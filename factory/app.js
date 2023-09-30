@@ -7,17 +7,17 @@ const PORT = 3000;
 
 function computeUnionAndIntersection(dict1, dict2) {
 	let union = { ...dict1, ...dict2 };
-	return [union,{}];
+	//return [union,{}];
 	let intersection = {};
 
 	for (let key in dict1) {
-		console.log(key);break;
+		//console.log(key);break;
 		if (dict2[key] != undefined) { //key in dict2) { //dict2.hasOwnProperty(key)) {
 			intersection[key] = dict1[key];
 		}
 	}
 
-	return { union, intersection };
+	return [union, intersection ];
 }
 
 // Read the .yaml file into a dictionary
@@ -34,24 +34,29 @@ let gkeys = Object.keys(gamecodes);
 let fkeys = Object.keys(facodes);
 let ikeys = Object.keys(iconchars);
 let skeys = Object.keys(allSyms);
+console.log('g',Object.keys(gamecodes).length);
+console.log('f',Object.keys(facodes).length);
+console.log('i',Object.keys(iconchars).length);
+console.log('s',Object.keys(allSyms).length);
+
 const di={
 	g:{di:gamecodes, keys:Object.keys(gamecodes),vals:Object.values(gamecodes)},
 	f:{di:facodes, keys:Object.keys(facodes),vals:Object.values(facodes)},
 	i:{di:iconchars, keys:Object.keys(iconchars),vals:Object.values(iconchars)},
 	s:{di:allSyms, keys:Object.keys(allSyms),vals:Object.values(allSyms)},
 }
-console.log('gc',di.g.di)
+//console.log('gc',di.g.di)
 let arr='gfis';
 for(let i=0;i<arr.length;i++){
 	for(let j=i+1;j<arr.length;j++){
 		let di1=di[arr[i]].di;
 		let di2=di[arr[j]].di;
 		let [uni, inter] = computeUnionAndIntersection(di1,di2);
-		console.log('uni',uni);
-		console.log('inter',inter);
-		break;
+		//console.log('uni',uni);
+		console.log('inter',arr[i],arr[j],Object.keys(inter).length);
+		//break;
 	}
-	break;
+	//break;
 }
 console.log('*TEST DONE*')
 
