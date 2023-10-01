@@ -1,27 +1,39 @@
 onload = start;
 async function start() { test1(); }
 
-async function test1(){
-	let dir='../factory/assets/'
-	let m = await mGetYaml(dir+'m.yaml'); //console.log('m', m);
-	let emo  = createMDict(m); 
-	console.log('emo',emo)
-	let syms = await mGetYaml(dir+'allSyms.yaml'); 
-	let facodes = await mGetYaml(dir+'facodes.yaml'); 
+async function test1() {
+	let dir = '../factory/assets/'
+	let m = await mGetYaml(dir + 'm.yaml'); //console.log('m', m);
+	let emo = createMDict(m);
+	console.log('emo', emo)
+	let syms = await mGetYaml(dir + 'allSyms.yaml');
+	let facodes = await mGetYaml(dir + 'facodes.yaml');
 
-	let gamecodes = await mGetYaml(dir+'gamecodes.yaml'); 
-	fa = convertValuesToDict(facodes,'fa')
-	game = convertValuesToDict(gamecodes,'ga')
+	let gamecodes = await mGetYaml(dir + 'gamecodes.yaml');
+	fa = convertValuesToDict(facodes, 'fa')
+	game = convertValuesToDict(gamecodes, 'ga')
 	for (const pair of [[game, 'g'], [fa, 'f'], [syms, 's'], [emo, 'm']]) {
 		for (const k in pair[0]) { pair[0][k].type = pair[1]; }
 
 	}
 
-	let di = M = mergeDictionariesWithListOfValues([emo,syms,fa,game]);
-	console.log('di',di);
+	let di = M = mergeDictionariesWithListOfValues([emo, syms, fa, game]);
+	console.log('di', di);
 
 	//da draus mach jetzt ein di dass alle values merged hat, und type soll sein: 
+	let superdi = {};
+	for (const k in di) {
+		let o = { cats: [] };
+		for (const val of di[k]) {
+			if (val.type == 's') { o.tx = val.text; if (isdef(val.cats)) val.cats.map(x => addIf(o.cats, x)); }
+			if (val.type == 'g') { o.ga = val.ga; }
+			if (val.type == 'f') { o.fa = val.fa; }
+			if (val.type == 'm') { o.img = val.key; addIf(o.cats, val.cat); }
+		}
+		superdi[k]=o;
+	}
 
+	console.log('superdi',superdi)
 }
 async function test0() {
 	// Read the .yaml file into a dictionary
@@ -101,10 +113,10 @@ function createMDict(m) {
 	}
 	return di;
 }
-function convertValuesToDict(di,key) {
+function convertValuesToDict(di, key) {
 	let dires = {};
 	for (const k in di) {
-		dires[k] = {};dires[k][key]=di[k];
+		dires[k] = {}; dires[k][key] = di[k];
 	}
 	return dires;
 }
