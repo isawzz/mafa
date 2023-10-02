@@ -1,5 +1,37 @@
 onload = start;
-async function start() { test1(); }
+async function start() { test2(); }
+
+async function test3(){
+	M = await mGetYaml('../assets/m.yaml');
+	let cats = await mGetYaml('../factory/assets/cats.yaml');
+
+	let keys = Object.keys(M);
+	keys.sort();
+	let dnew={};
+	for(const k of keys){
+		let o = M[k];
+		if (isdef(cats[k])) addIf(o.cats,cats[k]);
+		dnew[k]=o;
+	}
+	downloadAsYaml(M,'mnew');
+}
+
+async function test2(){
+	M = await mGetYaml('../assets/m.yaml');
+	let keys = Object.keys(M);
+	console.log('num',keys.length);
+	//let arr = arrTake(keys,10);	arr.map(x=>console.log(x))
+
+	//make an index
+	//first just show me the categories
+	let cats = [];
+	for(const k in M){for(const c of M[k].cats) addIf(cats,c);} console.log('categories',cats);
+
+	let list=['action', 'object', 'music', 'sport', 'best', 'game', 'place', 'transport', 'travel', 'animal', 'plant', 'nature', 'body', 'person', 'event', 'drink', 'food', 'vegetable', 'fruit', 'dishware', 'bug', 'mammal', 'bird', 'marine', 'emotion', 'smiley', 'reptile', 'amphibian', 'tool', 'household', 'office', 'science', 'medical', 'time', 'face', 'clothing', 'symbol', 'hand', 'sound'];
+	let smallerlist = ['action', 'object', 'music', 'sport', 'game', 'place', 'transport', 'travel', 'plant', 'body', 'person', 'event', 'drink', 'food', 'vegetable', 'fruit', 'dishware', 'bug', 'mammal', 'bird', 'marine', 'emotion', 'reptile', 'amphibian', 'tool', 'household', 'office', 'science', 'medical', 'time', 'clothing', 'symbol', 'sound']
+
+	let arr=arrTakeFromTo(keys,2300,2400);console.log('arr',arr);
+}
 
 async function test1() {
 	let dir = '../factory/assets/'
@@ -22,6 +54,7 @@ async function test1() {
 
 	//da draus mach jetzt ein di dass alle values merged hat, und type soll sein: 
 	let superdi = {};
+	let allcats = [];
 	for (const k in di) {
 		let o = { cats: [] };
 		for (const val of di[k]) {
@@ -30,10 +63,44 @@ async function test1() {
 			if (val.type == 'f') { o.fa = val.fa; }
 			if (val.type == 'm') { o.img = val.key; addIf(o.cats, val.cat); }
 		}
-		superdi[k]=o;
+		superdi[k] = o;
+		if (isdef(o.cats)) o.cats.map(x => addIf(allcats, x));
+
 	}
 
-	console.log('superdi',superdi)
+	allcats.sort();
+	console.log('allcats', allcats);
+	console.log('superdi', superdi);
+	//objects and object should be just one of them
+	let difinal = {};
+	for (const k in superdi) {
+		let old = superdi[k];
+		let o = difinal[k] = { cats: [] };
+		addKeys(old, o);
+
+		if (nundef(old.cats)) continue;
+		let list = old.cats;
+		//console.log('list', list)
+		let lnew = [];
+		if (list.some(x => x.startsWith('act'))) lnew.push('action');
+		let ani = list.find(x => x.startsWith('ani'));
+		if (isdef(ani)) lnew.push('animal');
+		let anispec = list.find(x => x.startsWith('animal-'));
+		if (isdef(anispec)) lnew.push(stringAfter(anispec,'-'));
+		if (list.some(x => x.startsWith('obj') && !x.endsWith('Plus'))) lnew.push('object');
+
+		for(const w of ['best', 'body','clothing','dishware', 'drink', 'food', 'plant', 'vegetable', 'fruit', 'emotion', 'event', 'face', 'game', 'hand', 'household', 'nature', 'medical', 'music', 'office', 'person', 'place', 'science', 'smiley', 'sport', 'sound', 'symbol', 'time', 'tool', 'transport', 'travel']){
+			if (list.some(x=>x.includes(w))) addIf(lnew,w);
+		}
+
+		lnew.map(x => o.cats.push(x));
+
+
+	}
+	console.log('final', difinal.ant, superdi.ant);
+	//save file as yaml
+	//downloadAsYaml(difinal,'di');
+	//M=difinal;
 }
 async function test0() {
 	// Read the .yaml file into a dictionary

@@ -1,0 +1,60 @@
+/* Custom CSS styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.questionnaire-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.question {
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.question h3 {
+  margin: 0;
+  font-size: inherit;
+}
+
+.answer-input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  font-size: inherit;
+}
+
+.submit-button {
+  display: block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.results-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+}
+
+.results h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.results p {
+  margin: 0;
+  margin-bottom: 10px;
+}

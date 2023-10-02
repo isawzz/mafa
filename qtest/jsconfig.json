@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6"
+  },
+  "include": [
+    "../*.js", 
+    "." 
+  ],
+  "exclude": [
+    "coding",
+    "node_modules",
+    "../*_*",
+    "../y/*",
+    "../base/*",
+    "../MUELL.js",
+    "../test.js",
+    "../allcode.js"
+  ]
+}
