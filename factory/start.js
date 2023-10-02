@@ -7,6 +7,9 @@ async function test3(){
 
 	let keys = Object.keys(M);
 	keys.sort();
+
+	
+
 	let dnew={};
 	for(const k of keys){
 		let o = M[k];
@@ -20,6 +23,7 @@ async function test2(){
 	M = await mGetYaml('../assets/m.yaml');
 	let keys = Object.keys(M);
 	console.log('num',keys.length);
+	console.log('roller coaster',keys.indexOf('roller coaster'));
 	//let arr = arrTake(keys,10);	arr.map(x=>console.log(x))
 
 	//make an index
@@ -30,7 +34,7 @@ async function test2(){
 	let list=['action', 'object', 'music', 'sport', 'best', 'game', 'place', 'transport', 'travel', 'animal', 'plant', 'nature', 'body', 'person', 'event', 'drink', 'food', 'vegetable', 'fruit', 'dishware', 'bug', 'mammal', 'bird', 'marine', 'emotion', 'smiley', 'reptile', 'amphibian', 'tool', 'household', 'office', 'science', 'medical', 'time', 'face', 'clothing', 'symbol', 'hand', 'sound'];
 	let smallerlist = ['action', 'object', 'music', 'sport', 'game', 'place', 'transport', 'travel', 'plant', 'body', 'person', 'event', 'drink', 'food', 'vegetable', 'fruit', 'dishware', 'bug', 'mammal', 'bird', 'marine', 'emotion', 'reptile', 'amphibian', 'tool', 'household', 'office', 'science', 'medical', 'time', 'clothing', 'symbol', 'sound']
 
-	let arr=arrTakeFromTo(keys,2300,2400);console.log('arr',arr);
+	let arr=arrTakeFromTo(keys,2900,3000);console.log('arr',arr);
 }
 
 async function test1() {
