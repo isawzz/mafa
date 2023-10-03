@@ -34,7 +34,7 @@ async function test2(){
 	let list=['action', 'object', 'music', 'sport', 'best', 'game', 'place', 'transport', 'travel', 'animal', 'plant', 'nature', 'body', 'person', 'event', 'drink', 'food', 'vegetable', 'fruit', 'dishware', 'bug', 'mammal', 'bird', 'marine', 'emotion', 'smiley', 'reptile', 'amphibian', 'tool', 'household', 'office', 'science', 'medical', 'time', 'face', 'clothing', 'symbol', 'hand', 'sound'];
 	let smallerlist = ['action', 'object', 'music', 'sport', 'game', 'place', 'transport', 'travel', 'plant', 'body', 'person', 'event', 'drink', 'food', 'vegetable', 'fruit', 'dishware', 'bug', 'mammal', 'bird', 'marine', 'emotion', 'reptile', 'amphibian', 'tool', 'household', 'office', 'science', 'medical', 'time', 'clothing', 'symbol', 'sound']
 
-	let arr=arrTakeFromTo(keys,2900,3000);console.log('arr',arr);
+	let arr=arrTakeFromTo(keys,0,10);console.log('arr',arr);
 }
 
 async function test1() {
