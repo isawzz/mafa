@@ -6628,7 +6628,7 @@ wooden-pier: object
 wooden-sign: object
 wool: object
 woozy face: symbol
-world: symbol
+world: place
 worm-mouth: symbol
 worms: creature
 worried-eyes: symbol
