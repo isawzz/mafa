@@ -1,6 +1,13 @@
-was soll noch in m kommen?
+ubuntu 22 04
 
+ps aux | grep apache2
+sudo netstat -tuln | grep 3000
 
+npm install -g npm@10.1.0
+
+sudo npm install -g express
+
+=>express functioniert muss es ein package.json geben
 
 
 
