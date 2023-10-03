@@ -42420,6 +42420,11 @@ function mGetStyleX(elem, prop) {
   if (nundef(val)) val = elem.style[prop];
   if (val.endsWith('px')) return firstNumber(val); else return val;
 }
+async function mGetText(path='../base/assets/m.txt'){
+	let res = await fetch(path);
+	let text = await res.text();
+  return text;
+}
 async function mGetYaml(path='../base/assets/m.txt'){
 	let res = await fetch(path);
 	let text = await res.text();

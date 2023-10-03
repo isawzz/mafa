@@ -1,5 +1,36 @@
 onload = start;
-async function start() { test2(); }
+async function start() { test4(); }
+
+async function test4(){
+	M = await mGetYaml('../assets/m.yaml');
+	let txt = await mGetText('../factory/assets/cats.txt');
+	let lines = txt.split('\n');
+	let cats={};
+	for(const line of lines){
+		//let tline = line.replace(/^\s+|\s+$/g, '');
+		if (isEmpty(line.trim())) continue;
+		let [a,b]=line.split(':').map(x=>x.trim());
+		a=a.toLowerCase();
+		if (nundef(b)) console.log('problem',a)
+		b=b.toLowerCase();
+		// console.log('a',a,a.length)
+		// console.log('b',b,b.length)
+		if (isdef(cats[a])) addIf(cats[a],b);
+		else cats[a]=[b];
+	}
+	let keys = Object.keys(M);
+	keys.sort();
+	let dnew={};
+	for(const k of keys){
+		let o = M[k];
+		let k1=k.toLowerCase();
+		if (k != k1) console.log('wrong key',k,k1)
+		if (isdef(cats[k])) cats[k].map(x=>addIf(o.cats,x));
+		dnew[k]=o;
+	}
+	//downloadAsYaml(M,'mnew');
+	console.log('M',M)
+}
 
 async function test3(){
 	M = await mGetYaml('../assets/m.yaml');
@@ -7,9 +38,6 @@ async function test3(){
 
 	let keys = Object.keys(M);
 	keys.sort();
-
-	
-
 	let dnew={};
 	for(const k of keys){
 		let o = M[k];
