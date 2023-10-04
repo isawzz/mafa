@@ -24,6 +24,8 @@ async function test4(){
 	for(const k of keys){
 		let o = M[k];
 		let k1=k.toLowerCase();
+		//ich moecht es auch noch so veraendern dass ich 
+		//keys mit - zu 
 		if (k != k1) console.log('wrong key',k,k1)
 		if (isdef(cats[k])) cats[k].map(x=>addIf(o.cats,x));
 		dnew[k]=o;
