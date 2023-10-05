@@ -1,5 +1,7 @@
 ubuntu 22 04
 
+ssh -p 7822  root@server.vidulusludorum.com
+
 ps aux | grep apache2
 sudo netstat -tuln | grep 3000
 
