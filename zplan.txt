@@ -1,17 +1,13 @@
-ubuntu 22 04
+____ubuntu 22 04
+	ssh -p 7822  root@server.vidulusludorum.com
+	ps aux | grep apache2
+	sudo netstat -tuln | grep 3000
+	npm install -g npm@10.1.0
+	sudo npm install -g express
+	=>express functioniert muss es ein package.json geben
 
-ssh -p 7822  root@server.vidulusludorum.com
-
-ps aux | grep apache2
-sudo netstat -tuln | grep 3000
-
-npm install -g npm@10.1.0
-
-sudo npm install -g express
-
-=>express functioniert muss es ein package.json geben
-
-jetzt muss ich 
+____mafa
+	jetzt muss ich alle keys normalizen: ' ' und - wird ersetzt durch _
 
 
 

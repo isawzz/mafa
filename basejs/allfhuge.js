@@ -63239,10 +63239,13 @@ function stringBetweenLast(sFull, sStart, sEnd) {
   return stringAfterLast(s1, sStart);
 }
 function stringCount(s, sSub, caseInsensitive = true) {
-  let temp = "Welcome to W3Docs";
+  //let temp = "Welcome to W3Docs";
   let m = new RegExp(sSub, 'g' + (caseInsensitive ? 'i' : ''));
-  let count = (s.match(m)).length;
-  return count;
+  let s1=s.match(m);
+  return s1?s1.length:0;
+  // console.log(s,sSub,s1)
+  // let count = (s.match(m)).length;
+  // return count;
 }
 function stringDivider(str, width, spaceReplacer) {
   if (str.length > width) {

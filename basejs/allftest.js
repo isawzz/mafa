@@ -1633,10 +1633,9 @@ function stringBeforeLast(sFull, sSub) {
   return sFull.substring(0, sFull.length - arrLast(parts).length - 1);
 }
 function stringCount(s, sSub, caseInsensitive = true) {
-  let temp = "Welcome to W3Docs";
   let m = new RegExp(sSub, 'g' + (caseInsensitive ? 'i' : ''));
-  let count = (s.match(m)).length;
-  return count;
+  let s1=s.match(m);
+  return s1?s1.length:0;
 }
 function toElem(d) { return isString(d) ? mBy(d) : d; }
 function toLetters(s) { return [...s]; }
