@@ -1,5 +1,24 @@
 onload = start;
-async function start() { test8(); }
+async function start() { test9_draw(); }
+
+async function test9_draw(){
+	//draw a random img h 200
+	M = await mGetYaml('../assets/m.yaml'); //console.log('m', m);
+	console.log('M',M)
+	let k=rChoose(Object.keys(M));
+	console.log('k',k)
+
+	k=M[k];
+	console.log('k',k)
+	let d=mBy('dGames');
+	if (isdef(k.img)) mDom(d,{h:200},{tag:'img',src:'../assets/img/emo/'+k.img+'.png'});
+	if (isdef(k.text)) mDom(d,{fz:200,family:'emoNoto',bg:rColor(),fg:rColor(),display:'inline'},{html:k.text});
+	// if (isdef(k.hex)) mDom(d,{fz:200,family:'emoNoto',bg:rColor(),fg:rColor(),display:'inline'},{html:String.fromCharCode('0x'+k.hex)});
+	if (isdef(k.fa)) mDom(d,{fz:200,family:'pictoFa',bg:rColor(),fg:rColor(),display:'inline'},{html:String.fromCharCode('0x'+k.fa)});
+	if (isdef(k.ga)) mDom(d,{fz:200,family:'pictoGame',bg:rColor(),fg:rColor(),display:'inline'},{html:String.fromCharCode('0x'+k.ga)});
+
+
+}
 
 async function test8() {
 	let dir = '../factory/assets/'

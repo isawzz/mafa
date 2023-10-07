@@ -8,6 +8,32 @@ const PORT = 3000;
 // Specify the path of the directory you want to access
 const directoryPath = __dirname;
 
+function listEmojiFiles(){
+	let dir = 'C:\\xampp\\htdocs\\mafa\\assets\\img\\emo';
+	fs.readdir(dir, (err, files) => {
+		if (err) {
+			console.log('Error reading directory');
+		} else {
+			console.log('files',files.length)
+			for(let i=0;i<10;i++) console.log('i',i,files[i])
+			const yamlData = yaml.dump({ files: files });
+
+			// Write YAML data to files.yaml
+			fs.writeFile('files.yaml', yamlData, (err) => {
+					if (err) {
+							console.error('Error writing to files.yaml:', err);
+					} else {
+							console.log('List of files saved to files.yaml');
+					}
+			});
+	
+		}
+	});
+
+
+}
+listEmojiFiles();
+
 // Endpoint to get data from the YAML file
 app.get('/data', (req, res) => {
 	res.json(data);
