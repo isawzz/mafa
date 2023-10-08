@@ -7,6 +7,7 @@ const PORT = 3000;
 
 // Specify the path of the directory you want to access
 const directoryPath = __dirname;
+console.log(__dirname);
 
 function listEmojiFiles(){
 	let dir = 'C:\\xampp\\htdocs\\mafa\\assets\\img\\emo';
@@ -32,7 +33,7 @@ function listEmojiFiles(){
 
 
 }
-listEmojiFiles();
+//listEmojiFiles();
 
 // Endpoint to get data from the YAML file
 app.get('/data', (req, res) => {
@@ -40,8 +41,9 @@ app.get('/data', (req, res) => {
 });
 
 // Endpoint to get a list of files in the specified directory
+const dir_diversity="C:\\xampp\\htdocs\\mafa\\assets_old\\assets\\img\\enoji\\diversity";
 app.get('/files', (req, res) => {
-	fs.readdir(directoryPath, (err, files) => {
+	fs.readdir(dir_diversity, (err, files) => {
 		if (err) {
 			res.status(500).send('Error reading directory');
 		} else {

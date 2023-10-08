@@ -1,0 +1,904 @@
+- word: anger-symbol
+  cat: symbol
+  unicode: "&#128163;"
+
+- word: antenna-bars
+  cat: symbol
+  unicode: "&#128246;"
+
+- word: atm-sign
+  cat: symbol
+  unicode: "&#127975;"
+
+- word: atom-symbol
+  cat: symbol
+  unicode: "&#9883;"
+
+- word: baby-symbol
+  cat: symbol
+  unicode: "&#128118;"
+
+- word: back-arrow
+  cat: symbol
+  unicode: "&#11013;"
+
+- word: baggage-claim
+  cat: symbol
+  unicode: "&#128708;"
+
+- word: beating-heart
+  cat: symbol
+  unicode: "&#128147;"
+
+- word: bell-with-slash
+  cat: symbol
+  unicode: "&#128277;"
+
+- word: bell
+  cat: symbol
+  unicode: "&#128276;"
+
+- word: biohazard
+  cat: symbol
+  unicode: "&#9763;"
+
+- word: black-circle
+  cat: symbol
+  unicode: "&#9899;"
+
+- word: black-heart
+  cat: symbol
+  unicode: "&#128420;"
+
+- word: black-large-square
+  cat: symbol
+  unicode: "&#11035;"
+
+- word: black-medium-small-square
+  cat: symbol
+  unicode: "&#9724;"
+
+- word: black-medium-square
+  cat: symbol
+  unicode: "&#9723;"
+
+- word: black-small-square
+  cat: symbol
+  unicode: "&#9642;"
+
+- word: black-square-button
+  cat: symbol
+  unicode: "&#128306;"
+
+- word: blue-circle
+  cat: symbol
+  unicode: "&#128309;"
+
+- word: blue-heart
+  cat: symbol
+  unicode: "&#128153;"
+
+- word: blue-square
+  cat: symbol
+  unicode: "&#128998;"
+
+- word: bright-button
+  cat: symbol
+  unicode: "&#128309;"
+
+- word: broken-heart
+  cat: symbol
+  unicode: "&#128148;"
+
+- word: brown-circle
+  cat: symbol
+  unicode: "&#128996;"
+
+- word: brown-heart
+  cat: symbol
+  unicode: "&#128158;"
+
+- word: brown-square
+  cat: symbol
+  unicode: "&#128995;"
+
+- word: chart-increasing-with-yen
+  cat: symbol
+  unicode: "&#128187;"
+
+- word: check-box-with-check
+  cat: symbol
+  unicode: "&#9745;"
+
+- word: check-mark-button
+  cat: symbol
+  unicode: "&#9989;"
+
+- word: check-mark
+  cat: symbol
+  unicode: "&#10004;"
+
+- word: chequered-flag
+  cat: symbol
+  unicode: "&#127937;"
+
+- word: children-crossing
+  cat: symbol
+  unicode: "&#128696;"
+
+- word: cinema
+  cat: symbol
+  unicode: "&#127910;"
+
+- word: circled-m
+  cat: symbol
+  unicode: "&#9410;"
+
+- word: cl-button
+  cat: symbol
+  unicode: "&#127377;"
+
+- word: clockwise-vertical-arrows
+  cat: symbol
+  unicode: "&#128260;"
+
+- word: club-suit
+  cat: symbol
+  unicode: "&#9827;"
+
+- word: cool-button
+  cat: symbol
+  unicode: "&#127378;"
+
+- word: copyright
+  cat: symbol
+  unicode: "&#169;"
+
+- word: counterclockwise-arrows-button
+  cat: symbol
+  unicode: "&#128259;"
+
+- word: cross-mark-button
+  cat: symbol
+  unicode: "&#10060;"
+
+- word: cross-mark
+  cat: symbol
+  unicode: "&#10060;"
+
+- word: curly-loop
+  cat: symbol
+  unicode: "&#10160;"
+
+- word: currency-exchange
+  cat: symbol
+  unicode: "&#128177;"
+
+- word: customs
+  cat: symbol
+  unicode: "&#128707;"
+
+- word: cyclone
+  cat: symbol
+  unicode: "&#127744;"
+
+- word: diamond-suit
+  cat: symbol
+  unicode: "&#9830;"
+
+- word: diamond-with-a-dot
+  cat: symbol
+  unicode: "&#128160;"
+
+- word: dim-button
+  cat: symbol
+  unicode: "&#128307;"
+
+- word: dotted-six-pointed-star
+  cat: symbol
+  unicode: "&#128303;"
+
+- word: double-curly-loop
+  cat: symbol
+  unicode: "&#10175;"
+
+- word: double-exclamation-mark
+  cat: symbol
+  unicode: "&#8252;"
+
+- word: down-arrow
+  cat: symbol
+  unicode: "&#11015;"
+
+- word: down-left-arrow
+  cat: symbol
+  unicode: "&#8601;"
+
+- word: down-right-arrow
+  cat: symbol
+  unicode: "&#8600;"
+
+- word: downwards-button
+  cat: symbol
+  unicode: "&#128317;"
+
+- word: eight-pointed-star
+  cat: symbol
+  unicode: "&#10035;"
+
+- word: eight-spoked-asterisk
+  cat: symbol
+  unicode: "&#10035;"
+
+- word: eight-thirty
+  cat: symbol
+  unicode: "&#128344;"
+
+- word: eject-button
+  cat: symbol
+  unicode: "&#9167;"
+
+- word: elevator
+  cat: symbol
+  unicode: "&#128727;"
+
+- word: eleven-thirty
+  cat: symbol
+  unicode: "&#128347;"
+
+- word: end-arrow
+  cat: symbol
+  unicode: "&#9197;"
+
+- word: exclamation-mark
+  cat: symbol
+  unicode: "&#33;"
+
+- word: exclamation-question-mark
+  cat: symbol
+  unicode: "&#8265;"
+
+- word: eye-in-speech-bubble
+  cat: symbol
+  unicode: "&#128065;"
+
+- word: fast-down-button
+  cat: symbol
+  unicode: "&#9195;"
+
+- word: fast-forward-button
+  cat: symbol
+  unicode: "&#9193;"
+
+- word: fast-reverse-button
+  cat: symbol
+  unicode: "&#9194;"
+
+- word: fast-up-button
+  cat: symbol
+  unicode: "&#9196;"
+
+- word: female-sign
+  cat: symbol
+  unicode: "&#9792;"
+
+- word: five-thirty
+  cat: symbol
+  unicode: "&#128342;"
+
+- word: fleur-de-lis
+  cat: symbol
+  unicode: "&#9884;"
+
+- word: flower-playing-cards
+  cat: symbol
+  unicode: "&#127924;"
+
+- word: four-thirty
+  cat: symbol
+  unicode: "&#128341;"
+
+- word: free-button
+  cat: symbol
+  unicode: "&#128309;"
+
+- word: green-circle
+  cat: symbol
+  unicode: "&#128994;"
+
+- word: green-heart
+  cat: symbol
+  unicode: "&#128155;"
+
+- word: green-square
+  cat: symbol
+  unicode: "&#128997;"
+
+- word: growing-heart
+  cat: symbol
+  unicode: "&#128152;"
+
+- word: heart-decoration
+  cat: symbol
+  unicode: "&#128159;"
+
+- word: heart-exclamation
+  cat: symbol
+  unicode: "&#10083;"
+
+- word: heart-suit
+  cat: symbol
+  unicode: "&#9829;"
+
+- word: heart-with-arrow
+  cat: symbol
+  unicode: "&#128152;"
+
+- word: heart-with-ribbon
+  cat: symbol
+  unicode: "&#128158;"
+
+- word: heavy-dollar-sign
+  cat: symbol
+  unicode: "&#128178;"
+
+- word: hollow-red-circle
+  cat: symbol
+  unicode: "&#128308;"
+
+- word: hundred-points
+  cat: symbol
+  unicode: "&#128175;"
+
+- word: id-button
+  cat: symbol
+  unicode: "&#127380;"
+
+- word: infinity
+  cat: symbol
+  unicode: "&#8734;"
+
+- word: input-latin-letters
+  cat: symbol
+  unicode: "&#127344;"
+
+- word: input-latin-lowercase
+  cat: symbol
+  unicode: "&#127358;"
+
+- word: input-latin-uppercase
+  cat: symbol
+  unicode: "&#127359;"
+
+- word: input-numbers
+  cat: symbol
+  unicode: "&#127358;"
+
+- word: input-symbols
+  cat: symbol
+  unicode: "&#127358;"
+
+- word: japanese-symbol-for-beginner
+  cat: symbol
+  unicode: "&#128304;"
+
+- word: joker
+  cat: symbol
+  unicode: "&#127183;"
+
+- word: large-blue-diamond
+  cat: symbol
+  unicode: "&#128311;"
+
+- word: large-orange-diamond
+  cat: symbol
+  unicode: "&#128310;"
+
+- word: last-track-button
+  cat: symbol
+  unicode: "&#9194;"
+
+- word: latin-cross
+  cat: symbol
+  unicode: "&#10013;"
+
+- word: left-arrow-curving-right
+  cat: symbol
+  unicode: "&#8630;"
+
+- word: left-arrow
+  cat: symbol
+  unicode: "&#8592;"
+
+- word: left-luggage
+  cat: symbol
+  unicode: "&#128709;"
+
+- word: left-right-arrow
+  cat: symbol
+  unicode: "&#8596;"
+
+- word: left-speech-bubble
+  cat: symbol
+  unicode: "&#128488;"
+
+- word: litter-in-bin-sign
+  cat: symbol
+  unicode: "&#128705;"
+
+- word: loudspeaker
+  cat: symbol
+  unicode: "&#128227;"
+
+- word: mahjong-red-dragon
+  cat: symbol
+  unicode: "&#126980;"
+
+- word: male-sign
+  cat: symbol
+  unicode: "&#9794;"
+
+- word: medical-symbol
+  cat: symbol
+  unicode: "&#9877;"
+
+- word: megaphone
+  cat: symbol
+  unicode: "&#128227;"
+
+- word: menorah
+  cat: symbol
+  unicode: "&#128334;"
+
+- word: mobile-phone-off
+  cat: symbol
+  unicode: "&#128244;"
+
+- word: musical-note
+  cat: symbol
+  unicode: "&#127925;"
+
+- word: musical-notes
+  cat: symbol
+  unicode: "&#127932;"
+
+- word: muted-speaker
+  cat: symbol
+  unicode: "&#128263;"
+
+- word: name-badge
+  cat: symbol
+  unicode: "&#128219;"
+
+- word: new-button
+  cat: symbol
+  unicode: "&#128280;"
+
+- word: next-track-button
+  cat: symbol
+  unicode: "&#9197;"
+
+- word: ng-button
+  cat: symbol
+  unicode: "&#127383;"
+
+- word: nine-thirty
+  cat: symbol
+  unicode: "&#128345;"
+
+- word: no-bicycles
+  cat: symbol
+  unicode: "&#128691;"
+
+- word: no-entry
+  cat: symbol
+  unicode: "&#9940;"
+
+- word: no-littering
+  cat: symbol
+  unicode: "&#128686;"
+
+- word: no-mobile-phones
+  cat: symbol
+  unicode: "&#128245;"
+
+- word: no-one-under-eighteen
+  cat: symbol
+  unicode: "&#128688;"
+
+- word: no-pedestrians
+  cat: symbol
+  unicode: "&#128695;"
+
+- word: no-smoking
+  cat: symbol
+  unicode: "&#128685;"
+
+- word: non-potable-water
+  cat: symbol
+  unicode: "&#128688;"
+
+- word: ok-button
+  cat: symbol
+  unicode: "&#128076;"
+
+- word: om
+  cat: symbol
+  unicode: "&#128329;"
+
+- word: one-thirty
+  cat: symbol
+  unicode: "&#128347;"
+
+- word: orange-circle
+  cat: symbol
+  unicode: "&#128992;"
+
+- word: orange-heart
+  cat: symbol
+  unicode: "&#128154;"
+
+- word: orange-square
+  cat: symbol
+  unicode: "&#129002;"
+
+- word: orthodox-cross
+  cat: symbol
+  unicode: "&#9766;"
+
+- word: p-button
+  cat: symbol
+  unicode: "&#127383;"
+
+- word: part-alternation-mark
+  cat: symbol
+  unicode: "&#12349;"
+
+- word: passport-control
+  cat: symbol
+  unicode: "&#128706;"
+
+- word: pause-button
+  cat: symbol
+  unicode: "&#9208;"
+
+- word: peace-symbol
+  cat: symbol
+  unicode: "&#9774;"
+
+- word: place-of-worship
+  cat: symbol
+  unicode: "&#128720;"
+
+- word: play-button
+  cat: symbol
+  unicode: "&#9654;"
+
+- word: play-or-pause-button
+  cat: symbol
+  unicode: "&#9199;"
+
+- word: prohibited
+  cat: symbol
+  unicode: "&#128683;"
+
+- word: purple-circle
+  cat: symbol
+  unicode: "&#128995;"
+
+- word: purple-heart
+  cat: symbol
+  unicode: "&#128156;"
+
+- word: purple-square
+  cat: symbol
+  unicode: "&#128997;"
+
+- word: question-mark
+  cat: symbol
+  unicode: "&#63;"
+
+- word: radio-button
+  cat: symbol
+  unicode: "&#128280;"
+
+- word: radioactive
+  cat: symbol
+  unicode: "&#9762;"
+
+- word: record-button
+  cat: symbol
+  unicode: "&#9209;"
+
+- word: recycling-symbol
+  cat: symbol
+  unicode: "&#9851;"
+
+- word: red-circle
+  cat: symbol
+  unicode: "&#128308;"
+
+- word: red-heart
+  cat: symbol
+  unicode: "&#128152;"
+
+- word: red-square
+  cat: symbol
+  unicode: "&#128994;"
+
+- word: red-triangle-pointed-down
+  cat: symbol
+  unicode: "&#128315;"
+
+- word: red-triangle-pointed-up
+  cat: symbol
+  unicode: "&#128314;"
+
+- word: registered
+  cat: symbol
+  unicode: "&#174;"
+
+- word: repeat-button
+  cat: symbol
+  unicode: "&#128257;"
+
+- word: repeat-single-button
+  cat: symbol
+  unicode: "&#128258;"
+
+- word: restroom
+  cat: symbol
+  unicode: "&#128699;"
+
+- word: reverse-button
+  cat: symbol
+  unicode: "&#9194;"
+
+- word: revolving-hearts
+  cat: symbol
+  unicode: "&#128159;"
+
+- word: right-anger-bubble
+  cat: symbol
+  unicode: "&#128495;"
+
+- word: right-arrow-curving-down
+  cat: symbol
+  unicode: "&#8641;"
+
+- word: right-arrow-curving-left
+  cat: symbol
+  unicode: "&#8630;"
+
+- word: right-arrow-curving-up
+  cat: symbol
+  unicode: "&#8631;"
+
+- word: right-arrow
+  cat: symbol
+  unicode: "&#8594;"
+
+- word: seven-thirty
+  cat: symbol
+  unicode: "&#128346;"
+
+- word: shuffle-tracks-button
+  cat: symbol
+  unicode: "&#128256;"
+
+- word: six-thirty
+  cat: symbol
+  unicode: "&#128345;"
+
+- word: small-blue-diamond
+  cat: symbol
+  unicode: "&#128313;"
+
+- word: small-orange-diamond
+  cat: symbol
+  unicode: "&#128312;"
+
+- word: soon-arrow
+  cat: symbol
+  unicode: "&#9194;"
+
+- word: sos-button
+  cat: symbol
+  unicode: "&#127384;"
+
+- word: spade-suit
+  cat: symbol
+  unicode: "&#9824;"
+
+- word: sparkle
+  cat: symbol
+  unicode: "&#10024;"
+
+- word: sparkling-heart
+  cat: symbol
+  unicode: "&#128150;"
+
+- word: speaker-high-volume
+  cat: symbol
+  unicode: "&#128266;"
+
+- word: speaker-low-volume
+  cat: symbol
+  unicode: "&#128265;"
+
+- word: speaker-medium-volume
+  cat: symbol
+  unicode: "&#128264;"
+
+- word: speech-balloon
+  cat: symbol
+  unicode: "&#128172;"
+
+- word: star-and-crescent
+  cat: symbol
+  unicode: "&#9770;"
+
+- word: star-of-david
+  cat: symbol
+  unicode: "&#10017;"
+
+- word: stop-button
+  cat: symbol
+  unicode: "&#9209;"
+
+- word: stop-sign
+  cat: symbol
+  unicode: "&#128721;"
+
+- word: ten-thirty
+  cat: symbol
+  unicode: "&#128346;"
+
+- word: thought-balloon
+  cat: symbol
+  unicode: "&#128173;"
+
+- word: three-thirty
+  cat: symbol
+  unicode: "&#128342;"
+
+- word: top-arrow
+  cat: symbol
+  unicode: "&#128285;"
+
+- word: trade-mark
+  cat: symbol
+  unicode: "&#8482;"
+
+- word: transgender-symbol
+  cat: symbol
+  unicode: "&#9792;"
+
+- word: triangular-flag
+  cat: symbol
+  unicode: "&#127987;"
+
+- word: trident-emblem
+  cat: symbol
+  unicode: "&#128305;"
+
+- word: twelve-thirty
+  cat: symbol
+  unicode: "&#128348;"
+
+- word: two-hearts
+  cat: symbol
+  unicode: "&#128149;"
+
+- word: two-thirty
+  cat: symbol
+  unicode: "&#128341;"
+
+- word: up-arrow
+  cat: symbol
+  unicode: "&#8593;"
+
+- word: up-down-arrow
+  cat: symbol
+  unicode: "&#8597;"
+
+- word: up-left-arrow
+  cat: symbol
+  unicode: "&#8598;"
+
+- word: up-right-arrow
+  cat: symbol
+  unicode: "&#8599;"
+
+- word: upwards-button
+  cat: symbol
+  unicode: "&#128316;"
+
+- word: vibration-mode
+  cat: symbol
+  unicode: "&#128243;"
+
+- word: vs-button
+  cat: symbol
+  unicode: "&#128302;"
+
+- word: warning
+  cat: symbol
+  unicode: "&#9888;"
+
+- word: water-closet
+  cat: symbol
+  unicode: "&#128702;"
+
+- word: wavy-dash
+  cat: symbol
+  unicode: "&#12316;"
+
+- word: wheel-of-dharma
+  cat: symbol
+  unicode: "&#9784;"
+
+- word: wheelchair-symbol
+  cat: symbol
+  unicode: "&#9855;"
+
+- word: white-circle
+  cat: symbol
+  unicode: "&#9898;"
+
+- word: white-exclamation-mark
+  cat: symbol
+  unicode: "&#10069;"
+
+- word: white-flower
+  cat: symbol
+  unicode: "&#127799;"
+
+- word: white-heart
+  cat: symbol
+  unicode: "&#128159;"
+
+- word: white-large-square
+  cat: symbol
+  unicode: "&#11036;"
+
+- word: white-medium-small-square
+  cat: symbol
+  unicode: "&#9723;"
+
+- word: white-medium-square
+  cat: symbol
+  unicode: "&#9724;"
+
+- word: white-question-mark
+  cat: symbol
+  unicode: "&#10068;"
+
+- word: white-small-square
+  cat: symbol
+  unicode: "&#9642;"
+
+- word: white-square-button
+  cat: symbol
+  unicode: "&#128307;"
+
+- word: yellow-circle
+  cat: symbol
+  unicode: "&#128993;"
+
+- word: yellow-heart
+  cat: symbol
+  unicode: "&#128155;"
+
+- word: yellow-square
+  cat: symbol
+  unicode: "&#128998;"
+
+- word: yin-yang
+  cat: symbol
+  unicode: "&#9775;"
+
+- word: zzz
+  cat: symbol
+  unicode: "&#128164;"
+
