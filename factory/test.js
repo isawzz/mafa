@@ -1,3 +1,48 @@
+
+async function test17() {
+	//read in allSyms
+	let dinew = await createAllsymsNew();
+	dinew = await addFacodesTo(dinew);
+	dinew = await addGamecodesTo(dinew);
+	dinew = await addImagesTo(dinew);
+	dinew = await addCats(dinew);
+
+	//da ist aber jetzt noch nur das mit den genders drin!
+	//eliminate genders!
+	let di1 = dictWithoutGender(dinew);
+	dinew = sortKeysAlphabetically(di1);
+
+
+	//check ob img ohne text und cats empty!
+
+	for(const k in dinew){
+		let o=dinew[k];
+		if (isEmpty(dinew[k].cats)) {
+			
+			if (k.includes('digit')) o.cats=['digit','symbol'];
+			else if (k.includes('clock')) o.cats=['time'];
+			else if (k.includes('sign')) o.cats=['sign','symbol'];
+			else if (k.includes('blood')) o.cats=['medical','symbol'];
+			else if (k.includes('globe')) o.cats=['place'];
+			else if (k.includes('heart')) o.cats=['symbol','heart','emotion'];
+			else if (k.includes('key')) o.cats=['symbol','key'];
+			else {o.cats = ['symbol']; } //console.log('no cats',k,dinew[k]);}
+		}
+		if (k.includes('blood_type')) addIf(o.cats,'medical');
+	}
+
+	console.log('dinew count', Object.keys(dinew).length);
+	console.log(dinew.gnome);
+	//downloadAsYaml(dinew,'dinew');
+
+}
+async function test16() {
+	let files = await mGetFiles("http://localhost:3000", "../assets_old/assets/img/emoji/diversity"); //YEAH!!!
+	let wrong = firstCond(files, x => !x.includes('skin-tone'));
+	console.log('files', files);
+	console.log('wrong', wrong ? wrong : 'ALL FILES CONTAIN SKIN-TONE!!!');
+}
+
 async function test15() {
 	let files = await fetchFilenamesLocalhost("C:\\xampp\\htdocs\\mafa\\assets_old\\assets\\img\\emoji\\diversity");
 }

@@ -24908,8 +24908,8 @@ zzz:
     - nemo
     - object
     - objectPlus
-a button (blood type):
-  key: a button (blood type)
+a button blood type:
+  key: a button blood type
   hexcode: 1F170
   hex: 1F170
   family: emoNoto
@@ -24922,8 +24922,8 @@ a button (blood type):
   D: a
   cats:
     - huge
-ab button (blood type):
-  key: ab button (blood type)
+ab button blood type:
+  key: ab button blood type
   hexcode: 1F18E
   hex: 1F18E
   family: emoNoto
@@ -24988,8 +24988,8 @@ aries:
   C: 白羊座
   cats:
     - huge
-b button (blood type):
-  key: b button (blood type)
+b button blood type:
+  key: b button blood type
   hexcode: 1F171
   hex: 1F171
   family: emoNoto
@@ -25276,8 +25276,8 @@ ng button:
   C: ng
   cats:
     - huge
-o button (blood type):
-  key: o button (blood type)
+o button blood type:
+  key: o button blood type
   hexcode: 1F17E
   hex: 1F17E
   family: emoNoto
@@ -25286,7 +25286,7 @@ o button (blood type):
   isDuplicate: false
   w: 125
   h: 117
-  E: o button (blood type)
+  E: o button blood type
 ok button:
   key: ok button
   hexcode: 1F197

@@ -1,0 +1,6645 @@
+abacus:
+  text: '&#129518;'
+  cats:
+    - object
+accordion:
+  text: '&#129687;'
+  cats:
+    - object
+    - music
+adhesive_bandage:
+  text: '&#129657;'
+  cats:
+    - action
+    - object
+    - best
+    - medical
+aerial_tramway:
+  text: '&#128673;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+airplane:
+  text: '&#9992;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+airplane_arrival:
+  text: '&#128748;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+airplane_departure:
+  text: '&#128747;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+alarm_clock:
+  text: '&#9200;'
+  cats:
+    - object
+    - place
+    - time
+    - travel
+alien:
+  text: '&#128125;'
+  cats:
+    - emotion
+    - face
+    - smiley
+ambulance:
+  text: '&#128657;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+american_football:
+  text: '&#127944;'
+  cats:
+    - action
+    - object
+    - sport
+amphora:
+  text: '&#127994;'
+  cats:
+    - action
+    - object
+    - best
+    - dishware
+    - drink
+    - food
+anchor:
+  text: '&#9875;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+ant:
+  text: '&#128028;'
+  cats:
+    - animal
+    - bug
+    - nature
+anxious_face_with_sweat:
+  text: '&#128560;'
+  cats:
+    - emotion
+    - face
+    - smiley
+articulated_lorry:
+  text: '&#128667;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+artist_palette:
+  text: '&#127912;'
+  cats:
+    - action
+    - object
+astonished_face:
+  text: '&#128562;'
+  cats:
+    - emotion
+    - face
+    - smiley
+automobile:
+  text: '&#128663;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+avocado:
+  text: '&#129361;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - vegetable
+axe:
+  text: '&#129683;'
+  cats:
+    - object
+    - tool
+baby:
+  text: '&#128118;'
+  cats:
+    - body
+    - person
+baby_angel:
+  text: '&#128124;'
+  cats:
+    - body
+    - person
+baby_bottle:
+  text: '&#127868;'
+  cats:
+    - drink
+    - food
+baby_chick:
+  text: '&#128036;'
+  cats:
+    - animal
+    - bird
+    - nature
+backhand_index_pointing_down:
+  text: '&#128071;'
+  cats:
+    - body
+    - hand
+backhand_index_pointing_left:
+  text: '&#128072;'
+  cats:
+    - body
+    - hand
+backhand_index_pointing_right:
+  text: '&#128073;'
+  cats:
+    - body
+    - hand
+backhand_index_pointing_up:
+  text: '&#128070;'
+  cats:
+    - body
+    - hand
+backpack:
+  text: '&#127890;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+bacon:
+  text: '&#129363;'
+  cats:
+    - drink
+    - food
+badger:
+  text: '&#129441;'
+  cats:
+    - animal
+    - mammal
+    - nature
+badminton:
+  text: '&#127992;'
+  cats:
+    - action
+    - object
+    - sport
+bagel:
+  text: '&#129391;'
+  cats:
+    - drink
+    - food
+baguette_bread:
+  text: '&#129366;'
+  cats:
+    - drink
+    - food
+balance_scale:
+  text: '&#9878;'
+  cats:
+    - object
+    - tool
+ballet_shoes:
+  text: '&#129648;'
+  cats:
+    - object
+    - clothing
+balloon:
+  text: '&#127880;'
+  cats:
+    - action
+    - object
+    - event
+ballot_box_with_ballot:
+  text: '&#128499;'
+  cats:
+    - object
+banana:
+  text: '&#127820;'
+  cats:
+    - drink
+    - food
+    - fruit
+banjo:
+  text: '&#129685;'
+  cats:
+    - object
+    - music
+bar_chart:
+  text: '&#128202;'
+  cats:
+    - object
+    - office
+barrier:
+  text: '&#128679;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+baseball:
+  text: '&#9918;'
+  cats:
+    - action
+    - object
+    - sport
+basket:
+  text: '&#129530;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+basketball:
+  text: '&#127936;'
+  cats:
+    - action
+    - object
+    - sport
+bat:
+  text: '&#129415;'
+  cats:
+    - animal
+    - mammal
+    - nature
+bathtub:
+  text: '&#128705;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+battery:
+  text: '&#128267;'
+  cats:
+    - action
+    - object
+    - best
+beach_with_umbrella:
+  text: '&#127958;'
+  cats:
+    - place
+    - travel
+beaming_face_with_smiling_eyes:
+  text: '&#128513;'
+  cats:
+    - emotion
+    - face
+    - smiley
+bear:
+  text: '&#128059;'
+  cats:
+    - animal
+    - mammal
+    - nature
+beaver:
+  text: '&#129451;'
+  cats:
+    - animal
+    - mammal
+    - nature
+bed:
+  text: '&#128719;'
+  cats:
+    - object
+    - household
+bee:
+  text: '&#128029;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+beer_mug:
+  text: '&#127866;'
+  cats:
+    - drink
+    - food
+beetle:
+  text: '&#129714;'
+  cats:
+    - animal
+    - bug
+    - nature
+bell:
+  text: '&#128276;'
+  cats:
+    - object
+    - sound
+bellhop_bell:
+  text: '&#128718;'
+  cats:
+    - place
+    - travel
+bell_pepper:
+  text: '&#129745;'
+  cats:
+    - drink
+    - food
+    - vegetable
+bicycle:
+  text: '&#128690;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+biking:
+  text: '&#128692;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+bikini:
+  text: '&#128089;'
+  cats:
+    - object
+    - clothing
+billed_cap:
+  text: '&#129506;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+bird:
+  text: '&#128038;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+birthday_cake:
+  text: '&#127874;'
+  cats:
+    - drink
+    - food
+bison:
+  text: '&#129452;'
+  cats:
+    - animal
+    - mammal
+    - nature
+black_heart:
+  text: '&#128420;'
+  cats:
+    - emotion
+    - smiley
+black_nib:
+  text: '&#10002;'
+  cats:
+    - object
+blossom:
+  text: '&#127804;'
+  cats:
+    - animal
+    - plant
+    - nature
+blowfish:
+  text: '&#128033;'
+  cats:
+    - animal
+    - marine
+    - nature
+blue_book:
+  text: '&#128216;'
+  cats:
+    - object
+blue_heart:
+  text: '&#128153;'
+  cats:
+    - emotion
+    - smiley
+blueberries:
+  text: '&#129744;'
+  cats:
+    - drink
+    - food
+    - fruit
+bomb:
+  text: '&#128163;'
+  cats:
+    - emotion
+    - smiley
+bone:
+  text: '&#129460;'
+  cats:
+    - body
+bookmark:
+  text: '&#128278;'
+  cats:
+    - object
+bookmark_tabs:
+  text: '&#128209;'
+  cats:
+    - object
+books:
+  text: '&#128218;'
+  cats:
+    - object
+boomerang:
+  text: '&#129667;'
+  cats:
+    - object
+    - tool
+bottle_with_popping_cork:
+  text: '&#127870;'
+  cats:
+    - drink
+    - food
+bouncing_ball:
+  text: '&#9977;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+bouquet:
+  text: '&#128144;'
+  cats:
+    - animal
+    - plant
+    - nature
+bow_and_arrow:
+  text: '&#127993;'
+  cats:
+    - object
+    - tool
+bowl_with_spoon:
+  text: '&#129379;'
+  cats:
+    - drink
+    - food
+bowling:
+  text: '&#127923;'
+  cats:
+    - action
+    - object
+    - sport
+boxing_glove:
+  text: '&#129354;'
+  cats:
+    - action
+    - object
+    - sport
+boy:
+  text: '&#128102;'
+  cats:
+    - body
+    - person
+brain:
+  text: '&#129504;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+bread:
+  text: '&#127838;'
+  cats:
+    - drink
+    - food
+breast_feeding:
+  text: '&#129329;'
+  cats:
+    - action
+    - body
+    - person
+brick:
+  text: '&#129521;'
+  cats:
+    - place
+    - travel
+bridge_at_night:
+  text: '&#127753;'
+  cats:
+    - place
+    - travel
+briefcase:
+  text: '&#128188;'
+  cats:
+    - object
+    - office
+briefs:
+  text: '&#129650;'
+  cats:
+    - object
+    - clothing
+broccoli:
+  text: '&#129382;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - vegetable
+broken_heart:
+  text: '&#128148;'
+  cats:
+    - emotion
+    - smiley
+broom:
+  text: '&#129529;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+brown_heart:
+  text: '&#129294;'
+  cats:
+    - emotion
+    - smiley
+bubble_tea:
+  text: '&#129483;'
+  cats:
+    - drink
+    - food
+bucket:
+  text: '&#129699;'
+  cats:
+    - object
+    - household
+buffalo:
+  text: '&#128003;'
+  cats:
+    - animal
+    - mammal
+    - nature
+bug:
+  text: '&#128027;'
+  cats:
+    - animal
+    - bug
+    - nature
+burrito:
+  text: '&#127791;'
+  cats:
+    - drink
+    - food
+bus:
+  text: '&#128652;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+bus_stop:
+  text: '&#128655;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+butter:
+  text: '&#129480;'
+  cats:
+    - drink
+    - food
+butterfly:
+  text: '&#129419;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+cactus:
+  text: '&#127797;'
+  cats:
+    - animal
+    - plant
+    - nature
+calendar:
+  text: '&#128197;'
+  cats:
+    - object
+    - office
+call_me_hand:
+  text: '&#129305;'
+  cats:
+    - body
+    - hand
+camel:
+  text: '&#128042;'
+  cats:
+    - animal
+    - mammal
+    - nature
+camera:
+  text: '&#128247;'
+  cats:
+    - action
+    - object
+    - best
+camera_with_flash:
+  text: '&#128248;'
+  cats:
+    - object
+camping:
+  text: '&#127957;'
+  cats:
+    - place
+    - travel
+candle:
+  text: '&#128367;'
+  cats:
+    - action
+    - object
+    - best
+candy:
+  text: '&#127852;'
+  cats:
+    - drink
+    - food
+canned_food:
+  text: '&#129387;'
+  cats:
+    - drink
+    - food
+canoe:
+  text: '&#128758;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+card_file_box:
+  text: '&#128451;'
+  cats:
+    - object
+    - office
+card_index:
+  text: '&#128199;'
+  cats:
+    - object
+    - office
+card_index_dividers:
+  text: '&#128450;'
+  cats:
+    - object
+    - office
+carousel:
+  text: '&#127904;'
+  cats:
+    - place
+    - travel
+carpentry_saw:
+  text: '&#129690;'
+  cats:
+    - object
+    - tool
+carrot:
+  text: '&#129365;'
+  cats:
+    - drink
+    - food
+    - vegetable
+cartwheeling:
+  text: '&#129336;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+castle:
+  text: '&#127984;'
+  cats:
+    - place
+    - travel
+cat:
+  text: '&#128008;'
+  cats:
+    - animal
+    - mammal
+    - nature
+chains:
+  text: '&#9939;'
+  cats:
+    - object
+    - tool
+chair:
+  text: '&#129681;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+chart_decreasing:
+  text: '&#128201;'
+  cats:
+    - object
+    - office
+chart_increasing:
+  text: '&#128200;'
+  cats:
+    - object
+    - office
+chart_increasing_with_yen:
+  text: '&#128185;'
+  cats:
+    - object
+cheese_wedge:
+  text: '&#129472;'
+  cats:
+    - drink
+    - food
+cherries:
+  text: '&#127826;'
+  cats:
+    - drink
+    - food
+    - fruit
+cherry_blossom:
+  text: '&#127800;'
+  cats:
+    - animal
+    - plant
+    - nature
+chess_pawn:
+  text: '&#9823;'
+  cats:
+    - action
+    - object
+    - game
+chestnut:
+  text: '&#127792;'
+  cats:
+    - drink
+    - food
+    - vegetable
+chicken:
+  text: '&#128020;'
+  cats:
+    - animal
+    - bird
+    - nature
+child:
+  text: '&#129490;'
+  cats:
+    - body
+    - person
+chipmunk:
+  text: '&#128063;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+chocolate_bar:
+  text: '&#127851;'
+  cats:
+    - drink
+    - food
+chopsticks:
+  text: '&#129378;'
+  cats:
+    - object
+    - dishware
+    - drink
+    - food
+church:
+  text: '&#9962;'
+  cats:
+    - place
+    - travel
+cigarette:
+  text: '&#128684;'
+  cats:
+    - object
+circus_tent:
+  text: '&#127914;'
+  cats:
+    - place
+    - travel
+cityscape:
+  text: '&#127961;'
+  cats:
+    - place
+    - travel
+cityscape_at_dusk:
+  text: '&#127750;'
+  cats:
+    - place
+    - travel
+clamp:
+  text: '&#128476;'
+  cats:
+    - object
+    - tool
+clapper_board:
+  text: '&#127916;'
+  cats:
+    - object
+clapping_hands:
+  text: '&#128079;'
+  cats:
+    - body
+    - hand
+classical_building:
+  text: '&#127963;'
+  cats:
+    - place
+    - travel
+climbing:
+  text: '&#129495;'
+  cats:
+    - action
+    - body
+    - person
+clinking_beer_mugs:
+  text: '&#127867;'
+  cats:
+    - drink
+    - food
+clinking_glasses:
+  text: '&#129346;'
+  cats:
+    - drink
+    - food
+clipboard:
+  text: '&#128203;'
+  cats:
+    - object
+    - office
+closed_book:
+  text: '&#128213;'
+  cats:
+    - object
+closed_umbrella:
+  text: '&#127746;'
+  cats:
+    - object
+    - place
+    - travel
+cloud:
+  text: '&#9729;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+cloud_with_lightning:
+  text: '&#127785;'
+  cats:
+    - object
+    - place
+    - travel
+cloud_with_lightning_and_rain:
+  text: '&#9928;'
+  cats:
+    - object
+    - place
+    - travel
+cloud_with_rain:
+  text: '&#127783;'
+  cats:
+    - object
+    - place
+    - travel
+cloud_with_snow:
+  text: '&#127784;'
+  cats:
+    - object
+    - place
+    - travel
+clown_face:
+  text: '&#129313;'
+  cats:
+    - emotion
+    - face
+    - smiley
+club_suit:
+  text: '&#9827;'
+  cats:
+    - action
+    - object
+    - game
+clutch_bag:
+  text: '&#128093;'
+  cats:
+    - object
+    - clothing
+coat:
+  text: '&#129509;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+cockroach:
+  text: '&#129715;'
+  cats:
+    - animal
+    - bug
+    - nature
+cocktail_glass:
+  text: '&#127864;'
+  cats:
+    - drink
+    - food
+coconut:
+  text: '&#129381;'
+  cats:
+    - drink
+    - food
+    - fruit
+coffin:
+  text: '&#9904;'
+  cats:
+    - object
+coin:
+  text: '&#129689;'
+  cats:
+    - object
+    - best
+cold_face:
+  text: '&#129398;'
+  cats:
+    - emotion
+    - face
+    - smiley
+collision:
+  text: '&#128165;'
+  cats:
+    - emotion
+    - smiley
+comet:
+  text: '&#9732;'
+  cats:
+    - object
+    - place
+    - travel
+compass:
+  text: '&#129517;'
+  cats:
+    - place
+    - travel
+computer_mouse:
+  text: '&#128433;'
+  cats:
+    - action
+    - object
+    - best
+confetti_ball:
+  text: '&#127882;'
+  cats:
+    - action
+    - object
+    - event
+confounded_face:
+  text: '&#128534;'
+  cats:
+    - emotion
+    - face
+    - smiley
+confused_face:
+  text: '&#128533;'
+  cats:
+    - emotion
+    - face
+    - smiley
+construction_site:
+  text: '&#127959;'
+  cats:
+    - place
+    - travel
+construction_worker:
+  text: '&#128119;'
+  cats:
+    - action
+    - body
+    - person
+cooked_rice:
+  text: '&#127834;'
+  cats:
+    - drink
+    - food
+cookie:
+  text: '&#127850;'
+  cats:
+    - drink
+    - food
+cooking:
+  text: '&#127859;'
+  cats:
+    - drink
+    - food
+couch_and_lamp:
+  text: '&#128715;'
+  cats:
+    - object
+    - household
+couple_with_heart:
+  text: '&#128145;'
+  cats:
+    - body
+cow:
+  text: '&#128004;'
+  cats:
+    - animal
+    - mammal
+    - nature
+cowboy_hat_face:
+  text: '&#129312;'
+  cats:
+    - emotion
+    - face
+    - smiley
+crab:
+  text: '&#129408;'
+  cats:
+    - drink
+    - food
+crayon:
+  text: '&#128397;'
+  cats:
+    - object
+credit_card:
+  text: '&#128179;'
+  cats:
+    - object
+crescent_moon:
+  text: '&#127769;'
+  cats:
+    - object
+    - place
+    - travel
+cricket:
+  text: '&#129431;'
+  cats:
+    - animal
+    - bug
+    - nature
+cricket_game:
+  text: '&#127951;'
+  cats:
+    - action
+    - object
+    - sport
+crocodile:
+  text: '&#128010;'
+  cats:
+    - animal
+    - reptile
+    - nature
+croissant:
+  text: '&#129360;'
+  cats:
+    - drink
+    - food
+crossed_fingers:
+  text: '&#129310;'
+  cats:
+    - body
+    - hand
+crossed_swords:
+  text: '&#9876;'
+  cats:
+    - object
+    - tool
+crown:
+  text: '&#128081;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+crying_face:
+  text: '&#128546;'
+  cats:
+    - emotion
+    - face
+    - smiley
+crystal_ball:
+  text: '&#128302;'
+  cats:
+    - action
+    - object
+    - game
+cucumber:
+  text: '&#129362;'
+  cats:
+    - drink
+    - food
+    - vegetable
+cup_with_straw:
+  text: '&#129380;'
+  cats:
+    - drink
+    - food
+cupcake:
+  text: '&#129473;'
+  cats:
+    - drink
+    - food
+curling_stone:
+  text: '&#129356;'
+  cats:
+    - action
+    - object
+    - sport
+curry_rice:
+  text: '&#127835;'
+  cats:
+    - drink
+    - food
+custard:
+  text: '&#127854;'
+  cats:
+    - drink
+    - food
+cut_of_meat:
+  text: '&#129385;'
+  cats:
+    - drink
+    - food
+dagger:
+  text: '&#128481;'
+  cats:
+    - object
+    - tool
+deciduous_tree:
+  text: '&#127795;'
+  cats:
+    - action
+    - animal
+    - object
+    - best
+    - plant
+    - nature
+deer:
+  text: '&#129420;'
+  cats:
+    - animal
+    - mammal
+    - nature
+delivery_truck:
+  text: '&#128666;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+department_store:
+  text: '&#127980;'
+  cats:
+    - place
+    - travel
+derelict_house:
+  text: '&#127962;'
+  cats:
+    - place
+    - travel
+desert:
+  text: '&#127964;'
+  cats:
+    - place
+    - travel
+desert_island:
+  text: '&#127965;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+desktop_computer:
+  text: '&#128421;'
+  cats:
+    - object
+detective:
+  text: '&#128373;'
+  cats:
+    - action
+    - body
+    - person
+diamond_suit:
+  text: '&#9830;'
+  cats:
+    - action
+    - object
+    - game
+direct_hit:
+  text: '&#127919;'
+  cats:
+    - action
+    - object
+    - game
+disappointed_face:
+  text: '&#128542;'
+  cats:
+    - emotion
+    - face
+    - smiley
+disguised_face:
+  text: '&#129400;'
+  cats:
+    - emotion
+    - face
+    - smiley
+diving_mask:
+  text: '&#129343;'
+  cats:
+    - action
+    - object
+    - sport
+diya_lamp:
+  text: '&#129684;'
+  cats:
+    - object
+dizzy:
+  text: '&#128171;'
+  cats:
+    - emotion
+    - smiley
+dizzy_face:
+  text: '&#128565;'
+  cats:
+    - emotion
+    - face
+    - smiley
+dna:
+  text: '&#129516;'
+  cats:
+    - object
+    - science
+dodo:
+  text: '&#129444;'
+  cats:
+    - animal
+    - bird
+    - nature
+dog:
+  text: '&#128021;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+dollar_banknote:
+  text: '&#128181;'
+  cats:
+    - object
+dolphin:
+  text: '&#128044;'
+  cats:
+    - animal
+    - marine
+    - nature
+door:
+  text: '&#128682;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+doughnut:
+  text: '&#127849;'
+  cats:
+    - drink
+    - food
+dove:
+  text: '&#128330;'
+  cats:
+    - animal
+    - bird
+    - nature
+downcast_face_with_sweat:
+  text: '&#128531;'
+  cats:
+    - emotion
+    - face
+    - smiley
+dragon:
+  text: '&#128009;'
+  cats:
+    - action
+    - animal
+    - reptile
+    - object
+    - best
+    - nature
+dragon_face:
+  text: '&#128050;'
+  cats:
+    - animal
+    - reptile
+    - nature
+dress:
+  text: '&#128087;'
+  cats:
+    - object
+    - clothing
+drooling_face:
+  text: '&#129316;'
+  cats:
+    - emotion
+    - face
+    - smiley
+drop_of_blood:
+  text: '&#129656;'
+  cats:
+    - object
+    - medical
+droplet:
+  text: '&#128167;'
+  cats:
+    - object
+    - place
+    - travel
+drum:
+  text: '&#129345;'
+  cats:
+    - object
+    - music
+duck:
+  text: '&#129414;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+dvd:
+  text: '&#128192;'
+  cats:
+    - object
+eagle:
+  text: '&#129413;'
+  cats:
+    - animal
+    - bird
+    - nature
+ear:
+  text: '&#128066;'
+  cats:
+    - body
+ear_of_corn:
+  text: '&#127805;'
+  cats:
+    - drink
+    - food
+    - vegetable
+ear_with_hearing_aid:
+  text: '&#129467;'
+  cats:
+    - body
+egg:
+  text: '&#129370;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+eggplant:
+  text: '&#127814;'
+  cats:
+    - drink
+    - food
+    - vegetable
+electric_plug:
+  text: '&#128268;'
+  cats:
+    - object
+elephant:
+  text: '&#128024;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+elevator:
+  text: '&#128727;'
+  cats:
+    - object
+    - household
+envelope:
+  text: '&#9993;'
+  cats:
+    - object
+envelope_with_arrow:
+  text: '&#128233;'
+  cats:
+    - object
+euro_banknote:
+  text: '&#128182;'
+  cats:
+    - object
+evergreen_tree:
+  text: '&#127794;'
+  cats:
+    - animal
+    - plant
+    - nature
+expressionless_face:
+  text: '&#128529;'
+  cats:
+    - emotion
+    - face
+    - smiley
+eye:
+  text: '&#128065;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+face_blowing_a_kiss:
+  text: '&#128536;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_vomiting:
+  text: '&#129326;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_hand_over_mouth:
+  text: '&#129325;'
+  cats:
+    - emotion
+    - face
+    - hand
+    - smiley
+face_with_head_bandage:
+  text: '&#129301;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_medical_mask:
+  text: '&#128567;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_monocle:
+  text: '&#129488;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_open_mouth:
+  text: '&#128558;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_raised_eyebrow:
+  text: '&#129320;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_rolling_eyes:
+  text: '&#128580;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_symbols_on_mouth:
+  text: '&#129324;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_tears_of_joy:
+  text: '&#128514;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_thermometer:
+  text: '&#129298;'
+  cats:
+    - emotion
+    - face
+    - smiley
+face_with_tongue:
+  text: '&#128539;'
+  cats:
+    - emotion
+    - face
+    - smiley
+factory:
+  text: '&#127981;'
+  cats:
+    - place
+    - travel
+fairy:
+  text: '&#129498;'
+  cats:
+    - body
+    - person
+falafel:
+  text: '&#129478;'
+  cats:
+    - drink
+    - food
+family:
+  text: '&#128106;'
+  cats:
+    - body
+family_of_4:
+  text: '&#128104;&#8205;&#128105;&#8205;&#128103;&#8205;&#128102;'
+  cats:
+    - body
+fax_machine:
+  text: '&#128224;'
+  cats:
+    - object
+feather:
+  text: '&#129718;'
+  cats:
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+fencing:
+  text: '&#129338;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+ferris_wheel:
+  text: '&#127905;'
+  cats:
+    - place
+    - travel
+ferry:
+  text: '&#9972;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+field_hockey:
+  text: '&#127953;'
+  cats:
+    - action
+    - object
+    - sport
+file_cabinet:
+  text: '&#128452;'
+  cats:
+    - object
+    - office
+file_folder:
+  text: '&#128193;'
+  cats:
+    - action
+    - object
+    - best
+    - office
+film_frames:
+  text: '&#127902;'
+  cats:
+    - object
+film_projector:
+  text: '&#128253;'
+  cats:
+    - object
+fire:
+  text: '&#128293;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+fire_engine:
+  text: '&#128658;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+fire_extinguisher:
+  text: '&#129519;'
+  cats:
+    - object
+    - household
+firecracker:
+  text: '&#129512;'
+  cats:
+    - action
+    - object
+    - event
+fireworks:
+  text: '&#127878;'
+  cats:
+    - action
+    - object
+    - event
+first_quarter_moon:
+  text: '&#127763;'
+  cats:
+    - object
+    - place
+    - travel
+first_quarter_moon_face:
+  text: '&#127771;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+fish:
+  text: '&#128031;'
+  cats:
+    - animal
+    - marine
+    - nature
+fishing_pole:
+  text: '&#127907;'
+  cats:
+    - action
+    - object
+    - sport
+flag_in_hole:
+  text: '&#9971;'
+  cats:
+    - action
+    - object
+    - sport
+flamingo:
+  text: '&#129449;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+flashlight:
+  text: '&#128294;'
+  cats:
+    - action
+    - object
+    - best
+flat_shoe:
+  text: '&#129407;'
+  cats:
+    - object
+    - clothing
+flatbread:
+  text: '&#129747;'
+  cats:
+    - drink
+    - food
+flexed_biceps:
+  text: '&#128170;'
+  cats:
+    - body
+floppy_disk:
+  text: '&#128190;'
+  cats:
+    - object
+fly:
+  text: '&#129712;'
+  cats:
+    - animal
+    - bug
+    - nature
+flying_disc:
+  text: '&#129359;'
+  cats:
+    - action
+    - object
+    - sport
+flying_saucer:
+  text: '&#128760;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+fog:
+  text: '&#127787;'
+  cats:
+    - object
+    - place
+    - travel
+folded_hands:
+  text: '&#128591;'
+  cats:
+    - body
+    - hand
+fondue:
+  text: '&#129749;'
+  cats:
+    - drink
+    - food
+foot:
+  text: '&#129462;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+footprints:
+  text: '&#128099;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+    - person
+    - symbol
+fork_and_knife:
+  text: '&#127860;'
+  cats:
+    - object
+    - dishware
+    - drink
+    - food
+fork_and_knife_with_plate:
+  text: '&#127869;'
+  cats:
+    - object
+    - dishware
+    - drink
+    - food
+fortune_cookie:
+  text: '&#129376;'
+  cats:
+    - drink
+    - food
+fountain:
+  text: '&#9970;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+fountain_pen:
+  text: '&#128395;'
+  cats:
+    - object
+four_leaf_clover:
+  text: '&#127808;'
+  cats:
+    - animal
+    - plant
+    - nature
+framed_picture:
+  text: '&#128444;'
+  cats:
+    - action
+    - object
+    - best
+frog:
+  text: '&#128056;'
+  cats:
+    - animal
+    - amphibian
+    - nature
+front_facing_baby_chick:
+  text: '&#128037;'
+  cats:
+    - animal
+    - bird
+    - nature
+frowning_face:
+  text: '&#9785;'
+  cats:
+    - emotion
+    - face
+    - smiley
+fuel_pump:
+  text: '&#9981;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+full_moon:
+  text: '&#127765;'
+  cats:
+    - object
+    - place
+    - travel
+funeral_urn:
+  text: '&#9905;'
+  cats:
+    - object
+game_die:
+  text: '&#127922;'
+  cats:
+    - action
+    - object
+    - best
+    - game
+garlic:
+  text: '&#129476;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - vegetable
+gear:
+  text: '&#9881;'
+  cats:
+    - action
+    - object
+    - best
+    - tool
+gem_stone:
+  text: '&#128142;'
+  cats:
+    - object
+    - clothing
+genie:
+  text: '&#129502;'
+  cats:
+    - body
+    - person
+ghost:
+  text: '&#128123;'
+  cats:
+    - emotion
+    - face
+    - smiley
+giraffe:
+  text: '&#129426;'
+  cats:
+    - animal
+    - mammal
+    - nature
+girl:
+  text: '&#128103;'
+  cats:
+    - body
+    - person
+glass_of_milk:
+  text: '&#129371;'
+  cats:
+    - drink
+    - food
+glasses:
+  text: '&#128083;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+globe_showing_americas:
+  text: '&#127758;'
+  cats:
+    - place
+    - travel
+globe_showing_asia_australia:
+  text: '&#127759;'
+  cats:
+    - place
+    - travel
+globe_showing_europe_africa:
+  text: '&#127757;'
+  cats:
+    - place
+    - travel
+gloves:
+  text: '&#129508;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+glowing_star:
+  text: '&#127775;'
+  cats:
+    - object
+    - place
+    - travel
+goal_net:
+  text: '&#129349;'
+  cats:
+    - action
+    - object
+    - sport
+goat:
+  text: '&#128016;'
+  cats:
+    - animal
+    - mammal
+    - nature
+goggles:
+  text: '&#129405;'
+  cats:
+    - object
+    - clothing
+gorilla:
+  text: '&#129421;'
+  cats:
+    - animal
+    - mammal
+    - nature
+graduation_cap:
+  text: '&#127891;'
+  cats:
+    - object
+    - clothing
+grapes:
+  text: '&#127815;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+green_apple:
+  text: '&#127823;'
+  cats:
+    - drink
+    - food
+    - fruit
+green_book:
+  text: '&#128215;'
+  cats:
+    - action
+    - object
+    - best
+green_heart:
+  text: '&#128154;'
+  cats:
+    - emotion
+    - smiley
+green_salad:
+  text: '&#129367;'
+  cats:
+    - drink
+    - food
+grimacing_face:
+  text: '&#128556;'
+  cats:
+    - emotion
+    - face
+    - smiley
+grinning_face:
+  text: '&#128512;'
+  cats:
+    - emotion
+    - face
+    - smiley
+grinning_face_with_smiling_eyes:
+  text: '&#128516;'
+  cats:
+    - emotion
+    - face
+    - smiley
+guard:
+  text: '&#128130;'
+  cats:
+    - action
+    - body
+    - person
+guitar:
+  text: '&#127928;'
+  cats:
+    - object
+    - music
+haircut:
+  text: '&#128135;'
+  cats:
+    - action
+    - body
+    - person
+hamburger:
+  text: '&#127828;'
+  cats:
+    - drink
+    - food
+hammer:
+  text: '&#128296;'
+  cats:
+    - action
+    - object
+    - best
+    - tool
+hammer_and_pick:
+  text: '&#9874;'
+  cats:
+    - object
+    - tool
+hammer_and_wrench:
+  text: '&#128736;'
+  cats:
+    - object
+    - tool
+hamster:
+  text: '&#128057;'
+  cats:
+    - animal
+    - mammal
+    - nature
+hand_with_fingers_splayed:
+  text: '&#128400;'
+  cats:
+    - body
+    - hand
+handbag:
+  text: '&#128092;'
+  cats:
+    - object
+    - clothing
+handball:
+  text: '&#129342;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+handshake:
+  text: '&#129309;'
+  cats:
+    - body
+    - hand
+hatching_chick:
+  text: '&#128035;'
+  cats:
+    - animal
+    - bird
+    - nature
+headphone:
+  text: '&#127911;'
+  cats:
+    - action
+    - object
+    - best
+    - music
+headstone:
+  text: '&#129702;'
+  cats:
+    - object
+heart_suit:
+  text: '&#9829;'
+  cats:
+    - action
+    - object
+    - best
+    - game
+heart_with_arrow:
+  text: '&#128152;'
+  cats:
+    - emotion
+    - smiley
+heart_with_ribbon:
+  text: '&#128157;'
+  cats:
+    - emotion
+    - smiley
+hedgehog:
+  text: '&#129428;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+helicopter:
+  text: '&#128641;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+herb:
+  text: '&#127807;'
+  cats:
+    - animal
+    - plant
+    - nature
+hibiscus:
+  text: '&#127802;'
+  cats:
+    - animal
+    - plant
+    - nature
+high_voltage:
+  text: '&#9889;'
+  cats:
+    - object
+    - place
+    - travel
+high_heeled_shoe:
+  text: '&#128096;'
+  cats:
+    - object
+    - clothing
+high_speed_train:
+  text: '&#128644;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+hiking_boot:
+  text: '&#129406;'
+  cats:
+    - object
+    - clothing
+hindu_temple:
+  text: '&#128725;'
+  cats:
+    - place
+    - travel
+hippopotamus:
+  text: '&#129435;'
+  cats:
+    - animal
+    - mammal
+    - nature
+hole:
+  text: '&#128371;'
+  cats:
+    - emotion
+    - smiley
+honey_pot:
+  text: '&#127855;'
+  cats:
+    - drink
+    - food
+hook:
+  text: '&#129693;'
+  cats:
+    - object
+    - tool
+horse:
+  text: '&#128014;'
+  cats:
+    - animal
+    - mammal
+    - nature
+horse_racing:
+  text: '&#127943;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+hot_beverage:
+  text: '&#9749;'
+  cats:
+    - drink
+    - food
+hot_face:
+  text: '&#129397;'
+  cats:
+    - emotion
+    - face
+    - smiley
+hot_pepper:
+  text: '&#127798;'
+  cats:
+    - drink
+    - food
+    - vegetable
+hotdog:
+  text: '&#127789;'
+  cats:
+    - drink
+    - food
+hourglass_done:
+  text: '&#8987;'
+  cats:
+    - object
+    - place
+    - time
+    - travel
+hourglass_not_done:
+  text: '&#9203;'
+  cats:
+    - object
+    - place
+    - time
+    - travel
+house:
+  text: '&#127968;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+house_with_garden:
+  text: '&#127969;'
+  cats:
+    - place
+    - travel
+houses:
+  text: '&#127960;'
+  cats:
+    - place
+    - travel
+hushed_face:
+  text: '&#128559;'
+  cats:
+    - emotion
+    - face
+    - smiley
+hut:
+  text: '&#128726;'
+  cats:
+    - object
+    - place
+    - travel
+ice:
+  text: '&#129482;'
+  cats:
+    - drink
+    - food
+ice_cream:
+  text: '&#127848;'
+  cats:
+    - drink
+    - food
+ice_hockey:
+  text: '&#127954;'
+  cats:
+    - action
+    - object
+    - sport
+ice_skate:
+  text: '&#9976;'
+  cats:
+    - action
+    - object
+    - sport
+inbox_tray:
+  text: '&#128229;'
+  cats:
+    - object
+incoming_envelope:
+  text: '&#128232;'
+  cats:
+    - object
+index_pointing_up:
+  text: '&#9757;'
+  cats:
+    - body
+    - hand
+jack_o_lantern:
+  text: '&#127875;'
+  cats:
+    - action
+    - object
+    - event
+jeans:
+  text: '&#128086;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+joker:
+  text: '&#127183;'
+  cats:
+    - action
+    - object
+    - game
+joystick:
+  text: '&#128377;'
+  cats:
+    - action
+    - object
+    - game
+juggling:
+  text: '&#129337;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+kangaroo:
+  text: '&#129432;'
+  cats:
+    - animal
+    - mammal
+    - nature
+key:
+  text: '&#128273;'
+  cats:
+    - action
+    - object
+    - best
+keyboard:
+  text: '&#9000;'
+  cats:
+    - action
+    - object
+    - best
+kick_scooter:
+  text: '&#128756;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+kimono:
+  text: '&#128088;'
+  cats:
+    - object
+    - clothing
+kiss:
+  text: '&#128143;'
+  cats:
+    - body
+kiss_mark:
+  text: '&#128139;'
+  cats:
+    - emotion
+    - smiley
+kissing_face_with_smiling_eyes:
+  text: '&#128537;'
+  cats:
+    - emotion
+    - face
+    - smiley
+kitchen_knife:
+  text: '&#128298;'
+  cats:
+    - object
+    - dishware
+    - drink
+    - food
+kite:
+  text: '&#129665;'
+  cats:
+    - action
+    - object
+    - game
+kiwi_fruit:
+  text: '&#129373;'
+  cats:
+    - drink
+    - food
+    - fruit
+kneeling:
+  text: '&#129486;'
+  cats:
+    - action
+    - body
+    - person
+knot:
+  text: '&#129698;'
+  cats:
+    - action
+    - object
+lab_coat:
+  text: '&#129404;'
+  cats:
+    - object
+    - clothing
+label:
+  text: '&#127991;'
+  cats:
+    - object
+lacrosse:
+  text: '&#129357;'
+  cats:
+    - action
+    - object
+    - sport
+ladder:
+  text: '&#129692;'
+  cats:
+    - object
+    - tool
+ladybug:
+  text: '&#128030;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+laptop:
+  text: '&#128187;'
+  cats:
+    - object
+last_quarter_moon_face:
+  text: '&#127772;'
+  cats:
+    - object
+    - place
+    - travel
+leaf_fluttering_in_wind:
+  text: '&#127811;'
+  cats:
+    - animal
+    - plant
+    - nature
+ledger:
+  text: '&#128210;'
+  cats:
+    - object
+left_speech_bubble:
+  text: '&#128488;'
+  cats:
+    - emotion
+    - smiley
+left_facing_fist:
+  text: '&#129307;'
+  cats:
+    - body
+    - hand
+leg:
+  text: '&#129461;'
+  cats:
+    - body
+lemon:
+  text: '&#127819;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+leopard:
+  text: '&#128006;'
+  cats:
+    - animal
+    - mammal
+    - nature
+level_slider:
+  text: '&#127898;'
+  cats:
+    - object
+    - music
+levitating:
+  text: '&#128372;'
+  cats:
+    - action
+    - body
+    - person
+lifting_weights:
+  text: '&#127947;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+light_bulb:
+  text: '&#128161;'
+  cats:
+    - object
+light_rail:
+  text: '&#128648;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+link:
+  text: '&#128279;'
+  cats:
+    - object
+    - tool
+linked_paperclips:
+  text: '&#128391;'
+  cats:
+    - object
+    - office
+lipstick:
+  text: '&#128132;'
+  cats:
+    - object
+    - clothing
+lizard:
+  text: '&#129422;'
+  cats:
+    - animal
+    - reptile
+    - nature
+llama:
+  text: '&#129433;'
+  cats:
+    - animal
+    - mammal
+    - nature
+lobster:
+  text: '&#129438;'
+  cats:
+    - drink
+    - food
+locked:
+  text: '&#128274;'
+  cats:
+    - object
+locked_with_key:
+  text: '&#128272;'
+  cats:
+    - object
+locked_with_pen:
+  text: '&#128271;'
+  cats:
+    - object
+locomotive:
+  text: '&#128642;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+lollipop:
+  text: '&#127853;'
+  cats:
+    - drink
+    - food
+long_drum:
+  text: '&#129688;'
+  cats:
+    - object
+    - music
+lotion_bottle:
+  text: '&#129524;'
+  cats:
+    - object
+    - household
+lotus_position:
+  text: '&#129496;'
+  cats:
+    - action
+    - body
+    - person
+loudly_crying_face:
+  text: '&#128557;'
+  cats:
+    - emotion
+    - face
+    - smiley
+loudspeaker:
+  text: '&#128226;'
+  cats:
+    - object
+    - sound
+love_letter:
+  text: '&#128140;'
+  cats:
+    - emotion
+    - smiley
+love_you_gesture:
+  text: '&#129311;'
+  cats:
+    - body
+    - hand
+luggage:
+  text: '&#129523;'
+  cats:
+    - place
+    - travel
+lungs:
+  text: '&#129729;'
+  cats:
+    - body
+lying_face:
+  text: '&#129317;'
+  cats:
+    - emotion
+    - face
+    - smiley
+magic_wand:
+  text: '&#129668;'
+  cats:
+    - action
+    - object
+    - game
+magnet:
+  text: '&#129522;'
+  cats:
+    - object
+    - tool
+magnifying_glass_tilted_left:
+  text: '&#128269;'
+  cats:
+    - object
+magnifying_glass_tilted_right:
+  text: '&#128270;'
+  cats:
+    - object
+mahjong_red_dragon:
+  text: '&#126980;'
+  cats:
+    - action
+    - object
+    - game
+mammoth:
+  text: '&#129443;'
+  cats:
+    - animal
+    - mammal
+    - nature
+man:
+  text: '&#128104;'
+  cats:
+    - body
+    - person
+man_artist:
+  text: '&#128104;&#8205;&#127912;'
+  cats:
+    - action
+    - body
+    - person
+man_astronaut:
+  text: '&#128104;&#8205;&#128640;'
+  cats:
+    - action
+    - body
+    - person
+man_blind:
+  text: '&#128104;&#8205;&#129455;'
+  cats:
+    - action
+    - body
+    - person
+man_cook:
+  text: '&#128104;&#8205;&#127859;'
+  cats:
+    - action
+    - body
+    - person
+man_dancing:
+  text: '&#128378;'
+  cats:
+    - action
+    - body
+    - person
+man_factory_worker:
+  text: '&#128104;&#8205;&#127981;'
+  cats:
+    - action
+    - body
+    - person
+man_fairy:
+  text: '&#129498;&#8205;&#9794;&#65039;'
+  cats:
+    - body
+    - person
+man_farmer:
+  text: '&#128104;&#8205;&#127806;'
+  cats:
+    - action
+    - body
+    - person
+man_firefighter:
+  text: '&#128104;&#8205;&#128658;'
+  cats:
+    - action
+    - body
+    - person
+man_golfing:
+  text: '&#127948;&#65039;&#8205;&#9794;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+man_health_worker:
+  text: '&#128104;&#8205;&#9877;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+man_in_manual_wheelchair:
+  text: '&#128104;&#8205;&#129469;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+    - person
+man_in_motorized_wheelchair:
+  text: '&#128104;&#8205;&#129468;'
+  cats:
+    - action
+    - body
+    - person
+man_judge:
+  text: '&#128104;&#8205;&#9878;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+man_kneeling:
+  text: '&#129486;&#8205;&#9794;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+man_mechanic:
+  text: '&#128104;&#8205;&#128295;'
+  cats:
+    - action
+    - body
+    - person
+man_office_worker:
+  text: '&#128104;&#8205;&#128188;'
+  cats:
+    - action
+    - body
+    - person
+man_pilot:
+  text: '&#128104;&#8205;&#9992;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+man_running:
+  text: '&#127939;&#8205;&#9794;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+man_scientist:
+  text: '&#128104;&#8205;&#128300;'
+  cats:
+    - action
+    - body
+    - person
+man_singer:
+  text: '&#128104;&#8205;&#127908;'
+  cats:
+    - action
+    - body
+    - person
+man_standing:
+  text: '&#129485;&#8205;&#9794;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+man_student:
+  text: '&#128104;&#8205;&#127891;'
+  cats:
+    - action
+    - body
+    - person
+man_surfing:
+  text: '&#127940;&#8205;&#9794;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+man_teacher:
+  text: '&#128104;&#8205;&#127979;'
+  cats:
+    - action
+    - body
+    - person
+man_technologist:
+  text: '&#128104;&#8205;&#128187;'
+  cats:
+    - action
+    - body
+    - person
+man_walking:
+  text: '&#128694;&#8205;&#9794;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+'man:_bald':
+  text: '&#128104;&#8205;&#129458;'
+  cats:
+    - body
+    - person
+'man:_beard':
+  text: '&#129492;'
+  cats:
+    - body
+    - person
+'man:_blond_hair':
+  text: '&#128113;&#8205;&#9794;&#65039;'
+  cats:
+    - body
+    - person
+'man:_curly_hair':
+  text: '&#128104;&#8205;&#129457;'
+  cats:
+    - body
+    - person
+'man:_red_hair':
+  text: '&#128104;&#8205;&#129456;'
+  cats:
+    - body
+    - person
+'man:_white_hair':
+  text: '&#128104;&#8205;&#129459;'
+  cats:
+    - body
+    - person
+mango:
+  text: '&#129389;'
+  cats:
+    - drink
+    - food
+    - fruit
+mantelpiece_clock:
+  text: '&#128368;'
+  cats:
+    - object
+    - place
+    - time
+    - travel
+manual_wheelchair:
+  text: '&#129469;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+man’s_shoe:
+  text: '&#128094;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+map_of_japan:
+  text: '&#128510;'
+  cats:
+    - place
+    - travel
+maple_leaf:
+  text: '&#127809;'
+  cats:
+    - animal
+    - plant
+    - nature
+martial_arts_uniform:
+  text: '&#129355;'
+  cats:
+    - action
+    - object
+    - sport
+massage:
+  text: '&#128134;'
+  cats:
+    - action
+    - body
+    - person
+meat_on_bone:
+  text: '&#127830;'
+  cats:
+    - drink
+    - food
+mechanical_arm:
+  text: '&#129470;'
+  cats:
+    - body
+mechanical_leg:
+  text: '&#129471;'
+  cats:
+    - body
+medal:
+  text: '&#127941;'
+  cats:
+    - action
+    - object
+megaphone:
+  text: '&#128227;'
+  cats:
+    - object
+    - sound
+melon:
+  text: '&#127816;'
+  cats:
+    - drink
+    - food
+    - fruit
+memo:
+  text: '&#128221;'
+  cats:
+    - object
+men_holding_hands:
+  text: '&#128108;'
+  cats:
+    - body
+mermaid:
+  text: '&#129500;&#8205;&#9792;&#65039;'
+  cats:
+    - body
+    - person
+metro:
+  text: '&#128647;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+microbe:
+  text: '&#129440;'
+  cats:
+    - animal
+    - bug
+    - nature
+microphone:
+  text: '&#127908;'
+  cats:
+    - action
+    - object
+    - best
+    - music
+microscope:
+  text: '&#128300;'
+  cats:
+    - action
+    - object
+    - best
+    - science
+middle_finger:
+  text: '&#128405;'
+  cats:
+    - body
+    - hand
+military_helmet:
+  text: '&#129686;'
+  cats:
+    - object
+    - clothing
+military_medal:
+  text: '&#127894;'
+  cats:
+    - action
+    - object
+milky_way:
+  text: '&#127756;'
+  cats:
+    - object
+    - place
+    - travel
+minibus:
+  text: '&#128656;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+mirror:
+  text: '&#129694;'
+  cats:
+    - object
+    - household
+moai:
+  text: '&#128511;'
+  cats:
+    - object
+mobile_phone:
+  text: '&#128241;'
+  cats:
+    - action
+    - object
+    - best
+money_bag:
+  text: '&#128176;'
+  cats:
+    - object
+money_mouth_face:
+  text: '&#129297;'
+  cats:
+    - emotion
+    - face
+    - smiley
+monkey:
+  text: '&#128018;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+monorail:
+  text: '&#128669;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+mosque:
+  text: '&#128332;'
+  cats:
+    - place
+    - travel
+mosquito:
+  text: '&#129439;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+motor_boat:
+  text: '&#128741;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+motor_scooter:
+  text: '&#128757;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+motorcycle:
+  text: '&#127949;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+motorized_wheelchair:
+  text: '&#129468;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+motorway:
+  text: '&#128739;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+mountain:
+  text: '&#9968;'
+  cats:
+    - place
+    - travel
+mountain_biking:
+  text: '&#128693;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+mountain_cableway:
+  text: '&#128672;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+mouse:
+  text: '&#128045;'
+  cats:
+    - animal
+    - mammal
+    - nature
+mouse_trap:
+  text: '&#129700;'
+  cats:
+    - object
+    - household
+mouth:
+  text: '&#128068;'
+  cats:
+    - body
+movie_camera:
+  text: '&#127909;'
+  cats:
+    - object
+mushroom:
+  text: '&#127812;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - vegetable
+musical_keyboard:
+  text: '&#127929;'
+  cats:
+    - object
+    - music
+musical_note:
+  text: '&#127925;'
+  cats:
+    - object
+    - music
+musical_notes:
+  text: '&#127926;'
+  cats:
+    - object
+    - music
+musical_score:
+  text: '&#127932;'
+  cats:
+    - object
+    - music
+muted_speaker:
+  text: '&#128263;'
+  cats:
+    - object
+    - sound
+nail_polish:
+  text: '&#128133;'
+  cats:
+    - body
+    - hand
+namaste:
+  text: '&#129330;'
+  cats:
+    - body
+    - hand
+nauseated_face:
+  text: '&#129314;'
+  cats:
+    - emotion
+    - face
+    - smiley
+necktie:
+  text: '&#128084;'
+  cats:
+    - object
+    - clothing
+nerd_face:
+  text: '&#129299;'
+  cats:
+    - emotion
+    - face
+    - smiley
+nesting_dolls:
+  text: '&#129670;'
+  cats:
+    - action
+    - object
+    - game
+neutral_face:
+  text: '&#128528;'
+  cats:
+    - emotion
+    - face
+    - smiley
+newspaper:
+  text: '&#128240;'
+  cats:
+    - object
+ninja:
+  text: '&#129399;'
+  cats:
+    - body
+nose:
+  text: '&#128067;'
+  cats:
+    - body
+notebook:
+  text: '&#128211;'
+  cats:
+    - object
+notebook_with_decorative_cover:
+  text: '&#128212;'
+  cats:
+    - object
+nut_and_bolt:
+  text: '&#128297;'
+  cats:
+    - object
+    - tool
+octopus:
+  text: '&#128025;'
+  cats:
+    - animal
+    - marine
+    - nature
+office_building:
+  text: '&#127970;'
+  cats:
+    - place
+    - travel
+ogre:
+  text: '&#128121;'
+  cats:
+    - emotion
+    - face
+    - smiley
+oil_drum:
+  text: '&#128738;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+old_key:
+  text: '&#128477;'
+  cats:
+    - action
+    - object
+    - best
+olive:
+  text: '&#129746;'
+  cats:
+    - drink
+    - food
+    - fruit
+oncoming_automobile:
+  text: '&#128664;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+oncoming_fist:
+  text: '&#128074;'
+  cats:
+    - body
+    - hand
+one_piece_swimsuit:
+  text: '&#129649;'
+  cats:
+    - object
+    - clothing
+onion:
+  text: '&#129477;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - vegetable
+open_book:
+  text: '&#128214;'
+  cats:
+    - action
+    - object
+    - best
+open_file_folder:
+  text: '&#128194;'
+  cats:
+    - action
+    - object
+    - best
+    - office
+open_hands:
+  text: '&#128080;'
+  cats:
+    - body
+    - hand
+optical_disk:
+  text: '&#128191;'
+  cats:
+    - object
+orange_book:
+  text: '&#128217;'
+  cats:
+    - object
+orange_heart:
+  text: '&#129505;'
+  cats:
+    - emotion
+    - smiley
+orangutan:
+  text: '&#129447;'
+  cats:
+    - animal
+    - mammal
+    - nature
+otter:
+  text: '&#129446;'
+  cats:
+    - animal
+    - mammal
+    - nature
+outbox_tray:
+  text: '&#128228;'
+  cats:
+    - object
+owl:
+  text: '&#129417;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+ox:
+  text: '&#128002;'
+  cats:
+    - animal
+    - mammal
+    - nature
+oyster:
+  text: '&#129450;'
+  cats:
+    - drink
+    - food
+package:
+  text: '&#128230;'
+  cats:
+    - object
+page_facing_up:
+  text: '&#128196;'
+  cats:
+    - object
+page_with_curl:
+  text: '&#128195;'
+  cats:
+    - object
+pager:
+  text: '&#128223;'
+  cats:
+    - object
+paintbrush:
+  text: '&#128396;'
+  cats:
+    - object
+palm_tree:
+  text: '&#127796;'
+  cats:
+    - action
+    - animal
+    - object
+    - best
+    - plant
+    - nature
+pancakes:
+  text: '&#129374;'
+  cats:
+    - drink
+    - food
+panda:
+  text: '&#128060;'
+  cats:
+    - animal
+    - mammal
+    - nature
+paperclip:
+  text: '&#128206;'
+  cats:
+    - action
+    - object
+    - best
+    - office
+parachute:
+  text: '&#129666;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+parrot:
+  text: '&#129436;'
+  cats:
+    - animal
+    - bird
+    - nature
+party_popper:
+  text: '&#127881;'
+  cats:
+    - action
+    - object
+    - event
+partying_face:
+  text: '&#129395;'
+  cats:
+    - emotion
+    - face
+    - smiley
+passenger_ship:
+  text: '&#128755;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+paws:
+  text: '&#128062;'
+  cats:
+    - animal
+    - mammal
+    - nature
+peach:
+  text: '&#127825;'
+  cats:
+    - drink
+    - food
+    - fruit
+peacock:
+  text: '&#129434;'
+  cats:
+    - animal
+    - bird
+    - nature
+peanuts:
+  text: '&#129372;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - vegetable
+pear:
+  text: '&#127824;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+pen:
+  text: '&#128394;'
+  cats:
+    - action
+    - object
+    - best
+pencil:
+  text: '&#9999;'
+  cats:
+    - action
+    - object
+    - best
+penguin:
+  text: '&#128039;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+pensive_face:
+  text: '&#128532;'
+  cats:
+    - emotion
+    - face
+    - smiley
+people_holding_hands:
+  text: '&#129489;&#8205;&#129309;&#8205;&#129489;'
+  cats:
+    - body
+performing_arts:
+  text: '&#127917;'
+  cats:
+    - action
+    - object
+persevering_face:
+  text: '&#128547;'
+  cats:
+    - emotion
+    - face
+    - smiley
+person:
+  text: '&#129489;'
+  cats:
+    - body
+    - person
+person_bowing:
+  text: '&#128583;'
+  cats:
+    - body
+    - person
+person_frowning:
+  text: '&#128589;'
+  cats:
+    - body
+    - person
+person_gesturing_no:
+  text: '&#128581;'
+  cats:
+    - body
+    - person
+person_golfing:
+  text: '&#127948;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+person_in_tuxedo:
+  text: '&#129333;'
+  cats:
+    - action
+    - body
+    - person
+person_pouting:
+  text: '&#128590;'
+  cats:
+    - body
+    - person
+person_raising_hand:
+  text: '&#128587;'
+  cats:
+    - body
+    - person
+person_shrugging:
+  text: '&#129335;'
+  cats:
+    - body
+    - person
+person_wearing_turban:
+  text: '&#128115;'
+  cats:
+    - action
+    - body
+    - person
+person_with_skullcap:
+  text: '&#128114;'
+  cats:
+    - action
+    - body
+    - person
+person_with_veil:
+  text: '&#128112;'
+  cats:
+    - action
+    - body
+    - person
+'person:_blond_hair':
+  text: '&#128113;'
+  cats:
+    - body
+    - person
+petri_dish:
+  text: '&#129515;'
+  cats:
+    - object
+    - science
+pick:
+  text: '&#9935;'
+  cats:
+    - object
+    - tool
+pickup_truck:
+  text: '&#128763;'
+  cats:
+    - object
+    - place
+    - sport
+    - transport
+    - travel
+pie:
+  text: '&#129383;'
+  cats:
+    - drink
+    - food
+pig:
+  text: '&#128022;'
+  cats:
+    - animal
+    - mammal
+    - nature
+pile_of_poo:
+  text: '&#128169;'
+  cats:
+    - emotion
+    - face
+    - smiley
+pill:
+  text: '&#128138;'
+  cats:
+    - object
+    - medical
+pinata:
+  text: '&#129669;'
+  cats:
+    - action
+    - object
+    - game
+pinched_fingers:
+  text: '&#129292;'
+  cats:
+    - body
+    - hand
+pinching_hand:
+  text: '&#129295;'
+  cats:
+    - body
+    - hand
+pineapple:
+  text: '&#127821;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+ping_pong:
+  text: '&#127955;'
+  cats:
+    - action
+    - object
+    - sport
+pistol:
+  text: '&#128299;'
+  cats:
+    - object
+    - tool
+pizza:
+  text: '&#127829;'
+  cats:
+    - drink
+    - food
+placard:
+  text: '&#129703;'
+  cats:
+    - object
+plunger:
+  text: '&#129696;'
+  cats:
+    - object
+    - household
+police_car:
+  text: '&#128659;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+police_officer:
+  text: '&#128110;'
+  cats:
+    - action
+    - body
+    - person
+poodle:
+  text: '&#128041;'
+  cats:
+    - animal
+    - mammal
+    - nature
+pool_8_ball:
+  text: '&#127921;'
+  cats:
+    - action
+    - object
+    - game
+popcorn:
+  text: '&#127871;'
+  cats:
+    - drink
+    - food
+postal_horn:
+  text: '&#128239;'
+  cats:
+    - object
+    - sound
+postbox:
+  text: '&#128238;'
+  cats:
+    - object
+pot_of_food:
+  text: '&#127858;'
+  cats:
+    - drink
+    - food
+potato:
+  text: '&#129364;'
+  cats:
+    - drink
+    - food
+    - vegetable
+potted_plant:
+  text: '&#129716;'
+  cats:
+    - animal
+    - plant
+    - nature
+poultry_leg:
+  text: '&#127831;'
+  cats:
+    - drink
+    - food
+pound_banknote:
+  text: '&#128183;'
+  cats:
+    - object
+pouting_face:
+  text: '&#128545;'
+  cats:
+    - emotion
+    - face
+    - smiley
+prayer_beads:
+  text: '&#128255;'
+  cats:
+    - object
+    - clothing
+pregnant_woman:
+  text: '&#129328;'
+  cats:
+    - action
+    - body
+    - person
+pretzel:
+  text: '&#129384;'
+  cats:
+    - drink
+    - food
+prince:
+  text: '&#129332;'
+  cats:
+    - action
+    - body
+    - person
+princess:
+  text: '&#128120;'
+  cats:
+    - action
+    - body
+    - person
+printer:
+  text: '&#128424;'
+  cats:
+    - object
+purple_heart:
+  text: '&#128156;'
+  cats:
+    - emotion
+    - smiley
+purse:
+  text: '&#128091;'
+  cats:
+    - object
+    - clothing
+pushpin:
+  text: '&#128204;'
+  cats:
+    - action
+    - object
+    - best
+    - office
+puzzle_piece:
+  text: '&#129513;'
+  cats:
+    - action
+    - object
+    - best
+    - game
+rabbit:
+  text: '&#128007;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+racing_car:
+  text: '&#127950;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+radio:
+  text: '&#128251;'
+  cats:
+    - object
+    - music
+railway_car:
+  text: '&#128643;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+railway_track:
+  text: '&#128740;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+rainbow:
+  text: '&#127752;'
+  cats:
+    - object
+    - place
+    - travel
+raised_back_of_hand:
+  text: '&#129306;'
+  cats:
+    - body
+    - hand
+raised_fist:
+  text: '&#9994;'
+  cats:
+    - body
+    - hand
+raised_hand:
+  text: '&#9995;'
+  cats:
+    - body
+    - hand
+raising_hands:
+  text: '&#128588;'
+  cats:
+    - body
+    - hand
+ram:
+  text: '&#128015;'
+  cats:
+    - animal
+    - mammal
+    - nature
+rat:
+  text: '&#128000;'
+  cats:
+    - animal
+    - mammal
+    - nature
+razor:
+  text: '&#129682;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+receipt:
+  text: '&#129534;'
+  cats:
+    - object
+red_apple:
+  text: '&#127822;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+red_heart:
+  text: '&#10084;'
+  cats:
+    - emotion
+    - smiley
+red_paper_lantern:
+  text: '&#127982;'
+  cats:
+    - object
+relieved_face:
+  text: '&#128524;'
+  cats:
+    - emotion
+    - face
+    - smiley
+rescue_worker’s_helmet:
+  text: '&#9937;'
+  cats:
+    - object
+    - clothing
+resting:
+  text: '&#128716;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+    - person
+revolving_hearts:
+  text: '&#128158;'
+  cats:
+    - emotion
+    - smiley
+rhinoceros:
+  text: '&#129423;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+ribbon:
+  text: '&#127872;'
+  cats:
+    - action
+    - object
+    - event
+rice_cracker:
+  text: '&#127832;'
+  cats:
+    - drink
+    - food
+rickshaw:
+  text: '&#128762;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+right_anger_bubble:
+  text: '&#128495;'
+  cats:
+    - emotion
+    - smiley
+right_facing_fist:
+  text: '&#129308;'
+  cats:
+    - body
+    - hand
+ring:
+  text: '&#128141;'
+  cats:
+    - object
+    - clothing
+ringed_planet:
+  text: '&#129680;'
+  cats:
+    - object
+    - place
+    - travel
+roasted_sweet_potato:
+  text: '&#127840;'
+  cats:
+    - drink
+    - food
+robot:
+  text: '&#129302;'
+  cats:
+    - emotion
+    - face
+    - smiley
+rock:
+  text: '&#129704;'
+  cats:
+    - object
+    - place
+    - travel
+rocket:
+  text: '&#128640;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+roll_of_paper:
+  text: '&#129531;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+rolled_up_newspaper:
+  text: '&#128478;'
+  cats:
+    - object
+roller_coaster:
+  text: '&#127906;'
+  cats:
+    - place
+    - travel
+roller_skate:
+  text: '&#128764;'
+  cats:
+    - object
+    - place
+    - sport
+    - transport
+    - travel
+rolling_on_the_floor_laughing:
+  text: '&#129315;'
+  cats:
+    - emotion
+    - face
+    - smiley
+rooster:
+  text: '&#128019;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+rose:
+  text: '&#127801;'
+  cats:
+    - animal
+    - plant
+    - nature
+rosette:
+  text: '&#127989;'
+  cats:
+    - animal
+    - plant
+    - nature
+round_pushpin:
+  text: '&#128205;'
+  cats:
+    - object
+    - office
+rowing_boat:
+  text: '&#128675;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+rugby_football:
+  text: '&#127945;'
+  cats:
+    - action
+    - object
+    - sport
+running:
+  text: '&#127939;'
+  cats:
+    - action
+    - body
+    - person
+running_shirt:
+  text: '&#127933;'
+  cats:
+    - object
+    - clothing
+running_shoe:
+  text: '&#128095;'
+  cats:
+    - object
+    - clothing
+sad_but_relieved_face:
+  text: '&#128549;'
+  cats:
+    - emotion
+    - face
+    - smiley
+safety_pin:
+  text: '&#129527;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+safety_vest:
+  text: '&#129466;'
+  cats:
+    - object
+    - clothing
+sailboat:
+  text: '&#9973;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+salt:
+  text: '&#129474;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+sandwich:
+  text: '&#129386;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+sari:
+  text: '&#129403;'
+  cats:
+    - object
+    - clothing
+satellite:
+  text: '&#128752;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+satellite_antenna:
+  text: '&#128225;'
+  cats:
+    - object
+    - science
+sauropod:
+  text: '&#129429;'
+  cats:
+    - action
+    - animal
+    - reptile
+    - object
+    - best
+    - nature
+saxophone:
+  text: '&#127927;'
+  cats:
+    - object
+    - music
+scarf:
+  text: '&#129507;'
+  cats:
+    - object
+    - clothing
+school:
+  text: '&#127979;'
+  cats:
+    - place
+    - travel
+scissors:
+  text: '&#9986;'
+  cats:
+    - action
+    - object
+    - best
+    - office
+scorpion:
+  text: '&#129410;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+screwdriver:
+  text: '&#129691;'
+  cats:
+    - object
+    - best
+    - tool
+scroll:
+  text: '&#128220;'
+  cats:
+    - object
+seal:
+  text: '&#129453;'
+  cats:
+    - animal
+    - marine
+    - nature
+seat:
+  text: '&#128186;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+see_no_evil_monkey:
+  text: '&#128584;'
+  cats:
+    - emotion
+    - face
+    - smiley
+seedling:
+  text: '&#127793;'
+  cats:
+    - animal
+    - plant
+    - nature
+selfie:
+  text: '&#129331;'
+  cats:
+    - body
+    - hand
+sewing_needle:
+  text: '&#129697;'
+  cats:
+    - action
+    - object
+shallow_pan_of_food:
+  text: '&#129368;'
+  cats:
+    - drink
+    - food
+shamrock:
+  text: '&#9752;'
+  cats:
+    - animal
+    - plant
+    - nature
+shark:
+  text: '&#129416;'
+  cats:
+    - animal
+    - marine
+    - nature
+shaved_ice:
+  text: '&#127847;'
+  cats:
+    - drink
+    - food
+sheaf_of_rice:
+  text: '&#127806;'
+  cats:
+    - action
+    - animal
+    - object
+    - best
+    - plant
+    - nature
+sheep:
+  text: '&#128017;'
+  cats:
+    - animal
+    - mammal
+    - nature
+shield:
+  text: '&#128737;'
+  cats:
+    - action
+    - object
+    - best
+    - tool
+shinto_shrine:
+  text: '&#9961;'
+  cats:
+    - place
+    - travel
+ship:
+  text: '&#128674;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+shooting_star:
+  text: '&#127776;'
+  cats:
+    - object
+    - place
+    - travel
+shopping_bags:
+  text: '&#128717;'
+  cats:
+    - object
+    - clothing
+shopping_cart:
+  text: '&#128722;'
+  cats:
+    - object
+    - household
+shortcake:
+  text: '&#127856;'
+  cats:
+    - drink
+    - food
+shorts:
+  text: '&#129651;'
+  cats:
+    - object
+    - clothing
+shower:
+  text: '&#128703;'
+  cats:
+    - object
+    - household
+shrimp:
+  text: '&#129424;'
+  cats:
+    - drink
+    - food
+shushing_face:
+  text: '&#129323;'
+  cats:
+    - emotion
+    - face
+    - hand
+    - smiley
+sign_of_the_horns:
+  text: '&#129304;'
+  cats:
+    - body
+    - hand
+skateboard:
+  text: '&#128761;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+skier:
+  text: '&#9975;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+skis:
+  text: '&#127935;'
+  cats:
+    - action
+    - object
+    - sport
+skull:
+  text: '&#128128;'
+  cats:
+    - emotion
+    - face
+    - smiley
+skull_and_crossbones:
+  text: '&#9760;'
+  cats:
+    - emotion
+    - face
+    - smiley
+skunk:
+  text: '&#129448;'
+  cats:
+    - animal
+    - mammal
+    - nature
+sled:
+  text: '&#128759;'
+  cats:
+    - action
+    - object
+    - sport
+sleeping_face:
+  text: '&#128564;'
+  cats:
+    - emotion
+    - face
+    - smiley
+sleepy_face:
+  text: '&#128554;'
+  cats:
+    - emotion
+    - face
+    - smiley
+slightly_frowning_face:
+  text: '&#128577;'
+  cats:
+    - emotion
+    - face
+    - smiley
+slightly_smiling_face:
+  text: '&#128578;'
+  cats:
+    - emotion
+    - face
+    - smiley
+slot_machine:
+  text: '&#127920;'
+  cats:
+    - action
+    - object
+    - game
+sloth:
+  text: '&#129445;'
+  cats:
+    - animal
+    - mammal
+    - nature
+small_airplane:
+  text: '&#128745;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+smiling_cat_with_heart_eyes:
+  text: '&#128571;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_halo:
+  text: '&#128519;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_heart_eyes:
+  text: '&#128525;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_hearts:
+  text: '&#129392;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_horns:
+  text: '&#128520;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_smiling_eyes:
+  text: '&#128522;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_sunglasses:
+  text: '&#128526;'
+  cats:
+    - emotion
+    - face
+    - smiley
+smiling_face_with_tear:
+  text: '&#129394;'
+  cats:
+    - emotion
+    - face
+    - smiley
+snail:
+  text: '&#128012;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+snake:
+  text: '&#128013;'
+  cats:
+    - action
+    - animal
+    - reptile
+    - object
+    - best
+    - nature
+sneezing_face:
+  text: '&#129319;'
+  cats:
+    - emotion
+    - face
+    - smiley
+snow_capped_mountain:
+  text: '&#127956;'
+  cats:
+    - place
+    - travel
+snowboarder:
+  text: '&#127938;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+snowflake:
+  text: '&#10052;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+snowman:
+  text: '&#9731;'
+  cats:
+    - object
+    - place
+    - travel
+snowman_without_snow:
+  text: '&#9924;'
+  cats:
+    - object
+    - place
+    - travel
+soap:
+  text: '&#129532;'
+  cats:
+    - object
+    - household
+soccer_ball:
+  text: '&#9917;'
+  cats:
+    - action
+    - object
+    - sport
+socks:
+  text: '&#129510;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+soft_ice_cream:
+  text: '&#127846;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+softball:
+  text: '&#129358;'
+  cats:
+    - action
+    - object
+    - sport
+spade_suit:
+  text: '&#9824;'
+  cats:
+    - action
+    - object
+    - game
+spaghetti:
+  text: '&#127837;'
+  cats:
+    - drink
+    - food
+sparkler:
+  text: '&#127879;'
+  cats:
+    - action
+    - object
+    - event
+sparkles:
+  text: '&#10024;'
+  cats:
+    - action
+    - object
+    - event
+sparkling_heart:
+  text: '&#128150;'
+  cats:
+    - emotion
+    - smiley
+speak_no_evil_monkey:
+  text: '&#128586;'
+  cats:
+    - emotion
+    - face
+    - smiley
+speaker_high_volume:
+  text: '&#128266;'
+  cats:
+    - object
+    - sound
+speaker_low_volume:
+  text: '&#128264;'
+  cats:
+    - object
+    - sound
+speaker_medium_volume:
+  text: '&#128265;'
+  cats:
+    - object
+    - sound
+speaking_head:
+  text: '&#128483;'
+  cats:
+    - body
+    - person
+    - symbol
+speech_balloon:
+  text: '&#128172;'
+  cats:
+    - emotion
+    - smiley
+speedboat:
+  text: '&#128676;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+spider:
+  text: '&#128375;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+spider_web:
+  text: '&#128376;'
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+spiral_calendar:
+  text: '&#128467;'
+  cats:
+    - object
+    - office
+spiral_notepad:
+  text: '&#128466;'
+  cats:
+    - object
+    - office
+spiral_shell:
+  text: '&#128026;'
+  cats:
+    - animal
+    - marine
+    - nature
+sponge:
+  text: '&#129533;'
+  cats:
+    - object
+    - household
+spoon:
+  text: '&#129348;'
+  cats:
+    - action
+    - object
+    - best
+    - dishware
+    - drink
+    - food
+spouting_whale:
+  text: '&#128051;'
+  cats:
+    - animal
+    - marine
+    - nature
+squid:
+  text: '&#129425;'
+  cats:
+    - drink
+    - food
+squinting_face_with_tongue:
+  text: '&#128541;'
+  cats:
+    - emotion
+    - face
+    - smiley
+stadium:
+  text: '&#127967;'
+  cats:
+    - place
+    - travel
+standing:
+  text: '&#129485;'
+  cats:
+    - action
+    - body
+    - person
+star:
+  text: '&#11088;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+star_struck:
+  text: '&#129321;'
+  cats:
+    - emotion
+    - face
+    - smiley
+station:
+  text: '&#128649;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+steaming_bowl:
+  text: '&#127836;'
+  cats:
+    - drink
+    - food
+steamy_room:
+  text: '&#129494;'
+  cats:
+    - action
+    - body
+    - person
+stethoscope:
+  text: '&#129658;'
+  cats:
+    - action
+    - object
+    - best
+    - medical
+stop_sign:
+  text: '&#128721;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+stopwatch:
+  text: '&#9201;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - time
+    - travel
+straight_ruler:
+  text: '&#128207;'
+  cats:
+    - action
+    - object
+    - best
+    - office
+strawberry:
+  text: '&#127827;'
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+studio_microphone:
+  text: '&#127897;'
+  cats:
+    - object
+    - music
+stuffed_flatbread:
+  text: '&#129369;'
+  cats:
+    - drink
+    - food
+sun:
+  text: '&#9728;'
+  cats:
+    - object
+    - place
+    - travel
+sun_behind_cloud:
+  text: '&#9925;'
+  cats:
+    - object
+    - place
+    - travel
+sun_behind_large_cloud:
+  text: '&#127781;'
+  cats:
+    - object
+    - place
+    - travel
+sun_behind_rain_cloud:
+  text: '&#127782;'
+  cats:
+    - object
+    - place
+    - travel
+sun_behind_small_cloud:
+  text: '&#127780;'
+  cats:
+    - object
+    - place
+    - travel
+sun_with_face:
+  text: '&#127774;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+sunflower:
+  text: '&#127803;'
+  cats:
+    - animal
+    - plant
+    - nature
+sunglasses:
+  text: '&#128374;'
+  cats:
+    - object
+    - clothing
+superhero:
+  text: '&#129464;'
+  cats:
+    - body
+    - person
+supervillain:
+  text: '&#129465;'
+  cats:
+    - body
+    - person
+surfing:
+  text: '&#127940;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+sushi:
+  text: '&#127843;'
+  cats:
+    - drink
+    - food
+suspension_railway:
+  text: '&#128671;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+swan:
+  text: '&#129442;'
+  cats:
+    - action
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+sweat_droplets:
+  text: '&#128166;'
+  cats:
+    - emotion
+    - smiley
+swimming:
+  text: '&#127946;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+synagogue:
+  text: '&#128333;'
+  cats:
+    - place
+    - travel
+syringe:
+  text: '&#128137;'
+  cats:
+    - object
+    - medical
+t_shirt:
+  text: '&#128085;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+taco:
+  text: '&#127790;'
+  cats:
+    - drink
+    - food
+taking_bath:
+  text: '&#128704;'
+  cats:
+    - action
+    - body
+    - person
+tamale:
+  text: '&#129748;'
+  cats:
+    - drink
+    - food
+tangerine:
+  text: '&#127818;'
+  cats:
+    - drink
+    - food
+    - fruit
+taxi:
+  text: '&#128661;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+teacup_without_handle:
+  text: '&#127861;'
+  cats:
+    - drink
+    - food
+teapot:
+  text: '&#129750;'
+  cats:
+    - object
+    - best
+    - drink
+    - food
+tear_off_calendar:
+  text: '&#128198;'
+  cats:
+    - object
+    - office
+teddy_bear:
+  text: '&#129528;'
+  cats:
+    - action
+    - object
+    - game
+telephone:
+  text: '&#9742;'
+  cats:
+    - object
+telephone_receiver:
+  text: '&#128222;'
+  cats:
+    - object
+telescope:
+  text: '&#128301;'
+  cats:
+    - object
+    - science
+television:
+  text: '&#128250;'
+  cats:
+    - object
+tennis:
+  text: '&#127934;'
+  cats:
+    - action
+    - object
+    - sport
+tent:
+  text: '&#9978;'
+  cats:
+    - place
+    - travel
+test_tube:
+  text: '&#129514;'
+  cats:
+    - object
+    - science
+thermometer:
+  text: '&#127777;'
+  cats:
+    - object
+    - place
+    - travel
+thinking_face:
+  text: '&#129300;'
+  cats:
+    - emotion
+    - face
+    - hand
+    - smiley
+thong_sandal:
+  text: '&#129652;'
+  cats:
+    - object
+    - clothing
+thought_balloon:
+  text: '&#128173;'
+  cats:
+    - emotion
+    - smiley
+thread:
+  text: '&#129525;'
+  cats:
+    - action
+    - object
+    - best
+thumbs_down:
+  text: '&#128078;'
+  cats:
+    - body
+    - hand
+thumbs_up:
+  text: '&#128077;'
+  cats:
+    - body
+    - hand
+ticket:
+  text: '&#127915;'
+  cats:
+    - action
+    - object
+    - event
+tiger:
+  text: '&#128005;'
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+timer_clock:
+  text: '&#9202;'
+  cats:
+    - object
+    - place
+    - time
+    - travel
+tired_face:
+  text: '&#128555;'
+  cats:
+    - emotion
+    - face
+    - smiley
+toilet:
+  text: '&#128701;'
+  cats:
+    - action
+    - object
+    - best
+    - household
+tomato:
+  text: '&#127813;'
+  cats:
+    - drink
+    - food
+    - fruit
+tongue:
+  text: '&#128069;'
+  cats:
+    - body
+toolbox:
+  text: '&#129520;'
+  cats:
+    - action
+    - object
+    - best
+    - tool
+tooth:
+  text: '&#129463;'
+  cats:
+    - action
+    - object
+    - best
+    - body
+toothbrush:
+  text: '&#129701;'
+  cats:
+    - object
+    - best
+    - household
+top_hat:
+  text: '&#127913;'
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+tornado:
+  text: '&#127786;'
+  cats:
+    - object
+    - place
+    - travel
+trackball:
+  text: '&#128434;'
+  cats:
+    - object
+tractor:
+  text: '&#128668;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+train:
+  text: '&#128646;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+tram:
+  text: '&#128650;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+tram_car:
+  text: '&#128651;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+transgender_symbol:
+  text: '&#9895;'
+  cats:
+    - symbol
+triangular_ruler:
+  text: '&#128208;'
+  cats:
+    - object
+    - office
+trolleybus:
+  text: '&#128654;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+trophy:
+  text: '&#127942;'
+  cats:
+    - action
+    - object
+tropical_drink:
+  text: '&#127865;'
+  cats:
+    - drink
+    - food
+tropical_fish:
+  text: '&#128032;'
+  cats:
+    - animal
+    - marine
+    - nature
+trumpet:
+  text: '&#127930;'
+  cats:
+    - object
+    - music
+tulip:
+  text: '&#127799;'
+  cats:
+    - animal
+    - plant
+    - nature
+turkey:
+  text: '&#129411;'
+  cats:
+    - animal
+    - bird
+    - nature
+turtle:
+  text: '&#128034;'
+  cats:
+    - animal
+    - reptile
+    - nature
+two_hearts:
+  text: '&#128149;'
+  cats:
+    - emotion
+    - smiley
+umbrella:
+  text: '&#9730;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+umbrella_on_ground:
+  text: '&#9969;'
+  cats:
+    - object
+    - place
+    - travel
+umbrella_with_rain_drops:
+  text: '&#9748;'
+  cats:
+    - object
+    - place
+    - travel
+unamused_face:
+  text: '&#128530;'
+  cats:
+    - emotion
+    - face
+    - smiley
+unlocked:
+  text: '&#128275;'
+  cats:
+    - action
+    - object
+    - best
+upside_down_face:
+  text: '&#128579;'
+  cats:
+    - emotion
+    - face
+    - smiley
+vampire:
+  text: '&#129499;'
+  cats:
+    - body
+    - person
+vertical_traffic_light:
+  text: '&#128678;'
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+victory_hand:
+  text: '&#9996;'
+  cats:
+    - body
+    - hand
+video_camera:
+  text: '&#128249;'
+  cats:
+    - object
+video_game:
+  text: '&#127918;'
+  cats:
+    - action
+    - object
+    - game
+videocassette:
+  text: '&#128252;'
+  cats:
+    - object
+violin:
+  text: '&#127931;'
+  cats:
+    - object
+    - music
+volcano:
+  text: '&#127755;'
+  cats:
+    - place
+    - travel
+volleyball:
+  text: '&#127952;'
+  cats:
+    - action
+    - object
+    - sport
+vulcan_salute:
+  text: '&#128406;'
+  cats:
+    - body
+    - hand
+waffle:
+  text: '&#129479;'
+  cats:
+    - drink
+    - food
+walking:
+  text: '&#128694;'
+  cats:
+    - action
+    - body
+    - person
+waning_crescent_moon:
+  text: '&#127768;'
+  cats:
+    - object
+    - place
+    - travel
+waning_gibbous_moon:
+  text: '&#127766;'
+  cats:
+    - object
+    - place
+    - travel
+wastebasket:
+  text: '&#128465;'
+  cats:
+    - object
+    - office
+watch:
+  text: '&#8986;'
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - time
+    - travel
+water_polo:
+  text: '&#129341;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+water_wave:
+  text: '&#127754;'
+  cats:
+    - object
+    - place
+    - travel
+watermelon:
+  text: '&#127817;'
+  cats:
+    - drink
+    - food
+    - fruit
+waving_hand:
+  text: '&#128075;'
+  cats:
+    - body
+    - hand
+waxing_crescent_moon:
+  text: '&#127762;'
+  cats:
+    - object
+    - place
+    - travel
+waxing_gibbous_moon:
+  text: '&#127764;'
+  cats:
+    - object
+    - place
+    - travel
+weary_cat:
+  text: '&#128576;'
+  cats:
+    - emotion
+    - face
+    - smiley
+weary_face:
+  text: '&#128553;'
+  cats:
+    - emotion
+    - face
+    - smiley
+whale:
+  text: '&#128011;'
+  cats:
+    - animal
+    - marine
+    - nature
+white_cane:
+  text: '&#129455;'
+  cats:
+    - object
+    - tool
+white_flower:
+  text: '&#128174;'
+  cats:
+    - animal
+    - plant
+    - nature
+white_heart:
+  text: '&#129293;'
+  cats:
+    - emotion
+    - smiley
+wilted_flower:
+  text: '&#129344;'
+  cats:
+    - animal
+    - plant
+    - nature
+wind_face:
+  text: '&#127788;'
+  cats:
+    - object
+    - place
+    - travel
+window:
+  text: '&#129695;'
+  cats:
+    - object
+    - best
+    - household
+wine_glass:
+  text: '&#127863;'
+  cats:
+    - drink
+    - food
+winking_face:
+  text: '&#128521;'
+  cats:
+    - emotion
+    - face
+    - smiley
+winking_face_with_tongue:
+  text: '&#128540;'
+  cats:
+    - emotion
+    - face
+    - smiley
+with:
+  text: '&#129497;&#8205;&#9792;&#65039;'
+  cats:
+    - body
+    - person
+wizard:
+  text: '&#129497;&#8205;&#9794;&#65039;'
+  cats:
+    - body
+    - person
+woman:
+  text: '&#128105;'
+  cats:
+    - body
+    - person
+woman_and_man_holding_hands:
+  text: '&#128107;'
+  cats:
+    - body
+woman_artist:
+  text: '&#128105;&#8205;&#127912;'
+  cats:
+    - action
+    - body
+    - person
+woman_blind:
+  text: '&#128105;&#8205;&#129455;'
+  cats:
+    - action
+    - body
+    - person
+woman_cook:
+  text: '&#128105;&#8205;&#127859;'
+  cats:
+    - action
+    - body
+    - person
+woman_dancing:
+  text: '&#128131;'
+  cats:
+    - action
+    - body
+    - person
+woman_factory_worker:
+  text: '&#128105;&#8205;&#127981;'
+  cats:
+    - action
+    - body
+    - person
+woman_fairy:
+  text: '&#129498;&#8205;&#9792;&#65039;'
+  cats:
+    - body
+    - person
+woman_farmer:
+  text: '&#128105;&#8205;&#127806;'
+  cats:
+    - action
+    - body
+    - person
+woman_golfing:
+  text: '&#127948;&#65039;&#8205;&#9792;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+woman_health_worker:
+  text: '&#128105;&#8205;&#9877;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_in_manual_wheelchair:
+  text: '&#128105;&#8205;&#129469;'
+  cats:
+    - action
+    - body
+    - person
+woman_in_motorized_wheelchair:
+  text: '&#128105;&#8205;&#129468;'
+  cats:
+    - action
+    - body
+    - person
+woman_judge:
+  text: '&#128105;&#8205;&#9878;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_kneeling:
+  text: '&#129486;&#8205;&#9792;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_mechanic:
+  text: '&#128105;&#8205;&#128295;'
+  cats:
+    - action
+    - body
+    - person
+woman_office_worker:
+  text: '&#128105;&#8205;&#128188;'
+  cats:
+    - action
+    - body
+    - person
+woman_pilot:
+  text: '&#128105;&#8205;&#9992;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_running:
+  text: '&#127939;&#8205;&#9792;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_scientist:
+  text: '&#128105;&#8205;&#128300;'
+  cats:
+    - action
+    - body
+    - person
+woman_singer:
+  text: '&#128105;&#8205;&#127908;'
+  cats:
+    - action
+    - body
+    - person
+woman_standing:
+  text: '&#129485;&#8205;&#9792;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_student:
+  text: '&#128105;&#8205;&#127891;'
+  cats:
+    - action
+    - body
+    - person
+woman_surfing:
+  text: '&#127940;&#8205;&#9792;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+woman_teacher:
+  text: '&#128105;&#8205;&#127979;'
+  cats:
+    - action
+    - body
+    - person
+woman_technologist:
+  text: '&#128105;&#8205;&#128187;'
+  cats:
+    - action
+    - body
+    - person
+woman_walking:
+  text: '&#128694;&#8205;&#9792;&#65039;'
+  cats:
+    - action
+    - body
+    - person
+woman_with_headscarf:
+  text: '&#129493;'
+  cats:
+    - action
+    - body
+    - person
+woman’s_boot:
+  text: '&#128098;'
+  cats:
+    - object
+    - clothing
+woman’s_clothes:
+  text: '&#128090;'
+  cats:
+    - object
+    - clothing
+woman’s_hat:
+  text: '&#128082;'
+  cats:
+    - object
+    - clothing
+woman’s_sandal:
+  text: '&#128097;'
+  cats:
+    - object
+    - clothing
+wood:
+  text: '&#129717;'
+  cats:
+    - object
+    - place
+    - travel
+world_map:
+  text: '&#128506;'
+  cats:
+    - place
+    - travel
+worm:
+  text: '&#129713;'
+  cats:
+    - animal
+    - bug
+    - nature
+worried_face:
+  text: '&#128543;'
+  cats:
+    - emotion
+    - face
+    - smiley
+wrapped_gift:
+  text: '&#127873;'
+  cats:
+    - action
+    - object
+    - event
+wrench:
+  text: '&#128295;'
+  cats:
+    - action
+    - object
+    - best
+    - tool
+wrestling:
+  text: '&#129340;'
+  cats:
+    - action
+    - body
+    - person
+    - sport
+writing_hand:
+  text: '&#9997;'
+  cats:
+    - body
+    - hand
+yarn:
+  text: '&#129526;'
+  cats:
+    - action
+    - object
+    - best
+yawning_face:
+  text: '&#129393;'
+  cats:
+    - emotion
+    - face
+    - smiley
+yellow_heart:
+  text: '&#128155;'
+  cats:
+    - emotion
+    - smiley
+yen_banknote:
+  text: '&#128180;'
+  cats:
+    - object
+yo_yo:
+  text: '&#129664;'
+  cats:
+    - action
+    - object
+    - game
+zany_face:
+  text: '&#129322;'
+  cats:
+    - emotion
+    - face
+    - smiley
+zipper_mouth_face:
+  text: '&#129296;'
+  cats:
+    - emotion
+    - face
+    - smiley
+zzz:
+  text: '&#128164;'
+  cats:
+    - emotion
+    - smiley
+1st_place_medal:
+  text: '&#129351;'
+  cats:
+    - object
+2nd_place_medal:
+  text: '&#129352;'
+  cats:
+    - object
+3rd_place_medal:
+  text: '&#129353;'
+  cats:
+    - object
+a_button_blood_type:
+  text: '&#127344;'
+  cats: []
+ab_button_blood_type:
+  text: '&#127374;'
+  cats: []
+atm_sign:
+  text: '&#127975;'
+  cats: []
+b_button_blood_type:
+  text: '&#127345;'
+  cats: []
+back_arrow:
+  text: '&#128281;'
+  cats: []
+cl_button:
+  text: '&#127377;'
+  cats: []
+cool_button:
+  text: '&#127378;'
+  cats: []
+christmas_tree:
+  text: '&#127876;'
+  cats:
+    - object
+end_arrow:
+  text: '&#128282;'
+  cats: []
+free_button:
+  text: '&#127379;'
+  cats: []
+id_button:
+  text: '&#127380;'
+  cats: []
+japanese_castle:
+  text: '&#127983;'
+  cats: []
+japanese_symbol_for_beginner:
+  text: '&#128304;'
+  cats: []
+new_button:
+  text: '&#127381;'
+  cats: []
+ng_button:
+  text: '&#127382;'
+  cats: []
+o_button_blood_type:
+  text: '&#127358;'
+  cats: []
+ok_button:
+  text: '&#127383;'
+  cats: []
+ok_hand:
+  text: '&#128076;'
+  cats: []
+on!_arrow:
+  text: '&#128283;'
+  cats: []
+p_button:
+  text: '&#127359;'
+  cats: []
+soon_arrow:
+  text: '&#128284;'
+  cats: []
+sos_button:
+  text: '&#127384;'
+  cats: []
+santa_claus:
+  text: '&#127877;'
+  cats: []
+statue_of_liberty:
+  text: '&#128509;'
+  cats: []
+t_rex:
+  text: '&#129430;'
+  cats: []
+top_arrow:
+  text: '&#128285;'
+  cats: []
+up!_button:
+  text: '&#127385;'
+  cats: []
+vs_button:
+  text: '&#127386;'
+  cats: []
+alembic:
+  text: '&#9879;'
+  cats:
+    - object
+alien_monster:
+  text: '&#128126;'
+  cats: []
+anatomical_heart:
+  text: '&#129728;'
+  cats: []
+anger_symbol:
+  text: '&#128162;'
+  cats: []
+angry_face:
+  text: '&#128544;'
+  cats: []
+angry_face_with_horns:
+  text: '&#128127;'
+  cats: []
+anguished_face:
+  text: '&#128551;'
+  cats: []
+antenna_bars:
+  text: '&#128246;'
+  cats: []
+atom_symbol:
+  text: '&#9883;'
+  cats: []
+award:
+  text: '&#127894;'
+  cats:
+    - object
+baby_symbol:
+  text: '&#128700;'
+  cats: []
+baggage_claim:
+  text: '&#128708;'
+  cats: []
+beating_heart:
+  text: '&#128147;'
+  cats: []
+bell_with_slash:
+  text: '&#128277;'
+  cats:
+    - object
+bento_box:
+  text: '&#127857;'
+  cats: []
+biohazard:
+  text: '&#9763;'
+  cats: []
+black_circle:
+  text: '&#9899;'
+  cats: []
+black_large_square:
+  text: '&#11035;'
+  cats: []
+black_medium_square:
+  text: '&#9724;'
+  cats: []
+black_medium_small_square:
+  text: '&#9726;'
+  cats: []
+black_small_square:
+  text: '&#9642;'
+  cats: []
+black_square_button:
+  text: '&#128306;'
+  cats: []
+blue_circle:
+  text: '&#128309;'
+  cats: []
+blue_square:
+  text: '&#128998;'
+  cats: []
+bright_button:
+  text: '&#128262;'
+  cats: []
+brown_circle:
+  text: '&#128996;'
+  cats: []
+brown_square:
+  text: '&#129003;'
+  cats: []
+bunny_ears:
+  text: '&#128111;'
+  cats: []
+bust_in_silhouette:
+  text: '&#128100;'
+  cats: []
+busts_in_silhouette:
+  text: '&#128101;'
+  cats: []
+cat_with_tears_of_joy:
+  text: '&#128569;'
+  cats: []
+cat_with_wry_smile:
+  text: '&#128572;'
+  cats: []
+check_box_with_check:
+  text: '&#9745;'
+  cats: []
+check_mark:
+  text: '&#10004;'
+  cats: []
+check_mark_button:
+  text: '&#9989;'
+  cats: []
+chequered_flag:
+  text: '&#127937;'
+  cats: []
+children_crossing:
+  text: '&#128696;'
+  cats: []
+cinema:
+  text: '&#127910;'
+  cats: []
+circled_m:
+  text: '&#9410;'
+  cats: []
+clockwise_vertical_arrows:
+  text: '&#128259;'
+  cats: []
+copyright:
+  text: '&#169;'
+  cats: []
+counterclockwise_arrows_button:
+  text: '&#128260;'
+  cats: []
+cross_mark:
+  text: '&#10060;'
+  cats: []
+cross_mark_button:
+  text: '&#10062;'
+  cats: []
+crying_cat:
+  text: '&#128575;'
+  cats: []
+curly_loop:
+  text: '&#10160;'
+  cats: []
+currency_exchange:
+  text: '&#128177;'
+  cats: []
+customs:
+  text: '&#128707;'
+  cats: []
+cyclone:
+  text: '&#127744;'
+  cats:
+    - object
+dashing_away:
+  text: '&#128168;'
+  cats: []
+deaf_person:
+  text: '&#129487;'
+  cats: []
+diamond_with_a_dot:
+  text: '&#128160;'
+  cats: []
+dim_button:
+  text: '&#128261;'
+  cats: []
+divide:
+  text: '&#10135;'
+  cats: []
+dotted_six_pointed_star:
+  text: '&#128303;'
+  cats: []
+double_curly_loop:
+  text: '&#10175;'
+  cats: []
+double_exclamation_mark:
+  text: '&#8252;'
+  cats: []
+down_arrow:
+  text: '&#11015;'
+  cats: []
+down_left_arrow:
+  text: '&#8601;'
+  cats: []
+down_right_arrow:
+  text: '&#8600;'
+  cats: []
+downwards_button:
+  text: '&#128317;'
+  cats: []
+e_mail:
+  text: '&#128231;'
+  cats:
+    - object
+eight_o'clock:
+  text: '&#128343;'
+  cats: []
+eight_pointed_star:
+  text: '&#10036;'
+  cats: []
+eight_spoked_asterisk:
+  text: '&#10035;'
+  cats: []
+eight_thirty:
+  text: '&#128355;'
+  cats: []
+eject_button:
+  text: '&#9167;'
+  cats: []
+eleven_o'clock:
+  text: '&#128346;'
+  cats: []
+eleven_thirty:
+  text: '&#128358;'
+  cats: []
+elf:
+  text: '&#129501;'
+  cats: []
+exclamation_mark:
+  text: '&#10071;'
+  cats: []
+exclamation_question_mark:
+  text: '&#8265;'
+  cats: []
+exploding_head:
+  text: '&#129327;'
+  cats: []
+eye_in_speech_bubble:
+  text: '&#128065;&#65039;&#8205;&#128488;&#65039;'
+  cats: []
+eyes:
+  text: '&#128064;'
+  cats: []
+face_screaming_in_fear:
+  text: '&#128561;'
+  cats: []
+face_with_steam_from_nose:
+  text: '&#128548;'
+  cats: []
+face_without_mouth:
+  text: '&#128566;'
+  cats: []
+fallen_leaf:
+  text: '&#127810;'
+  cats: []
+fast_down_button:
+  text: '&#9196;'
+  cats: []
+fast_reverse_button:
+  text: '&#9194;'
+  cats: []
+fast_up_button:
+  text: '&#9195;'
+  cats: []
+fast_forward_button:
+  text: '&#9193;'
+  cats: []
+fearful_face:
+  text: '&#128552;'
+  cats: []
+female_sign:
+  text: '&#9792;'
+  cats: []
+five_o'clock:
+  text: '&#128340;'
+  cats: []
+five_thirty:
+  text: '&#128352;'
+  cats: []
+fleur_de_lis:
+  text: '&#9884;'
+  cats: []
+flower_playing_cards:
+  text: '&#127924;'
+  cats:
+    - action
+    - object
+flushed_face:
+  text: '&#128563;'
+  cats: []
+four_o'clock:
+  text: '&#128339;'
+  cats: []
+four_thirty:
+  text: '&#128351;'
+  cats: []
+french_fries:
+  text: '&#127839;'
+  cats: []
+fried_shrimp:
+  text: '&#127844;'
+  cats: []
+frowning_face_with_open_mouth:
+  text: '&#128550;'
+  cats: []
+goblin:
+  text: '&#128122;'
+  cats: []
+green_circle:
+  text: '&#128994;'
+  cats: []
+green_square:
+  text: '&#129001;'
+  cats: []
+grinning_cat:
+  text: '&#128570;'
+  cats: []
+grinning_cat_with_smiling_eyes:
+  text: '&#128568;'
+  cats: []
+grinning_face_with_big_eyes:
+  text: '&#128515;'
+  cats: []
+grinning_face_with_sweat:
+  text: '&#128517;'
+  cats: []
+grinning_squinting_face:
+  text: '&#128518;'
+  cats: []
+growing_heart:
+  text: '&#128151;'
+  cats: []
+hear_no_evil_monkey:
+  text: '&#128585;'
+  cats: []
+heart_decoration:
+  text: '&#128159;'
+  cats: []
+heart_exclamation:
+  text: '&#10083;'
+  cats: []
+heavy_dollar_sign:
+  text: '&#128178;'
+  cats: []
+hollow_red_circle:
+  text: '&#11093;'
+  cats: []
+hugging_face:
+  text: '&#129303;'
+  cats: []
+hundred_points:
+  text: '&#128175;'
+  cats: []
+infinity:
+  text: '&#9854;'
+  cats: []
+input_latin_letters:
+  text: '&#128292;'
+  cats: []
+input_latin_lowercase:
+  text: '&#128289;'
+  cats: []
+input_latin_uppercase:
+  text: '&#128288;'
+  cats: []
+input_numbers:
+  text: '&#128290;'
+  cats: []
+input_symbols:
+  text: '&#128291;'
+  cats: []
+'keycap:_#':
+  text: '&#35;&#65039;&#8419;'
+  cats: []
+'keycap:_*':
+  text: '&#42;&#65039;&#8419;'
+  cats: []
+'keycap:_0':
+  text: '&#48;&#65039;&#8419;'
+  cats: []
+'keycap:_1':
+  text: '&#49;&#65039;&#8419;'
+  cats: []
+'keycap:_10':
+  text: '&#128287;'
+  cats: []
+'keycap:_2':
+  text: '&#50;&#65039;&#8419;'
+  cats: []
+'keycap:_3':
+  text: '&#51;&#65039;&#8419;'
+  cats: []
+'keycap:_4':
+  text: '&#52;&#65039;&#8419;'
+  cats: []
+'keycap:_5':
+  text: '&#53;&#65039;&#8419;'
+  cats: []
+'keycap:_6':
+  text: '&#54;&#65039;&#8419;'
+  cats: []
+'keycap:_7':
+  text: '&#55;&#65039;&#8419;'
+  cats: []
+'keycap:_8':
+  text: '&#56;&#65039;&#8419;'
+  cats: []
+'keycap:_9':
+  text: '&#57;&#65039;&#8419;'
+  cats: []
+kissing_cat:
+  text: '&#128573;'
+  cats: []
+kissing_face:
+  text: '&#128535;'
+  cats: []
+kissing_face_with_closed_eyes:
+  text: '&#128538;'
+  cats: []
+large_blue_diamond:
+  text: '&#128311;'
+  cats: []
+large_orange_diamond:
+  text: '&#128310;'
+  cats: []
+last_quarter_moon:
+  text: '&#127767;'
+  cats:
+    - object
+last_track_button:
+  text: '&#9198;'
+  cats: []
+latin_cross:
+  text: '&#10013;'
+  cats: []
+left_arrow:
+  text: '&#11013;'
+  cats: []
+left_arrow_curving_right:
+  text: '&#8618;'
+  cats: []
+left_luggage:
+  text: '&#128709;'
+  cats: []
+left_right_arrow:
+  text: '&#8596;'
+  cats: []
+litter_in_bin_sign:
+  text: '&#128686;'
+  cats: []
+male_sign:
+  text: '&#9794;'
+  cats: []
+medical_symbol:
+  text: '&#9877;'
+  cats: []
+menorah:
+  text: '&#128334;'
+  cats: []
+men’s_room:
+  text: '&#128697;'
+  cats: []
+minus:
+  text: '&#10134;'
+  cats: []
+mobile_phone_off:
+  text: '&#128244;'
+  cats: []
+multiply:
+  text: '&#10006;'
+  cats: []
+name_badge:
+  text: '&#128219;'
+  cats: []
+next_track_button:
+  text: '&#9197;'
+  cats: []
+nine_o'clock:
+  text: '&#128344;'
+  cats: []
+nine_thirty:
+  text: '&#128356;'
+  cats: []
+no_bicycles:
+  text: '&#128691;'
+  cats: []
+no_entry:
+  text: '&#9940;'
+  cats: []
+no_littering:
+  text: '&#128687;'
+  cats: []
+no_mobile_phones:
+  text: '&#128245;'
+  cats: []
+no_one_under_eighteen:
+  text: '&#128286;'
+  cats: []
+no_pedestrians:
+  text: '&#128695;'
+  cats: []
+no_smoking:
+  text: '&#128685;'
+  cats: []
+non_potable_water:
+  text: '&#128689;'
+  cats: []
+oden:
+  text: '&#127842;'
+  cats: []
+old_man:
+  text: '&#128116;'
+  cats: []
+old_woman:
+  text: '&#128117;'
+  cats: []
+older_person:
+  text: '&#129491;'
+  cats: []
+om:
+  text: '&#128329;'
+  cats: []
+one_o'clock:
+  text: '&#128336;'
+  cats: []
+one_thirty:
+  text: '&#128348;'
+  cats: []
+orange_circle:
+  text: '&#128992;'
+  cats: []
+orange_square:
+  text: '&#128999;'
+  cats: []
+orthodox_cross:
+  text: '&#9766;'
+  cats: []
+part_alternation_mark:
+  text: '&#12349;'
+  cats: []
+passport_control:
+  text: '&#128706;'
+  cats: []
+pause_button:
+  text: '&#9208;'
+  cats: []
+peace_symbol:
+  text: '&#9774;'
+  cats: []
+people_hugging:
+  text: '&#129730;'
+  cats: []
+person_facepalming:
+  text: '&#129318;'
+  cats: []
+person_gesturing_ok:
+  text: '&#128582;'
+  cats: []
+person_tipping_hand:
+  text: '&#128129;'
+  cats: []
+place_of_worship:
+  text: '&#128720;'
+  cats: []
+play_button:
+  text: '&#9654;'
+  cats: []
+play_or_pause_button:
+  text: '&#9199;'
+  cats: []
+pleading_face:
+  text: '&#129402;'
+  cats: []
+plus:
+  text: '&#10133;'
+  cats: []
+potable_water:
+  text: '&#128688;'
+  cats: []
+pouting_cat:
+  text: '&#128574;'
+  cats: []
+prohibited:
+  text: '&#128683;'
+  cats: []
+purple_circle:
+  text: '&#128995;'
+  cats: []
+purple_square:
+  text: '&#129002;'
+  cats: []
+question_mark:
+  text: '&#10067;'
+  cats: []
+radio_button:
+  text: '&#128280;'
+  cats: []
+radioactive:
+  text: '&#9762;'
+  cats: []
+record_button:
+  text: '&#9210;'
+  cats: []
+recycling_symbol:
+  text: '&#9851;'
+  cats: []
+red_circle:
+  text: '&#128308;'
+  cats: []
+red_square:
+  text: '&#128997;'
+  cats: []
+red_triangle_pointed_down:
+  text: '&#128315;'
+  cats: []
+red_triangle_pointed_up:
+  text: '&#128314;'
+  cats: []
+registered:
+  text: '&#174;'
+  cats: []
+repeat_button:
+  text: '&#128257;'
+  cats: []
+repeat_single_button:
+  text: '&#128258;'
+  cats: []
+restroom:
+  text: '&#128699;'
+  cats: []
+reverse_button:
+  text: '&#9664;'
+  cats: []
+right_arrow:
+  text: '&#10145;'
+  cats: []
+right_arrow_curving_down:
+  text: '&#10549;'
+  cats: []
+right_arrow_curving_left:
+  text: '&#8617;'
+  cats: []
+right_arrow_curving_up:
+  text: '&#10548;'
+  cats: []
+seven_o'clock:
+  text: '&#128342;'
+  cats: []
+seven_thirty:
+  text: '&#128354;'
+  cats: []
+shuffle_tracks_button:
+  text: '&#128256;'
+  cats: []
+six_o'clock:
+  text: '&#128341;'
+  cats: []
+six_thirty:
+  text: '&#128353;'
+  cats: []
+small_blue_diamond:
+  text: '&#128313;'
+  cats: []
+small_orange_diamond:
+  text: '&#128312;'
+  cats: []
+smirking_face:
+  text: '&#128527;'
+  cats: []
+sparkle:
+  text: '&#10055;'
+  cats: []
+star_and_crescent:
+  text: '&#9770;'
+  cats: []
+star_of_david:
+  text: '&#10017;'
+  cats: []
+stop_button:
+  text: '&#9209;'
+  cats: []
+ten_o'clock:
+  text: '&#128345;'
+  cats: []
+ten_thirty:
+  text: '&#128357;'
+  cats: []
+three_o'clock:
+  text: '&#128338;'
+  cats: []
+three_thirty:
+  text: '&#128350;'
+  cats: []
+trade_mark:
+  text: '&#8482;'
+  cats: []
+triangular_flag:
+  text: '&#128681;'
+  cats: []
+trident_emblem:
+  text: '&#128305;'
+  cats: []
+twelve_o'clock:
+  text: '&#128347;'
+  cats: []
+twelve_thirty:
+  text: '&#128359;'
+  cats: []
+two_o'clock:
+  text: '&#128337;'
+  cats: []
+two_thirty:
+  text: '&#128349;'
+  cats: []
+up_arrow:
+  text: '&#11014;'
+  cats: []
+up_down_arrow:
+  text: '&#8597;'
+  cats: []
+up_left_arrow:
+  text: '&#8598;'
+  cats: []
+up_right_arrow:
+  text: '&#8599;'
+  cats: []
+upwards_button:
+  text: '&#128316;'
+  cats: []
+vibration_mode:
+  text: '&#128243;'
+  cats: []
+warning:
+  text: '&#9888;'
+  cats: []
+water_closet:
+  text: '&#128702;'
+  cats: []
+wavy_dash:
+  text: '&#12336;'
+  cats: []
+wheel_of_dharma:
+  text: '&#9784;'
+  cats: []
+wheelchair_symbol:
+  text: '&#9855;'
+  cats: []
+white_circle:
+  text: '&#9898;'
+  cats: []
+white_exclamation_mark:
+  text: '&#10069;'
+  cats: []
+white_large_square:
+  text: '&#11036;'
+  cats: []
+white_medium_square:
+  text: '&#9723;'
+  cats: []
+white_medium_small_square:
+  text: '&#9725;'
+  cats: []
+white_question_mark:
+  text: '&#10068;'
+  cats: []
+white_small_square:
+  text: '&#9643;'
+  cats: []
+white_square_button:
+  text: '&#128307;'
+  cats: []
+'woman:_blond_hair':
+  text: '&#128113;&#8205;&#9792;&#65039;'
+  cats: []
+'woman:_curly_hair':
+  text: '&#128105;&#8205;&#129457;'
+  cats: []
+'woman:_red_hair':
+  text: '&#128105;&#8205;&#129456;'
+  cats: []
+'woman:_white_hair':
+  text: '&#128105;&#8205;&#129459;'
+  cats: []
+women_holding_hands:
+  text: '&#128109;'
+  cats: []
+women’s_room:
+  text: '&#128698;'
+  cats: []
+woozy_face:
+  text: '&#129396;'
+  cats: []
+yellow_circle:
+  text: '&#128993;'
+  cats: []
+yellow_square:
+  text: '&#129000;'
+  cats: []
+yin_yang:
+  text: '&#9775;'
+  cats: []
+yummy:
+  text: '&#128523;'
+  cats: []
+zombie:
+  text: '&#129503;'
+  cats: []

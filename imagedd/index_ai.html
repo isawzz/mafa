@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Image Drag and Drop</title>
+	<style>
+		#dropZone {
+			min-width: 300px;
+			height: 300px;
+			border: 2px dashed #ccc;
+			text-align: center;
+			line-height: 300px;
+			font-size: 16px;
+			color: #999;
+			margin: 20px auto;
+			display: inline-block;
+		}
+
+		#dropZone img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="dropZone">Drop Image Here</div>
+
+	<script>
+		const dropZone = document.getElementById('dropZone');
+
+		dropZone.addEventListener('dragover', function (event) {
+			event.preventDefault();
+			dropZone.style.border = '2px dashed #007bff';
+		});
+
+		dropZone.addEventListener('dragleave', function (event) {
+			event.preventDefault();
+			dropZone.style.border = '2px dashed #ccc';
+		});
+
+		dropZone.addEventListener('drop', function (event) {
+			event.preventDefault();
+			dropZone.style.border = '2px dashed #ccc';
+
+			const files = event.dataTransfer.files;
+
+			if (files.length > 0) {
+				const reader = new FileReader();
+
+				reader.onload = function (e) {
+					const img = new Image();
+					img.src = e.target.result;
+					img.height = 300;
+					img.alt = 'Dropped Image';
+					dropZone.innerHTML = '';
+					dropZone.appendChild(img);
+				};
+
+				reader.readAsDataURL(files[0]);
+			}
+		});
+	</script>
+</body>
+
+</html>

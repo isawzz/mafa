@@ -9678,6 +9678,7 @@ function autocomplete(inp, arr) {
   inp = toElem(inp);
   inp.addEventListener('input', e => {
     var a, b, i, val = this.value;
+    //console.log('val',val)
     autocomplete_closeAllLists();
     if (!val) { return false; }
     currentFocus = -1;
@@ -42397,7 +42398,7 @@ async function mGetJsonCors(url){
 		mode: 'cors' // Set CORS mode to enable cross-origin requests
 	});
 	let json = await res.json();
-	console.log('json',json)
+	//console.log('json',json)
 	return json;
 }
 function mGetStyle(elem, prop) {
