@@ -1,10 +1,10 @@
 onload = start;
 async function start() { test18(); }
 
-async function test18(){
+async function test18() {
 	M = createMFromAssetsOld();
 }
-async function createMFromAssetsOld(){
+async function createMFromAssetsOld() {
 	//read in allSyms
 	let dinew = await createAllsymsNew();
 	dinew = await addFacodesTo(dinew);
@@ -17,28 +17,49 @@ async function createMFromAssetsOld(){
 	let di1 = dictWithoutGender(dinew);
 	dinew = sortKeysAlphabetically(di1);
 
-	for(const k in dinew){
-		let o=dinew[k];
-		if (isEmpty(dinew[k].cats)) {
-			
-			if (k.includes('digit')) o.cats=['digit','symbol'];
-			else if (k.includes('clock')) o.cats=['time'];
-			else if (k.includes('sign')) o.cats=['sign','symbol'];
-			else if (k.includes('blood')) o.cats=['medical','symbol'];
-			else if (k.includes('globe')) o.cats=['place'];
-			else if (k.includes('heart')) o.cats=['symbol','heart','emotion'];
-			else if (k.includes('key')) o.cats=['symbol','key'];
-			else {o.cats = ['symbol']; } //console.log('no cats',k,dinew[k]);}
-		}
-		if (k.includes('blood_type')) addIf(o.cats,'medical');
-	}
+	dinew = filterCats(dinew);
 
 	console.log('dinew count', Object.keys(dinew).length);
-	console.log(dinew.gnome);
-	//downloadAsYaml(dinew,'dinew');
+	console.log(dinew.sun);
+	downloadAsYaml(dinew,'dinew');
 
 }
-async function addCats(dinew){
+function filterCats(dinew) {
+	for (const k in dinew) {
+		let o = dinew[k];
+		if (isEmpty(dinew[k].cats)) {
+			if (k.includes('digit')) o.cats = ['digit', 'symbol'];
+			else if (k.includes('clock')) o.cats = ['time'];
+			else if (k.includes('sign')) o.cats = ['sign', 'symbol'];
+			else if (k.includes('blood')) o.cats = ['medical', 'symbol'];
+			else if (k.includes('globe')) o.cats = ['place'];
+			else if (k.includes('heart')) o.cats = ['symbol', 'heart', 'emotion'];
+			else if (k.includes('key')) o.cats = ['symbol', 'key'];
+			else { o.cats = ['symbol']; } //console.log('no cats',k,dinew[k]);}
+		}
+		if (k.includes('blood_type')) addIf(o.cats, 'medical');
+	}
+
+	for (const k in dinew) {
+		let cats = dinew[k].cats;
+		let newcats = [];
+		//if (['moon','sun','rain','sky']k.includes())
+		if (k.includes('_moon')) newcats = ['symbol'];
+		else if (cats.includes('living being')) newcats = ['nature'];
+		else if (cats.includes('sky')) newcats = ['nature', 'symbol'];
+		else if (cats.includes('planet')) newcats = ['nature'];
+		else {
+			for (const c of cats) {
+				if (isNumber(c) || c.length < 2) continue;
+				addIf(newcats, c);
+			}
+		}
+		dinew[k].cats = newcats;
+	}
+	return dinew;
+
+}
+async function addCats(dinew) {
 	//add cats from cats.yaml file
 	let txt = await mGetText('../factory/assets/cats.txt');
 	let lines = txt.split('\n');
@@ -98,16 +119,16 @@ async function addImagesTo(diold) {
 	//same as:
 	let files = await mGetFiles("http://localhost:3000", "../assets/img/emo"); //YEAH!!!
 	let di = {};
-	for(const o of files){
+	for (const o of files) {
 		//console.log('f',f);break;
-		let k=stringBefore(o,'.');
+		let k = stringBefore(o, '.');
 		let k1 = normalizedKey(k);
 		di[k1] = { img: o };
 		if (isdef(diold[k1])) {
-			addKeys(diold[k1],di[k1]);
-		}else di[k1].cats=[];
+			addKeys(diold[k1], di[k1]);
+		} else di[k1].cats = [];
 	}
-	addKeys(diold,di);
+	addKeys(diold, di);
 	return di;
 }
 async function addGamecodesTo(diold) {
@@ -118,10 +139,10 @@ async function addGamecodesTo(diold) {
 		let k1 = normalizedKey(k);
 		di[k1] = { ga: o };
 		if (isdef(diold[k1])) {
-			addKeys(diold[k1],di[k1]);
-		}else di[k1].cats=[];
+			addKeys(diold[k1], di[k1]);
+		} else di[k1].cats = [];
 	}
-	addKeys(diold,di);
+	addKeys(diold, di);
 	return di;
 }
 async function addFacodesTo(diold) {
@@ -132,10 +153,10 @@ async function addFacodesTo(diold) {
 		let k1 = normalizedKey(k);
 		di[k1] = { fa: o };
 		if (isdef(diold[k1])) {
-			addKeys(diold[k1],di[k1]);
-		}else di[k1].cats=[];
+			addKeys(diold[k1], di[k1]);
+		} else di[k1].cats = [];
 	}
-	addKeys(diold,di);
+	addKeys(diold, di);
 	return di;
 }
 async function createAllsymsNew() {
@@ -185,8 +206,8 @@ function normalizedKey(k) {
 	k3 = replaceAll(k2, '-', '_');
 	k3 = replaceAll(k3, ':', '');
 
-	if (k3.includes('(blood_type)')) k3=stringBefore(k3,'(blood_type)')+'blood_type'; 
-	if (k3.startsWith('i_')) k3=k3.substr(2);
+	if (k3.includes('(blood_type)')) k3 = stringBefore(k3, '(blood_type)') + 'blood_type';
+	if (k3.startsWith('i_')) k3 = k3.substr(2);
 	if (k3.endsWith('gnome')) k3 = 'gnome';
 	if (k3 == 'muscle_up') k3 = 'muscle';
 

@@ -6075,10 +6075,7 @@ crescent_moon:
   img: crescent-moon.png
   text: '&#127769;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
+    - symbol
 crested_helmet:
   ga: E1B9
   cats:
@@ -8063,7 +8060,7 @@ embrassed_energy:
 embryo:
   ga: E920
   cats:
-    - living being
+    - nature
 emerald:
   ga: E89B
   cats:
@@ -8277,7 +8274,7 @@ evil_minion:
 evil_moon:
   ga: E4FC
   cats:
-    - place
+    - symbol
 evil_tower:
   ga: E7BD
   cats:
@@ -8659,7 +8656,7 @@ falafel:
 falcon_moon:
   ga: E36D
   cats:
-    - place
+    - symbol
 fall_down:
   ga: E260
   cats:
@@ -9006,7 +9003,7 @@ fertilizer_bag:
 fetus:
   ga: E931
   cats:
-    - living being
+    - nature
 fez:
   ga: E18D
   cats:
@@ -9354,20 +9351,12 @@ first_quarter_moon:
   img: first-quarter-moon.png
   text: '&#127763;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
+    - symbol
 first_quarter_moon_face:
   img: first-quarter-moon-face.png
   text: '&#127771;'
   cats:
-    - action
-    - object
-    - best
-    - place
-    - travel
-    - sky
+    - symbol
 fish:
   img: fish.png
   fa: f578
@@ -10252,14 +10241,11 @@ full_moon:
   img: full-moon.png
   text: '&#127765;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
+    - symbol
 full_moon_face:
   img: full-moon-face.png
   cats:
-    - sky
+    - symbol
 full_motorcycle_helmet:
   ga: E190
   cats:
@@ -10669,10 +10655,8 @@ glowing_star:
   img: glowing-star.png
   text: '&#127775;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
+    - nature
+    - symbol
 gluttonous_smile:
   ga: E503
   cats:
@@ -13144,7 +13128,7 @@ jungle:
 jupiter:
   ga: ECBE
   cats:
-    - planet
+    - nature
 justice_star:
   ga: E0D1
   cats:
@@ -13223,20 +13207,7 @@ keyboard:
     - tool
 keycap:
   img: keycap.png
-  cats:
-    - '#'
-    - '*'
-    - '0'
-    - '1'
-    - '10'
-    - '2'
-    - '3'
-    - '4'
-    - '5'
-    - '6'
-    - '7'
-    - '8'
-    - '9'
+  cats: []
 'keycap_#':
   text: '&#35;&#65039;&#8419;'
   cats:
@@ -13671,17 +13642,12 @@ last_quarter_moon:
   img: last-quarter-moon.png
   text: '&#127767;'
   cats:
-    - object
-    - sky
-    - place
+    - symbol
 last_quarter_moon_face:
   img: last-quarter-moon-face.png
   text: '&#127772;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
+    - symbol
 last_track_button:
   img: last-track-button.png
   text: '&#9198;'
@@ -16163,11 +16129,11 @@ new_button:
 new_moon:
   img: new-moon.png
   cats:
-    - sky
+    - symbol
 new_moon_face:
   img: new-moon-face.png
   cats:
-    - sky
+    - symbol
 new_shoot:
   ga: EABE
   cats:
@@ -22953,11 +22919,8 @@ sun:
   fa: f185
   text: '&#9728;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
-    - weather
+    - nature
+    - symbol
 sun_behind_cloud:
   img: sun-behind-cloud.png
   text: '&#9925;'
@@ -23006,12 +22969,7 @@ sun_with_face:
   img: sun-with-face.png
   text: '&#127774;'
   cats:
-    - action
-    - object
-    - best
-    - place
-    - travel
-    - sky
+    - nature
     - symbol
 sunbeams:
   ga: E6E4
@@ -25657,20 +25615,12 @@ waning_crescent_moon:
   img: waning-crescent-moon.png
   text: '&#127768;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
-    - space
+    - symbol
 waning_gibbous_moon:
   img: waning-gibbous-moon.png
   text: '&#127766;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
-    - space
+    - symbol
 wanted_reward:
   ga: E0AE
   cats:
@@ -25872,20 +25822,12 @@ waxing_crescent_moon:
   img: waxing-crescent-moon.png
   text: '&#127762;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
-    - space
+    - symbol
 waxing_gibbous_moon:
   img: waxing-gibbous-moon.png
   text: '&#127764;'
   cats:
-    - object
-    - place
-    - travel
-    - sky
-    - space
+    - symbol
 wearing_turban:
   img: woman-wearing-turban.png
   cats:

@@ -155,29 +155,30 @@ function mSelect1() {
 
 
 	let s = `
-	<div class="combobox">
-		<div>
-			<select id=MandatoryBenefits onchange="this.nextElementSibling.value=this.value" required>
-				<option value="" selected>Select ...</option>
-				<option value="Pension">Pension %</option>
-				<option value="Medical">Medical %</option>
-				<option value="Unemployment">Unemployment %</option>
-				<option value="Injury">Injury %</option>
-				<option value="Maternity">Maternity %</option>
-				<option value="Serious Illness">Serious Illness %</option>
-				<option value="Housing Fund">Housing Fund %</option>
-			</select>
-			<input type="text" value="" onchange="this.previousElementSibling.selectedIndex=0"
-					oninput="this.previousElementSibling.options[0].value=this.value; this.previousElementSibling.options[0].innerHTML=this.value" />
-		</div>
-	</div>		`;
+		<div class="combobox">
+			<div>
+				<select id=MandatoryBenefits onchange="this.nextElementSibling.value=this.value" required>
+					<option value="" selected>Select ...</option>
+					<option value="Pension">Pension %</option>
+					<option value="Medical">Medical %</option>
+					<option value="Unemployment">Unemployment %</option>
+					<option value="Injury">Injury %</option>
+					<option value="Maternity">Maternity %</option>
+					<option value="Serious Illness">Serious Illness %</option>
+					<option value="Housing Fund">Housing Fund %</option>
+				</select>
+				<input type="text" value="" onchange="this.previousElementSibling.selectedIndex=0"
+						oninput="this.previousElementSibling.options[0].value=this.value; this.previousElementSibling.options[0].innerHTML=this.value" />
+			</div>
+		</div>		`;
 
 	let html = `
-	<select id="mySelect">
-	<option value="option1">Option 1</option>
-	<option value="option2">Option 2</option>
-	<!-- Other predefined options -->
-</select>		`;
+		<select id="mySelect">
+		<option value="option1">Option 1</option>
+		<option value="option2">Option 2</option>
+		<!-- Other predefined options -->
+		</select>		
+		`;
 	let dSelect = mDom(d, {}, { html: s }); //mSelect(d,['hallo','das','ist'])
 
 
