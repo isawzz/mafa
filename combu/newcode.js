@@ -57,7 +57,7 @@ function mDatalist(dParent, list, opts = {}) {
 
 	}
 }
-function mDropZone(dropZone) {
+function mDropZone(dropZone,onDrop) {
 	//const dropZone = document.getElementById('dropZone');
 
 	dropZone.addEventListener('dragover', function (event) {
@@ -79,12 +79,12 @@ function mDropZone(dropZone) {
 		if (files.length > 0) {
 			const reader = new FileReader();
 
-			reader.onload = function (e) {
+			reader.onload = ev => {
 				const img = new Image();
-				img.src = e.target.result;
+				img.src = ev.target.result;
 				img.height = 300;
 				img.alt = 'Dropped Image';
-				mClass(img,'previewContainer');
+				mClass(img,'previewImage');
 
 				dropZone.innerHTML = '';
 				dropZone.appendChild(img);

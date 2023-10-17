@@ -1,27 +1,19 @@
 
-function cropPreviewImage(previewContainer,previewImage) {
-	// const previewContainer = document.getElementById('previewContainer');
-	// const previewImage = document.getElementById('previewImage');
-	let [w,h]=[previewImage.offsetWidth,previewImage.offsetHeight];
+function cropPreviewImage(dParent,img) {
+	let [w,h]=[img.offsetWidth,img.offsetHeight];
 	console.log('w',w,'h',h)
-	mStyle(previewContainer,{w:w,h:h,position:'relative'});
-	const cropBox = mDom(dDrop,{w:w,h:h},{className:'crop-box'}); // document.querySelector('.crop-box');
-	// const cropButton = mButton('send',cropImage,'dMain');// document.getElementById('cropButton');
-
+	mStyle(dParent,{w:w,h:h,position:'relative'});
+	const cropBox = mDom(dDrop,{w:w,h:h},{className:'crop-box'});
 	let isCropping = false;
 	let cropStartX;
 	let cropStartY;
-	//cropBox.style.width = `${previewImage.offsetWidth}px`;
-	//cropBox.style.height = `${previewImage.offsetHeight}px`;
-
 	cropBox.addEventListener('mousedown', startCrop);
 
 	function startCrop(e) {
-		//console.log('HALLO!!!')
 		e.preventDefault();
 		isCropping = true;
-		cropStartX = e.clientX - previewContainer.offsetLeft;
-		cropStartY = e.clientY - previewContainer.offsetTop;
+		cropStartX = e.clientX - dParent.offsetLeft;
+		cropStartY = e.clientY - dParent.offsetTop;
 		document.addEventListener('mousemove', crop);
 		document.addEventListener('mouseup', stopCrop);
 	}
@@ -29,16 +21,12 @@ function cropPreviewImage(previewContainer,previewImage) {
 	function crop(e) {
 		e.preventDefault();
 		if (isCropping) {
-
-			//console.log('yes')
-			const mouseX = e.clientX - previewContainer.offsetLeft;
-			const mouseY = e.clientY - previewContainer.offsetTop;
-
+			const mouseX = e.clientX - dParent.offsetLeft;
+			const mouseY = e.clientY - dParent.offsetTop;
 			const width = Math.abs(mouseX - cropStartX);
 			const height = 300; //Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = 0; //Math.min(mouseY, cropStartY);
-
 			cropBox.style.width = `${width}px`;
 			cropBox.style.left = `${left}px`;
 			cropBox.style.height = `${height}px`; //erlaubt nur width cropping!
@@ -52,8 +40,6 @@ function cropPreviewImage(previewContainer,previewImage) {
 		document.removeEventListener('mouseup', stopCrop);
 	}
 
-	//cropButton.addEventListener('click', cropImage);
-
 	function cropImage() {
 		const cropX = parseInt(cropBox.style.left);
 		const cropY = parseInt(cropBox.style.top);
@@ -61,52 +47,29 @@ function cropPreviewImage(previewContainer,previewImage) {
 		const cropHeight = parseInt(cropBox.style.height);
 
 		const canvas = document.createElement('canvas');
-
 		canvas.width = cropWidth;
 		canvas.height = cropHeight;
 		const ctx = canvas.getContext('2d');
-		ctx.drawImage(previewImage, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-		//ctx.drawImage(previewImage, cropX, cropY, cropWidth, cropHeight, cropX, cropY, cropWidth, cropHeight);
-
-		// Now you have the cropped image in the canvas element (ctx).
-		// You can convert it to data URL or Blob and upload it as needed.
-		// Example to convert to data URL:
-		const croppedImageDataUrl = canvas.toDataURL('image/jpeg'); // Change format as needed
-
-		// TODO: Handle the cropped image data (croppedImageDataUrl).
-		//console.log('Cropped Image Data URL:', croppedImageDataUrl);
-		previewImage.src = croppedImageDataUrl;
-		//cropBox.style.display = 'none';
-		previewImage.width = cropWidth;
-		previewImage.height = cropHeight; //'100px';
-		//console.log('w,h',cropWidth,cropHeight);
-
-		// Hide the crop box after cropping
-		//reset_cropbox();
+		ctx.drawImage(img, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+		const croppedImageDataUrl = canvas.toDataURL('image/png'); // Change format as needed
+		img.src = croppedImageDataUrl;
+		img.width = cropWidth;
+		img.height = cropHeight; 
+		mStyle(cropBox,{top:0,left:0});
 		return croppedImageDataUrl;
-	}
-	function reset_cropbox() {
-		cropBox.style.top = cropBox.style.left = '0px';
-		cropBox.style.width = '100%'; // '0px';
-		cropBox.style.height = '100%'; // '0px';
-
-		// You can also handle the croppedImageDataUrl as needed (e.g., upload it to a server).
-		//console.log('Cropped Image Data URL:', croppedImageDataUrl);    
 	}
 	function show_cropbox(){cropBox.style.display = 'block'}
 	function hide_cropbox(){cropBox.style.display = 'none'}
-	//hide_cropbox();
 	return {
 		hide: hide_cropbox,
 		show: show_cropbox,
 		crop: cropImage,
-
+		elem: cropBox,
 	}
-
 }
 function resizePreviewImage() {
-	const previewContainer = document.querySelector('.previewContainer');
-	const previewImage = document.querySelector('.previewImage');
+	const dParent = document.querySelector('.dParent');
+	const img = document.querySelector('.img');
 	//const uploadButton = document.getElementById('uploadButton');
 	const topLeftResizeHandle = document.querySelector('.resize-handle.top-left');
 	const bottomRightResizeHandle = document.querySelector('.resize-handle.bottom-right');
@@ -121,8 +84,8 @@ function resizePreviewImage() {
 		isResizing = true;
 		resizeStartX = e.clientX;
 		resizeStartY = e.clientY;
-		initialWidth = previewImage.offsetWidth;
-		initialHeight = previewImage.offsetHeight;
+		initialWidth = img.offsetWidth;
+		initialHeight = img.offsetHeight;
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
@@ -131,8 +94,8 @@ function resizePreviewImage() {
 		if (isResizing) {
 			const width = initialWidth + (e.clientX - resizeStartX);
 			const height = initialHeight + (e.clientY - resizeStartY);
-			previewImage.style.width = `${width}px`;
-			previewImage.style.height = `${height}px`;
+			img.style.width = `${width}px`;
+			img.style.height = `${height}px`;
 		}
 	}
 
@@ -145,6 +108,4 @@ function resizePreviewImage() {
 	bottomRightResizeHandle.addEventListener('mousedown', startResize);
 
 }
-
-//uploadButton.addEventListener('click', onclickUpload);
 

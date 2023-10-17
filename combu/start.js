@@ -19,6 +19,7 @@ async function test0() {
 
 	//mClass(dDrop, 'previewContainer');
 	UI.dDrop = dDrop;
+	UI.dForm = dForm;
 	UI.imgCat = dl.inpElem;
 	UI.imgName = inpName;
 
@@ -29,8 +30,8 @@ function loadImage(path, dParent, dButtons) {
 	//let dParent = UI.dDrop;
 
 	// let img = new Image();	img.src = path;
-	let img = UI.imgElem = mDom(dParent, { position: 'absolute', left: 0 }, { tag: 'img', src: path, height: 300, className: 'previewImage' });
-
+	let img = UI.imgElem = mDom(dParent, { position: 'absolute', left: 0, box:true }, { tag: 'img', src: path, height: 300, className: 'previewImage' });
+	
 
 	img.onload = () => {
 		img.onload = null;
@@ -65,7 +66,7 @@ function loadImage(path, dParent, dButtons) {
 		}
 
 	};
-
+	return img;
 
 }
 function _loadImage(path, dParent, dButtons) {
