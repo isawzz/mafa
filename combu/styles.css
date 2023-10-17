@@ -28,9 +28,7 @@
 	margin: 0;
 	border: none;
 }
-
-/* #region datalist */
-.datalistInput {
+.input {
 	padding: 10px;
 	font-size: 16px;
 	border: 1px solid #ccc;
@@ -39,6 +37,8 @@
 	margin-bottom: 10px;
 }
 
+
+/* #region datalist */
 .datalist {
 	list-style: none;
 	padding: 0;
@@ -55,4 +55,49 @@
 	border-bottom: none;
 }
 /* #endregion datalist */
+
+/* #region resizing */
+.previewContainer {
+	display: inline-block;
+	position: relative;
+	height: 300px;
+	/* width: 100%; */
+	/* overflow: hidden; */
+}
+.previewImage {
+	position: absolute;
+	border: 2px solid #ccc;
+}
+.resize-handle {
+	width: 10px;
+	height: 10px;
+	background-color: #007bff;
+	position: absolute;
+}
+.resize-handle.top-left {
+	top: -5px;
+	left: -5px;
+	cursor: nwse-resize;
+}
+.resize-handle.bottom-right {
+	bottom: -5px;
+	right: -5px;
+	cursor: nwse-resize;
+}
+/* #endregion resizing */
+
+/* #region cropping */
+.crop-box {
+	border: 2px dashed #007bff;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: #ff000080;
+	box-sizing: border-box;
+	/* pointer-events: none; */
+
+
+}
+
+/* #endregion cropping */
 

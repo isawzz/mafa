@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <style>
+        #previewContainer {
+            position: relative;
+            overflow: hidden;
+        }
+        #previewImage {
+            border: 2px solid #ccc;
+        }
+        .resize-handle {
+            width: 10px;
+            height: 10px;
+            background-color: #007bff;
+            position: absolute;
+        }
+        .resize-handle.top-left {
+            top: -5px;
+            left: -5px;
+            cursor: nwse-resize;
+        }
+        .resize-handle.bottom-right {
+            bottom: -5px;
+            right: -5px;
+            cursor: nwse-resize;
+        }
+    </style>
+</head>
+<body>
+    <div id="previewContainer">
+        <img id="previewImage" src="path/to/your/image.jpg" alt="Preview Image">
+        <div class="resize-handle top-left"></div>
+        <div class="resize-handle bottom-right"></div>
+    </div>
+    <button id="uploadButton">Upload Image</button>
+</body>
+<script src="script.js"></script>
+</html>

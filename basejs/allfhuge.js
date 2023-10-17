@@ -55948,7 +55948,7 @@ function runcode(code, callback = null) {
 function runderkreis(color, id) {
   return `<div id=${id} style='width:20px;height:20px;border-radius:50%;background-color:${color};color:white;position:absolute;left:0px;top:0px;'>` + '' + "</div>";
 }
-function rUniqueId(n) { return rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
+function rUniqueId(n=10) { return rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
 async function runNextSeries(listSeries, series, from, to) {
   let timeOUT = 500;
   if (isEmpty(listSeries)) {

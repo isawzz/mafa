@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Image Cropping</title>
+	<style>
+		#previewContainer {
+			position: relative;
+			height: 300px;
+			width: 100%;
+			/* overflow: hidden; */
+		}
+
+		#previewImage {
+			/* width: auto; */
+			position: absolute;
+			/* height: 300px; */
+		}
+
+		.crop-box {
+			border: 2px dashed #007bff;
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			background: #ff000080;
+			box-sizing: border-box;
+			/* pointer-events: none; */
+
+
+		}
+	</style>
+</head>
+
+<body>
+	<div id="previewContainer">
+		<img id="previewImage" src="../icrop2/hallo.png" alt="Preview Image" height="300">
+		<div class="crop-box">HALLO</div>
+	</div>
+	<button id="cropButton">Crop Image</button>
+</body>
+<script src="../icrop2/script.js"></script>
+
+</html>

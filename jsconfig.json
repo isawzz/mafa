@@ -17,5 +17,6 @@
     "../../../base/assets/*",
     "_hideTEMP",
     "_projects",
+    "CODE.js"
   ]
 }
