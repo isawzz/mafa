@@ -1,4 +1,90 @@
 
+function makeCropper(previewContainer,previewImage) {
+	let [w,h]=[previewImage.offsetWidth,previewImage.offsetHeight];
+	console.log('w',w,'h',h)
+	mStyle(previewContainer,{w:w,h:h,position:'relative'});
+	const cropBox = mDom(previewContainer,{w:w,h:h},{className:'crop-box'}); // document.querySelector('.crop-box');
+	let isCropping = false;
+	let cropStartX;
+	let cropStartY;
+	cropBox.addEventListener('mousedown', startCrop);
+
+	function startCrop(e) {
+		//console.log('HALLO!!!')
+		e.preventDefault();
+		isCropping = true;
+		cropStartX = e.clientX - previewContainer.offsetLeft;
+		cropStartY = e.clientY - previewContainer.offsetTop;
+		document.addEventListener('mousemove', crop);
+		document.addEventListener('mouseup', stopCrop);
+	}
+
+	function crop(e) {
+		e.preventDefault();
+		if (isCropping) {
+
+			//console.log('yes')
+			const mouseX = e.clientX - previewContainer.offsetLeft;
+			const mouseY = e.clientY - previewContainer.offsetTop;
+
+			const width = Math.abs(mouseX - cropStartX);
+			const height = 300; //Math.abs(mouseY - cropStartY);
+			const left = Math.min(mouseX, cropStartX);
+			const top = 0; //Math.min(mouseY, cropStartY);
+
+			cropBox.style.width = `${width}px`;
+			cropBox.style.left = `${left}px`;
+			cropBox.style.height = `${height}px`; //erlaubt nur width cropping!
+			cropBox.style.top = `${top}px`;
+		}
+	}
+
+	function stopCrop() {
+		isCropping = false;
+		document.removeEventListener('mousemove', crop);
+		document.removeEventListener('mouseup', stopCrop);
+	}
+	function cropImage() {
+		const cropX = parseInt(cropBox.style.left);
+		const cropY = parseInt(cropBox.style.top);
+		const cropWidth = parseInt(cropBox.style.width);
+		const cropHeight = parseInt(cropBox.style.height);
+
+		const canvas = document.createElement('canvas');
+
+		canvas.width = cropWidth;
+		canvas.height = cropHeight;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(previewImage, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+		//ctx.drawImage(previewImage, cropX, cropY, cropWidth, cropHeight, cropX, cropY, cropWidth, cropHeight);
+
+		// Now you have the cropped image in the canvas element (ctx).
+		// You can convert it to data URL or Blob and upload it as needed.
+		// Example to convert to data URL:
+		const croppedImageDataUrl = canvas.toDataURL('image/jpeg'); // Change format as needed
+
+		// TODO: Handle the cropped image data (croppedImageDataUrl).
+		//console.log('Cropped Image Data URL:', croppedImageDataUrl);
+		previewImage.src = croppedImageDataUrl;
+		//cropBox.style.display = 'none';
+		previewImage.width = cropWidth;
+		previewImage.height = cropHeight; //'100px';
+		//console.log('w,h',cropWidth,cropHeight);
+
+		// Hide the crop box after cropping
+		//reset_cropbox();
+		return croppedImageDataUrl;
+	}
+	function show_cropbox(){cropBox.style.display = 'block'}
+	function hide_cropbox(){cropBox.style.display = 'none'}
+	return {
+		hide: hide_cropbox,
+		show: show_cropbox,
+		crop: cropImage,
+
+	}
+
+}
 function cropPreviewImage(previewContainer,previewImage) {
 	// const previewContainer = document.getElementById('previewContainer');
 	// const previewImage = document.getElementById('previewImage');

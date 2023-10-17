@@ -8,7 +8,7 @@ async function test0() {
 
 	let d = mDom('dMain');
 	mFlexWrap(d);
-	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop);
+	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, onDropPreviewImage);
 
 	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => event.preventDefault() });
 
@@ -25,6 +25,10 @@ async function test0() {
 
 	UI.img = loadImage('../combu/katzen.png', dDrop, dForm);
 }
+function onDropPreviewImage(){
+
+}
+
 function loadImage(path, dParent, dButtons) {
 
 	//let dParent = UI.dDrop;

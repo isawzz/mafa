@@ -73,27 +73,26 @@ function mDropZone(dropZone,onDrop) {
 	dropZone.addEventListener('drop', function (event) {
 		event.preventDefault();
 		dropZone.style.border = '2px dashed #ccc';
-
 		const files = event.dataTransfer.files;
 
 		if (files.length > 0) {
 			const reader = new FileReader();
-
 			reader.onload = ev => {
 				const img = new Image();
 				img.src = ev.target.result;
 				img.height = 300;
 				img.alt = 'Dropped Image';
 				mClass(img,'previewImage');
-
 				dropZone.innerHTML = '';
 				dropZone.appendChild(img);
+				UI.cropper = createCropper(dropZone, img);
+				mStyle(img,{top:0,left:0})
+				console.log('cropper',UI.cropper)
 			};
 
 			reader.readAsDataURL(files[0]);
 		}
 	});
-
 	return dropZone;
 }
 async function mGetFiles(server, dir) {
