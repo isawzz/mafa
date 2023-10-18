@@ -78,16 +78,17 @@ function mDropZone(dropZone,onDrop) {
 		if (files.length > 0) {
 			const reader = new FileReader();
 			reader.onload = ev => {
-				const img = new Image();
-				img.src = ev.target.result;
-				img.height = 300;
-				img.alt = 'Dropped Image';
-				mClass(img,'previewImage');
-				dropZone.innerHTML = '';
-				dropZone.appendChild(img);
-				UI.cropper = createCropper(dropZone, img);
-				mStyle(img,{top:0,left:0})
-				console.log('cropper',UI.cropper)
+				onDrop(ev.target.result);
+				// const img = new Image();
+				// img.src = ev.target.result;
+				// img.height = 300;
+				// img.alt = 'Dropped Image';
+				// mClass(img,'previewImage');
+				// dropZone.innerHTML = '';
+				// dropZone.appendChild(img);
+				// UI.cropper = createCropper(dropZone, img);
+				// mStyle(img,{top:0,left:0})
+				// console.log('cropper',UI.cropper)
 			};
 
 			reader.readAsDataURL(files[0]);

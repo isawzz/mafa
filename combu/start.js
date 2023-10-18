@@ -20,12 +20,13 @@ async function test0() {
 	//mClass(dDrop, 'previewContainer');
 	UI.dDrop = dDrop;
 	UI.dForm = dForm;
+	UI.dButtons = mDom(dForm,{display:'inline-block'});
 	UI.imgCat = dl.inpElem;
 	UI.imgName = inpName;
 
-	UI.img = loadImage('../combu/katzen.png', dDrop, dForm);
 }
-function onDropPreviewImage(){
+function onDropPreviewImage(url){
+	UI.img = loadImage(url, UI.dDrop, UI.dButtons);
 
 }
 
@@ -34,6 +35,7 @@ function loadImage(path, dParent, dButtons) {
 	//let dParent = UI.dDrop;
 
 	// let img = new Image();	img.src = path;
+	dParent.innerHTML = '';
 	let img = UI.imgElem = mDom(dParent, { position: 'absolute', left: 0, box:true }, { tag: 'img', src: path, height: 300, className: 'previewImage' });
 	
 
@@ -64,6 +66,7 @@ function loadImage(path, dParent, dButtons) {
 			// mAppend(dParent, image); //canvas);
 			// document.getElementById('container').appendChild(canvas);
 			UI.cropper = cropPreviewImage(dParent, image);
+			dButtons.innerHTML = '';
 			mDom(dButtons, { w: 120, maright: 10 }, { tag: 'button', html: 'Crop', onclick: UI.cropper.crop, className: 'input' })
 			mDom(dButtons, { w: 120, maright: 10 }, { tag: 'button', html: 'Show Cropper', onclick: UI.cropper.show, className: 'input' })
 			mDom(dButtons, { w: 120, maright: 10 }, { tag: 'button', html: 'Hide Cropper', onclick: UI.cropper.hide, className: 'input' })
