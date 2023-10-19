@@ -1,9 +1,33 @@
 
 //#region combu
+function _loadImage(path, dParent, dButtons) {
+
+	//console.log('img',UI.imgElem)
+	UI.imgElem = mDom(dParent, { position: 'absolute', left: 0 }, { tag: 'img', src: path, height: 300, className: 'previewImage' });
+	//mDom(dParent,{},{className:"resize-handle top-left"});
+	//mDom(dParent,{},{className:"resize-handle bottom-right"});
+	//resizePreviewImage();
+	UI.imgElem.onload = () => {
+		let img = UI.imgElem;
+		img.onload = null;
+		let [w, h] = [img.offsetWidth, img.offsetHeight];
+		img.width = w;
+		img.height = h;
+		mStyle(img, { w: w, h: h });
+		UI.cropper = cropPreviewImage(dParent, img);
+		mDom(dButtons, { w: 120, maright: 10 }, { tag: 'button', html: 'Show Cropper', onclick: UI.cropper.show, className: 'input' })
+		mDom(dButtons, { w: 120, maright: 10 }, { tag: 'button', html: 'Crop', onclick: UI.cropper.crop, className: 'input' })
+	}
+
+	//mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Cancel', onclick: onclickUpload, className: 'input' })
+
+
+}
+
 function mDatalist(dParent, list, opts = {}) {
 	var mylist = list;
 	var opts = opts;
-	addKeys({ alpha: true, edit: true, filter: 'contains'},opts); // matches: (x, inputVal) => x.startsWith(inputVal.toLowerCase()) },opts)
+	addKeys({ alpha: true, edit: true, filter: 'contains' }, opts); // matches: (x, inputVal) => x.startsWith(inputVal.toLowerCase()) },opts)
 
 	let d = mDiv(toElem(dParent));
 	let optid = getUID('dl');
@@ -16,31 +40,31 @@ function mDatalist(dParent, list, opts = {}) {
 
 	inp.setAttribute('list', optid);
 	// console.log('datalist',elem,inp,datalist)
-	
+
 	function update() {
-		let val = valf(inp.value,'');
+		let val = valf(inp.value, '');
 		if (isEmpty(val)) return;
 		if (mylist.includes(val)) return;
 		mylist.push(val);
 		if (opts.alpha) mylist.sort();
-		let i=mylist.indexOf(val);
+		let i = mylist.indexOf(val);
 		//if (opts.alpha) addIfAlpha(mylist,val); else addIf(mylist,val);
 		inp.value = ''; //clear input
-		if (opts.filter == 'contains') { let el=mDom(datalist, {}, { tag: 'option', value: val }); mInsertAt(datalist,el,i) }
+		if (opts.filter == 'contains') { let el = mDom(datalist, {}, { tag: 'option', value: val }); mInsertAt(datalist, el, i) }
 		else populate();
 	}
 	function populate() {
 		//if (isdef(datalist.firstChild) && opts.filter == 'contains') return;
-		let val = valf(inp.value,''); val=val.toLowerCase();
+		let val = valf(inp.value, ''); val = val.toLowerCase();
 		datalist.innerHTML = '';
 		//console.log('datalist',datalist)
-		let filteredList = isEmpty(val)?mylist:mylist.filter(x => opts.matches(x, val));
+		let filteredList = isEmpty(val) ? mylist : mylist.filter(x => opts.matches(x, val));
 		//console.log('filtered',filteredList)
 		for (const w of filteredList) { mDom(datalist, {}, { tag: 'option', value: w }); }
 	}
 	populate();
-	
-	if (opts.edit) inp.addEventListener('keyup', ev => {	if (ev.key === 'Enter') update(); });
+
+	if (opts.edit) inp.addEventListener('keyup', ev => { if (ev.key === 'Enter') update(); });
 	if (isdef(opts.matches)) inp.addEventListener('input', populate);
 
 	return {
@@ -59,7 +83,7 @@ function _myDatalist(dParent, list, opts = {}) {
 	//what is the list we are working with?
 	var mylist = list;
 	var opts = opts;
-	addKeys({ alpha: true, edit: true, matches: (x, inputVal) => x.startsWith(inputVal.toLowerCase()) },opts)
+	addKeys({ alpha: true, edit: true, matches: (x, inputVal) => x.startsWith(inputVal.toLowerCase()) }, opts)
 
 	let d = mDiv(toElem(dParent));
 	let optid = getUID('dl');
@@ -83,25 +107,25 @@ function _myDatalist(dParent, list, opts = {}) {
 	var inp = elem.firstChild;
 	var datalist = elem.lastChild;
 	inp.setAttribute('list', optid);
-	console.log('datalist',elem,inp,datalist)
+	console.log('datalist', elem, inp, datalist)
 	function update() {
-		let val = valf(inp.value,'');
+		let val = valf(inp.value, '');
 		//fuege val alphabetisch in liste ein (opt.alpha)
-		addIfAlpha(mylist,val);
+		addIfAlpha(mylist, val);
 		//populate
 		populate();
 		inp.value = ''; //clear input
 	}
 	function populate(val) {
-		val = valf(inp.value,''); val=val.toLowerCase();
+		val = valf(inp.value, ''); val = val.toLowerCase();
 		datalist.innerHTML = '';
-		console.log('datalist',datalist)
+		console.log('datalist', datalist)
 		let filteredList = mylist.filter(x => opts.matches(x, val));
 		for (const w of filteredList) { mDom(datalist, {}, { tag: 'option', value: w }); }
 	}
 	populate();
-	
-	if (opts.edit) inp.addEventListener('keyup', ev => {	if (ev.key === 'Enter') update(); });
+
+	if (opts.edit) inp.addEventListener('keyup', ev => { if (ev.key === 'Enter') update(); });
 	//if (opts.alpha) inp.addEventListener('input', this.populate);
 
 	return {
