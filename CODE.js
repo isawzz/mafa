@@ -1,4 +1,76 @@
 
+//#region mist
+async function test0(){
+  try {
+    const element = document.getElementById('dTest'); // Replace 'your-element-id' with the actual ID of your HTML element
+    const base64data = await htmlElementToBase64(element);
+    console.log('Base64 Data URL:', base64data);
+    // Do something with the base64 data URL
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+function htmlElementToBase64(element) {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const rect = element.getBoundingClientRect();
+    
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    
+    const styles = window.getComputedStyle(element);
+    const oldOverflow = styles.overflow;
+    const oldPosition = styles.position;
+    
+    // Override styles to ensure the element is rendered correctly on the canvas
+    element.style.overflow = 'visible';
+    element.style.position = 'static';
+    
+    const elementClone = element.cloneNode(true);
+    
+    // Remove any potential IDs to prevent duplicates in the document
+    elementClone.removeAttribute('id');
+    
+    const cloneContainer = document.createElement('div');
+    cloneContainer.appendChild(elementClone);
+    
+    // Draw the element on the canvas
+    const svg = new Blob([cloneContainer.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svg);
+    console.log('url',url);
+    const img = document.getElementById('result'); //new Image();
+    img.src = url;
+    return url;
+    
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, rect.width, rect.height);
+      // Get the base64 data URL from the canvas
+      const base64data = canvas.toDataURL('image/png');
+      // Revert overridden styles
+      element.style.overflow = oldOverflow;
+      element.style.position = oldPosition;
+      // Clean up
+      URL.revokeObjectURL(url);
+      resolve(base64data);
+    };
+    
+    img.onerror = (error) => {
+      // Revert overridden styles
+      element.style.overflow = oldOverflow;
+      element.style.position = oldPosition;
+      // Clean up
+      URL.revokeObjectURL(url);
+      reject(error);
+    };
+    
+  });
+}
+
+
+//#endregion
+
 //#region combu
 function _loadImage(path, dParent, dButtons) {
 
