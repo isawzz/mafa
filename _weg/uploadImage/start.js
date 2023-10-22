@@ -107,7 +107,7 @@ async function onDrop(ev) {
 }
 
 
-function uploadImage() {
+function uploadImg() {
 	// Create a FormData object and append the resized image data
 	var formData = new FormData();
 	formData.append('uploadedFile', resizedImageData);

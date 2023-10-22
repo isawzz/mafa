@@ -193,7 +193,7 @@ async function mGetJsonCors(url) {
 	console.log('json', json)
 	return json;
 }
-function uploadImage(imgElem, cat, name, ev) {
+function uploadImg(imgElem, cat, name, ev) {
 	const canvas = document.createElement('canvas');
 	canvas.width = imgElem.width;
 	canvas.height = imgElem.height;
@@ -221,7 +221,7 @@ function uploadImage(imgElem, cat, name, ev) {
 			});
 	});
 }
-function uploadImage(imgElem, cat, name, ev) {
+function uploadImg(imgElem, cat, name, ev) {
 	const canvas = document.createElement('canvas');
 	canvas.width = imgElem.width;
 	canvas.height = imgElem.height;

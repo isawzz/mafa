@@ -93,14 +93,14 @@ function onclickUpload(ev) {
 
 	//return;
 
-	uploadImage(img, cat, name, ev)
+	uploadImg(img, cat, name, ev)
 }
 function onDropPreviewImage(url) {
 	UI.img = loadImage(url, UI.dDrop, UI.dButtons);
 
 }
 
-function uploadImage(imgElem, cat, name) {
+function uploadImg(imgElem, cat, name) {
 	// Create a canvas element
 	const canvas = document.createElement('canvas');
 	canvas.width = imgElem.width;

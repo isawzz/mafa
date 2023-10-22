@@ -38,8 +38,8 @@ function stopResize() {
     document.removeEventListener('mouseup', stopResize);
 }
 
-uploadButton.addEventListener('click', uploadImage);
+uploadButton.addEventListener('click', uploadImg);
 
-function uploadImage() {
+function uploadImg() {
     // ... (same as previous code)
 }

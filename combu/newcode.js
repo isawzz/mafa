@@ -21,15 +21,20 @@ function collectCats(di) {
 	return cats;
 }
 function mCropper(dParent, img) {
-	let [w, h] = [img.offsetWidth, img.offsetHeight];
-	console.log('w', w, 'h', h)
+	let [w, h] = [img.offsetWidth, img.offsetHeight]; 
+	console.log('w', w, 'h', h);
+	console.log('dParent',dParent)
 	mStyle(dParent, { w: w, h: h, position: 'relative' });
-	const cropBox = mDom(dParent, { w: w, h: h }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: w, h: h }, { className: 'crop-box' });
 	let isCropping = false;
 	let cropStartX;
 	let cropStartY;
 	cropBox.addEventListener('mousedown', startCrop);
 
+	function restart(){
+		stopCrop();
+		mStyle(cropBox,{left:0,top:0,w:w,h:h});
+	}
 	function startCrop(e) {
 		e.preventDefault();
 		isCropping = true;
@@ -38,8 +43,22 @@ function mCropper(dParent, img) {
 		document.addEventListener('mousemove', crop);
 		document.addEventListener('mouseup', stopCrop);
 	}
-
 	function crop(e) {
+		e.preventDefault();
+		if (isCropping) {
+			const mouseX = e.clientX - dParent.offsetLeft;
+			const mouseY = e.clientY - dParent.offsetTop;
+			const width = Math.abs(mouseX - cropStartX);
+			const height = Math.abs(mouseY - cropStartY);
+			const left = Math.min(mouseX, cropStartX);
+			const top = Math.min(mouseY, cropStartY);
+			cropBox.style.width = `${width}px`;
+			cropBox.style.left = `${left}px`;
+			cropBox.style.height = `${height}px`; //erlaubt nur width cropping!
+			cropBox.style.top = `${top}px`;
+		}
+	}
+	function cropX(e) {
 		e.preventDefault();
 		if (isCropping) {
 			const mouseX = e.clientX - dParent.offsetLeft;
@@ -54,29 +73,45 @@ function mCropper(dParent, img) {
 			cropBox.style.top = `${top}px`;
 		}
 	}
-
+	function cropCenter(e) {
+    e.preventDefault();
+    if (isCropping) {
+        const mouseX = e.clientX - dParent.offsetLeft;
+        const mouseY = e.clientY - dParent.offsetTop;
+        const radiusX = Math.abs(mouseX - cropStartX);
+        const radiusY = Math.abs(mouseY - cropStartY);
+        const centerX = cropStartX; // (mouseX + cropStartX) / 2;
+        const centerY = cropStartY; //(mouseY + cropStartY) / 2;
+        
+        const width = radiusX * 2;
+        const height = radiusY * 2;
+        const left = centerX - radiusX;
+        const top = centerY - radiusY;
+        
+        cropBox.style.width = `${width}px`;
+        cropBox.style.height = `${height}px`;
+        cropBox.style.left = `${left}px`;
+        cropBox.style.top = `${top}px`;
+    }
+	}
 	function stopCrop() {
 		isCropping = false;
 		document.removeEventListener('mousemove', crop);
 		document.removeEventListener('mouseup', stopCrop);
 	}
-
 	function cropImage() {
-		const cropX = parseInt(cropBox.style.left);
-		const cropY = parseInt(cropBox.style.top);
-		const cropWidth = parseInt(cropBox.style.width);
-		const cropHeight = parseInt(cropBox.style.height);
-		const canvas = document.createElement('canvas');
-		canvas.width = cropWidth;
-		canvas.height = cropHeight;
+		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
+		console.log('x,y,w,h',x,y,w,h);
+		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
 		const ctx = canvas.getContext('2d');
-		ctx.drawImage(img, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-		const croppedImageDataUrl = canvas.toDataURL('image/png'); // Change format as needed
-		img.src = croppedImageDataUrl;
-		img.width = cropWidth;
-		img.height = cropHeight;
-		mStyle(cropBox, { top: 0, left: 0 });
-		return croppedImageDataUrl;
+		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
+		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
+		img.src = imgDataUrl;
+		img.width = w;
+		img.height = h;
+		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
+		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		return imgDataUrl;
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
 	function hide_cropbox() { cropBox.style.display = 'none' }
@@ -84,6 +119,9 @@ function mCropper(dParent, img) {
 		hide: hide_cropbox,
 		show: show_cropbox,
 		crop: cropImage,
+		cropX: cropX,
+		cropCenter:cropCenter,
+		restart:restart,
 		elem: cropBox,
 	}
 }
@@ -193,78 +231,89 @@ async function mGetJsonCors(url) {
 	console.log('json', json)
 	return json;
 }
-function uploadImg(imgElem, cat, name, ev) {
-	const canvas = document.createElement('canvas');
-	canvas.width = imgElem.width;
-	canvas.height = imgElem.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(imgElem, 0, 0, canvas.width, canvas.height);
-
-	canvas.toBlob((blob) => {
-		const formData = new FormData();
-		formData.append('image', blob, name + '.png');
-		formData.append('category', cat);
-		formData.append('name', name);
-		let url = `http://localhost:3000/upload`; //TODO: SERVERNAME!!!
-		fetch(url, {
-			method: 'POST',
-			mode: 'cors',
-			body: formData
-		})
-			.then(response => response.json())
-			.then(data => {
-				ev.preventDefault();
-				console.log('Image uploaded successfully:', data);
-			})
-			.catch(error => {
-				console.error('Error uploading image:', error);
-			});
+async function resizeImage(img, newHeight) {
+	return new Promise((resolve, reject) => {
+		console.log('resizing...')
+		const aspectRatio = img.width / img.height;
+		const newWidth = aspectRatio * newHeight;
+		const canvas = document.createElement('canvas');
+		canvas.width = newWidth;
+		canvas.height = newHeight;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, newWidth, newHeight);
+		const resizedDataURL = canvas.toDataURL('image/png');
+		img.onload = function () { let data = { message: 'hallo' }; console.log('data', data); resolve(data); };
+		img.onerror = function (error) { console.log('error', error); reject(error); };
+		img.src = resizedDataURL;
 	});
 }
-function uploadImg(imgElem, cat, name, ev) {
-	const canvas = document.createElement('canvas');
-	canvas.width = imgElem.width;
-	canvas.height = imgElem.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(imgElem, 0, 0, canvas.width, canvas.height);
+async function srcToDataUrl(src, h) {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.crossOrigin = "Anonymous"; // Enable cross-origin resource sharing (CORS) for the image
+		img.onload = function () {
+			// Calculate new width and height while preserving aspect ratio
+			let aspectRatio, newWidth, newHeight;
+			if (isdef(h)) {
+				aspectRatio = img.width / img.height;
+				newHeight = h;
+				newWidth = aspectRatio * newHeight;
+			} else {
+				newHeight = img.height;
+				newWidth = img.width;
+			}
+			const canvas = document.createElement('canvas');
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(img, 0, 0, newWidth, newHeight);
+			const dataUrl = canvas.toDataURL('image/png');
+			resolve(dataUrl);
+		};
+		img.onerror = function (error) {
+			reject(error);
+		};
+		img.src = src;
+	});
+}
+async function uploadImg(img, cat, name) {
+	return new Promise((resolve, reject) => {
+		const canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-	canvas.toBlob((blob) => {
-		const formData = new FormData();
-		formData.append('image', blob, name + '.png');
-		formData.append('category', cat);
-		formData.append('name', name);
-		let url = `http://localhost:3000/upload`; //TODO: SERVERNAME!!!
+		canvas.toBlob(async (blob) => {
+			const formData = new FormData();
+			formData.append('image', blob, name + '.png');
+			formData.append('category', cat);
 
-		// Send form data via AJAX
-		// var xhr = new XMLHttpRequest();
-		// xhr.open('POST', url, true);
-		// xhr.setRequestHeader('Content-Type', 'application/json');
-		// xhr.withCredentials = false; //das ist cors
-		// xhr.onreadystatechange = function () {
-		// 	if (xhr.readyState === 4 && xhr.status === 200) {
-		// 		// Handle the AJAX response here
-		// 		console.log(xhr.responseText);
-		// 	}
-		// };
-		// xhr.send(JSON.stringify(formData));
+			try {
+				const response = await fetch('http://localhost:3000/upload', {
+					method: 'POST',
+					mode: 'cors',
+					body: formData
+				});
 
-		// Send form data via fetch
-		fetch(url, {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			mode: 'cors',
-			body: formData
-		})
-			.then(response => response.json())
-			.then(data => {
-				ev.preventDefault();
-				console.log('Image uploaded successfully:', data);
-			})
-			.catch(error => {
+				if (response.ok) {
+					const data = await response.json();
+					//console.log('Image uploaded successfully:', data);
+					resolve(data);
+				} else {
+					// Handle non-ok response status
+					//console.error('Error uploading image:', response.statusText);
+					reject(response.statusText);
+				}
+
+
+				// const data = await response.json();
+				// console.log('Image uploaded successfully:', data);
+				// resolve(data);
+			} catch (error) {
 				console.error('Error uploading image:', error);
-			});
+				reject(error);
+			}
+		});
 	});
 }
