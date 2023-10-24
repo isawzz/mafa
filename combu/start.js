@@ -10,12 +10,11 @@ async function test0() {
 	mFlexWrap(d);
 	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, onDropPreviewImage);
 
-	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => {console.log('H!');ev.preventDefault();return false;} });
+	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { console.log('H!'); ev.preventDefault(); return false; } });
 
 	mDom(dForm, {}, { html: 'Category:' }); let dl = mDatalist(dForm, cats);
 	mDom(dForm, {}, { html: 'Name:' }); let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', className: 'input', placeholder: "<enter value>" });
 	mDom(dForm, { h: 10 })
-	mDom(dForm, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
 
 	UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
 	UI.dForm = dForm;
@@ -24,17 +23,25 @@ async function test0() {
 	UI.imgName = inpName;
 
 }
+
 async function onDropPreviewImage(url) {
 	let dParent = UI.dDrop;
 	let dButtons = UI.dButtons;
 	dParent.innerHTML = '';
+	dButtons.innerHTML = '';
 	let img = UI.img = mDom(dParent, {}, { tag: 'img', src: url });
 	img.onload = async () => {
 		img.onload = null;
 		//await resizeImage(img, 300);
-		UI.cropper = mCropper(dParent, img);
-		mButton('Crop', UI.cropper.crop, dButtons, { w: 120, maleft: 12 }, 'input');
-		mButton('Restart', UI.cropper.restart, dButtons, { w: 120, maleft: 12 }, 'input');
+		UI.img_orig = new Image(img.offsetWidth, img.offsetHeight);
+		UI.url = url;
+		UI.cropper = mCropResizer(dParent, img, dButtons);
+
+		// UI.cropTool = addCropTool(dButtons,img,UI.cropper.setSize);
+		//resizePreviewImage(dParent,img);
+
+		mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
+		mButton('Restart', () => onDropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
 	}
 }
 async function onclickUpload() {
