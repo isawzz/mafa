@@ -1,4 +1,52 @@
 
+
+function addToolX(cropper,d) {
+	//let dButtons = cropper.dButtons;
+	let img = cropper.img;
+
+	function createCropTool(){
+		let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
+		let handler = cropper.setSize;
+		mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
+		let [w, h] = [img.offsetWidth, img.offsetHeight];
+		if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, handler, 'rSizes', false)
+		if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, handler, 'rSizes', false)
+		if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, handler, 'rSizes', false)
+		if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, handler, 'rSizes', false)
+		if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, handler, 'rSizes', false)
+		if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, handler, 'rSizes', false)
+		else {
+			//card portrait kann man auch machen: take das das nicht passt
+			let [w1, h1] = [w, w / .7];
+			let [w2, h2] = [h * .7, h];
+			if (w1 < w2) mRadio(`${w1} x ${h1} (card)`, [w1, h1], 'rSizes', rg, {}, handler, 'rSizes', false)
+			else mRadio(`${w2} x ${h2} (card)`, [w2, h2], 'rSizes', rg, {}, handler, 'rSizes', false)
+		}
+		if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, handler, 'rSizes', false)
+		else {
+			//card portrait kann man auch machen: take das das nicht passt
+			let [w1, h1] = [w, w * .7];
+			let [w2, h2] = [h / .7, h];
+			if (w1 < w2) mRadio(`${w1} x ${h1} (landscape)`, [w1, h1], 'rSizes', rg, {}, handler, 'rSizes', false)
+			else mRadio(`${w2} x ${h2} (landscape)`, [w2, h2], 'rSizes', rg, {}, handler, 'rSizes', false)
+		}
+		mDom(rg, { fz: 14, margin: 12 }, { html: '(or use mouse to select)' });
+		return rg;
+	}
+	function createSquareTool(){
+		let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
+		let handler = x=>squareTo(cropper,x);
+		mRadio(`${'crop height'}`, 0, 'rSquare', rg, {}, handler, 'rSquare', false)
+		for(const h of [128,200,300,400,500,600,700,800]){
+			mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
+		}
+		return rg;
+	}
+	let rgCrop = createCropTool();
+	let rgResize = createSquareTool();
+}
+
+
 //=>integrate with allfhuge.js
 function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);
@@ -554,25 +602,6 @@ function mResizer(dParent, img, dButtons){
 		//tool: tool,
 	}
 }
-function redrawImage(img,dParent,x,y,wold,hold,w,h,callback){
-	console.log('ausschnitt:', x, y, w, h);
-	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, x, y, wold, hold, 0, 0, w, h);
-	const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
-
-	img.onload=()=>{
-		img.onload = null;
-		img.width = w;
-		img.height = h;
-		mStyle(img,{w:w,h:h});
-		mStyle(dParent, { w: w, h: h });
-		callback(); //setRect(0, 0, w, h);
-	}
-	img.src = imgDataUrl;
-	return imgDataUrl;
-
-}
 async function resizeImage(img, newHeight) {
 	return new Promise((resolve, reject) => {
 		//console.log('resizing...')
@@ -667,113 +696,3 @@ async function uploadImg(img, cat, name) {
 
 
 //*** mist */
-function addCropTool(dParent,img,setSizeFunc) {
-	let d = dParent;
-	let rg = mRadioGroup(d, {}, 'rSizes', 'Crop to: '); mClass(rg, 'input')
-	mRadio('manual', [0, 0], 'rSizes', rg, {}, setSizeFunc, 'rSizes', true)
-	let [w, h] = [img.offsetWidth, img.offsetHeight];
-	if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	else {
-		//card portrait kann man auch machen: take das das nicht passt
-		let [w1,h1]=[w,w/.7];
-		let [w2,h2]=[h*.7,h];
-		if (w1<w2) mRadio(`${w1} x ${h1} (card)`, [w1,h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		else mRadio(`${w2} x ${h2} (card)`, [w2,h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	}
-	if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	else {
-		//card portrait kann man auch machen: take das das nicht passt
-		let [w1,h1]=[w,w*.7];
-		let [w2,h2]=[h/.7,h];
-		if (w1<w2) mRadio(`${w1} x ${h1} (landscape)`, [w1,h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		else mRadio(`${w2} x ${h2} (landscape)`, [w2,h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	}
-	mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
-	return rg;
-}
-function addResizeTool(dParent,img) {
-	let setSizeFunc = async arr=>{
-		await resizeImage(img,arr[1]);
-		console.log('new size',img.offsetWidth,img.offsetHeight);
-	}
-	let d = dParent;
-
-	//let rg = mDom(d,{},{className:'input',type:'numeric',value:img.offsetHeight});
-	mDom(d, {}, { html: 'Resize:' }); 
-	let rg = mDom(d, {}, { tag: 'input', value:img.offsetHeight, name: 'imgheight', type: 'text', className: 'input', placeholder: "<enter height>" });
-
-	// let rg = mRadioGroup(d, {}, 'rSizes', 'Resize to: '); mClass(rg, 'input');
-
-	// mRadio('manual', [0, 0], 'rSizes', rg, {}, setSizeFunc, 'rSizes', true)
-	// let [w, h] = [img.offsetWidth, img.offsetHeight];
-	// if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// else {
-	// 	//card portrait kann man auch machen: take das das nicht passt
-	// 	let [w1,h1]=[w,w/.7];
-	// 	let [w2,h2]=[h*.7,h];
-	// 	if (w1<w2) mRadio(`${w1} x ${h1} (card)`, [w1,h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// 	else mRadio(`${w2} x ${h2} (card)`, [w2,h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// }
-	// if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// else {
-	// 	//card portrait kann man auch machen: take das das nicht passt
-	// 	let [w1,h1]=[w,w*.7];
-	// 	let [w2,h2]=[h/.7,h];
-	// 	if (w1<w2) mRadio(`${w1} x ${h1} (landscape)`, [w1,h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// 	else mRadio(`${w2} x ${h2} (landscape)`, [w2,h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-	// }
-	//mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
-	return rg;
-}
-function resizePreviewImage(dParent,img) {
-	const bottomRightResizeHandle = mDom(dParent,{},{className:"resize-handle bottom-right"}); 
-
-	let isResizing = false;
-	let resizeStartX;
-	let resizeStartY;
-	let initialWidth;
-	let initialHeight;
-
-	function startResize(e) {
-		isResizing = true;
-		resizeStartX = e.clientX;
-		resizeStartY = e.clientY;
-		initialWidth = img.offsetWidth;
-		initialHeight = img.offsetHeight;
-		document.addEventListener('mousemove', resize);
-		document.addEventListener('mouseup', stopResize);
-	}
-
-	function resize(e) {
-		if (isResizing) {
-			const width = initialWidth + (e.clientX - resizeStartX);
-			const height = initialHeight + (e.clientY - resizeStartY);
-			img.style.width = `${width}px`;
-			img.style.height = `${height}px`;
-			bottomRightResizeHandle.style.left = `${width}px`;
-			bottomRightResizeHandle.style.top = `${height}px`;
-			dParent.style.width = `${width}px`;
-			dParent.style.height = `${height}px`;
-
-		}
-	}
-
-	function stopResize() {
-		isResizing = false;
-		document.removeEventListener('mousemove', resize);
-		document.removeEventListener('mouseup', stopResize);
-	}
-	bottomRightResizeHandle.addEventListener('mousedown', startResize);
-
-
-}
