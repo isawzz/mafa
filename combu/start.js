@@ -1,47 +1,65 @@
 onload = start
 
-async function start() { test3_mhuge(); }
+async function start() { test5_showImage(); }
+async function test5_showImage() {
+	if (nundef(M.emos)) {
+		M = await mGetYaml('../assets/mhuge.yaml');
+		console.log('M', M);
+		showNavbar('M', ['view', 'add', 'play', 'create']);
+		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
+		mInsert(document.body, dTitle, 1)
+	}
 
-async function test3_mhuge(){
-	let M = await mGetYaml('../assets/mhuge.yaml');
-	console.log('M',M)
+	//hier will ich einen super simplen viewer!
+	//take a random category
+	dTitle.innerHTML = 'View Collections';
+	mClear('dMain')
+	//console.log('categories',M.emos); return;
+	let cat = rChoose(M.categories);
+	mDom('dMain',{},{tag:'h2',html:`Collection: ${cat}`})
+	for (const k of M.byCat[cat]) {
+		console.log('k',M.superdi[k]);
+		showImage(k,'dMain')
+	}
+}
+async function test4_checkpath(){
+	if (nundef(M.emos)) {
+		M = await mGetYaml('../assets/mhuge.yaml');
+		console.log('M', M);
+		showNavbar('M', ['view', 'add', 'play', 'create']);
+		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
+		mInsert(document.body, dTitle, 1)
+	}
+	for(const k in M.superdi){
+		let o = M.superdi[k];
+
+		if (isdef(o.img)) { 
+			if (!o.path.endsWith(o.ext)) console.log('path corrupt:',k,o.path);
+			else if (stringCount(o.path,'.')!=3) console.log('path contains not exactly 3!!!',k,o.path);
+			// else console.log('ok',k);
+
+		}
+	}
+}
+async function test3_createMHuge(){
+	M = await loadCollections();
+	downloadAsYaml(M,'mhuge')
 }
 async function test2_theRealM() {
 	await loadCollections();
 	console.log(M)
 	//downloadAsYaml(M,'mhuge');
 }
-async function mGetAnimals(server = 'http://localhost:3000') {
-	let dir = "../assets/img/animals";
-	let dirs = await mGetFiles(server, dir);
-	let di = {};
-	for (const subdir of dirs) {
-		let path = `${dir}/${subdir}`;
-		let files = await mGetFiles(server, path);
-		for (const fname of files) {
-			let o = filenameToObject(fname, path, ['animals', subdir]);
-			di[o.key] = o;
-		}
-	}
-	return di;
-}
-function filenameToObject(fname, path, cats) {
-	let parts = fname.split('.');
-	if (parts.length != 2) console.log('file', path, fname, 'wrong name');
-	let [k, ext] = parts;
-	let o = { key: k, ext: ext, cats: cats, path: `${path}/${fname}}`, img: fname, friendly: k.replace(/[^a-zA-Z]/g, '') };
-	return o;
-}
 async function test1_showCollection() {
 	await loadCollections();
-	let [emos, cats] = [M.emos,M.categories];
+	let [emos, cats] = [M.emos, M.categories];
 	dTitle.innerHTML = 'View Collections';
 	mClear('dMain')
 }
 
 async function test0_addToCollection() {
 	await loadCollections();
-	let [emos, cats] = [M.emos,M.categories];
+	let [emos, cats] = [M.emos, M.categories];
 	dTitle.innerHTML = 'Add to Collection';
 	mClear('dMain')
 	let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);

@@ -53157,6 +53157,7 @@ function rBehaviorCode() {
 }
 function rCard(postfix = 'n', ranks = '*A23456789TJQK', suits = 'HSDC') { return rChoose(ranks) + rChoose(suits) + postfix; }
 function rChoose(arr, n = 1, func = null, exceptIndices = null) {
+  //console.log('arr',arr)
   let indices = arrRange(0, arr.length - 1);
   if (isdef(exceptIndices)) {
     for (const i of exceptIndices) removeInPlace(indices, i);
@@ -63255,6 +63256,11 @@ function stringBetweenLast(sFull, sStart, sEnd) {
   return stringAfterLast(s1, sStart);
 }
 function stringCount(s, sSub, caseInsensitive = true) {
+  let n=0;
+  for(let i=0;i<s.length;i++){
+    if (s.slice(i).startsWith(sSub)) n++;
+  }
+  return n;
   //let temp = "Welcome to W3Docs";
   let m = new RegExp(sSub, 'g' + (caseInsensitive ? 'i' : ''));
   let s1=s.match(m);

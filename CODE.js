@@ -1,4 +1,27 @@
 //#region combu
+function createImageIndex(){
+	let byKey={},byFriendly={},byCat={};
+	console.log(M.emos.abacus)
+	for(const k in M.emos){
+		let o=M.emos[k];
+		let onew = {friendly:k};
+		addKeys(o,onew);
+		if (isdef(o.img)) onew.path = '../assets/img/emo/'+o.img;
+		byKey[k]=onew;
+		lookupAddIfToList(byFriendly,[k],onew);
+		o.cats.map(x=>lookupAddIfToList(byCat,[x],onew));
+	}
+	for(const k in M.collections){
+		let o=M.collections[k];
+		let onew = {friendly:o.name,cats:[o.cat],img:k+'.'+k.ext};
+		onew.path = `../y/${k}.${o.ext}`;
+		byKey[k]=onew;
+		lookupAddIfToList(byFriendly,[o.name],onew);
+		lookupAddIfToList(byCat,[o.cat],onew);
+	}
+	return [byKey,byFriendly,byCat];
+}
+
 async function uploadImg(img, unique, cat, name) {
 	return new Promise((resolve, reject) => {
 		const canvas = document.createElement('canvas');
