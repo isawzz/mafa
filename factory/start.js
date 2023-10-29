@@ -24,7 +24,8 @@ async function createMFromAssetsOld() {
 
 	console.log('dinew count', Object.keys(dinew).length);
 	console.log(dinew.sun);
-	downloadAsYaml(dinew,'dinew');
+	console.log('downloading HALLO')
+	//downloadAsYaml(dinew,'HALLO');
 
 }
 function filterCats(dinew) {

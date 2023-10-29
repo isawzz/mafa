@@ -12688,8 +12688,8 @@ manual wheelchair:
   subgroup: transport-ground
   w: 125
   h: 117
-man’s shoe:
-  key: man’s shoe
+mans shoe:
+  key: mans shoe
   hexcode: 1F45E
   hex: 1F45E
   family: emoNoto
@@ -60885,7 +60885,7 @@ menorah:
   w: 125
   h: 117
   E: menorah
-men’s room:
+mens room:
   key: men’s room
   hexcode: 1F6B9
   hex: 1F6B9
@@ -60895,7 +60895,7 @@ men’s room:
   isDuplicate: false
   w: 125
   h: 117
-  E: men’s room
+  E: mens room
 mercury:
   key: mercury
   hexcode: f223

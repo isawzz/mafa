@@ -1,10 +1,15 @@
 onload = start
 
-async function start() { test2_theRealM(); }
+async function start() { test3_mhuge(); }
 
+async function test3_mhuge(){
+	let M = await mGetYaml('../assets/mhuge.yaml');
+	console.log('M',M)
+}
 async function test2_theRealM() {
 	await loadCollections();
 	console.log(M)
+	//downloadAsYaml(M,'mhuge');
 }
 async function mGetAnimals(server = 'http://localhost:3000') {
 	let dir = "../assets/img/animals";

@@ -14698,7 +14698,11 @@ mango:
     - fruit
 mans_shoe:
   img: mans-shoe.png
+  text: '&#128094;'
   cats:
+    - action
+    - object
+    - best
     - clothing
 manta_ray:
   ga: E37B
@@ -14733,13 +14737,6 @@ manual_wheelchair:
     - transport
     - travel
     - object
-man’s_shoe:
-  text: '&#128094;'
-  cats:
-    - action
-    - object
-    - best
-    - clothing
 map:
   fa: f279
   cats:
@@ -15118,9 +15115,6 @@ menorah:
     - object
 mens_room:
   img: mens-room.png
-  cats:
-    - symbol
-men’s_room:
   text: '&#128697;'
   cats:
     - symbol

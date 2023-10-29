@@ -5640,22 +5640,22 @@ woman_with_headscarf:
     - action
     - body
     - person
-woman’s_boot:
+womans_boot:
   text: '&#128098;'
   cats:
     - object
     - clothing
-woman’s_clothes:
+womans_clothes:
   text: '&#128090;'
   cats:
     - object
     - clothing
-woman’s_hat:
+womans_hat:
   text: '&#128082;'
   cats:
     - object
     - clothing
-woman’s_sandal:
+womans_sandal:
   text: '&#128097;'
   cats:
     - object
