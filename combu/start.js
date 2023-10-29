@@ -1,6 +1,45 @@
 onload = start
 
-async function start() { test5_showImage(); }
+async function start() { test6_showAll(); }
+async function test6_showAll(){
+	if (nundef(M.emos)) {
+		M = await mGetYaml('../assets/mhuge.yaml');
+		console.log('M', M);
+		showNavbar('M', ['view', 'add', 'play', 'create']);
+		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
+		mInsert(document.body, dTitle, 1)
+	}
+	dTitle.innerHTML = 'View Collections';
+	mClear('dMain');
+	
+	M.rows=5;M.cols=8;
+	M.grid = mGrid(M.rows,M.cols,'dMain');
+	M.cells = [];
+	for(let i=0;i<M.rows*M.cols;i++){
+		let d=mDom(M.grid,{bg:'sienna',box:true,padding:8,margin:8,w:128,h:128,overflow:'hidden'});
+		mCenterCenterFlex(d);
+		M.cells.push(d);
+	}
+
+	M.keys = Object.keys(M.superdi);
+	M.index = 0;
+	M.grid.onclick = ()=>showNextBatch();
+	showNextBatch();
+}
+function showNextBatch(){
+	let x=M.rows*M.cols;
+	let list = arrTakeFromTo(M.keys,M.index,M.index+x); 
+	M.index+=x;
+	//let d=M.grid;
+	//mClear(d)
+	//let [wcell,hcell]=[128,128];
+	for(let i=0;i<x;i++){
+		showImage(list[i],M.cells[i],{w:128,h:128}); //`${100/M.cols}%`,h:`${100/M.rows}%`});
+	}
+	// for(const k of list){
+	// 	showImage(k,d,{w:128,h:128}); //`${100/M.cols}%`,h:`${100/M.rows}%`});
+	// }
+}
 async function test5_showImage() {
 	if (nundef(M.emos)) {
 		M = await mGetYaml('../assets/mhuge.yaml');
