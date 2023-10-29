@@ -40,7 +40,7 @@ function onclickUpload(ev) {
 
 	uploadImg(img, cat, name, ev)
 }
-function onDropPreviewImage(url) {
+function ondropPreviewImage(url) {
 	UI.img = loadImage(url, UI.dDrop, UI.dButtons);
 
 }

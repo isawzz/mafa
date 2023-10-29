@@ -19085,6 +19085,7 @@ function detectSessionType() {
   let loc = window.location.href;
   //console.log('loc',loc);
   DA.sessionType =
+    loc.includes('vidulus') ? 'vps' :
     loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php'
       : loc.includes(':40') ? 'nodejs'
         : loc.includes(':60') ? 'flask' : 'live';
@@ -64184,7 +64185,7 @@ function test_ui_extended() {
   onresize = create_left_side_extended;
   create_left_side_extended();
 }
-function test0() {
+function test0_addToCollection() {
   dTable.onclick = game_add_default_item;
 }
 function test0_ari_flip_one_card() {
@@ -71796,7 +71797,10 @@ function valfi() {
   return null;
 }
 function valnwhite() {
-  for (const arg of arguments) if (isdef(arg) && !isEmptyOrWhiteSpace(arg)) return arg;
+  for (const arg of arguments) {
+    if (nundef(arg) || isEmpty(arg) || isWhiteSpace(arg)) continue;
+    return arg;
+  }
   return null;
 }
 function valToString(n) { if (isFractionType(n)) return getTextForFractionX(n.n, n.d); else return n; }

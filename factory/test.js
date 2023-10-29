@@ -487,7 +487,7 @@ async function test1() {
 	//downloadAsYaml(difinal,'di');
 	//M=difinal;
 }
-async function test0() {
+async function test0_addToCollection() {
 	// Read the .yaml file into a dictionary
 	const data = {};
 	const allSyms = yaml.load(fs.readFileSync('allSyms.yaml', 'utf8'));

@@ -1,14 +1,14 @@
 onload = start
 
-async function start() { test0(); }
+async function start() { test0_addToCollection(); }
 
-async function test0() {
+async function test0_addToCollection() {
 	let emos = M.emos = await mGetYaml('../assets/m.yaml');
 	let cats = M.cats = collectCats(emos); cats.sort(); //console.log('cats', cats); 
 
 	let d = mDom('dMain');
 	mFlexWrap(d);
-	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, onDropPreviewImage);
+	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
 
 	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => event.preventDefault() });
 
@@ -95,7 +95,7 @@ function onclickUpload(ev) {
 
 	uploadImg(img, cat, name, ev)
 }
-function onDropPreviewImage(url) {
+function ondropPreviewImage(url) {
 	UI.img = loadImage(url, UI.dDrop, UI.dButtons);
 
 }

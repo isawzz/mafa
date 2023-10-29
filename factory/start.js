@@ -1,6 +1,9 @@
 onload = start;
 async function start() { test18(); }
 
+async function test19(){
+	let files = await getFilesFromApp
+}
 async function test18() {
 	M = createMFromAssetsOld();
 }

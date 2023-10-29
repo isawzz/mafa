@@ -239,7 +239,7 @@ function mForm(dParent, listOfInputs = [], styles = {}, opts = {}) {
 	// </form>
 	return dForm;
 }
-function test0() {
+function test0_addToCollection() {
 	const dropZone = document.getElementById('dropZone');
 
 	dropZone.addEventListener('dragover', function (event) {

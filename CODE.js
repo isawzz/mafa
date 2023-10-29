@@ -1,4 +1,46 @@
 //#region combu
+async function uploadImg(img, unique, cat, name) {
+	return new Promise((resolve, reject) => {
+		const canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+		canvas.toBlob(async (blob) => {
+			const formData = new FormData();
+			formData.append('image', blob, unique + '.png');
+			formData.append('category', cat);
+			formData.append('name',name);
+
+			try {
+				const response = await fetch('http://localhost:3000/upload', {
+					method: 'POST',
+					mode: 'cors',
+					body: formData
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					//console.log('Image uploaded successfully:', data);
+					resolve(data);
+				} else {
+					// Handle non-ok response status
+					//console.error('Error uploading image:', response.statusText);
+					reject(response.statusText);
+				}
+
+
+				// const data = await response.json();
+				// console.log('Image uploaded successfully:', data);
+				// resolve(data);
+			} catch (error) {
+				console.error('Error uploading image:', error);
+				reject(error);
+			}
+		});
+	});
+}
 function createRg(dParent, img, handler, title, ){
 	let rg = mRadioGroup(d, {}, 'rSizes', 'Crop to: '); mClass(rg, 'input')
 	mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)

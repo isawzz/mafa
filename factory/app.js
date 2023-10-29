@@ -41,7 +41,7 @@ app.get('/data', (req, res) => {
 });
 
 // Endpoint to get a list of files in the specified directory
-const dir_diversity="C:\\xampp\\htdocs\\mafa\\assets_old\\assets\\img\\enoji\\diversity";
+const dir_diversity="C:\\xampp\\htdocs\\mafa\\assets_old\\assets\\img\\emoji\\diversity";
 app.get('/files', (req, res) => {
 	fs.readdir(dir_diversity, (err, files) => {
 		if (err) {

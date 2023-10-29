@@ -1,70 +1,51 @@
-
-function resizeTo(tool, wnew, hnew) {
-	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
-	if (hnew == 0) hnew = img.height;
-	if (wnew == 0) {
-		let aspectRatio = img.width / img.height;
-		wnew = aspectRatio * hnew;
-	}
-	redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
-}
-function cropTo(tool, wnew, hnew) {
-	//calc center
-	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
-	let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
-	let xnew = x + (wnew - w) / 2;
-	let ynew = y + (hnew - h) / 2;
-	redrawImage(img, dParent, xnew, ynew, wnew, wnew, wnew, hnew, () => setRect(0, 0, wnew, hnew))
-}
-function squareTo(tool, sznew=128) {
-	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
-	let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
-	if (sznew == 0) sznew = h;
-	console.log('cropBox dims',x,y,w,h)
-	let sz = Math.max(w,h)
-	console.log('sz',sz)
-	let [x1,y1]=[x-(sz-w)/2,y-(sz-h)/2];
-	redrawImage(img, dParent, x1, y1, sz,sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
-}
-function redrawImage(img,dParent,x,y,wold,hold,w,h,callback){
-	console.log('ausschnitt:', x, y, wold, hold);
-	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, x, y, wold, hold, 0, 0, w, h);
-	const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
-
-	img.onload=()=>{
-		img.onload = null;
-		img.width = w;
-		img.height = h;
-		mStyle(img,{w:w,h:h});
-		mStyle(dParent, { w: w, h: h });
-		callback(); //setRect(0, 0, w, h);
-	}
-	img.src = imgDataUrl;
-	return imgDataUrl;
-
-}
-
-
-
-
 onload = start
 
-async function start() { test0(); }
+async function start() { test2_theRealM(); }
 
-async function test0() {
-	let emos = M.emos = await mGetYaml('../assets/m.yaml');
-	let cats = M.cats = collectCats(emos); cats.sort(); //console.log('cats', cats); 
+async function test2_theRealM() {
+	await loadCollections();
+	console.log(M)
+}
+async function mGetAnimals(server = 'http://localhost:3000') {
+	let dir = "../assets/img/animals";
+	let dirs = await mGetFiles(server, dir);
+	let di = {};
+	for (const subdir of dirs) {
+		let path = `${dir}/${subdir}`;
+		let files = await mGetFiles(server, path);
+		for (const fname of files) {
+			let o = filenameToObject(fname, path, ['animals', subdir]);
+			di[o.key] = o;
+		}
+	}
+	return di;
+}
+function filenameToObject(fname, path, cats) {
+	let parts = fname.split('.');
+	if (parts.length != 2) console.log('file', path, fname, 'wrong name');
+	let [k, ext] = parts;
+	let o = { key: k, ext: ext, cats: cats, path: `${path}/${fname}}`, img: fname, friendly: k.replace(/[^a-zA-Z]/g, '') };
+	return o;
+}
+async function test1_showCollection() {
+	await loadCollections();
+	let [emos, cats] = [M.emos,M.categories];
+	dTitle.innerHTML = 'View Collections';
+	mClear('dMain')
+}
 
-	let d = mDom('dMain');
-	mFlexWrap(d);
-	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, onDropPreviewImage);
+async function test0_addToCollection() {
+	await loadCollections();
+	let [emos, cats] = [M.emos,M.categories];
+	dTitle.innerHTML = 'Add to Collection';
+	mClear('dMain')
+	let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);
+	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
 
 	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { console.log('H!'); ev.preventDefault(); return false; } });
 
 	mDom(dForm, {}, { html: 'Category:' }); let dl = mDatalist(dForm, cats);
-	mDom(dForm, {}, { html: 'Name:' }); let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', className: 'input', placeholder: "<enter value>" });
+	mDom(dForm, {}, { html: 'Name:' }); let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>" });
 	mDom(dForm, { h: 10 })
 
 	UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
@@ -74,8 +55,24 @@ async function test0() {
 	UI.imgName = inpName;
 
 }
+async function onclickView() { test1_showCollection(); }
+async function onclickAdd() { test0_addToCollection(); }
+async function onclickPlay() { test0_addToCollection(); }
+async function onclickCreate() { test0_addToCollection(); }
+async function onclickUpload() {
+	console.log('onclickUpload');
+	let img = UI.img;
 
-async function onDropPreviewImage(url) {
+	let name = valnwhite(UI.imgName.value, rUID('img'));
+	let unique = isdef(M.index[name]) ? rUID('img') : name;
+
+	console.log('cat', isdef(UI.imgCat.value), typeof (UI.imgCat.value), isEmpty(UI.imgCat.value))
+	let cat = valnwhite(UI.imgCat.value, 'other');
+	console.log('name', name, 'cat', cat)
+	let data = await uploadImg(img, unique, cat, name);
+	console.log('uploaded', data)
+}
+async function ondropPreviewImage(url) {
 	let dParent = UI.dDrop;
 	let dButtons = UI.dButtons;
 	dParent.innerHTML = '';
@@ -87,18 +84,12 @@ async function onDropPreviewImage(url) {
 		UI.img_orig = new Image(img.offsetWidth, img.offsetHeight);
 		UI.url = url;
 		let tool = UI.cropper = mCropResizePan(dParent, img);
-		addToolX(tool,dButtons)
+		addToolX(tool, dButtons)
 		// UI.cropTool = addCropTool(dButtons,img,UI.cropper.setSize);
 		//resizePreviewImage(dParent,img);
 
 		mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
-		mButton('Restart', () => onDropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
+		mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
 	}
-}
-async function onclickUpload() {
-	console.log('onclickUpload');
-	let img = UI.img;
-	let data = await uploadImg(img, rName(5), rUID('img'));
-	console.log('uploaded', data)
 }
 
