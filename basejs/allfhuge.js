@@ -1,3 +1,25 @@
+function ___prelim() {
+  console.assert(isdef(DB));
+  Speech = new SpeechAPI('E');
+  KeySets = getKeySetsX();
+  TO = new TimeoutManager();
+  initTable();
+  initSidebar();
+  initAux();
+  _start();
+}
+async function ___prelims() {
+  if (serverData.waiting_for) { await sendStatus(getUsernameForPlid(serverData.waiting_for[0])); }
+  if (serverData.end) { d3.select('button').text('RESTART').on('click', restartGame); }
+  timit.showTime('* vor package: *')
+  preProcessData();
+  isTraceOn = SHOW_TRACE;
+  G = {};
+  PROTO = {};
+  POOLS = { augData: makeDefaultPool(jsCopy(serverData)) };
+  sData = POOLS.augData;
+}
+function ___prelude(s, d) { }
 function __pictoG(key, x, y, w, h, fg, bg) {
   let ch = iconChars[key];
   let family = (ch[0] == 'f' || ch[0] == 'F') ? 'pictoFa' : 'pictoGame';
@@ -19086,9 +19108,9 @@ function detectSessionType() {
   //console.log('loc',loc);
   DA.sessionType =
     loc.includes('vidulus') ? 'vps' :
-    loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php'
-      : loc.includes(':40') ? 'nodejs'
-        : loc.includes(':60') ? 'flask' : 'live';
+      loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php'
+        : loc.includes(':40') ? 'nodejs'
+          : loc.includes(':60') ? 'flask' : 'live';
   return DA.sessionType;
 }
 function detectSilben(words) {
@@ -23718,11 +23740,11 @@ function fromArrayLighter(arr) {
   let c = fromArray(arr);
   return pSBC(0.4, c);
 }
-async function fromAssets(path){return await fromBase('../base/assets/'+path)}
-async function fromBase(path){
+async function fromAssets(path) { return await fromBase('../base/assets/' + path) }
+async function fromBase(path) {
   //prepends ../base/ to path param
   let data = {
-    path: '../base/'+path,
+    path: '../base/' + path,
     cmd: path.includes('.') ? stringAfterLast(path, '.') : 'yaml',
   };
   return await fetch(data.path);
@@ -23734,7 +23756,7 @@ function fromRCMxToNumArrSq(f, r) {
 }
 function fromSessionStorage(name = '_all') { return JSON.parse(sessionStorage.getItem(name)); }
 function FROMSQ(m) { return (m & 0x7F); }
-function fromTimestamp(timestamp, options, lang='de-DE') {
+function fromTimestamp(timestamp, options, lang = 'de-DE') {
   const date = new Date(timestamp);
   // addKeys({ lang: 'de', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }, options);
   // addKeys({ lang: 'de', year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }, options);
@@ -42349,6 +42371,7 @@ function mFlexEvenly(d) {
 function mFlexLinebreak(d) { if (isString(d)) d = mBy(d); let lb = mDiv(d); mClass(lb, 'linebreak'); return lb; }
 function mFlexLR(d) { mStyle(d, { display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }); }
 function mFlexSpacebetween(d) { mFlexLR(d); }
+function mFlexV(d) { mStyle(d, { display: 'flex', 'align-items': 'center' }); }
 function mFlexWrap(d) { mFlex(d, 'w'); }
 function mFlexWrapGrow(d) { d.style.display = 'flex'; d.style.flexWrap = 'wrap'; d.style.flex = 1; }
 function mFlip(card, ms, callback) {
@@ -42388,19 +42411,19 @@ function mget_map(center = Geo.places.tuerkenschanzpark, zoom = 17) {
   let map = M.map = L.map('map').setView(center, zoom);
   return map;
 }
-async function mGetFiles(server,dir){
-	let data = await mGetJsonCors(`${server}/filenames?directory=${dir}`);
-	return data.files;
+async function mGetFiles(server, dir) {
+  let data = await mGetJsonCors(`${server}/filenames?directory=${dir}`);
+  return data.files;
 }
-async function mGetJsonCors(url){
-	let res = await fetch(url, {
-		method: 'GET',
-		headers: { 'Content-Type': 'application/json' },
-		mode: 'cors' // Set CORS mode to enable cross-origin requests
-	});
-	let json = await res.json();
-	//console.log('json',json)
-	return json;
+async function mGetJsonCors(url) {
+  let res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    mode: 'cors' // Set CORS mode to enable cross-origin requests
+  });
+  let json = await res.json();
+  //console.log('json',json)
+  return json;
 }
 function mGetStyle(elem, prop) {
   let val;
@@ -42436,17 +42459,17 @@ function mGetStyleX(elem, prop) {
   if (nundef(val)) val = elem.style[prop];
   if (val.endsWith('px')) return firstNumber(val); else return val;
 }
-async function mGetText(path='../base/assets/m.txt'){
-	let res = await fetch(path);
-	let text = await res.text();
+async function mGetText(path = '../base/assets/m.txt') {
+  let res = await fetch(path);
+  let text = await res.text();
   return text;
 }
-async function mGetYaml(path='../base/assets/m.txt'){
-	let res = await fetch(path);
-	let text = await res.text();
-	let di = jsyaml.load(text);
-	//console.log('di',di);
-	return di;
+async function mGetYaml(path = '../base/assets/m.txt') {
+  let res = await fetch(path);
+  let text = await res.text();
+  let di = jsyaml.load(text);
+  //console.log('di',di);
+  return di;
 
 }
 function mgPos(card, el, x = 0, y = 0, unit = '%', anchor = 'center') {
@@ -45733,12 +45756,12 @@ function on_ticker_status(obj) {
   }
 }
 function onAvailableGames(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
 }
 function onAvailablePlayers(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
   S.availablePlayers = d;
@@ -45765,7 +45788,7 @@ function onAvailablePlayers(d) {
   else restartHost(onHostStarted);
 }
 function onBeginRequest(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { enterWaitingLoop(); return; }
   d = d.response;
   if (S.settings.useSpec) loadUserSpec([loadUserCode, sendInit]); else sendInit();
@@ -47680,20 +47703,20 @@ function onEnterPerle(perle) {
 }
 function oneWordKeys(keys) { return keys.filter(x => !x.includes(' ')); }
 function onExistingPlayers(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
   availablePlayers(onAvailablePlayers);
 }
 function onExitPerle() { if (IsControlKeyDown) iMagnifyCancel(); }
 function onGameChosen(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
   whichGame(onGameInfo);
 }
 function onGameInfo(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
   S.gameInfo = d;
@@ -47702,7 +47725,7 @@ function onGameInfo(d) {
 }
 function onHostStarted(d) {
   pageHeaderClearPlayers();
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) throw 'CANNOT RESTART HOST!!!!!!!!!';
   d = d.response;
   S.plAddedByMe = {};
@@ -47778,7 +47801,7 @@ function onpagedeactivated(handler) {
     });
 }
 function onPlayerAdded(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
   let nap = S.availablePlayers.length - 1;
@@ -47860,7 +47883,7 @@ async function onTestSeriesChanged() {
   onClickRepeatTest();
 }
 function onWhichGame(d) {
-  prelude(getFunctionCallerName(), d);
+  ___prelude(getFunctionCallerName(), d);
   if (isError(d)) { restartHost(onHostStarted); return; }
   d = d.response;
   S.gameInfo = d;
@@ -50497,28 +50520,6 @@ function posXY(d1, dParent, x, y, unit = 'px', position = 'absolute') {
 }
 function pPanel(dParent) { return mDiv(dParent, { bg: 'random', rounding: 10, margin: 10, padding: 10 }); }
 function pr(x) { }
-function prelim() {
-  console.assert(isdef(DB));
-  Speech = new SpeechAPI('E');
-  KeySets = getKeySetsX();
-  TO = new TimeoutManager();
-  initTable();
-  initSidebar();
-  initAux();
-  _start();
-}
-async function prelims() {
-  if (serverData.waiting_for) { await sendStatus(getUsernameForPlid(serverData.waiting_for[0])); }
-  if (serverData.end) { d3.select('button').text('RESTART').on('click', restartGame); }
-  timit.showTime('* vor package: *')
-  preProcessData();
-  isTraceOn = SHOW_TRACE;
-  G = {};
-  PROTO = {};
-  POOLS = { augData: makeDefaultPool(jsCopy(serverData)) };
-  sData = POOLS.augData;
-}
-function prelude(s, d) { }
 function prep_for_church_downgrade(o) {
   let [fen, uplayer] = [o.fen, o.fen.turn[0]];
   fen.stage = 1004;
@@ -53175,23 +53176,21 @@ function rCoin(percent = 50) {
   r *= 100;
   return r < percent;
 }
-function rColor(cbrightness, c2, alpha = null) {
-  if (isdef(c2)) {
-    let c = colorMix(cbrightness, c2, rNumber(0, 100));
-    return colorTrans(c, alpha ?? Math.random());
-  }
-  if (isdef(cbrightness)) {
-    let hue = rHue();
+function rColor(brightPerOrAlpha01 = 1, alpha01 = 1, hueVari = 60) {
+  let c;
+  if (brightPerOrAlpha01 <= 1) {
+    c = '#';
+    for (let i = 0; i < 6; i++) { c += rChoose(['f', 'c', '9', '6', '3', '0']); }
+    alpha01 = brightPerOrAlpha01;
+  } else {
+    let hue = rHue(hueVari);
     let sat = 100;
-    let b = isNumber(cbrightness) ? cbrightness : cbrightness == 'dark' ? 25 : cbrightness == 'light' ? 75 : 50;
-    return colorFromHSL(hue, sat, b);
+    let b = isNumber(brightPerOrAlpha01) ? brightPerOrAlpha01 : brightPerOrAlpha01 == 'dark' ? 25 : brightPerOrAlpha01 == 'light' ? 75 : 50;
+    c = colorFromHSL(hue, sat, b);
   }
-  let s = '#';
-  for (let i = 0; i < 6; i++) {
-    s += rChoose(['f', 'c', '9', '6', '3', '0']);
-  }
-  return s;
+  return alpha01 < 1 ? colorTrans(c, alpha01) : c;
 }
+function rColorMix(c1, c2, alpha01 = null) { let c = colorMix(c1, c2, rNumber(0, 100)); return colorTrans(c, alpha01 ?? Math.random()); }
 function rConsonant(w, except = []) { let vowels = w ? getConsonants(w, except) : toLetters('aeiouy'); return chooseRandom(vowels); }
 function rDate(before, after) {
   let after_date = new Date(after);
@@ -55318,7 +55317,7 @@ function RgenIdRef(R, genKey = 'G') {
     R.check_id(k, n, R);
   }
 }
-function rHue() { return (rNumber(0, 36) * 10) % 360; }
+function rHue(vari = 36) { return (rNumber(0, vari) * Math.round(360 / vari)) % 360; }
 function rInc(o, prop, min, max) { o[prop] += rNumber(min, max); return o[prop]; }
 function rLetter(except) { return rLetters(1, except)[0]; }
 function rLetters(n, except = []) {
@@ -55950,7 +55949,7 @@ function runcode(code, callback = null) {
 function runderkreis(color, id) {
   return `<div id=${id} style='width:20px;height:20px;border-radius:50%;background-color:${color};color:white;position:absolute;left:0px;top:0px;'>` + '' + "</div>";
 }
-function rUniqueId(n=10) { return rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
+function rUniqueId(n = 10) { return rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
 async function runNextSeries(listSeries, series, from, to) {
   let timeOUT = 500;
   if (isEmpty(listSeries)) {
@@ -63256,15 +63255,15 @@ function stringBetweenLast(sFull, sStart, sEnd) {
   return stringAfterLast(s1, sStart);
 }
 function stringCount(s, sSub, caseInsensitive = true) {
-  let n=0;
-  for(let i=0;i<s.length;i++){
+  let n = 0;
+  for (let i = 0; i < s.length; i++) {
     if (s.slice(i).startsWith(sSub)) n++;
   }
   return n;
   //let temp = "Welcome to W3Docs";
   let m = new RegExp(sSub, 'g' + (caseInsensitive ? 'i' : ''));
-  let s1=s.match(m);
-  return s1?s1.length:0;
+  let s1 = s.match(m);
+  return s1 ? s1.length : 0;
   // console.log(s,sSub,s1)
   // let count = (s.match(m)).length;
   // return count;
@@ -64184,7 +64183,7 @@ function test_ui_extended() {
   mClear(document.body);
   let d1 = mDom(document.body, {}, { classes: 'fullpage airport' });
   let [dl, dr] = mColFlex(d1, [7, 2]);
-  for (const d of [dl, dr]) mStyle(d, { bg: rColor('blue', 'green', .5) })
+  for (const d of [dl, dr]) mStyle(d, { bg: rColorMix('blue', 'green', .5) })
   mStyle(dr, { h: '100vh', fg: 'white' })
   dSidebar = mDiv100(dr, { wmax: 240, overy: 'auto', overx: 'hidden' }, 'dSidebar');
   dLeft = dl;

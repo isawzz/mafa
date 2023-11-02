@@ -1,0 +1,27 @@
+users:
+- id: u1
+  name: felix
+  username: felix
+  password: felix
+  email: felix@yahoo.com
+  fen: null
+- id: u2
+  name: amanda
+  username: amanda
+  password: amanda
+  email: amanda@yahoo.com
+  fen: null
+events:
+- id: e1
+  title: golf
+  text: we are visiting a beautiful golf club
+  date: 1382086394000
+- id: e2
+  title: baking
+  text: we are baking a cake
+  date: 1681141568440
+subscribed:
+- id: s1
+  userid: u1
+  eventid: e1
+  role: null

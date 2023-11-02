@@ -16,11 +16,11 @@ function addIfAlpha(arr, val) {
 	console.log('i', i, 'len', arr.length, arr)
 	return i;
 }
-function addToolX(cropper,d) {
+function addToolX(cropper, d) {
 	//let dButtons = cropper.dButtons;
 	let img = cropper.img;
 
-	function createCropTool(){
+	function createCropTool() {
 		let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
 		let handler = cropper.setSize;
 		mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
@@ -49,11 +49,11 @@ function addToolX(cropper,d) {
 		mDom(rg, { fz: 14, margin: 12 }, { html: '(or use mouse to select)' });
 		return rg;
 	}
-	function createSquareTool(){
+	function createSquareTool() {
 		let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-		let handler = x=>squareTo(cropper,x);
+		let handler = x => squareTo(cropper, x);
 		mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
-		for(const h of [128,200,300,400,500,600,700,800]){
+		for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 			mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
 		}
 		return rg;
@@ -81,57 +81,67 @@ function filenameToObject(fname, path, cats) {
 	let o = { key: k, ext: ext, cats: cats, path: `${path}/${fname}`, img: fname, friendly: k.replace(/[^a-zA-Z]/g, '') };
 	return o;
 }
-async function loadCollections(){
+function getMouseCoordinates(event) {
+	const image = event.target; //const image = document.getElementById('your-image-id'); // Replace with the actual ID of your image element
+	//const imageRect = image.getBoundingClientRect();
+	const offsetX = event.clientX +
+		(window.scrollX !== undefined ? window.scrollX : (document.documentElement || document.body.parentNode || document.body).scrollLeft) -
+		12; //imageRect.left;
+	const offsetY = event.clientY +
+		(window.scrollY !== undefined ? window.scrollY : (document.documentElement || document.body.parentNode || document.body).scrollTop) -
+		124; //imageRect.top;
+
+	return { x: offsetX, y: offsetY };
+}
+function isSameDate(date1, date2) {
+	return date1.getFullYear() === date2.getFullYear() &&
+				 date1.getMonth() === date2.getMonth() &&
+				 date1.getDate() === date2.getDate();
+}
+async function loadCollections() {
 	if (nundef(M.emos)) {
-		let type=detectSessionType();
-		let server=type == 'vps'?'https://server.vidulusludorum.com':'http://localhost:3000';
+		let type = detectSessionType();
+		let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
 		let emos = await mGetYaml('../assets/m.yaml');
-		let collections = await mGetYaml('../y/m2.yaml');
-		let amanda = await mGetFiles(server,'../assets/img/amanda')
-		let airport = await mGetFiles(server,'../assets/img/airport');
+		let amanda = await mGetFiles(server, '../assets/img/amanda')
+		let airport = await mGetFiles(server, '../assets/img/airport');
 		let animals = await mGetAnimals(server);
 
 		let di = animals;
-		for(const k in emos){
-			let o=emos[k];
-			let onew = {key:k,friendly:k};
-			addKeys(o,onew);
-			if (isdef(o.img)) {onew.path = '../assets/img/emo/'+o.img; onew.ext=stringAfter(o.img,'.');}
+		for (const k in emos) {
+			let o = emos[k];
+			let onew = { key: k, friendly: k };
+			addKeys(o, onew);
+			if (isdef(o.img)) { onew.path = '../assets/img/emo/' + o.img; onew.ext = stringAfter(o.img, '.'); }
 			di[k] = onew;
 		}
-		for(const k in collections){
-			let o=collections[k];
-			let onew = {key:k,friendly:o.name,cats:[o.cat],img:`${k}.${o.ext}`,ext:o.ext};
-			onew.path = `../y/${k}.${o.ext}`;
-			di[k] = onew;
+		for (const fname of amanda) {
+			let o = filenameToObject(fname, '../assets/img/amanda', ['art', 'amanda']);
+			if (isdef(di[o.key])) console.log('ACHTUNG!!! duplicate', o.key)
+			di[o.key] = o;
 		}
-		for(const fname of amanda){
-			let o = filenameToObject(fname, '../assets/img/amanda', ['art','amanda']);
-			if (isdef(di[o.key])) console.log('ACHTUNG!!! duplicate',o.key)
-			di[o.key]=o;
-		}
-		for(const fname of airport){
-			let o = filenameToObject(fname, '../assets/img/airport', ['wallpaper','airport']);
-			if (isdef(di[o.key])) console.log('ACHTUNG!!! duplicate',o.key)
-			di[o.key]=o;
+		for (const fname of airport) {
+			let o = filenameToObject(fname, '../assets/img/airport', ['wallpaper', 'airport']);
+			if (isdef(di[o.key])) console.log('ACHTUNG!!! duplicate', o.key)
+			di[o.key] = o;
 		}
 		let superdi = sortKeysAlphabetically(di);
 
 		M.superdi = {};
-		for(const k in superdi){
+		for (const k in superdi) {
 			let o = {};
-			addKeys(superdi[k],o);
-			M.superdi[k]=o;
+			addKeys(superdi[k], o);
+			M.superdi[k] = o;
 		}
 
 		//downloadAsYaml(M.superdi,'superdi');
 
 		//indexing superdi!
-		let bycat={},byfriendly={};
-		for(const k in superdi){
+		let bycat = {}, byfriendly = {};
+		for (const k in superdi) {
 			let o = superdi[k];
-			lookupAddIfToList(byfriendly,[o.friendly],o.key);
-			o.cats.map(x=>lookupAddIfToList(bycat,[x],o.key));
+			lookupAddIfToList(byfriendly, [o.friendly], o.key);
+			o.cats.map(x => lookupAddIfToList(bycat, [x], o.key));
 		}
 
 		M.byCat = sortKeysAlphabetically(bycat);
@@ -142,7 +152,7 @@ async function loadCollections(){
 		showNavbar('M', ['view', 'add', 'play', 'create']);
 		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
 		mInsert(document.body, dTitle, 1)
-	}	
+	}
 	return M;
 }
 function mCropper(dParent, img, dButtons) {
@@ -151,7 +161,7 @@ function mCropper(dParent, img, dButtons) {
 	console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, {bg:'#ffffff80',fg:'black'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
 	const centerBox = mDom(cropBox, { bg: 'red', w: 10, h: 10, rounding: '50%', position: 'absolute' });
 	let isCropping = false;
 	let cropStartX;
@@ -305,7 +315,7 @@ function mCropResizer(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, {bg:'#ffffff80',fg:'black'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
 
 	let sz = 16;
 	const centerBox = mDom(cropBox, { bg: 'red', w: sz, h: sz, rounding: '50%', position: 'absolute' });
@@ -320,8 +330,8 @@ function mCropResizer(dParent, img, dButtons) {
 	let cropStartY;
 	function startResize(e) {
 		e.preventDefault(); evNoBubble(e);
-		isResizing = e.target == wHandle ? 'w' :  e.target == hHandle ? 'h':'wh';
-		[resizeStartW,resizeStartH] = [parseInt(cropBox.style.width),parseInt(cropBox.style.height)];
+		isResizing = e.target == wHandle ? 'w' : e.target == hHandle ? 'h' : 'wh';
+		[resizeStartW, resizeStartH] = [parseInt(cropBox.style.width), parseInt(cropBox.style.height)];
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
@@ -335,21 +345,21 @@ function mCropResizer(dParent, img, dButtons) {
 		} else if (isResizing == 'h') {
 			newWidth = img.width;
 			newHeight = e.clientY;
-		} else if (isResizing == 'wh'){
+		} else if (isResizing == 'wh') {
 			newHeight = e.clientY;
 			let aspectRatio = img.width / img.height;
 			newWidth = aspectRatio * newHeight;
 		}
 		[img, dParent].map(x => mStyle(x, { w: newWidth, h: newHeight }));
-		setRect(0,0,newWidth,newHeight);
+		setRect(0, 0, newWidth, newHeight);
 		//messageBox.innerHTML = `size: ${Math.round(newWidth)} x ${Math.round(newHeight)}`;
 	}
 	function stopResize() {
 		isResizing = null;
 		document.removeEventListener('mousemove', resize);
 		document.removeEventListener('mouseup', stopResize);
-		let [wnew,hnew]=[parseInt(cropBox.style.width),parseInt(cropBox.style.height)]
-		redrawImage(img,dParent,0,0,resizeStartW,resizeStartH,wnew,hnew,()=>setRect(0,0,wnew,hnew))
+		let [wnew, hnew] = [parseInt(cropBox.style.width), parseInt(cropBox.style.height)]
+		redrawImage(img, dParent, 0, 0, resizeStartW, resizeStartH, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 	}
 
 	function addCropTool(dParent, img, setSizeFunc) {
@@ -439,7 +449,7 @@ function mCropResizer(dParent, img, dButtons) {
 	}
 	function cropImage() {
 		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
-		redrawImage(img,dParent,x,y,w,h,w,h,()=>setRect(0,0,w,h))
+		redrawImage(img, dParent, x, y, w, h, w, h, () => setRect(0, 0, w, h))
 	}
 	function getRect() { return ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x])); }
 	function setRect(left, top, width, height) {
@@ -541,7 +551,7 @@ function mCropResizePan(dParent, img, dButtons) {
 		let [wnew, hnew] = [parseInt(cropBox.style.width), parseInt(cropBox.style.height)]
 		redrawImage(img, dParent, 0, 0, resizeStartW, resizeStartH, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 	}
-	function resizeTo(wnew,hnew){
+	function resizeTo(wnew, hnew) {
 		if (hnew == 0) hnew = img.height;
 		if (wnew == 0) {
 			let aspectRatio = img.width / img.height;
@@ -555,19 +565,26 @@ function mCropResizePan(dParent, img, dButtons) {
 	let isCropping = false;
 	let cropStartX;
 	let cropStartY;
-	function startCrop(e) {
-		e.preventDefault();
+	function startCrop(ev) {
+		ev.preventDefault();
 		isCropping = true;
-		cropStartX = e.clientX - dParent.offsetLeft;
-		cropStartY = e.clientY - dParent.offsetTop;
+		// cropStartX = ev.clientX - dParent.offsetLeft;
+		// cropStartY = ev.clientY - dParent.offsetTop;
+		let pt = getMouseCoordinates(ev); //get_mouse_pos(ev,dParent); //getMouseCoordinates(ev);
+		[cropStartX, cropStartY] = [pt.x, pt.y];
+		console.log('pt', pt, cropStartX, cropStartY);
 		document.addEventListener('mousemove', crop); //cropCenter);
 		document.addEventListener('mouseup', stopCrop);
 	}
-	function crop(e) {
-		e.preventDefault();
+	function crop(ev) {
+		ev.preventDefault();
 		if (isCropping) {
-			const mouseX = e.clientX - dParent.offsetLeft;
-			const mouseY = e.clientY - dParent.offsetTop;
+			evNoBubble(ev);
+			// const mouseX = ev.clientX - dParent.offsetLeft;
+			// const mouseY = ev.clientY - dParent.offsetTop;
+			let pt = getMouseCoordinates(ev); //get_mouse_pos(ev,dParent); //getMouseCoordinates(ev);
+			let [mouseX, mouseY] = [pt.x, pt.y];
+			console.log('pt', pt, mouseX, mouseY);
 			const width = Math.abs(mouseX - cropStartX);
 			const height = Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
@@ -615,11 +632,11 @@ function mCropResizePan(dParent, img, dButtons) {
 		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
 		redrawImage(img, dParent, x, y, w, h, w, h, () => setRect(0, 0, w, h))
 	}
-	function cropTo(wnew,hnew){
+	function cropTo(wnew, hnew) {
 		//calc center
 		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
-		let xnew=x+(wnew-w)/2;
-		let ynew=y+(hnew-h)/2;
+		let xnew = x + (wnew - w) / 2;
+		let ynew = y + (hnew - h) / 2;
 		redrawImage(img, dParent, xnew, ynew, wnew, wnew, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 	}
 	//#endregion crop
@@ -631,7 +648,7 @@ function mCropResizePan(dParent, img, dButtons) {
 	let cboxX;
 	let cboxY;
 	function startPan(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		isPanning = true;
 		panStartX = e.clientX - dParent.offsetLeft;
 		panStartY = e.clientY - dParent.offsetTop;
@@ -649,8 +666,8 @@ function mCropResizePan(dParent, img, dButtons) {
 			const mouseY = e.clientY - dParent.offsetTop;
 			let diffX = panStartX - mouseX;
 			let diffY = panStartY - mouseY;
-			const left = cboxX-diffX
-			const top = cboxY-diffY
+			const left = cboxX - diffX
+			const top = cboxY - diffY
 			setRect(left, top, parseInt(cropBox.style.width), parseInt(cropBox.style.height));
 		}
 	}
@@ -728,7 +745,7 @@ function mCropResizePan(dParent, img, dButtons) {
 	messageBox.addEventListener('mousedown', startPan);
 
 	setRect(0, 0, worig, horig);
-	console.log('DIMS',worig,horig)
+	console.log('DIMS', worig, horig)
 	//var tool = addToolX(dButtons, img, setSize);
 	//var button = mButton('Crop', cropImage, tool, { w: 120, maleft: 12 }, 'input');
 
@@ -792,6 +809,7 @@ function mDatalist(dParent, list, opts = {}) {
 
 	if (opts.edit) inp.addEventListener('keyup', ev => { if (ev.key === 'Enter') update(); });
 	if (isdef(opts.matches)) inp.addEventListener('input', populate);
+	inp.onmousedown = ()=>inp.value = ''
 
 	return {
 		list: mylist,
@@ -842,6 +860,11 @@ function mDropZone(dropZone, onDrop) {
 	});
 	return dropZone;
 }
+function measureHeight(d) { let d2 = mDiv(d, { opacity: 0 }, null, 'HALLO'); return d2.clientHeight; }
+function mFlexLine(d, bg = 'white', fg = 'contrast') {
+	mStyle(d, { bg: bg, fg: fg, display: 'flex', valign: 'center', hmin: measureHeight(d) });
+	mDiv(d, { fg: 'transparent' }, null, '|')
+}
 async function mGetAnimals(server = 'http://localhost:3000') {
 	let dir = "../assets/img/animals";
 	let dirs = await mGetFiles(server, dir);
@@ -870,11 +893,11 @@ async function mGetJsonCors(url) {
 	//console.log('json', json)
 	return json;
 }
-function mResizer(dParent, img, dButtons){ 
+function mResizer(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, {bg:'#ffffff80',fg:'black'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
 	let sz = 25;
 	const wHandle = mDom(cropBox, { cursor: 'ew-resize', bg: 'red', w: sz, h: sz, right: -sz / 2, top: '50%', rounding: '50%', position: 'absolute' });
 	const hHandle = mDom(cropBox, { cursor: 'ns-resize', bg: 'red', w: sz, h: sz, left: '50%', bottom: -sz / 2, rounding: '50%', position: 'absolute' });
@@ -884,7 +907,7 @@ function mResizer(dParent, img, dButtons){
 
 	function startResize(e) {
 		e.preventDefault(); evNoBubble(e);
-		isResizing = e.target == wHandle ? 'w' :  e.target == hHandle ? 'h':'wh';
+		isResizing = e.target == wHandle ? 'w' : e.target == hHandle ? 'h' : 'wh';
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
@@ -898,7 +921,7 @@ function mResizer(dParent, img, dButtons){
 		} else if (isResizing == 'h') {
 			newWidth = img.width;
 			newHeight = e.clientY;
-		} else if (isResizing == 'wh'){
+		} else if (isResizing == 'wh') {
 			newHeight = e.clientY;
 			let aspectRatio = img.width / img.height;
 			newWidth = aspectRatio * newHeight;
@@ -950,18 +973,66 @@ function mResizer(dParent, img, dButtons){
 		//tool: tool,
 	}
 }
-function redrawImage(img,dParent,x,y,wold,hold,w,h,callback){
+function navbarActivate(){
+	let links = document.getElementsByClassName('nav-link');
+	for(const w of arguments){
+		let el = links.find(x=>x.innerHTML == w);
+		if (isdef(el)) {
+			mClass(el,'active');
+			el.style.pointerEvents = 'auto'
+		}
+	}
+}
+function navbarDeactivate(){
+	let links = Array.from(document.getElementsByClassName('nav-link'));
+	console.log('links',links)
+	for(const w of arguments){
+		let el = links.find(x=>x.innerHTML == w);
+		console.log('el',el)
+		if (isdef(el)) {
+			mClassRemove(el.parentNode,'active');
+			el.style.pointerEvents = 'none'
+		}
+	}
+}
+async function prelims() {
+	if (nundef(M.superdi)) {
+		Config = await mGetYaml('../combu/config.yaml');
+		M = await mGetYaml('../assets/mhuge.yaml');
+
+		//integrate m2.yaml
+		let collections = await mGetYaml('../y/m2.yaml');
+		let di = {};
+		for (const k in collections) {
+			let o = collections[k];
+			let onew = { key: k, friendly: o.name, cats: [o.cat], img: `${k}.${o.ext}`, ext: o.ext };
+			onew.path = `../y/${k}.${o.ext}`;
+			di[k] = onew;
+		}
+		//add di to M.superdi,M.byCat,M.byFriendly,M.names,M.categories
+		//sort all the dicts alphabetically
+
+
+		console.log('M', M, 'Config', Config);
+		showNavbar('M', ['add', 'create', 'play', 'schedule', 'view']);
+		navbarDeactivate('play','create');
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14,padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
+		mInsert(document.body, dTitle, 1);
+	}
+
+}
+function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	console.log('ausschnitt:', x, y, wold, hold);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 	const ctx = canvas.getContext('2d');
 	ctx.drawImage(img, x, y, wold, hold, 0, 0, w, h);
 	const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 
-	img.onload=()=>{
+	img.onload = () => {
 		img.onload = null;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{w:w,h:h});
+		mStyle(img, { w: w, h: h });
 		mStyle(dParent, { w: w, h: h });
 		callback(); //setRect(0, 0, w, h);
 	}
@@ -980,11 +1051,11 @@ async function resizeImage(img, newHeight) {
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, 0, 0, newWidth, newHeight);
 		const resizedDataURL = canvas.toDataURL('image/png');
-		img.onload = function () { 
-			img.onload = null; 
+		img.onload = function () {
+			img.onload = null;
 
-			let data = { message: 'hallo' }; 
-			resolve(data); 
+			let data = { message: 'hallo' };
+			resolve(data);
 		};
 		img.onerror = function (error) { console.log('error', error); reject(error); };
 		img.src = resizedDataURL;
@@ -999,6 +1070,29 @@ function resizeTo(tool, wnew, hnew) {
 	}
 	redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
+function showImage(key, dParent, styles = {}) {
+	let o = M.superdi[key];
+	try {
+		addKeys({ bg: rColor() }, styles);
+		mClear(dParent);
+		let [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+		let [sz, fz] = [.9 * w, .8 * h];
+		let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
+		mCenterCenterFlex(d1)
+		if (isdef(o.img)) {
+			let img = mDom(d1, { cursor: 'pointer', w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+			img.onclick = async () => { await onclickAdd(); ondropPreviewImage(o.path, key); };
+
+		}
+		else if (isdef(o.text)) mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+		else if (isdef(o.fa)) mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+		else if (isdef(o.ga)) mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+
+	} catch {
+		console.log('ERROR showImage:', key, o)
+	}
+
+}
 function showNavbar(pageTitle, titles, funcNames) {
 	if (nundef(funcNames)) {
 		//standard is that funcs are named: onclick${title}
@@ -1006,13 +1100,13 @@ function showNavbar(pageTitle, titles, funcNames) {
 	}
 	let html = `
     <nav class="navbar navbar-expand navbar-light bg-light">
-      <a class="navbar-brand" href="#">${pageTitle}</a>
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">`;
 	for (let i = 0; i < titles.length; i++) {
 		html += `
-					<li class="nav-item active">
-					<a class="nav-link hoverHue" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
+				<li class="nav-item active">
+					<a class="nav-link hoverHue a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
 				</li>
 			`;
 	}
@@ -1022,9 +1116,34 @@ function showNavbar(pageTitle, titles, funcNames) {
 		</nav>
 		`;
 	//let inner = document.body.innerHTML;
-	mInsertFirst(document.body,mCreateFrom(html));
+	mInsertFirst(document.body, mCreateFrom(html));
 	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
 
+}
+function showImageBatch(inc) {
+	let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
+
+	index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
+
+	let list = arrTakeFromTo(keys, index, index + x);
+	M.index = index;
+	console.log('show', list.length, 'images from i=' + index)
+
+
+	for (let i = 0; i < list.length; i++) {
+		mStyle(M.cells[i], { opacity: 1 })
+		showImage(list[i], M.cells[i], { w: 128, h: 128 });
+	}
+	for (let i = list.length; i < x; i++) {
+		mStyle(M.cells[i], { opacity: 0 })
+	}
+}
+function showTitle(title, buttons = []) {
+	mClear(dTitle);
+	mDom(dTitle, {}, { tag: 'h1', html: title });
+	for (const b of buttons) {
+		mButton(b.caption, b.handler, dTitle, { w: 70, margin: 0 }, 'input');
+	}
 }
 function sortKeysAlphabetically(dinew) {
 	let keys = Object.keys(dinew); keys.sort();
@@ -1034,15 +1153,15 @@ function sortKeysAlphabetically(dinew) {
 	}
 	return difinal;
 }
-function squareTo(tool, sznew=128) {
+function squareTo(tool, sznew = 128) {
 	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
 	let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
 	if (sznew == 0) sznew = h;
-	console.log('cropBox dims',x,y,w,h)
-	let sz = Math.max(w,h)
-	console.log('sz',sz)
-	let [x1,y1]=[x-(sz-w)/2,y-(sz-h)/2];
-	redrawImage(img, dParent, x1, y1, sz,sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
+	console.log('cropBox dims', x, y, w, h)
+	let sz = Math.max(w, h)
+	console.log('sz', sz)
+	let [x1, y1] = [x - (sz - w) / 2, y - (sz - h) / 2];
+	redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function srcToDataUrl(src, h) {
 	return new Promise((resolve, reject) => {
@@ -1073,7 +1192,7 @@ async function srcToDataUrl(src, h) {
 		img.src = src;
 	});
 }
-async function uploadImg(img, cat, name) {
+async function uploadImg(img, unique, cat, name) {
 	return new Promise((resolve, reject) => {
 		const canvas = document.createElement('canvas');
 		canvas.width = img.width;
@@ -1083,14 +1202,15 @@ async function uploadImg(img, cat, name) {
 
 		canvas.toBlob(async (blob) => {
 			const formData = new FormData();
-			formData.append('image', blob, name + '.png');
+			formData.append('image', blob, unique + '.png');
 			formData.append('category', cat);
-			let type=detectSessionType();
-			let server=type == 'vps'?'https://server.vidulusludorum.com':'http://localhost:3000';
-			server+='/upload';
+			formData.append('name', name);
+			let type = detectSessionType();
+			let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+			server += '/upload';
 
 			try {
-				const response = await fetch(server,{ //'http://localhost:3000/upload', {
+				const response = await fetch(server, { //'http://localhost:3000/upload', {
 					method: 'POST',
 					mode: 'cors',
 					body: formData

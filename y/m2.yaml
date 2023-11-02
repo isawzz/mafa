@@ -2,3 +2,11 @@ minou:
   cat: animal
   name: minou
   ext: png
+img_1698675496256_0pt9:
+  cat: object
+  name: 2nd_place_medal
+  ext: png
+img_1698676211664_6b15:
+  cat: object
+  name: 1st_place_medal
+  ext: png

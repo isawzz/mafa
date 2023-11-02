@@ -9,10 +9,37 @@
 	/* margin: 20px auto; */
 	display: inline-block;
 }
-/* .dropZone img {
-	max-width: 100%;
-	max-height: 100%;
-} */
+.hop1 {
+  opacity: 0.7;
+}
+.hop1:hover {
+  opacity: 1;
+}
+.hoverHue:hover{
+  color: red !important;
+  /* filter: hue-rotate(180deg); */
+}
+.hoverPointer {
+  cursor: none;
+}
+.hoverPointer:hover {
+  cursor: pointer;
+}
+.hoverScale {
+  cursor: pointer;
+}
+.hoverScale:hover {
+  transform-origin: bottom right;
+  transform: scale(1.05);
+}
+.input {
+	padding: 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	width: 300px;
+	/* margin-bottom: 10px; */
+}
 .section {
 	border-radius: 10px;
 	border: 2px silver solid;
@@ -27,15 +54,9 @@
 	margin: 0;
 	border: none;
 }
-.input {
-	padding: 10px;
-	font-size: 16px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	width: 300px;
-	margin-bottom: 10px;
+.w80{
+	width: 80px;
 }
-
 
 /* #region datalist */
 .datalist {
