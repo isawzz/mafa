@@ -4,16 +4,16 @@ function calendarOpenDay(date, d, ev) {
   let d1 = addEditable(d, { w: 50 }, {
     onEnter: ev => {
       let inp = ev.target;
+      
       let o = { date: date.getTime(), text: inp.value, title: firstWord(inp.value) };
-      phpPost(o, 'addEvent');
+      onEventEdited(o, inp);
+      //phpPost(o, 'addEvent');
     }
   });
   return d1;
   //const eventForDay = events.find(e => e.date === clicked);
   //console.log('eventForDay', eventForDay);
 }
-function calendarGetDayId(dt) { return `d_${dt.getDate()}`; }
-function calendarGetEventId(o) { return `inp_${o.id}`; }
 function evToEventObject(ev) {
   let inp = ev.target;
   let o = Config.events[firstNumber(inp.id)];
@@ -164,35 +164,36 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
       const daySquare = dDays[i - 1];
       let date = new Date(year, month, i - paddingDays);
       daySquare.innerText = i - paddingDays + (isSameDate(date,today) ? ' TODAY':'');
-      let d = mDiv(daySquare, innerStyles, calendarGetDayId(date));
-      d.addEventListener('click', ev => calendarOpenDay(date, daySquare.lastChild, ev));
+      let d = mDom(daySquare, innerStyles, {id:date.getTime()});
+      d.addEventListener('click', onclickDay); //ev => calendarOpenDay(date, daySquare.lastChild, ev));
     }
     updateEvents();
   }
   function updateEvents() {
     //console.log('events',events);
-    //console.log('dDays',dDays);
-    for (const e of events) {
-      let dt = new Date(e.date);
+    for (const k in events) {
+      //console.log('hhhhhhhhhhhhhhhhhhhhhhhh')
+      let e = events[k];
+      let dt = new Date(Number(e.day));
+      //console.log('dt',dt)
+
       if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) {
         //console.log('YES!');
         continue;
       }
-      // let iday = date.getDate();
-      // iday = date.getUTCDay();
-      // console.log('date',date)
-      // console.log('iday',date.getDay(),date.getUTCDay(),date.getDate(),info.dayOffset)
-      let dDay = dDays[dt.getDate() + info.dayOffset];
-      //console.log('dDay',dDay)
-      let ch = arrChildren(dDay);
-      //console.log('children',ch)
-      let d = ch[0]; //dDay.firstChild; //arrChildren(dDay)[1];
-      let d1 = calendarAddExistingEvent(e, d);
-      e.div = d;
-      //console.log('d',d)
-      //mDiv(d,{bg:'blue'},null,e.title); break;
+      let dDay = dDays[dt.getDate() + info.dayOffset].children[0];
+      
+      //console.log('add another input to',dt,dDay);
+      let d1 = addEditable(dDay, { w: '100%' }, { id:k, onEnter: onEventEdited, value: e.text });
+      //console.log(d1);
+          
+      // let ch = arrChildren(dDay);
+      // let d = ch[0]; 
+      // let d1 = calendarAddExistingEvent(e, d);
+      // e.div = d;
     }
   }
+
   setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
   populate();
 
@@ -221,7 +222,9 @@ function measureHeight(d) {
 }
 function addEditable(dParent, styles = {}, opts = {}) {
   //let html= `<p contenteditable="true">hallo</p>`; let x=mDom(dParent,{},{html:html});
-  let x = mDom(dParent, { w: '90%' }, { tag: 'input', classes: 'plain' });
+  addKeys({ tag: 'input', classes: 'plain' },opts)
+  addKeys({ w: '90%' },styles);
+  let x = mDom(dParent, styles, opts); // { tag: 'input', classes: 'plain' });
   x.focus();
   x.addEventListener('keyup', ev => {
     if (ev.key == 'Enter') {

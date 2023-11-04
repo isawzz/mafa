@@ -1,7 +1,11 @@
 onload = start
 
-async function start() { onclickSchedule(); }
+async function start() { onclickView(); }//test8_addDrop(); }
 
+async function test8_addDrop(){
+	await onclickAdd();
+	ondropPreviewImage('../y/bubblebath.png')
+}
 async function test7_calendar(){
 	await prelims();
 
@@ -78,7 +82,7 @@ async function onclickView() {
 
 	let dCat = dTitle;
 	let cats = M.categories;
-	mDom(dCat, {}, { html: 'Collection:' }); let dl = mDatalist(dCat, cats);
+	mDom(dCat, {}, { html: 'Filter:' }); let dl = mDatalist(dCat, cats, {edit:false});
 
 	console.log('dl', dl)
 	dl.inpElem.oninput = filterImages;
@@ -127,4 +131,19 @@ async function ondropPreviewImage(url, key) {
 		mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
 	}
 }
+async function onEventEdited(ev){
+	let id = evToId(ev);
+	let o = Config.events[id];
+	let inp = mBy(id);
+	if (inp.value){
+		console.log('send value',inp.value,'to server')
+		o.text=inp.value;
+		let resp = await uploadJson('event',o)
+		console.log('response',resp)
+	}
 
+	//console.log('event',id,o,inp)
+	//ich moecht das event mit await an den node js server schicken,
+	//dort saven mit der id oder einer neuen id
+
+}

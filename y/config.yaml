@@ -1,0 +1,68 @@
+users:
+  - id: u1
+    name: felix
+    username: felix
+    password: felix
+    email: felix@yahoo.com
+    fen: null
+  - id: u2
+    name: amanda
+    username: amanda
+    password: amanda
+    email: amanda@yahoo.com
+    fen: null
+events:
+  n_1698908400000_1698942654534:
+    id: n_1698908400000_1698942654534
+    created: 1698942654534
+    day: '1698908400000'
+    from: null
+    to: null
+    title: ''
+    text: ws
+    subscribers: []
+  a_1698908400000_1698943301276:
+    id: a_1698908400000_1698943301276
+    created: 1698943301276
+    day: '1698908400000'
+    from: null
+    to: null
+    title: ''
+    text: lunch
+    subscribers: []
+  z_1699344000000_1698943498924:
+    id: z_1699344000000_1698943498924
+    created: 1698943498924
+    day: '1699344000000'
+    from: null
+    to: null
+    title: ''
+    text: ws
+    subscribers: []
+  x_1700208000000_1698943509738:
+    id: x_1700208000000_1698943509738
+    created: 1698943509738
+    day: '1700208000000'
+    from: null
+    to: null
+    title: ''
+    text: dance
+    subscribers: []
+  g_1699516800000_1698945556616:
+    id: g_1699516800000_1698945556616
+    created: 1698945556616
+    day: '1699516800000'
+    from: null
+    to: null
+    title: ''
+    text: play
+    subscribers: []
+  u_1702368000000_1698945576074:
+    id: u_1702368000000_1698945576074
+    created: 1698945576074
+    day: '1702368000000'
+    from: null
+    to: null
+    title: ''
+    text: christkindlmarkt
+    subscribers: []

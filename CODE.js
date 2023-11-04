@@ -1,152 +1,311 @@
+
+//#region imgSplit
+async function splitImageH(inputImagePath, outputDirectory) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+
+	let columnIndex = 0;
+	let startX = 0;
+	let endX = 0;
+	let isPart = false;
+
+	for (let x = 0; x < canvas.width; x++) {
+			let hasNonWhitePixel = false;
+			for (let y = 0; y < canvas.height; y++) {
+					const pixelData = ctx.getImageData(x, y, 1, 1).data;
+					if (pixelData[3] !== 0 && pixelData[0] !== 255 && pixelData[1] !== 255 && pixelData[2] !== 255) {
+							hasNonWhitePixel = true;
+							break;
+					}
+			}
+
+			if (hasNonWhitePixel) {
+					if (!isPart) {
+							startX = x;
+					}
+					isPart = true;
+			} else {
+					if (isPart) {
+							endX = x;
+							const partCanvas = createCanvas(endX - startX, canvas.height);
+							const partCtx = partCanvas.getContext('2d');
+							partCtx.drawImage(canvas, startX, 0, endX - startX, canvas.height, 0, 0, endX - startX, canvas.height);
+
+							const partFileName = `${outputDirectory}/part${columnIndex}.png`;
+							fs.writeFileSync(partFileName, partCanvas.toBuffer());
+							console.log(`Part ${columnIndex} saved as ${partFileName}`);
+
+							columnIndex++;
+					}
+					isPart = false;
+			}
+	}
+}
+
+
+function getImageBoundariesX(ctx,fromx, maxx){
+	let x=fromx;
+	let from,to;
+	while(isWhitePixel(ctx,x,0)) x++;
+	from=x; //first non-white pixel
+	while(!isWhitePixel(ctx,x,0)) x++;
+	to=x; //first white pixel
+	return {from,to};
+}
+
+async function splitImageH(inputImagePath, outputDirectory) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+	//now save this column fromx tox into new image!
+	let x=0, maxx=image.width, iPart=0;
+	while(x<maxx){
+		let bd=getImageBoundariesX(ctx,x,maxx);
+		console.log('bd',bd);
+		let w=bd.to-bd.from;
+		if (w > 5) {
+			iPart++;
+			const partCanvas = createCanvas(w, canvas.height);
+			const partCtx = partCanvas.getContext('2d');
+			partCtx.drawImage(canvas, bd.from, 0, w, canvas.height, 0, 0, w, canvas.height);
+
+			const partFileName = `${outputDirectory}/part${iPart}.png`;
+			fs.writeFileSync(partFileName, partCanvas.toBuffer());
+			console.log(`Part ${iPart} saved as ${partFileName}`);
+		}
+		x=bd.to;
+	}
+}
+async function splitImageY(inputImagePath, outputDirectory,xPart) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+	//now save this column fromx tox into new image!
+	let x=0, maxx=image.height, iPart=0;
+	while(x<maxx){
+		let bd=getImageBoundariesY(ctx,x,maxx);
+		console.log('bd',bd);
+		let h=bd.to-bd.from;
+		if (h > 5) {
+			iPart++;
+			const partCanvas = createCanvas(canvas.width, h);
+			const partCtx = partCanvas.getContext('2d');
+			partCtx.drawImage(canvas, bd.from, 0, canvas.width, h, 0, 0, canvas.width, h);
+
+			const partFileName = `${outputDirectory}/part${xPart}${iPart}.png`;
+			fs.writeFileSync(partFileName, partCanvas.toBuffer());
+			console.log(`Part ${iPart} saved as ${partFileName}`);
+		}
+		x=bd.to;
+	}
+}
+
+function mist() {
+	let pix = ctx.getImageData(0, 0, 1, 1).data; console.log('pix', pix, pix[0]);
+
+	let x = 0;
+
+
+	for (let x = 0; x < canvas.width; x++) {
+		pix = ctx.getImageData(x, 0, 1, 1).data;
+		if (pix[0] + pix[1] + pix[2] > 740) {
+
+			//split at this x
+			//first look for x that is the end of this whitespace
+
+		}
+		return;
+	}
+
+	for (let x = 0; x < canvas.width; x++) {
+		let hasNonWhitePixel = false;
+		for (let y = 0; y < canvas.height; y++) {
+			const pixelData = ctx.getImageData(x, y, 1, 1).data;
+			console.log('pixelData', pixelData);
+			if (pixelData[3] !== 0 && pixelData[0] !== 255 && pixelData[1] !== 255 && pixelData[2] !== 255) {
+				hasNonWhitePixel = true;
+				break;
+			}
+		}
+
+		if (hasNonWhitePixel) {
+			if (!isPart) {
+				startX = x;
+			}
+			isPart = true;
+		} else {
+			if (isPart) {
+				endX = x;
+				const partCanvas = createCanvas(endX - startX, canvas.height);
+				const partCtx = partCanvas.getContext('2d');
+				partCtx.drawImage(canvas, startX, 0, endX - startX, canvas.height, 0, 0, endX - startX, canvas.height);
+
+				const partFileName = `${outputDirectory}/part${columnIndex}.png`;
+				fs.writeFileSync(partFileName, partCanvas.toBuffer());
+				console.log(`Part ${columnIndex} saved as ${partFileName}`);
+
+				columnIndex++;
+			}
+			isPart = false;
+		}
+	}
+}
+
+//#endregion
+
 //#region combu
-function uiTypeCalendar(dParent, month1, year1, events1=[]) {
-  const [cellWidth, gap] = [100, 10];
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  var dParent = toElem(dParent);
-  const events = events1;
-  var container = mDiv(dParent, { bg: 'white' }, 'dCalendar');
-  var date = new Date();
-  let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
-  var dWeekdays = mGrid(1, 7, container, { gap: gap });
-  var dDays = [];
-  var info = {};
-  for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth, fg: '#247BA0' }, null, w) };
-  var dGrid = mGrid(6, 7, container, { gap: gap });
-  var dDate = mDiv(dTitle, { display: 'flex', gap: gap });
-  var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
-  mButton('Prev',
-    () => {
-      let m = date.getMonth();
-      let y = date.getFullYear();
-      if (m == 0) setDate(12, y - 1); else setDate(m, y);
-      //setDate(date.getMonth(), date.getFullYear())
-    },
-    dButtons, { w: 70, margin: 0 }, 'input');
-  mButton('Next',
-    () => {
-      let m = date.getMonth();
-      let y = date.getFullYear();
-      if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
-      //setDate(date.getMonth() + 2, date.getFullYear())
-    }, dButtons, { w: 70, margin: 0 }, 'input');
-  var dMonth, dYear;
+function uiTypeCalendar(dParent, month1, year1, events1 = []) {
+	const [cellWidth, gap] = [100, 10];
+	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	var dParent = toElem(dParent);
+	const events = events1;
+	var container = mDiv(dParent, { bg: 'white' }, 'dCalendar');
+	var date = new Date();
+	let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
+	var dWeekdays = mGrid(1, 7, container, { gap: gap });
+	var dDays = [];
+	var info = {};
+	for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth, fg: '#247BA0' }, null, w) };
+	var dGrid = mGrid(6, 7, container, { gap: gap });
+	var dDate = mDiv(dTitle, { display: 'flex', gap: gap });
+	var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
+	mButton('Prev',
+		() => {
+			let m = date.getMonth();
+			let y = date.getFullYear();
+			if (m == 0) setDate(12, y - 1); else setDate(m, y);
+			//setDate(date.getMonth(), date.getFullYear())
+		},
+		dButtons, { w: 70, margin: 0 }, 'input');
+	mButton('Next',
+		() => {
+			let m = date.getMonth();
+			let y = date.getFullYear();
+			if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
+			//setDate(date.getMonth() + 2, date.getFullYear())
+		}, dButtons, { w: 70, margin: 0 }, 'input');
+	var dMonth, dYear;
 
-  function getDay(d) {
-    let i = d + info.dayOffset;
-    console.log('i', i);
-    if (i < 1 || i > info.numDays) return null;
-    let ui = dDays[i];
-    console.log('ui', ui)
-    if (ui.style.opacity === 0) return null;
-    return { div: dDays[i], events: [] };
-  }
-  function setDate(m, y) {
-    date.setMonth(m - 1);
-    date.setFullYear(y);
-    mClear(dDate);
-    dMonth = mDiv(dDate, {}, 'dMonth', `${date.toLocaleDateString('en-us', { month: 'long' })}`);
-    dYear = mDiv(dDate, {}, 'dYear', `${date.getFullYear()}`);
-    makeContentEditable(dMonth, ev => {
-      let d = ev.target;
-      if (d != dMonth) return;
-      let val = getCorrectMonth(d.innerHTML, months[date.getMonth()]);
-      d.innerHTML = val[1];
-      date.setMonth(val[0])
-    });
-    makeContentEditable(dYear, ev => {
-      let d = ev.target;
-      if (d != dYear) return;
-      let val = firstNumber(d.innerHTML);
-      date.setFullYear(val);
-      d.innerHTML = val;
-    });
+	function getDay(d) {
+		let i = d + info.dayOffset;
+		console.log('i', i);
+		if (i < 1 || i > info.numDays) return null;
+		let ui = dDays[i];
+		console.log('ui', ui)
+		if (ui.style.opacity === 0) return null;
+		return { div: dDays[i], events: [] };
+	}
+	function setDate(m, y) {
+		date.setMonth(m - 1);
+		date.setFullYear(y);
+		mClear(dDate);
+		dMonth = mDiv(dDate, {}, 'dMonth', `${date.toLocaleDateString('en-us', { month: 'long' })}`);
+		dYear = mDiv(dDate, {}, 'dYear', `${date.getFullYear()}`);
+		makeContentEditable(dMonth, ev => {
+			let d = ev.target;
+			if (d != dMonth) return;
+			let val = getCorrectMonth(d.innerHTML, months[date.getMonth()]);
+			d.innerHTML = val[1];
+			date.setMonth(val[0])
+		});
+		makeContentEditable(dYear, ev => {
+			let d = ev.target;
+			if (d != dYear) return;
+			let val = firstNumber(d.innerHTML);
+			date.setFullYear(val);
+			d.innerHTML = val;
+		});
 
-    mClear(dGrid); dDays.length = 0;
-    let outerStyles = {
-      rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
-      paleft: gap / 2, w: cellWidth, hmin: cellWidth, fg: 'contrast', bg: rColor('light',.5)
-    }
-    for (const i of range(42)) {
-      let cell = mDiv(dGrid, outerStyles);
-      dDays[i] = cell;
-    }
-    populate(date);
-    return { container, date, dDate, dGrid, dMonth, dYear, setDate, populate };
-  }
-  function populate() {
-    let dt = date;
-    const day = info.day = dt.getDate();
-    const month = info.month = dt.getMonth();
-    const year = info.year = dt.getFullYear();
+		mClear(dGrid); dDays.length = 0;
+		let outerStyles = {
+			rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
+			paleft: gap / 2, w: cellWidth, hmin: cellWidth, fg: 'contrast', bg: rColor('light', .5)
+		}
+		for (const i of range(42)) {
+			let cell = mDiv(dGrid, outerStyles);
+			dDays[i] = cell;
+		}
+		populate(date);
+		return { container, date, dDate, dGrid, dMonth, dYear, setDate, populate };
+	}
+	function populate() {
+		let dt = date;
+		const day = info.day = dt.getDate();
+		const month = info.month = dt.getMonth();
+		const year = info.year = dt.getFullYear();
 
-    const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
-    const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
+		const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
+		const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
 
-    const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-    });
-    const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
-    info.dayOffset = paddingDays - 1;
-    //console.log('paddingDays', day, month, year, paddingDays);
-    //console.log('dDays', dDays);
-    for (const i of range(42)) {
-      if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
-    }
-    // for (const i of range(paddingDays)) { mStyle(dDays[i], { opacity: 0 }); }
-    // for (const i of range(paddingDays + daysInMonth,34)) { mStyle(dDays[i], { opacity: 0 }); }
+		const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric',
+		});
+		const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+		info.dayOffset = paddingDays - 1;
+		//console.log('paddingDays', day, month, year, paddingDays);
+		//console.log('dDays', dDays);
+		for (const i of range(42)) {
+			if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
+		}
+		// for (const i of range(paddingDays)) { mStyle(dDays[i], { opacity: 0 }); }
+		// for (const i of range(paddingDays + daysInMonth,34)) { mStyle(dDays[i], { opacity: 0 }); }
 
-    //restliche tage bis month ende sind ok
-    for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
-      const daySquare = dDays[i - 1]; //document.createElement('div');
-      //const dayString = `${month + 1}/${i - paddingDays}/${year}`;
-      daySquare.innerText = i - paddingDays;
-      let date = new Date(year, month, i - paddingDays);
-      let d = mDiv(daySquare, { box: true, align: 'center', bg: 'beige', rounding:4, w: '95%', hpadding: '2%', hmin: cellWidth - 28 }, calendarGetDayId(date)); //,null,null,'padding');
-      d.addEventListener('click', ev => calendarOpenDay(date, daySquare.lastChild, ev));
-      // d.addEventListener('click', ev => calendarOpenDay(date, dayString, daySquare.lastChild, ev));
-      //dDays[i - 1].appendChild(daySquare);
-    }
-    updateEvents();
-  }
-  function updateEvents() {
-    //console.log('events',events);
-    //console.log('dDays',dDays);
-    for (const e of events) {
-      let dt = new Date(e.date);
-      if (dt.getMonth() != date.getMonth() || dt.getFullYear() != date.getFullYear()) {
-        //console.log('YES!');
-        continue;
-      }
-      // let iday = date.getDate();
-      // iday = date.getUTCDay();
-      // console.log('date',date)
-      // console.log('iday',date.getDay(),date.getUTCDay(),date.getDate(),info.dayOffset)
-      let dDay = dDays[dt.getDate() + info.dayOffset];
-      //console.log('dDay',dDay)
-      let ch = arrChildren(dDay);
-      //console.log('children',ch)
-      let d = ch[0]; //dDay.firstChild; //arrChildren(dDay)[1];
-      let d1 = calendarAddExistingEvent(e, d);
-      e.div = d;
-      //console.log('d',d)
-      //mDiv(d,{bg:'blue'},null,e.title); break;
-    }
-  }
-  setDate(valf(month1, date.getMonth() + 1), valf(year1, date.getFullYear()));
-  populate();
+		//restliche tage bis month ende sind ok
+		for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
+			const daySquare = dDays[i - 1]; //document.createElement('div');
+			//const dayString = `${month + 1}/${i - paddingDays}/${year}`;
+			daySquare.innerText = i - paddingDays;
+			let date = new Date(year, month, i - paddingDays);
+			let d = mDiv(daySquare, { box: true, align: 'center', bg: 'beige', rounding: 4, w: '95%', hpadding: '2%', hmin: cellWidth - 28 }, calendarGetDayId(date)); //,null,null,'padding');
+			d.addEventListener('click', ev => calendarOpenDay(date, daySquare.lastChild, ev));
+			// d.addEventListener('click', ev => calendarOpenDay(date, dayString, daySquare.lastChild, ev));
+			//dDays[i - 1].appendChild(daySquare);
+		}
+		updateEvents();
+	}
+	function updateEvents() {
+		//console.log('events',events);
+		//console.log('dDays',dDays);
+		for (const e of events) {
+			let dt = new Date(e.date);
+			if (dt.getMonth() != date.getMonth() || dt.getFullYear() != date.getFullYear()) {
+				//console.log('YES!');
+				continue;
+			}
+			// let iday = date.getDate();
+			// iday = date.getUTCDay();
+			// console.log('date',date)
+			// console.log('iday',date.getDay(),date.getUTCDay(),date.getDate(),info.dayOffset)
+			let dDay = dDays[dt.getDate() + info.dayOffset];
+			//console.log('dDay',dDay)
+			let ch = arrChildren(dDay);
+			//console.log('children',ch)
+			let d = ch[0]; //dDay.firstChild; //arrChildren(dDay)[1];
+			let d1 = calendarAddExistingEvent(e, d);
+			e.div = d;
+			//console.log('d',d)
+			//mDiv(d,{bg:'blue'},null,e.title); break;
+		}
+	}
+	setDate(valf(month1, date.getMonth() + 1), valf(year1, date.getFullYear()));
+	populate();
 
-  return { container, date, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
+	return { container, date, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
 }
 
 function maButton(caption, handler, dParent, styles, classes) {
-  let a = mLink("javascript:void(0)", dParent, styles, null, caption, classes);
-  a.onclick = handler;
-  if (isdef(styles)) mStyle(a, styles);
-  return a;
+	let a = mLink("javascript:void(0)", dParent, styles, null, caption, classes);
+	a.onclick = handler;
+	if (isdef(styles)) mStyle(a, styles);
+	return a;
 }
 
 function __getMouseCoordinates(ev) {
@@ -157,64 +316,64 @@ function __getMouseCoordinates(ev) {
 
 	return { x: offsetX, y: offsetY };
 }
-function get_mouse_pos(ev,relToElem) {
-  let x = ev.clientX - relToElem.offsetLeft + document.body.scrollLeft;
-  let y = ev.clientY - relToElem.offsetTop - document.body.scrollTop;
-  return ({ x: x, y: y });
+function get_mouse_pos(ev, relToElem) {
+	let x = ev.clientX - relToElem.offsetLeft + document.body.scrollLeft;
+	let y = ev.clientY - relToElem.offsetTop - document.body.scrollTop;
+	return ({ x: x, y: y });
 }
 
-function showImage(key,dParent,styles={}){
+function showImage(key, dParent, styles = {}) {
 	// let d = toElem(dParent);
 	let o = M.superdi[key];
 	//console.log('k', key)
-	try{
-		addKeys({bg:rColor()},styles);
+	try {
+		addKeys({ bg: rColor() }, styles);
 		// let d1=dParent; //mDom(d,{bg:'red',box:true, align:'center',padding:8,margin:8,})
 		mClear(dParent);
-		let [w,h]=[dParent.offsetWidth,dParent.offsetHeight];
+		let [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
 		//console.log('w',w,'h',h)
-		let [sz,fz]=[.9*w,.8*h];
+		let [sz, fz] = [.9 * w, .8 * h];
 
-		let d1 = mDiv(dParent,{position:'relative',w:'100%',h:'100%',overflow:'hidden'});
+		let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
 		mCenterCenterFlex(d1)
 
-		
+
 		if (isdef(o.img)) {
 			//console.log('img',o.img);
 			// mDom(d1, {hmax:'100%',wmax:'100%',h:'auto',w:'auto'}, { tag: 'img', src: `${o.path}` });
-			mDom(d1, {w:'100%',h:'100%','object-fit':'cover','object-position':'center center'}, { tag: 'img', src: `${o.path}` });
+			mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
 		}
-		else if (isdef(o.text)) mDom(d1, { fz: fz,hline:fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+		else if (isdef(o.text)) mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
 		// if (isdef(k.hex)) mDom(d,{fz:200,family:'emoNoto',bg:rColor(),fg:rColor(),display:'inline'},{html:String.fromCharCode('0x'+k.hex)});
-		else if (isdef(o.fa)) mDom(d1, { fz: fz,hline:fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-		else if (isdef(o.ga)) mDom(d1, { fz: fz,hline:fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-	}catch{
-		console.log('k',key,o)
+		else if (isdef(o.fa)) mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+		else if (isdef(o.ga)) mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	} catch {
+		console.log('k', key, o)
 	}
 
 }
 
-function createImageIndex(){
-	let byKey={},byFriendly={},byCat={};
+function createImageIndex() {
+	let byKey = {}, byFriendly = {}, byCat = {};
 	console.log(M.emos.abacus)
-	for(const k in M.emos){
-		let o=M.emos[k];
-		let onew = {friendly:k};
-		addKeys(o,onew);
-		if (isdef(o.img)) onew.path = '../assets/img/emo/'+o.img;
-		byKey[k]=onew;
-		lookupAddIfToList(byFriendly,[k],onew);
-		o.cats.map(x=>lookupAddIfToList(byCat,[x],onew));
+	for (const k in M.emos) {
+		let o = M.emos[k];
+		let onew = { friendly: k };
+		addKeys(o, onew);
+		if (isdef(o.img)) onew.path = '../assets/img/emo/' + o.img;
+		byKey[k] = onew;
+		lookupAddIfToList(byFriendly, [k], onew);
+		o.cats.map(x => lookupAddIfToList(byCat, [x], onew));
 	}
-	for(const k in M.collections){
-		let o=M.collections[k];
-		let onew = {friendly:o.name,cats:[o.cat],img:k+'.'+k.ext};
+	for (const k in M.collections) {
+		let o = M.collections[k];
+		let onew = { friendly: o.name, cats: [o.cat], img: k + '.' + k.ext };
 		onew.path = `../y/${k}.${o.ext}`;
-		byKey[k]=onew;
-		lookupAddIfToList(byFriendly,[o.name],onew);
-		lookupAddIfToList(byCat,[o.cat],onew);
+		byKey[k] = onew;
+		lookupAddIfToList(byFriendly, [o.name], onew);
+		lookupAddIfToList(byCat, [o.cat], onew);
 	}
-	return [byKey,byFriendly,byCat];
+	return [byKey, byFriendly, byCat];
 }
 
 async function uploadImg(img, unique, cat, name) {
@@ -229,7 +388,7 @@ async function uploadImg(img, unique, cat, name) {
 			const formData = new FormData();
 			formData.append('image', blob, unique + '.png');
 			formData.append('category', cat);
-			formData.append('name',name);
+			formData.append('name', name);
 
 			try {
 				const response = await fetch('http://localhost:3000/upload', {
@@ -259,7 +418,7 @@ async function uploadImg(img, unique, cat, name) {
 		});
 	});
 }
-function createRg(dParent, img, handler, title, ){
+function createRg(dParent, img, handler, title,) {
 	let rg = mRadioGroup(d, {}, 'rSizes', 'Crop to: '); mClass(rg, 'input')
 	mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
 	let [w, h] = [img.offsetWidth, img.offsetHeight];
@@ -287,7 +446,7 @@ function createRg(dParent, img, handler, title, ){
 	mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
 	return rg;
 }
-function addCropTool(dParent,img,setSizeFunc) {
+function addCropTool(dParent, img, setSizeFunc) {
 	let d = dParent;
 	let rg = mRadioGroup(d, {}, 'rSizes', 'Crop to: '); mClass(rg, 'input')
 	mRadio('manual', [0, 0], 'rSizes', rg, {}, setSizeFunc, 'rSizes', true)
@@ -300,32 +459,32 @@ function addCropTool(dParent,img,setSizeFunc) {
 	if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
 	else {
 		//card portrait kann man auch machen: take das das nicht passt
-		let [w1,h1]=[w,w/.7];
-		let [w2,h2]=[h*.7,h];
-		if (w1<w2) mRadio(`${w1} x ${h1} (card)`, [w1,h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		else mRadio(`${w2} x ${h2} (card)`, [w2,h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+		let [w1, h1] = [w, w / .7];
+		let [w2, h2] = [h * .7, h];
+		if (w1 < w2) mRadio(`${w1} x ${h1} (card)`, [w1, h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+		else mRadio(`${w2} x ${h2} (card)`, [w2, h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
 	}
 	if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
 	else {
 		//card portrait kann man auch machen: take das das nicht passt
-		let [w1,h1]=[w,w*.7];
-		let [w2,h2]=[h/.7,h];
-		if (w1<w2) mRadio(`${w1} x ${h1} (landscape)`, [w1,h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		else mRadio(`${w2} x ${h2} (landscape)`, [w2,h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+		let [w1, h1] = [w, w * .7];
+		let [w2, h2] = [h / .7, h];
+		if (w1 < w2) mRadio(`${w1} x ${h1} (landscape)`, [w1, h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+		else mRadio(`${w2} x ${h2} (landscape)`, [w2, h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
 	}
 	mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
 	return rg;
 }
-function addResizeTool(dParent,img) {
-	let setSizeFunc = async arr=>{
-		await resizeImage(img,arr[1]);
-		console.log('new size',img.offsetWidth,img.offsetHeight);
+function addResizeTool(dParent, img) {
+	let setSizeFunc = async arr => {
+		await resizeImage(img, arr[1]);
+		console.log('new size', img.offsetWidth, img.offsetHeight);
 	}
 	let d = dParent;
 
 	//let rg = mDom(d,{},{className:'input',type:'numeric',value:img.offsetHeight});
-	mDom(d, {}, { html: 'Resize:' }); 
-	let rg = mDom(d, {}, { tag: 'input', value:img.offsetHeight, name: 'imgheight', type: 'text', className: 'input', placeholder: "<enter height>" });
+	mDom(d, {}, { html: 'Resize:' });
+	let rg = mDom(d, {}, { tag: 'input', value: img.offsetHeight, name: 'imgheight', type: 'text', className: 'input', placeholder: "<enter height>" });
 
 	// let rg = mRadioGroup(d, {}, 'rSizes', 'Resize to: '); mClass(rg, 'input');
 
@@ -355,8 +514,8 @@ function addResizeTool(dParent,img) {
 	//mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
 	return rg;
 }
-function resizePreviewImage(dParent,img) {
-	const bottomRightResizeHandle = mDom(dParent,{},{className:"resize-handle bottom-right"}); 
+function resizePreviewImage(dParent, img) {
+	const bottomRightResizeHandle = mDom(dParent, {}, { className: "resize-handle bottom-right" });
 
 	let isResizing = false;
 	let resizeStartX;
@@ -398,18 +557,18 @@ function resizePreviewImage(dParent,img) {
 
 }
 
-function redrawImage1(img,dParent,x,y,w,h,callback){
+function redrawImage1(img, dParent, x, y, w, h, callback) {
 	console.log('ausschnitt:', x, y, w, h);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 	const ctx = canvas.getContext('2d');
 	ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 	const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 
-	img.onload=()=>{
+	img.onload = () => {
 		img.onload = null;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{w:w,h:h});
+		mStyle(img, { w: w, h: h });
 		mStyle(dParent, { w: w, h: h });
 		callback(); //setRect(0, 0, w, h);
 	}
@@ -417,16 +576,16 @@ function redrawImage1(img,dParent,x,y,w,h,callback){
 	return imgDataUrl;
 
 }
-function redrawImage2(img,dParent,wold,hold,w,h,callback){
+function redrawImage2(img, dParent, wold, hold, w, h, callback) {
 	// let [wold,hold]=['width','height'].map(x=>parseInt(dParent.style[x])); //img.width,img.height];
-	console.log('old dims',wold,hold)
-	console.log('new dims:', w,h);
+	console.log('old dims', wold, hold)
+	console.log('new dims:', w, h);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 	const ctx = canvas.getContext('2d');
 	ctx.drawImage(img, 0, 0, wold, hold, 0, 0, w, h);
 	const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 
-	img.onload=()=>{
+	img.onload = () => {
 		img.onload = null;
 		img.width = w;
 		img.height = h;
@@ -437,15 +596,15 @@ function redrawImage2(img,dParent,wold,hold,w,h,callback){
 	return imgDataUrl;
 
 }
-function __redrawImage(img,x,y,w,h,w2,h2,callback=null) {
+function __redrawImage(img, x, y, w, h, w2, h2, callback = null) {
 	// let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
 	console.log('___\nausschnitt:', x, y, w, h);
-	console.log('dest rect:',0,0,w2,h2)
+	console.log('dest rect:', 0, 0, w2, h2)
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w2, height: h2 });
 	const ctx = canvas.getContext('2d');
 	ctx.drawImage(img, x, y, w, h, 0, 0, w2, h2);
 	const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
-	img.onload=()=>{
+	img.onload = () => {
 		img.onload = null;
 		img.width = w2;
 		img.height = h2;
@@ -463,7 +622,7 @@ function miCropResizer(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, {bg:'#ffffff80',fg:'black'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
 
 	let sz = 25;
 	const centerBox = mDom(cropBox, { bg: 'red', w: sz, h: sz, rounding: '50%', position: 'absolute' });
@@ -478,8 +637,8 @@ function miCropResizer(dParent, img, dButtons) {
 	let cropStartY;
 	function startResize(e) {
 		e.preventDefault(); evNoBubble(e);
-		isResizing = e.target == wHandle ? 'w' :  e.target == hHandle ? 'h':'wh';
-		[resizeStartW,resizeStartH] = [parseInt(cropBox.style.width),parseInt(cropBox.style.height)];
+		isResizing = e.target == wHandle ? 'w' : e.target == hHandle ? 'h' : 'wh';
+		[resizeStartW, resizeStartH] = [parseInt(cropBox.style.width), parseInt(cropBox.style.height)];
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
@@ -493,21 +652,21 @@ function miCropResizer(dParent, img, dButtons) {
 		} else if (isResizing == 'h') {
 			newWidth = img.width;
 			newHeight = e.clientY;
-		} else if (isResizing == 'wh'){
+		} else if (isResizing == 'wh') {
 			newHeight = e.clientY;
 			let aspectRatio = img.width / img.height;
 			newWidth = aspectRatio * newHeight;
 		}
 		[img, dParent].map(x => mStyle(x, { w: newWidth, h: newHeight }));
-		setRect(0,0,newWidth,newHeight);
+		setRect(0, 0, newWidth, newHeight);
 		//messageBox.innerHTML = `size: ${Math.round(newWidth)} x ${Math.round(newHeight)}`;
 	}
 	function stopResize() {
 		isResizing = null;
 		document.removeEventListener('mousemove', resize);
 		document.removeEventListener('mouseup', stopResize);
-		let [wnew,hnew]=[parseInt(cropBox.style.width),parseInt(cropBox.style.height)]
-		redrawImage(img,dParent,0,0,resizeStartW,resizeStartH,wnew,hnew,()=>setRect(0,0,wnew,hnew))
+		let [wnew, hnew] = [parseInt(cropBox.style.width), parseInt(cropBox.style.height)]
+		redrawImage(img, dParent, 0, 0, resizeStartW, resizeStartH, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 		// redrawImage2(img,dParent,resizeStartW,resizeStartH,wnew,hnew,()=>setRect(0,0,wnew,hnew))
 		//resizeImage(img, parseInt(cropBox.style.height))
 	}
@@ -605,7 +764,7 @@ function miCropResizer(dParent, img, dButtons) {
 		// 	mStyle(dParent, { w: w, h: h, display:'inline' });
 		// });
 		//redrawImage1(img,dParent,x,y,w,h,()=>setRect(0,0,w,h))
-		redrawImage(img,dParent,x,y,w,h,w,h,()=>setRect(0,0,w,h))
+		redrawImage(img, dParent, x, y, w, h, w, h, () => setRect(0, 0, w, h))
 
 		// console.log('ausschnitt:', x, y, w, h);
 		// let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
@@ -681,7 +840,7 @@ function miCropResizer(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, {bg:'#ffffff80',fg:'black'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
 	const centerBox = mDom(cropBox, { bg: 'red', w: 10, h: 10, rounding: '50%', position: 'absolute' });
 	let isCropping = false;
 	let cropStartX;
@@ -695,7 +854,7 @@ function miCropResizer(dParent, img, dButtons) {
 	let isResizing = null;
 	function startResize(e) {
 		e.preventDefault(); evNoBubble(e);
-		isResizing = e.target == wHandle ? 'w' :  e.target == hHandle ? 'h':'wh';
+		isResizing = e.target == wHandle ? 'w' : e.target == hHandle ? 'h' : 'wh';
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
@@ -709,13 +868,13 @@ function miCropResizer(dParent, img, dButtons) {
 		} else if (isResizing == 'h') {
 			newWidth = img.width;
 			newHeight = e.clientY;
-		} else if (isResizing == 'wh'){
+		} else if (isResizing == 'wh') {
 			newHeight = e.clientY;
 			let aspectRatio = img.width / img.height;
 			newWidth = aspectRatio * newHeight;
 		}
 		[img, dParent].map(x => mStyle(x, { w: newWidth, h: newHeight }));
-		setRect(0,0,newWidth,newHeight);
+		setRect(0, 0, newWidth, newHeight);
 		//messageBox.innerHTML = `size: ${Math.round(newWidth)} x ${Math.round(newHeight)}`;
 	}
 	function stopResize() {
@@ -875,13 +1034,13 @@ function miCropResizer(dParent, img, dButtons) {
 		tool: tool,
 	}
 }
-function miResizer(dParent, img, dButtons){ //}, cropBox, messageBox) {
+function miResizer(dParent, img, dButtons) { //}, cropBox, messageBox) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	//console.log('w', worig, 'h', horig);
 	//console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, {bg:'#ffffff80',fg:'black'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
 	let sz = 25;
 	const wHandle = mDom(cropBox, { cursor: 'ew-resize', bg: 'red', w: sz, h: sz, right: -sz / 2, top: '50%', rounding: '50%', position: 'absolute' });
 	const hHandle = mDom(cropBox, { cursor: 'ns-resize', bg: 'red', w: sz, h: sz, left: '50%', bottom: -sz / 2, rounding: '50%', position: 'absolute' });
@@ -892,7 +1051,7 @@ function miResizer(dParent, img, dButtons){ //}, cropBox, messageBox) {
 
 	function startResize(e) {
 		e.preventDefault(); evNoBubble(e);
-		isResizing = e.target == wHandle ? 'w' :  e.target == hHandle ? 'h':'wh';
+		isResizing = e.target == wHandle ? 'w' : e.target == hHandle ? 'h' : 'wh';
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
@@ -914,10 +1073,10 @@ function miResizer(dParent, img, dButtons){ //}, cropBox, messageBox) {
 				let aspectRatio = img.width / img.height;
 				newWidth = aspectRatio * newHeight;
 			}
-		} else if (isResizing == 'wh'){
+		} else if (isResizing == 'wh') {
 			newHeight = e.clientY;
-				let aspectRatio = img.width / img.height;
-				newWidth = aspectRatio * newHeight;
+			let aspectRatio = img.width / img.height;
+			newWidth = aspectRatio * newHeight;
 		}
 		[img, cropBox, dParent].map(x => mStyle(x, { w: newWidth, h: newHeight }));
 		messageBox.innerHTML = `size: ${Math.round(newWidth)} x ${Math.round(newHeight)}`;
@@ -967,30 +1126,30 @@ function miResizer(dParent, img, dButtons){ //}, cropBox, messageBox) {
 	}
 }
 function miResizer(dParent, img, dButtons) {
-	let [worig, horig] = [img.offsetWidth, img.offsetHeight]; 
+	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	console.log('w', worig, 'h', horig);
-	console.log('dParent',dParent)
+	console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
-	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: worig, h: horig }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
 	const messageBox = mDom(cropBox);
-	let sz=25;
-	const wHandle = mDom(cropBox,{cursor:'ew-resize',bg:'red',w:sz,h:sz,left:'100%',top:'50%',rounding:'50%',position:'absolute'});
-	const hHandle = mDom(cropBox,{cursor:'ns-resize',bg:'red',w:sz,h:sz,left:'50%',top:'100%',rounding:'50%',position:'absolute'});
+	let sz = 25;
+	const wHandle = mDom(cropBox, { cursor: 'ew-resize', bg: 'red', w: sz, h: sz, left: '100%', top: '50%', rounding: '50%', position: 'absolute' });
+	const hHandle = mDom(cropBox, { cursor: 'ns-resize', bg: 'red', w: sz, h: sz, left: '50%', top: '100%', rounding: '50%', position: 'absolute' });
 
 	let isResizingW = false;
 	let isResizingH = false;
 
 	function startResizeW(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		isResizingW = true;
 		document.addEventListener('mousemove', resizeW);
 		document.addEventListener('mouseup', stopResizeW);
 	}
 	function resizeW(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		if (isResizingW) {
 
-			let x=e.clientX;//,y=e.clientY;
+			let x = e.clientX;//,y=e.clientY;
 
 			const width = x; //initialWidth + (e.clientX - resizeStartX);
 			const aspectRatio = img.height / img.width;
@@ -1010,20 +1169,20 @@ function miResizer(dParent, img, dButtons) {
 		isResizingW = false;
 		document.removeEventListener('mousemove', resizeW);
 		document.removeEventListener('mouseup', stopResizeW);
-		resizeImage(img,parseInt(cropBox.style.height))
+		resizeImage(img, parseInt(cropBox.style.height))
 		// cropImage();
 	}
 	function startResizeH(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		isResizingH = true;
 		document.addEventListener('mousemove', resizeH);
 		document.addEventListener('mouseup', stopResizeH);
 	}
 	function resizeH(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		if (isResizingH) {
 
-			let y=e.clientY;
+			let y = e.clientY;
 
 			const height = y; //initialWidth + (e.clientX - resizeStartX);
 			const aspectRatio = img.width / img.height;
@@ -1043,30 +1202,30 @@ function miResizer(dParent, img, dButtons) {
 		isResizingH = false;
 		document.removeEventListener('mousemove', resizeH);
 		document.removeEventListener('mouseup', stopResizeH);
-		resizeImage(img,parseInt(cropBox.style.height))
+		resizeImage(img, parseInt(cropBox.style.height))
 		// cropImage();
 	}
-	function getRect(){ return ['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));}
-	function setRect(left,top,width,height){
-		mStyle(cropBox,{left:left,top:top,w:width,h:height});
+	function getRect() { return ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x])); }
+	function setRect(left, top, width, height) {
+		mStyle(cropBox, { left: left, top: top, w: width, h: height });
 		messageBox.innerHTML = `size: ${width} x ${height}`;
 	}
-	function setSize(wnew,hnew){
-		if (isList(wnew)) [wnew,hnew]=wnew;
-		console.log('sz',wnew,hnew);
-		if (wnew == 0 || hnew == 0){
-			setRect(0,0,worig,horig);
+	function setSize(wnew, hnew) {
+		if (isList(wnew)) [wnew, hnew] = wnew;
+		console.log('sz', wnew, hnew);
+		if (wnew == 0 || hnew == 0) {
+			setRect(0, 0, worig, horig);
 			return;
 		}
-		let [x,y,w,h]=getRect(); 
-		let [cx,cy] = [x+w/2,y+h/2];
-		let [xnew,ynew]=[cx-(wnew/2),cy-(hnew/2)];
-		setRect(xnew,ynew,wnew,hnew);
+		let [x, y, w, h] = getRect();
+		let [cx, cy] = [x + w / 2, y + h / 2];
+		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
+		setRect(xnew, ynew, wnew, hnew);
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
 	function hide_cropbox() { cropBox.style.display = 'none' }
 
-	setRect(0,0,worig,horig);
+	setRect(0, 0, worig, horig);
 	wHandle.addEventListener('mousedown', startResizeW);
 	hHandle.addEventListener('mousedown', startResizeH);
 	//var tool = addResizeTool(dButtons,img,setSize);
@@ -1085,30 +1244,30 @@ function miResizer(dParent, img, dButtons) {
 }
 
 function miResizer(dParent, img, dButtons) {
-	let [worig, horig] = [img.offsetWidth, img.offsetHeight]; 
+	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	console.log('w', worig, 'h', horig);
-	console.log('dParent',dParent)
+	console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
-	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: worig, h: horig }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
 	const messageBox = mDom(cropBox);
-	let sz=25;
-	const wHandle = mDom(cropBox,{cursor:'ew-resize',bg:'red',w:sz,h:sz,left:'100%',top:'50%',rounding:'50%',position:'absolute'});
-	const hHandle = mDom(cropBox,{cursor:'ns-resize',bg:'red',w:sz,h:sz,left:'50%',top:'100%',rounding:'50%',position:'absolute'});
+	let sz = 25;
+	const wHandle = mDom(cropBox, { cursor: 'ew-resize', bg: 'red', w: sz, h: sz, left: '100%', top: '50%', rounding: '50%', position: 'absolute' });
+	const hHandle = mDom(cropBox, { cursor: 'ns-resize', bg: 'red', w: sz, h: sz, left: '50%', top: '100%', rounding: '50%', position: 'absolute' });
 
 	let isResizingW = false;
 	let isResizingH = false;
 
 	function startResizeW(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		isResizingW = true;
 		document.addEventListener('mousemove', resizeW);
 		document.addEventListener('mouseup', stopResizeW);
 	}
 	function resizeW(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		if (isResizingW) {
 
-			let x=e.clientX;//,y=e.clientY;
+			let x = e.clientX;//,y=e.clientY;
 
 			const width = x; //initialWidth + (e.clientX - resizeStartX);
 			const aspectRatio = img.height / img.width;
@@ -1128,20 +1287,20 @@ function miResizer(dParent, img, dButtons) {
 		isResizingW = false;
 		document.removeEventListener('mousemove', resizeW);
 		document.removeEventListener('mouseup', stopResizeW);
-		resizeImage(img,parseInt(cropBox.style.height))
+		resizeImage(img, parseInt(cropBox.style.height))
 		// cropImage();
 	}
 	function startResizeH(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		isResizingH = true;
 		document.addEventListener('mousemove', resizeH);
 		document.addEventListener('mouseup', stopResizeH);
 	}
 	function resizeH(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		if (isResizingH) {
 
-			let y=e.clientY;
+			let y = e.clientY;
 
 			const height = y; //initialWidth + (e.clientX - resizeStartX);
 			const aspectRatio = img.width / img.height;
@@ -1161,30 +1320,30 @@ function miResizer(dParent, img, dButtons) {
 		isResizingH = false;
 		document.removeEventListener('mousemove', resizeH);
 		document.removeEventListener('mouseup', stopResizeH);
-		resizeImage(img,parseInt(cropBox.style.height))
+		resizeImage(img, parseInt(cropBox.style.height))
 		// cropImage();
 	}
-	function getRect(){ return ['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));}
-	function setRect(left,top,width,height){
-		mStyle(cropBox,{left:left,top:top,w:width,h:height});
+	function getRect() { return ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x])); }
+	function setRect(left, top, width, height) {
+		mStyle(cropBox, { left: left, top: top, w: width, h: height });
 		messageBox.innerHTML = `size: ${width} x ${height}`;
 	}
-	function setSize(wnew,hnew){
-		if (isList(wnew)) [wnew,hnew]=wnew;
-		console.log('sz',wnew,hnew);
-		if (wnew == 0 || hnew == 0){
-			setRect(0,0,worig,horig);
+	function setSize(wnew, hnew) {
+		if (isList(wnew)) [wnew, hnew] = wnew;
+		console.log('sz', wnew, hnew);
+		if (wnew == 0 || hnew == 0) {
+			setRect(0, 0, worig, horig);
 			return;
 		}
-		let [x,y,w,h]=getRect(); 
-		let [cx,cy] = [x+w/2,y+h/2];
-		let [xnew,ynew]=[cx-(wnew/2),cy-(hnew/2)];
-		setRect(xnew,ynew,wnew,hnew);
+		let [x, y, w, h] = getRect();
+		let [cx, cy] = [x + w / 2, y + h / 2];
+		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
+		setRect(xnew, ynew, wnew, hnew);
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
 	function hide_cropbox() { cropBox.style.display = 'none' }
 
-	setRect(0,0,worig,horig);
+	setRect(0, 0, worig, horig);
 	wHandle.addEventListener('mousedown', startResizeW);
 	hHandle.addEventListener('mousedown', startResizeH);
 	//var tool = addResizeTool(dButtons,img,setSize);
@@ -1203,14 +1362,14 @@ function miResizer(dParent, img, dButtons) {
 }
 
 function mCropResizer(dParent, img, dButtons) {
-	let [worig, horig] = [img.offsetWidth, img.offsetHeight]; 
+	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	console.log('w', worig, 'h', horig);
-	console.log('dParent',dParent)
+	console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
-	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: worig, h: horig }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
 	const messageBox = mDom(cropBox);
-	const centerBox = mDom(cropBox,{bg:'red',w:10,h:10,rounding:'50%',position:'absolute'});
-	const bottomRightResizeHandle = mDom(cropBox,{left:worig,top:horig},{className:"resize-handle bottom-right"}); 
+	const centerBox = mDom(cropBox, { bg: 'red', w: 10, h: 10, rounding: '50%', position: 'absolute' });
+	const bottomRightResizeHandle = mDom(cropBox, { left: worig, top: horig }, { className: "resize-handle bottom-right" });
 
 	let isCropping = false;
 	let cropStartX;
@@ -1219,16 +1378,16 @@ function mCropResizer(dParent, img, dButtons) {
 	let isResizing = false;
 
 	function startResize(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		stopCrop();
 		isResizing = true;
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
 	function resize(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		if (isResizing) {
-			let x=e.clientX,y=e.clientY;
+			let x = e.clientX, y = e.clientY;
 
 			const width = x; //initialWidth + (e.clientX - resizeStartX);
 			const height = y; //initialHeight + (e.clientY - resizeStartY);
@@ -1267,7 +1426,7 @@ function mCropResizer(dParent, img, dButtons) {
 			const height = Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = Math.min(mouseY, cropStartY);
-			setRect(left,top,width,height);
+			setRect(left, top, width, height);
 		}
 	}
 	function cropX(e) {
@@ -1279,25 +1438,25 @@ function mCropResizer(dParent, img, dButtons) {
 			const height = 300; //Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = 0; //Math.min(mouseY, cropStartY);
-			setRect(left,top,width,height);
+			setRect(left, top, width, height);
 		}
 	}
 	function cropCenter(e) {
-    e.preventDefault();
-    if (isCropping) {
-        const mouseX = e.clientX - dParent.offsetLeft;
-        const mouseY = e.clientY - dParent.offsetTop;
-        const radiusX = Math.abs(mouseX - cropStartX);
-        const radiusY = Math.abs(mouseY - cropStartY);
-        const centerX = cropStartX; // (mouseX + cropStartX) / 2;
-        const centerY = cropStartY; //(mouseY + cropStartY) / 2;
-        
-        const width = radiusX * 2;
-        const height = radiusY * 2;
-        const left = centerX - radiusX;
-        const top = centerY - radiusY;
-        setRect(left,top,width,height);
-    }
+		e.preventDefault();
+		if (isCropping) {
+			const mouseX = e.clientX - dParent.offsetLeft;
+			const mouseY = e.clientY - dParent.offsetTop;
+			const radiusX = Math.abs(mouseX - cropStartX);
+			const radiusY = Math.abs(mouseY - cropStartY);
+			const centerX = cropStartX; // (mouseX + cropStartX) / 2;
+			const centerY = cropStartY; //(mouseY + cropStartY) / 2;
+
+			const width = radiusX * 2;
+			const height = radiusY * 2;
+			const left = centerX - radiusX;
+			const top = centerY - radiusY;
+			setRect(left, top, width, height);
+		}
 	}
 	function stopCrop() {
 		isCropping = false;
@@ -1305,42 +1464,42 @@ function mCropResizer(dParent, img, dButtons) {
 		document.removeEventListener('mouseup', stopCrop);
 	}
 	function cropImage() {
-		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
-		console.log('x,y,w,h',x,y,w,h);
-		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
+		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
+		console.log('x,y,w,h', x, y, w, h);
+		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 		img.src = imgDataUrl;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: w, h: h });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return imgDataUrl;
 	}
 	function finalize() {
-		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
-		console.log('x,y,w,h',x,y,w,h);
-		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
+		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
+		console.log('x,y,w,h', x, y, w, h);
+		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 		img.src = imgDataUrl;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: w, h: h });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return imgDataUrl;
 	}
-	function getRect(){ return ['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));}
-	function setRect(left,top,width,height){
+	function getRect() { return ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x])); }
+	function setRect(left, top, width, height) {
 		cropBox.style.width = `${width}px`;
 		cropBox.style.height = `${height}px`;
 		cropBox.style.left = `${left}px`;
 		cropBox.style.top = `${top}px`;
 		messageBox.innerHTML = `size: ${width} x ${height}`;
 		//let [cx,cy] = [(left+width)/2,(top+height)/2];
-		mStyle(centerBox,{left:width/2-5,top:height/2-5});
+		mStyle(centerBox, { left: width / 2 - 5, top: height / 2 - 5 });
 		//cropBox.innerHTML = `size: ${width} x ${height}`;
 		//mach roten punkt im center
 
@@ -1350,25 +1509,25 @@ function mCropResizer(dParent, img, dButtons) {
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
 	function hide_cropbox() { cropBox.style.display = 'none' }
-	function setSize(wnew,hnew){
-		if (isList(wnew)) [wnew,hnew]=wnew;
-		console.log('sz',wnew,hnew);
-		if (wnew == 0 || hnew == 0){
-			setRect(0,0,worig,horig);
+	function setSize(wnew, hnew) {
+		if (isList(wnew)) [wnew, hnew] = wnew;
+		console.log('sz', wnew, hnew);
+		if (wnew == 0 || hnew == 0) {
+			setRect(0, 0, worig, horig);
 			return;
 		}
-		let [x,y,w,h]=getRect(); 
-		let [cx,cy] = [x+w/2,y+h/2];
+		let [x, y, w, h] = getRect();
+		let [cx, cy] = [x + w / 2, y + h / 2];
 
-		console.log('old rect',x,y,w,h,cx,cy);
+		console.log('old rect', x, y, w, h, cx, cy);
 
-		let [xnew,ynew]=[cx-(wnew/2),cy-(hnew/2)];
+		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
 
 
-		setRect(xnew,ynew,wnew,hnew);
+		setRect(xnew, ynew, wnew, hnew);
 
 	}
-	setRect(0,0,worig,horig);
+	setRect(0, 0, worig, horig);
 	bottomRightResizeHandle.addEventListener('mousedown', startResize);
 	cropBox.addEventListener('mousedown', startCrop);
 	//addTool();
@@ -1398,9 +1557,9 @@ async function onDropPreviewImage(url) {
 		UI.cropper = mCropper(dParent, img, dButtons);
 
 		let d = dButtons;
-		UI.cropTool = addCropTool(dButtons,img,UI.cropper.setSize);
+		UI.cropTool = addCropTool(dButtons, img, UI.cropper.setSize);
 
-		resizePreviewImage(dParent,img);
+		resizePreviewImage(dParent, img);
 
 		//UI.resizeTool = addResizeTool(dButtons,img,resizeImage);
 		mDom(d, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
@@ -1416,9 +1575,9 @@ async function onDropPreviewImage(url) {
 function mCropper(dParent, img) {
 	let [w, h] = [img.offsetWidth, img.offsetHeight]; //img.offsetY,img.offsetX,
 	console.log('w', w, 'h', h);
-	console.log('dParent',dParent)
+	console.log('dParent', dParent)
 	mStyle(dParent, { w: w, h: h, position: 'relative' });
-	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: w, h: h }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: w, h: h }, { className: 'crop-box' });
 	//const cropBox = mDom(dParent, { w: w, h: h }, { className: 'crop-box' });
 	let isCropping = false;
 	let cropStartX;
@@ -1470,22 +1629,22 @@ function mCropper(dParent, img) {
 		img.src = croppedImageDataUrl;
 		img.width = cropWidth;
 		img.height = cropHeight;
-		mStyle(img,{position:'absolute',top:0,left:0,w:cropWidth,h:cropHeight});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: cropWidth, h: cropHeight });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return croppedImageDataUrl;
 	}
 	function cropImage() {
-		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
-		console.log('x,y,w,h',x,y,w,h);
-		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
+		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
+		console.log('x,y,w,h', x, y, w, h);
+		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 		img.src = imgDataUrl;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: w, h: h });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return imgDataUrl;
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
@@ -1565,37 +1724,37 @@ function mCropper(dParent, img) {
 	}
 }
 async function loadSrcAndComplete(path, dParent, dButtons) {
-  return new Promise(async(resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		dParent.innerHTML = '';
-		let img = UI.imgElem = mDom(dParent, { box:true }, { tag: 'img'});
+		let img = UI.imgElem = mDom(dParent, { box: true }, { tag: 'img' });
 		//let img = UI.imgElem = mDom(dParent, { position: 'absolute', left: 0, box:true }, { tag: 'img', className: 'previewImage' });
-    img.onload = () => {
+		img.onload = () => {
 			img.onload = null;
 			const aspectRatio = img.width / img.height;
 			const h = 300;
 			const w = aspectRatio * h;
 			//mStyle(img,{left: 0, h:h, w:w})
 			UI.cropper = mCropper(dParent, img);
-			mButton('Crop',UI.cropper.crop,dButtons,{w:120},'input');
-      resolve(img);
-    };
+			mButton('Crop', UI.cropper.crop, dButtons, { w: 120 }, 'input');
+			resolve(img);
+		};
 
-    img.onerror = (error) => {
-      // Handle loading errors, if necessary
-      reject(error);
-    };
+		img.onerror = (error) => {
+			// Handle loading errors, if necessary
+			reject(error);
+		};
 
-    img.src = path;
+		img.src = path;
 		//await resizeImage(img,300);
 		//UI.cropper = mCropper(UI.dDrop, imgElem);
-    //resolve(img);
-  });
+		//resolve(img);
+	});
 }
 
 function loadImage(path, dParent, dButtons) {
 	dParent.innerHTML = '';
-	let img = UI.imgElem = mDom(dParent, { position: 'absolute', left: 0, box:true }, { tag: 'img', src: path, height: 300, className: 'previewImage' });
-	
+	let img = UI.imgElem = mDom(dParent, { position: 'absolute', left: 0, box: true }, { tag: 'img', src: path, height: 300, className: 'previewImage' });
+
 
 	img.onload = () => {
 		img.onload = null;
@@ -2112,169 +2271,199 @@ function uploadImage(imgElem, cat, name, ev) {
 
 
 async function uploadImageToServer(dataUrl) {
-  try {
-    // Convert dataUrl to Blob (binary data)
-    //dataUrl = 'data:image/png;base64,'+dataUrl;
-    console.log('data',dataUrl.substring(0,100))
-    const blobData = await fetch(dataUrl).then(response => response.blob());
+	try {
+		// Convert dataUrl to Blob (binary data)
+		//dataUrl = 'data:image/png;base64,'+dataUrl;
+		console.log('data', dataUrl.substring(0, 100))
+		const blobData = await fetch(dataUrl).then(response => response.blob());
 
-    // Create FormData object and append the Blob data
-    const formData = new FormData();
-    formData.append('image', blobData, 'image.png'); // 'image' is the field name on the server
+		// Create FormData object and append the Blob data
+		const formData = new FormData();
+		formData.append('image', blobData, 'image.png'); // 'image' is the field name on the server
 
-    // Send POST request to the server
-    const response = await fetch('http://localhost:3000/save', {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json', },
-      body: formData,
-    });
+		// Send POST request to the server
+		const response = await fetch('http://localhost:3000/save', {
+			method: 'POST',
+			mode: 'cors',
+			headers: { 'Content-Type': 'application/json', },
+			body: formData,
+		});
 
-    // Handle the server response as needed
-    const result = await response.json();
-    console.log('Server Response:', result);
-  } catch (error) {
-    console.error('Error uploading image:', error);
-  }
+		// Handle the server response as needed
+		const result = await response.json();
+		console.log('Server Response:', result);
+	} catch (error) {
+		console.error('Error uploading image:', error);
+	}
 }
 
 async function _uploadDataUrl(dataUrl) {
-  console.log(dataUrl);
-  const response = await fetch('http://localhost:3000/save', {
-    method: 'POST',
-    mode: 'cors',
-    headers: { 'Content-Type': 'application/json', },
-    body: JSON.stringify({ dataUrl }),
-  });
+	console.log(dataUrl);
+	const response = await fetch('http://localhost:3000/save', {
+		method: 'POST',
+		mode: 'cors',
+		headers: { 'Content-Type': 'application/json', },
+		body: JSON.stringify({ dataUrl }),
+	});
 
-  const result = await response.text();
-  console.log(result);
+	const result = await response.text();
+	console.log(result);
 }
 
 
 
 //#************************************************************************************
 function createImageFromDataURL(dataUrl) {
-  const img = new Image();
-  img.src = dataUrl;
-  return img;
+	const img = new Image();
+	img.src = dataUrl;
+	return img;
 }
 
 async function test1() {
-  test0();
-  //jetzt lade das file hoch zu nodejs
-  imageToDataURLWithResizeHeight('../test0/ball1.png', 300, test1_weiter);
+	test0();
+	//jetzt lade das file hoch zu nodejs
+	imageToDataURLWithResizeHeight('../test0/ball1.png', 300, test1_weiter);
 }
 function test1_weiter(x) {
-  console.log('habs gemacht!', x);
+	console.log('habs gemacht!', x);
 
 
 }
 async function test0() {
-  let d = mBy('dTest');
-  mDom(d, { h: 200 }, { tag: 'img', src: '../test0/ball1.png' });
+	let d = mBy('dTest');
+	mDom(d, { h: 200 }, { tag: 'img', src: '../test0/ball1.png' });
 }
 
 function imageToDataURLWithResizeHeight(src, h, callback) {
-  const img = new Image();
-  img.crossOrigin = "Anonymous"; // Enable cross-origin resource sharing (CORS) for the image
-  img.onload = function () {
-    // Calculate new width and height while preserving aspect ratio
-    const aspectRatio = img.width / img.height;
-    const newHeight = h;
-    const newWidth = aspectRatio * newHeight;
+	const img = new Image();
+	img.crossOrigin = "Anonymous"; // Enable cross-origin resource sharing (CORS) for the image
+	img.onload = function () {
+		// Calculate new width and height while preserving aspect ratio
+		const aspectRatio = img.width / img.height;
+		const newHeight = h;
+		const newWidth = aspectRatio * newHeight;
 
-    const canvas = mDom('dTest', {}, { tag: 'canvas', id: 'canvas1' }); // document.createElement('canvas');
-    canvas.width = newWidth;
-    canvas.height = newHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, newWidth, newHeight);
-    const dataUrl = canvas.toDataURL('image/png');
-    callback(dataUrl);
-  };
-  img.src = src;
+		const canvas = mDom('dTest', {}, { tag: 'canvas', id: 'canvas1' }); // document.createElement('canvas');
+		canvas.width = newWidth;
+		canvas.height = newHeight;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, newWidth, newHeight);
+		const dataUrl = canvas.toDataURL('image/png');
+		callback(dataUrl);
+	};
+	img.src = src;
 }
 
 function imageToDataURL(src, callback) {
-  const img = new Image();
-  img.crossOrigin = "Anonymous"; // Enable cross-origin resource sharing (CORS) for the image
-  img.onload = function () {
-    const canvas = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-    const dataUrl = canvas.toDataURL('image/png');
-    callback(dataUrl);
-  };
-  img.src = src;
+	const img = new Image();
+	img.crossOrigin = "Anonymous"; // Enable cross-origin resource sharing (CORS) for the image
+	img.onload = function () {
+		const canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, img.width, img.height);
+		const dataUrl = canvas.toDataURL('image/png');
+		callback(dataUrl);
+	};
+	img.src = src;
 }
 
 function imageToDataURL_(file, callback) {
-  const reader = new FileReader();
-  reader.onloadend = function () {
-    const img = new Image();
-    img.onload = function () {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, img.width, img.height);
-      const dataUrl = canvas.toDataURL('image/png');
-      callback(dataUrl);
-    };
-    img.src = reader.result;
-  };
-  reader.readAsDataURL(file);
+	const reader = new FileReader();
+	reader.onloadend = function () {
+		const img = new Image();
+		img.onload = function () {
+			const canvas = document.createElement('canvas');
+			canvas.width = img.width;
+			canvas.height = img.height;
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(img, 0, 0, img.width, img.height);
+			const dataUrl = canvas.toDataURL('image/png');
+			callback(dataUrl);
+		};
+		img.src = reader.result;
+	};
+	reader.readAsDataURL(file);
 }
 
 
 
 //********************************************* */
+function addTool(dParent, img, setSizeFunc) {
+	let d = dParent;
+	let rg = mRadioGroup(d, {}, 'rSizes', 'Crop to: '); mClass(rg, 'input')
+	mRadio('manual', [0, 0], 'rSizes', rg, {}, setSizeFunc, 'rSizes', true)
+	let [w, h] = [img.offsetWidth, img.offsetHeight];
+	if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	else {
+		//card portrait kann man auch machen: take das das nicht passt
+		let [w1, h1] = [w, w / .7];
+		let [w2, h2] = [h * .7, h];
+		if (w1 < w2) mRadio(`${w1} x ${h1} (card)`, [w1, h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+		else mRadio(`${w2} x ${h2} (card)`, [w2, h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	}
+	if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	else {
+		//card portrait kann man auch machen: take das das nicht passt
+		let [w1, h1] = [w, w * .7];
+		let [w2, h2] = [h / .7, h];
+		if (w1 < w2) mRadio(`${w1} x ${h1} (landscape)`, [w1, h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+		else mRadio(`${w2} x ${h2} (landscape)`, [w2, h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
+	}
+	mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
+	return rg;
+}
+
 async function test1() {
-  //mBy('button1').addEventListener('click',saveCanvas)
-  //window.onbeforeunload = function() {    return "Dude, are you sure you want to leave? Think of the kittens!";  }
+	//mBy('button1').addEventListener('click',saveCanvas)
+	//window.onbeforeunload = function() {    return "Dude, are you sure you want to leave? Think of the kittens!";  }
 
-  //console.log('test1.....')
-  html2canvas(document.querySelector("#dTest")).then(canvas => {
-    canvas.id = 'canvas1';
-    document.body.appendChild(canvas);
-  });
+	//console.log('test1.....')
+	html2canvas(document.querySelector("#dTest")).then(canvas => {
+		canvas.id = 'canvas1';
+		document.body.appendChild(canvas);
+	});
 
-  let x = localStorage.getItem('hallo');
-  if (isdef(x)) console.log(JSON.parse(x));
-  // if (nundef(x))  test1(); else console.log(JSON.parse(x));
-  localStorage.removeItem('hallo');
+	let x = localStorage.getItem('hallo');
+	if (isdef(x)) console.log(JSON.parse(x));
+	// if (nundef(x))  test1(); else console.log(JSON.parse(x));
+	localStorage.removeItem('hallo');
 }
 
 function onclickButton(ev) {
-  // DA.TOTO=setInterval(function(){
-  //   window.location.reload();
-  //   window.stop();
-  // },100)
-  ev.preventDefault();
-  let elem = mBy('canvas1');
-  console.log('elem', elem);
-  saveCanvas(ev);
-  return false;
+	// DA.TOTO=setInterval(function(){
+	//   window.location.reload();
+	//   window.stop();
+	// },100)
+	ev.preventDefault();
+	let elem = mBy('canvas1');
+	console.log('elem', elem);
+	saveCanvas(ev);
+	return false;
 }
 
 async function saveCanvas(ev) {
-  ev.preventDefault();
-  const canvas = document.getElementById('canvas1');
-  const dataURL = canvas.toDataURL('image/png');
-  const response = await fetch('http://localhost:3000/save', {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ dataURL }),
-  });
+	ev.preventDefault();
+	const canvas = document.getElementById('canvas1');
+	const dataURL = canvas.toDataURL('image/png');
+	const response = await fetch('http://localhost:3000/save', {
+		method: 'POST',
+		mode: 'cors',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ dataURL }),
+	});
 
-  const result = await response.json();
-  console.log(result);
-  localStorage.setItem('hallo', JSON.stringify(result));
+	const result = await response.json();
+	console.log(result);
+	localStorage.setItem('hallo', JSON.stringify(result));
 }
 
 
@@ -2283,48 +2472,48 @@ async function saveCanvas(ev) {
 
 //#region nodejs
 app.post('/upload', //WORKS!!!!!!!
-    fileUpload({ createParentPath: true }),
-    filesPayloadExists,
-    fileExtLimiter(['.png', '.jpg', '.jpeg']),
-    fileSizeLimiter,
-    (req, res) => {
-        const files = req.files;
-        //console.log(files);
-				console.log(Object.keys(req).join('\n'));
-				console.log('____________ BODY')
-				console.log(Object.keys(req.body).join('\n'));
-				console.log('____________ FILES');
-				console.log(Object.keys(req.files).join('\n'));
+	fileUpload({ createParentPath: true }),
+	filesPayloadExists,
+	fileExtLimiter(['.png', '.jpg', '.jpeg']),
+	fileSizeLimiter,
+	(req, res) => {
+		const files = req.files;
+		//console.log(files);
+		console.log(Object.keys(req).join('\n'));
+		console.log('____________ BODY')
+		console.log(Object.keys(req.body).join('\n'));
+		console.log('____________ FILES');
+		console.log(Object.keys(req.files).join('\n'));
 
-        Object.keys(files).forEach(key => {
-            const filepath = path.join(__dirname, '..','y', files[key].name)
-            files[key].mv(filepath, (err) => {
-                if (err) return res.status(500).json({ status: "error", message: err })
-            })
-        })
+		Object.keys(files).forEach(key => {
+			const filepath = path.join(__dirname, '..', 'y', files[key].name)
+			files[key].mv(filepath, (err) => {
+				if (err) return res.status(500).json({ status: "error", message: err })
+			})
+		})
 
-        return res.json({ status: 'success', message: Object.keys(files).toString() })
-    }
+		return res.json({ status: 'success', message: Object.keys(files).toString() })
+	}
 )
 
 
 app.get('/submit', (req, res) => {
-  const base64data = req.query.data;
-  const decodedData = Buffer.from(base64data, 'base64');//.toString('utf-8');
-  console.log('Decoded Base64 Data:', decodedData);
-	   // Specify the file path where you want to save the image
-		 const filePath = path.join(__dirname, '..', 'y', 'image.png');
+	const base64data = req.query.data;
+	const decodedData = Buffer.from(base64data, 'base64');//.toString('utf-8');
+	console.log('Decoded Base64 Data:', decodedData);
+	// Specify the file path where you want to save the image
+	const filePath = path.join(__dirname, '..', 'y', 'image.png');
 
-		 // Write the decoded data to the file
-		 fs.writeFile(filePath, decodedData, 'base64', (err) => {
-			 if (err) {
-				 console.error(err);
-				 res.status(500).json({ error: 'Error saving file' });
-			 } else {
-				 console.log('File saved successfully');
-				 res.json({ message: 'Data processed and saved as image.png' });
-			 }
-		 });
+	// Write the decoded data to the file
+	fs.writeFile(filePath, decodedData, 'base64', (err) => {
+		if (err) {
+			console.error(err);
+			res.status(500).json({ error: 'Error saving file' });
+		} else {
+			console.log('File saved successfully');
+			res.json({ message: 'Data processed and saved as image.png' });
+		}
+	});
 	// const filePath = path.join(__dirname, 'saved_image.png');
 
 	// fs.writeFile(filePath, base64Data, 'base64', (err) => {
@@ -2334,21 +2523,21 @@ app.get('/submit', (req, res) => {
 	// 		res.json({ message: 'File saved successfully' });
 	// 	}
 	// });
-  // res.json({ message: 'Received and processed base64 data successfully' });
+	// res.json({ message: 'Received and processed base64 data successfully' });
 });
 
 //#endregion
 
 //#region mist
 function ___mCropResizer(dParent, img, dButtons) {
-	let [worig, horig] = [img.offsetWidth, img.offsetHeight]; 
+	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	console.log('w', worig, 'h', horig);
-	console.log('dParent',dParent)
+	console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
-	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: worig, h: horig }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
 	const messageBox = mDom(cropBox);
-	const centerBox = mDom(cropBox,{bg:'red',w:10,h:10,rounding:'50%',position:'absolute'});
-	const bottomRightResizeHandle = mDom(cropBox,{left:worig,top:horig},{className:"resize-handle bottom-right"}); 
+	const centerBox = mDom(cropBox, { bg: 'red', w: 10, h: 10, rounding: '50%', position: 'absolute' });
+	const bottomRightResizeHandle = mDom(cropBox, { left: worig, top: horig }, { className: "resize-handle bottom-right" });
 
 	let isCropping = false;
 	let cropStartX;
@@ -2357,16 +2546,16 @@ function ___mCropResizer(dParent, img, dButtons) {
 	let isResizing = false;
 
 	function startResize(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		stopCrop();
 		isResizing = true;
 		document.addEventListener('mousemove', resize);
 		document.addEventListener('mouseup', stopResize);
 	}
 	function resize(e) {
-		e.preventDefault();evNoBubble(e);
+		e.preventDefault(); evNoBubble(e);
 		if (isResizing) {
-			let x=e.clientX,y=e.clientY;
+			let x = e.clientX, y = e.clientY;
 
 			const width = x; //initialWidth + (e.clientX - resizeStartX);
 			const height = y; //initialHeight + (e.clientY - resizeStartY);
@@ -2405,7 +2594,7 @@ function ___mCropResizer(dParent, img, dButtons) {
 			const height = Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = Math.min(mouseY, cropStartY);
-			setRect(left,top,width,height);
+			setRect(left, top, width, height);
 		}
 	}
 	function cropX(e) {
@@ -2417,25 +2606,25 @@ function ___mCropResizer(dParent, img, dButtons) {
 			const height = 300; //Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = 0; //Math.min(mouseY, cropStartY);
-			setRect(left,top,width,height);
+			setRect(left, top, width, height);
 		}
 	}
 	function cropCenter(e) {
-    e.preventDefault();
-    if (isCropping) {
-        const mouseX = e.clientX - dParent.offsetLeft;
-        const mouseY = e.clientY - dParent.offsetTop;
-        const radiusX = Math.abs(mouseX - cropStartX);
-        const radiusY = Math.abs(mouseY - cropStartY);
-        const centerX = cropStartX; // (mouseX + cropStartX) / 2;
-        const centerY = cropStartY; //(mouseY + cropStartY) / 2;
-        
-        const width = radiusX * 2;
-        const height = radiusY * 2;
-        const left = centerX - radiusX;
-        const top = centerY - radiusY;
-        setRect(left,top,width,height);
-    }
+		e.preventDefault();
+		if (isCropping) {
+			const mouseX = e.clientX - dParent.offsetLeft;
+			const mouseY = e.clientY - dParent.offsetTop;
+			const radiusX = Math.abs(mouseX - cropStartX);
+			const radiusY = Math.abs(mouseY - cropStartY);
+			const centerX = cropStartX; // (mouseX + cropStartX) / 2;
+			const centerY = cropStartY; //(mouseY + cropStartY) / 2;
+
+			const width = radiusX * 2;
+			const height = radiusY * 2;
+			const left = centerX - radiusX;
+			const top = centerY - radiusY;
+			setRect(left, top, width, height);
+		}
 	}
 	function stopCrop() {
 		isCropping = false;
@@ -2443,42 +2632,42 @@ function ___mCropResizer(dParent, img, dButtons) {
 		document.removeEventListener('mouseup', stopCrop);
 	}
 	function cropImage() {
-		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
-		console.log('x,y,w,h',x,y,w,h);
-		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
+		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
+		console.log('x,y,w,h', x, y, w, h);
+		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 		img.src = imgDataUrl;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: w, h: h });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return imgDataUrl;
 	}
 	function finalize() {
-		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
-		console.log('x,y,w,h',x,y,w,h);
-		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
+		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
+		console.log('x,y,w,h', x, y, w, h);
+		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 		img.src = imgDataUrl;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: w, h: h });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return imgDataUrl;
 	}
-	function getRect(){ return ['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));}
-	function setRect(left,top,width,height){
+	function getRect() { return ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x])); }
+	function setRect(left, top, width, height) {
 		cropBox.style.width = `${width}px`;
 		cropBox.style.height = `${height}px`;
 		cropBox.style.left = `${left}px`;
 		cropBox.style.top = `${top}px`;
 		messageBox.innerHTML = `size: ${width} x ${height}`;
 		//let [cx,cy] = [(left+width)/2,(top+height)/2];
-		mStyle(centerBox,{left:width/2-5,top:height/2-5});
+		mStyle(centerBox, { left: width / 2 - 5, top: height / 2 - 5 });
 		//cropBox.innerHTML = `size: ${width} x ${height}`;
 		//mach roten punkt im center
 
@@ -2488,25 +2677,25 @@ function ___mCropResizer(dParent, img, dButtons) {
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
 	function hide_cropbox() { cropBox.style.display = 'none' }
-	function setSize(wnew,hnew){
-		if (isList(wnew)) [wnew,hnew]=wnew;
-		console.log('sz',wnew,hnew);
-		if (wnew == 0 || hnew == 0){
-			setRect(0,0,worig,horig);
+	function setSize(wnew, hnew) {
+		if (isList(wnew)) [wnew, hnew] = wnew;
+		console.log('sz', wnew, hnew);
+		if (wnew == 0 || hnew == 0) {
+			setRect(0, 0, worig, horig);
 			return;
 		}
-		let [x,y,w,h]=getRect(); 
-		let [cx,cy] = [x+w/2,y+h/2];
+		let [x, y, w, h] = getRect();
+		let [cx, cy] = [x + w / 2, y + h / 2];
 
-		console.log('old rect',x,y,w,h,cx,cy);
+		console.log('old rect', x, y, w, h, cx, cy);
 
-		let [xnew,ynew]=[cx-(wnew/2),cy-(hnew/2)];
+		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
 
 
-		setRect(xnew,ynew,wnew,hnew);
+		setRect(xnew, ynew, wnew, hnew);
 
 	}
-	setRect(0,0,worig,horig);
+	setRect(0, 0, worig, horig);
 	bottomRightResizeHandle.addEventListener('mousedown', startResize);
 	cropBox.addEventListener('mousedown', startCrop);
 	//addTool();
@@ -2523,21 +2712,21 @@ function ___mCropResizer(dParent, img, dButtons) {
 	}
 }
 function mCropper(dParent, img, dButtons) {
-	let [worig, horig] = [img.offsetWidth, img.offsetHeight]; 
+	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	console.log('w', worig, 'h', horig);
-	console.log('dParent',dParent)
+	console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
-	const cropBox = mDom(dParent, { position:'absolute',left:0, top:0, w: worig, h: horig }, { className: 'crop-box' });
+	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
 	const messageBox = mDom(cropBox);
-	const centerBox = mDom(cropBox,{bg:'red',w:10,h:10,rounding:'50%',position:'absolute'});
+	const centerBox = mDom(cropBox, { bg: 'red', w: 10, h: 10, rounding: '50%', position: 'absolute' });
 	let isCropping = false;
 	let cropStartX;
 	let cropStartY;
 
 
-	function __restart(){
+	function __restart() {
 		stopCrop();
-		mStyle(cropBox,{left:0,top:0,w:worig,h:horig});
+		mStyle(cropBox, { left: 0, top: 0, w: worig, h: horig });
 		cropBox.innerHTML = `size: ${worig} x ${horig}`;
 	}
 	function startCrop(e) {
@@ -2557,7 +2746,7 @@ function mCropper(dParent, img, dButtons) {
 			const height = Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = Math.min(mouseY, cropStartY);
-			setRect(left,top,width,height);
+			setRect(left, top, width, height);
 		}
 	}
 	function cropX(e) {
@@ -2569,25 +2758,25 @@ function mCropper(dParent, img, dButtons) {
 			const height = 300; //Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
 			const top = 0; //Math.min(mouseY, cropStartY);
-			setRect(left,top,width,height);
+			setRect(left, top, width, height);
 		}
 	}
 	function cropCenter(e) {
-    e.preventDefault();
-    if (isCropping) {
-        const mouseX = e.clientX - dParent.offsetLeft;
-        const mouseY = e.clientY - dParent.offsetTop;
-        const radiusX = Math.abs(mouseX - cropStartX);
-        const radiusY = Math.abs(mouseY - cropStartY);
-        const centerX = cropStartX; // (mouseX + cropStartX) / 2;
-        const centerY = cropStartY; //(mouseY + cropStartY) / 2;
-        
-        const width = radiusX * 2;
-        const height = radiusY * 2;
-        const left = centerX - radiusX;
-        const top = centerY - radiusY;
-        setRect(left,top,width,height);
-    }
+		e.preventDefault();
+		if (isCropping) {
+			const mouseX = e.clientX - dParent.offsetLeft;
+			const mouseY = e.clientY - dParent.offsetTop;
+			const radiusX = Math.abs(mouseX - cropStartX);
+			const radiusY = Math.abs(mouseY - cropStartY);
+			const centerX = cropStartX; // (mouseX + cropStartX) / 2;
+			const centerY = cropStartY; //(mouseY + cropStartY) / 2;
+
+			const width = radiusX * 2;
+			const height = radiusY * 2;
+			const left = centerX - radiusX;
+			const top = centerY - radiusY;
+			setRect(left, top, width, height);
+		}
 	}
 	function stopCrop() {
 		isCropping = false;
@@ -2595,56 +2784,56 @@ function mCropper(dParent, img, dButtons) {
 		document.removeEventListener('mouseup', stopCrop);
 	}
 	function cropImage() {
-		let [x,y,w,h]=['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));
-		console.log('x,y,w,h',x,y,w,h);
-		let canvas = mDom(null,{},{tag:'canvas',width:w,height:h});
+		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
+		console.log('x,y,w,h', x, y, w, h);
+		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
 		const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
 		img.src = imgDataUrl;
 		img.width = w;
 		img.height = h;
-		mStyle(img,{position:'absolute',top:0,left:0,w:w,h:h});
-		mStyle(cropBox, { display:'none' }); //top: 0, left: img.offsetLeft });
+		mStyle(img, { position: 'absolute', top: 0, left: 0, w: w, h: h });
+		mStyle(cropBox, { display: 'none' }); //top: 0, left: img.offsetLeft });
 		return imgDataUrl;
 	}
-	function getRect(){ return ['left','top','width','height'].map(x=>parseInt(cropBox.style[x]));}
-	function setRect(left,top,width,height){
+	function getRect() { return ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x])); }
+	function setRect(left, top, width, height) {
 		cropBox.style.width = `${width}px`;
 		cropBox.style.height = `${height}px`;
 		cropBox.style.left = `${left}px`;
 		cropBox.style.top = `${top}px`;
 		messageBox.innerHTML = `size: ${width} x ${height}`;
 		//let [cx,cy] = [(left+width)/2,(top+height)/2];
-		mStyle(centerBox,{left:width/2-5,top:height/2-5});
+		mStyle(centerBox, { left: width / 2 - 5, top: height / 2 - 5 });
 		//cropBox.innerHTML = `size: ${width} x ${height}`;
 		//mach roten punkt im center
 
-		console.log('new rect',left,top,width,height,width/2,height/2);
+		console.log('new rect', left, top, width, height, width / 2, height / 2);
 
 
 	}
 	function show_cropbox() { cropBox.style.display = 'block' }
 	function hide_cropbox() { cropBox.style.display = 'none' }
-	function setSize(wnew,hnew){
-		if (isList(wnew)) [wnew,hnew]=wnew;
-		console.log('sz',wnew,hnew);
-		if (wnew == 0 || hnew == 0){
-			setRect(0,0,worig,horig);
+	function setSize(wnew, hnew) {
+		if (isList(wnew)) [wnew, hnew] = wnew;
+		console.log('sz', wnew, hnew);
+		if (wnew == 0 || hnew == 0) {
+			setRect(0, 0, worig, horig);
 			return;
 		}
-		let [x,y,w,h]=getRect(); 
-		let [cx,cy] = [x+w/2,y+h/2];
+		let [x, y, w, h] = getRect();
+		let [cx, cy] = [x + w / 2, y + h / 2];
 
-		console.log('old rect',x,y,w,h,cx,cy);
+		console.log('old rect', x, y, w, h, cx, cy);
 
-		let [xnew,ynew]=[cx-(wnew/2),cy-(hnew/2)];
+		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
 
 
-		setRect(xnew,ynew,wnew,hnew);
+		setRect(xnew, ynew, wnew, hnew);
 
 	}
-	setRect(0,0,worig,horig);
+	setRect(0, 0, worig, horig);
 	cropBox.addEventListener('mousedown', startCrop);
 	//addTool();
 
@@ -2658,14 +2847,14 @@ function mCropper(dParent, img, dButtons) {
 		elem: cropBox,
 	}
 }
-function resizePreviewImage(dParent,img) {
+function resizePreviewImage(dParent, img) {
 	// const dParent = document.querySelector('.dParent');
 	// const img = document.querySelector('.img');
 	//const uploadButton = document.getElementById('uploadButton');
 	//<div class="resize-handle top-left"></div>
 	// <div class="resize-handle bottom-right"></div>
-	const topLeftResizeHandle = mDom(dParent,{},{className:"resize-handle top-left"}); //document.querySelector('.resize-handle.top-left');
-	const bottomRightResizeHandle = mDom(dParent,{},{className:"resize-handle bottom-right"}); //document.querySelector('.resize-handle.bottom-right');
+	const topLeftResizeHandle = mDom(dParent, {}, { className: "resize-handle top-left" }); //document.querySelector('.resize-handle.top-left');
+	const bottomRightResizeHandle = mDom(dParent, {}, { className: "resize-handle bottom-right" }); //document.querySelector('.resize-handle.bottom-right');
 
 	let isResizing = false;
 	let resizeStartX;
@@ -2703,90 +2892,90 @@ function resizePreviewImage(dParent,img) {
 
 }
 async function _saveCanvas(ev) {
-  ev.preventDefault();
-  const canvas = document.getElementById('canvas1');
-  const base64data = canvas.toDataURL('image/png');
-  const encodedBase64 = encodeURIComponent(base64data);
-  const queryString = `?data=${encodedBase64}`;
-  const response = await fetch(`http://localhost:3000/submit${queryString}`, {
-    method: 'GET',
-    mode: 'cors',
-  });
+	ev.preventDefault();
+	const canvas = document.getElementById('canvas1');
+	const base64data = canvas.toDataURL('image/png');
+	const encodedBase64 = encodeURIComponent(base64data);
+	const queryString = `?data=${encodedBase64}`;
+	const response = await fetch(`http://localhost:3000/submit${queryString}`, {
+		method: 'GET',
+		mode: 'cors',
+	});
 
-  const result = await response.text();
-  console.log(result);
-  localStorage.setItem('hallo',JSON.stringify(result));
-  return false;
+	const result = await response.text();
+	console.log(result);
+	localStorage.setItem('hallo', JSON.stringify(result));
+	return false;
 }
 
 
 
-async function test0(){
-  try {
-    const element = document.getElementById('dTest'); // Replace 'your-element-id' with the actual ID of your HTML element
-    const base64data = await htmlElementToBase64(element);
-    console.log('Base64 Data URL:', base64data);
-    // Do something with the base64 data URL
-  } catch (error) {
-    console.error('Error:', error);
-  }
+async function test0() {
+	try {
+		const element = document.getElementById('dTest'); // Replace 'your-element-id' with the actual ID of your HTML element
+		const base64data = await htmlElementToBase64(element);
+		console.log('Base64 Data URL:', base64data);
+		// Do something with the base64 data URL
+	} catch (error) {
+		console.error('Error:', error);
+	}
 }
 
 function htmlElementToBase64(element) {
-  return new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const rect = element.getBoundingClientRect();
-    
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    
-    const styles = window.getComputedStyle(element);
-    const oldOverflow = styles.overflow;
-    const oldPosition = styles.position;
-    
-    // Override styles to ensure the element is rendered correctly on the canvas
-    element.style.overflow = 'visible';
-    element.style.position = 'static';
-    
-    const elementClone = element.cloneNode(true);
-    
-    // Remove any potential IDs to prevent duplicates in the document
-    elementClone.removeAttribute('id');
-    
-    const cloneContainer = document.createElement('div');
-    cloneContainer.appendChild(elementClone);
-    
-    // Draw the element on the canvas
-    const svg = new Blob([cloneContainer.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(svg);
-    console.log('url',url);
-    const img = document.getElementById('result'); //new Image();
-    img.src = url;
-    return url;
-    
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, rect.width, rect.height);
-      // Get the base64 data URL from the canvas
-      const base64data = canvas.toDataURL('image/png');
-      // Revert overridden styles
-      element.style.overflow = oldOverflow;
-      element.style.position = oldPosition;
-      // Clean up
-      URL.revokeObjectURL(url);
-      resolve(base64data);
-    };
-    
-    img.onerror = (error) => {
-      // Revert overridden styles
-      element.style.overflow = oldOverflow;
-      element.style.position = oldPosition;
-      // Clean up
-      URL.revokeObjectURL(url);
-      reject(error);
-    };
-    
-  });
+	return new Promise((resolve, reject) => {
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		const rect = element.getBoundingClientRect();
+
+		canvas.width = rect.width;
+		canvas.height = rect.height;
+
+		const styles = window.getComputedStyle(element);
+		const oldOverflow = styles.overflow;
+		const oldPosition = styles.position;
+
+		// Override styles to ensure the element is rendered correctly on the canvas
+		element.style.overflow = 'visible';
+		element.style.position = 'static';
+
+		const elementClone = element.cloneNode(true);
+
+		// Remove any potential IDs to prevent duplicates in the document
+		elementClone.removeAttribute('id');
+
+		const cloneContainer = document.createElement('div');
+		cloneContainer.appendChild(elementClone);
+
+		// Draw the element on the canvas
+		const svg = new Blob([cloneContainer.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+		const url = URL.createObjectURL(svg);
+		console.log('url', url);
+		const img = document.getElementById('result'); //new Image();
+		img.src = url;
+		return url;
+
+		img.onload = () => {
+			ctx.drawImage(img, 0, 0, rect.width, rect.height);
+			// Get the base64 data URL from the canvas
+			const base64data = canvas.toDataURL('image/png');
+			// Revert overridden styles
+			element.style.overflow = oldOverflow;
+			element.style.position = oldPosition;
+			// Clean up
+			URL.revokeObjectURL(url);
+			resolve(base64data);
+		};
+
+		img.onerror = (error) => {
+			// Revert overridden styles
+			element.style.overflow = oldOverflow;
+			element.style.position = oldPosition;
+			// Clean up
+			URL.revokeObjectURL(url);
+			reject(error);
+		};
+
+	});
 }
 
 

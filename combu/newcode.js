@@ -81,6 +81,26 @@ function filenameToObject(fname, path, cats) {
 	let o = { key: k, ext: ext, cats: cats, path: `${path}/${fname}`, img: fname, friendly: k.replace(/[^a-zA-Z]/g, '') };
 	return o;
 }
+function filterImages(ev) {
+	//s can be interpreted as cat or part of key
+	//erstmal nur als cat
+	//wenn da nix ist, dann als part of key
+	console.log('oninput!!!!!!!!!!!!!!!!');
+	let s = ev.target.value;
+	let list = M.byCat[s.toLowerCase()];
+	if (nundef(list) || isEmpty(list)) {
+		list=[];
+		for (const k in M.superdi){
+			let o=M.superdi[k];
+			if (k.includes(s) || o.friendly.includes(s)) list.push(k);
+		}
+		if (isEmpty(list)) return; //list = Object.keys(M.superdi);
+	}
+	M.keys = list;
+	M.index = 0;
+	showImageBatch(0);
+
+}
 function getMouseCoordinates(event) {
 	const image = event.target; //const image = document.getElementById('your-image-id'); // Replace with the actual ID of your image element
 	//const imageRect = image.getBoundingClientRect();
@@ -95,8 +115,8 @@ function getMouseCoordinates(event) {
 }
 function isSameDate(date1, date2) {
 	return date1.getFullYear() === date2.getFullYear() &&
-				 date1.getMonth() === date2.getMonth() &&
-				 date1.getDate() === date2.getDate();
+		date1.getMonth() === date2.getMonth() &&
+		date1.getDate() === date2.getDate();
 }
 async function loadCollections() {
 	if (nundef(M.emos)) {
@@ -506,7 +526,7 @@ function mCropResizePan(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black', cursor: 'move' });
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black', cursor: 'move'});
 
 	let sz = 16;
 	const centerBox = mDom(cropBox, { bg: 'red', w: sz, h: sz, rounding: '50%', position: 'absolute' });
@@ -571,7 +591,7 @@ function mCropResizePan(dParent, img, dButtons) {
 		// cropStartX = ev.clientX - dParent.offsetLeft;
 		// cropStartY = ev.clientY - dParent.offsetTop;
 		let pt = getMouseCoordinates(ev); //get_mouse_pos(ev,dParent); //getMouseCoordinates(ev);
-		[cropStartX, cropStartY] = [pt.x, pt.y];
+		[cropStartX, cropStartY] = [pt.x, pt.y-24];
 		console.log('pt', pt, cropStartX, cropStartY);
 		document.addEventListener('mousemove', crop); //cropCenter);
 		document.addEventListener('mouseup', stopCrop);
@@ -708,35 +728,6 @@ function mCropResizePan(dParent, img, dButtons) {
 		setRect(xnew, ynew, wnew, hnew);
 
 	}
-	function addTool(dParent, img, setSizeFunc) {
-		let d = dParent;
-		let rg = mRadioGroup(d, {}, 'rSizes', 'Crop to: '); mClass(rg, 'input')
-		mRadio('manual', [0, 0], 'rSizes', rg, {}, setSizeFunc, 'rSizes', true)
-		let [w, h] = [img.offsetWidth, img.offsetHeight];
-		if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		else {
-			//card portrait kann man auch machen: take das das nicht passt
-			let [w1, h1] = [w, w / .7];
-			let [w2, h2] = [h * .7, h];
-			if (w1 < w2) mRadio(`${w1} x ${h1} (card)`, [w1, h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-			else mRadio(`${w2} x ${h2} (card)`, [w2, h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		}
-		if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		else {
-			//card portrait kann man auch machen: take das das nicht passt
-			let [w1, h1] = [w, w * .7];
-			let [w2, h2] = [h / .7, h];
-			if (w1 < w2) mRadio(`${w1} x ${h1} (landscape)`, [w1, h1], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-			else mRadio(`${w2} x ${h2} (landscape)`, [w2, h2], 'rSizes', rg, {}, setSizeFunc, 'rSizes', false)
-		}
-		mDom(rg, { fz: 12, margin: 12 }, { html: '(click & drag image to crop)' });
-		return rg;
-	}
 
 	wHandle.addEventListener('mousedown', startResize);
 	hHandle.addEventListener('mousedown', startResize);
@@ -787,7 +778,7 @@ function mDatalist(dParent, list, opts = {}) {
 	function update() {
 		let val = valf(inp.value, '');
 		if (isEmpty(val)) return;
-		if (mylist.includes(val)) return;
+		if (mylist.includes(val) || !opts.edit) return;
 		mylist.push(val);
 		if (opts.alpha) mylist.sort();
 		let i = mylist.indexOf(val);
@@ -809,7 +800,7 @@ function mDatalist(dParent, list, opts = {}) {
 
 	if (opts.edit) inp.addEventListener('keyup', ev => { if (ev.key === 'Enter') update(); });
 	if (isdef(opts.matches)) inp.addEventListener('input', populate);
-	inp.onmousedown = ()=>inp.value = ''
+	inp.onmousedown = () => inp.value = ''
 
 	return {
 		list: mylist,
@@ -973,50 +964,61 @@ function mResizer(dParent, img, dButtons) {
 		//tool: tool,
 	}
 }
-function navbarActivate(){
+function navbarActivate() {
 	let links = document.getElementsByClassName('nav-link');
-	for(const w of arguments){
-		let el = links.find(x=>x.innerHTML == w);
+	for (const w of arguments) {
+		let el = links.find(x => x.innerHTML == w);
 		if (isdef(el)) {
-			mClass(el,'active');
+			mClass(el, 'active');
 			el.style.pointerEvents = 'auto'
 		}
 	}
 }
-function navbarDeactivate(){
+function navbarDeactivate() {
 	let links = Array.from(document.getElementsByClassName('nav-link'));
-	console.log('links',links)
-	for(const w of arguments){
-		let el = links.find(x=>x.innerHTML == w);
-		console.log('el',el)
+	//console.log('links',links)
+	for (const w of arguments) {
+		let el = links.find(x => x.innerHTML == w);
+		//console.log('el',el)
 		if (isdef(el)) {
-			mClassRemove(el.parentNode,'active');
+			mClassRemove(el.parentNode, 'active');
 			el.style.pointerEvents = 'none'
 		}
 	}
 }
 async function prelims() {
 	if (nundef(M.superdi)) {
-		Config = await mGetYaml('../combu/config.yaml');
+		Config = await mGetYaml('../y/config.yaml');
 		M = await mGetYaml('../assets/mhuge.yaml');
 
 		//integrate m2.yaml
 		let collections = await mGetYaml('../y/m2.yaml');
-		let di = {};
-		for (const k in collections) {
-			let o = collections[k];
-			let onew = { key: k, friendly: o.name, cats: [o.cat], img: `${k}.${o.ext}`, ext: o.ext };
-			onew.path = `../y/${k}.${o.ext}`;
-			di[k] = onew;
-		}
+		// let di = {};
+		// for (const k in collections) {
+		// 	let o = collections[k];
+		// 	let onew = { key: k, friendly: o.name, cats: [o.cat], img: `${k}.${o.ext}`, ext: o.ext };
+		// 	onew.path = `../y/${k}.${o.ext}`;
+		// 	di[k] = onew;
+		// }
 		//add di to M.superdi,M.byCat,M.byFriendly,M.names,M.categories
+		for(const k in collections){
+			let o=collections[k];
+			M.superdi[k] = {key:k,friendly:o.name,cats:[o.cat],ext:o.ext,img:`${k}.${o.ext}`,path:`../y/${k}.${o.ext}`};
+			addIf(M.categories,o.cat);
+			addIf(M.names,o.name);
+			console.log('o.cat',o.cat,k)
+			lookupAddIfToList(M.byCat,[o.cat],k);
+			lookupAddIfToList(M.byFriendly,[o.name],k);
+		}
 		//sort all the dicts alphabetically
+		M.categories.sort();
+		M.names.sort();
 
 
 		console.log('M', M, 'Config', Config);
-		showNavbar('M', ['add', 'create', 'play', 'schedule', 'view']);
-		navbarDeactivate('play','create');
-		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14,padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
+		showNavbar('COMBU', ['add', 'create', 'play', 'schedule', 'view']);
+		navbarDeactivate('play', 'create');
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
 		mInsert(document.body, dTitle, 1);
 	}
 
@@ -1237,4 +1239,28 @@ async function uploadImg(img, unique, cat, name) {
 		});
 	});
 }
+async function uploadJson(route, o) {
+		let type = detectSessionType();
+		let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+		server += `/${route}`;
+
+		try {
+			const response = await fetch(server, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				mode: 'cors',
+				body: JSON.stringify(o)
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				return 'ERROR 1';
+			}
+		} catch (error) {
+			return 'ERROR 2';
+		}
+}
+
 

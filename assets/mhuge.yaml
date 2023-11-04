@@ -1304,6 +1304,1131 @@ superdi:
     ga: EBBE
     cats:
       - food
+  amanda10_11:
+    key: amanda10_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_11.png
+    img: amanda10_11.png
+    friendly: amanda
+  amanda10_12:
+    key: amanda10_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_12.png
+    img: amanda10_12.png
+    friendly: amanda
+  amanda10_13:
+    key: amanda10_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_13.png
+    img: amanda10_13.png
+    friendly: amanda
+  amanda10_21:
+    key: amanda10_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_21.png
+    img: amanda10_21.png
+    friendly: amanda
+  amanda10_22:
+    key: amanda10_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_22.png
+    img: amanda10_22.png
+    friendly: amanda
+  amanda10_23:
+    key: amanda10_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_23.png
+    img: amanda10_23.png
+    friendly: amanda
+  amanda10_31:
+    key: amanda10_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_31.png
+    img: amanda10_31.png
+    friendly: amanda
+  amanda10_32:
+    key: amanda10_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_32.png
+    img: amanda10_32.png
+    friendly: amanda
+  amanda10_33:
+    key: amanda10_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda10_33.png
+    img: amanda10_33.png
+    friendly: amanda
+  amanda11_11:
+    key: amanda11_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_11.png
+    img: amanda11_11.png
+    friendly: amanda
+  amanda11_12:
+    key: amanda11_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_12.png
+    img: amanda11_12.png
+    friendly: amanda
+  amanda11_13:
+    key: amanda11_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_13.png
+    img: amanda11_13.png
+    friendly: amanda
+  amanda11_21:
+    key: amanda11_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_21.png
+    img: amanda11_21.png
+    friendly: amanda
+  amanda11_22:
+    key: amanda11_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_22.png
+    img: amanda11_22.png
+    friendly: amanda
+  amanda11_23:
+    key: amanda11_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_23.png
+    img: amanda11_23.png
+    friendly: amanda
+  amanda11_31:
+    key: amanda11_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_31.png
+    img: amanda11_31.png
+    friendly: amanda
+  amanda11_32:
+    key: amanda11_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_32.png
+    img: amanda11_32.png
+    friendly: amanda
+  amanda11_33:
+    key: amanda11_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda11_33.png
+    img: amanda11_33.png
+    friendly: amanda
+  amanda12_11:
+    key: amanda12_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_11.png
+    img: amanda12_11.png
+    friendly: amanda
+  amanda12_12:
+    key: amanda12_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_12.png
+    img: amanda12_12.png
+    friendly: amanda
+  amanda12_13:
+    key: amanda12_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_13.png
+    img: amanda12_13.png
+    friendly: amanda
+  amanda12_21:
+    key: amanda12_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_21.png
+    img: amanda12_21.png
+    friendly: amanda
+  amanda12_22:
+    key: amanda12_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_22.png
+    img: amanda12_22.png
+    friendly: amanda
+  amanda12_23:
+    key: amanda12_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_23.png
+    img: amanda12_23.png
+    friendly: amanda
+  amanda12_31:
+    key: amanda12_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_31.png
+    img: amanda12_31.png
+    friendly: amanda
+  amanda12_32:
+    key: amanda12_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_32.png
+    img: amanda12_32.png
+    friendly: amanda
+  amanda12_33:
+    key: amanda12_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda12_33.png
+    img: amanda12_33.png
+    friendly: amanda
+  amanda13_11:
+    key: amanda13_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_11.png
+    img: amanda13_11.png
+    friendly: amanda
+  amanda13_12:
+    key: amanda13_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_12.png
+    img: amanda13_12.png
+    friendly: amanda
+  amanda13_13:
+    key: amanda13_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_13.png
+    img: amanda13_13.png
+    friendly: amanda
+  amanda13_21:
+    key: amanda13_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_21.png
+    img: amanda13_21.png
+    friendly: amanda
+  amanda13_22:
+    key: amanda13_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_22.png
+    img: amanda13_22.png
+    friendly: amanda
+  amanda13_23:
+    key: amanda13_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_23.png
+    img: amanda13_23.png
+    friendly: amanda
+  amanda13_31:
+    key: amanda13_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_31.png
+    img: amanda13_31.png
+    friendly: amanda
+  amanda13_32:
+    key: amanda13_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_32.png
+    img: amanda13_32.png
+    friendly: amanda
+  amanda13_33:
+    key: amanda13_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda13_33.png
+    img: amanda13_33.png
+    friendly: amanda
+  amanda14_11:
+    key: amanda14_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_11.png
+    img: amanda14_11.png
+    friendly: amanda
+  amanda14_12:
+    key: amanda14_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_12.png
+    img: amanda14_12.png
+    friendly: amanda
+  amanda14_13:
+    key: amanda14_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_13.png
+    img: amanda14_13.png
+    friendly: amanda
+  amanda14_21:
+    key: amanda14_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_21.png
+    img: amanda14_21.png
+    friendly: amanda
+  amanda14_22:
+    key: amanda14_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_22.png
+    img: amanda14_22.png
+    friendly: amanda
+  amanda14_23:
+    key: amanda14_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_23.png
+    img: amanda14_23.png
+    friendly: amanda
+  amanda14_31:
+    key: amanda14_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_31.png
+    img: amanda14_31.png
+    friendly: amanda
+  amanda14_32:
+    key: amanda14_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_32.png
+    img: amanda14_32.png
+    friendly: amanda
+  amanda14_33:
+    key: amanda14_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda14_33.png
+    img: amanda14_33.png
+    friendly: amanda
+  amanda15_11:
+    key: amanda15_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_11.png
+    img: amanda15_11.png
+    friendly: amanda
+  amanda15_12:
+    key: amanda15_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_12.png
+    img: amanda15_12.png
+    friendly: amanda
+  amanda15_13:
+    key: amanda15_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_13.png
+    img: amanda15_13.png
+    friendly: amanda
+  amanda15_21:
+    key: amanda15_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_21.png
+    img: amanda15_21.png
+    friendly: amanda
+  amanda15_22:
+    key: amanda15_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_22.png
+    img: amanda15_22.png
+    friendly: amanda
+  amanda15_23:
+    key: amanda15_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_23.png
+    img: amanda15_23.png
+    friendly: amanda
+  amanda15_31:
+    key: amanda15_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_31.png
+    img: amanda15_31.png
+    friendly: amanda
+  amanda15_32:
+    key: amanda15_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda15_32.png
+    img: amanda15_32.png
+    friendly: amanda
+  amanda2_11:
+    key: amanda2_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_11.png
+    img: amanda2_11.png
+    friendly: amanda
+  amanda2_12:
+    key: amanda2_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_12.png
+    img: amanda2_12.png
+    friendly: amanda
+  amanda2_13:
+    key: amanda2_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_13.png
+    img: amanda2_13.png
+    friendly: amanda
+  amanda2_21:
+    key: amanda2_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_21.png
+    img: amanda2_21.png
+    friendly: amanda
+  amanda2_22:
+    key: amanda2_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_22.png
+    img: amanda2_22.png
+    friendly: amanda
+  amanda2_23:
+    key: amanda2_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_23.png
+    img: amanda2_23.png
+    friendly: amanda
+  amanda2_31:
+    key: amanda2_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_31.png
+    img: amanda2_31.png
+    friendly: amanda
+  amanda2_32:
+    key: amanda2_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_32.png
+    img: amanda2_32.png
+    friendly: amanda
+  amanda2_33:
+    key: amanda2_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda2_33.png
+    img: amanda2_33.png
+    friendly: amanda
+  amanda3_11:
+    key: amanda3_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_11.png
+    img: amanda3_11.png
+    friendly: amanda
+  amanda3_12:
+    key: amanda3_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_12.png
+    img: amanda3_12.png
+    friendly: amanda
+  amanda3_13:
+    key: amanda3_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_13.png
+    img: amanda3_13.png
+    friendly: amanda
+  amanda3_21:
+    key: amanda3_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_21.png
+    img: amanda3_21.png
+    friendly: amanda
+  amanda3_22:
+    key: amanda3_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_22.png
+    img: amanda3_22.png
+    friendly: amanda
+  amanda3_23:
+    key: amanda3_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_23.png
+    img: amanda3_23.png
+    friendly: amanda
+  amanda3_31:
+    key: amanda3_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_31.png
+    img: amanda3_31.png
+    friendly: amanda
+  amanda3_32:
+    key: amanda3_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_32.png
+    img: amanda3_32.png
+    friendly: amanda
+  amanda3_33:
+    key: amanda3_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda3_33.png
+    img: amanda3_33.png
+    friendly: amanda
+  amanda4_11:
+    key: amanda4_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_11.png
+    img: amanda4_11.png
+    friendly: amanda
+  amanda4_12:
+    key: amanda4_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_12.png
+    img: amanda4_12.png
+    friendly: amanda
+  amanda4_13:
+    key: amanda4_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_13.png
+    img: amanda4_13.png
+    friendly: amanda
+  amanda4_21:
+    key: amanda4_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_21.png
+    img: amanda4_21.png
+    friendly: amanda
+  amanda4_22:
+    key: amanda4_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_22.png
+    img: amanda4_22.png
+    friendly: amanda
+  amanda4_23:
+    key: amanda4_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_23.png
+    img: amanda4_23.png
+    friendly: amanda
+  amanda4_41:
+    key: amanda4_41
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_41.png
+    img: amanda4_41.png
+    friendly: amanda
+  amanda4_42:
+    key: amanda4_42
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_42.png
+    img: amanda4_42.png
+    friendly: amanda
+  amanda4_43:
+    key: amanda4_43
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda4_43.png
+    img: amanda4_43.png
+    friendly: amanda
+  amanda5_11:
+    key: amanda5_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_11.png
+    img: amanda5_11.png
+    friendly: amanda
+  amanda5_12:
+    key: amanda5_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_12.png
+    img: amanda5_12.png
+    friendly: amanda
+  amanda5_13:
+    key: amanda5_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_13.png
+    img: amanda5_13.png
+    friendly: amanda
+  amanda5_21:
+    key: amanda5_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_21.png
+    img: amanda5_21.png
+    friendly: amanda
+  amanda5_22:
+    key: amanda5_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_22.png
+    img: amanda5_22.png
+    friendly: amanda
+  amanda5_23:
+    key: amanda5_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_23.png
+    img: amanda5_23.png
+    friendly: amanda
+  amanda5_31:
+    key: amanda5_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_31.png
+    img: amanda5_31.png
+    friendly: amanda
+  amanda5_32:
+    key: amanda5_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_32.png
+    img: amanda5_32.png
+    friendly: amanda
+  amanda5_33:
+    key: amanda5_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda5_33.png
+    img: amanda5_33.png
+    friendly: amanda
+  amanda6_11:
+    key: amanda6_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_11.png
+    img: amanda6_11.png
+    friendly: amanda
+  amanda6_12:
+    key: amanda6_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_12.png
+    img: amanda6_12.png
+    friendly: amanda
+  amanda6_13:
+    key: amanda6_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_13.png
+    img: amanda6_13.png
+    friendly: amanda
+  amanda6_21:
+    key: amanda6_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_21.png
+    img: amanda6_21.png
+    friendly: amanda
+  amanda6_22:
+    key: amanda6_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_22.png
+    img: amanda6_22.png
+    friendly: amanda
+  amanda6_23:
+    key: amanda6_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_23.png
+    img: amanda6_23.png
+    friendly: amanda
+  amanda6_31:
+    key: amanda6_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_31.png
+    img: amanda6_31.png
+    friendly: amanda
+  amanda6_32:
+    key: amanda6_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_32.png
+    img: amanda6_32.png
+    friendly: amanda
+  amanda6_33:
+    key: amanda6_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda6_33.png
+    img: amanda6_33.png
+    friendly: amanda
+  amanda7_11:
+    key: amanda7_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_11.png
+    img: amanda7_11.png
+    friendly: amanda
+  amanda7_12:
+    key: amanda7_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_12.png
+    img: amanda7_12.png
+    friendly: amanda
+  amanda7_13:
+    key: amanda7_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_13.png
+    img: amanda7_13.png
+    friendly: amanda
+  amanda7_21:
+    key: amanda7_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_21.png
+    img: amanda7_21.png
+    friendly: amanda
+  amanda7_22:
+    key: amanda7_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_22.png
+    img: amanda7_22.png
+    friendly: amanda
+  amanda7_23:
+    key: amanda7_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_23.png
+    img: amanda7_23.png
+    friendly: amanda
+  amanda7_31:
+    key: amanda7_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_31.png
+    img: amanda7_31.png
+    friendly: amanda
+  amanda7_32:
+    key: amanda7_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_32.png
+    img: amanda7_32.png
+    friendly: amanda
+  amanda7_33:
+    key: amanda7_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda7_33.png
+    img: amanda7_33.png
+    friendly: amanda
+  amanda8_11:
+    key: amanda8_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_11.png
+    img: amanda8_11.png
+    friendly: amanda
+  amanda8_12:
+    key: amanda8_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_12.png
+    img: amanda8_12.png
+    friendly: amanda
+  amanda8_13:
+    key: amanda8_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_13.png
+    img: amanda8_13.png
+    friendly: amanda
+  amanda8_21:
+    key: amanda8_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_21.png
+    img: amanda8_21.png
+    friendly: amanda
+  amanda8_22:
+    key: amanda8_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_22.png
+    img: amanda8_22.png
+    friendly: amanda
+  amanda8_23:
+    key: amanda8_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_23.png
+    img: amanda8_23.png
+    friendly: amanda
+  amanda8_31:
+    key: amanda8_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_31.png
+    img: amanda8_31.png
+    friendly: amanda
+  amanda8_32:
+    key: amanda8_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_32.png
+    img: amanda8_32.png
+    friendly: amanda
+  amanda8_33:
+    key: amanda8_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda8_33.png
+    img: amanda8_33.png
+    friendly: amanda
+  amanda9_11:
+    key: amanda9_11
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_11.png
+    img: amanda9_11.png
+    friendly: amanda
+  amanda9_12:
+    key: amanda9_12
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_12.png
+    img: amanda9_12.png
+    friendly: amanda
+  amanda9_13:
+    key: amanda9_13
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_13.png
+    img: amanda9_13.png
+    friendly: amanda
+  amanda9_21:
+    key: amanda9_21
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_21.png
+    img: amanda9_21.png
+    friendly: amanda
+  amanda9_22:
+    key: amanda9_22
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_22.png
+    img: amanda9_22.png
+    friendly: amanda
+  amanda9_23:
+    key: amanda9_23
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_23.png
+    img: amanda9_23.png
+    friendly: amanda
+  amanda9_31:
+    key: amanda9_31
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_31.png
+    img: amanda9_31.png
+    friendly: amanda
+  amanda9_32:
+    key: amanda9_32
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_32.png
+    img: amanda9_32.png
+    friendly: amanda
+  amanda9_33:
+    key: amanda9_33
+    ext: png
+    cats:
+      - art
+      - amanda
+    path: ../assets/img/amanda/amanda9_33.png
+    img: amanda9_33.png
+    friendly: amanda
   amber_mosquito:
     key: amber_mosquito
     friendly: amber_mosquito
@@ -26407,14 +27532,6 @@ superdi:
     ga: E3C6
     cats:
       - creature
-  minou:
-    key: minou
-    friendly: minou
-    cats:
-      - animal
-    img: minou.png
-    ext: png
-    path: ../y/minou.png
   minus:
     key: minus
     friendly: minus
@@ -44743,6 +45860,131 @@ byCat:
     - airport8
     - airport9
   amanda:
+    - amanda10_11
+    - amanda10_12
+    - amanda10_13
+    - amanda10_21
+    - amanda10_22
+    - amanda10_23
+    - amanda10_31
+    - amanda10_32
+    - amanda10_33
+    - amanda11_11
+    - amanda11_12
+    - amanda11_13
+    - amanda11_21
+    - amanda11_22
+    - amanda11_23
+    - amanda11_31
+    - amanda11_32
+    - amanda11_33
+    - amanda12_11
+    - amanda12_12
+    - amanda12_13
+    - amanda12_21
+    - amanda12_22
+    - amanda12_23
+    - amanda12_31
+    - amanda12_32
+    - amanda12_33
+    - amanda13_11
+    - amanda13_12
+    - amanda13_13
+    - amanda13_21
+    - amanda13_22
+    - amanda13_23
+    - amanda13_31
+    - amanda13_32
+    - amanda13_33
+    - amanda14_11
+    - amanda14_12
+    - amanda14_13
+    - amanda14_21
+    - amanda14_22
+    - amanda14_23
+    - amanda14_31
+    - amanda14_32
+    - amanda14_33
+    - amanda15_11
+    - amanda15_12
+    - amanda15_13
+    - amanda15_21
+    - amanda15_22
+    - amanda15_23
+    - amanda15_31
+    - amanda15_32
+    - amanda2_11
+    - amanda2_12
+    - amanda2_13
+    - amanda2_21
+    - amanda2_22
+    - amanda2_23
+    - amanda2_31
+    - amanda2_32
+    - amanda2_33
+    - amanda3_11
+    - amanda3_12
+    - amanda3_13
+    - amanda3_21
+    - amanda3_22
+    - amanda3_23
+    - amanda3_31
+    - amanda3_32
+    - amanda3_33
+    - amanda4_11
+    - amanda4_12
+    - amanda4_13
+    - amanda4_21
+    - amanda4_22
+    - amanda4_23
+    - amanda4_41
+    - amanda4_42
+    - amanda4_43
+    - amanda5_11
+    - amanda5_12
+    - amanda5_13
+    - amanda5_21
+    - amanda5_22
+    - amanda5_23
+    - amanda5_31
+    - amanda5_32
+    - amanda5_33
+    - amanda6_11
+    - amanda6_12
+    - amanda6_13
+    - amanda6_21
+    - amanda6_22
+    - amanda6_23
+    - amanda6_31
+    - amanda6_32
+    - amanda6_33
+    - amanda7_11
+    - amanda7_12
+    - amanda7_13
+    - amanda7_21
+    - amanda7_22
+    - amanda7_23
+    - amanda7_31
+    - amanda7_32
+    - amanda7_33
+    - amanda8_11
+    - amanda8_12
+    - amanda8_13
+    - amanda8_21
+    - amanda8_22
+    - amanda8_23
+    - amanda8_31
+    - amanda8_32
+    - amanda8_33
+    - amanda9_11
+    - amanda9_12
+    - amanda9_13
+    - amanda9_21
+    - amanda9_22
+    - amanda9_23
+    - amanda9_31
+    - amanda9_32
+    - amanda9_33
     - image0
     - image1
     - image2
@@ -44861,7 +46103,6 @@ byCat:
     - mammoth
     - maple_leaf
     - microbe
-    - minou
     - monkey
     - mosquito
     - mouse
@@ -45277,6 +46518,131 @@ byCat:
   armor:
     - barbute
   art:
+    - amanda10_11
+    - amanda10_12
+    - amanda10_13
+    - amanda10_21
+    - amanda10_22
+    - amanda10_23
+    - amanda10_31
+    - amanda10_32
+    - amanda10_33
+    - amanda11_11
+    - amanda11_12
+    - amanda11_13
+    - amanda11_21
+    - amanda11_22
+    - amanda11_23
+    - amanda11_31
+    - amanda11_32
+    - amanda11_33
+    - amanda12_11
+    - amanda12_12
+    - amanda12_13
+    - amanda12_21
+    - amanda12_22
+    - amanda12_23
+    - amanda12_31
+    - amanda12_32
+    - amanda12_33
+    - amanda13_11
+    - amanda13_12
+    - amanda13_13
+    - amanda13_21
+    - amanda13_22
+    - amanda13_23
+    - amanda13_31
+    - amanda13_32
+    - amanda13_33
+    - amanda14_11
+    - amanda14_12
+    - amanda14_13
+    - amanda14_21
+    - amanda14_22
+    - amanda14_23
+    - amanda14_31
+    - amanda14_32
+    - amanda14_33
+    - amanda15_11
+    - amanda15_12
+    - amanda15_13
+    - amanda15_21
+    - amanda15_22
+    - amanda15_23
+    - amanda15_31
+    - amanda15_32
+    - amanda2_11
+    - amanda2_12
+    - amanda2_13
+    - amanda2_21
+    - amanda2_22
+    - amanda2_23
+    - amanda2_31
+    - amanda2_32
+    - amanda2_33
+    - amanda3_11
+    - amanda3_12
+    - amanda3_13
+    - amanda3_21
+    - amanda3_22
+    - amanda3_23
+    - amanda3_31
+    - amanda3_32
+    - amanda3_33
+    - amanda4_11
+    - amanda4_12
+    - amanda4_13
+    - amanda4_21
+    - amanda4_22
+    - amanda4_23
+    - amanda4_41
+    - amanda4_42
+    - amanda4_43
+    - amanda5_11
+    - amanda5_12
+    - amanda5_13
+    - amanda5_21
+    - amanda5_22
+    - amanda5_23
+    - amanda5_31
+    - amanda5_32
+    - amanda5_33
+    - amanda6_11
+    - amanda6_12
+    - amanda6_13
+    - amanda6_21
+    - amanda6_22
+    - amanda6_23
+    - amanda6_31
+    - amanda6_32
+    - amanda6_33
+    - amanda7_11
+    - amanda7_12
+    - amanda7_13
+    - amanda7_21
+    - amanda7_22
+    - amanda7_23
+    - amanda7_31
+    - amanda7_32
+    - amanda7_33
+    - amanda8_11
+    - amanda8_12
+    - amanda8_13
+    - amanda8_21
+    - amanda8_22
+    - amanda8_23
+    - amanda8_31
+    - amanda8_32
+    - amanda8_33
+    - amanda9_11
+    - amanda9_12
+    - amanda9_13
+    - amanda9_21
+    - amanda9_22
+    - amanda9_23
+    - amanda9_31
+    - amanda9_32
+    - amanda9_33
     - crayon
     - image0
     - image1
@@ -53372,6 +54738,132 @@ byFriendly:
     - alligator_clip
   almond:
     - almond
+  amanda:
+    - amanda10_11
+    - amanda10_12
+    - amanda10_13
+    - amanda10_21
+    - amanda10_22
+    - amanda10_23
+    - amanda10_31
+    - amanda10_32
+    - amanda10_33
+    - amanda11_11
+    - amanda11_12
+    - amanda11_13
+    - amanda11_21
+    - amanda11_22
+    - amanda11_23
+    - amanda11_31
+    - amanda11_32
+    - amanda11_33
+    - amanda12_11
+    - amanda12_12
+    - amanda12_13
+    - amanda12_21
+    - amanda12_22
+    - amanda12_23
+    - amanda12_31
+    - amanda12_32
+    - amanda12_33
+    - amanda13_11
+    - amanda13_12
+    - amanda13_13
+    - amanda13_21
+    - amanda13_22
+    - amanda13_23
+    - amanda13_31
+    - amanda13_32
+    - amanda13_33
+    - amanda14_11
+    - amanda14_12
+    - amanda14_13
+    - amanda14_21
+    - amanda14_22
+    - amanda14_23
+    - amanda14_31
+    - amanda14_32
+    - amanda14_33
+    - amanda15_11
+    - amanda15_12
+    - amanda15_13
+    - amanda15_21
+    - amanda15_22
+    - amanda15_23
+    - amanda15_31
+    - amanda15_32
+    - amanda2_11
+    - amanda2_12
+    - amanda2_13
+    - amanda2_21
+    - amanda2_22
+    - amanda2_23
+    - amanda2_31
+    - amanda2_32
+    - amanda2_33
+    - amanda3_11
+    - amanda3_12
+    - amanda3_13
+    - amanda3_21
+    - amanda3_22
+    - amanda3_23
+    - amanda3_31
+    - amanda3_32
+    - amanda3_33
+    - amanda4_11
+    - amanda4_12
+    - amanda4_13
+    - amanda4_21
+    - amanda4_22
+    - amanda4_23
+    - amanda4_41
+    - amanda4_42
+    - amanda4_43
+    - amanda5_11
+    - amanda5_12
+    - amanda5_13
+    - amanda5_21
+    - amanda5_22
+    - amanda5_23
+    - amanda5_31
+    - amanda5_32
+    - amanda5_33
+    - amanda6_11
+    - amanda6_12
+    - amanda6_13
+    - amanda6_21
+    - amanda6_22
+    - amanda6_23
+    - amanda6_31
+    - amanda6_32
+    - amanda6_33
+    - amanda7_11
+    - amanda7_12
+    - amanda7_13
+    - amanda7_21
+    - amanda7_22
+    - amanda7_23
+    - amanda7_31
+    - amanda7_32
+    - amanda7_33
+    - amanda8_11
+    - amanda8_12
+    - amanda8_13
+    - amanda8_21
+    - amanda8_22
+    - amanda8_23
+    - amanda8_31
+    - amanda8_32
+    - amanda8_33
+    - amanda9_11
+    - amanda9_12
+    - amanda9_13
+    - amanda9_21
+    - amanda9_22
+    - amanda9_23
+    - amanda9_31
+    - amanda9_32
+    - amanda9_33
   amber_mosquito:
     - amber_mosquito
   ambulance:
@@ -59974,8 +61466,6 @@ byFriendly:
     - minions
   minotaur:
     - minotaur
-  minou:
-    - minou
   minus:
     - minus
   minus_circle:
@@ -65016,6 +66506,7 @@ names:
   - allied_star
   - alligator_clip
   - almond
+  - amanda
   - amber_mosquito
   - ambulance
   - american_football
@@ -68177,7 +69668,6 @@ names:
   - mining_helmet
   - minions
   - minotaur
-  - minou
   - minus
   - minus_circle
   - minus_sign
