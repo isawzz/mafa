@@ -1,7 +1,22 @@
 onload = start
 
-async function start() { onclickView(); }//test8_addDrop(); }
+async function start() { test9_correctMHuge(); }//onclickView(); }//test8_addDrop(); }
 
+async function test9_correctMHuge(){
+	M = await mGetYaml('../assets/mhuge.yaml');
+	for(const k in M.superdi){
+		let o=M.superdi[k];
+		if (isdef(o.text)) o.coll = 'emo';
+		else if (isdef(o.ga) || isdef(o.fa)) o.coll = 'icon';
+		else if (isdef(o.path) && o.path.includes('amanda')) o.coll = 'amanda';
+		else if (isdef(o.path) && o.path.includes('airport')) o.coll = 'big';
+		else if (isdef(o.path) && o.path.includes('animal')) o.coll = 'animals';
+		else if (isdef(o.path) && o.path.includes('emo')) o.coll = 'emo';
+		else console.log('OTHER!!!!!!',k);
+	}
+	M.collections = ['amanda','animals','big','emoticon','icon'];
+	//downloadAsYaml(M,'mhuge');
+}
 async function test8_addDrop(){
 	await onclickAdd();
 	ondropPreviewImage('../y/bubblebath.png')
@@ -73,7 +88,9 @@ async function onclickUpload() {
 	let cat = valnwhite(UI.imgCat.value, 'other');
 	console.log('name', name, 'cat', cat)
 	let data = await uploadImg(img, unique, cat, name);
-	console.log('uploaded', data)
+	console.log('uploaded', data);
+	await updateCollections();
+
 }
 async function onclickView() {
 	await prelims();

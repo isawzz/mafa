@@ -10,3 +10,7 @@ amanda_tired:
   cat: art
   name: amanda_tired
   ext: png
+frog_mini:
+  cat: animals
+  name: frog_mini
+  ext: png

@@ -991,29 +991,7 @@ async function prelims() {
 		Config = await mGetYaml('../y/config.yaml');
 		M = await mGetYaml('../assets/mhuge.yaml');
 
-		//integrate m2.yaml
-		let collections = await mGetYaml('../y/m2.yaml');
-		// let di = {};
-		// for (const k in collections) {
-		// 	let o = collections[k];
-		// 	let onew = { key: k, friendly: o.name, cats: [o.cat], img: `${k}.${o.ext}`, ext: o.ext };
-		// 	onew.path = `../y/${k}.${o.ext}`;
-		// 	di[k] = onew;
-		// }
-		//add di to M.superdi,M.byCat,M.byFriendly,M.names,M.categories
-		for(const k in collections){
-			let o=collections[k];
-			M.superdi[k] = {key:k,friendly:o.name,cats:[o.cat],ext:o.ext,img:`${k}.${o.ext}`,path:`../y/${k}.${o.ext}`};
-			addIf(M.categories,o.cat);
-			addIf(M.names,o.name);
-			console.log('o.cat',o.cat,k)
-			lookupAddIfToList(M.byCat,[o.cat],k);
-			lookupAddIfToList(M.byFriendly,[o.name],k);
-		}
-		//sort all the dicts alphabetically
-		M.categories.sort();
-		M.names.sort();
-
+		await updateCollections();
 
 		console.log('M', M, 'Config', Config);
 		showNavbar('COMBU', ['add', 'create', 'play', 'schedule', 'view']);
@@ -1193,6 +1171,30 @@ async function srcToDataUrl(src, h) {
 		};
 		img.src = src;
 	});
+}
+async function updateCollections(){
+		//integrate m2.yaml
+		let collections = await mGetYaml('../y/m2.yaml');
+		// let di = {};
+		// for (const k in collections) {
+		// 	let o = collections[k];
+		// 	let onew = { key: k, friendly: o.name, cats: [o.cat], img: `${k}.${o.ext}`, ext: o.ext };
+		// 	onew.path = `../y/${k}.${o.ext}`;
+		// 	di[k] = onew;
+		// }
+		//add di to M.superdi,M.byCat,M.byFriendly,M.names,M.categories
+		for(const k in collections){
+			let o=collections[k];
+			M.superdi[k] = {key:k,friendly:o.name,cats:[o.cat],ext:o.ext,img:`${k}.${o.ext}`,path:`../y/${k}.${o.ext}`};
+			addIf(M.categories,o.cat);
+			addIf(M.names,o.name);
+			console.log('o.cat',o.cat,k)
+			lookupAddIfToList(M.byCat,[o.cat],k);
+			lookupAddIfToList(M.byFriendly,[o.name],k);
+		}
+		//sort all the dicts alphabetically
+		M.categories.sort();
+		M.names.sort();
 }
 async function uploadImg(img, unique, cat, name) {
 	return new Promise((resolve, reject) => {
