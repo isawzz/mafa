@@ -1,6 +1,6 @@
 onload = start
 
-async function start() { test9_correctMHuge(); }//onclickView(); }//test8_addDrop(); }
+async function start() { onclickView(); }//test8_addDrop(); }
 
 async function test9_correctMHuge(){
 	M = await mGetYaml('../assets/mhuge.yaml');
@@ -14,7 +14,7 @@ async function test9_correctMHuge(){
 		else if (isdef(o.path) && o.path.includes('emo')) o.coll = 'emo';
 		else console.log('OTHER!!!!!!',k);
 	}
-	M.collections = ['amanda','animals','big','emoticon','icon'];
+	M.collections = ['amanda','animals','big','emo','icon'];
 	//downloadAsYaml(M,'mhuge');
 }
 async function test8_addDrop(){
