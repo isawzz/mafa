@@ -1,163 +1,90 @@
 
-//#region imgSplit
-async function splitImageH(inputImagePath, outputDirectory) {
-	const image = await loadImage(inputImagePath);
-	const canvas = createCanvas(image.width, image.height);
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(image, 0, 0, image.width, image.height);
-
-	let columnIndex = 0;
-	let startX = 0;
-	let endX = 0;
-	let isPart = false;
-
-	for (let x = 0; x < canvas.width; x++) {
-			let hasNonWhitePixel = false;
-			for (let y = 0; y < canvas.height; y++) {
-					const pixelData = ctx.getImageData(x, y, 1, 1).data;
-					if (pixelData[3] !== 0 && pixelData[0] !== 255 && pixelData[1] !== 255 && pixelData[2] !== 255) {
-							hasNonWhitePixel = true;
-							break;
-					}
-			}
-
-			if (hasNonWhitePixel) {
-					if (!isPart) {
-							startX = x;
-					}
-					isPart = true;
-			} else {
-					if (isPart) {
-							endX = x;
-							const partCanvas = createCanvas(endX - startX, canvas.height);
-							const partCtx = partCanvas.getContext('2d');
-							partCtx.drawImage(canvas, startX, 0, endX - startX, canvas.height, 0, 0, endX - startX, canvas.height);
-
-							const partFileName = `${outputDirectory}/part${columnIndex}.png`;
-							fs.writeFileSync(partFileName, partCanvas.toBuffer());
-							console.log(`Part ${columnIndex} saved as ${partFileName}`);
-
-							columnIndex++;
-					}
-					isPart = false;
-			}
-	}
-}
-
-
-function getImageBoundariesX(ctx,fromx, maxx){
-	let x=fromx;
-	let from,to;
-	while(isWhitePixel(ctx,x,0)) x++;
-	from=x; //first non-white pixel
-	while(!isWhitePixel(ctx,x,0)) x++;
-	to=x; //first white pixel
-	return {from,to};
-}
-
-async function splitImageH(inputImagePath, outputDirectory) {
-	const image = await loadImage(inputImagePath);
-	const canvas = createCanvas(image.width, image.height);
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(image, 0, 0, image.width, image.height);
-	//now save this column fromx tox into new image!
-	let x=0, maxx=image.width, iPart=0;
-	while(x<maxx){
-		let bd=getImageBoundariesX(ctx,x,maxx);
-		console.log('bd',bd);
-		let w=bd.to-bd.from;
-		if (w > 5) {
-			iPart++;
-			const partCanvas = createCanvas(w, canvas.height);
-			const partCtx = partCanvas.getContext('2d');
-			partCtx.drawImage(canvas, bd.from, 0, w, canvas.height, 0, 0, w, canvas.height);
-
-			const partFileName = `${outputDirectory}/part${iPart}.png`;
-			fs.writeFileSync(partFileName, partCanvas.toBuffer());
-			console.log(`Part ${iPart} saved as ${partFileName}`);
-		}
-		x=bd.to;
-	}
-}
-async function splitImageY(inputImagePath, outputDirectory,xPart) {
-	const image = await loadImage(inputImagePath);
-	const canvas = createCanvas(image.width, image.height);
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(image, 0, 0, image.width, image.height);
-	//now save this column fromx tox into new image!
-	let x=0, maxx=image.height, iPart=0;
-	while(x<maxx){
-		let bd=getImageBoundariesY(ctx,x,maxx);
-		console.log('bd',bd);
-		let h=bd.to-bd.from;
-		if (h > 5) {
-			iPart++;
-			const partCanvas = createCanvas(canvas.width, h);
-			const partCtx = partCanvas.getContext('2d');
-			partCtx.drawImage(canvas, bd.from, 0, canvas.width, h, 0, 0, canvas.width, h);
-
-			const partFileName = `${outputDirectory}/part${xPart}${iPart}.png`;
-			fs.writeFileSync(partFileName, partCanvas.toBuffer());
-			console.log(`Part ${iPart} saved as ${partFileName}`);
-		}
-		x=bd.to;
-	}
-}
-
-function mist() {
-	let pix = ctx.getImageData(0, 0, 1, 1).data; console.log('pix', pix, pix[0]);
-
-	let x = 0;
-
-
-	for (let x = 0; x < canvas.width; x++) {
-		pix = ctx.getImageData(x, 0, 1, 1).data;
-		if (pix[0] + pix[1] + pix[2] > 740) {
-
-			//split at this x
-			//first look for x that is the end of this whitespace
-
-		}
-		return;
-	}
-
-	for (let x = 0; x < canvas.width; x++) {
-		let hasNonWhitePixel = false;
-		for (let y = 0; y < canvas.height; y++) {
-			const pixelData = ctx.getImageData(x, y, 1, 1).data;
-			console.log('pixelData', pixelData);
-			if (pixelData[3] !== 0 && pixelData[0] !== 255 && pixelData[1] !== 255 && pixelData[2] !== 255) {
-				hasNonWhitePixel = true;
-				break;
-			}
-		}
-
-		if (hasNonWhitePixel) {
-			if (!isPart) {
-				startX = x;
-			}
-			isPart = true;
-		} else {
-			if (isPart) {
-				endX = x;
-				const partCanvas = createCanvas(endX - startX, canvas.height);
-				const partCtx = partCanvas.getContext('2d');
-				partCtx.drawImage(canvas, startX, 0, endX - startX, canvas.height, 0, 0, endX - startX, canvas.height);
-
-				const partFileName = `${outputDirectory}/part${columnIndex}.png`;
-				fs.writeFileSync(partFileName, partCanvas.toBuffer());
-				console.log(`Part ${columnIndex} saved as ${partFileName}`);
-
-				columnIndex++;
-			}
-			isPart = false;
-		}
-	}
-}
-
-//#endregion
-
 //#region combu
+async function onclickView() {
+	await prelims();
+
+	showTitle('View Collection:'); //, [{ caption: 'prev', handler: onclickPrev }, { caption: 'next', handler: onclickNext }]);
+
+	let dParent = dTitle;
+	let colls = M.collections; mDom(dParent, {}, { html: '' }); let dlColl = mDatalist(dParent, colls, {edit:false});
+	let cats = M.categories; mDom(dParent, {}, { html: 'Filter:' }); let dlCat = mDatalist(dParent, cats, {edit:false});
+
+	console.log('dl', dlCat)
+	dlCat.inpElem.oninput = filterImages;
+	dlColl.inpElem.oninput = filterImages;
+
+	M.masterViewer = dlColl; M.filterViewer = dlCat;
+
+	mClear('dMain');
+	M.rows = 5; M.cols = 8;
+	M.grid = mGrid(M.rows, M.cols, 'dMain');
+	M.cells = [];
+	for (let i = 0; i < M.rows * M.cols; i++) {
+		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		M.cells.push(d);
+	}
+
+	if (nundef(M.keys)) M.keys = Object.keys(M.superdi);
+	if (nundef(M.index)) M.index = M.keys.length;
+	//M.grid.onclick = () => showNextBatch();
+	showImageBatch(0);
+}
+
+function mDatalist(dParent, list, opts = {}) {
+	var mylist = list;
+	var opts = opts;
+	addKeys({ defaultValue:'', alpha: true, edit: true, filter: 'contains' }, opts); // matches: (x, inputVal) => x.startsWith(inputVal.toLowerCase()) },opts)
+
+	let d = mDiv(toElem(dParent));
+	let optid = getUID('dl');
+	mDom(d, {}, { tag: 'input', className: 'input', value:opts.defaultValue, placeholder: "<enter value>" });
+	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+
+	var elem = d;
+	var inp = elem.firstChild;
+	var datalist = elem.lastChild;
+
+	inp.setAttribute('list', optid);
+	// console.log('datalist',elem,inp,datalist)
+
+	function update() {
+		let val = valf(inp.value, opts.defaultValue);
+		if (isEmpty(val)) return;
+		if (mylist.includes(val) || !opts.edit) return;
+		mylist.push(val);
+		if (opts.alpha) mylist.sort();
+		let i = mylist.indexOf(val);
+		//if (opts.alpha) addIfAlpha(mylist,val); else addIf(mylist,val);
+		inp.value = ''; //clear input
+		if (opts.filter == 'contains') { let el = mDom(datalist, {}, { tag: 'option', value: val }); mInsertAt(datalist, el, i) }
+		else populate();
+	}
+	function populate() {
+		//if (isdef(datalist.firstChild) && opts.filter == 'contains') return;
+		let val = valf(inp.value, opts.defaultValue); val = val.toLowerCase();
+		datalist.innerHTML = '';
+		//console.log('datalist',datalist)
+		let filteredList = isEmpty(val)||val == opts.defaultValue ? mylist : mylist.filter(x => opts.matches(x, val));
+		//console.log('filtered',filteredList)
+		for (const w of filteredList) { mDom(datalist, {}, { tag: 'option', value: w }); }
+	}
+	populate();
+
+	if (opts.edit) inp.addEventListener('keyup', ev => { if (ev.key === 'Enter') update(); });
+	if (isdef(opts.matches)) inp.addEventListener('input', populate);
+	inp.onmousedown = () => inp.value = ''
+
+	return {
+		list: mylist,
+		elem: elem,
+		inpElem: inp,
+		listElem: datalist,
+		opts: opts,
+		populate: populate,
+
+	}
+}
 function uiTypeCalendar(dParent, month1, year1, events1 = []) {
 	const [cellWidth, gap] = [100, 10];
 	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -2096,6 +2023,265 @@ function _mDatalist(dParent, list, allowEdit = true) {
 }
 
 //#endregion combu
+
+//#region filterImages (combu)
+function filterCollection(ev) {
+	console.log('changing collection!!!!!!!!!!!!!!!!');
+	//hier soll er M.masterList setzen auf alle oder die von collection
+	//danach soll er den filter clear setzen!
+	let s = ev.target.value.toLowerCase().trim();
+	let list = s == 'all' || isEmpty(s)? Object.keys(M.superdi): M.byCollection[s];
+	M.masterKeys = list;
+	M.keys = Array.from(list);
+	M.filterViewer.inpElem.value = '';
+	if (nundef(list) || isEmpty(list)) { 
+		M.cells.map(x=>mStyle(x,{opacity:0}));
+		showFleetingMessage(`collection ${s} is empty`, 'dMessage');
+		return;
+	}
+	M.index = 0;
+	showImageBatch(0);
+}
+function filterImages(ev) {
+	//s can be interpreted as cat or part of key
+	//erstmal nur als cat
+	//wenn da nix ist, dann als part of key
+	console.log('oninput!!!!!!!!!!!!!!!!');
+	let s = ev.target.value.toLowerCase().trim();
+	if (isEmpty(s)) return;
+	let list = M.byCat[s];
+	if (nundef(list) || isEmpty(list)) {
+		list = [];
+		for (const k in M.superdi) {
+			let o = M.superdi[k];
+			if (k.includes(s) || o.friendly.includes(s)) list.push(k);
+		}
+		if (isEmpty(list)) return; //list = Object.keys(M.superdi);
+	}
+	M.keys = list;
+	M.index = 0;
+	showImageBatch(0);
+
+}
+
+function filterImages(ev){
+	let coll = M.masterViewer.inpElem.value.toLowerCase().trim();
+	let filter = M.filterViewer.inpElem.value.toLowerCase().trim();
+	console.log('coll='+coll,'filter='+filter)
+
+	let list = isEmpty(coll)?Object.keys(M.superdi):nundef(M.byCollection[coll])?[]:M.byCollection[coll];
+
+	if (isEmpty(list)){
+		showFleetingMessage(`Collection ${coll} is empty!`)
+		return;
+	}
+
+	let di = {};list.map(x=>di[x]=true);
+
+	//now simply apply filter to list!
+	let s=filter;
+	let list1 = isEmpty(s)?list:isdef(M.byCat[s])?M.byCat[s].filter(x=>isdef(di[x])):[];
+
+	if (isEmpty(list1)){
+		//jetzt apply s for keysearch
+		for (const k in di) {
+			let o = M.superdi[k];
+			if (k.includes(s) || o.friendly.includes(s)) list1.push(k);
+		}
+	}
+
+	M.keys = list1;
+	console.log('list1',list1)
+
+
+
+	for(const k of list){
+
+	}
+
+
+}
+//#endregion
+
+//#region calendar (combu)
+function muell(){
+	console.log('clicked on day',idDay);
+	let tsEventDay = firstNumber(idDay);
+	let dte = new Date(tsEventDay)
+	let day=`${dte.get}`
+	console.log('clicked on date',dte);
+	let tsCreated = Date.now();
+	console.log('created',tsCreated,new Date(tsCreated));
+	let id = idDay;
+	let o = {inpId:idDay,day:tsEventDay,from:null,to:null,created:tsCreated,title:'',text:'',user:ClientData.userid,subscribers:[]};
+	//Config.Events
+	console.log('created event',o)
+	//start input field in this day element
+	//find a unique id for input field
+	//create an event for this input field
+	//event:{id,user,content,date,time}
+}
+
+
+//#endregion
+
+//#region imgSplit
+async function splitImageH(inputImagePath, outputDirectory) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+
+	let columnIndex = 0;
+	let startX = 0;
+	let endX = 0;
+	let isPart = false;
+
+	for (let x = 0; x < canvas.width; x++) {
+			let hasNonWhitePixel = false;
+			for (let y = 0; y < canvas.height; y++) {
+					const pixelData = ctx.getImageData(x, y, 1, 1).data;
+					if (pixelData[3] !== 0 && pixelData[0] !== 255 && pixelData[1] !== 255 && pixelData[2] !== 255) {
+							hasNonWhitePixel = true;
+							break;
+					}
+			}
+
+			if (hasNonWhitePixel) {
+					if (!isPart) {
+							startX = x;
+					}
+					isPart = true;
+			} else {
+					if (isPart) {
+							endX = x;
+							const partCanvas = createCanvas(endX - startX, canvas.height);
+							const partCtx = partCanvas.getContext('2d');
+							partCtx.drawImage(canvas, startX, 0, endX - startX, canvas.height, 0, 0, endX - startX, canvas.height);
+
+							const partFileName = `${outputDirectory}/part${columnIndex}.png`;
+							fs.writeFileSync(partFileName, partCanvas.toBuffer());
+							console.log(`Part ${columnIndex} saved as ${partFileName}`);
+
+							columnIndex++;
+					}
+					isPart = false;
+			}
+	}
+}
+
+
+function getImageBoundariesX(ctx,fromx, maxx){
+	let x=fromx;
+	let from,to;
+	while(isWhitePixel(ctx,x,0)) x++;
+	from=x; //first non-white pixel
+	while(!isWhitePixel(ctx,x,0)) x++;
+	to=x; //first white pixel
+	return {from,to};
+}
+
+async function splitImageH(inputImagePath, outputDirectory) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+	//now save this column fromx tox into new image!
+	let x=0, maxx=image.width, iPart=0;
+	while(x<maxx){
+		let bd=getImageBoundariesX(ctx,x,maxx);
+		console.log('bd',bd);
+		let w=bd.to-bd.from;
+		if (w > 5) {
+			iPart++;
+			const partCanvas = createCanvas(w, canvas.height);
+			const partCtx = partCanvas.getContext('2d');
+			partCtx.drawImage(canvas, bd.from, 0, w, canvas.height, 0, 0, w, canvas.height);
+
+			const partFileName = `${outputDirectory}/part${iPart}.png`;
+			fs.writeFileSync(partFileName, partCanvas.toBuffer());
+			console.log(`Part ${iPart} saved as ${partFileName}`);
+		}
+		x=bd.to;
+	}
+}
+async function splitImageY(inputImagePath, outputDirectory,xPart) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+	//now save this column fromx tox into new image!
+	let x=0, maxx=image.height, iPart=0;
+	while(x<maxx){
+		let bd=getImageBoundariesY(ctx,x,maxx);
+		console.log('bd',bd);
+		let h=bd.to-bd.from;
+		if (h > 5) {
+			iPart++;
+			const partCanvas = createCanvas(canvas.width, h);
+			const partCtx = partCanvas.getContext('2d');
+			partCtx.drawImage(canvas, bd.from, 0, canvas.width, h, 0, 0, canvas.width, h);
+
+			const partFileName = `${outputDirectory}/part${xPart}${iPart}.png`;
+			fs.writeFileSync(partFileName, partCanvas.toBuffer());
+			console.log(`Part ${iPart} saved as ${partFileName}`);
+		}
+		x=bd.to;
+	}
+}
+
+function mist() {
+	let pix = ctx.getImageData(0, 0, 1, 1).data; console.log('pix', pix, pix[0]);
+
+	let x = 0;
+
+
+	for (let x = 0; x < canvas.width; x++) {
+		pix = ctx.getImageData(x, 0, 1, 1).data;
+		if (pix[0] + pix[1] + pix[2] > 740) {
+
+			//split at this x
+			//first look for x that is the end of this whitespace
+
+		}
+		return;
+	}
+
+	for (let x = 0; x < canvas.width; x++) {
+		let hasNonWhitePixel = false;
+		for (let y = 0; y < canvas.height; y++) {
+			const pixelData = ctx.getImageData(x, y, 1, 1).data;
+			console.log('pixelData', pixelData);
+			if (pixelData[3] !== 0 && pixelData[0] !== 255 && pixelData[1] !== 255 && pixelData[2] !== 255) {
+				hasNonWhitePixel = true;
+				break;
+			}
+		}
+
+		if (hasNonWhitePixel) {
+			if (!isPart) {
+				startX = x;
+			}
+			isPart = true;
+		} else {
+			if (isPart) {
+				endX = x;
+				const partCanvas = createCanvas(endX - startX, canvas.height);
+				const partCtx = partCanvas.getContext('2d');
+				partCtx.drawImage(canvas, startX, 0, endX - startX, canvas.height, 0, 0, endX - startX, canvas.height);
+
+				const partFileName = `${outputDirectory}/part${columnIndex}.png`;
+				fs.writeFileSync(partFileName, partCanvas.toBuffer());
+				console.log(`Part ${columnIndex} saved as ${partFileName}`);
+
+				columnIndex++;
+			}
+			isPart = false;
+		}
+	}
+}
+
+//#endregion
 
 //#region test0
 async function imgToDataUrl(src, h) {

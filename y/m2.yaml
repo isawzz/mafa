@@ -1,16 +1,15 @@
 minou:
   cat: animal
+  coll: animals
+  ext: png
   name: minou
-  ext: png
-bubblebath:
-  cat: amanda
-  name: bubblebath
-  ext: png
 amanda_tired:
   cat: art
-  name: amanda_tired
+  coll: amanda
   ext: png
+  name: amanda_tired
 frog_mini:
   cat: animals
-  name: frog_mini
+  coll: animals
   ext: png
+  name: frog_mini

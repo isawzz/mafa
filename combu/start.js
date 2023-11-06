@@ -1,7 +1,28 @@
-onload = start
+onload = start;
 
-async function start() { onclickView(); }//test8_addDrop(); }
+async function start() { test11_altviewer();} //onclickView(); }//test8_addDrop(); }
 
+async function test11_altviewer(){
+	await prelims();
+
+	showTitle('Collection:'); 
+	dMenu = mDom(dTitle,{h:'100%'});mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+
+	mClear('dMain');
+	M.rows = 5; M.cols = 8;
+	M.grid = mGrid(M.rows, M.cols, 'dMain');
+	M.cells = [];
+	for (let i = 0; i < M.rows * M.cols; i++) {
+		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		M.cells.push(d);
+	}
+
+	initCollection('animals');
+}
+async function test10_message(){
+	showFleetingMessage('HALLO!!!!','dMessage',{bg:'pink'})
+}
 async function test9_correctMHuge(){
 	M = await mGetYaml('../assets/mhuge.yaml');
 	for(const k in M.superdi){
@@ -46,7 +67,7 @@ async function onclickAdd() {
 	let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);
 	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
 
-	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { console.log('H!'); ev.preventDefault(); return false; } });
+	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { ev.preventDefault(); return false; } });
 
 	mDom(dForm, {}, { html: 'Category:' }); let dl = mDatalist(dForm, cats);
 	mDom(dForm, { h: 10 })
@@ -63,7 +84,26 @@ async function onclickAdd() {
 
 
 }
-async function onclickCreate() { alert('COMING SOON!'); } //test0_addToCollection(); }
+function onclickDay(ev){
+	//id kann ja nur die day id sein!!!!
+	let tsDay = evToId(ev); //ev.target.getAttribute('date'); //evToTargetAttribute(ev,'date'); //ts for this day
+	let tsCreated = Date.now()
+	let id = generateEventId(tsDay,tsCreated);
+	let o={id:id,created:tsCreated,day:tsDay,from:null,to:null,title:'',text:'',user:ClientData.userid,subscribers:[]};
+	Config.events[id]=o;
+	// console.log(id,o);
+
+  let d1 = addEditable(ev.target, { w: '100%' }, { id:id, onEnter: onEventEdited });
+	//console.log(d1);
+
+	//trag dieses event ein!
+	//soll ich das event hier eintragen oder erst wenn es einen content hat?
+}
+function eventEdited(o,inp){
+	//irgendwo muessen all die events gespeichert sein!
+	//ein event muss eine id haben!!!
+
+}
 async function onclickPlay() { alert('COMING SOON!'); } //test0_addToCollection(); }
 async function onclickPrev() { showImageBatch(-1); }
 async function onclickNext() { showImageBatch(1); }
@@ -78,34 +118,27 @@ async function onclickSchedule() {
   let x = DA.calendar = uiTypeCalendar(d1, null, null, Config.events);
 } 
 async function onclickUpload() {
-	console.log('onclickUpload');
+	//console.log('onclickUpload');
 	let img = UI.img;
 
 	let name = valnwhite(UI.imgName.value, rUID('img'));
 	let unique = isdef(M.superdi[name]) ? rUID('img') : name;
 
-	console.log('cat', isdef(UI.imgCat.value), typeof (UI.imgCat.value), isEmpty(UI.imgCat.value))
+	//console.log('cat', isdef(UI.imgCat.value), typeof (UI.imgCat.value), isEmpty(UI.imgCat.value))
 	let cat = valnwhite(UI.imgCat.value, 'other');
-	console.log('name', name, 'cat', cat)
+	//console.log('name', name, 'cat', cat)
 	let data = await uploadImg(img, unique, cat, name);
-	console.log('uploaded', data);
+	//console.log('uploaded', data);
 	await updateCollections();
 
 }
 async function onclickView() {
 	await prelims();
 
-	showTitle('View Collections', [{ caption: 'prev', handler: onclickPrev }, { caption: 'next', handler: onclickNext }]);
-
-	let dCat = dTitle;
-	let cats = M.categories;
-	mDom(dCat, {}, { html: 'Filter:' }); let dl = mDatalist(dCat, cats, {edit:false});
-
-	console.log('dl', dl)
-	dl.inpElem.oninput = filterImages;
+	showTitle('Collection:'); 
+	dMenu = mDom(dTitle,{h:'100%'});mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
 
 	mClear('dMain');
-
 	M.rows = 5; M.cols = 8;
 	M.grid = mGrid(M.rows, M.cols, 'dMain');
 	M.cells = [];
@@ -115,10 +148,7 @@ async function onclickView() {
 		M.cells.push(d);
 	}
 
-	if (nundef(M.keys)) M.keys = Object.keys(M.superdi);
-	if (nundef(M.index)) M.index = M.keys.length;
-	//M.grid.onclick = () => showNextBatch();
-	showImageBatch(0);
+	initCollection('animals');
 }
 async function ondropPreviewImage(url, key) {
 	if (isdef(key)) {
@@ -153,10 +183,10 @@ async function onEventEdited(ev){
 	let o = Config.events[id];
 	let inp = mBy(id);
 	if (inp.value){
-		console.log('send value',inp.value,'to server')
+		//console.log('send value',inp.value,'to server')
 		o.text=inp.value;
 		let resp = await uploadJson('event',o)
-		console.log('response',resp)
+		//console.log('response',resp)
 	}
 
 	//console.log('event',id,o,inp)

@@ -61,9 +61,11 @@ function addToolX(cropper, d) {
 	let rgCrop = createCropTool();
 	let rgResize = createSquareTool();
 }
-function collectCats(di) {
+function collectCats(klist) {
 	let cats = [];
-	for (const k in di) di[k].cats.map(x => addIf(cats, x));
+	for (const k of klist) {
+		M.superdi[k].cats.map(x => addIf(cats, x));
+	}
 	return cats;
 }
 function cropTo(tool, wnew, hnew) {
@@ -85,13 +87,20 @@ function filterImages(ev) {
 	//s can be interpreted as cat or part of key
 	//erstmal nur als cat
 	//wenn da nix ist, dann als part of key
-	console.log('oninput!!!!!!!!!!!!!!!!');
-	let s = ev.target.value;
-	let list = M.byCat[s.toLowerCase()];
+	let s = ev.target.value.toLowerCase().trim();
+	if (isEmpty(s)) return;
+	//let list = M.masterKeys.filter(x=>M.superdibyCat[s];
+
+	let di = {};
+	for(const k of M.masterKeys){
+		di[k]=true;
+	}
+	let list = isdef(M.byCat[s])?M.byCat[s].filter(x=>isdef(di[x])):[];
+
 	if (nundef(list) || isEmpty(list)) {
-		list=[];
-		for (const k in M.superdi){
-			let o=M.superdi[k];
+		list = [];
+		for (const k of M.masterKeys) {
+			let o = M.superdi[k];
 			if (k.includes(s) || o.friendly.includes(s)) list.push(k);
 		}
 		if (isEmpty(list)) return; //list = Object.keys(M.superdi);
@@ -101,6 +110,42 @@ function filterImages(ev) {
 	showImageBatch(0);
 
 }
+//#region fleetingMessage
+function clearFleetingMessage() {
+  if (isdef(dFleetingMessage)) {
+    dFleetingMessage.remove();
+    dFleetingMessage = null;
+  }
+}
+function showFleetingMessage(msg, dParent, styles = {}, ms = 3000, msDelay = 0, fade = true) {
+  clearFleetingMessage();
+
+  dFleetingMessage = mDiv(dParent);
+  if (msDelay) {
+    TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
+  } else {
+    TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
+  }
+}
+function mFleetingMessage(msg, styles, ms, fade) {
+  if (isString(msg)) {
+    dFleetingMessage.innerHTML = msg;
+    mStyle(dFleetingMessage, styles);
+  } else {
+    mAppend(dFleetingMessage, msg);
+  }
+  if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
+  return dFleetingMessage;
+}
+//#endregion
+function formatDate(date) {
+	const day = String(date.getDate()).padStart(2, '0');
+	const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+	const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
+
+	return `${day}_${month}_${year}`;
+}
+function generateEventId(tsDay,tsCreated){return `${rLetter()}_${tsDay}_${tsCreated}`; }
 function getMouseCoordinates(event) {
 	const image = event.target; //const image = document.getElementById('your-image-id'); // Replace with the actual ID of your image element
 	//const imageRect = image.getBoundingClientRect();
@@ -112,6 +157,45 @@ function getMouseCoordinates(event) {
 		124; //imageRect.top;
 
 	return { x: offsetX, y: offsetY };
+}
+function initCollection(name){
+	let list=[];
+	if (name == 'all' || isEmpty(name)){
+		list = Object.keys(M.superdi);
+	}else if (isdef(M.byCollection[name])){
+		list = M.byCollection[name];
+	}
+
+	mClear(dMenu);
+	let dParent = dMenu;
+	let colls = ['all'].concat(M.collections); 
+	mDom(dParent, {}, { html: '' }); 
+	let dlColl = mDatalist(dParent, colls);
+	dlColl.inpElem.oninput = ev=>initCollection(ev.target.value);
+	dlColl.inpElem.value = name;
+
+
+	initFilter(list);
+
+	//add buttons!
+	mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
+	mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
+
+
+	M.keys = list;
+	M.index = 0;
+	showImageBatch();
+}
+function initFilter(list){
+
+	//need to find all cats for list elements
+	M.masterKeys = list;
+	let cats = collectCats(list);
+	cats.sort();
+	mDom(dMenu, {}, { html: 'Filter:' }); 
+	let dlCat = mDatalist(dMenu, cats, {edit:false});
+	dlCat.inpElem.oninput = filterImages;
+
 }
 function isSameDate(date1, date2) {
 	return date1.getFullYear() === date2.getFullYear() &&
@@ -167,7 +251,7 @@ async function loadCollections() {
 		M.byCat = sortKeysAlphabetically(bycat);
 		M.byFriendly = sortKeysAlphabetically(byfriendly);
 		M.names = Object.keys(M.byFriendly);
-		M.categories = Object.keys(M.byCat); //collectCats(di); 
+		M.categories = Object.keys(M.byCat); 
 
 		showNavbar('M', ['view', 'add', 'play', 'create']);
 		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
@@ -177,8 +261,8 @@ async function loadCollections() {
 }
 function mCropper(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
-	console.log('w', worig, 'h', horig);
-	console.log('dParent', dParent)
+	//console.log('w', worig, 'h', horig);
+	//console.log('dParent', dParent)
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
 	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black' });
@@ -272,7 +356,7 @@ function mCropper(dParent, img, dButtons) {
 	}
 	function cropImage() {
 		let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
-		console.log('x,y,w,h', x, y, w, h);
+		//console.log('x,y,w,h', x, y, w, h);
 		let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(img, x, y, w, h, 0, 0, w, h);
@@ -295,7 +379,7 @@ function mCropper(dParent, img, dButtons) {
 	function hide_cropbox() { cropBox.style.display = 'none' }
 	function setSize(wnew, hnew) {
 		if (isList(wnew)) [wnew, hnew] = wnew;
-		console.log('sz', wnew, hnew);
+		//console.log('sz', wnew, hnew);
 		if (wnew == 0 || hnew == 0) {
 			setRect(0, 0, worig, horig);
 			return;
@@ -303,7 +387,7 @@ function mCropper(dParent, img, dButtons) {
 		let [x, y, w, h] = getRect();
 		let [cx, cy] = [x + w / 2, y + h / 2];
 
-		console.log('old rect', x, y, w, h, cx, cy);
+		//console.log('old rect', x, y, w, h, cx, cy);
 
 		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
 
@@ -483,7 +567,7 @@ function mCropResizer(dParent, img, dButtons) {
 	function hide_cropbox() { cropBox.style.display = 'none' }
 	function setSize(wnew, hnew) {
 		if (isList(wnew)) [wnew, hnew] = wnew;
-		console.log('sz', wnew, hnew);
+		//console.log('sz', wnew, hnew);
 		if (wnew == 0 || hnew == 0) {
 			setRect(0, 0, worig, horig);
 			return;
@@ -491,7 +575,7 @@ function mCropResizer(dParent, img, dButtons) {
 		let [x, y, w, h] = getRect();
 		let [cx, cy] = [x + w / 2, y + h / 2];
 
-		console.log('old rect', x, y, w, h, cx, cy);
+		//console.log('old rect', x, y, w, h, cx, cy);
 
 		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
 
@@ -526,7 +610,7 @@ function mCropResizePan(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
 	const cropBox = mDom(dParent, { position: 'absolute', left: 0, top: 0, w: worig, h: horig }, { className: 'crop-box' });
-	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black', cursor: 'move'});
+	const messageBox = mDom(cropBox, { bg: '#ffffff80', fg: 'black', cursor: 'move' });
 
 	let sz = 16;
 	const centerBox = mDom(cropBox, { bg: 'red', w: sz, h: sz, rounding: '50%', position: 'absolute' });
@@ -591,8 +675,8 @@ function mCropResizePan(dParent, img, dButtons) {
 		// cropStartX = ev.clientX - dParent.offsetLeft;
 		// cropStartY = ev.clientY - dParent.offsetTop;
 		let pt = getMouseCoordinates(ev); //get_mouse_pos(ev,dParent); //getMouseCoordinates(ev);
-		[cropStartX, cropStartY] = [pt.x, pt.y-24];
-		console.log('pt', pt, cropStartX, cropStartY);
+		[cropStartX, cropStartY] = [pt.x, pt.y - 24];
+		//console.log('pt', pt, cropStartX, cropStartY);
 		document.addEventListener('mousemove', crop); //cropCenter);
 		document.addEventListener('mouseup', stopCrop);
 	}
@@ -604,7 +688,7 @@ function mCropResizePan(dParent, img, dButtons) {
 			// const mouseY = ev.clientY - dParent.offsetTop;
 			let pt = getMouseCoordinates(ev); //get_mouse_pos(ev,dParent); //getMouseCoordinates(ev);
 			let [mouseX, mouseY] = [pt.x, pt.y];
-			console.log('pt', pt, mouseX, mouseY);
+			//console.log('pt', pt, mouseX, mouseY);
 			const width = Math.abs(mouseX - cropStartX);
 			const height = Math.abs(mouseY - cropStartY);
 			const left = Math.min(mouseX, cropStartX);
@@ -712,7 +796,7 @@ function mCropResizePan(dParent, img, dButtons) {
 	function hide_cropbox() { cropBox.style.display = 'none' }
 	function setSize(wnew, hnew) {
 		if (isList(wnew)) [wnew, hnew] = wnew;
-		console.log('sz', wnew, hnew);
+		//console.log('sz', wnew, hnew);
 		if (wnew == 0 || hnew == 0) {
 			setRect(0, 0, worig, horig);
 			return;
@@ -720,7 +804,7 @@ function mCropResizePan(dParent, img, dButtons) {
 		let [x, y, w, h] = getRect();
 		let [cx, cy] = [x + w / 2, y + h / 2];
 
-		console.log('old rect', x, y, w, h, cx, cy);
+		//console.log('old rect', x, y, w, h, cx, cy);
 
 		let [xnew, ynew] = [cx - (wnew / 2), cy - (hnew / 2)];
 
@@ -736,7 +820,7 @@ function mCropResizePan(dParent, img, dButtons) {
 	messageBox.addEventListener('mousedown', startPan);
 
 	setRect(0, 0, worig, horig);
-	console.log('DIMS', worig, horig)
+	//console.log('DIMS', worig, horig)
 	//var tool = addToolX(dButtons, img, setSize);
 	//var button = mButton('Crop', cropImage, tool, { w: 120, maleft: 12 }, 'input');
 
@@ -765,7 +849,7 @@ function mDatalist(dParent, list, opts = {}) {
 
 	let d = mDiv(toElem(dParent));
 	let optid = getUID('dl');
-	mDom(d, {}, { tag: 'input', className: 'input', placeholder: "<enter value>" });
+	mDom(d, {w:200}, { tag: 'input', className: 'input', placeholder: "<enter value>" });
 	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
 
 	var elem = d;
@@ -933,7 +1017,7 @@ function mResizer(dParent, img, dButtons) {
 	}
 	function setSize(wnew, hnew) {
 		if (isList(wnew)) [wnew, hnew] = wnew;
-		console.log('sz', wnew, hnew);
+		//console.log('sz', wnew, hnew);
 		if (wnew == 0 || hnew == 0) {
 			setRect(0, 0, worig, horig);
 			return;
@@ -991,18 +1075,24 @@ async function prelims() {
 		Config = await mGetYaml('../y/config.yaml');
 		M = await mGetYaml('../assets/mhuge.yaml');
 
+		M.byCollection = {};
+		for(const k in M.superdi){
+			let o=M.superdi[k];
+			lookupAddIfToList(M.byCollection,[o.coll],k);
+		}
+
 		await updateCollections();
 
-		console.log('M', M, 'Config', Config);
-		showNavbar('COMBU', ['add', 'create', 'play', 'schedule', 'view']);
-		navbarDeactivate('play', 'create');
+		//console.log('M', M, 'Config', Config);
+		showNavbar('COMBU', ['add', 'play', 'schedule', 'view']);
+		navbarDeactivate('play');
 		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
 		mInsert(document.body, dTitle, 1);
 	}
 
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
-	console.log('ausschnitt:', x, y, wold, hold);
+	//console.log('ausschnitt:', x, y, wold, hold);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
 	const ctx = canvas.getContext('2d');
 	ctx.drawImage(img, x, y, wold, hold, 0, 0, w, h);
@@ -1100,14 +1190,15 @@ function showNavbar(pageTitle, titles, funcNames) {
 	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
 
 }
-function showImageBatch(inc) {
+function showImageBatch(inc=0) {
 	let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
 
+	if (keys.length <= x) inc=0;
 	index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
 
 	let list = arrTakeFromTo(keys, index, index + x);
 	M.index = index;
-	console.log('show', list.length, 'images from i=' + index)
+	//console.log('show', list.length, 'images from i=' + index)
 
 
 	for (let i = 0; i < list.length; i++) {
@@ -1137,9 +1228,9 @@ function squareTo(tool, sznew = 128) {
 	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
 	let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
 	if (sznew == 0) sznew = h;
-	console.log('cropBox dims', x, y, w, h)
+	//console.log('cropBox dims', x, y, w, h)
 	let sz = Math.max(w, h)
-	console.log('sz', sz)
+	//console.log('sz', sz)
 	let [x1, y1] = [x - (sz - w) / 2, y - (sz - h) / 2];
 	redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
@@ -1172,29 +1263,26 @@ async function srcToDataUrl(src, h) {
 		img.src = src;
 	});
 }
-async function updateCollections(){
-		//integrate m2.yaml
-		let collections = await mGetYaml('../y/m2.yaml');
-		// let di = {};
-		// for (const k in collections) {
-		// 	let o = collections[k];
-		// 	let onew = { key: k, friendly: o.name, cats: [o.cat], img: `${k}.${o.ext}`, ext: o.ext };
-		// 	onew.path = `../y/${k}.${o.ext}`;
-		// 	di[k] = onew;
-		// }
-		//add di to M.superdi,M.byCat,M.byFriendly,M.names,M.categories
-		for(const k in collections){
-			let o=collections[k];
-			M.superdi[k] = {key:k,friendly:o.name,cats:[o.cat],ext:o.ext,img:`${k}.${o.ext}`,path:`../y/${k}.${o.ext}`};
-			addIf(M.categories,o.cat);
-			addIf(M.names,o.name);
-			console.log('o.cat',o.cat,k)
-			lookupAddIfToList(M.byCat,[o.cat],k);
-			lookupAddIfToList(M.byFriendly,[o.name],k);
-		}
-		//sort all the dicts alphabetically
-		M.categories.sort();
-		M.names.sort();
+async function updateCollections() {
+
+	//integrate m2.yaml
+	let collections = await mGetYaml('../y/m2.yaml');
+	for (const k in collections) {
+		let o = collections[k];
+		M.superdi[k] = { key: k, friendly: o.name, cats: [o.cat], ext: o.ext, img: `${k}.${o.ext}`, path: `../y/img/${k}.${o.ext}` };
+		addIf(M.collections, o.coll);
+		addIf(M.categories, o.cat);
+		addIf(M.names, o.name);
+		//console.log('o.cat', o.cat, k)
+		lookupAddIfToList(M.byCat, [o.cat], k);
+		lookupAddIfToList(M.byFriendly, [o.name], k);
+		lookupAddIfToList(M.byCollection, [o.coll], k);
+	}
+	//sort all the dicts alphabetically
+	M.categories.sort();
+	M.names.sort();
+	M.collections.sort();
+	
 }
 async function uploadImg(img, unique, cat, name) {
 	return new Promise((resolve, reject) => {
@@ -1242,27 +1330,27 @@ async function uploadImg(img, unique, cat, name) {
 	});
 }
 async function uploadJson(route, o) {
-		let type = detectSessionType();
-		let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
-		server += `/${route}`;
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	server += `/${route}`;
 
-		try {
-			const response = await fetch(server, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				mode: 'cors',
-				body: JSON.stringify(o)
-			});
+	try {
+		const response = await fetch(server, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			mode: 'cors',
+			body: JSON.stringify(o)
+		});
 
-			if (response.ok) {
-				const data = await response.json();
-				return data;
-			} else {
-				return 'ERROR 1';
-			}
-		} catch (error) {
-			return 'ERROR 2';
+		if (response.ok) {
+			const data = await response.json();
+			return data;
+		} else {
+			return 'ERROR 1';
 		}
+	} catch (error) {
+		return 'ERROR 2';
+	}
 }
 
 
