@@ -9,6 +9,10 @@
 	/* margin: 20px auto; */
 	display: inline-block;
 }
+.framedPicture {
+  outline: solid 8px yellow;
+  outline-offset: -6px;
+}
 .hop1 {
   opacity: 0.7;
 }

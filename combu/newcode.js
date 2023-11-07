@@ -158,45 +158,6 @@ function getMouseCoordinates(event) {
 
 	return { x: offsetX, y: offsetY };
 }
-function initCollection(name){
-	let list=[];
-	if (name == 'all' || isEmpty(name)){
-		list = Object.keys(M.superdi);
-	}else if (isdef(M.byCollection[name])){
-		list = M.byCollection[name];
-	}
-
-	mClear(dMenu);
-	let dParent = dMenu;
-	let colls = ['all'].concat(M.collections); 
-	mDom(dParent, {}, { html: '' }); 
-	let dlColl = mDatalist(dParent, colls);
-	dlColl.inpElem.oninput = ev=>initCollection(ev.target.value);
-	dlColl.inpElem.value = name;
-
-
-	initFilter(list);
-
-	//add buttons!
-	mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
-	mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
-
-
-	M.keys = list;
-	M.index = 0;
-	showImageBatch();
-}
-function initFilter(list){
-
-	//need to find all cats for list elements
-	M.masterKeys = list;
-	let cats = collectCats(list);
-	cats.sort();
-	mDom(dMenu, {}, { html: 'Filter:' }); 
-	let dlCat = mDatalist(dMenu, cats, {edit:false});
-	dlCat.inpElem.oninput = filterImages;
-
-}
 function isSameDate(date1, date2) {
 	return date1.getFullYear() === date2.getFullYear() &&
 		date1.getMonth() === date2.getMonth() &&
@@ -842,60 +803,6 @@ function mCropResizePan(dParent, img, dButtons) {
 
 	}
 }
-function mDatalist(dParent, list, opts = {}) {
-	var mylist = list;
-	var opts = opts;
-	addKeys({ alpha: true, edit: true, filter: 'contains' }, opts); // matches: (x, inputVal) => x.startsWith(inputVal.toLowerCase()) },opts)
-
-	let d = mDiv(toElem(dParent));
-	let optid = getUID('dl');
-	mDom(d, {w:200}, { tag: 'input', className: 'input', placeholder: "<enter value>" });
-	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
-
-	var elem = d;
-	var inp = elem.firstChild;
-	var datalist = elem.lastChild;
-
-	inp.setAttribute('list', optid);
-	// console.log('datalist',elem,inp,datalist)
-
-	function update() {
-		let val = valf(inp.value, '');
-		if (isEmpty(val)) return;
-		if (mylist.includes(val) || !opts.edit) return;
-		mylist.push(val);
-		if (opts.alpha) mylist.sort();
-		let i = mylist.indexOf(val);
-		//if (opts.alpha) addIfAlpha(mylist,val); else addIf(mylist,val);
-		inp.value = ''; //clear input
-		if (opts.filter == 'contains') { let el = mDom(datalist, {}, { tag: 'option', value: val }); mInsertAt(datalist, el, i) }
-		else populate();
-	}
-	function populate() {
-		//if (isdef(datalist.firstChild) && opts.filter == 'contains') return;
-		let val = valf(inp.value, ''); val = val.toLowerCase();
-		datalist.innerHTML = '';
-		//console.log('datalist',datalist)
-		let filteredList = isEmpty(val) ? mylist : mylist.filter(x => opts.matches(x, val));
-		//console.log('filtered',filteredList)
-		for (const w of filteredList) { mDom(datalist, {}, { tag: 'option', value: w }); }
-	}
-	populate();
-
-	if (opts.edit) inp.addEventListener('keyup', ev => { if (ev.key === 'Enter') update(); });
-	if (isdef(opts.matches)) inp.addEventListener('input', populate);
-	inp.onmousedown = () => inp.value = ''
-
-	return {
-		list: mylist,
-		elem: elem,
-		inpElem: inp,
-		listElem: datalist,
-		opts: opts,
-		populate: populate,
-
-	}
-}
 function mDropZone(dropZone, onDrop) {
 	//const dropZone = document.getElementById('dropZone');
 
@@ -1070,27 +977,6 @@ function navbarDeactivate() {
 		}
 	}
 }
-async function prelims() {
-	if (nundef(M.superdi)) {
-		Config = await mGetYaml('../y/config.yaml');
-		M = await mGetYaml('../assets/mhuge.yaml');
-
-		M.byCollection = {};
-		for(const k in M.superdi){
-			let o=M.superdi[k];
-			lookupAddIfToList(M.byCollection,[o.coll],k);
-		}
-
-		await updateCollections();
-
-		//console.log('M', M, 'Config', Config);
-		showNavbar('COMBU', ['add', 'play', 'schedule', 'view']);
-		navbarDeactivate('play');
-		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
-		mInsert(document.body, dTitle, 1);
-	}
-
-}
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	//console.log('ausschnitt:', x, y, wold, hold);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
@@ -1149,14 +1035,24 @@ function showImage(key, dParent, styles = {}) {
 		let [sz, fz] = [.9 * w, .8 * h];
 		let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
 		mCenterCenterFlex(d1)
+		let el=null;
 		if (isdef(o.img)) {
-			let img = mDom(d1, { cursor: 'pointer', w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
-			img.onclick = async () => { await onclickAdd(); ondropPreviewImage(o.path, key); };
+			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+			// let img = mDom(d1, { cursor: 'pointer', w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+			// img.onclick = async () => { await onclickAdd(); ondropPreviewImage(o.path, key); };
 
 		}
-		else if (isdef(o.text)) mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
-		else if (isdef(o.fa)) mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-		else if (isdef(o.ga)) mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+		else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+		else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+		else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+
+		assertion(el,'PROBLEM mit'+key);
+		mStyle(el,{cursor:'pointer'})
+		el.onclick = onclickItem;
+		el.setAttribute('key',key)
+		//console.log('dParent',key,el)
+
+
 
 	} catch {
 		console.log('ERROR showImage:', key, o)
@@ -1192,6 +1088,8 @@ function showNavbar(pageTitle, titles, funcNames) {
 }
 function showImageBatch(inc=0) {
 	let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
+
+	if (isEmpty(keys)) showFleetingMessage('nothing has been added to this collection yet!','dMessage',{margin:10},5000)
 
 	if (keys.length <= x) inc=0;
 	index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
@@ -1262,27 +1160,6 @@ async function srcToDataUrl(src, h) {
 		};
 		img.src = src;
 	});
-}
-async function updateCollections() {
-
-	//integrate m2.yaml
-	let collections = await mGetYaml('../y/m2.yaml');
-	for (const k in collections) {
-		let o = collections[k];
-		M.superdi[k] = { key: k, friendly: o.name, cats: [o.cat], ext: o.ext, img: `${k}.${o.ext}`, path: `../y/img/${k}.${o.ext}` };
-		addIf(M.collections, o.coll);
-		addIf(M.categories, o.cat);
-		addIf(M.names, o.name);
-		//console.log('o.cat', o.cat, k)
-		lookupAddIfToList(M.byCat, [o.cat], k);
-		lookupAddIfToList(M.byFriendly, [o.name], k);
-		lookupAddIfToList(M.byCollection, [o.coll], k);
-	}
-	//sort all the dicts alphabetically
-	M.categories.sort();
-	M.names.sort();
-	M.collections.sort();
-	
 }
 async function uploadImg(img, unique, cat, name) {
 	return new Promise((resolve, reject) => {

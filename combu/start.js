@@ -1,7 +1,25 @@
 onload = start;
 
-async function start() { test11_altviewer();} //onclickView(); }//test8_addDrop(); }
+async function start() { test12_save();} //onclickView(); }//test8_addDrop(); }
 
+async function test12_save(){
+	//a ... append text/json
+	//ay ... append as yaml
+	//w ... override text/json
+	//wi ... override image
+	//wy ... override yaml
+	//as ... addKeys to session object
+	//ws ... copyKeys to session object
+	//ac ... addKeys to config object and save config
+	//wc ... copyKeys to config object and save config
+	//_ac ... addKeys to config object without saving!!!
+	//_wc ... copyKeys to config object without saving!!!
+	//c ... just save config file and reload
+	let o = {path:'../combu/test.txt',data:{text:'I am Sam',pos:22},mode:'a'};
+	let resp = await uploadJson('save',o)
+	console.log('response',resp);
+
+}
 async function test11_altviewer(){
 	await prelims();
 
@@ -18,44 +36,32 @@ async function test11_altviewer(){
 		M.cells.push(d);
 	}
 
-	initCollection('animals');
+	initCollection('all');
 }
-async function test10_message(){
-	showFleetingMessage('HALLO!!!!','dMessage',{bg:'pink'})
-}
-async function test9_correctMHuge(){
-	M = await mGetYaml('../assets/mhuge.yaml');
-	for(const k in M.superdi){
-		let o=M.superdi[k];
-		if (isdef(o.text)) o.coll = 'emo';
-		else if (isdef(o.ga) || isdef(o.fa)) o.coll = 'icon';
-		else if (isdef(o.path) && o.path.includes('amanda')) o.coll = 'amanda';
-		else if (isdef(o.path) && o.path.includes('airport')) o.coll = 'big';
-		else if (isdef(o.path) && o.path.includes('animal')) o.coll = 'animals';
-		else if (isdef(o.path) && o.path.includes('emo')) o.coll = 'emo';
-		else console.log('OTHER!!!!!!',k);
+async function prelims() {
+	if (nundef(M.superdi)) {
+		Config = await mGetYaml('../y/config.yaml');
+		M = await mGetYaml('../assets/mhuge.yaml');
+
+		M.byCollection = {};
+		M.collections = ['all'];
+		for(const k in M.superdi){
+			let o=M.superdi[k];
+			lookupAddIfToList(M.byCollection,[o.coll],k);
+			addIf(M.collections,o.coll);
+		}
+
+		await updateCollections();
+
+		//console.log('M', M, 'Config', Config);
+		showNavbar('COMBU', ['add', 'play', 'schedule', 'view']);
+		navbarDeactivate('play');
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
+		mInsert(document.body, dTitle, 1);
 	}
-	M.collections = ['amanda','animals','big','emo','icon'];
-	//downloadAsYaml(M,'mhuge');
-}
-async function test8_addDrop(){
-	await onclickAdd();
-	ondropPreviewImage('../y/bubblebath.png')
-}
-async function test7_calendar(){
-	await prelims();
-
-	showTitle('Add to Collections');
-
-	mClear('dMain');
-
-	let d1 = mDiv('dMain', { w: 800, h: 800, bg: 'white' });
-	Config.events = [
-		
-	]
-  let x = DA.calendar = uiTypeCalendar(d1, null, null, Config.events);
 
 }
+
 
 async function onclickAdd() {
 	await prelims();
@@ -99,10 +105,23 @@ function onclickDay(ev){
 	//trag dieses event ein!
 	//soll ich das event hier eintragen oder erst wenn es einen content hat?
 }
-function eventEdited(o,inp){
-	//irgendwo muessen all die events gespeichert sein!
-	//ein event muss eine id haben!!!
+async function onclickItem(ev){
+	//the key of the superdi item should be saved in 'key' attribute
+	//goto showImage
+	let elem=ev.target;
+	console.log('elem',elem)
+	let key = ev.target.getAttribute('key');
+	console.log('clicked on item',key);
 
+	if (nundef(Items[key])){
+		let o = M.superdi[key];
+		Items[key]={selected:false};
+		addKeys(o,Items[key]);
+	} 
+	Items[key].div = elem.parentNode;
+	if (nundef(M.selectedImages)) M.selectedImages = [];
+	toggleSelectionOfPicture(Items[key],M.selectedImages);
+	console.log('item',Items[key],'selectedImages',M.selectedImages)
 }
 async function onclickPlay() { alert('COMING SOON!'); } //test0_addToCollection(); }
 async function onclickPrev() { showImageBatch(-1); }
@@ -144,6 +163,7 @@ async function onclickView() {
 	M.cells = [];
 	for (let i = 0; i < M.rows * M.cols; i++) {
 		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		//d.onclick = onclickItem;
 		mCenterCenterFlex(d);
 		M.cells.push(d);
 	}
@@ -186,7 +206,7 @@ async function onEventEdited(ev){
 		//console.log('send value',inp.value,'to server')
 		o.text=inp.value;
 		let resp = await uploadJson('event',o)
-		//console.log('response',resp)
+		console.log('response',resp)
 	}
 
 	//console.log('event',id,o,inp)

@@ -7,10 +7,12 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const yaml = require('js-yaml');
 
-const uploadDirectory = path.join(__dirname, '..', 'y');
-var Config = {};
+console.log('**************\n__dirname',__dirname);
+const uploadDirectory = path.join(__dirname, '..','y');
+var Config = {}; // permanent app data: mem && saved on change
+var Session = {}; // session ist nur fuer temp data: just mem
 try {
-	const yamlFile = fs.readFileSync(path.join(uploadDirectory, 'config.yaml'), 'utf8');
+	const yamlFile = fs.readFileSync(path.join(uploadDirectory,'config.yaml'), 'utf8');
 	Config = yaml.load(yamlFile);
 	showEvents();
 } catch (error) {
@@ -21,15 +23,11 @@ const app = express();
 app.use(bodyParser.json());
 app.use(fileUpload());
 const cors = require('cors'); app.use(cors());
-app.use(express.static(path.join(__dirname, '/..'))); //Serve public directory
+app.use(express.static(path.join(__dirname,'..'))); //Serve public directory
 
 //#region functions
-function showEvents(){
-	console.log('Events', Object.keys(Config.events).length);	
-}
+function showEvents(){	console.log('Events', Object.keys(Config.events).length);	}
 //#endregion
-
-//console.log('__dirname', __dirname)
 
 app.get("/", (req, res) => { res.sendFile(path.join(__dirname, "index.html")); });
 
@@ -90,6 +88,36 @@ app.post('/event', (req, res) => {
 	//ich sollte am server ein Config dict haben!
 
 	res.json({ message: `event ${event.id} updated!` });
+	// console.log('req',Object.keys(req.query)); //Object.keys(req.body));
+	// res.json({msg:'YEAH!!!!'});
+});
+app.post('/save', (req, res) => {
+	const body = req.body;
+	const data = body.data; //some json object
+	const fname = path.join(__dirname, body.path); //
+	const mode = body.mode;
+
+	console.log('save:', mode,'to',fname,'\n',data);
+	//modi: s=session, c=config, ay=append as yaml, 
+
+	// Config.events[event.id] = event;
+	// showEvents()
+	
+	// try {
+	// 	// Convert the JavaScript object to a YAML string
+	// 	const yamlData = yaml.dump(Config);
+
+	// 	// Write the YAML string to a file
+	// 	fs.writeFileSync(path.join(uploadDirectory, 'config.yaml'), yamlData, 'utf8');
+	// 	console.log('Config file updated successfully.');
+	// } catch (error) {
+	// 	console.error('Error writing YAML file:', error);
+	// }
+	// // Process the received JSON object as needed
+	// //update this event!
+	// //ich sollte am server ein Config dict haben!
+
+	res.json({ message: `save mode:${mode} ${fname} *** successful ***` });
 	// console.log('req',Object.keys(req.query)); //Object.keys(req.body));
 	// res.json({msg:'YEAH!!!!'});
 });

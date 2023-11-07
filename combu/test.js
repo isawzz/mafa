@@ -1,4 +1,40 @@
 //*** collections tests */
+async function test10_message(){
+	showFleetingMessage('HALLO!!!!','dMessage',{bg:'pink'})
+}
+async function test9_correctMHuge(){
+	M = await mGetYaml('../assets/mhuge.yaml');
+	for(const k in M.superdi){
+		let o=M.superdi[k];
+		if (isdef(o.text)) o.coll = 'emo';
+		else if (isdef(o.ga) || isdef(o.fa)) o.coll = 'icon';
+		else if (isdef(o.path) && o.path.includes('amanda')) o.coll = 'amanda';
+		else if (isdef(o.path) && o.path.includes('airport')) o.coll = 'big';
+		else if (isdef(o.path) && o.path.includes('animal')) o.coll = 'animals';
+		else if (isdef(o.path) && o.path.includes('emo')) o.coll = 'emo';
+		else console.log('OTHER!!!!!!',k);
+	}
+	M.collections = ['amanda','animals','big','emo','icon'];
+	//downloadAsYaml(M,'mhuge');
+}
+async function test8_addDrop(){
+	await onclickAdd();
+	ondropPreviewImage('../y/bubblebath.png')
+}
+async function test7_calendar(){
+	await prelims();
+
+	showTitle('Add to Collections');
+
+	mClear('dMain');
+
+	let d1 = mDiv('dMain', { w: 800, h: 800, bg: 'white' });
+	Config.events = [
+		
+	]
+  let x = DA.calendar = uiTypeCalendar(d1, null, null, Config.events);
+
+}
 async function test6_showAll() {
 	if (nundef(M.emos)) {
 		M = await mGetYaml('../assets/mhuge.yaml');

@@ -98,10 +98,10 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
 
   function getDay(d) {
     let i = d + info.dayOffset;
-    console.log('i', i);
+    //console.log('i', i);
     if (i < 1 || i > info.numDays) return null;
     let ui = dDays[i];
-    console.log('ui', ui)
+    //console.log('ui', ui)
     if (ui.style.opacity === 0) return null;
     return { div: dDays[i], events: [] };
   }
