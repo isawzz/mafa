@@ -92,10 +92,10 @@ function filterImages(ev) {
 	//let list = M.masterKeys.filter(x=>M.superdibyCat[s];
 
 	let di = {};
-	for(const k of M.masterKeys){
-		di[k]=true;
+	for (const k of M.masterKeys) {
+		di[k] = true;
 	}
-	let list = isdef(M.byCat[s])?M.byCat[s].filter(x=>isdef(di[x])):[];
+	let list = isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
 
 	if (nundef(list) || isEmpty(list)) {
 		list = [];
@@ -112,30 +112,30 @@ function filterImages(ev) {
 }
 //#region fleetingMessage
 function clearFleetingMessage() {
-  if (isdef(dFleetingMessage)) {
-    dFleetingMessage.remove();
-    dFleetingMessage = null;
-  }
+	if (isdef(dFleetingMessage)) {
+		dFleetingMessage.remove();
+		dFleetingMessage = null;
+	}
 }
 function showFleetingMessage(msg, dParent, styles = {}, ms = 3000, msDelay = 0, fade = true) {
-  clearFleetingMessage();
+	clearFleetingMessage();
 
-  dFleetingMessage = mDiv(dParent);
-  if (msDelay) {
-    TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
-  } else {
-    TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
-  }
+	dFleetingMessage = mDiv(dParent);
+	if (msDelay) {
+		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
+	} else {
+		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
+	}
 }
 function mFleetingMessage(msg, styles, ms, fade) {
-  if (isString(msg)) {
-    dFleetingMessage.innerHTML = msg;
-    mStyle(dFleetingMessage, styles);
-  } else {
-    mAppend(dFleetingMessage, msg);
-  }
-  if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
-  return dFleetingMessage;
+	if (isString(msg)) {
+		dFleetingMessage.innerHTML = msg;
+		mStyle(dFleetingMessage, styles);
+	} else {
+		mAppend(dFleetingMessage, msg);
+	}
+	if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
+	return dFleetingMessage;
 }
 //#endregion
 function formatDate(date) {
@@ -145,7 +145,7 @@ function formatDate(date) {
 
 	return `${day}_${month}_${year}`;
 }
-function generateEventId(tsDay,tsCreated){return `${rLetter()}_${tsDay}_${tsCreated}`; }
+function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
 function getMouseCoordinates(event) {
 	const image = event.target; //const image = document.getElementById('your-image-id'); // Replace with the actual ID of your image element
 	//const imageRect = image.getBoundingClientRect();
@@ -212,7 +212,7 @@ async function loadCollections() {
 		M.byCat = sortKeysAlphabetically(bycat);
 		M.byFriendly = sortKeysAlphabetically(byfriendly);
 		M.names = Object.keys(M.byFriendly);
-		M.categories = Object.keys(M.byCat); 
+		M.categories = Object.keys(M.byCat);
 
 		showNavbar('M', ['view', 'add', 'play', 'create']);
 		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
@@ -1035,7 +1035,7 @@ function showImage(key, dParent, styles = {}) {
 		let [sz, fz] = [.9 * w, .8 * h];
 		let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
 		mCenterCenterFlex(d1)
-		let el=null;
+		let el = null;
 		if (isdef(o.img)) {
 			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
 			// let img = mDom(d1, { cursor: 'pointer', w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
@@ -1046,10 +1046,10 @@ function showImage(key, dParent, styles = {}) {
 		else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
 		else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
 
-		assertion(el,'PROBLEM mit'+key);
-		mStyle(el,{cursor:'pointer'})
+		assertion(el, 'PROBLEM mit' + key);
+		mStyle(el, { cursor: 'pointer' })
 		el.onclick = onclickItem;
-		el.setAttribute('key',key)
+		el.setAttribute('key', key)
 		//console.log('dParent',key,el)
 
 
@@ -1086,12 +1086,12 @@ function showNavbar(pageTitle, titles, funcNames) {
 	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
 
 }
-function showImageBatch(inc=0) {
+function showImageBatch(inc = 0) {
 	let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
 
-	if (isEmpty(keys)) showFleetingMessage('nothing has been added to this collection yet!','dMessage',{margin:10},5000)
+	if (isEmpty(keys)) showFleetingMessage('nothing has been added to this collection yet!', 'dMessage', { margin: 10 }, 5000)
 
-	if (keys.length <= x) inc=0;
+	if (keys.length <= x) inc = 0;
 	index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
 
 	let list = arrTakeFromTo(keys, index, index + x);
@@ -1205,6 +1205,30 @@ async function uploadImg(img, unique, cat, name) {
 			}
 		});
 	});
+}
+async function uploadImg2(img, path) {
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+	const dataUrl = canvas.toDataURL('image/png');
+	//console.log(dataUrl);
+	let o = { data: {image:dataUrl}, path: valf(path,'out.png'), mode: 'wi' };
+
+	return await uploadJson('save',o);
+	return;
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	server += `/save`;
+	const response = await fetch(server, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors',
+		body: JSON.stringify(o)
+	});
+	return await response.json();
 }
 async function uploadJson(route, o) {
 	let type = detectSessionType();

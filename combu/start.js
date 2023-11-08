@@ -1,10 +1,99 @@
 onload = start;
 
-async function start() { test12_save();} //onclickView(); }//test8_addDrop(); }
+async function start() { test19_besser(); } //test15_simpleImageUpload();} //onclickView(); }//test8_addDrop(); }
 
+async function test19_besser(){
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = await imgAsync(d,{},{tag:'img',src:path});
+	let dataUrl = imgToDataUrl(img);
+	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+	let resp = await uploadJson('save',o)
+	console.log('response',resp)
+}
+function imgToDataUrl(img){
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	return dataUrl;
+}
+async function test18_nochBesser(){
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+
+	let img = await loadImageAsync(path);
+	mAppend(d,img);
+
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+	let resp = await uploadJson('save',o)
+}
+async function test17_awaitOnload(){
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = await loadImageAsync(path);
+	mAppend(d,img);
+	//let img = mDom(d,{},{tag:'img'});
+	let resp = await ximage(img,path);
+	console.log('response',resp);
+}
+async function ximage(img,path){
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+	let resp = await uploadJson('save',o)
+	return resp;
+}
+async function test16_uploadBase64(){ //geht nachdem added app.use(bodyParser.json({ limit: '200mb' })); //works!!!
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = mDom(d,{},{tag:'img',src:path});
+	img.onload = async ()=>console.log(await uploadImg2(img,path));
+}
+async function test15_simpleImageUpload(){ //geht jetzt!
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = mDom(d,{},{tag:'img',src:path});
+	img.onload = async()=>{
+		// uploadImg2(img);
+		const canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+		const dataUrl = canvas.toDataURL('image/png');
+		let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+		let resp = await uploadJson('save',o)
+		console.log('response',resp);
+	}
+}
+async function test14_uploadBase64(){ //YEAH!!!!
+	let d=mBy('dMain');
+	let img = mDom(d,{},{tag:'img',src:'../assets/img/emo/unicorn.png'});
+	img.onload = async ()=>console.log(await uploadImg2(img));
+}
+async function test13_save(){
+	let o = {path:'',data:{text:'I am TOMAS',pos:22},mode:'ac'};
+	let resp = await uploadJson('save',o)
+	console.log('response',resp);
+
+}
 async function test12_save(){
 	//a ... append text/json
-	//ay ... append as yaml
+	//ay ... append as yaml mit addKeys (existing keys ignored!)
+	//oy ... append as yaml mit copyKeys (existing keys overwritten!)
 	//w ... override text/json
 	//wi ... override image
 	//wy ... override yaml

@@ -1,3 +1,35 @@
+
+async function imgAsync(dParent,styles,opts) {
+	let path = opts.src;
+	delete opts.src;
+	
+  return new Promise((resolve, reject) => {
+		const img = mDom(dParent,styles,opts);
+    // const img = new Image();
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.src = path;
+  });
+}
+async function loadImageAsync(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.src = url;
+  });
+}
+
+
+
 function collectionAddEmpty(ev){ //val,inp){
 	if (ev.key != 'Enter') return;
 	console.log('onupdate',ev.target,ev.target.value); 

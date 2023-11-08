@@ -1,4 +1,29 @@
 
+//#region simple image upload
+async function uploadImg2(img, unique, cat, name) {
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	server += `/save`;
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+	const dataUrl = canvas.toDataURL('image/png');
+	console.log(dataUrl);
+	let o = { data: {image:dataUrl}, path: 'out.png', mode: 'wi' };
+
+	const response = await fetch(server, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors',
+		body: JSON.stringify(o)
+	});
+	return await response.json();
+}
+//#endregion
+
 //#region combu
 async function onclickView() {
 	await prelims();
