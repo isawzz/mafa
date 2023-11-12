@@ -68,6 +68,16 @@ function collectCats(klist) {
 	}
 	return cats;
 }
+function collectionAddEmpty(ev){ //val,inp){
+	if (ev.key != 'Enter') return;
+	console.log('onupdate',ev.target,ev.target.value); 
+	let val = ev.target.value;
+	addIf(M.collections,val);
+	M.collections.sort()
+	//M.collections.push(val);
+	M.byCollection[val] = [];
+	initCollection(val);
+}
 function cropTo(tool, wnew, hnew) {
 	//calc center
 	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
@@ -157,6 +167,31 @@ function getMouseCoordinates(event) {
 		124; //imageRect.top;
 
 	return { x: offsetX, y: offsetY };
+}
+async function imgAsync(dParent,styles,opts) {
+	let path = opts.src;
+	delete opts.src;
+	
+  return new Promise((resolve, reject) => {
+		const img = mDom(dParent,styles,opts);
+    // const img = new Image();
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.src = path;
+  });
+}
+function imgToDataUrl(img){
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	return dataUrl;
 }
 function isSameDate(date1, date2) {
 	return date1.getFullYear() === date2.getFullYear() &&
@@ -803,6 +838,35 @@ function mCropResizePan(dParent, img, dButtons) {
 
 	}
 }
+function mDatalist(dParent, list, opts = {}) {
+	//the variant w/ update and matches is in CODE.js!
+	var mylist = list;
+	var opts = opts;
+	addKeys({ alpha: true, filter: 'contains' }, opts); 
+
+	let d = mDiv(toElem(dParent));
+	let optid = getUID('dl');
+	mDom(d, {w:200}, { tag: 'input', className: 'input', placeholder: "<enter value>" });
+	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+
+	var elem = d;
+	var inp = elem.firstChild;
+	var datalist = elem.lastChild;
+	for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
+
+	inp.setAttribute('list', optid);
+
+	if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate); 
+	inp.onmousedown = () => inp.value = ''
+
+	return {
+		list: mylist,
+		elem: elem,
+		inpElem: inp,
+		listElem: datalist,
+		opts: opts,
+	}
+}
 function mDropZone(dropZone, onDrop) {
 	//const dropZone = document.getElementById('dropZone');
 
@@ -1161,6 +1225,32 @@ async function srcToDataUrl(src, h) {
 		img.src = src;
 	});
 }
+async function uploadAll(data, path, mode) {
+	//a ... append text/json
+	//w ... override text/json
+	//wi ... override image (in this case data param should be img!!!)
+	//ay ... append as yaml mit addKeys (existing keys ignored!)
+	//wy ... append as yaml mit copyKeys (existing keys overwritten!)
+	//oy ... override yaml
+	//as ... addKeys to session object
+	//ws ... copyKeys to session object
+	//ac ... addKeys to config object and save config
+	//wc ... copyKeys to config object and save config
+	//_ac ... addKeys to config object without saving!!!
+	//_wc ... copyKeys to config object without saving!!!
+	//c ... just save config file and reload
+	let o;
+	if (mode == 'wi') {
+		//data interpreted as img!!!!
+		let dataUrl = imgToDataUrl(data);
+		o = { data: { image: dataUrl }, path: path, mode: 'wi' };
+
+	} else o = { path: path, data: o, mode: mode };
+	let resp = await uploadJson('save', o)
+	console.log('response', resp);
+
+}
+
 async function uploadImg(img, unique, cat, name) {
 	return new Promise((resolve, reject) => {
 		const canvas = document.createElement('canvas');
@@ -1218,7 +1308,6 @@ async function uploadImg2(img, path) {
 	let o = { data: {image:dataUrl}, path: valf(path,'out.png'), mode: 'wi' };
 
 	return await uploadJson('save',o);
-	return;
 	let type = detectSessionType();
 	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
 	server += `/save`;

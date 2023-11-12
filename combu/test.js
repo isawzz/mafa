@@ -1,8 +1,124 @@
 //*** collections tests */
-async function test10_message(){
+async function YES_test19_besser(){
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = await imgAsync(d,{},{tag:'img',src:path});
+	let dataUrl = imgToDataUrl(img);
+	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+	let resp = await uploadJson('save',o)
+	console.log('response',resp)
+}
+async function test18_nochBesser(){
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+
+	let img = await loadImageAsync(path);
+	mAppend(d,img);
+
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+	let resp = await uploadJson('save',o)
+}
+async function test17_awaitOnload(){
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = await loadImageAsync(path);
+	mAppend(d,img);
+	//let img = mDom(d,{},{tag:'img'});
+	let resp = await ximage(img,path);
+	console.log('response',resp);
+}
+async function __ximage(img,path){
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+	let resp = await uploadJson('save',o)
+	return resp;
+}
+async function test16_uploadBase64(){ //geht nachdem added app.use(bodyParser.json({ limit: '200mb' })); //works!!!
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = mDom(d,{},{tag:'img',src:path});
+	img.onload = async ()=>console.log(await uploadImg2(img,path));
+}
+async function test15_simpleImageUpload(){ //geht jetzt!
+	let d=mBy('dMain');
+	let path = '../y/img/minoutest.png';
+	let img = mDom(d,{},{tag:'img',src:path});
+	img.onload = async()=>{
+		// uploadImg2(img);
+		const canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+		const dataUrl = canvas.toDataURL('image/png');
+		let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
+		let resp = await uploadJson('save',o)
+		console.log('response',resp);
+	}
+}
+async function test14_uploadBase64(){ //YEAH!!!!
+	let d=mBy('dMain');
+	let img = mDom(d,{},{tag:'img',src:'../assets/img/emo/unicorn.png'});
+	img.onload = async ()=>console.log(await uploadImg2(img));
+}
+async function YES_test13_save(){
+	let o = {path:'',data:{text:'I am TOMAS',pos:22},mode:'ac'};
+	let resp = await uploadJson('save',o)
+	console.log('response',resp);
+
+}
+async function YES_test12_save(){
+	//a ... append text/json
+	//ay ... append as yaml mit addKeys (existing keys ignored!)
+	//wy ... append as yaml mit copyKeys (existing keys overwritten!)
+	//w ... override text/json
+	//wi ... override image
+	//oy ... override yaml
+	//as ... addKeys to session object
+	//ws ... copyKeys to session object
+	//ac ... addKeys to config object and save config
+	//wc ... copyKeys to config object and save config
+	//_ac ... addKeys to config object without saving!!!
+	//_wc ... copyKeys to config object without saving!!!
+	//c ... just save config file and reload
+	let o = {path:'../combu/test.txt',data:{text:'I am Sam',pos:22},mode:'a'};
+	let resp = await uploadJson('save',o)
+	console.log('response',resp);
+
+}
+async function test11_altviewer(){
+	await prelims();
+
+	showTitle('Collection:'); 
+	dMenu = mDom(dTitle,{h:'100%'});mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+
+	mClear('dMain');
+	M.rows = 5; M.cols = 8;
+	M.grid = mGrid(M.rows, M.cols, 'dMain');
+	M.cells = [];
+	for (let i = 0; i < M.rows * M.cols; i++) {
+		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		M.cells.push(d);
+	}
+
+	initCollection('all');
+}
+async function YES_test10_showMessage(){
 	showFleetingMessage('HALLO!!!!','dMessage',{bg:'pink'})
 }
-async function test9_correctMHuge(){
+async function YES_test9_correctMHuge(){
 	M = await mGetYaml('../assets/mhuge.yaml');
 	for(const k in M.superdi){
 		let o=M.superdi[k];
@@ -21,7 +137,7 @@ async function test8_addDrop(){
 	await onclickAdd();
 	ondropPreviewImage('../y/bubblebath.png')
 }
-async function test7_calendar(){
+async function YES_test7_calendar(){
 	await prelims();
 
 	showTitle('Add to Collections');
@@ -97,7 +213,7 @@ async function test4_checkpath() {
 		}
 	}
 }
-async function test3_createMHuge() {
+async function YES_test3_createMHuge() {
 	M = await loadCollections();
 	downloadAsYaml(M, 'mhuge')
 }

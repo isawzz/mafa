@@ -1,132 +1,14 @@
 onload = start;
 
-async function start() { test19_besser(); } //test15_simpleImageUpload();} //onclickView(); }//test8_addDrop(); }
+async function start() { test20_sidebar(); } //onclickView(); }
 
-async function test19_besser(){
-	let d=mBy('dMain');
-	let path = '../y/img/minoutest.png';
-	let img = await imgAsync(d,{},{tag:'img',src:path});
-	let dataUrl = imgToDataUrl(img);
-	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
-	let resp = await uploadJson('save',o)
-	console.log('response',resp)
+async function test21_user(){
+	
 }
-function imgToDataUrl(img){
-	const canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-	const dataUrl = canvas.toDataURL('image/png');
-	return dataUrl;
+async function test20_sidebar(){
+	onclickView(); //calls showSidebar TODO!
 }
-async function test18_nochBesser(){
-	let d=mBy('dMain');
-	let path = '../y/img/minoutest.png';
 
-	let img = await loadImageAsync(path);
-	mAppend(d,img);
-
-	const canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-	const dataUrl = canvas.toDataURL('image/png');
-	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
-	let resp = await uploadJson('save',o)
-}
-async function test17_awaitOnload(){
-	let d=mBy('dMain');
-	let path = '../y/img/minoutest.png';
-	let img = await loadImageAsync(path);
-	mAppend(d,img);
-	//let img = mDom(d,{},{tag:'img'});
-	let resp = await ximage(img,path);
-	console.log('response',resp);
-}
-async function ximage(img,path){
-	const canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-	const dataUrl = canvas.toDataURL('image/png');
-	let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
-	let resp = await uploadJson('save',o)
-	return resp;
-}
-async function test16_uploadBase64(){ //geht nachdem added app.use(bodyParser.json({ limit: '200mb' })); //works!!!
-	let d=mBy('dMain');
-	let path = '../y/img/minoutest.png';
-	let img = mDom(d,{},{tag:'img',src:path});
-	img.onload = async ()=>console.log(await uploadImg2(img,path));
-}
-async function test15_simpleImageUpload(){ //geht jetzt!
-	let d=mBy('dMain');
-	let path = '../y/img/minoutest.png';
-	let img = mDom(d,{},{tag:'img',src:path});
-	img.onload = async()=>{
-		// uploadImg2(img);
-		const canvas = document.createElement('canvas');
-		canvas.width = img.width;
-		canvas.height = img.height;
-		const ctx = canvas.getContext('2d');
-		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-		const dataUrl = canvas.toDataURL('image/png');
-		let o = { data: {image:dataUrl}, path: path, mode: 'wi' };
-		let resp = await uploadJson('save',o)
-		console.log('response',resp);
-	}
-}
-async function test14_uploadBase64(){ //YEAH!!!!
-	let d=mBy('dMain');
-	let img = mDom(d,{},{tag:'img',src:'../assets/img/emo/unicorn.png'});
-	img.onload = async ()=>console.log(await uploadImg2(img));
-}
-async function test13_save(){
-	let o = {path:'',data:{text:'I am TOMAS',pos:22},mode:'ac'};
-	let resp = await uploadJson('save',o)
-	console.log('response',resp);
-
-}
-async function test12_save(){
-	//a ... append text/json
-	//ay ... append as yaml mit addKeys (existing keys ignored!)
-	//oy ... append as yaml mit copyKeys (existing keys overwritten!)
-	//w ... override text/json
-	//wi ... override image
-	//wy ... override yaml
-	//as ... addKeys to session object
-	//ws ... copyKeys to session object
-	//ac ... addKeys to config object and save config
-	//wc ... copyKeys to config object and save config
-	//_ac ... addKeys to config object without saving!!!
-	//_wc ... copyKeys to config object without saving!!!
-	//c ... just save config file and reload
-	let o = {path:'../combu/test.txt',data:{text:'I am Sam',pos:22},mode:'a'};
-	let resp = await uploadJson('save',o)
-	console.log('response',resp);
-
-}
-async function test11_altviewer(){
-	await prelims();
-
-	showTitle('Collection:'); 
-	dMenu = mDom(dTitle,{h:'100%'});mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
-
-	mClear('dMain');
-	M.rows = 5; M.cols = 8;
-	M.grid = mGrid(M.rows, M.cols, 'dMain');
-	M.cells = [];
-	for (let i = 0; i < M.rows * M.cols; i++) {
-		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
-		mCenterCenterFlex(d);
-		M.cells.push(d);
-	}
-
-	initCollection('all');
-}
 async function prelims() {
 	if (nundef(M.superdi)) {
 		Config = await mGetYaml('../y/config.yaml');
@@ -145,8 +27,9 @@ async function prelims() {
 		//console.log('M', M, 'Config', Config);
 		showNavbar('COMBU', ['add', 'play', 'schedule', 'view']);
 		navbarDeactivate('play');
-		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, padding: 14 }) //, { margin: 16 }, { html: '<h1>Add to Collection' });
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 }) 
 		mInsert(document.body, dTitle, 1);
+
 	}
 
 }
@@ -158,6 +41,7 @@ async function onclickAdd() {
 	showTitle('Add to Collections');
 
 	mClear('dMain');
+
 	let cats = M.categories;
 	let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);
 	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
@@ -247,8 +131,13 @@ async function onclickView() {
 	dMenu = mDom(dTitle,{h:'100%'});mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
 
 	mClear('dMain');
-	M.rows = 5; M.cols = 8;
-	M.grid = mGrid(M.rows, M.cols, 'dMain');
+
+	mFlex('dMain');
+	showSidebar('dMain');
+
+
+	M.rows = 5; M.cols = 7;
+	M.grid = mGrid(M.rows, M.cols, 'dMain',{'align-self':'start'});
 	M.cells = [];
 	for (let i = 0; i < M.rows * M.cols; i++) {
 		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });

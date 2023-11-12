@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>accuse</title>
+    <link rel="icon" href="../base/assets/images/icons/bubble.png" style="height: 40px" />
+    <link rel="stylesheet" href="../base/assets/fonts/fonts.css" />
+    <link rel="stylesheet" href="../games/final.css" />
+    <script src="../base/alibs/jq3.js"></script>
+    <script src="../base/alibs/jsyaml.js"></script>
+  </head>
+  <body>
+    <div class="page-wrap">
+      <div id="dAdmin">
+        <div id="dAdminLeft" style="display: flex; justify-content: space-evenly; align-items: center; padding-left: 10px"></div>
+        <div id="dAdminMiddle"></div>
+        <div id="dAdminRight" style="display: flex; justify-content: space-evenly; align-items: center; box-sizing: border-box"></div>
+      </div>
+      <div id="dTakeover" style="background: silver; padding: 3px; position: relative"></div>
+      <div id="dTest" style="background: silver; padding: 3px; position: relative">
+        <button onclick="onclick_home()">home</button>
+        <button onclick="onclick_reload()">reload</button>
+        <button onclick="onclick_restart_move()" id="bRestartMove" style="display: none">RESTART MOVE</button>
+        <button id="bExperience" onclick="onclick_experience()" class="selectable_button" style="display: none">BRIBE!</button>
+        &nbsp;&nbsp;&nbsp;
+        <span id="dAdvanced1" style="display: none">
+          <button onclick="onclick_reset_all()">delete tables</button>
+        </span>
+        <span id="dHostButtons" style="display: none">
+          <button id="bSpotitStart" onclick="onclick_start_spotit()">spotit start</button>
+          <button onclick="onclick_restart()">RESTART</button>
+          <button id="bSkipPlayer" onclick="onclick_skip()">SKIP</button>
+          &nbsp;&nbsp;&nbsp;
+          <button id="bClearAck" onclick="onclick_ack()">CLEAR ACK</button>
+          &nbsp;
+        </span>
+        <span id="dTestButtons" style="display: none">
+          <button onclick="fentest7_cards()">TEST</button>
+          <button onclick="fentest6_start4()">4!</button>
+          <button onclick="fentest6_start5()">5</button>
+          <button onclick="fentest6_start6()">6</button>
+          <button onclick="fentest6_start8()">8</button>
+          <button onclick="fentest6_start11()">11</button>
+          <button onclick="fentest6_start14()">14</button>
+          <button onclick="onclick_skip_membership_selection()">alliance</button>
+          <button onclick="onclick_vote_empty()">vote empty</button>
+          <button onclick="onclick_vote_president()">vote president</button>
+          <button onclick="onclick_vote_random()">vote random</button>
+          <button onclick="onclick_vote_red()">vote red</button>
+          <button onclick="onclick_vote_1()">vote 1</button>
+
+          <!-- <button onclick="test_start_aristo(3)">TEST ARISTO</button> -->
+          <!-- <button onclick="test_start_aristo(2)">TEST ARISTO 2</button> -->
+          <!-- <button onclick="test_start_ferro()">TEST FERRO</button> -->
+          <!-- <button onclick="test_start_ferro('hotseat')">TEST FERRO HOTSEAT</button> -->
+          <!-- <button onclick="test_start_ferro('solo')">TEST FERRO SOLO</button> -->
+        </span>
+        &nbsp;&nbsp;&nbsp;
+        <button id="bRandomMove" onclick="onclick_random()" style="display: none">random</button>
+        <button id="dummy" class="dummy">dummy</button>
+        <div id="dAdvanced" style="display: none">
+          <button onclick="onclick_restart()">RESTART</button>
+          <button onclick="onclick_stoppolling()">stop polling</button>
+          <button onclick="onclick_startpolling()">start polling</button>
+          <button onclick="onclick_reset_all()">delete tables</button>
+          <button onclick="test7_add_hand_card()">add card</button>
+          <button onclick="onclick_remove_host()">remove host</button>
+          <button onclick="onclick_ack()">CLEAR ACK</button>
+          <button onclick="onclick_random()">random</button>
+          <br />
+          unit tests:
+          <button onclick="fentest0_min_items()">min items</button>
+          <button onclick="fentest1_auction()">auction</button>
+          <button onclick="fentest2_build()">build</button>
+          <button onclick="fentest4_visit()">visit</button>
+          <button onclick="fentest5_market_opens()">pop</button>
+          <button onclick="fentest6_endgame()">endgame</button>
+          <button onclick="fentest7_gameover()">GAMEOVER</button>
+          <button onclick="onclick_tithe_all()">tithe</button>
+        </div>
+        <div id="dTablename" style="float: right; font-family: algerian; margin-right: 5px"></div>
+      </div>
+      <div id="dTexture">
+        <div id="dMMM" style="position: absolute; background: red; color: yellow; width: 100%; text-align: center"></div>
+        <div id="dTitle" style="display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; height: 42px; width: 100%">
+          <div id="dTitleLeft" style="display: flex; justify-content: space-evenly; align-items: center; padding-left: 10px"></div>
+          <div id="dTitleMiddle"></div>
+          <div id="dTitleRight" style="min-width: 200px; display: flex; justify-content: end; align-items: center; box-sizing: border-box"></div>
+        </div>
+        <div id="dScreen">
+          <div id="dMessage" class="section"></div>
+          <div id="dUsers" class="mCenterFlex pad"></div>
+          <div id="dTable"></div>
+          <div id="dTables" class="section"></div>
+          <div id="dGames" class="section"></div>
+          <div id="dMenu" class="section"></div>
+          <div id="dPadding" style="height: 20px"></div>
+        </div>
+      </div>
+    </div>
+    <div id="dBandMessage" styles="background:skyblue;min-height:100vh;display:none"></div>
+    <footer class="site-footer">
+      <div>
+        <p style="width: 100%; font-size: 12px; text-align: center">
+          Copyright © 2020-
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          Vidulus Ludorum All Rights Reserved
+        </p>
+      </div>
+    </footer>
+  </body>
+  <script src="../games/closure.js"></script>
+  <script>onload = start;</script>
+</html>
