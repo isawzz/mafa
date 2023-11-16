@@ -1,3 +1,7 @@
+.disabled {
+  opacity: .6;
+	pointer-events: none;
+}
 .dropZone {
 	/* min-width: 300px; */
 	/* min-height: 300px; */

@@ -1,0 +1,12592 @@
+down_left_and_up_right_to_center:
+  key: down_left_and_up_right_to_center
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f422
+arrow_up_long:
+  key: arrow_up_long
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f176
+hospital_user:
+  key: hospital_user
+  friendly: hospital
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f80d
+tent_arrow_left_right:
+  key: tent_arrow_left_right
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e57f
+sun_plant_wilt:
+  key: sun_plant_wilt
+  friendly: plant
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e57a
+arrow_right_from_bracket:
+  key: arrow_right_from_bracket
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f08b
+sack_dollar:
+  key: sack_dollar
+  friendly: sack
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f81d
+staff_snake:
+  key: staff_snake
+  friendly: staff
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e579
+arrow_up_from_bracket:
+  key: arrow_up_from_bracket
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e09a
+gauge:
+  key: gauge
+  friendly: gauge
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f624
+repeat:
+  key: repeat
+  friendly: repeat
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f363
+arrow_right_to_bracket:
+  key: arrow_right_to_bracket
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f090
+helicopter_symbol:
+  key: helicopter_symbol
+  friendly: helicopter
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e502
+arrow_down_long:
+  key: arrow_down_long
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f175
+square_arrow_up_right:
+  key: square_arrow_up_right
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f14c
+cloud_arrow_up:
+  key: cloud_arrow_up
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f0ee
+cloud_bolt:
+  key: cloud_bolt
+  friendly: cloud
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f76c
+arrows_left_right:
+  key: arrows_left_right
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f07e
+cloud_arrow_down:
+  key: cloud_arrow_down
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f0ed
+arrow_up_right_from_square:
+  key: arrow_up_right_from_square
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f08e
+bitcoin_sign:
+  key: bitcoin_sign
+  friendly: bitcoin
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e0b4
+truck_field:
+  key: truck_field
+  friendly: truck
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e58d
+bars_progress:
+  key: bars_progress
+  friendly: bars
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f828
+diamond:
+  key: diamond
+  friendly: diamond
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f219
+location_crosshairs:
+  key: location_crosshairs
+  friendly: location
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f601
+person_digging:
+  key: person_digging
+  friendly: person
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f85e
+gauge_simple:
+  key: gauge_simple
+  friendly: gauge
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f629
+book_tanakh:
+  key: book_tanakh
+  friendly: book
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f827
+clipboard_user:
+  key: clipboard_user
+  friendly: clipboard
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f7f3
+hand_holding_droplet:
+  key: hand_holding_droplet
+  friendly: hand
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f4c1
+person_cane:
+  key: person_cane
+  friendly: person
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e53c
+indian_rupee_sign:
+  key: indian_rupee_sign
+  friendly: indian
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e1bc
+arrow_left_long:
+  key: arrow_left_long
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f177
+arrow_turn_up:
+  key: arrow_turn_up
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f148
+baseball_bat_ball:
+  key: baseball_bat_ball
+  friendly: baseball
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f432
+mobile_screen:
+  key: mobile_screen
+  friendly: mobile
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f3cf
+folder_tree:
+  key: folder_tree
+  friendly: folder
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f802
+wand_sparkles:
+  key: wand_sparkles
+  friendly: wand
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f72b
+arrow_right_arrow_left:
+  key: arrow_right_arrow_left
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f0ec
+code_merge:
+  key: code_merge
+  friendly: code
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f387
+hurricane:
+  key: hurricane
+  friendly: hurricane
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f751
+arrow_right_long:
+  key: arrow_right_long
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f178
+file_circle_xmark:
+  key: file_circle_xmark
+  friendly: file
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e5a1
+gauge_high:
+  key: gauge_high
+  friendly: gauge
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f625
+file_pen:
+  key: file_pen
+  friendly: file
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f31c
+tower_cell:
+  key: tower_cell
+  friendly: tower
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e585
+landmark_dome:
+  key: landmark_dome
+  friendly: landmark
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f752
+arrows_up_down_left_right:
+  key: arrows_up_down_left_right
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f047
+disease:
+  key: disease
+  friendly: disease
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f7fa
+arrow_turn_down:
+  key: arrow_turn_down
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f149
+code_commit:
+  key: code_commit
+  friendly: code
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f386
+square_xmark:
+  key: square_xmark
+  friendly: square
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f2d3
+up_right_and_down_left_from_center:
+  key: up_right_and_down_left_from_center
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f424
+gauge_simple_high:
+  key: gauge_simple_high
+  friendly: gauge
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f62a
+diagram_successor:
+  key: diagram_successor
+  friendly: diagram
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: e47a
+arrows_up_down:
+  key: arrows_up_down
+  friendly: arrow
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f07d
+handshake_simple:
+  key: handshake_simple
+  friendly: handshake
+  cats:
+    - symbol
+    - allnew
+    - fa6
+  coll: fa6
+  fa6: f4c6
+fill_drip:
+  key: fill_drip
+  friendly: fill
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f576
+trash_can:
+  key: trash_can
+  friendly: trash
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2ed
+text_height:
+  key: text_height
+  friendly: text
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f034
+stethoscope:
+  key: stethoscope
+  friendly: stethoscope
+  cats:
+    - action
+    - object
+    - best
+    - medical
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0f1
+info:
+  key: info
+  friendly: info
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f129
+wave_square:
+  key: wave_square
+  friendly: wave
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f83e
+ring:
+  key: ring
+  friendly: ring
+  cats:
+    - object
+    - clothing
+    - jewelry
+    - same
+    - fa6
+  coll: fa6
+  fa6: f70b
+dice_three:
+  key: dice_three
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f527
+volleyball:
+  key: volleyball
+  friendly: volleyball
+  cats:
+    - action
+    - object
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f45f
+sort_down:
+  key: sort_down
+  friendly: sort
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0dd
+door_open:
+  key: door_open
+  friendly: door
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f52b
+atom:
+  key: atom
+  friendly: atom
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5d2
+soap:
+  key: soap
+  friendly: soap
+  cats:
+    - object
+    - household
+    - same
+    - fa6
+  coll: fa6
+  fa6: e06e
+icons:
+  key: icons
+  friendly: icons
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f86d
+fingerprint:
+  key: fingerprint
+  friendly: fingerprint
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f577
+hand_point_right:
+  key: hand_point_right
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0a4
+flag_checkered:
+  key: flag_checkered
+  friendly: flag
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f11e
+crop:
+  key: crop
+  friendly: crop
+  cats:
+    - plant
+    - same
+    - fa6
+  coll: fa6
+  fa6: f125
+person:
+  key: person
+  friendly: person
+  cats:
+    - body
+    - person
+    - same
+    - fa6
+  coll: fa6
+  fa6: f183
+laptop:
+  key: laptop
+  friendly: laptop
+  cats:
+    - object
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f109
+file_csv:
+  key: file_csv
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6dd
+menorah:
+  key: menorah
+  friendly: menorah
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f676
+record_vinyl:
+  key: record_vinyl
+  friendly: record
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f8d9
+bong:
+  key: bong
+  friendly: bong
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f55c
+spoon:
+  key: spoon
+  friendly: spoon
+  cats:
+    - action
+    - object
+    - best
+    - dishware
+    - drink
+    - food
+    - utensil
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2e5
+pager:
+  key: pager
+  friendly: pager
+  cats:
+    - object
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f815
+address_book:
+  key: address_book
+  friendly: address
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2b9
+strikethrough:
+  key: strikethrough
+  friendly: strikethrough
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0cc
+pencil:
+  key: pencil
+  friendly: pencil
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f303
+backward:
+  key: backward
+  friendly: backward
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f04a
+caret_right:
+  key: caret_right
+  friendly: caret
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0da
+comments:
+  key: comments
+  friendly: comments
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f086
+paste:
+  key: paste
+  friendly: paste
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0ea
+clipboard_list:
+  key: clipboard_list
+  friendly: clipboard
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f46d
+user_check:
+  key: user_check
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4fc
+blog:
+  key: blog
+  friendly: blog
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f781
+user_ninja:
+  key: user_ninja
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f504
+toggle_off:
+  key: toggle_off
+  friendly: toggle
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f204
+spray_can:
+  key: spray_can
+  friendly: spray
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5bd
+truck_monster:
+  key: truck_monster
+  friendly: truck
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f63b
+rainbow:
+  key: rainbow
+  friendly: rainbow
+  cats:
+    - object
+    - place
+    - travel
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f75b
+circle_notch:
+  key: circle_notch
+  friendly: circle
+  cats:
+    - shape
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ce
+paw:
+  key: paw
+  friendly: paw
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1b0
+cloud:
+  key: cloud
+  friendly: cloud
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c2
+gavel:
+  key: gavel
+  friendly: gavel
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0e3
+binoculars:
+  key: binoculars
+  friendly: binoculars
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1e5
+microphone_slash:
+  key: microphone_slash
+  friendly: microphone
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f131
+motorcycle:
+  key: motorcycle
+  friendly: motorcycle
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f21c
+scissors:
+  key: scissors
+  friendly: scissors
+  cats:
+    - action
+    - object
+    - best
+    - office
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c4
+hockey_puck:
+  key: hockey_puck
+  friendly: hockey
+  cats:
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f453
+table:
+  key: table
+  friendly: table
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0ce
+clover:
+  key: clover
+  friendly: clover
+  cats:
+    - plant
+    - same
+    - fa6
+  coll: fa6
+  fa6: e139
+reply:
+  key: reply
+  friendly: reply
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f3e5
+star_and_crescent:
+  key: star_and_crescent
+  friendly: star
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f699
+helicopter:
+  key: helicopter
+  friendly: helicopter
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f533
+compass:
+  key: compass
+  friendly: compass
+  cats:
+    - place
+    - travel
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f14e
+laptop_code:
+  key: laptop_code
+  friendly: laptop
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5fc
+swatchbook:
+  key: swatchbook
+  friendly: swatchbook
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5c3
+prescription_bottle:
+  key: prescription_bottle
+  friendly: prescription
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f485
+bars:
+  key: bars
+  friendly: bars
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c9
+hourglass_end:
+  key: hourglass_end
+  friendly: hourglass
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f253
+film:
+  key: film
+  friendly: film
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f008
+ruler_horizontal:
+  key: ruler_horizontal
+  friendly: ruler
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f547
+lightbulb:
+  key: lightbulb
+  friendly: lightbulb
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0eb
+caret_left:
+  key: caret_left
+  friendly: caret
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0d9
+cloud_showers_heavy:
+  key: cloud_showers_heavy
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f740
+sitemap:
+  key: sitemap
+  friendly: sitemap
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0e8
+memory:
+  key: memory
+  friendly: memory
+  cats:
+    - concept
+    - same
+    - fa6
+  coll: fa6
+  fa6: f538
+flag:
+  key: flag
+  friendly: flag
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f024
+hanukiah:
+  key: hanukiah
+  friendly: hanukiah
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6e6
+feather:
+  key: feather
+  friendly: feather
+  cats:
+    - animal
+    - bird
+    - object
+    - best
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f52d
+comment_slash:
+  key: comment_slash
+  friendly: comment
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4b3
+cloud_sun_rain:
+  key: cloud_sun_rain
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f743
+compress:
+  key: compress
+  friendly: compress
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f066
+ankh:
+  key: ankh
+  friendly: ankh
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f644
+heading:
+  key: heading
+  friendly: heading
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1dc
+ghost:
+  key: ghost
+  friendly: ghost
+  cats:
+    - emotion
+    - face
+    - smiley
+    - mythical
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6e2
+list:
+  key: list
+  friendly: list
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f03a
+cart_plus:
+  key: cart_plus
+  friendly: cart
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f217
+gamepad:
+  key: gamepad
+  friendly: gamepad
+  cats:
+    - electronics
+    - same
+    - fa6
+  coll: fa6
+  fa6: f11b
+egg:
+  key: egg
+  friendly: egg
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7fb
+campground:
+  key: campground
+  friendly: campground
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6bb
+folder_plus:
+  key: folder_plus
+  friendly: folder
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f65e
+futbol:
+  key: futbol
+  friendly: futbol
+  cats:
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1e3
+paintbrush:
+  key: paintbrush
+  friendly: paintbrush
+  cats:
+    - object
+    - art
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1fc
+lock:
+  key: lock
+  friendly: lock
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f023
+gas_pump:
+  key: gas_pump
+  friendly: gas
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f52f
+tree:
+  key: tree
+  friendly: tree
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1bb
+car_side:
+  key: car_side
+  friendly: car
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5e4
+hourglass_half:
+  key: hourglass_half
+  friendly: hourglass
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f252
+microscope:
+  key: microscope
+  friendly: microscope
+  cats:
+    - action
+    - object
+    - best
+    - science
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f610
+mitten:
+  key: mitten
+  friendly: mitten
+  cats:
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7b5
+users:
+  key: users
+  friendly: users
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c0
+eye_slash:
+  key: eye_slash
+  friendly: eye
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f070
+hand:
+  key: hand
+  friendly: hand
+  cats:
+    - body
+    - same
+    - fa6
+  coll: fa6
+  fa6: f256
+om:
+  key: om
+  friendly: om
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f679
+worm:
+  key: worm
+  friendly: worm
+  cats:
+    - animal
+    - bug
+    - nature
+    - invertebrate
+    - same
+    - fa6
+  coll: fa6
+  fa6: e599
+plug:
+  key: plug
+  friendly: plug
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1e6
+chevron_up:
+  key: chevron_up
+  friendly: chevron
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f077
+hand_spock:
+  key: hand_spock
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f259
+stopwatch:
+  key: stopwatch
+  friendly: stopwatch
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - time
+    - travel
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2f2
+chess_bishop:
+  key: chess_bishop
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f43a
+dice_five:
+  key: dice_five
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f523
+stamp:
+  key: stamp
+  friendly: stamp
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5bf
+stairs:
+  key: stairs
+  friendly: stairs
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e289
+pills:
+  key: pills
+  friendly: pills
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f484
+tooth:
+  key: tooth
+  friendly: tooth
+  cats:
+    - action
+    - object
+    - best
+    - body
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5c9
+bicycle:
+  key: bicycle
+  friendly: bicycle
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f206
+snowman:
+  key: snowman
+  friendly: snowman
+  cats:
+    - object
+    - place
+    - travel
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7d0
+mortar_pestle:
+  key: mortar_pestle
+  friendly: mortar
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5a7
+school:
+  key: school
+  friendly: school
+  cats:
+    - place
+    - travel
+    - building
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f549
+igloo:
+  key: igloo
+  friendly: igloo
+  cats:
+    - dwelling
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7ae
+joint:
+  key: joint
+  friendly: joint
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f595
+angle_right:
+  key: angle_right
+  friendly: angle
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f105
+horse:
+  key: horse
+  friendly: horse
+  cats:
+    - animal
+    - mammal
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6f0
+notes_medical:
+  key: notes_medical
+  friendly: notes
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f481
+capsules:
+  key: capsules
+  friendly: capsules
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f46b
+poo_storm:
+  key: poo_storm
+  friendly: poo
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f75a
+hand_point_up:
+  key: hand_point_up
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0a6
+money_bill:
+  key: money_bill
+  friendly: money
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0d6
+bookmark:
+  key: bookmark
+  friendly: bookmark
+  cats:
+    - object
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f02e
+align_justify:
+  key: align_justify
+  friendly: align
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f039
+umbrella_beach:
+  key: umbrella_beach
+  friendly: umbrella
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5ca
+bullseye:
+  key: bullseye
+  friendly: bullseye
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f140
+bacon:
+  key: bacon
+  friendly: bacon
+  cats:
+    - drink
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7e5
+hand_point_down:
+  key: hand_point_down
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0a7
+folder:
+  key: folder
+  friendly: folder
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f07b
+radiation:
+  key: radiation
+  friendly: radiation
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7b9
+mars_stroke:
+  key: mars_stroke
+  friendly: mars
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f229
+vial:
+  key: vial
+  friendly: vial
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f492
+user:
+  key: user
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f007
+dumpster:
+  key: dumpster
+  friendly: dumpster
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f793
+highlighter:
+  key: highlighter
+  friendly: highlighter
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f591
+key:
+  key: key
+  friendly: key
+  cats:
+    - action
+    - object
+    - best
+    - same
+    - fa6
+  coll: fa6
+  fa6: f084
+bullhorn:
+  key: bullhorn
+  friendly: bullhorn
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0a1
+globe:
+  key: globe
+  friendly: globe
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0ac
+synagogue:
+  key: synagogue
+  friendly: synagogue
+  cats:
+    - place
+    - travel
+    - building
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f69b
+location_arrow:
+  key: location_arrow
+  friendly: arrow
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f124
+pizza_slice:
+  key: pizza_slice
+  friendly: pizza
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f818
+money_bill_wave:
+  key: money_bill_wave
+  friendly: money
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f53a
+chart_area:
+  key: chart_area
+  friendly: chart
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1fe
+ban:
+  key: ban
+  friendly: ban
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f05e
+star:
+  key: star
+  friendly: star
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f005
+cross:
+  key: cross
+  friendly: cross
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f654
+box:
+  key: box
+  friendly: box
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f466
+venus_mars:
+  key: venus_mars
+  friendly: venus
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f228
+charging_station:
+  key: charging_station
+  friendly: charging
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5e7
+shapes:
+  key: shapes
+  friendly: shapes
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f61f
+grip_lines_vertical:
+  key: grip_lines_vertical
+  friendly: grip
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7a5
+spider:
+  key: spider
+  friendly: spider
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+    - arachnid
+    - same
+    - fa6
+  coll: fa6
+  fa6: f717
+file_invoice_dollar:
+  key: file_invoice_dollar
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f571
+x_ray:
+  key: x_ray
+  friendly: x
+  cats:
+    - medical
+    - same
+    - fa6
+  coll: fa6
+  fa6: f497
+spell_check:
+  key: spell_check
+  friendly: spell
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f891
+slash:
+  key: slash
+  friendly: slash
+  cats:
+    - weapon
+    - same
+    - fa6
+  coll: fa6
+  fa6: f715
+computer_mouse:
+  key: computer_mouse
+  friendly: computer
+  cats:
+    - action
+    - object
+    - best
+    - same
+    - fa6
+  coll: fa6
+  fa6: f8cc
+server:
+  key: server
+  friendly: server
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f233
+hourglass_start:
+  key: hourglass_start
+  friendly: hourglass
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f251
+blender_phone:
+  key: blender_phone
+  friendly: blender
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6b6
+venus:
+  key: venus
+  friendly: venus
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f221
+passport:
+  key: passport
+  friendly: passport
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5ab
+temperature_high:
+  key: temperature_high
+  friendly: temperature
+  cats:
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f769
+microchip:
+  key: microchip
+  friendly: microchip
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2db
+weight_hanging:
+  key: weight_hanging
+  friendly: weight
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5cd
+file_prescription:
+  key: file_prescription
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f572
+chess_knight:
+  key: chess_knight
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f441
+wheelchair:
+  key: wheelchair
+  friendly: wheelchair
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f193
+toggle_on:
+  key: toggle_on
+  friendly: toggle
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f205
+fire:
+  key: fire
+  friendly: fire
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+    - element
+    - same
+    - fa6
+  coll: fa6
+  fa6: f06d
+folder_open:
+  key: folder_open
+  friendly: folder
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f07c
+city:
+  key: city
+  friendly: city
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f64f
+pepper_hot:
+  key: pepper_hot
+  friendly: pepper
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f816
+unlock:
+  key: unlock
+  friendly: unlock
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f09c
+headset:
+  key: headset
+  friendly: headset
+  cats:
+    - electronics
+    - same
+    - fa6
+  coll: fa6
+  fa6: f590
+user_minus:
+  key: user_minus
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f503
+clipboard:
+  key: clipboard
+  friendly: clipboard
+  cats:
+    - object
+    - office
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f328
+wifi:
+  key: wifi
+  friendly: wifi
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1eb
+bath:
+  key: bath
+  friendly: bath
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2cd
+underline:
+  key: underline
+  friendly: underline
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0cd
+signature:
+  key: signature
+  friendly: signature
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5b7
+stroopwafel:
+  key: stroopwafel
+  friendly: stroopwafel
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f551
+bold:
+  key: bold
+  friendly: bold
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f032
+not_equal:
+  key: not_equal
+  friendly: not
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f53e
+jedi:
+  key: jedi
+  friendly: jedi
+  cats:
+    - character
+    - same
+    - fa6
+  coll: fa6
+  fa6: f669
+mug_hot:
+  key: mug_hot
+  friendly: mug
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7b6
+car_battery:
+  key: car_battery
+  friendly: car
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5df
+gift:
+  key: gift
+  friendly: gift
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f06b
+dice_two:
+  key: dice_two
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f528
+chess_queen:
+  key: chess_queen
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f445
+glasses:
+  key: glasses
+  friendly: glasses
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+    - accessory
+    - same
+    - fa6
+  coll: fa6
+  fa6: f530
+chess_board:
+  key: chess_board
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f43c
+chart_bar:
+  key: chart_bar
+  friendly: chart
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f080
+less_than_equal:
+  key: less_than_equal
+  friendly: less
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f537
+train:
+  key: train
+  friendly: train
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f238
+crow:
+  key: crow
+  friendly: crow
+  cats:
+    - animal
+    - same
+    - fa6
+  coll: fa6
+  fa6: f520
+sailboat:
+  key: sailboat
+  friendly: sailboat
+  cats: &ref_2
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+    - codeexists
+  coll: fa6
+  fa6: e445
+window_restore:
+  key: window_restore
+  friendly: window
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2d2
+torii_gate:
+  key: torii_gate
+  friendly: torii
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6a1
+frog:
+  key: frog
+  friendly: frog
+  cats:
+    - animal
+    - amphibian
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f52e
+bucket:
+  key: bucket
+  friendly: bucket
+  cats:
+    - object
+    - household
+    - same
+    - fa6
+  coll: fa6
+  fa6: e4cf
+image:
+  key: image
+  friendly: image
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f03e
+microphone:
+  key: microphone
+  friendly: microphone
+  cats:
+    - action
+    - object
+    - best
+    - music
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f130
+caret_up:
+  key: caret_up
+  friendly: caret
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0d8
+screwdriver:
+  key: screwdriver
+  friendly: screwdriver
+  cats:
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f54a
+lemon:
+  key: lemon
+  friendly: lemon
+  cats:
+    - action
+    - object
+    - best
+    - drink
+    - food
+    - fruit
+    - same
+    - fa6
+  coll: fa6
+  fa6: f094
+handshake:
+  key: handshake
+  friendly: handshake
+  cats:
+    - body
+    - hand
+    - gesture
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2b5
+gem:
+  key: gem
+  friendly: gem
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f3a5
+dolly:
+  key: dolly
+  friendly: dolly
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f472
+smoking:
+  key: smoking
+  friendly: smoking
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f48d
+monument:
+  key: monument
+  friendly: monument
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5a6
+snowplow:
+  key: snowplow
+  friendly: snowplow
+  cats:
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7d2
+cannabis:
+  key: cannabis
+  friendly: cannabis
+  cats:
+    - plant
+    - same
+    - fa6
+  coll: fa6
+  fa6: f55f
+tablets:
+  key: tablets
+  friendly: tablets
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f490
+ethernet:
+  key: ethernet
+  friendly: ethernet
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f796
+euro_sign:
+  key: euro_sign
+  friendly: euro
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f153
+chair:
+  key: chair
+  friendly: chair
+  cats:
+    - action
+    - object
+    - best
+    - household
+    - furniture
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6c0
+icicles:
+  key: icicles
+  friendly: icicles
+  cats:
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7ad
+neuter:
+  key: neuter
+  friendly: neuter
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f22c
+id_badge:
+  key: id_badge
+  friendly: id
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2c1
+marker:
+  key: marker
+  friendly: marker
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5a1
+universal_access:
+  key: universal_access
+  friendly: universal
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f29a
+user_tie:
+  key: user_tie
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f508
+certificate:
+  key: certificate
+  friendly: certificate
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0a3
+reply_all:
+  key: reply_all
+  friendly: reply
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f122
+suitcase:
+  key: suitcase
+  friendly: suitcase
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0f2
+camera_retro:
+  key: camera_retro
+  friendly: camera
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f083
+file_import:
+  key: file_import
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f56f
+box_open:
+  key: box_open
+  friendly: box
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f49e
+scroll:
+  key: scroll
+  friendly: scroll
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f70e
+spa:
+  key: spa
+  friendly: spa
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5bb
+pause:
+  key: pause
+  friendly: pause
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f04c
+bomb:
+  key: bomb
+  friendly: bomb
+  cats:
+    - emotion
+    - smiley
+    - object
+    - weapon
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1e2
+registered:
+  key: registered
+  friendly: registered
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f25d
+address_card:
+  key: address_card
+  friendly: address
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2bb
+subscript:
+  key: subscript
+  friendly: subscript
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f12c
+smog:
+  key: smog
+  friendly: smog
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f75f
+crutch:
+  key: crutch
+  friendly: crutch
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7f7
+palette:
+  key: palette
+  friendly: palette
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f53f
+ferry:
+  key: ferry
+  friendly: ferry
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - same
+    - fa6
+  coll: fa6
+  fa6: e4ea
+seedling:
+  key: seedling
+  friendly: seedling
+  cats:
+    - animal
+    - plant
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4d8
+candy_cane:
+  key: candy_cane
+  friendly: candy
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f786
+file_word:
+  key: file_word
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c2
+file_powerpoint:
+  key: file_powerpoint
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c4
+chalkboard:
+  key: chalkboard
+  friendly: chalkboard
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f51b
+envelope_open:
+  key: envelope_open
+  friendly: envelope
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2b6
+fire_extinguisher:
+  key: fire_extinguisher
+  friendly: fire
+  cats:
+    - object
+    - household
+    - same
+    - fa6
+  coll: fa6
+  fa6: f134
+greater_than_equal:
+  key: greater_than_equal
+  friendly: greater
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f532
+virus:
+  key: virus
+  friendly: virus
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e074
+layer_group:
+  key: layer_group
+  friendly: layer
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5fd
+archway:
+  key: archway
+  friendly: archway
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f557
+square:
+  key: square
+  friendly: square
+  cats:
+    - shape
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c8
+couch:
+  key: couch
+  friendly: couch
+  cats:
+    - furniture
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4b8
+italic:
+  key: italic
+  friendly: italic
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f033
+church:
+  key: church
+  friendly: church
+  cats:
+    - place
+    - travel
+    - building
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f51d
+comments_dollar:
+  key: comments_dollar
+  friendly: comments
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f653
+democrat:
+  key: democrat
+  friendly: democrat
+  cats:
+    - person
+    - same
+    - fa6
+  coll: fa6
+  fa6: f747
+snowflake:
+  key: snowflake
+  friendly: snowflake
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2dc
+newspaper:
+  key: newspaper
+  friendly: newspaper
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ea
+sort:
+  key: sort
+  friendly: sort
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0dc
+list_ol:
+  key: list_ol
+  friendly: list
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0cb
+vector_square:
+  key: vector_square
+  friendly: vector
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5cb
+bread_slice:
+  key: bread_slice
+  friendly: bread
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7ec
+language:
+  key: language
+  friendly: language
+  cats:
+    - concept
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ab
+filter:
+  key: filter
+  friendly: filter
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0b0
+file_signature:
+  key: file_signature
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f573
+hand_holding_heart:
+  key: hand_holding_heart
+  friendly: hand
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4be
+puzzle_piece:
+  key: puzzle_piece
+  friendly: puzzle
+  cats:
+    - action
+    - object
+    - best
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f12e
+money_check:
+  key: money_check
+  friendly: money
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f53c
+code:
+  key: code
+  friendly: code
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f121
+won_sign:
+  key: won_sign
+  friendly: won
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f159
+leaf:
+  key: leaf
+  friendly: leaf
+  cats:
+    - plant
+    - same
+    - fa6
+  coll: fa6
+  fa6: f06c
+road:
+  key: road
+  friendly: road
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f018
+taxi:
+  key: taxi
+  friendly: taxi
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ba
+chart_pie:
+  key: chart_pie
+  friendly: chart
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f200
+file_excel:
+  key: file_excel
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c3
+file_contract:
+  key: file_contract
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f56c
+object_ungroup:
+  key: object_ungroup
+  friendly: object
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f248
+poop:
+  key: poop
+  friendly: poop
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f619
+kaaba:
+  key: kaaba
+  friendly: kaaba
+  cats:
+    - building
+    - same
+    - fa6
+  coll: fa6
+  fa6: f66b
+toilet_paper:
+  key: toilet_paper
+  friendly: toilet
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f71e
+eject:
+  key: eject
+  friendly: eject
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f052
+object_group:
+  key: object_group
+  friendly: object
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f247
+chart_line:
+  key: chart_line
+  friendly: chart
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f201
+arrow_right:
+  key: arrow_right
+  friendly: arrow
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f061
+cash_register:
+  key: cash_register
+  friendly: cash
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f788
+heart:
+  key: heart
+  friendly: heart
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f004
+dumpster_fire:
+  key: dumpster_fire
+  friendly: dumpster
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f794
+cube:
+  key: cube
+  friendly: cube
+  cats:
+    - shape
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1b2
+solar_panel:
+  key: solar_panel
+  friendly: solar
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5ba
+lock_open:
+  key: lock_open
+  friendly: lock
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f3c1
+circle:
+  key: circle
+  friendly: circle
+  cats:
+    - shape
+    - same
+    - fa6
+  coll: fa6
+  fa6: f111
+recycle:
+  key: recycle
+  friendly: recycle
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1b8
+user_astronaut:
+  key: user_astronaut
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4fb
+trademark:
+  key: trademark
+  friendly: trademark
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f25c
+basketball:
+  key: basketball
+  friendly: basketball
+  cats:
+    - action
+    - object
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f434
+satellite_dish:
+  key: satellite_dish
+  friendly: satellite
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7c0
+wallet:
+  key: wallet
+  friendly: wallet
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f555
+clipboard_check:
+  key: clipboard_check
+  friendly: clipboard
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f46c
+file_audio:
+  key: file_audio
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c7
+wrench:
+  key: wrench
+  friendly: wrench
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0ad
+rupee_sign:
+  key: rupee_sign
+  friendly: rupee
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f156
+file_image:
+  key: file_image
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c5
+plane_departure:
+  key: plane_departure
+  friendly: plane
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5b0
+code_branch:
+  key: code_branch
+  friendly: code
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f126
+hat_cowboy:
+  key: hat_cowboy
+  friendly: hat
+  cats:
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f8c0
+bridge:
+  key: bridge
+  friendly: bridge
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e4c8
+cat:
+  key: cat
+  friendly: cat
+  cats:
+    - animal
+    - mammal
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6be
+route:
+  key: route
+  friendly: route
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4d7
+comment_medical:
+  key: comment_medical
+  friendly: comment
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7f5
+teeth_open:
+  key: teeth_open
+  friendly: teeth
+  cats:
+    - body
+    - same
+    - fa6
+  coll: fa6
+  fa6: f62f
+tags:
+  key: tags
+  friendly: tags
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f02c
+wine_glass:
+  key: wine_glass
+  friendly: wine
+  cats:
+    - drink
+    - food
+    - dishware
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4e3
+terminal:
+  key: terminal
+  friendly: terminal
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f120
+tape:
+  key: tape
+  friendly: tape
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4db
+eye:
+  key: eye
+  friendly: eye
+  cats:
+    - action
+    - object
+    - best
+    - body
+    - same
+    - fa6
+  coll: fa6
+  fa6: f06e
+audio_description:
+  key: audio_description
+  friendly: audio
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f29e
+user_slash:
+  key: user_slash
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f506
+pen:
+  key: pen
+  friendly: pen
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f304
+file_code:
+  key: file_code
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c9
+signal:
+  key: signal
+  friendly: signal
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f012
+bus:
+  key: bus
+  friendly: bus
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f207
+window_maximize:
+  key: window_maximize
+  friendly: window
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2d0
+prescription:
+  key: prescription
+  friendly: prescription
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5b1
+shop:
+  key: shop
+  friendly: shop
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f54f
+floppy_disk:
+  key: floppy_disk
+  friendly: floppy
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c7
+vihara:
+  key: vihara
+  friendly: vihara
+  cats:
+    - building
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6a7
+sort_up:
+  key: sort_up
+  friendly: sort
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0de
+comment_dots:
+  key: comment_dots
+  friendly: comment
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4ad
+hand_pointer:
+  key: hand_pointer
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f25a
+drum_steelpan:
+  key: drum_steelpan
+  friendly: drum
+  cats:
+    - music
+    - same
+    - fa6
+  coll: fa6
+  fa6: f56a
+hand_scissors:
+  key: hand_scissors
+  friendly: hand
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f257
+biohazard:
+  key: biohazard
+  friendly: biohazard
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f780
+mars_double:
+  key: mars_double
+  friendly: mars
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f227
+phone:
+  key: phone
+  friendly: phone
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f095
+door_closed:
+  key: door_closed
+  friendly: door
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f52a
+dice_six:
+  key: dice_six
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f526
+text_width:
+  key: text_width
+  friendly: text
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f035
+hat_wizard:
+  key: hat_wizard
+  friendly: hat
+  cats:
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6e8
+pen_fancy:
+  key: pen_fancy
+  friendly: pen
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5ac
+trash:
+  key: trash
+  friendly: trash
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1f8
+book_medical:
+  key: book_medical
+  friendly: book
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7e6
+poo:
+  key: poo
+  friendly: poo
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2fe
+quote_right:
+  key: quote_right
+  friendly: quote
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f10e
+shirt:
+  key: shirt
+  friendly: shirt
+  cats:
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f553
+cubes:
+  key: cubes
+  friendly: cubes
+  cats:
+    - shape
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1b3
+divide:
+  key: divide
+  friendly: divide
+  cats:
+    - action
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f529
+headphones:
+  key: headphones
+  friendly: headphones
+  cats:
+    - electronics
+    - same
+    - fa6
+  coll: fa6
+  fa6: f025
+republican:
+  key: republican
+  friendly: republican
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f75e
+arrow_left:
+  key: arrow_left
+  friendly: arrow
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f060
+ruler:
+  key: ruler
+  friendly: ruler
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f545
+align_left:
+  key: align_left
+  friendly: align
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f036
+dice_d6:
+  key: dice_d6
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6d1
+restroom:
+  key: restroom
+  friendly: restroom
+  cats:
+    - symbol
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7bd
+file_video:
+  key: file_video
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c8
+file_pdf:
+  key: file_pdf
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c1
+user_secret:
+  key: user_secret
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f21b
+otter:
+  key: otter
+  friendly: otter
+  cats:
+    - animal
+    - mammal
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f700
+comment_dollar:
+  key: comment_dollar
+  friendly: comment
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f651
+business_time:
+  key: business_time
+  friendly: business
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f64a
+phone_volume:
+  key: phone_volume
+  friendly: phone
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2a0
+hat_cowboy_side:
+  key: hat_cowboy_side
+  friendly: hat
+  cats:
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f8c1
+child:
+  key: child
+  friendly: child
+  cats:
+    - body
+    - person
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ae
+lira_sign:
+  key: lira_sign
+  friendly: lira
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f195
+satellite:
+  key: satellite
+  friendly: satellite
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7bf
+tag:
+  key: tag
+  friendly: tag
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f02b
+comment:
+  key: comment
+  friendly: comment
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f075
+envelope:
+  key: envelope
+  friendly: envelope
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0e0
+paperclip:
+  key: paperclip
+  friendly: paperclip
+  cats:
+    - action
+    - object
+    - best
+    - office
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c6
+ribbon:
+  key: ribbon
+  friendly: ribbon
+  cats:
+    - action
+    - object
+    - event
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4d6
+border_none:
+  key: border_none
+  friendly: border
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f850
+parachute_box:
+  key: parachute_box
+  friendly: parachute
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4cd
+indent:
+  key: indent
+  friendly: indent
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f03c
+hourglass:
+  key: hourglass
+  friendly: hourglass
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f254
+mountain:
+  key: mountain
+  friendly: mountain
+  cats:
+    - place
+    - travel
+    - landscape
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6fc
+cloud_meatball:
+  key: cloud_meatball
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f73b
+camera:
+  key: camera
+  friendly: camera
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f030
+meteor:
+  key: meteor
+  friendly: meteor
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f753
+sleigh:
+  key: sleigh
+  friendly: sleigh
+  cats:
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7cc
+water:
+  key: water
+  friendly: water
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f773
+calendar_check:
+  key: calendar_check
+  friendly: calendar
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f274
+braille:
+  key: braille
+  friendly: braille
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2a1
+landmark:
+  key: landmark
+  friendly: landmark
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f66f
+truck:
+  key: truck
+  friendly: truck
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0d1
+crosshairs:
+  key: crosshairs
+  friendly: crosshairs
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f05b
+tent:
+  key: tent
+  friendly: tent
+  cats:
+    - place
+    - travel
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e57d
+check_double:
+  key: check_double
+  friendly: check
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f560
+cookie:
+  key: cookie
+  friendly: cookie
+  cats:
+    - drink
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f563
+dumbbell:
+  key: dumbbell
+  friendly: dumbbell
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f44b
+calendar_plus:
+  key: calendar_plus
+  friendly: calendar
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f271
+plane_arrival:
+  key: plane_arrival
+  friendly: plane
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5af
+dna:
+  key: dna
+  friendly: dna
+  cats:
+    - object
+    - science
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f471
+minus:
+  key: minus
+  friendly: minus
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f068
+chess:
+  key: chess
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f439
+street_view:
+  key: street_view
+  friendly: street
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f21d
+volume_off:
+  key: volume_off
+  friendly: volume
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f026
+gear:
+  key: gear
+  friendly: gear
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f013
+mosque:
+  key: mosque
+  friendly: mosque
+  cats:
+    - place
+    - travel
+    - building
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f678
+mosquito:
+  key: mosquito
+  friendly: mosquito
+  cats:
+    - action
+    - animal
+    - bug
+    - object
+    - best
+    - nature
+    - insect
+    - same
+    - fa6
+  coll: fa6
+  fa6: e52b
+star_of_david:
+  key: star_of_david
+  friendly: star
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f69a
+vials:
+  key: vials
+  friendly: vials
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f493
+place_of_worship:
+  key: place_of_worship
+  friendly: place
+  cats:
+    - building
+    - same
+    - fa6
+  coll: fa6
+  fa6: f67f
+grip_vertical:
+  key: grip_vertical
+  friendly: grip
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f58e
+clock:
+  key: clock
+  friendly: clock
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f017
+pallet:
+  key: pallet
+  friendly: pallet
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f482
+keyboard:
+  key: keyboard
+  friendly: keyboard
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f11c
+caret_down:
+  key: caret_down
+  friendly: caret
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0d7
+piggy_bank:
+  key: piggy_bank
+  friendly: piggy
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4d3
+battery_half:
+  key: battery_half
+  friendly: battery
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f242
+coins:
+  key: coins
+  friendly: coins
+  cats:
+    - currency
+    - same
+    - fa6
+  coll: fa6
+  fa6: f51e
+khanda:
+  key: khanda
+  friendly: khanda
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f66d
+network_wired:
+  key: network_wired
+  friendly: network
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6ff
+map_pin:
+  key: map_pin
+  friendly: map
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f276
+hamsa:
+  key: hamsa
+  friendly: hamsa
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f665
+flask:
+  key: flask
+  friendly: flask
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c3
+power_off:
+  key: power_off
+  friendly: power
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f011
+flag_usa:
+  key: flag_usa
+  friendly: flag
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f74d
+tty:
+  key: tty
+  friendly: tty
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1e4
+closed_captioning:
+  key: closed_captioning
+  friendly: closed
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f20a
+venus_double:
+  key: venus_double
+  friendly: venus
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f226
+images:
+  key: images
+  friendly: images
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f302
+calculator:
+  key: calculator
+  friendly: calculator
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ec
+cloud_rain:
+  key: cloud_rain
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f73d
+ship:
+  key: ship
+  friendly: ship
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f21a
+download:
+  key: download
+  friendly: download
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f019
+eye_dropper:
+  key: eye_dropper
+  friendly: eye
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1fb
+forward:
+  key: forward
+  friendly: forward
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f04e
+align_center:
+  key: align_center
+  friendly: align
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f037
+id_card:
+  key: id_card
+  friendly: id
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2c2
+outdent:
+  key: outdent
+  friendly: outdent
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f03b
+house:
+  key: house
+  friendly: house
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+    - building
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f015
+calendar_week:
+  key: calendar_week
+  friendly: calendar
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f784
+laptop_medical:
+  key: laptop_medical
+  friendly: laptop
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f812
+file_medical:
+  key: file_medical
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f477
+dice_one:
+  key: dice_one
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f525
+kiwi_bird:
+  key: kiwi_bird
+  friendly: kiwi
+  cats:
+    - animal
+    - same
+    - fa6
+  coll: fa6
+  fa6: f535
+utensils:
+  key: utensils
+  friendly: utensils
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2e7
+skull:
+  key: skull
+  friendly: skull
+  cats:
+    - emotion
+    - face
+    - smiley
+    - symbol
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f54c
+truck_pickup:
+  key: truck_pickup
+  friendly: truck
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f63c
+stop:
+  key: stop
+  friendly: stop
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f04d
+upload:
+  key: upload
+  friendly: upload
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f093
+compact_disc:
+  key: compact_disc
+  friendly: compact
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f51f
+bolt:
+  key: bolt
+  friendly: bolt
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0e7
+mars:
+  key: mars
+  friendly: mars
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f222
+toilet:
+  key: toilet
+  friendly: toilet
+  cats:
+    - action
+    - object
+    - best
+    - household
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7d8
+yen_sign:
+  key: yen_sign
+  friendly: yen
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f157
+ruble_sign:
+  key: ruble_sign
+  friendly: ruble
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f158
+sun:
+  key: sun
+  friendly: sun
+  cats:
+    - nature
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f185
+guitar:
+  key: guitar
+  friendly: guitar
+  cats:
+    - object
+    - music
+    - instrument
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7a6
+horse_head:
+  key: horse_head
+  friendly: horse
+  cats:
+    - animal
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7ab
+industry:
+  key: industry
+  friendly: industry
+  cats:
+    - concept
+    - same
+    - fa6
+  coll: fa6
+  fa6: f275
+angle_down:
+  key: angle_down
+  friendly: angle
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f107
+grip_lines:
+  key: grip_lines
+  friendly: grip
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7a4
+thumbs_down:
+  key: thumbs_down
+  friendly: thumbs
+  cats:
+    - body
+    - hand
+    - gesture
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f165
+user_lock:
+  key: user_lock
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f502
+chess_pawn:
+  key: chess_pawn
+  friendly: chess
+  cats:
+    - action
+    - object
+    - game
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f443
+toolbox:
+  key: toolbox
+  friendly: toolbox
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f552
+bug:
+  key: bug
+  friendly: bug
+  cats:
+    - animal
+    - bug
+    - nature
+    - insect
+    - creature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f188
+credit_card:
+  key: credit_card
+  friendly: credit
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f09d
+car:
+  key: car
+  friendly: car
+  cats:
+    - transport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1b9
+dice_d20:
+  key: dice_d20
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6cf
+medal:
+  key: medal
+  friendly: medal
+  cats:
+    - action
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5a2
+bed:
+  key: bed
+  friendly: bed
+  cats:
+    - object
+    - household
+    - same
+    - fa6
+  coll: fa6
+  fa6: f236
+podcast:
+  key: podcast
+  friendly: podcast
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2ce
+bell:
+  key: bell
+  friendly: bell
+  cats:
+    - object
+    - sound
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0f3
+superscript:
+  key: superscript
+  friendly: superscript
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f12b
+star_of_life:
+  key: star_of_life
+  friendly: star
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f621
+phone_slash:
+  key: phone_slash
+  friendly: phone
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f3dd
+paint_roller:
+  key: paint_roller
+  friendly: paint
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5aa
+file:
+  key: file
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f15b
+arrow_down:
+  key: arrow_down
+  friendly: arrow
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f063
+droplet:
+  key: droplet
+  friendly: droplet
+  cats:
+    - object
+    - place
+    - travel
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f043
+eraser:
+  key: eraser
+  friendly: eraser
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f12d
+dove:
+  key: dove
+  friendly: dove
+  cats:
+    - animal
+    - bird
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4ba
+battery_empty:
+  key: battery_empty
+  friendly: battery
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f244
+socks:
+  key: socks
+  friendly: socks
+  cats:
+    - action
+    - object
+    - best
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f696
+inbox:
+  key: inbox
+  friendly: inbox
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f01c
+envelope_open_text:
+  key: envelope_open_text
+  friendly: envelope
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f658
+hospital:
+  key: hospital
+  friendly: hospital
+  cats:
+    - building
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0f8
+wine_bottle:
+  key: wine_bottle
+  friendly: wine
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f72f
+chess_rook:
+  key: chess_rook
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f447
+dharmachakra:
+  key: dharmachakra
+  friendly: dharmachakra
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f655
+hotdog:
+  key: hotdog
+  friendly: hotdog
+  cats:
+    - drink
+    - food
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f80f
+drum:
+  key: drum
+  friendly: drum
+  cats:
+    - object
+    - music
+    - instrument
+    - same
+    - fa6
+  coll: fa6
+  fa6: f569
+ice_cream:
+  key: ice_cream
+  friendly: ice
+  cats:
+    - drink
+    - food
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f810
+fax:
+  key: fax
+  friendly: fax
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ac
+paragraph:
+  key: paragraph
+  friendly: paragraph
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1dd
+star_half:
+  key: star_half
+  friendly: star
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f089
+link:
+  key: link
+  friendly: link
+  cats:
+    - object
+    - tool
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c1
+play:
+  key: play
+  friendly: play
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f04b
+font:
+  key: font
+  friendly: font
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f031
+magnifying_glass:
+  key: magnifying_glass
+  friendly: magnifying
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f002
+cart_arrow_down:
+  key: cart_arrow_down
+  friendly: arrow
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f218
+receipt:
+  key: receipt
+  friendly: receipt
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f543
+suitcase_rolling:
+  key: suitcase_rolling
+  friendly: suitcase
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5c1
+chevron_down:
+  key: chevron_down
+  friendly: chevron
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f078
+battery_full:
+  key: battery_full
+  friendly: battery
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f240
+skull_crossbones:
+  key: skull_crossbones
+  friendly: skull
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f714
+list_ul:
+  key: list_ul
+  friendly: list
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0ca
+chess_king:
+  key: chess_king
+  friendly: chess
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f43f
+arrow_up:
+  key: arrow_up
+  friendly: arrow
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f062
+tv:
+  key: tv
+  friendly: tv
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f26c
+shrimp:
+  key: shrimp
+  friendly: shrimp
+  cats:
+    - drink
+    - food
+    - seafood
+    - animal
+    - same
+    - fa6
+  coll: fa6
+  fa6: e448
+user_shield:
+  key: user_shield
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f505
+wind:
+  key: wind
+  friendly: wind
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f72e
+fish:
+  key: fish
+  friendly: fish
+  cats:
+    - animal
+    - marine
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f578
+user_graduate:
+  key: user_graduate
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f501
+clapperboard:
+  key: clapperboard
+  friendly: clapperboard
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e131
+baseball:
+  key: baseball
+  friendly: baseball
+  cats:
+    - action
+    - object
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f433
+copy:
+  key: copy
+  friendly: copy
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0c5
+expand:
+  key: expand
+  friendly: expand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f065
+baby:
+  key: baby
+  friendly: baby
+  cats:
+    - body
+    - person
+    - creature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f77c
+quote_left:
+  key: quote_left
+  friendly: quote
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f10d
+tractor:
+  key: tractor
+  friendly: tractor
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f722
+ruler_combined:
+  key: ruler_combined
+  friendly: ruler
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f546
+copyright:
+  key: copyright
+  friendly: copyright
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1f9
+blender:
+  key: blender
+  friendly: blender
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f517
+teeth:
+  key: teeth
+  friendly: teeth
+  cats:
+    - body
+    - same
+    - fa6
+  coll: fa6
+  fa6: f62e
+shekel_sign:
+  key: shekel_sign
+  friendly: shekel
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f20b
+map:
+  key: map
+  friendly: map
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f279
+rocket:
+  key: rocket
+  friendly: rocket
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f135
+folder_minus:
+  key: folder_minus
+  friendly: folder
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f65d
+store:
+  key: store
+  friendly: store
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f54e
+bezier_curve:
+  key: bezier_curve
+  friendly: bezier
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f55b
+bell_slash:
+  key: bell_slash
+  friendly: bell
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1f6
+fill:
+  key: fill
+  friendly: fill
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f575
+angle_up:
+  key: angle_up
+  friendly: angle
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f106
+drumstick_bite:
+  key: drumstick_bite
+  friendly: drumstick
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6d7
+holly_berry:
+  key: holly_berry
+  friendly: holly
+  cats:
+    - plant
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7aa
+chevron_left:
+  key: chevron_left
+  friendly: chevron
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f053
+hand_lizard:
+  key: hand_lizard
+  friendly: hand
+  cats:
+    - creature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f258
+briefcase_medical:
+  key: briefcase_medical
+  friendly: briefcase
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f469
+genderless:
+  key: genderless
+  friendly: genderless
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f22d
+chevron_right:
+  key: chevron_right
+  friendly: chevron
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f054
+retweet:
+  key: retweet
+  friendly: retweet
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f079
+video_slash:
+  key: video_slash
+  friendly: video
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4e2
+battery_quarter:
+  key: battery_quarter
+  friendly: battery
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f243
+baby_carriage:
+  key: baby_carriage
+  friendly: baby
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f77d
+traffic_light:
+  key: traffic_light
+  friendly: traffic
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f637
+thermometer:
+  key: thermometer
+  friendly: thermometer
+  cats:
+    - object
+    - place
+    - travel
+    - medical
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f491
+vr_cardboard:
+  key: vr_cardboard
+  friendly: vr
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f729
+hand_middle_finger:
+  key: hand_middle_finger
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f806
+truck_moving:
+  key: truck_moving
+  friendly: truck
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4df
+thumbtack:
+  key: thumbtack
+  friendly: thumbtack
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f08d
+trophy:
+  key: trophy
+  friendly: trophy
+  cats:
+    - action
+    - object
+    - event
+    - same
+    - fa6
+  coll: fa6
+  fa6: f091
+hammer:
+  key: hammer
+  friendly: hammer
+  cats:
+    - action
+    - object
+    - best
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6e3
+hand_peace:
+  key: hand_peace
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f25b
+spinner:
+  key: spinner
+  friendly: spinner
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f110
+robot:
+  key: robot
+  friendly: robot
+  cats:
+    - emotion
+    - face
+    - smiley
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f544
+peace:
+  key: peace
+  friendly: peace
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f67c
+gears:
+  key: gears
+  friendly: gears
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f085
+warehouse:
+  key: warehouse
+  friendly: warehouse
+  cats:
+    - building
+    - same
+    - fa6
+  coll: fa6
+  fa6: f494
+splotch:
+  key: splotch
+  friendly: splotch
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5bc
+dice_four:
+  key: dice_four
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f524
+sim_card:
+  key: sim_card
+  friendly: sim
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7c4
+transgender:
+  key: transgender
+  friendly: transgender
+  cats: &ref_0
+    - symbol
+    - same
+    - fa6
+    - codeexists
+  coll: fa6
+  fa6: f225
+mercury:
+  key: mercury
+  friendly: mercury
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f223
+award:
+  key: award
+  friendly: award
+  cats:
+    - object
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f559
+building:
+  key: building
+  friendly: building
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1ad
+qrcode:
+  key: qrcode
+  friendly: qrcode
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f029
+file_export:
+  key: file_export
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f56e
+pen_nib:
+  key: pen_nib
+  friendly: pen
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5ad
+dog:
+  key: dog
+  friendly: dog
+  cats:
+    - action
+    - animal
+    - mammal
+    - object
+    - best
+    - nature
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6d3
+carrot:
+  key: carrot
+  friendly: carrot
+  cats:
+    - drink
+    - food
+    - vegetable
+    - plant
+    - same
+    - fa6
+  coll: fa6
+  fa6: f787
+moon:
+  key: moon
+  friendly: moon
+  cats:
+    - place
+    - same
+    - fa6
+  coll: fa6
+  fa6: f186
+cheese:
+  key: cheese
+  friendly: cheese
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7ef
+yin_yang:
+  key: yin_yang
+  friendly: yin
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6ad
+music:
+  key: music
+  friendly: music
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f001
+temperature_low:
+  key: temperature_low
+  friendly: temperature
+  cats:
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f76b
+broom:
+  key: broom
+  friendly: broom
+  cats:
+    - action
+    - object
+    - best
+    - household
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f51a
+gopuram:
+  key: gopuram
+  friendly: gopuram
+  cats:
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f664
+oil_can:
+  key: oil_can
+  friendly: oil
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f613
+hippo:
+  key: hippo
+  friendly: hippo
+  cats:
+    - animal
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6ed
+infinity:
+  key: infinity
+  friendly: infinity
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f534
+voicemail:
+  key: voicemail
+  friendly: voicemail
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f897
+fan:
+  key: fan
+  friendly: fan
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f863
+cloud_moon_rain:
+  key: cloud_moon_rain
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f73c
+calendar:
+  key: calendar
+  friendly: calendar
+  cats:
+    - object
+    - office
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f133
+sd_card:
+  key: sd_card
+  friendly: sd
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f7c2
+dragon:
+  key: dragon
+  friendly: dragon
+  cats:
+    - action
+    - animal
+    - reptile
+    - object
+    - best
+    - nature
+    - mythical
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6d5
+shoe_prints:
+  key: shoe_prints
+  friendly: shoe
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f54b
+hand_holding:
+  key: hand_holding
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4bd
+clone:
+  key: clone
+  friendly: clone
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f24d
+anchor:
+  key: anchor
+  friendly: anchor
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f13d
+border_all:
+  key: border_all
+  friendly: border
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f84c
+cookie_bite:
+  key: cookie_bite
+  friendly: cookie
+  cats:
+    - food
+    - same
+    - fa6
+  coll: fa6
+  fa6: f564
+rss:
+  key: rss
+  friendly: rss
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f09e
+draw_polygon:
+  key: draw_polygon
+  friendly: draw
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5ee
+shower:
+  key: shower
+  friendly: shower
+  cats:
+    - object
+    - household
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2cc
+book:
+  key: book
+  friendly: book
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f02d
+user_plus:
+  key: user_plus
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f234
+check:
+  key: check
+  friendly: check
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f00c
+battery_three_quarters:
+  key: battery_three_quarters
+  friendly: battery
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f241
+angle_left:
+  key: angle_left
+  friendly: angle
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f104
+cloud_moon:
+  key: cloud_moon
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6c3
+briefcase:
+  key: briefcase
+  friendly: briefcase
+  cats:
+    - object
+    - office
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0b1
+user_tag:
+  key: user_tag
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f507
+book_open:
+  key: book_open
+  friendly: book
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f518
+handcuffs:
+  key: handcuffs
+  friendly: handcuffs
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: e4f8
+database:
+  key: database
+  friendly: database
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1c0
+share:
+  key: share
+  friendly: share
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f064
+paper_plane:
+  key: paper_plane
+  friendly: paper
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1d8
+dungeon:
+  key: dungeon
+  friendly: dungeon
+  cats:
+    - structure
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6d9
+align_right:
+  key: align_right
+  friendly: align
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f038
+life_ring:
+  key: life_ring
+  friendly: life
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f1cd
+hands:
+  key: hands
+  friendly: hands
+  cats: &ref_1
+    - people
+    - same
+    - fa6
+    - codeexists
+  coll: fa6
+  fa6: f2a7
+calendar_day:
+  key: calendar_day
+  friendly: calendar
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f783
+dice:
+  key: dice
+  friendly: dice
+  cats:
+    - game
+    - same
+    - fa6
+  coll: fa6
+  fa6: f522
+bowling_ball:
+  key: bowling_ball
+  friendly: bowling
+  cats:
+    - sport
+    - same
+    - fa6
+  coll: fa6
+  fa6: f436
+brain:
+  key: brain
+  friendly: brain
+  cats:
+    - action
+    - object
+    - best
+    - body
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5dc
+calendar_minus:
+  key: calendar_minus
+  friendly: calendar
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f272
+gifts:
+  key: gifts
+  friendly: gifts
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f79c
+hotel:
+  key: hotel
+  friendly: hotel
+  cats:
+    - building
+    - same
+    - fa6
+  coll: fa6
+  fa6: f594
+thumbs_up:
+  key: thumbs_up
+  friendly: thumbs
+  cats:
+    - body
+    - hand
+    - gesture
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f164
+user_clock:
+  key: user_clock
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f4fd
+file_invoice:
+  key: file_invoice
+  friendly: file
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f570
+window_minimize:
+  key: window_minimize
+  friendly: window
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f2d1
+brush:
+  key: brush
+  friendly: brush
+  cats:
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f55d
+mask:
+  key: mask
+  friendly: mask
+  cats:
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6fa
+ruler_vertical:
+  key: ruler_vertical
+  friendly: ruler
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f548
+user_nurse:
+  key: user_nurse
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f82f
+syringe:
+  key: syringe
+  friendly: syringe
+  cats:
+    - object
+    - medical
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f48e
+cloud_sun:
+  key: cloud_sun
+  friendly: cloud
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f6c4
+square_full:
+  key: square_full
+  friendly: square
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f45c
+magnet:
+  key: magnet
+  friendly: magnet
+  cats:
+    - object
+    - tool
+    - same
+    - fa6
+  coll: fa6
+  fa6: f076
+jar:
+  key: jar
+  friendly: jar
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e516
+bone:
+  key: bone
+  friendly: bone
+  cats:
+    - body
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f5d7
+user_injured:
+  key: user_injured
+  friendly: user
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f728
+plane:
+  key: plane
+  friendly: plane
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f072
+print:
+  key: print
+  friendly: print
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f02f
+umbrella:
+  key: umbrella
+  friendly: umbrella
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - travel
+    - weather
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0e9
+trowel:
+  key: trowel
+  friendly: trowel
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: e589
+hand_point_left:
+  key: hand_point_left
+  friendly: hand
+  cats:
+    - action
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0a5
+jet_fighter:
+  key: jet_fighter
+  friendly: jet
+  cats:
+    - vehicle
+    - same
+    - fa6
+  coll: fa6
+  fa6: f0fb
+barcode:
+  key: barcode
+  friendly: barcode
+  cats:
+    - symbol
+    - same
+    - fa6
+  coll: fa6
+  fa6: f02a
+video:
+  key: video
+  friendly: video
+  cats:
+    - object
+    - same
+    - fa6
+  coll: fa6
+  fa6: f03d
+graduation_cap:
+  key: graduation_cap
+  friendly: graduation
+  cats:
+    - object
+    - clothing
+    - same
+    - fa6
+  coll: fa6
+  fa6: f19d
+arrows_to_circle:
+  key: arrows_to_circle
+  friendly: arrow
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4bd
+circle_chevron_right:
+  key: circle_chevron_right
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f138
+user_xmark:
+  key: user_xmark
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f235
+message:
+  key: message
+  friendly: comment_alt
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f27a
+explosion:
+  key: explosion
+  friendly: swamp_bat
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e9
+file_lines:
+  key: file_lines
+  friendly: file
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f15c
+building_un:
+  key: building_un
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d9
+calendar_days:
+  key: calendar_days
+  friendly: calendar
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f073
+anchor_circle_check:
+  key: anchor_circle_check
+  friendly: anchor
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4aa
+building_circle_arrow_right:
+  key: building_circle_arrow_right
+  friendly: arrow
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d1
+arrows_up_to_line:
+  key: arrows_up_to_line
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c2
+circle_minus:
+  key: circle_minus
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f056
+right_from_bracket:
+  key: right_from_bracket
+  friendly: right
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2f5
+microphone_lines_slash:
+  key: microphone_lines_slash
+  friendly: microphone
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f539
+bridge_circle_check:
+  key: bridge_circle_check
+  friendly: bridge
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c9
+pump_medical:
+  key: pump_medical
+  friendly: pump
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e06a
+magnifying_glass_location:
+  key: magnifying_glass_location
+  friendly: magnifying
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f689
+forward_step:
+  key: forward_step
+  friendly: forward
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f051
+face_smile_beam:
+  key: face_smile_beam
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5b8
+football:
+  key: football
+  friendly: football_ball
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f44e
+school_circle_exclamation:
+  key: school_circle_exclamation
+  friendly: school
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e56c
+angles_down:
+  key: angles_down
+  friendly: angles
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f103
+users_rectangle:
+  key: users_rectangle
+  friendly: users
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e594
+people_roof:
+  key: people_roof
+  friendly: people
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e537
+people_line:
+  key: people_line
+  friendly: people
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e534
+beer_mug_empty:
+  key: beer_mug_empty
+  friendly: beer
+  cats:
+    - drink
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0fc
+diagram_predecessor:
+  key: diagram_predecessor
+  friendly: diagram
+  cats:
+    - country
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e477
+fire_flame_simple:
+  key: fire_flame_simple
+  friendly: fire
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f46a
+truck_plane:
+  key: truck_plane
+  friendly: truck
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e58f
+face_grin_stars:
+  key: face_grin_stars
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f587
+spaghetti_monster_flying:
+  key: spaghetti_monster_flying
+  friendly: spaghetti
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f67b
+arrow_down_up_across_line:
+  key: arrow_down_up_across_line
+  friendly: arrow
+  cats:
+    - mythical
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4af
+jar_wheat:
+  key: jar_wheat
+  friendly: jar
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e517
+envelopes_bulk:
+  key: envelopes_bulk
+  friendly: envelopes
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f674
+file_circle_exclamation:
+  key: file_circle_exclamation
+  friendly: file
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4eb
+circle_h:
+  key: circle_h
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f47e
+landmark_flag:
+  key: landmark_flag
+  friendly: landmark
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e51c
+code_pull_request:
+  key: code_pull_request
+  friendly: code
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e13c
+truck_ramp_box:
+  key: truck_ramp_box
+  friendly: truck
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4de
+vial_virus:
+  key: vial_virus
+  friendly: vial
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e597
+sheet_plastic:
+  key: sheet_plastic
+  friendly: sheet
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e571
+person_arrow_up_from_line:
+  key: person_arrow_up_from_line
+  friendly: arrow
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e539
+scroll_torah:
+  key: scroll_torah
+  friendly: scroll
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6a0
+broom_ball:
+  key: broom_ball
+  friendly: broom
+  cats:
+    - sport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f458
+box_archive:
+  key: box_archive
+  friendly: box
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f187
+person_drowning:
+  key: person_drowning
+  friendly: person
+  cats:
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e545
+arrow_down_9_1:
+  key: arrow_down_9_1
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f886
+face_grin_tongue_squint:
+  key: face_grin_tongue_squint
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f58a
+earth_africa:
+  key: earth_africa
+  friendly: earth
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f57c
+tablet_screen_button:
+  key: tablet_screen_button
+  friendly: tablet
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3fa
+trowel_bricks:
+  key: trowel_bricks
+  friendly: trowel
+  cats:
+    - music
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e58a
+face_flushed:
+  key: face_flushed
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f579
+box_tissue:
+  key: box_tissue
+  friendly: box
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e05b
+bell_concierge:
+  key: bell_concierge
+  friendly: bell
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f562
+pen_ruler:
+  key: pen_ruler
+  friendly: pen
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5ae
+people_arrows:
+  key: people_arrows
+  friendly: arrow
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e068
+mars_and_venus_burst:
+  key: mars_and_venus_burst
+  friendly: mars
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e523
+square_caret_right:
+  key: square_caret_right
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f152
+toilets_portable:
+  key: toilets_portable
+  friendly: toilets
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e584
+magnifying_glass_arrow_right:
+  key: magnifying_glass_arrow_right
+  friendly: arrow
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e521
+tachograph_digital:
+  key: tachograph_digital
+  friendly: tachograph
+  cats:
+    - technology
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f566
+users_slash:
+  key: users_slash
+  friendly: users
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e073
+house_fire:
+  key: house_fire
+  friendly: house
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e50c
+square_minus:
+  key: square_minus
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f146
+square_caret_down:
+  key: square_caret_down
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f150
+file_circle_question:
+  key: file_circle_question
+  friendly: file
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ef
+people_group:
+  key: people_group
+  friendly: people
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e533
+heart_crack:
+  key: heart_crack
+  friendly: heart
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7a9
+square_up_right:
+  key: square_up_right
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f360
+face_kiss_beam:
+  key: face_kiss_beam
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f597
+people_robbery:
+  key: people_robbery
+  friendly: people
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e536
+circle_exclamation:
+  key: circle_exclamation
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f06a
+school_circle_xmark:
+  key: school_circle_xmark
+  friendly: school
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e56d
+circle_chevron_down:
+  key: circle_chevron_down
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f13a
+unlock_keyhole:
+  key: unlock_keyhole
+  friendly: unlock
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f13e
+headphones_simple:
+  key: headphones_simple
+  friendly: headphones
+  cats:
+    - electronics
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f58f
+circle_dollar_to_slot:
+  key: circle_dollar_to_slot
+  friendly: circle
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4b9
+road_spikes:
+  key: road_spikes
+  friendly: road
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e568
+fire_burner:
+  key: fire_burner
+  friendly: fire
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f1
+volume_low:
+  key: volume_low
+  friendly: volume
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f027
+wheat_awn:
+  key: wheat_awn
+  friendly: wheat
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2cd
+hands_holding_child:
+  key: hands_holding_child
+  friendly: hands
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4fa
+square_check:
+  key: square_check
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f14a
+peseta_sign:
+  key: peseta_sign
+  friendly: peseta
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e221
+square_phone_flip:
+  key: square_phone_flip
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f87b
+circle_dot:
+  key: circle_dot
+  friendly: circle
+  cats:
+    - shape
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f192
+face_dizzy:
+  key: face_dizzy
+  friendly: face
+  cats:
+    - emotion
+    - smiley
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f567
+house_medical_circle_xmark:
+  key: house_medical_circle_xmark
+  friendly: house
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e513
+hot_tub_person:
+  key: hot_tub_person
+  friendly: hot
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f593
+map_location:
+  key: map_location
+  friendly: map
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f59f
+house_flood_water:
+  key: house_flood_water
+  friendly: house
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e50e
+bridge_lock:
+  key: bridge_lock
+  friendly: bridge
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4cc
+pen_to_square:
+  key: pen_to_square
+  friendly: pen
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f044
+share_nodes:
+  key: share_nodes
+  friendly: share
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f1e0
+heart_circle_minus:
+  key: heart_circle_minus
+  friendly: heart
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ff
+sink:
+  key: sink
+  friendly: all_seeing_eye
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e06d
+bag_shopping:
+  key: bag_shopping
+  friendly: bag
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f290
+arrow_down_z_a:
+  key: arrow_down_z_a
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f881
+person_rays:
+  key: person_rays
+  friendly: person
+  cats:
+    - phenomenon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e54d
+flask_vial:
+  key: flask_vial
+  friendly: flask
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f3
+house_circle_xmark:
+  key: house_circle_xmark
+  friendly: house
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e50b
+face_kiss:
+  key: face_kiss
+  friendly: face
+  cats:
+    - body
+    - gesture
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f596
+bridge_circle_xmark:
+  key: bridge_circle_xmark
+  friendly: bridge
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4cb
+face_grin_tongue:
+  key: face_grin_tongue
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f589
+face_grin_wink:
+  key: face_grin_wink
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f58c
+ear_deaf:
+  key: ear_deaf
+  friendly: ear
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2a4
+road_circle_check:
+  key: road_circle_check
+  friendly: road
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e564
+square_rss:
+  key: square_rss
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f143
+land_mine_on:
+  key: land_mine_on
+  friendly: land
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e51b
+i_cursor:
+  key: i_cursor
+  friendly: i
+  cats:
+    - tool
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f246
+hryvnia_sign:
+  key: hryvnia_sign
+  friendly: hryvnia
+  cats:
+    - currency
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6f2
+face_grin_wide:
+  key: face_grin_wide
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f581
+bangladeshi_taka_sign:
+  key: bangladeshi_taka_sign
+  friendly: bangladeshi
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2e6
+head_side_cough_slash:
+  key: head_side_cough_slash
+  friendly: head
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e062
+truck_medical:
+  key: truck_medical
+  friendly: truck
+  cats:
+    - action
+    - object
+    - best
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0f9
+wheat_awn_circle_exclamation:
+  key: wheat_awn_circle_exclamation
+  friendly: wheat
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e598
+road_barrier:
+  key: road_barrier
+  friendly: road
+  cats:
+    - animal
+    - mammal
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e562
+temperature_half:
+  key: temperature_half
+  friendly: temperature
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2c9
+dong_sign:
+  key: dong_sign
+  friendly: dong
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e169
+face_frown_open:
+  key: face_frown_open
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f57a
+helmet_un:
+  key: helmet_un
+  friendly: helmet
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e503
+file_waveform:
+  key: file_waveform
+  friendly: file
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f478
+chart_simple:
+  key: chart_simple
+  friendly: chart
+  cats:
+    - country
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e473
+wand_magic_sparkles:
+  key: wand_magic_sparkles
+  friendly: wand
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2ca
+pen_clip:
+  key: pen_clip
+  friendly: pen
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f305
+bridge_circle_exclamation:
+  key: bridge_circle_exclamation
+  friendly: bridge
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ca
+school_circle_check:
+  key: school_circle_check
+  friendly: school
+  cats:
+    - animal
+    - mammal
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e56b
+van_shuttle:
+  key: van_shuttle
+  friendly: van
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5b6
+building_user:
+  key: building_user
+  friendly: building
+  cats:
+    - body
+    - person
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4da
+square_caret_left:
+  key: square_caret_left
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f191
+person_half_dress:
+  key: person_half_dress
+  friendly: person
+  cats:
+    - weather
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e548
+road_bridge:
+  key: road_bridge
+  friendly: road
+  cats:
+    - mammal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e563
+tablet_button:
+  key: tablet_button
+  friendly: tablet
+  cats: &ref_4
+    - object
+    - codeexists
+    - fa6
+    - keyexists
+  coll: fa6
+  fa6: f10a
+building_lock:
+  key: building_lock
+  friendly: building
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d6
+house_flag:
+  key: house_flag
+  friendly: house
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e50d
+person_circle_minus:
+  key: person_circle_minus
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e540
+camera_rotate:
+  key: camera_rotate
+  friendly: camera
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0d8
+spray_can_sparkles:
+  key: spray_can_sparkles
+  friendly: spray
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5d0
+arrow_pointer:
+  key: arrow_pointer
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f245
+maximize:
+  key: maximize
+  friendly: expand_arrows_alt
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f31e
+shuffle:
+  key: shuffle
+  friendly: random
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f074
+person_running:
+  key: person_running
+  friendly: person
+  cats:
+    - action
+    - body
+    - person
+    - sport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f70c
+mobile_retro:
+  key: mobile_retro
+  friendly: mobile
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e527
+hands_bound:
+  key: hands_bound
+  friendly: hands
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f9
+plane_circle_exclamation:
+  key: plane_circle_exclamation
+  friendly: plane
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e556
+shop_slash:
+  key: shop_slash
+  friendly: shop
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e070
+virus_covid_slash:
+  key: virus_covid_slash
+  friendly: virus
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4a9
+shop_lock:
+  key: shop_lock
+  friendly: shop
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4a5
+building_wheat:
+  key: building_wheat
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4db
+person_breastfeeding:
+  key: person_breastfeeding
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e53a
+right_to_bracket:
+  key: right_to_bracket
+  friendly: right
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2f6
+heart_pulse:
+  key: heart_pulse
+  friendly: heart
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f21e
+people_carry_box:
+  key: people_carry_box
+  friendly: people
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4ce
+xmarks_lines:
+  key: xmarks_lines
+  friendly: xmarks
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e59a
+weight_scale:
+  key: weight_scale
+  friendly: weight
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f496
+user_group:
+  key: user_group
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f500
+arrow_up_a_z:
+  key: arrow_up_a_z
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f15e
+face_laugh_squint:
+  key: face_laugh_squint
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f59b
+circle_arrow_up:
+  key: circle_arrow_up
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0aa
+person_walking:
+  key: person_walking
+  friendly: person
+  cats:
+    - action
+    - body
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f554
+bed_pulse:
+  key: bed_pulse
+  friendly: bed
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f487
+shuttle_space:
+  key: shuttle_space
+  friendly: shuttle
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f197
+face_laugh:
+  key: face_laugh
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f599
+heart_circle_plus:
+  key: heart_circle_plus
+  friendly: heart
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e500
+code_fork:
+  key: code_fork
+  friendly: code
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e13b
+microphone_lines:
+  key: microphone_lines
+  friendly: microphone
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3c9
+colon_sign:
+  key: colon_sign
+  friendly: colon
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e140
+store_slash:
+  key: store_slash
+  friendly: store
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e071
+road_circle_xmark:
+  key: road_circle_xmark
+  friendly: road
+  cats:
+    - animal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e566
+mars_stroke_up:
+  key: mars_stroke_up
+  friendly: mars
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f22a
+champagne_glasses:
+  key: champagne_glasses
+  friendly: champagne
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f79f
+house_circle_exclamation:
+  key: house_circle_exclamation
+  friendly: house
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e50a
+file_arrow_up:
+  key: file_arrow_up
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f574
+user_pen:
+  key: user_pen
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4ff
+anchor_lock:
+  key: anchor_lock
+  friendly: anchor
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ad
+building_ngo:
+  key: building_ngo
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d7
+manat_sign:
+  key: manat_sign
+  friendly: manat
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1d5
+border_top_left:
+  key: border_top_left
+  friendly: border
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f853
+map_location_dot:
+  key: map_location_dot
+  friendly: map
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5a0
+square_poll_vertical:
+  key: square_poll_vertical
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f681
+building_circle_check:
+  key: building_circle_check
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d2
+person_chalkboard:
+  key: person_chalkboard
+  friendly: person
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e53d
+mars_stroke_right:
+  key: mars_stroke_right
+  friendly: mars
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f22b
+hand_back_fist:
+  key: hand_back_fist
+  friendly: hand
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f255
+square_caret_up:
+  key: square_caret_up
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f151
+cloud_showers_water:
+  key: cloud_showers_water
+  friendly: cloud
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e4
+hands_bubbles:
+  key: hands_bubbles
+  friendly: hands
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e05e
+eye_low_vision:
+  key: eye_low_vision
+  friendly: eye
+  cats:
+    - concept
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2a8
+square_plus:
+  key: square_plus
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0fe
+folder_closed:
+  key: folder_closed
+  friendly: folder
+  cats:
+    - clothing
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e185
+house_tsunami:
+  key: house_tsunami
+  friendly: house
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e515
+square_nfi:
+  key: square_nfi
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e576
+arrow_up_from_ground_water:
+  key: arrow_up_from_ground_water
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b5
+martini_glass:
+  key: martini_glass
+  friendly: martini
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f57b
+rotate_left:
+  key: rotate_left
+  friendly: rotate
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2ea
+table_columns:
+  key: table_columns
+  friendly: table
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0db
+head_side_mask:
+  key: head_side_mask
+  friendly: head
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e063
+minimize:
+  key: minimize
+  friendly: compress_arrows_alt
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f78c
+angles_right:
+  key: angles_right
+  friendly: angles
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f101
+circle_play:
+  key: circle_play
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f144
+circle_check:
+  key: circle_check
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f058
+circle_stop:
+  key: circle_stop
+  friendly: circle
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f28d
+compass_drafting:
+  key: compass_drafting
+  friendly: compass
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f568
+plate_wheat:
+  key: plate_wheat
+  friendly: plate
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e55a
+person_shelter:
+  key: person_shelter
+  friendly: person
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e54f
+face_laugh_beam:
+  key: face_laugh_beam
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f59a
+circle_chevron_up:
+  key: circle_chevron_up
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f139
+lari_sign:
+  key: lari_sign
+  friendly: lari
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1c8
+person_walking_dashed_line_arrow_right:
+  key: person_walking_dashed_line_arrow_right
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e553
+sterling_sign:
+  key: sterling_sign
+  friendly: sterling
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f154
+viruses:
+  key: viruses
+  friendly: capricorn
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e076
+square_person_confined:
+  key: square_person_confined
+  friendly: square
+  cats:
+    - object
+    - place
+    - time
+    - travel
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e577
+tent_arrow_down_to_line:
+  key: tent_arrow_down_to_line
+  friendly: arrow
+  cats:
+    - music
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e57e
+person_skating:
+  key: person_skating
+  friendly: person
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7c5
+filter_circle_dollar:
+  key: filter_circle_dollar
+  friendly: filter
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f662
+circle_arrow_down:
+  key: circle_arrow_down
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0ab
+location_pin_lock:
+  key: location_pin_lock
+  friendly: location
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e51f
+hill_avalanche:
+  key: hill_avalanche
+  friendly: hill
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e507
+temperature_empty:
+  key: temperature_empty
+  friendly: temperature
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2cb
+scale_unbalanced_flip:
+  key: scale_unbalanced_flip
+  friendly: scale
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f516
+diamond_turn_right:
+  key: diamond_turn_right
+  friendly: diamond
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5eb
+burst:
+  key: burst
+  friendly: mimic_chest
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4dc
+house_laptop:
+  key: house_laptop
+  friendly: house
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e066
+face_tired:
+  key: face_tired
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5c8
+money_bills:
+  key: money_bills
+  friendly: money
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1f3
+arrows_turn_right:
+  key: arrows_turn_right
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c0
+vest:
+  key: vest
+  friendly: flower_emblem
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e085
+arrows_down_to_people:
+  key: arrows_down_to_people
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b9
+left_right:
+  key: left_right
+  friendly: left
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f337
+boxes_packing:
+  key: boxes_packing
+  friendly: boxes
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c7
+circle_arrow_left:
+  key: circle_arrow_left
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0a8
+group_arrows_rotate:
+  key: group_arrows_rotate
+  friendly: arrow
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f6
+bowl_food:
+  key: bowl_food
+  friendly: bowl
+  cats:
+    - bug
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c6
+arrow_down_wide_short:
+  key: arrow_down_wide_short
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f160
+text_slash:
+  key: text_slash
+  friendly: text
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f87d
+face_smile_wink:
+  key: face_smile_wink
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4da
+house_lock:
+  key: house_lock
+  friendly: house
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e510
+children:
+  key: children
+  friendly: resting_vampire
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e1
+user_large_slash:
+  key: user_large_slash
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4fa
+handshake_simple_slash:
+  key: handshake_simple_slash
+  friendly: handshake
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e05f
+mattress_pillow:
+  key: mattress_pillow
+  friendly: mattress
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e525
+guarani_sign:
+  key: guarani_sign
+  friendly: guarani
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e19a
+arrows_rotate:
+  key: arrows_rotate
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f021
+cruzeiro_sign:
+  key: cruzeiro_sign
+  friendly: cruzeiro
+  cats:
+    - game
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e152
+shield_halved:
+  key: shield_halved
+  friendly: shield
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3ed
+book_atlas:
+  key: book_atlas
+  friendly: book
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f558
+envelope_circle_check:
+  key: envelope_circle_check
+  friendly: envelope
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e8
+arrows_to_dot:
+  key: arrows_to_dot
+  friendly: arrow
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4be
+heart_circle_check:
+  key: heart_circle_check
+  friendly: heart
+  cats:
+    - plant
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4fd
+house_chimney_crack:
+  key: house_chimney_crack
+  friendly: house
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6f1
+file_zipper:
+  key: file_zipper
+  friendly: file
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f1c6
+martini_glass_empty:
+  key: martini_glass_empty
+  friendly: martini
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f000
+cedi_sign:
+  key: cedi_sign
+  friendly: cedi
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0df
+person_skiing:
+  key: person_skiing
+  friendly: person
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7c9
+road_lock:
+  key: road_lock
+  friendly: road
+  cats:
+    - animal
+    - mammal
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e567
+temperature_arrow_down:
+  key: temperature_arrow_down
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e03f
+feather_pointed:
+  key: feather_pointed
+  friendly: feather
+  cats:
+    - body
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f56b
+rectangle_ad:
+  key: rectangle_ad
+  friendly: rectangle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f641
+circle_arrow_right:
+  key: circle_arrow_right
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0a9
+filter_circle_xmark:
+  key: filter_circle_xmark
+  friendly: filter
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e17b
+locust:
+  key: locust
+  friendly: boat_propeller
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e520
+person_dress_burst:
+  key: person_dress_burst
+  friendly: person
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e544
+money_check_dollar:
+  key: money_check_dollar
+  friendly: money
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f53d
+face_kiss_wink_heart:
+  key: face_kiss_wink_heart
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f598
+up_down_left_right:
+  key: up_down_left_right
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0b2
+house_chimney_user:
+  key: house_chimney_user
+  friendly: house
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e065
+star_half_stroke:
+  key: star_half_stroke
+  friendly: star
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5c0
+whiskey_glass:
+  key: whiskey_glass
+  friendly: whiskey
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7a0
+building_circle_exclamation:
+  key: building_circle_exclamation
+  friendly: building
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d3
+magnifying_glass_chart:
+  key: magnifying_glass_chart
+  friendly: magnifying
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e522
+cubes_stacked:
+  key: cubes_stacked
+  friendly: cubes
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e6
+virus_covid:
+  key: virus_covid
+  friendly: virus
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4a8
+austral_sign:
+  key: austral_sign
+  friendly: austral
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0a9
+person_circle_plus:
+  key: person_circle_plus
+  friendly: person
+  cats:
+    - marine
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e541
+bolt_lightning:
+  key: bolt_lightning
+  friendly: bolt
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0b7
+sack_xmark:
+  key: sack_xmark
+  friendly: sack
+  cats:
+    - animal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e56a
+fish_fins:
+  key: fish_fins
+  friendly: fish
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f2
+building_flag:
+  key: building_flag
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d5
+face_grin_beam:
+  key: face_grin_beam
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f582
+location_pin:
+  key: location_pin
+  friendly: location
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f041
+helmet_safety:
+  key: helmet_safety
+  friendly: helmet
+  cats:
+    - clothing
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f807
+circle_right:
+  key: circle_right
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f35a
+plane_circle_check:
+  key: plane_circle_check
+  friendly: plane
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e555
+face_rolling_eyes:
+  key: face_rolling_eyes
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5a5
+mask_ventilator:
+  key: mask_ventilator
+  friendly: mask
+  cats:
+    - animal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e524
+signs_post:
+  key: signs_post
+  friendly: signs
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f277
+person_circle_question:
+  key: person_circle_question
+  friendly: person
+  cats:
+    - action
+    - object
+    - sport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e542
+tarp:
+  key: tarp
+  friendly: elf_ear
+  cats:
+    - body
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e57b
+screwdriver_wrench:
+  key: screwdriver_wrench
+  friendly: screwdriver
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7d9
+arrows_to_eye:
+  key: arrows_to_eye
+  friendly: arrow
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4bf
+plug_circle_bolt:
+  key: plug_circle_bolt
+  friendly: plug
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e55b
+mars_and_venus:
+  key: mars_and_venus
+  friendly: mars
+  cats: *ref_0
+  coll: fa6
+  fa6: f224
+house_user:
+  key: house_user
+  friendly: house
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1b0
+house_crack:
+  key: house_crack
+  friendly: house
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e3b1
+martini_glass_citrus:
+  key: martini_glass_citrus
+  friendly: martini
+  cats:
+    - drink
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f561
+face_surprise:
+  key: face_surprise
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5c2
+bottle_water:
+  key: bottle_water
+  friendly: bottle
+  cats:
+    - plant
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c5
+circle_pause:
+  key: circle_pause
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f28b
+toilet_paper_slash:
+  key: toilet_paper_slash
+  friendly: toilet
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e072
+apple_whole:
+  key: apple_whole
+  friendly: apple
+  cats:
+    - food
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5d1
+kitchen_set:
+  key: kitchen_set
+  friendly: kitchen
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e51a
+temperature_quarter:
+  key: temperature_quarter
+  friendly: temperature
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2ca
+shield_dog:
+  key: shield_dog
+  friendly: shield
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e573
+money_bill_transfer:
+  key: money_bill_transfer
+  friendly: money
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e528
+money_bill_trend_up:
+  key: money_bill_trend_up
+  friendly: money
+  cats:
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e529
+house_flood_water_circle_arrow_right:
+  key: house_flood_water_circle_arrow_right
+  friendly: arrow
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e50f
+square_poll_horizontal:
+  key: square_poll_horizontal
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f682
+backward_fast:
+  key: backward_fast
+  friendly: backward
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f049
+plane_slash:
+  key: plane_slash
+  friendly: plane
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e069
+circle_up:
+  key: circle_up
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f35b
+mobile_screen_button:
+  key: mobile_screen_button
+  friendly: mobile
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3cd
+volume_high:
+  key: volume_high
+  friendly: volume
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f028
+users_rays:
+  key: users_rays
+  friendly: users
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e593
+burger:
+  key: burger
+  friendly: hamburger
+  cats:
+    - drink
+    - food
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f805
+bugs:
+  key: bugs
+  friendly: gargoyle
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d0
+circle_question:
+  key: circle_question
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f059
+handshake_slash:
+  key: handshake_slash
+  friendly: handshake
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e060
+book_bookmark:
+  key: book_bookmark
+  friendly: book
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0bb
+phone_flip:
+  key: phone_flip
+  friendly: phone
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f879
+truck_front:
+  key: truck_front
+  friendly: truck
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2b7
+anchor_circle_exclamation:
+  key: anchor_circle_exclamation
+  friendly: anchor
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ab
+clipboard_question:
+  key: clipboard_question
+  friendly: clipboard
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e3
+panorama:
+  key: panorama
+  friendly: slalom
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e209
+file_circle_minus:
+  key: file_circle_minus
+  friendly: file
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ed
+forward_fast:
+  key: forward_fast
+  friendly: forward
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f050
+face_meh_blank:
+  key: face_meh_blank
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5a4
+square_parking:
+  key: square_parking
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f540
+house_signal:
+  key: house_signal
+  friendly: house
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e012
+faucet_drip:
+  key: faucet_drip
+  friendly: faucet
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e006
+cart_flatbed:
+  key: cart_flatbed
+  friendly: cart
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f474
+ban_smoking:
+  key: ban_smoking
+  friendly: ban
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f54d
+mobile_button:
+  key: mobile_button
+  friendly: mobile
+  cats: &ref_3
+    - object
+    - codeexists
+    - fa6
+    - keyexists
+  coll: fa6
+  fa6: f10b
+house_medical_flag:
+  key: house_medical_flag
+  friendly: house
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e514
+basket_shopping:
+  key: basket_shopping
+  friendly: basket
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f291
+bus_simple:
+  key: bus_simple
+  friendly: bus
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f55e
+face_sad_cry:
+  key: face_sad_cry
+  friendly: face
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5b3
+person_military_to_person:
+  key: person_military_to_person
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e54c
+file_shield:
+  key: file_shield
+  friendly: file
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f0
+tower_observation:
+  key: tower_observation
+  friendly: tower
+  cats:
+    - object
+    - music
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e586
+heart_circle_xmark:
+  key: heart_circle_xmark
+  friendly: heart
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e501
+house_chimney:
+  key: house_chimney
+  friendly: house
+  cats:
+    - insect
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e3af
+face_frown:
+  key: face_frown
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f119
+scale_unbalanced:
+  key: scale_unbalanced
+  friendly: scale
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f515
+plant_wilt:
+  key: plant_wilt
+  friendly: plant
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e5aa
+face_grin_squint:
+  key: face_grin_squint
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f585
+hand_holding_dollar:
+  key: hand_holding_dollar
+  friendly: hand
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4c0
+bacterium:
+  key: bacterium
+  friendly: rosa_shield
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e05a
+hands_praying:
+  key: hands_praying
+  friendly: hands
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f684
+arrow_rotate_right:
+  key: arrow_rotate_right
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f01e
+child_dress:
+  key: child_dress
+  friendly: child
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e59c
+users_between_lines:
+  key: users_between_lines
+  friendly: users
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e591
+lungs_virus:
+  key: lungs_virus
+  friendly: lungs
+  cats: &ref_5
+    - action
+    - object
+    - best
+    - tool
+    - codeexists
+    - fa6
+    - keyexists
+  coll: fa6
+  fa6: e067
+face_grin_tears:
+  key: face_grin_tears
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f588
+calendar_xmark:
+  key: calendar_xmark
+  friendly: calendar
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f273
+child_reaching:
+  key: child_reaching
+  friendly: child
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e59d
+head_side_virus:
+  key: head_side_virus
+  friendly: head
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e064
+user_gear:
+  key: user_gear
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4fe
+arrow_up_1_9:
+  key: arrow_up_1_9
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f163
+shield_virus:
+  key: shield_virus
+  friendly: shield
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e06c
+mosquito_net:
+  key: mosquito_net
+  friendly: mosquito
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e52c
+bridge_water:
+  key: bridge_water
+  friendly: bridge
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ce
+person_booth:
+  key: person_booth
+  friendly: person
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f756
+tenge_sign:
+  key: tenge_sign
+  friendly: tenge
+  cats:
+    - currency
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7d7
+hands_holding:
+  key: hands_holding
+  friendly: hands
+  cats: *ref_1
+  coll: fa6
+  fa6: f4c2
+hands_clapping:
+  key: hands_clapping
+  friendly: hands
+  cats:
+    - clothing
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1a8
+person_circle_xmark:
+  key: person_circle_xmark
+  friendly: person
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e543
+users_viewfinder:
+  key: users_viewfinder
+  friendly: users
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e595
+up_right_from_square:
+  key: up_right_from_square
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f35d
+table_cells:
+  key: table_cells
+  friendly: table
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f00a
+book_bible:
+  key: book_bible
+  friendly: book
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f647
+suitcase_medical:
+  key: suitcase_medical
+  friendly: suitcase
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0fa
+person_dress:
+  key: person_dress
+  friendly: person
+  cats:
+    - gender
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f182
+table_cells_large:
+  key: table_cells_large
+  friendly: table
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f009
+plane_lock:
+  key: plane_lock
+  friendly: plane
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e558
+cake_candles:
+  key: cake_candles
+  friendly: cake
+  cats:
+    - drink
+    - food
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f1fd
+angles_up:
+  key: angles_up
+  friendly: angles
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f102
+arrow_right_to_city:
+  key: arrow_right_to_city
+  friendly: arrow
+  cats:
+    - tree
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b3
+arrow_up_9_1:
+  key: arrow_up_9_1
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f887
+litecoin_sign:
+  key: litecoin_sign
+  friendly: litecoin
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1d3
+circle_nodes:
+  key: circle_nodes
+  friendly: circle
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e2
+truck_field_un:
+  key: truck_field_un
+  friendly: truck
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e58e
+user_doctor:
+  key: user_doctor
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0f0
+circle_info:
+  key: circle_info
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f05a
+square_virus:
+  key: square_virus
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e578
+car_on:
+  key: car_on
+  friendly: car
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4dd
+arrow_down_1_9:
+  key: arrow_down_1_9
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f162
+prescription_bottle_medical:
+  key: prescription_bottle_medical
+  friendly: prescription
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f486
+vest_patches:
+  key: vest_patches
+  friendly: vest
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e086
+arrow_down_a_z:
+  key: arrow_down_a_z
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f15d
+money_bill_wheat:
+  key: money_bill_wheat
+  friendly: money
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e52a
+arrow_rotate_left:
+  key: arrow_rotate_left
+  friendly: arrow
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0e2
+hard_drive:
+  key: hard_drive
+  friendly: hard
+  cats:
+    - electronics
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0a0
+face_grin_squint_tears:
+  key: face_grin_squint_tears
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f586
+rectangle_list:
+  key: rectangle_list
+  friendly: rectangle
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f022
+tarp_droplet:
+  key: tarp_droplet
+  friendly: tarp
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e57c
+house_medical_circle_check:
+  key: house_medical_circle_check
+  friendly: house
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e511
+person_skiing_nordic:
+  key: person_skiing_nordic
+  friendly: person
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7ca
+circle_left:
+  key: circle_left
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f359
+train_subway:
+  key: train_subway
+  friendly: train
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f239
+chart_gantt:
+  key: chart_gantt
+  friendly: chart
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0e4
+crop_simple:
+  key: crop_simple
+  friendly: crop
+  cats:
+    - plant
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f565
+money_bill_1:
+  key: money_bill_1
+  friendly: money
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3d1
+left_long:
+  key: left_long
+  friendly: left
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f30a
+virus_slash:
+  key: virus_slash
+  friendly: virus
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e075
+plug_circle_check:
+  key: plug_circle_check
+  friendly: plug
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e55c
+franc_sign:
+  key: franc_sign
+  friendly: franc
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e18f
+hands_asl_interpreting:
+  key: hands_asl_interpreting
+  friendly: hands
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2a3
+droplet_slash:
+  key: droplet_slash
+  friendly: droplet
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5c7
+person_military_rifle:
+  key: person_military_rifle
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e54b
+cart_shopping:
+  key: cart_shopping
+  friendly: cart
+  cats:
+    - object
+    - household
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f07a
+plug_circle_plus:
+  key: plug_circle_plus
+  friendly: plug
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e55f
+square_root_variable:
+  key: square_root_variable
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f698
+backward_step:
+  key: backward_step
+  friendly: backward
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f048
+faucet:
+  key: faucet
+  friendly: chalk_outline_murder
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e005
+timeline:
+  key: timeline
+  friendly: uzi
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e29c
+house_chimney_medical:
+  key: house_chimney_medical
+  friendly: house
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7f2
+temperature_three_quarters:
+  key: temperature_three_quarters
+  friendly: temperature
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2c8
+plane_up:
+  key: plane_up
+  friendly: plane
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e22d
+mountain_city:
+  key: mountain_city
+  friendly: mountain
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e52e
+sliders:
+  key: sliders
+  friendly: sliders_h
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f1de
+cent_sign:
+  key: cent_sign
+  friendly: cent
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e3f5
+person_pregnant:
+  key: person_pregnant
+  friendly: person
+  cats:
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e31e
+ellipsis_vertical:
+  key: ellipsis_vertical
+  friendly: ellipsis
+  cats:
+    - shape
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f142
+right_long:
+  key: right_long
+  friendly: right
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f30b
+laptop_file:
+  key: laptop_file
+  friendly: laptop
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e51d
+diagram_next:
+  key: diagram_next
+  friendly: diagram
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e476
+person_rifle:
+  key: person_rifle
+  friendly: person
+  cats:
+    - building
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e54e
+house_medical_circle_exclamation:
+  key: house_medical_circle_exclamation
+  friendly: house
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e512
+person_hiking:
+  key: person_hiking
+  friendly: person
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6ec
+people_pulling:
+  key: people_pulling
+  friendly: people
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e535
+cable_car:
+  key: cable_car
+  friendly: cable
+  cats:
+    - place
+    - sport
+    - transport
+    - travel
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7da
+building_circle_xmark:
+  key: building_circle_xmark
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d4
+arrows_down_to_line:
+  key: arrows_down_to_line
+  friendly: arrow
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b8
+face_grin:
+  key: face_grin
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f580
+delete_left:
+  key: delete_left
+  friendly: delete
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f55a
+file_circle_check:
+  key: file_circle_check
+  friendly: file
+  cats:
+    - shape
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e5a0
+face_meh:
+  key: face_meh
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f11a
+book_skull:
+  key: book_skull
+  friendly: book
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6b7
+heart_circle_exclamation:
+  key: heart_circle_exclamation
+  friendly: heart
+  cats:
+    - body
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4fe
+rotate_right:
+  key: rotate_right
+  friendly: rotate
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2f9
+arrow_up_wide_short:
+  key: arrow_up_wide_short
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f161
+mill_sign:
+  key: mill_sign
+  friendly: mill
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1ed
+bowl_rice:
+  key: bowl_rice
+  friendly: bowl
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2eb
+tower_broadcast:
+  key: tower_broadcast
+  friendly: tower
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f519
+up_long:
+  key: up_long
+  friendly: up
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f30c
+mound:
+  key: mound
+  friendly: paddles
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e52d
+toilet_portable:
+  key: toilet_portable
+  friendly: toilet
+  cats:
+    - music
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e583
+file_arrow_down:
+  key: file_arrow_down
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f56d
+shield_cat:
+  key: shield_cat
+  friendly: shield
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e572
+glass_water:
+  key: glass_water
+  friendly: glass
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f4
+oil_well:
+  key: oil_well
+  friendly: oil
+  cats: *ref_2
+  coll: fa6
+  fa6: e532
+vault:
+  key: vault
+  friendly: minigun
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2c5
+plane_circle_xmark:
+  key: plane_circle_xmark
+  friendly: plane
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e557
+face_laugh_wink:
+  key: face_laugh_wink
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f59c
+bore_hole:
+  key: bore_hole
+  friendly: bore
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c3
+circle_down:
+  key: circle_down
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f358
+arrows_turn_to_dots:
+  key: arrows_turn_to_dots
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c1
+florin_sign:
+  key: florin_sign
+  friendly: florin
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e184
+arrow_down_short_wide:
+  key: arrow_down_short_wide
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f884
+car_tunnel:
+  key: car_tunnel
+  friendly: car
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4de
+head_side_cough:
+  key: head_side_cough
+  friendly: head
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e061
+anchor_circle_xmark:
+  key: anchor_circle_xmark
+  friendly: anchor
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ac
+ellipsis:
+  key: ellipsis
+  friendly: ellipsis_h
+  cats:
+    - shape
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f141
+kit_medical:
+  key: kit_medical
+  friendly: kit
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f479
+person_through_window:
+  key: person_through_window
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e5a9
+hands_holding_circle:
+  key: hands_holding_circle
+  friendly: hands
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4fb
+hand_holding_hand:
+  key: hand_holding_hand
+  friendly: hand
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f7
+book_open_reader:
+  key: book_open_reader
+  friendly: book
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5da
+mountain_sun:
+  key: mountain_sun
+  friendly: mountain
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e52f
+arrows_left_right_to_line:
+  key: arrows_left_right_to_line
+  friendly: arrow
+  cats:
+    - clothing
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4ba
+truck_droplet:
+  key: truck_droplet
+  friendly: truck
+  cats:
+    - music
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e58c
+temperature_arrow_up:
+  key: temperature_arrow_up
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e040
+square_h:
+  key: square_h
+  friendly: square
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0fd
+temperature_full:
+  key: temperature_full
+  friendly: temperature
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2c7
+plug_circle_xmark:
+  key: plug_circle_xmark
+  friendly: plug
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e560
+handshake_angle:
+  key: handshake_angle
+  friendly: handshake
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4c4
+location_dot:
+  key: location_dot
+  friendly: location
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3c5
+person_swimming:
+  key: person_swimming
+  friendly: person
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5c4
+earth_americas:
+  key: earth_americas
+  friendly: earth
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f57d
+person_burst:
+  key: person_burst
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e53b
+section:
+  key: section
+  friendly: slap
+  cats:
+    - gesture
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e447
+bars_staggered:
+  key: bars_staggered
+  friendly: bars
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f550
+person_walking_with_cane:
+  key: person_walking_with_cane
+  friendly: person
+  cats:
+    - medical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f29d
+heart_circle_bolt:
+  key: heart_circle_bolt
+  friendly: heart
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4fc
+check_to_slot:
+  key: check_to_slot
+  friendly: check
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f772
+boxes_stacked:
+  key: boxes_stacked
+  friendly: boxes
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f468
+ear_listen:
+  key: ear_listen
+  friendly: ear
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2a2
+tree_city:
+  key: tree_city
+  friendly: tree
+  cats:
+    - object
+    - music
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e587
+rupiah_sign:
+  key: rupiah_sign
+  friendly: rupiah
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e23d
+table_tennis_paddle_ball:
+  key: table_tennis_paddle_ball
+  friendly: table
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f45d
+person_dots_from_line:
+  key: person_dots_from_line
+  friendly: person
+  cats:
+    - medical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f470
+trash_can_arrow_up:
+  key: trash_can_arrow_up
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f82a
+naira_sign:
+  key: naira_sign
+  friendly: naira
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1f6
+square_pen:
+  key: square_pen
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f14b
+person_circle_exclamation:
+  key: person_circle_exclamation
+  friendly: person
+  cats:
+    - plant
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e53f
+code_compare:
+  key: code_compare
+  friendly: code
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e13a
+school_lock:
+  key: school_lock
+  friendly: school
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e56f
+down_long:
+  key: down_long
+  friendly: down
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f309
+ranking_star:
+  key: ranking_star
+  friendly: ranking
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e561
+person_harassing:
+  key: person_harassing
+  friendly: person
+  cats:
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e549
+brazilian_real_sign:
+  key: brazilian_real_sign
+  friendly: brazilian
+  cats:
+    - country
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e46c
+list_check:
+  key: list_check
+  friendly: list
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0ae
+jug_detergent:
+  key: jug_detergent
+  friendly: jug
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e519
+circle_user:
+  key: circle_user
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2bd
+car_burst:
+  key: car_burst
+  friendly: car
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5e1
+person_snowboarding:
+  key: person_snowboarding
+  friendly: person
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7ce
+truck_fast:
+  key: truck_fast
+  friendly: truck
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f48b
+circle_half_stroke:
+  key: circle_half_stroke
+  friendly: circle
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f042
+circle_radiation:
+  key: circle_radiation
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7ba
+jet_fighter_up:
+  key: jet_fighter_up
+  friendly: jet
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e518
+diagram_project:
+  key: diagram_project
+  friendly: diagram
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f542
+volume_xmark:
+  key: volume_xmark
+  friendly: volume
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6a9
+hand_sparkles:
+  key: hand_sparkles
+  friendly: hand
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e05d
+grip:
+  key: grip
+  friendly: grip_horizontal
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f58d
+share_from_square:
+  key: share_from_square
+  friendly: share
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f14d
+child_combatant:
+  key: child_combatant
+  friendly: child
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e0
+gun:
+  key: gun
+  friendly: magick_trick
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e19b
+square_phone:
+  key: square_phone
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f098
+computer:
+  key: computer
+  friendly: shambling_zombie
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4e5
+xmark:
+  key: xmark
+  friendly: times
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f00d
+chalkboard_user:
+  key: chalkboard_user
+  friendly: chalkboard
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f51c
+peso_sign:
+  key: peso_sign
+  friendly: peso
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e222
+building_shield:
+  key: building_shield
+  friendly: building
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4d8
+users_line:
+  key: users_line
+  friendly: users
+  cats:
+    - object
+    - music
+    - instrument
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e592
+trash_arrow_up:
+  key: trash_arrow_up
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f829
+arrow_down_up_lock:
+  key: arrow_down_up_lock
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b0
+lines_leaning:
+  key: lines_leaning
+  friendly: lines
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e51e
+photo_film:
+  key: photo_film
+  friendly: photo
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f87c
+arrow_trend_up:
+  key: arrow_trend_up
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e098
+plug_circle_minus:
+  key: plug_circle_minus
+  friendly: plug
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e55e
+sign_hanging:
+  key: sign_hanging
+  friendly: sign
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f4d9
+school_flag:
+  key: school_flag
+  friendly: school
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e56e
+bacteria:
+  key: bacteria
+  friendly: magic_shield
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e059
+notdef:
+  key: notdef
+  friendly: encirclement
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1fe
+car_rear:
+  key: car_rear
+  friendly: car
+  cats:
+    - transport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5de
+pump_soap:
+  key: pump_soap
+  friendly: pump
+  cats:
+    - animal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e06b
+glass_water_droplet:
+  key: glass_water_droplet
+  friendly: glass
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4f5
+display:
+  key: display
+  friendly: sell_card
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e163
+face_smile:
+  key: face_smile
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f118
+person_praying:
+  key: person_praying
+  friendly: person
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f683
+rotate:
+  key: rotate
+  friendly: sync_alt
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f2f1
+arrow_up_right_dots:
+  key: arrow_up_right_dots
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b7
+face_grin_hearts:
+  key: face_grin_hearts
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f584
+person_falling_burst:
+  key: person_falling_burst
+  friendly: person
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e547
+ticket_simple:
+  key: ticket_simple
+  friendly: ticket
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3ff
+angles_left:
+  key: angles_left
+  friendly: angles
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f100
+clock_rotate_left:
+  key: clock_rotate_left
+  friendly: clock
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f1da
+face_grin_beam_sweat:
+  key: face_grin_beam_sweat
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f583
+arrow_up_short_wide:
+  key: arrow_up_short_wide
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f885
+house_medical:
+  key: house_medical
+  friendly: house
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e3b2
+golf_ball_tee:
+  key: golf_ball_tee
+  friendly: golf
+  cats:
+    - sport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f450
+circle_chevron_left:
+  key: circle_chevron_left
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f137
+house_chimney_window:
+  key: house_chimney_window
+  friendly: house
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e00d
+tent_arrow_turn_left:
+  key: tent_arrow_turn_left
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e580
+tents:
+  key: tents
+  friendly: jack_plug
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e582
+wand_magic:
+  key: wand_magic
+  friendly: wand
+  cats:
+    - concept
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0d0
+wine_glass_empty:
+  key: wine_glass_empty
+  friendly: wine
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5ce
+person_biking:
+  key: person_biking
+  friendly: person
+  cats:
+    - action
+    - body
+    - person
+    - sport
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f84a
+shield_heart:
+  key: shield_heart
+  friendly: shield
+  cats:
+    - animal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e574
+earth_oceania:
+  key: earth_oceania
+  friendly: earth
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e47b
+chart_column:
+  key: chart_column
+  friendly: chart
+  cats:
+    - weapon
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0e3
+vial_circle_check:
+  key: vial_circle_check
+  friendly: vial
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e596
+person_arrow_down_to_line:
+  key: person_arrow_down_to_line
+  friendly: arrow
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e538
+person_walking_luggage:
+  key: person_walking_luggage
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e554
+up_down:
+  key: up_down
+  friendly: up
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f338
+trailer:
+  key: trailer
+  friendly: shield_bash
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e041
+bahai:
+  key: bahai
+  friendly: haykal
+  cats:
+    - religious symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f666
+circle_plus:
+  key: circle_plus
+  friendly: circle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f055
+face_grin_tongue_wink:
+  key: face_grin_tongue_wink
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f58b
+plug_circle_exclamation:
+  key: plug_circle_exclamation
+  friendly: plug
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e55d
+link_slash:
+  key: link_slash
+  friendly: link
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f127
+person_walking_arrow_loop_left:
+  key: person_walking_arrow_loop_left
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e551
+arrow_up_z_a:
+  key: arrow_up_z_a
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f882
+fire_flame_curved:
+  key: fire_flame_curved
+  friendly: fire
+  cats:
+    - concept
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7e4
+file_circle_plus:
+  key: file_circle_plus
+  friendly: file
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e494
+book_quran:
+  key: book_quran
+  friendly: book
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f687
+face_angry:
+  key: face_angry
+  friendly: face
+  cats:
+    - emotion
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f556
+arrow_trend_down:
+  key: arrow_trend_down
+  friendly: arrow
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e097
+scale_balanced:
+  key: scale_balanced
+  friendly: scale
+  cats:
+    - object
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f24e
+table_list:
+  key: table_list
+  friendly: table
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f00b
+comment_sms:
+  key: comment_sms
+  friendly: comment
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7cd
+house_circle_check:
+  key: house_circle_check
+  friendly: house
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e509
+truck_arrow_right:
+  key: truck_arrow_right
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e58b
+arrows_split_up_and_left:
+  key: arrows_split_up_and_left
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4bc
+hand_fist:
+  key: hand_fist
+  friendly: hand
+  cats:
+    - hand gesture
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f6de
+person_falling:
+  key: person_falling
+  friendly: person
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e546
+image_portrait:
+  key: image_portrait
+  friendly: image
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3e0
+rug:
+  key: rug
+  friendly: juggling_seal
+  cats:
+    - animal
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e569
+earth_europe:
+  key: earth_europe
+  friendly: earth
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f7a2
+cart_flatbed_suitcase:
+  key: cart_flatbed_suitcase
+  friendly: cart
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f59d
+rectangle_xmark:
+  key: rectangle_xmark
+  friendly: rectangle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f410
+baht_sign:
+  key: baht_sign
+  friendly: baht
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e0ac
+book_journal_whills:
+  key: book_journal_whills
+  friendly: book
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f66a
+triangle_exclamation:
+  key: triangle_exclamation
+  friendly: triangle
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f071
+bottle_droplet:
+  key: bottle_droplet
+  friendly: bottle
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4c4
+mask_face:
+  key: mask_face
+  friendly: mask
+  cats:
+    - mythical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1d7
+hill_rockslide:
+  key: hill_rockslide
+  friendly: hill
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e508
+right_left:
+  key: right_left
+  friendly: right
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f362
+road_circle_exclamation:
+  key: road_circle_exclamation
+  friendly: road
+  cats:
+    - animal
+    - mammal
+    - nature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e565
+money_bill_1_wave:
+  key: money_bill_1_wave
+  friendly: money
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f53b
+water_ladder:
+  key: water_ladder
+  friendly: water
+  cats:
+    - place
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5c5
+face_grimace:
+  key: face_grimace
+  friendly: face
+  cats:
+    - expression
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f57f
+wheelchair_move:
+  key: wheelchair_move
+  friendly: wheelchair
+  cats:
+    - tool
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2ce
+turn_down:
+  key: turn_down
+  friendly: turn
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3be
+person_walking_arrow_right:
+  key: person_walking_arrow_right
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e552
+square_envelope:
+  key: square_envelope
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f199
+bandage:
+  key: bandage
+  friendly: band_aid
+  cats:
+    - medical
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f462
+circle_xmark:
+  key: circle_xmark
+  friendly: circle
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f057
+earth_asia:
+  key: earth_asia
+  friendly: earth
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f57e
+id_card_clip:
+  key: id_card_clip
+  friendly: id
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f47f
+magnifying_glass_plus:
+  key: magnifying_glass_plus
+  friendly: magnifying
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f00e
+hand_dots:
+  key: hand_dots
+  friendly: hand
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f461
+mug_saucer:
+  key: mug_saucer
+  friendly: mug
+  cats:
+    - drink
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f0f4
+magnifying_glass_minus:
+  key: magnifying_glass_minus
+  friendly: magnifying
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f010
+user_large:
+  key: user_large
+  friendly: user
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f406
+train_tram:
+  key: train_tram
+  friendly: train
+  cats:
+    - object
+    - music
+    - instrument
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e5b4
+stopwatch_20:
+  key: stopwatch_20
+  friendly: stopwatch
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e06f
+note_sticky:
+  key: note_sticky
+  friendly: note
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f249
+bug_slash:
+  key: bug_slash
+  friendly: bug
+  cats:
+    - vehicle
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e490
+arrow_up_from_water_pump:
+  key: arrow_up_from_water_pump
+  friendly: arrow
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4b6
+face_sad_tear:
+  key: face_sad_tear
+  friendly: face
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f5b4
+tent_arrows_down:
+  key: tent_arrows_down
+  friendly: arrow
+  cats:
+    - body
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e581
+arrows_spin:
+  key: arrows_spin
+  friendly: arrow
+  cats:
+    - creature
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e4bb
+turkish_lira_sign:
+  key: turkish_lira_sign
+  friendly: turkish
+  cats:
+    - action
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e2bb
+magnifying_glass_dollar:
+  key: magnifying_glass_dollar
+  friendly: magnifying
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f688
+users_gear:
+  key: users_gear
+  friendly: users
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f509
+person_military_pointing:
+  key: person_military_pointing
+  friendly: person
+  cats:
+    - action
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e54a
+building_columns:
+  key: building_columns
+  friendly: building
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f19c
+stapler:
+  key: stapler
+  friendly: vibrating_ball
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e5af
+masks_theater:
+  key: masks_theater
+  friendly: masks
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f630
+kip_sign:
+  key: kip_sign
+  friendly: kip
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e1c4
+square_share_nodes:
+  key: square_share_nodes
+  friendly: square
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f1e1
+plus_minus:
+  key: plus_minus
+  friendly: plus
+  cats:
+    - person
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e43c
+hand_holding_medical:
+  key: hand_holding_medical
+  friendly: hand
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e05c
+person_circle_check:
+  key: person_circle_check
+  friendly: person
+  cats:
+    - object
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: e53e
+turn_up:
+  key: turn_up
+  friendly: turn
+  cats:
+    - symbol
+    - codeexists
+    - fa6
+  coll: fa6
+  fa6: f3bf
+at:
+  key: at
+  friendly: at
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: '40'
+asterisk:
+  key: asterisk
+  friendly: asterisk
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: 2a
+crown:
+  key: crown
+  friendly: crown
+  cats:
+    - person
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f521
+cow:
+  key: cow
+  friendly: cow
+  cats:
+    - animal
+    - mammal
+    - nature
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f6c8
+volcano:
+  key: volcano
+  friendly: volcano
+  cats:
+    - place
+    - travel
+    - nature
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f770
+question:
+  key: question
+  friendly: question
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: 3f
+elevator:
+  key: elevator
+  friendly: elevator
+  cats:
+    - object
+    - household
+    - vehicle
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: e16d
+lungs:
+  key: lungs
+  friendly: lungs
+  cats:
+    - body
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f604
+ticket:
+  key: ticket
+  friendly: ticket
+  cats:
+    - action
+    - object
+    - event
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f145
+mobile:
+  key: mobile
+  friendly: mobile
+  cats: *ref_3
+  coll: icon
+  fa6: f3ce
+caravan:
+  key: caravan
+  friendly: caravan
+  cats:
+    - transport
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: f8ff
+less_than:
+  key: less_than
+  friendly: less
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: 3c
+greater_than:
+  key: greater_than
+  friendly: greater
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: 3e
+walkie_talkie:
+  key: walkie_talkie
+  friendly: walkie
+  cats:
+    - object
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: f8ef
+plus:
+  key: plus
+  friendly: plus
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: 2b
+equals:
+  key: equals
+  friendly: equals
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: 3d
+tablet:
+  key: tablet
+  friendly: tablet
+  cats: *ref_4
+  coll: icon
+  fa6: f3fb
+radio:
+  key: radio
+  friendly: radio
+  cats:
+    - object
+    - music
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f8d7
+percent:
+  key: percent
+  friendly: percent
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: '25'
+shield:
+  key: shield
+  friendly: shield
+  cats: *ref_5
+  coll: emo
+  fa6: f132
+hashtag:
+  key: hashtag
+  friendly: hashtag
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: '23'
+tornado:
+  key: tornado
+  friendly: tornado
+  cats:
+    - object
+    - place
+    - travel
+    - weather
+    - keyexists
+    - fa6
+  coll: emo
+  fa6: f76f
+desktop:
+  key: desktop
+  friendly: desktop
+  cats:
+    - technology
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: f390
+exclamation:
+  key: exclamation
+  friendly: exclamation
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: '21'
+dollar_sign:
+  key: dollar_sign
+  friendly: dollar
+  cats:
+    - symbol
+    - keyexists
+    - fa6
+  coll: icon
+  fa6: '24'

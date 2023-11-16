@@ -22,4 +22,11 @@
 	font-family: 'summervibes';
 	src: url('./summervibes.otf') format("truetype");
 }
+@font-face {
+  font-family: 'fa6';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("./fa6.ttf") format("truetype"); 
+}
 

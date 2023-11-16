@@ -179,8 +179,16 @@ app.post('/save', (req, res) => {
 			copyKeys(data, di);
 			let y = yaml.dump(di);
 			fs.writeFileSync(fname, y, 'utf8');
-		} else if (mode == 'as') {
-			addKeys(data, Session);
+		} else if (mode == 'as' || mode == 's') {
+			// let parts = body.path; //.split('.');
+			// let o=Session;
+			// for(const p of parts) {
+			// 	if (nundef(o[p])) o[p]={};
+			// 	o=o[p];
+			// }
+			// addKeys(data, o);
+			lookupSet(Session,body.path.split('.'),data);
+			console.log('Session',Session)
 		} else if (mode == 'ws') {
 			copyKeys(data, Session);
 		}

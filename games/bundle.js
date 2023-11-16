@@ -2894,7 +2894,7 @@ function mInsertAfter(dParent, el, index = 0) {
 	else mInsert(dParent, el, index + 1);
 }
 function mInsertAt(dParent, el, index = 0) { mInsert(dParent, el, index); }
-function mInsertFirst(dParent, el) { mInsert(dParent, el, 0); }
+function mInsertFirst(dParent, el) { mInsert(dParent, el, 0); return el; }
 function miPic(item, dParent, styles, classes) {
 	let info = isString(item) ? Syms[item] : isdef(item.info) ? item.info : item;
 	let d = mDiv(dParent);

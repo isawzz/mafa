@@ -1,4 +1,126 @@
 
+//#region Navbar
+function showNavbar(pageTitle, titles, funcNames) {
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+
+	function activate(ev){
+		let links = document.getElementsByClassName('nav-link');
+		//console.log('links',links)
+		let inner = ev.target.innerHTML;
+		for(const el of links){
+			if (el.innerHTML == inner) mClass(el, 'active');
+			else mClassRemove(el,'active');
+		}
+	}
+	function disable(){
+		let links = Array.from(document.getElementsByClassName('nav-link'));
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			//console.log('el',el)
+			if (isdef(el)) mClass(el, 'disabled');
+		}
+	}
+	function enable(){
+		let links = document.getElementsByClassName('nav-link');
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			if (isdef(el)) {
+				mClass(el, 'active');
+				el.style.pointerEvents = 'auto'
+			}
+		}
+	}
+	
+	let html = `
+    <nav class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		html += `
+				<li class="nav-item">
+					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+      <div style="align-self:end" >
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link a" href="#" onclick="UI.nav.activate(event);">HALLO</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	var ui = mInsertFirst(document.body, mCreateFrom(html));
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+	return {activate:activate,disable:disable,enable:enable,ui:ui};
+}
+
+function showNavbar(pageTitle, titles, funcNames) {
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+	let html = `
+    <nav class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		// html += `
+		// 		<li class="nav-item active">
+		// 			<a class="nav-link hoverHue a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
+		// 		</li>
+		// 	`;
+		html += `
+				<li class="nav-item">
+					<a class="nav-link a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	mInsertFirst(document.body, mCreateFrom(html));
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+
+}
+function navbarActivate() {
+	let links = document.getElementsByClassName('nav-link');
+	for (const w of arguments) {
+		let el = links.find(x => x.innerHTML == w);
+		if (isdef(el)) {
+			mClass(el, 'active');
+			el.style.pointerEvents = 'auto'
+		}
+	}
+}
+function navbarDeactivate() {
+	let links = Array.from(document.getElementsByClassName('nav-link'));
+	//console.log('links',links)
+	for (const w of arguments) {
+		let el = links.find(x => x.innerHTML == w);
+		//console.log('el',el)
+		if (isdef(el)) {
+			mClassRemove(el.parentNode, 'active');
+			el.style.pointerEvents = 'none'
+		}
+	}
+}
+
+//#endregion
+
 //#region sidebar
 function show_sidebar(list, handler) {
 	dSidebar = mBy('dSidebar'); mClear(dSidebar); mStyle(dSidebar, { w: 200, h: window.innerHeight - 68, overy: 'auto' });
@@ -89,6 +211,66 @@ async function uploadImg2(img, unique, cat, name) {
 //#endregion
 
 //#region combu
+async function prelims() {
+	if (nundef(M.superdi)) {
+		Config = await mGetYaml('../y/config.yaml');
+		M = await mGetYaml('../assets/mhuge.yaml');
+
+		M.byCollection = {};
+		M.collections = ['all'];
+		for (const k in M.superdi) {
+			let o = M.superdi[k];
+			lookupAddIfToList(M.byCollection, [o.coll], k);
+			addIf(M.collections, o.coll);
+		}
+
+		await updateCollections();
+
+		//console.log('M', M, 'Config', Config);
+		let nav = UI.nav = mNavbar('COMBU', ['add', 'play', 'schedule', 'view'], ['user']);
+		//console.log('nav',nav)
+		nav.disable('play');
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+		mInsert(document.body, dTitle, 1);
+
+	}
+
+}
+async function ___test24_newPrelims(){
+	if (nundef(M.superdi)) {
+		Config = await mGetYaml('../y/config.yaml');
+		M = {};
+		M.superdi = await mGetYaml('../assets/superdi.yaml');
+
+		let list = [['byCollection','coll','collections'],['byCat','cats','categories'],['byFriendly','friendly','names']];
+		for(const x of list){
+			let [dikey,source,listkey]=[x[0],x[1],x[2]];
+			let di = M[dikey]={};
+			let lst = M[listkey] = [];
+			for(const k in M.superdi){
+				let o = M.superdi[k];
+					//console.log('o[source]',k,source,o[source])
+					//assertion(isdef(o[source]),'ERROR');
+					if (isList(o[source])){
+					o[source].map(x=>lookupAddIfToList(di,[x],o.key));
+				}else lookupAddIfToList(di,[o[source]],o.key);
+				addIf(lst,o.key);
+			}
+		}
+		M.collections.unshift('all');
+
+		await updateCollections();
+
+		//console.log('M', M, 'Config', Config);
+		let nav = UI.nav = mNavbar('COMBU', ['add', 'play', 'schedule', 'view'], ['user']);
+		//console.log('nav',nav)
+		nav.disable('play');
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+		mInsert(document.body, dTitle, 1);
+
+	}
+
+}
 function mDatalist(dParent, list, opts = {}) {
 	var mylist = list;
 	var opts = opts;

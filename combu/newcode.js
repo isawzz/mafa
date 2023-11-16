@@ -249,7 +249,7 @@ async function loadCollections() {
 		M.names = Object.keys(M.byFriendly);
 		M.categories = Object.keys(M.byCat);
 
-		showNavbar('M', ['view', 'add', 'play', 'create']);
+		mNavbar('M', ['view', 'add', 'play', 'create']);
 		dTitle = mDom(document.body, { margin: 16 }, { tag: 'h1', html: 'Add to Collection' });
 		mInsert(document.body, dTitle, 1)
 	}
@@ -1019,28 +1019,6 @@ function mResizer(dParent, img, dButtons) {
 		//tool: tool,
 	}
 }
-function navbarActivate() {
-	let links = document.getElementsByClassName('nav-link');
-	for (const w of arguments) {
-		let el = links.find(x => x.innerHTML == w);
-		if (isdef(el)) {
-			mClass(el, 'active');
-			el.style.pointerEvents = 'auto'
-		}
-	}
-}
-function navbarDeactivate() {
-	let links = Array.from(document.getElementsByClassName('nav-link'));
-	//console.log('links',links)
-	for (const w of arguments) {
-		let el = links.find(x => x.innerHTML == w);
-		//console.log('el',el)
-		if (isdef(el)) {
-			mClassRemove(el.parentNode, 'active');
-			el.style.pointerEvents = 'none'
-		}
-	}
-}
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	//console.log('ausschnitt:', x, y, wold, hold);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
@@ -1123,11 +1101,40 @@ function showImage(key, dParent, styles = {}) {
 	}
 
 }
-function showNavbar(pageTitle, titles, funcNames) {
+function mNavbar(pageTitle, titles, icons, funcNames, iconFuncNames) {
 	if (nundef(funcNames)) {
 		//standard is that funcs are named: onclick${title}
 		funcNames = titles.map(x => `onclick${capitalize(x)}`);
 	}
+
+	function activate(ev){
+		let links = document.getElementsByClassName('nav-link');
+		//console.log('links',links)
+		let inner = ev.target.innerHTML;
+		for(const el of links){
+			if (el.innerHTML == inner) mClass(el, 'active');
+			else mClassRemove(el,'active');
+		}
+	}
+	function disable(){
+		let links = Array.from(document.getElementsByClassName('nav-link'));
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			//console.log('el',el)
+			if (isdef(el)) mClass(el, 'disabled');
+		}
+	}
+	function enable(){
+		let links = document.getElementsByClassName('nav-link');
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			if (isdef(el)) {
+				mClass(el, 'active');
+				el.style.pointerEvents = 'auto'
+			}
+		}
+	}
+	
 	let html = `
     <nav class="navbar navbar-expand navbar-light bg-light">
       <a class="navbar-brand a" href="#">${pageTitle}</a>
@@ -1135,8 +1142,8 @@ function showNavbar(pageTitle, titles, funcNames) {
         <ul class="navbar-nav mr-auto">`;
 	for (let i = 0; i < titles.length; i++) {
 		html += `
-				<li class="nav-item active">
-					<a class="nav-link hoverHue a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
+				<li class="nav-item">
+					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
 				</li>
 			`;
 	}
@@ -1146,9 +1153,9 @@ function showNavbar(pageTitle, titles, funcNames) {
 		</nav>
 		`;
 	//let inner = document.body.innerHTML;
-	mInsertFirst(document.body, mCreateFrom(html));
+	var ui = mInsertFirst(document.body, mCreateFrom(html));
 	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-
+	return {activate:activate,disable:disable,enable:enable,ui:ui};
 }
 function showImageBatch(inc = 0) {
 	let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];

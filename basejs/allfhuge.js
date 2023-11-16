@@ -42907,9 +42907,10 @@ function mInsert(dParent, el, index = 0) { dParent.insertBefore(el, dParent.chil
 function mInsertAfter(dParent, el, index = 0) {
   if (dParent.childNodes.length == index) mAppend(dParent, el);
   else mInsert(dParent, el, index + 1);
+  return el;
 }
-function mInsertAt(dParent, el, index = 0) { mInsert(dParent, el, index); }
-function mInsertFirst(dParent, el) { mInsert(dParent, el, 0); }
+function mInsertAt(dParent, el, index = 0) { mInsert(dParent, el, index); return el; }
+function mInsertFirst(dParent, el) { mInsert(dParent, el, 0); return el; }
 function mInstruction(msg, dParent, hasExclamation = true) {
   let p = mCreate('h2');
   p.innerHTML = msg + (hasExclamation ? '!' : '');
