@@ -16,6 +16,20 @@ function addIfAlpha(arr, val) {
 	console.log('i', i, 'len', arr.length, arr)
 	return i;
 }
+async function addNewUser(uname) {
+	// if (!isString(uname)) return false;
+	// uname = uname.toLowerCase().trim();
+	// //only letters please!
+	// let correct = true;
+	// for (const ch of toLetters(uname)) { if (!isLetter(ch)) correct = false; }
+	// if (!correct) return false;
+	//name is correct, so send it to session and update UI!
+	console.log('adding new user!!!', uname);
+	let data = { name: uname, color: rColor(50,1,15) };
+	o = { data: data, path: `users.${uname}`, mode: 's' }; //['users',uname]
+	return await uploadJson('save', o);
+	//phpPost(o, 'add_user');
+}
 function addToolX(cropper, d) {
 	//let dButtons = cropper.dButtons;
 	let img = cropper.img;
@@ -86,6 +100,22 @@ function cropTo(tool, wnew, hnew) {
 	let ynew = y + (hnew - h) / 2;
 	redrawImage(img, dParent, xnew, ynew, wnew, wnew, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
+function drawFa6(o) {
+	let fz = 50;
+	let d = mDom('dMain', { w: 120, h: 80, margin: 4, align: 'center', display: 'inline-block' });
+	let el = mDom(d, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor() }, { html: String.fromCharCode('0x' + o.fa6) });
+	let t = mDom(d, { fz: 11 }, { html: o.key });
+
+}
+function drawFaga(o) {
+	let fz = 50;
+	let [code, family] = isdef(o.fa) ? [o.fa, 'pictoFa'] : [o.ga, 'pictoGame'];
+	//console.log('family:',family)
+	let d = mDom('dMain', { w: 120, h: 80, margin: 4, align: 'center', display: 'inline-block' });
+	let el = mDom(d, { fz: fz, hline: fz, family: family, bg: 'transparent', fg: rColor() }, { html: String.fromCharCode('0x' + code) });
+	let t = mDom(d, { fz: 11 }, { html: o.key });
+
+}
 function filenameToObject(fname, path, cats) {
 	let parts = fname.split('.');
 	if (parts.length != 2) console.log('file', path, fname, 'wrong name');
@@ -148,6 +178,16 @@ function mFleetingMessage(msg, styles, ms, fade) {
 	return dFleetingMessage;
 }
 //#endregion
+function focusNextSiblingOrSubmitOnEnter(ev, id) {
+	if (ev.key === 'Enter') {
+		ev.preventDefault();
+		let el = mBy(id); let tag = el.tagName.toLowerCase();
+		if (tag == 'input') el.focus();
+		else if (tag == 'form') {
+			el.submit();
+		}
+	}
+}
 function formatDate(date) {
 	const day = String(date.getDate()).padStart(2, '0');
 	const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
@@ -193,6 +233,7 @@ function imgToDataUrl(img){
 	const dataUrl = canvas.toDataURL('image/png');
 	return dataUrl;
 }
+function isAlphanumeric(s){	for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; return true;}}
 function isSameDate(date1, date2) {
 	return date1.getFullYear() === date2.getFullYear() &&
 		date1.getMonth() === date2.getMonth() &&
@@ -939,6 +980,26 @@ async function mGetJsonCors(url) {
 	//console.log('json', json)
 	return json;
 }
+async function mPrompt(placeholder='<username>',cond=isAlphanumeric) {
+	return new Promise((resolve, reject) => {
+		mClear('dUser')
+		// let d = mInput('dUser', {position:'absolute',top:30,right:0,w:100}, 'inpUname', placeholder, 'input', 1);
+		let d = mInput('dUser', {w:100}, 'inpUname', placeholder, 'input', 1);
+		d.focus();
+		d.onkeyup = ev => {
+			if (ev.key == 'Enter') {
+				let val = ev.target.value;
+				ev.target.remove();
+				if (cond(val)) {
+					resolve(val.toLowerCase().trim());
+				}	else {
+					console.log('invalid input!');
+					resolve(null);
+				}
+			}
+		};
+	});
+}
 function mResizer(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	mStyle(dParent, { w: worig, h: horig, position: 'relative' });
@@ -1178,12 +1239,36 @@ function showImageBatch(inc = 0) {
 		mStyle(M.cells[i], { opacity: 0 })
 	}
 }
+function showSidebar(dParent) {
+
+	dSidebar = mDom(dParent, { 'align-self': 'stretch', hmin: '100vh' }, { id: 'dSidebar' });
+	dLeiste = mDiv(dParent);
+	mStyle(dLeiste, { bg: '#eee', wmin: 70, hmin: '100vh', display: 'flex', 'flex-flow': 'column wrap' });
+	//da kommen jetzt die tools drauf!
+
+	//wenn ich eines selecte kann ich edit,remove,delete,edit categories,edit name,add to collection machen
+	//wenn ich mehrere selecte kann ich remove,delete,add category,add to collection machen
+
+	//soll jetzt ein user sich ausweisen muessen? ja mindestens einloggen!
+
+}
 function showTitle(title, buttons = []) {
 	mClear(dTitle);
 	mDom(dTitle, {}, { tag: 'h1', html: title });
 	for (const b of buttons) {
 		mButton(b.caption, b.handler, dTitle, { w: 70, margin: 0 }, 'input');
 	}
+}
+function showUser(){
+	mClear(dUser);
+	let d;
+	if (U){
+		d=mDom(dUser,{fg:U.color,cursor:'pointer'},{html:U.name});
+	}else{
+		let styles = { family: 'fa6', fg: 'grey', cursor: 'pointer' }; //,'align-self': 'end'
+		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
+	}
+	d.onclick=onclickUser;
 }
 function sortKeysAlphabetically(dinew) {
 	let keys = Object.keys(dinew); keys.sort();

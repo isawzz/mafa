@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Dialog</title>
+  <style>
+    /* #customDialog {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    } */
+    #customDialog {
+      /* display: none; */
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.5s ease-in-out;
+      transform: translateY(-200px);
+    }
+
+    #customDialog.open {
+      transform: translateY(0);
+    }  </style>
+</head>
+<body>
+
+<button onclick="openCustomDialog()">Open Custom Dialog</button>
+
+<!-- <div id="customDialog">
+  <label for="customInput">Enter username:</label>
+  <input type="text" id="customInput">
+  <button onclick="submitCustomDialog()">Submit</button>
+</div> -->
+<div id="customDialog">
+  <form onsubmit="submitCustomDialog(); return false;" autocomplete="off">
+    <label for="customInput">Enter a word:</label>
+    <input type="text" id="customInput" onkeydown="handleKeyDown(event)">
+    <!-- Removed the explicit Submit button -->
+  </form>
+</div>
+
+<script>
+  function openCustomDialog() {
+    const customDialog = document.getElementById('customDialog');
+		customDialog.classList.add('open');
+    //customDialog.style.display = 'block';
+  }
+
+  function submitCustomDialog() {
+    const customInput = document.getElementById('customInput');
+    const value = customInput.value;
+    
+    // Use the value as needed (e.g., display it, process it, etc.)
+    //alert(`You entered: ${value}`);
+		console.log(`You entered: ${value}`);
+
+    // Close the dialog
+    const customDialog = document.getElementById('customDialog');
+    customDialog.classList.remove('open');
+    //customDialog.style.display = 'none';
+  }
+
+	function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      submitCustomDialog();
+    }
+  }
+</script>
+
+</body>
+</html>

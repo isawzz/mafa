@@ -1,4 +1,26 @@
 
+//#region user
+async function onclickUser(){
+	console.log(U); //null am anfang!
+	if (!U) {
+		//let uname = prompt('Enter name: ');
+		let uname = await mPrompt(); 
+		console.log('uname',uname);
+		if (uname) {
+			let result  = await addNewUser(uname);
+			console.log('result',result);
+			if (!result) {alert('login failed!'); return;}
+			U=result.session.users[uname];
+		}
+	}else {
+		//this user is logging out, another one logged in
+		U=null;
+		onclickUser();
+	}
+}
+
+//#endregion
+
 //#region Navbar
 function showNavbar(pageTitle, titles, funcNames) {
 	if (nundef(funcNames)) {

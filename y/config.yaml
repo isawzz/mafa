@@ -1,16 +1,5 @@
 users:
-  - id: u1
-    name: felix
-    username: felix
-    password: felix
-    email: felix@yahoo.com
-    fen: null
-  - id: u2
-    name: amanda
-    username: amanda
-    password: amanda
-    email: amanda@yahoo.com
-    fen: null
+  felix: '#0066ff'
 events:
   n_1698908400000_1698942654534:
     id: n_1698908400000_1698942654534

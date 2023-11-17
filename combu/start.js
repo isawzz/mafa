@@ -1,53 +1,59 @@
 onload = start;
 
-async function start() { test25_user(); } //onclickView(); }
+async function start() { test26_rColors(); } //test25_user(); } //onclickView(); }
+
+function test26_rColors() {
+	let d = mBy('dMain'); mFlexWrap(d);
+	let hstep = 20;
+	let sstep = 20;
+	let lstep = 20;
+	let [whites, blacks] = [[], []];
+	for (let h = 0; h < 360; h += hstep) {
+		for (let l = 30; l <= 60; l += lstep) {
+			for (let s = 60; s <= 100; s += sstep) {
+				let c = hslToHexCOOL({ h: h, s: s, l: l });
+				//let c2=colorFromHSL(h,100,50); //rColor(50,1,15)
+				let fg = idealTextColor(c);
+				if (fg == 'white') whites.push(c); else blacks.push(c);
+			}
+		}
+	}
+	for (const c of whites) {
+		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });
+		//mDom(d,{w:125,h:25,bg:c2},{html:colorFrom(c2)});
+	}
+	blacks.push('#FFDD33')
+	for (const c of blacks) {
+		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });
+		//mDom(d,{w:125,h:25,bg:c2},{html:colorFrom(c2)});
+	}
+	console.log('num', whites.length, blacks.length)
+}
 
 async function test25_user() {
 	await prelims();
 	let nav = UI.nav.ui;
-	dUser = mDom(nav,{ 'align-self': 'end' , fz: 20, bg:'red', h:'100%'});
-	let styles = { family: 'fa6','align-self': 'end', fg: 'grey', cursor: 'pointer' };
-	let fa = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
-	fa.onclick = onclickUser;
-	console.log('fa', fa)
+	dUser = mDom(nav, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+	showUser();
 }
 
-async function onclickUser(){
-	console.log(U); //null am anfang!
-	if (!U) {
-		let uname = prompt('Enter name: ');
-		console.log('uname',uname);
-		let result  = await addNewUser(uname);
-		console.log('result',result);
-		if (!result) {alert('login failed!'); return;}
-		U=result.session.users[uname];
-		mClear(dUser);
-		let d=mDom(dUser,{fg:U.color,cursor:'pointer'},{html:U.name});
-		d.onclick=onclickUser;
-	}else {
-		//this user is logging out
-		U=null;
-		onclickUser();
-	}
-}
-
-async function prelims(){
+async function prelims() {
 	if (nundef(M.superdi)) {
 		Config = await mGetYaml('../y/config.yaml');
 		M = {};
 		M.superdi = await mGetYaml('../assets/superdi.yaml');
 
-		M.byCollection={};
-		M.byCat={};
-		M.byFriendly={};
+		M.byCollection = {};
+		M.byCat = {};
+		M.byFriendly = {};
 		M.collections = ['all'];
 		M.categories = [];
 		M.names = [];
-		for(const k in M.superdi){
+		for (const k in M.superdi) {
 			let o = M.superdi[k];
-			if (isdef(o.coll)) {lookupAddIfToList(M.byCollection,[o.coll],o.key);addIf(M.collections,o.coll);}
-			o.cats.map(x=>{lookupAddIfToList(M.byCat,[x],o.key);addIf(M.categories,x);});
-			if (isdef(o.friendly)) {lookupAddIfToList(M.byFriendly,[o.friendly],o.key);	addIf(M.names,o.friendly);}
+			if (isdef(o.coll)) { lookupAddIfToList(M.byCollection, [o.coll], o.key); addIf(M.collections, o.coll); }
+			o.cats.map(x => { lookupAddIfToList(M.byCat, [x], o.key); addIf(M.categories, x); });
+			if (isdef(o.friendly)) { lookupAddIfToList(M.byFriendly, [o.friendly], o.key); addIf(M.names, o.friendly); }
 		}
 		M.collections.sort();
 		M.categories.sort();
@@ -154,6 +160,17 @@ async function onclickUpload() {
 	//console.log('uploaded', data);
 	await updateCollections();
 
+}
+async function onclickUser() {
+	let uname = await mPrompt(); //returns null if invalid!
+	console.log('uname', uname);
+	if (uname) {
+		let result = await addNewUser(uname);
+		console.log('result', result);
+		if (!result) { alert('login failed!'); return; }
+		U = result.session.users[uname];
+	}
+	showUser();
 }
 async function onclickView() {
 	await prelims();
