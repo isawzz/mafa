@@ -1,33 +1,71 @@
 onload = start;
 
-async function start() { test26_rColors(); } //test25_user(); } //onclickView(); }
+async function start() { test28_allColors(); } //test25_user(); } //onclickView(); }
+async function test28_allColors() {
+	await prelims();
+	//return;
+	//loadPlayerColors();
+	ensureColorDict();
+	ensureColorNames();
 
+	let allColors = Object.values(ColorDi).map(x => x.c);
+	let list = Object.values(M.knownUsers).concat(M.playerColors.concat(allColors).concat(Object.values(ColorNames)));
+	console.log('colors', list.length)
+	list = list.filter(x => colorLum(x) < .85);
+	list = list.filter(x => !isGrayColor(x));
+	let s = new Set(list);
+	console.log('list was', list.length, 'set is', Array.from(s).length)
+	list = Array.from(s);
+	let hsllist = list.map(x => colorHSL(x, true));
+	sortByMultipleProperties(hsllist, 'h', 'l');
+	list = hsllist.map(x => colorHex(x));
+
+	showColors(list, onclickColor);
+	return;
+
+	console.log(list[0])
+	console.log('list colors', list.length);
+
+	let list2 = sortByHueWithoutGrays(list);
+	console.log('list2 colors', list2.length);
+
+	showColors(list2);
+	//list.sort();
+	//list.sort((a,b)=>colorHue(a)-colorHue(b))
+	//for (const c of list) {		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });	}
+}
+function onclickColor(ev) {
+	let c = ev.target.style.background;
+	c = colorHex(c)
+	mStyle(document.body,{bg:c});
+	return;
+	console.log('clicked on', c);
+	if (isdef(U)) {
+		U.color = c;
+		showUser();
+	}
+
+}
+function showColors(list, fOnclick, fHtml) {
+	if (nundef(fHtml)) fHtml = x => '';
+	let d = mBy('dMain'); mFlexWrap(d); mStyle(d, { padding:10,gap: 10 })
+	for (const c of list) {
+		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
+		if (isdef(fOnclick)) {dc.onclick = fOnclick; mStyle(dc,{cursor:'pointer'}); }
+	} //colorLum(c).toFixed(2) });	}
+	//mDom(d, { w: '100%' }, { html: 'HALLO<br>' })
+	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
+}
+async function test27_user() {
+	await prelims();
+	let nav = UI.nav.ui;
+	dUser = mDom(nav, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+	showUser();
+}
 function test26_rColors() {
+	loadPlayerColors();
 	let d = mBy('dMain'); mFlexWrap(d);
-	let hstep = 20;
-	let sstep = 20;
-	let lstep = 20;
-	let [whites, blacks] = [[], []];
-	for (let h = 0; h < 360; h += hstep) {
-		for (let l = 30; l <= 60; l += lstep) {
-			for (let s = 60; s <= 100; s += sstep) {
-				let c = hslToHexCOOL({ h: h, s: s, l: l });
-				//let c2=colorFromHSL(h,100,50); //rColor(50,1,15)
-				let fg = idealTextColor(c);
-				if (fg == 'white') whites.push(c); else blacks.push(c);
-			}
-		}
-	}
-	for (const c of whites) {
-		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });
-		//mDom(d,{w:125,h:25,bg:c2},{html:colorFrom(c2)});
-	}
-	blacks.push('#FFDD33')
-	for (const c of blacks) {
-		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });
-		//mDom(d,{w:125,h:25,bg:c2},{html:colorFrom(c2)});
-	}
-	console.log('num', whites.length, blacks.length)
+	for (const c of M.playerColors) { mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) }); }
 }
 
 async function test25_user() {
@@ -39,34 +77,21 @@ async function test25_user() {
 
 async function prelims() {
 	if (nundef(M.superdi)) {
-		Config = await mGetYaml('../y/config.yaml');
-		M = {};
-		M.superdi = await mGetYaml('../assets/superdi.yaml');
 
-		M.byCollection = {};
-		M.byCat = {};
-		M.byFriendly = {};
-		M.collections = ['all'];
-		M.categories = [];
-		M.names = [];
-		for (const k in M.superdi) {
-			let o = M.superdi[k];
-			if (isdef(o.coll)) { lookupAddIfToList(M.byCollection, [o.coll], o.key); addIf(M.collections, o.coll); }
-			o.cats.map(x => { lookupAddIfToList(M.byCat, [x], o.key); addIf(M.categories, x); });
-			if (isdef(o.friendly)) { lookupAddIfToList(M.byFriendly, [o.friendly], o.key); addIf(M.names, o.friendly); }
-		}
-		M.collections.sort();
-		M.categories.sort();
-		M.names.sort();
-
-		await updateCollections();
+		await loadCollections();
+		loadPlayerColors();
 
 		//console.log('M', M, 'Config', Config);
 		let nav = UI.nav = mNavbar('COMBU', ['add', 'play', 'schedule', 'view'], ['user']);
+		
 		//console.log('nav',nav)
 		nav.disable('play');
 		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
 		mInsert(document.body, dTitle, 1);
+
+		dUser = mDom(nav.ui, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+		showUser();
+
 
 	}
 
@@ -79,13 +104,13 @@ async function onclickAdd() {
 
 	mClear('dMain');
 
-	let cats = M.categories;
+	let colls = M.collections;
 	let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);
 	let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
 
 	let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { ev.preventDefault(); return false; } });
 
-	mDom(dForm, {}, { html: 'Category:' }); let dl = mDatalist(dForm, cats);
+	mDom(dForm, {}, { html: 'Collection:' }); let dl = mDatalist(dForm, colls);
 	mDom(dForm, { h: 10 })
 	mDom(dForm, {}, { html: 'Name:' }); let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>" });
 	mDom(dForm, { h: 10 })
@@ -119,9 +144,9 @@ async function onclickItem(ev) {
 	//the key of the superdi item should be saved in 'key' attribute
 	//goto showImage
 	let elem = ev.target;
-	console.log('elem', elem)
+	//console.log('elem', elem)
 	let key = ev.target.getAttribute('key');
-	console.log('clicked on item', key);
+	//console.log('clicked on item', key);
 
 	if (nundef(Items[key])) {
 		let o = M.superdi[key];
@@ -131,7 +156,7 @@ async function onclickItem(ev) {
 	Items[key].div = elem.parentNode;
 	if (nundef(M.selectedImages)) M.selectedImages = [];
 	toggleSelectionOfPicture(Items[key], M.selectedImages);
-	console.log('item', Items[key], 'selectedImages', M.selectedImages)
+	//console.log('item', Items[key], 'selectedImages', M.selectedImages)
 }
 async function onclickPlay() { alert('COMING SOON!'); } //test0_addToCollection(); }
 async function onclickPrev() { showImageBatch(-1); }
@@ -160,17 +185,6 @@ async function onclickUpload() {
 	//console.log('uploaded', data);
 	await updateCollections();
 
-}
-async function onclickUser() {
-	let uname = await mPrompt(); //returns null if invalid!
-	console.log('uname', uname);
-	if (uname) {
-		let result = await addNewUser(uname);
-		console.log('result', result);
-		if (!result) { alert('login failed!'); return; }
-		U = result.session.users[uname];
-	}
-	showUser();
 }
 async function onclickView() {
 	await prelims();

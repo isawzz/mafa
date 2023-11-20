@@ -13,3 +13,18 @@ frog_mini:
   coll: animals
   ext: png
   name: frog_mini
+frog_bluish:
+  cat: other
+  coll: animals
+  name: frog_bluish
+  ext: png
+frog_yellow:
+  cat: animals
+  coll: animals
+  name: frog_yellow
+  ext: png
+waterball:
+  cat: all
+  coll: all
+  name: waterball
+  ext: png

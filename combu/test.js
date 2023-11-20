@@ -196,7 +196,7 @@ async function test21_user() {
 async function test20_sidebar() {
 	onclickView(); //calls showSidebar TODO!
 }
-async function YES_test19_besser(){
+async function YES_test19_BEST(){
 	let d=mBy('dMain');
 	let path = '../y/img/minoutest.png';
 	let img = await imgAsync(d,{},{tag:'img',src:path});

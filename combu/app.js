@@ -94,7 +94,7 @@ app.get('/filenames', async (req, res) => {
 app.post('/upload', (req, res) => {
 	console.log(Object.keys(req.body)); //'req.body',req.body)
 	const uploadedFile = req.files.image; // 'image' is the field name in the form
-	uploadedFile.mv(path.join(uploadDirectory, uploadedFile.name), (err) => {
+	uploadedFile.mv(path.join(uploadDirectory, 'img', uploadedFile.name), (err) => {
 		if (err) { return res.status(500).send(err); }
 		const fileSizeInBytes = uploadedFile.size;
 		const fileName = uploadedFile.name;
@@ -103,7 +103,7 @@ app.post('/upload', (req, res) => {
 		const fileSizeInKB = fileSizeInBytes / 1024; // KB
 		const fileSizeInMB = fileSizeInKB / 1024; // MB
 		console.log('!!!!', req.body.category, req.body.name);
-		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${unique}:\n  cat: ${req.body.category}\n  name: ${req.body.name}\n  ext: ${ext}`, err => { if (err) console.log('error:', err); });
+		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${unique}:\n  cat: ${req.body.collection}\n  coll: ${req.body.collection}\n  name: ${req.body.name}\n  ext: ${ext}`, err => { if (err) console.log('error:', err); });
 		res.json({
 			message: 'File uploaded successfully',
 			fileName: fileName,

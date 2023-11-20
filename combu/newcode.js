@@ -25,7 +25,7 @@ async function addNewUser(uname) {
 	// if (!correct) return false;
 	//name is correct, so send it to session and update UI!
 	console.log('adding new user!!!', uname);
-	let data = { name: uname, color: rColor(50,1,15) };
+	let data = { name: uname, color: valf(M.knownUsers[uname],rChoose(M.playerColors))}; //rColor(50,1,15) };
 	o = { data: data, path: `users.${uname}`, mode: 's' }; //['users',uname]
 	return await uploadJson('save', o);
 	//phpPost(o, 'add_user');
@@ -239,7 +239,31 @@ function isSameDate(date1, date2) {
 		date1.getMonth() === date2.getMonth() &&
 		date1.getDate() === date2.getDate();
 }
-async function loadCollections() {
+async function loadCollections(){
+	Config = await mGetYaml('../y/config.yaml');
+	M = {};
+	M.superdi = await mGetYaml('../assets/superdi.yaml');
+
+	M.byCollection = {};
+	M.byCat = {};
+	M.byFriendly = {};
+	M.collections = ['all'];
+	M.categories = [];
+	M.names = [];
+	for (const k in M.superdi) {
+		let o = M.superdi[k];
+		if (isdef(o.coll)) { lookupAddIfToList(M.byCollection, [o.coll], o.key); addIf(M.collections, o.coll); }
+		o.cats.map(x => { lookupAddIfToList(M.byCat, [x], o.key); addIf(M.categories, x); });
+		if (isdef(o.friendly)) { lookupAddIfToList(M.byFriendly, [o.friendly], o.key); addIf(M.names, o.friendly); }
+	}
+	M.collections.sort();
+	M.categories.sort();
+	M.names.sort();
+
+	await updateCollections();
+
+}
+async function loadCollectionsFromDirs() {
 	if (nundef(M.emos)) {
 		let type = detectSessionType();
 		let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
@@ -295,6 +319,52 @@ async function loadCollections() {
 		mInsert(document.body, dTitle, 1)
 	}
 	return M;
+}
+function loadPlayerColors(){
+	let hstep = 20;
+	let sstep = 20;
+	let lstep = 20;
+	let [whites, blacks] = [[], []];
+	for (let h = 0; h < 360; h += hstep) {
+		for (let l = 30; l <= 60; l += lstep) {
+			for (let s = 60; s <= 100; s += sstep) {
+					let c = hslToHexCOOL({ h: h, s: s, l: l });
+				//let c2=colorFromHSL(h,100,50); //rColor(50,1,15)
+				let fg = idealTextColor(c);
+				if (fg == 'white') whites.push(c); else blacks.push(c);
+			}
+		}
+	}
+	blacks.push('#FFDD33')
+	console.log('num', whites.length, blacks.length)
+
+	M.playerColors = whites.concat(blacks);
+	shuffle(M.playerColors);
+
+	M.knownUsers ={
+		"afia": "#69c963",
+		"ally": "#6660f3",
+		"amanda": "#339940FF",
+		"annabel": "#ADA0EEFF",
+		"bob": "#033993",
+		"buddy": "midnightblue",
+		"felix": BLUE,
+		"guest": "dodgerblue",
+		"gul": "#6fccc3",
+		"lauren": BLUEGREEN,
+		"leo": "#C19450FF",
+		"mac": "ORANGE",
+		"minnow": "#F28DB2",
+		"mimi": "#76AEEBFF",
+		"nasi": "#EC4169FF",
+		"nimble": "#6E52CCFF",
+		"sarah": "deeppink",
+		"sheeba": "gold",
+		"valerie": "lightgreen"
+	};
+	
+	// for (const c of whites) {		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });	}
+	// for (const c of blacks) {		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });	}
 }
 function mCropper(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
@@ -980,11 +1050,68 @@ async function mGetJsonCors(url) {
 	//console.log('json', json)
 	return json;
 }
-async function mPrompt(placeholder='<username>',cond=isAlphanumeric) {
+function mNavbar(pageTitle, titles, icons, funcNames, iconFuncNames) {
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+
+	function activate(ev){
+		let links = document.getElementsByClassName('nav-link');
+		//console.log('links',links)
+		let inner = ev.target.innerHTML;
+		for(const el of links){
+			if (el.innerHTML == inner) mClass(el, 'active');
+			else mClassRemove(el,'active');
+		}
+	}
+	function disable(){
+		let links = Array.from(document.getElementsByClassName('nav-link'));
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			//console.log('el',el)
+			if (isdef(el)) mClass(el, 'disabled');
+		}
+	}
+	function enable(){
+		let links = document.getElementsByClassName('nav-link');
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			if (isdef(el)) {
+				mClass(el, 'active');
+				el.style.pointerEvents = 'auto'
+			}
+		}
+	}
+	
+	let html = `
+    <nav class="navbar navbar-expand navbar-light">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		html += `
+				<li class="nav-item">
+					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	var ui = mInsertFirst(document.body, mCreateFrom(html));
+	mStyle(ui,{bg:'#ffffffc0'});
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+	return {activate:activate,disable:disable,enable:enable,ui:ui};
+}
+async function mPrompt(dParent='dUser',placeholder='<username>',cond=isAlphanumeric) {
 	return new Promise((resolve, reject) => {
-		mClear('dUser')
-		// let d = mInput('dUser', {position:'absolute',top:30,right:0,w:100}, 'inpUname', placeholder, 'input', 1);
-		let d = mInput('dUser', {w:100}, 'inpUname', placeholder, 'input', 1);
+		mClear(dParent)
+		// let d = mInput('dUser', {position:'absolute',top:30,right:0,w:100}, 'inpPrompt', placeholder, 'input', 1);
+		let d = mInput(dParent, {w:100}, 'inpPrompt', placeholder, 'input', 1);
 		d.focus();
 		d.onkeyup = ev => {
 			if (ev.key == 'Enter') {
@@ -1148,7 +1275,7 @@ function showImage(key, dParent, styles = {}) {
 		else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
 		else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
 		else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-
+		else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 		assertion(el, 'PROBLEM mit' + key);
 		mStyle(el, { cursor: 'pointer' })
 		el.onclick = onclickItem;
@@ -1161,62 +1288,6 @@ function showImage(key, dParent, styles = {}) {
 		console.log('ERROR showImage:', key, o)
 	}
 
-}
-function mNavbar(pageTitle, titles, icons, funcNames, iconFuncNames) {
-	if (nundef(funcNames)) {
-		//standard is that funcs are named: onclick${title}
-		funcNames = titles.map(x => `onclick${capitalize(x)}`);
-	}
-
-	function activate(ev){
-		let links = document.getElementsByClassName('nav-link');
-		//console.log('links',links)
-		let inner = ev.target.innerHTML;
-		for(const el of links){
-			if (el.innerHTML == inner) mClass(el, 'active');
-			else mClassRemove(el,'active');
-		}
-	}
-	function disable(){
-		let links = Array.from(document.getElementsByClassName('nav-link'));
-		for (const w of arguments) {
-			let el = links.find(x => x.innerHTML == w);
-			//console.log('el',el)
-			if (isdef(el)) mClass(el, 'disabled');
-		}
-	}
-	function enable(){
-		let links = document.getElementsByClassName('nav-link');
-		for (const w of arguments) {
-			let el = links.find(x => x.innerHTML == w);
-			if (isdef(el)) {
-				mClass(el, 'active');
-				el.style.pointerEvents = 'auto'
-			}
-		}
-	}
-	
-	let html = `
-    <nav class="navbar navbar-expand navbar-light bg-light">
-      <a class="navbar-brand a" href="#">${pageTitle}</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">`;
-	for (let i = 0; i < titles.length; i++) {
-		html += `
-				<li class="nav-item">
-					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
-				</li>
-			`;
-	}
-	html += `
-			</ul>
-			</div>
-		</nav>
-		`;
-	//let inner = document.body.innerHTML;
-	var ui = mInsertFirst(document.body, mCreateFrom(html));
-	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-	return {activate:activate,disable:disable,enable:enable,ui:ui};
 }
 function showImageBatch(inc = 0) {
 	let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
@@ -1243,7 +1314,7 @@ function showSidebar(dParent) {
 
 	dSidebar = mDom(dParent, { 'align-self': 'stretch', hmin: '100vh' }, { id: 'dSidebar' });
 	dLeiste = mDiv(dParent);
-	mStyle(dLeiste, { bg: '#eee', wmin: 70, hmin: '100vh', display: 'flex', 'flex-flow': 'column wrap' });
+	mStyle(dLeiste, { wmin: 70, hmin: '100vh', display: 'flex', 'flex-flow': 'column wrap' });
 	//da kommen jetzt die tools drauf!
 
 	//wenn ich eines selecte kann ich edit,remove,delete,edit categories,edit name,add to collection machen
@@ -1264,6 +1335,9 @@ function showUser(){
 	let d;
 	if (U){
 		d=mDom(dUser,{fg:U.color,cursor:'pointer'},{html:U.name});
+		mStyle(document.body,{bg:U.color});
+		//mStyle('dMain',{bg:U.color,h:1000})
+
 	}else{
 		let styles = { family: 'fa6', fg: 'grey', cursor: 'pointer' }; //,'align-self': 'end'
 		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
@@ -1317,7 +1391,7 @@ async function srcToDataUrl(src, h) {
 		img.src = src;
 	});
 }
-async function uploadAll(data, path, mode) {
+async function uploadAll(data, path, mode='w') {
 	//a ... append text/json
 	//w ... override text/json
 	//wi ... override image (in this case data param should be img!!!)
@@ -1343,7 +1417,7 @@ async function uploadAll(data, path, mode) {
 
 }
 
-async function uploadImg(img, unique, cat, name) {
+async function uploadImg(img, unique, coll, name) {
 	return new Promise((resolve, reject) => {
 		const canvas = document.createElement('canvas');
 		canvas.width = img.width;
@@ -1354,7 +1428,7 @@ async function uploadImg(img, unique, cat, name) {
 		canvas.toBlob(async (blob) => {
 			const formData = new FormData();
 			formData.append('image', blob, unique + '.png');
-			formData.append('category', cat);
+			formData.append('collection', coll);
 			formData.append('name', name);
 			let type = detectSessionType();
 			let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';

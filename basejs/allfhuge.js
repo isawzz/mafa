@@ -9407,6 +9407,7 @@ function arrTake(arr, n = 0, from = 0) {
     return n > 0 ? keys.slice(from, from + n).map(x => (arr[x])) : keys.slice(from).map(x => (arr[x]));
   } else return n > 0 ? arr.slice(from, from + n) : arr.slice(from);
 }
+function arrTakeFrom(arr, a) { return takeFromTo(arr, a, arr.length-1); }
 function arrTakeFromEnd(arr, n) {
   if (arr.length <= n) return arr.map(x => x); else return arr.slice(arr.length - n);
 }
