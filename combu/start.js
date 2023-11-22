@@ -1,60 +1,87 @@
 onload = start;
 
-async function start() { test28_allColors(); } //test25_user(); } //onclickView(); }
-async function test28_allColors() {
+async function start() { test29_user(); } //test25_user(); } //onclickView(); }
+async function test29_user(){
+	//localStorage.setItem('username','felix');
 	await prelims();
-	//return;
-	//loadPlayerColors();
-	ensureColorDict();
-	ensureColorNames();
-
-	let allColors = Object.values(ColorDi).map(x => x.c);
-	let list = Object.values(M.knownUsers).concat(M.playerColors.concat(allColors).concat(Object.values(ColorNames)));
-	console.log('colors', list.length)
-	list = list.filter(x => colorLum(x) < .85);
-	list = list.filter(x => !isGrayColor(x));
-	let s = new Set(list);
-	console.log('list was', list.length, 'set is', Array.from(s).length)
-	list = Array.from(s);
-	let hsllist = list.map(x => colorHSL(x, true));
-	sortByMultipleProperties(hsllist, 'h', 'l');
-	list = hsllist.map(x => colorHex(x));
-
-	showColors(list, onclickColor);
-	return;
-
-	console.log(list[0])
-	console.log('list colors', list.length);
-
-	let list2 = sortByHueWithoutGrays(list);
-	console.log('list2 colors', list2.length);
-
-	showColors(list2);
-	//list.sort();
-	//list.sort((a,b)=>colorHue(a)-colorHue(b))
-	//for (const c of list) {		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });	}
 }
-function onclickColor(ev) {
-	let c = ev.target.style.background;
-	c = colorHex(c)
-	mStyle(document.body,{bg:c});
-	return;
-	console.log('clicked on', c);
-	if (isdef(U)) {
-		U.color = c;
-		showUser();
+async function loadUser(uname){
+
+	if (nundef(Config)) {Serverdata = await mGetRoute('load',{config:true,session:true}); console.log('Serverdata',Serverdata);}
+
+	//am anfang lookup username (!!!) in localstorage!
+	if (nundef(uname)){
+		uname = localStorage.getItem('username');
+		assertion(nundef(uname) || isdef(Serverdata.config.users[uname]));
+	}
+	if (isdef(uname)) U = getUser(uname);
+	if (!U) {
+		//trying to load a non-existing user!
+		//needs to be added to config and session:
+		let o={name:uname,color:rChoose(M.playerColors)};
+
+	}
+	showUser();
+}
+async function prelims() {
+	if (nundef(M.superdi)) {
+
+		await loadCollections();
+		loadPlayerColors();
+
+		//console.log('M', M, 'Config', Config);
+		let nav = UI.nav = mNavbar('COMBU', ['add', 'play', 'schedule', 'view']);
+		
+		//console.log('nav',nav)
+		nav.disable('play');
+		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+		mInsert(document.body, dTitle, 1);
+
+		dUser = mDom(nav.ui, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+		await loadUser();
+
+
 	}
 
 }
-function showColors(list, fOnclick, fHtml) {
-	if (nundef(fHtml)) fHtml = x => '';
-	let d = mBy('dMain'); mFlexWrap(d); mStyle(d, { padding:10,gap: 10 })
-	for (const c of list) {
-		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
-		if (isdef(fOnclick)) {dc.onclick = fOnclick; mStyle(dc,{cursor:'pointer'}); }
-	} //colorLum(c).toFixed(2) });	}
-	//mDom(d, { w: '100%' }, { html: 'HALLO<br>' })
-	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
+async function ___loadUser(uname){
+	if (nundef(Config)) {Serverdata = await mGetRoute('load',{config:true,session:true}); console.log('Serverdata',Serverdata);}
+
+	let user;
+	if (nundef(uname)){
+		localStorage.setItem('user',JSON.stringify({name:'felix',color:'blue'}));
+		let info=localStorage.getItem('user');
+		if (info){
+			user = JSON.parse(info);
+			console.log('user found',user);
+		}
+		console.log('Session',Session,Config,Users);
+		//Config ist am anfang undefined!!!!!
+		let isloggedin = lookup(Session,['users',user.name]);
+		let isreg = lookup(Config,['users',user.name]);
+		let isme = U.name == user.name;	
+
+		if (!isme){
+			let result = await mGetRoute('login',user);
+			console.log('result',result)
+			//den user anmelden! dann erst anzeigen!
+			
+		}
+		showUser()
+	} else {
+		//no user has logged in on this computer before
+		showUser();
+	}
+	//show username in upper right corner
+	//load this users version of whatever is open right now!
+
+}
+async function userLogin(name,color){
+	//let data = await uploadJson('save',{data:{}})
+}
+async function test28_allColors() {
+	await prelims();
+	showColors(M.playerColors,onclickColor)
 }
 async function test27_user() {
 	await prelims();
@@ -65,7 +92,7 @@ async function test27_user() {
 function test26_rColors() {
 	loadPlayerColors();
 	let d = mBy('dMain'); mFlexWrap(d);
-	for (const c of M.playerColors) { mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) }); }
+	for (const c of plColors) { mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) }); }
 }
 
 async function test25_user() {
@@ -75,27 +102,6 @@ async function test25_user() {
 	showUser();
 }
 
-async function prelims() {
-	if (nundef(M.superdi)) {
-
-		await loadCollections();
-		loadPlayerColors();
-
-		//console.log('M', M, 'Config', Config);
-		let nav = UI.nav = mNavbar('COMBU', ['add', 'play', 'schedule', 'view'], ['user']);
-		
-		//console.log('nav',nav)
-		nav.disable('play');
-		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
-		mInsert(document.body, dTitle, 1);
-
-		dUser = mDom(nav.ui, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
-		showUser();
-
-
-	}
-
-}
 
 async function onclickAdd() {
 	await prelims();
@@ -123,6 +129,19 @@ async function onclickAdd() {
 	UI.imgCat = dl.inpElem;
 	UI.imgName = inpName;
 
+
+}
+function onclickColor(ev) {
+	let c = ev.target.style.background;
+	c = colorHex(c);
+	console.log('color',c)
+	mStyle(document.body,{bg:c});
+	return;
+	console.log('clicked on', c);
+	if (isdef(U)) {
+		U.color = c;
+		showUser();
+	}
 
 }
 function onclickDay(ev) {

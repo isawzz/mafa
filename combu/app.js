@@ -12,6 +12,7 @@ const uploadDirectory = path.join(__dirname, '..', 'y');
 const configFile = path.join(uploadDirectory, 'config.yaml');
 var Config = {}; // permanent app data: mem && saved on change
 var Session = {}; // session ist nur fuer temp data: just mem
+var Users = {}; // users logged in currently - unused as of now!
 try {
 	const yamlFile = fs.readFileSync(configFile, 'utf8');
 	Config = yaml.load(yamlFile);
@@ -38,6 +39,48 @@ function copyKeys(ofrom, oto, except = {}, only = null) {
 	return oto;
 }
 function isdef(x) { return x !== null && x !== undefined; }
+function lookup(dict, keys) {
+  let d = dict;
+  let ilast = keys.length - 1;
+  let i = 0;
+  for (const k of keys) {
+    if (k === undefined) break;
+    let e = d[k];
+    if (e === undefined || e === null) return null;
+    d = d[k];
+    if (i == ilast) return d;
+    i += 1;
+  }
+  return d;
+}
+function lookupAddIfToList(dict, keys, val) {
+  let lst = lookup(dict, keys);
+  if (isList(lst) && lst.includes(val)) return;
+  lookupAddToList(dict, keys, val);
+}
+function lookupAddToList(dict, keys, val) {
+  let d = dict;
+  let ilast = keys.length - 1;
+  let i = 0;
+  for (const k of keys) {
+    if (i == ilast) {
+      if (nundef(k)) {
+        console.assert(false, 'lookupAddToList: last key indefined!' + keys.join(' '));
+        return null;
+      } else if (isList(d[k])) {
+        d[k].push(val);
+      } else {
+        d[k] = [val];
+      }
+      return d[k];
+    }
+    if (nundef(k)) continue;
+    if (d[k] === undefined) d[k] = {};
+    d = d[k];
+    i += 1;
+  }
+  return d;
+}
 function lookupSet(dict, keys, val) {
 	let d = dict;
 	let ilast = keys.length - 1;
@@ -73,6 +116,7 @@ function lookupSetOverride(dict, keys, val) {
 	return d;
 }
 function nundef(x) { return x === null || x === undefined; }
+function saveConfig(){	let y = yaml.dump(Config);	fs.writeFileSync(configFile, y, 'utf8');}
 function showEvents() { console.log('Events', Object.keys(Config.events).length); }
 //#endregion
 
@@ -90,6 +134,17 @@ app.get('/filenames', async (req, res) => {
 		res.status(500).json({ error: 'Error reading directory', details: err.message });
 	}
 });
+app.get('/login', (req,res)=>{
+	console.log('______\nquery',req.query);
+	let u = req.query;
+	let uname = u.name;
+	if (nundef(uname)) {res.json({ message:'ERROR! missing name' });return;}
+	let uconf = lookup(Config,['users',uname]);
+	if (!uconf || uconf.color!=u.color) {uconf = lookupSetOverride(Config,['users',uname],u); saveConfig();}
+	let usession = lookupSetOverride(Session,['users',uname],u);
+	//now user is registered as well as loggedIn and with correct color!
+	res.json({ session:Session,config:Config,message:`user ${uname} logged in!` });
+})
 
 app.post('/upload', (req, res) => {
 	console.log(Object.keys(req.body)); //'req.body',req.body)
@@ -140,8 +195,8 @@ app.post('/event', (req, res) => {
 });
 app.post('/save', (req, res) => {
 	const body = req.body;
-	const data = body.data; //some json object or base64 image data
-	const fname = path.join(__dirname, body.path); //
+	const data = body.data; //some json object or base64 image data (or undef)
+	const fname = isdef(body.path)?path.join(__dirname, body.path):''; // 
 	const mode = body.mode;
 
 	console.log('save:', mode, 'to', fname); //, '\n', data);
@@ -153,18 +208,6 @@ app.post('/save', (req, res) => {
 		} else if (mode == 'wi') {
 			var base64Data = data.image.replace(/^data:image\/png;base64,/, "");
 			fs.writeFileSync(fname, base64Data, 'base64'); //, function(err) {  console.log('ERROR img upload: '+fname);});
-		} else if (mode == 'c') {
-			//save Config to file
-			let y = yaml.dump(Config);
-			fs.writeFileSync(configFile, y, 'utf8');
-		} else if (mode == 'ac') {
-			addKeys(data, Config);
-			let y = yaml.dump(Config);
-			fs.writeFileSync(configFile, y, 'utf8');
-		}	else if (mode == 'wc') {
-			copyKeys(data, Config);
-			let y = yaml.dump(Config);
-			fs.writeFileSync(configFile, y, 'utf8');
 		} else if (mode == '_ac') {
 			addKeys(data, Config);
 		}	else if (mode == '_wc') {
@@ -180,17 +223,18 @@ app.post('/save', (req, res) => {
 			let y = yaml.dump(di);
 			fs.writeFileSync(fname, y, 'utf8');
 		} else if (mode == 'as' || mode == 's') {
-			// let parts = body.path; //.split('.');
-			// let o=Session;
-			// for(const p of parts) {
-			// 	if (nundef(o[p])) o[p]={};
-			// 	o=o[p];
-			// }
-			// addKeys(data, o);
 			lookupSet(Session,body.path.split('.'),data);
 			console.log('Session',Session)
 		} else if (mode == 'ws') {
-			copyKeys(data, Session);
+			lookupSetOverride(Session,body.path.split('.'),data);
+			console.log('Session',Session)
+		} else if (mode == 'ac') {
+			lookupSet(Config,body.path.split('.'),data);
+			let y = yaml.dump(Config);
+			fs.writeFileSync(configFile, y, 'utf8');
+		}	else if (mode == 'wc' || mode == 'c') {
+			if (data) lookupSetOverride(Config,body.path.split('.'),data);
+			saveConfig();
 		}
 		console.log('*** success ***');
 	} catch (error) {
@@ -200,14 +244,15 @@ app.post('/save', (req, res) => {
 });
 app.get('/load', (req, res) => {
 	try {
-		// Read the YAML file as a string
-		const yamlFile = fs.readFileSync('path/to/your/file.yaml', 'utf8');
+		console.log('______\nquery',req.query);
+		let params = req.query;
+		let result={};
+		if (params.config) result.config=Config;
+		if (params.session) result.session=Session;
 
-		// Parse the YAML string into a JavaScript object (dictionary)
-		const data = yaml.load(yamlFile);
+		//const yamlFile = fs.readFileSync('path/to/your/file.yaml', 'utf8');	const data = yaml.load(yamlFile);
 
-		// Now, 'data' contains the contents of the YAML file as a JavaScript object
-		console.log(data);
+		res.json(result);
 	} catch (error) {
 		console.error('Error reading or parsing the YAML file:', error);
 	}

@@ -1,5 +1,7 @@
 users:
-  felix: '#0066ff'
+  felix:
+    name: felix
+    color: blue
 events:
   n_1698908400000_1698942654534:
     id: n_1698908400000_1698942654534

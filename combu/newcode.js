@@ -1,9 +1,9 @@
 
-//=>integrate with allfhuge.js
 function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);
 	return arr;
 }
+function arrRemoveDuplicates(arr) {	return Array.from(new Set(arr));}
 function addIfAlpha(arr, val) {
 	console.log('arr', arr, 'val', val)
 	let i = 0;
@@ -15,20 +15,6 @@ function addIfAlpha(arr, val) {
 	}
 	console.log('i', i, 'len', arr.length, arr)
 	return i;
-}
-async function addNewUser(uname) {
-	// if (!isString(uname)) return false;
-	// uname = uname.toLowerCase().trim();
-	// //only letters please!
-	// let correct = true;
-	// for (const ch of toLetters(uname)) { if (!isLetter(ch)) correct = false; }
-	// if (!correct) return false;
-	//name is correct, so send it to session and update UI!
-	console.log('adding new user!!!', uname);
-	let data = { name: uname, color: valf(M.knownUsers[uname],rChoose(M.playerColors))}; //rColor(50,1,15) };
-	o = { data: data, path: `users.${uname}`, mode: 's' }; //['users',uname]
-	return await uploadJson('save', o);
-	//phpPost(o, 'add_user');
 }
 function addToolX(cropper, d) {
 	//let dButtons = cropper.dButtons;
@@ -92,6 +78,98 @@ function collectionAddEmpty(ev){ //val,inp){
 	M.byCollection[val] = [];
 	initCollection(val);
 }
+
+//#region colors
+function sortByHue(colors) {
+  const hslColors = colors.map(AhexToHSL);
+  hslColors.sort((a, b) => a.hue - b.hue);
+  const sortedHexColors = hslColors.map(AhslToHex);
+  return sortedHexColors;
+}
+function isGrayColor(color,diff=60) {
+  const rgb = AhexToRgb(color);
+  //return rgb.r === rgb.g && rgb.g === rgb.b;
+
+	return Math.abs(rgb.r-rgb.g) + Math.abs(rgb.r-rgb.b) + Math.abs(rgb.g-rgb.b) < 3*diff;
+}
+function AhexToHSL(hex) {
+  const rgb = AhexToRgb(hex);
+  const hsl = ArgbToHsl(rgb.r, rgb.g, rgb.b);
+  return hsl;
+}
+function AhslToHex(hsl) {
+  const rgb = AhslToRgb(hsl.hue, hsl.saturation, hsl.lightness);
+  return ArgbToHex(rgb.r, rgb.g, rgb.b);
+}
+function AhexToRgb(hex) {
+  // Remove the hash character if present
+  hex = hex.replace(/^#/, '');
+
+  // Parse the hex values to RGB
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return { r, g, b };
+}
+function ArgbToHsl(r, g, b) {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0;
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+
+    h /= 6;
+  }
+
+  return { hue: h, saturation: s, lightness: l };
+}
+function AhslToRgb(h, s, l) {
+  let r, g, b;
+
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+}
+function ArgbToHex(r, g, b) {
+  return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+}
+
+//#endregion
+
 function cropTo(tool, wnew, hnew) {
 	//calc center
 	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
@@ -150,6 +228,7 @@ function filterImages(ev) {
 	showImageBatch(0);
 
 }
+
 //#region fleetingMessage
 function clearFleetingMessage() {
 	if (isdef(dFleetingMessage)) {
@@ -178,6 +257,7 @@ function mFleetingMessage(msg, styles, ms, fade) {
 	return dFleetingMessage;
 }
 //#endregion
+
 function focusNextSiblingOrSubmitOnEnter(ev, id) {
 	if (ev.key === 'Enter') {
 		ev.preventDefault();
@@ -196,6 +276,7 @@ function formatDate(date) {
 	return `${day}_${month}_${year}`;
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
+function getConfig(){return lookup(Serverdata.config,Array.from(arguments));}
 function getMouseCoordinates(event) {
 	const image = event.target; //const image = document.getElementById('your-image-id'); // Replace with the actual ID of your image element
 	//const imageRect = image.getBoundingClientRect();
@@ -208,6 +289,8 @@ function getMouseCoordinates(event) {
 
 	return { x: offsetX, y: offsetY };
 }
+function getSession(){return lookup(Serverdata.session,Array.from(arguments));}
+function getUser(uname){let u=Serverdata.config.users[uname]; return u?jsCopy(u):null;}
 async function imgAsync(dParent,styles,opts) {
 	let path = opts.src;
 	delete opts.src;
@@ -240,7 +323,6 @@ function isSameDate(date1, date2) {
 		date1.getDate() === date2.getDate();
 }
 async function loadCollections(){
-	Config = await mGetYaml('../y/config.yaml');
 	M = {};
 	M.superdi = await mGetYaml('../assets/superdi.yaml');
 
@@ -321,13 +403,13 @@ async function loadCollectionsFromDirs() {
 	return M;
 }
 function loadPlayerColors(){
-	let hstep = 20;
-	let sstep = 20;
-	let lstep = 20;
+	let [hstep,hmin,hmax] = [20,0,359]; //[20,30,60];
+	let [lstep,lmin,lmax] = [20,50,60]; //[20,30,60];
+	let [sstep,smin,smax] = [30,70,100]; //[20,60,100]; 
 	let [whites, blacks] = [[], []];
-	for (let h = 0; h < 360; h += hstep) {
-		for (let l = 30; l <= 60; l += lstep) {
-			for (let s = 60; s <= 100; s += sstep) {
+	for (let h = hmin; h < hmax; h += hstep) {
+		for (let l = lmin; l <= lmax; l += lstep) {
+			for (let s = smin; s <= smax; s += sstep) {
 					let c = hslToHexCOOL({ h: h, s: s, l: l });
 				//let c2=colorFromHSL(h,100,50); //rColor(50,1,15)
 				let fg = idealTextColor(c);
@@ -336,12 +418,12 @@ function loadPlayerColors(){
 		}
 	}
 	blacks.push('#FFDD33')
-	console.log('num', whites.length, blacks.length)
+	//console.log('num', whites.length, blacks.length)
 
-	M.playerColors = whites.concat(blacks);
-	shuffle(M.playerColors);
+	let plColors = whites.concat(blacks);
+	shuffle(plColors);
 
-	M.knownUsers ={
+	let userColors ={
 		"afia": "#69c963",
 		"ally": "#6660f3",
 		"amanda": "#339940FF",
@@ -363,8 +445,25 @@ function loadPlayerColors(){
 		"valerie": "lightgreen"
 	};
 	
-	// for (const c of whites) {		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });	}
-	// for (const c of blacks) {		mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) });	}
+	ensureColorDict();
+	ensureColorNames();
+
+	let allColors = Object.values(ColorDi).map(x => x.c);
+	let list = Object.values(userColors).concat(plColors.concat(allColors).concat(Object.values(ColorNames)));
+	//console.log('colors', list.length)
+	list = list.filter(x => colorLum(x) < .85);
+	list = list.filter(x => !isGrayColor(x));
+	let s = new Set(list);
+	//console.log('list was', list.length, 'set is', Array.from(s).length)
+	list = Array.from(s);
+	let hsllist = list.map(x => colorHSL(x, true));
+	sortByMultipleProperties(hsllist, 'h', 'l');
+	list = hsllist.map(x => colorHex(x));
+	console.log('list',list.length)
+	list = arrRemoveDuplicates(list);
+	console.log('list',list.length)
+	M.playerColors = list;
+	return list;
 }
 function mCropper(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
@@ -1050,7 +1149,34 @@ async function mGetJsonCors(url) {
 	//console.log('json', json)
 	return json;
 }
-function mNavbar(pageTitle, titles, icons, funcNames, iconFuncNames) {
+async function mGetRoute(route, o) {
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	server += `/${route}?`;
+	for(const k in o){		server+=`${k}=${o[k]}&`;	}
+	const response = await fetch(server, {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors',
+	});
+	return tryJSONParse(await response.text());
+	// try {
+
+	// 	if (response.ok) {
+	// 		const data = await response.json();
+	// 		if (isdef(data.session)) Session = data.session;
+	// 		if (isdef(data.config)) Config = data.config;
+	// 		return data;
+	// 	} else {
+	// 		return 'ERROR 1';
+	// 	}
+	// } catch (error) {
+	// 	return 'ERROR 2';
+	// }
+}
+
+function mNavbar(pageTitle, titles, funcNames) {
+	//da wollt ich noch icons und iconfuncs dazutun!
 	if (nundef(funcNames)) {
 		//standard is that funcs are named: onclick${title}
 		funcNames = titles.map(x => `onclick${capitalize(x)}`);
@@ -1207,6 +1333,16 @@ function mResizer(dParent, img, dButtons) {
 		//tool: tool,
 	}
 }
+async function mSleep(ms=1000) {
+  return new Promise(
+    (res, rej) => {
+      if (ms <= 3000) {
+        setTimeout(res, ms);
+      } else {
+        console.log('param should be less than 3001');
+      }
+    });
+}
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	//console.log('ausschnitt:', x, y, wold, hold);
 	let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
@@ -1255,6 +1391,16 @@ function resizeTo(tool, wnew, hnew) {
 		wnew = aspectRatio * hnew;
 	}
 	redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
+}
+function showColors(list, fOnclick, fHtml) {
+	if (nundef(fHtml)) fHtml = x => '';
+	let d = mBy('dMain'); mFlexWrap(d); mStyle(d, { padding:10,gap: 10 })
+	for (const c of list) {
+		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
+		if (isdef(fOnclick)) {dc.onclick = fOnclick; mStyle(dc,{cursor:'pointer'}); }
+	} //colorLum(c).toFixed(2) });	}
+	//mDom(d, { w: '100%' }, { html: 'HALLO<br>' })
+	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
 }
 function showImage(key, dParent, styles = {}) {
 	let o = M.superdi[key];
@@ -1344,6 +1490,20 @@ function showUser(){
 	}
 	d.onclick=onclickUser;
 }
+function sortByMultipleProperties(list) {
+	let props = Array.from(arguments).slice(1); //arrTakeFrom(arguments,1);
+	//console.log('props',props)
+  return list.sort((a, b) => {
+
+		for(const p of props){
+			if (a[p] < b[p]) return -1;
+			if (a[p] > b[p]) return 1;
+		}
+
+    // If all properties are equal, no change in order
+    return 0;
+  });
+}
 function sortKeysAlphabetically(dinew) {
 	let keys = Object.keys(dinew); keys.sort();
 	let difinal = {};
@@ -1391,6 +1551,15 @@ async function srcToDataUrl(src, h) {
 		img.src = src;
 	});
 }
+function tryJSONParse(astext) {
+	try {
+		const data = JSON.parse(astext);
+		return data;
+	} catch {
+		console.log('text', astext)
+		return { message: 'ERROR', text: astext }
+	}
+}
 async function uploadAll(data, path, mode='w') {
 	//a ... append text/json
 	//w ... override text/json
@@ -1404,7 +1573,9 @@ async function uploadAll(data, path, mode='w') {
 	//wc ... copyKeys to config object and save config
 	//_ac ... addKeys to config object without saving!!!
 	//_wc ... copyKeys to config object without saving!!!
-	//c ... just save config file and reload
+	//c ... ac
+	//s ... as
+	//ss ... save session
 	let o;
 	if (mode == 'wi') {
 		//data interpreted as img!!!!
@@ -1416,7 +1587,6 @@ async function uploadAll(data, path, mode='w') {
 	console.log('response', resp);
 
 }
-
 async function uploadImg(img, unique, coll, name) {
 	return new Promise((resolve, reject) => {
 		const canvas = document.createElement('canvas');
@@ -1500,6 +1670,8 @@ async function uploadJson(route, o) {
 
 		if (response.ok) {
 			const data = await response.json();
+			if (isdef(data.session)) Session = data.session;
+			if (isdef(data.config)) Config = data.config;
 			return data;
 		} else {
 			return 'ERROR 1';
@@ -1508,5 +1680,4 @@ async function uploadJson(route, o) {
 		return 'ERROR 2';
 	}
 }
-
 

@@ -43719,6 +43719,7 @@ function mpLineup(dParent, keys, bgs, fg, textColor, texts) {
 }
 function mPopup(content, dParent, styles, id) {
   if (isdef(mBy(id))) mRemove(id);
+  
   mIfNotRelative(dParent);
   if (nundef(styles)) styles = { top: 0, left: 0 };
   styles.position = 'absolute';

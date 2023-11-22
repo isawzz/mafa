@@ -233,6 +233,39 @@ async function uploadImg2(img, unique, cat, name) {
 //#endregion
 
 //#region combu
+function sortByHueWithoutGrays(colors) {
+  // Filter out the gray colors
+  const nonGrayColors = colors.filter(color => !isGrayColor(color));
+
+  // Convert non-gray hex colors to HSL format
+  const hslNonGrayColors = nonGrayColors.map(AhexToHSL);
+
+  // Sort by hue
+  hslNonGrayColors.sort((a, b) => a.hue - b.hue);
+
+  // Convert back to hex format
+  const sortedHexColors = hslNonGrayColors.map(AhslToHex);
+
+  return sortedHexColors;
+}
+function sortByMultipleProperties(list, p1, p2, p3) {
+  return list.sort((a, b) => {
+    // Compare by first property (p1)
+    if (a[p1] < b[p1]) return -1;
+    if (a[p1] > b[p1]) return 1;
+
+    // If p1 values are equal, compare by second property (p2)
+    if (a[p2] < b[p2]) return -1;
+    if (a[p2] > b[p2]) return 1;
+
+    // If p1 and p2 values are equal, compare by third property (p3)
+    if (a[p3] < b[p3]) return -1;
+    if (a[p3] > b[p3]) return 1;
+
+    // If all properties are equal, no change in order
+    return 0;
+  });
+}
 async function prelims() {
 	if (nundef(M.superdi)) {
 		Config = await mGetYaml('../y/config.yaml');
