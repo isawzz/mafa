@@ -1476,20 +1476,6 @@ function showTitle(title, buttons = []) {
 		mButton(b.caption, b.handler, dTitle, { w: 70, margin: 0 }, 'input');
 	}
 }
-function showUser(){
-	mClear(dUser);
-	let d;
-	if (U){
-		d=mDom(dUser,{fg:U.color,cursor:'pointer'},{html:U.name});
-		mStyle(document.body,{bg:U.color});
-		//mStyle('dMain',{bg:U.color,h:1000})
-
-	}else{
-		let styles = { family: 'fa6', fg: 'grey', cursor: 'pointer' }; //,'align-self': 'end'
-		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
-	}
-	d.onclick=onclickUser;
-}
 function sortByMultipleProperties(list) {
 	let props = Array.from(arguments).slice(1); //arrTakeFrom(arguments,1);
 	//console.log('props',props)

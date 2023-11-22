@@ -5,24 +5,6 @@ async function test29_user(){
 	//localStorage.setItem('username','felix');
 	await prelims();
 }
-async function loadUser(uname){
-
-	if (nundef(Config)) {Serverdata = await mGetRoute('load',{config:true,session:true}); console.log('Serverdata',Serverdata);}
-
-	//am anfang lookup username (!!!) in localstorage!
-	if (nundef(uname)){
-		uname = localStorage.getItem('username');
-		assertion(nundef(uname) || isdef(Serverdata.config.users[uname]));
-	}
-	if (isdef(uname)) U = getUser(uname);
-	if (!U) {
-		//trying to load a non-existing user!
-		//needs to be added to config and session:
-		let o={name:uname,color:rChoose(M.playerColors)};
-
-	}
-	showUser();
-}
 async function prelims() {
 	if (nundef(M.superdi)) {
 
