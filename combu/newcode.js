@@ -1395,7 +1395,7 @@ function resizeTo(tool, wnew, hnew) {
 function showColors(list, fOnclick, fHtml) {
 	if (!isList(list)) {list = M.playerColors;fOnclick=onclickColor;}
 	if (nundef(fHtml)) fHtml = x => '';
-	let d = mBy('dMain'); mFlexWrap(d); mStyle(d, { padding: 10, gap: 10 })
+	let d = mPopup('',mBy('dMain')); mFlexWrap(d); mStyle(d, { padding: 10, gap: 10 })
 	for (const c of list) {
 		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
 		if (isdef(fOnclick)) { dc.onclick = fOnclick; mStyle(dc, { cursor: 'pointer' }); }

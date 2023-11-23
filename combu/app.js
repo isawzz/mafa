@@ -203,6 +203,12 @@ app.post('/save', (req, res) => {
 	try {
 		if (mode == 'a') {
 			fs.appendFileSync(fname, data, 'utf8');
+		}	else if (mode == 'cs') {
+			if (data) {
+				lookupSetOverride(Config,body.path.split('.'),data);
+				lookupSetOverride(Session,body.path.split('.'),data);
+			}
+			saveConfig();
 		} else if (mode == 'w') {
 			fs.writeFileSync(fname, data, 'utf8');
 		} else if (mode == 'wi') {

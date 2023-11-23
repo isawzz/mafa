@@ -1,7 +1,10 @@
 users:
   felix:
     name: felix
-    color: blue
+    color: '#695ace'
+  amanda:
+    name: amanda
+    color: '#00aaff'
 events:
   n_1698908400000_1698942654534:
     id: n_1698908400000_1698942654534

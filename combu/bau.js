@@ -3,7 +3,7 @@
 async function addNewUser(uname) {
   console.log('adding new user!!!', uname);
   let data={name:uname,color:rChoose(M.playerColors)};
-  o = { data: data, path: `users.${uname}`, mode: 's' }; //['users',uname]
+  o = { data: data, path: `users.${uname}`, mode: 'c' }; //['users',uname]
   return await uploadJson('save', o);
 }
 async function onclickUser() {
@@ -44,9 +44,16 @@ function showUser() {
   }
   d.onclick = onclickUser;
 }
-function updateUserColor(ev){
+async function updateUserColor(ev){
   let c=ev.target.style.background;
-  console.log(c)
+  console.log(c);
+  U.color = colorHex(c);
+  let data={name:U.name,color:U.color};
+  o = { data: data, path: `users.${U.name}`, mode: 'c' }; //['users',uname]
+  Serverdata = await uploadJson('save', o);
+  showUser();
+  //mStyle(document.body,{bg:U.color});
+
 }
 
 //#endregion user
