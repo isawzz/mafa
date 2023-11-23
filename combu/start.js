@@ -19,7 +19,9 @@ async function prelims() {
 		dTitle = mDom(document.body); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
 		mInsert(document.body, dTitle, 1);
 
-		dUser = mDom(nav.ui, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+		dUser = mDom(nav.ui, { fz: 20 }, { id: 'dUser' });
+		mCenterCenterFlex(dUser); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+		mStyle(dUser,{gap:12})
 		await loadUser();
 
 
@@ -143,7 +145,6 @@ function onclickDay(ev) {
 }
 async function onclickItem(ev) {
 	//the key of the superdi item should be saved in 'key' attribute
-	//goto showImage
 	let elem = ev.target;
 	//console.log('elem', elem)
 	let key = ev.target.getAttribute('key');

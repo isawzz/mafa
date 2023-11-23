@@ -3,7 +3,7 @@ function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);
 	return arr;
 }
-function arrRemoveDuplicates(arr) {	return Array.from(new Set(arr));}
+function arrRemoveDuplicates(arr) { return Array.from(new Set(arr)); }
 function addIfAlpha(arr, val) {
 	console.log('arr', arr, 'val', val)
 	let i = 0;
@@ -68,11 +68,11 @@ function collectCats(klist) {
 	}
 	return cats;
 }
-function collectionAddEmpty(ev){ //val,inp){
+function collectionAddEmpty(ev) { //val,inp){
 	if (ev.key != 'Enter') return;
-	console.log('onupdate',ev.target,ev.target.value); 
+	console.log('onupdate', ev.target, ev.target.value);
 	let val = ev.target.value;
-	addIf(M.collections,val);
+	addIf(M.collections, val);
 	M.collections.sort()
 	//M.collections.push(val);
 	M.byCollection[val] = [];
@@ -81,91 +81,91 @@ function collectionAddEmpty(ev){ //val,inp){
 
 //#region colors
 function sortByHue(colors) {
-  const hslColors = colors.map(AhexToHSL);
-  hslColors.sort((a, b) => a.hue - b.hue);
-  const sortedHexColors = hslColors.map(AhslToHex);
-  return sortedHexColors;
+	const hslColors = colors.map(AhexToHSL);
+	hslColors.sort((a, b) => a.hue - b.hue);
+	const sortedHexColors = hslColors.map(AhslToHex);
+	return sortedHexColors;
 }
-function isGrayColor(color,diff=60) {
-  const rgb = AhexToRgb(color);
-  //return rgb.r === rgb.g && rgb.g === rgb.b;
+function isGrayColor(color, diff = 60) {
+	const rgb = AhexToRgb(color);
+	//return rgb.r === rgb.g && rgb.g === rgb.b;
 
-	return Math.abs(rgb.r-rgb.g) + Math.abs(rgb.r-rgb.b) + Math.abs(rgb.g-rgb.b) < 3*diff;
+	return Math.abs(rgb.r - rgb.g) + Math.abs(rgb.r - rgb.b) + Math.abs(rgb.g - rgb.b) < 3 * diff;
 }
 function AhexToHSL(hex) {
-  const rgb = AhexToRgb(hex);
-  const hsl = ArgbToHsl(rgb.r, rgb.g, rgb.b);
-  return hsl;
+	const rgb = AhexToRgb(hex);
+	const hsl = ArgbToHsl(rgb.r, rgb.g, rgb.b);
+	return hsl;
 }
 function AhslToHex(hsl) {
-  const rgb = AhslToRgb(hsl.hue, hsl.saturation, hsl.lightness);
-  return ArgbToHex(rgb.r, rgb.g, rgb.b);
+	const rgb = AhslToRgb(hsl.hue, hsl.saturation, hsl.lightness);
+	return ArgbToHex(rgb.r, rgb.g, rgb.b);
 }
 function AhexToRgb(hex) {
-  // Remove the hash character if present
-  hex = hex.replace(/^#/, '');
+	// Remove the hash character if present
+	hex = hex.replace(/^#/, '');
 
-  // Parse the hex values to RGB
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
+	// Parse the hex values to RGB
+	const bigint = parseInt(hex, 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = bigint & 255;
 
-  return { r, g, b };
+	return { r, g, b };
 }
 function ArgbToHsl(r, g, b) {
-  r /= 255;
-  g /= 255;
-  b /= 255;
+	r /= 255;
+	g /= 255;
+	b /= 255;
 
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  let h, s, l = (max + min) / 2;
+	const max = Math.max(r, g, b);
+	const min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
 
-  if (max === min) {
-    h = s = 0;
-  } else {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+	if (max === min) {
+		h = s = 0;
+	} else {
+		const d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
 
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-    }
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
 
-    h /= 6;
-  }
+		h /= 6;
+	}
 
-  return { hue: h, saturation: s, lightness: l };
+	return { hue: h, saturation: s, lightness: l };
 }
 function AhslToRgb(h, s, l) {
-  let r, g, b;
+	let r, g, b;
 
-  if (s === 0) {
-    r = g = b = l;
-  } else {
-    const hue2rgb = (p, q, t) => {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1 / 6) return p + (q - p) * 6 * t;
-      if (t < 1 / 2) return q;
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-      return p;
-    };
+	if (s === 0) {
+		r = g = b = l;
+	} else {
+		const hue2rgb = (p, q, t) => {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		};
 
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
+		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		const p = 2 * l - q;
 
-    r = hue2rgb(p, q, h + 1 / 3);
-    g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1 / 3);
-  }
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
 
-  return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+	return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
 }
 function ArgbToHex(r, g, b) {
-  return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+	return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
 }
 
 //#endregion
@@ -276,7 +276,7 @@ function formatDate(date) {
 	return `${day}_${month}_${year}`;
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
-function getConfig(){return lookup(Serverdata.config,Array.from(arguments));}
+function getConfig() { return lookup(Serverdata.config, Array.from(arguments)); }
 function getMouseCoordinates(event) {
 	const image = event.target; //const image = document.getElementById('your-image-id'); // Replace with the actual ID of your image element
 	//const imageRect = image.getBoundingClientRect();
@@ -289,25 +289,25 @@ function getMouseCoordinates(event) {
 
 	return { x: offsetX, y: offsetY };
 }
-function getSession(){return lookup(Serverdata.session,Array.from(arguments));}
-function getUser(uname){let u=Serverdata.config.users[uname]; return u?jsCopy(u):null;}
-async function imgAsync(dParent,styles,opts) {
+function getSession() { return lookup(Serverdata.session, Array.from(arguments)); }
+function getUser(uname) { let u = Serverdata.config.users[uname]; return u ? jsCopy(u) : null; }
+async function imgAsync(dParent, styles, opts) {
 	let path = opts.src;
 	delete opts.src;
-	
-  return new Promise((resolve, reject) => {
-		const img = mDom(dParent,styles,opts);
-    // const img = new Image();
-    img.onload = () => {
-      resolve(img);
-    };
-    img.onerror = (error) => {
-      reject(error);
-    };
-    img.src = path;
-  });
+
+	return new Promise((resolve, reject) => {
+		const img = mDom(dParent, styles, opts);
+		// const img = new Image();
+		img.onload = () => {
+			resolve(img);
+		};
+		img.onerror = (error) => {
+			reject(error);
+		};
+		img.src = path;
+	});
 }
-function imgToDataUrl(img){
+function imgToDataUrl(img) {
 	const canvas = document.createElement('canvas');
 	canvas.width = img.width;
 	canvas.height = img.height;
@@ -316,13 +316,13 @@ function imgToDataUrl(img){
 	const dataUrl = canvas.toDataURL('image/png');
 	return dataUrl;
 }
-function isAlphanumeric(s){	for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; return true;}}
+function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; return true; } }
 function isSameDate(date1, date2) {
 	return date1.getFullYear() === date2.getFullYear() &&
 		date1.getMonth() === date2.getMonth() &&
 		date1.getDate() === date2.getDate();
 }
-async function loadCollections(){
+async function loadCollections() {
 	M = {};
 	M.superdi = await mGetYaml('../assets/superdi.yaml');
 
@@ -402,15 +402,15 @@ async function loadCollectionsFromDirs() {
 	}
 	return M;
 }
-function loadPlayerColors(){
-	let [hstep,hmin,hmax] = [20,0,359]; //[20,30,60];
-	let [lstep,lmin,lmax] = [20,50,60]; //[20,30,60];
-	let [sstep,smin,smax] = [30,70,100]; //[20,60,100]; 
+function loadPlayerColors() {
+	let [hstep, hmin, hmax] = [20, 0, 359]; //[20,30,60];
+	let [lstep, lmin, lmax] = [20, 50, 60]; //[20,30,60];
+	let [sstep, smin, smax] = [30, 70, 100]; //[20,60,100]; 
 	let [whites, blacks] = [[], []];
 	for (let h = hmin; h < hmax; h += hstep) {
 		for (let l = lmin; l <= lmax; l += lstep) {
 			for (let s = smin; s <= smax; s += sstep) {
-					let c = hslToHexCOOL({ h: h, s: s, l: l });
+				let c = hslToHexCOOL({ h: h, s: s, l: l });
 				//let c2=colorFromHSL(h,100,50); //rColor(50,1,15)
 				let fg = idealTextColor(c);
 				if (fg == 'white') whites.push(c); else blacks.push(c);
@@ -423,7 +423,7 @@ function loadPlayerColors(){
 	let plColors = whites.concat(blacks);
 	shuffle(plColors);
 
-	let userColors ={
+	let userColors = {
 		"afia": "#69c963",
 		"ally": "#6660f3",
 		"amanda": "#339940FF",
@@ -444,7 +444,7 @@ function loadPlayerColors(){
 		"sheeba": "gold",
 		"valerie": "lightgreen"
 	};
-	
+
 	ensureColorDict();
 	ensureColorNames();
 
@@ -459,9 +459,9 @@ function loadPlayerColors(){
 	let hsllist = list.map(x => colorHSL(x, true));
 	sortByMultipleProperties(hsllist, 'h', 'l');
 	list = hsllist.map(x => colorHex(x));
-	console.log('list',list.length)
+	console.log('list', list.length)
 	list = arrRemoveDuplicates(list);
-	console.log('list',list.length)
+	console.log('list', list.length)
 	M.playerColors = list;
 	return list;
 }
@@ -1052,11 +1052,11 @@ function mDatalist(dParent, list, opts = {}) {
 	//the variant w/ update and matches is in CODE.js!
 	var mylist = list;
 	var opts = opts;
-	addKeys({ alpha: true, filter: 'contains' }, opts); 
+	addKeys({ alpha: true, filter: 'contains' }, opts);
 
 	let d = mDiv(toElem(dParent));
 	let optid = getUID('dl');
-	mDom(d, {w:200}, { tag: 'input', className: 'input', placeholder: "<enter value>" });
+	mDom(d, { w: 200 }, { tag: 'input', className: 'input', placeholder: "<enter value>" });
 	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
 
 	var elem = d;
@@ -1066,7 +1066,7 @@ function mDatalist(dParent, list, opts = {}) {
 
 	inp.setAttribute('list', optid);
 
-	if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate); 
+	if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate);
 	inp.onmousedown = () => inp.value = ''
 
 	return {
@@ -1153,7 +1153,7 @@ async function mGetRoute(route, o) {
 	let type = detectSessionType();
 	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
 	server += `/${route}?`;
-	for(const k in o){		server+=`${k}=${o[k]}&`;	}
+	for (const k in o) { server += `${k}=${o[k]}&`; }
 	const response = await fetch(server, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
@@ -1182,16 +1182,16 @@ function mNavbar(pageTitle, titles, funcNames) {
 		funcNames = titles.map(x => `onclick${capitalize(x)}`);
 	}
 
-	function activate(ev){
+	function activate(ev) {
 		let links = document.getElementsByClassName('nav-link');
 		//console.log('links',links)
 		let inner = ev.target.innerHTML;
-		for(const el of links){
+		for (const el of links) {
 			if (el.innerHTML == inner) mClass(el, 'active');
-			else mClassRemove(el,'active');
+			else mClassRemove(el, 'active');
 		}
 	}
-	function disable(){
+	function disable() {
 		let links = Array.from(document.getElementsByClassName('nav-link'));
 		for (const w of arguments) {
 			let el = links.find(x => x.innerHTML == w);
@@ -1199,7 +1199,7 @@ function mNavbar(pageTitle, titles, funcNames) {
 			if (isdef(el)) mClass(el, 'disabled');
 		}
 	}
-	function enable(){
+	function enable() {
 		let links = document.getElementsByClassName('nav-link');
 		for (const w of arguments) {
 			let el = links.find(x => x.innerHTML == w);
@@ -1209,7 +1209,7 @@ function mNavbar(pageTitle, titles, funcNames) {
 			}
 		}
 	}
-	
+
 	let html = `
     <nav class="navbar navbar-expand navbar-light">
       <a class="navbar-brand a" href="#">${pageTitle}</a>
@@ -1229,15 +1229,15 @@ function mNavbar(pageTitle, titles, funcNames) {
 		`;
 	//let inner = document.body.innerHTML;
 	var ui = mInsertFirst(document.body, mCreateFrom(html));
-	mStyle(ui,{bg:'#ffffffc0'});
+	mStyle(ui, { bg: '#ffffffc0' });
 	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-	return {activate:activate,disable:disable,enable:enable,ui:ui};
+	return { activate: activate, disable: disable, enable: enable, ui: ui };
 }
-async function mPrompt(dParent='dUser',placeholder='<username>',cond=isAlphanumeric) {
+async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isAlphanumeric) {
 	return new Promise((resolve, reject) => {
 		mClear(dParent)
 		// let d = mInput('dUser', {position:'absolute',top:30,right:0,w:100}, 'inpPrompt', placeholder, 'input', 1);
-		let d = mInput(dParent, {w:100}, 'inpPrompt', placeholder, 'input', 1);
+		let d = mInput(dParent, { w: 100 }, 'inpPrompt', placeholder, 'input', 1);
 		d.focus();
 		d.onkeyup = ev => {
 			if (ev.key == 'Enter') {
@@ -1245,7 +1245,7 @@ async function mPrompt(dParent='dUser',placeholder='<username>',cond=isAlphanume
 				ev.target.remove();
 				if (cond(val)) {
 					resolve(val.toLowerCase().trim());
-				}	else {
+				} else {
 					console.log('invalid input!');
 					resolve(null);
 				}
@@ -1333,15 +1333,15 @@ function mResizer(dParent, img, dButtons) {
 		//tool: tool,
 	}
 }
-async function mSleep(ms=1000) {
-  return new Promise(
-    (res, rej) => {
-      if (ms <= 3000) {
-        setTimeout(res, ms);
-      } else {
-        console.log('param should be less than 3001');
-      }
-    });
+async function mSleep(ms = 1000) {
+	return new Promise(
+		(res, rej) => {
+			if (ms <= 3000) {
+				setTimeout(res, ms);
+			} else {
+				console.log('param should be less than 3001');
+			}
+		});
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	//console.log('ausschnitt:', x, y, wold, hold);
@@ -1393,21 +1393,51 @@ function resizeTo(tool, wnew, hnew) {
 	redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
 function showColors(list, fOnclick, fHtml) {
+	if (!isList(list)) {list = M.playerColors;fOnclick=onclickColor;}
 	if (nundef(fHtml)) fHtml = x => '';
-	let d = mBy('dMain'); mFlexWrap(d); mStyle(d, { padding:10,gap: 10 })
+	let d = mBy('dMain'); mFlexWrap(d); mStyle(d, { padding: 10, gap: 10 })
 	for (const c of list) {
 		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
-		if (isdef(fOnclick)) {dc.onclick = fOnclick; mStyle(dc,{cursor:'pointer'}); }
+		if (isdef(fOnclick)) { dc.onclick = fOnclick; mStyle(dc, { cursor: 'pointer' }); }
 	} //colorLum(c).toFixed(2) });	}
 	//mDom(d, { w: '100%' }, { html: 'HALLO<br>' })
 	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
 }
 function showImage(key, dParent, styles = {}) {
 	let o = M.superdi[key];
+	if (nundef(o)) { console.log('showImage:key not found', key); return; }
+	let [w, h] = [valf(styles.w, styles.sz), valf(styles.h, styles.sz)];
+	if (nundef(w)) {
+		//size according to parent, parent is taken as outer div!			
+		mClear(dParent);
+		[w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+		//console.log('w,h', w, h, dParent, styles)
+	} else {
+		addKeys({w:w,h:h},styles)
+		dParent = mDom(dParent, styles);
+	}
+	let [sz, fz] = [.9 * w, .8 * h];
+	let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
+	mCenterCenterFlex(d1)
+	let el = null;
+	if (isdef(o.img)) {
+		el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+	}
+	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	assertion(el, 'PROBLEM mit' + key);
+	mStyle(el, { cursor: 'pointer' })
+	return d1;
+}
+function showImageInBatch(key, dParent, styles = {}) {
+	let o = M.superdi[key];
 	try {
 		addKeys({ bg: rColor() }, styles);
 		mClear(dParent);
-		let [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+		[w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+		// console.log('w,h', w, h, dParent, styles)
 		let [sz, fz] = [.9 * w, .8 * h];
 		let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
 		mCenterCenterFlex(d1)
@@ -1427,9 +1457,6 @@ function showImage(key, dParent, styles = {}) {
 		el.onclick = onclickItem;
 		el.setAttribute('key', key)
 		//console.log('dParent',key,el)
-
-
-
 	} catch {
 		console.log('ERROR showImage:', key, o)
 	}
@@ -1450,7 +1477,7 @@ function showImageBatch(inc = 0) {
 
 	for (let i = 0; i < list.length; i++) {
 		mStyle(M.cells[i], { opacity: 1 })
-		showImage(list[i], M.cells[i], { w: 128, h: 128 });
+		showImageInBatch(list[i], M.cells[i]); //, { w: 128, h: 128 });
 	}
 	for (let i = list.length; i < x; i++) {
 		mStyle(M.cells[i], { opacity: 0 })
@@ -1479,16 +1506,16 @@ function showTitle(title, buttons = []) {
 function sortByMultipleProperties(list) {
 	let props = Array.from(arguments).slice(1); //arrTakeFrom(arguments,1);
 	//console.log('props',props)
-  return list.sort((a, b) => {
+	return list.sort((a, b) => {
 
-		for(const p of props){
+		for (const p of props) {
 			if (a[p] < b[p]) return -1;
 			if (a[p] > b[p]) return 1;
 		}
 
-    // If all properties are equal, no change in order
-    return 0;
-  });
+		// If all properties are equal, no change in order
+		return 0;
+	});
 }
 function sortKeysAlphabetically(dinew) {
 	let keys = Object.keys(dinew); keys.sort();
@@ -1546,7 +1573,7 @@ function tryJSONParse(astext) {
 		return { message: 'ERROR', text: astext }
 	}
 }
-async function uploadAll(data, path, mode='w') {
+async function uploadAll(data, path, mode = 'w') {
 	//a ... append text/json
 	//w ... override text/json
 	//wi ... override image (in this case data param should be img!!!)
@@ -1627,9 +1654,9 @@ async function uploadImg2(img, path) {
 
 	const dataUrl = canvas.toDataURL('image/png');
 	//console.log(dataUrl);
-	let o = { data: {image:dataUrl}, path: valf(path,'out.png'), mode: 'wi' };
+	let o = { data: { image: dataUrl }, path: valf(path, 'out.png'), mode: 'wi' };
 
-	return await uploadJson('save',o);
+	return await uploadJson('save', o);
 	let type = detectSessionType();
 	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
 	server += `/save`;
