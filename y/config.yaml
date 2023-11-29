@@ -1,10 +1,28 @@
 users:
   felix:
     name: felix
-    color: '#70cdc3'
+    color: '#43d4f4'
   amanda:
     name: amanda
-    color: '#80ff00'
+    color: '#62d926'
+  ac:
+    name: ac
+    color: '#7c68ee'
+  mac:
+    name: mac
+    color: '#ffa600'
+  ma:
+    name: ma
+    color: '#ffdd33'
+  diana:
+    name: diana
+    color: '#1fb2aa'
+  lauren:
+    name: lauren
+    color: '#800080'
+  fe:
+    name: fe
+    color: '#89cfeb'
 events:
   n_1698908400000_1698942654534:
     id: n_1698908400000_1698942654534

@@ -1,5 +1,33 @@
+function mFlexLine(d, bg = 'white', fg = 'contrast') {
+  //console.log('h',d.clientHeight,d.innerHTML,d.offsetHeight);
+  mStyle(d, { bg: bg, fg: fg, display: 'flex', valign: 'center', hmin: measureHeight(d) });
+  mDiv(d, { fg: 'transparent' }, null, '|')
+}
+function measureHeight(d) {
+  let d2 = mDiv(d, { opacity: 0 }, null, 'HALLO');
+  return d2.clientHeight;
+}
+function addEditable(dParent, styles = {}, opts = {}) {
+  //let html= `<p contenteditable="true">hallo</p>`; let x=mDom(dParent,{},{html:html});
+  addKeys({ tag: 'input', classes: 'plain' }, opts)
+  addKeys({ wmax: '90%', box: true }, styles);
+  let x = mDom(dParent, styles, opts); // { tag: 'input', classes: 'plain' });
+  x.focus();
+  x.addEventListener('keyup', ev => {
+    if (ev.key == 'Enter') {
+      mBy('dummy').focus();
+      // let text=x.value;
+      // let d=mDiv(dParent,{},null,x.value);
+      // x.remove();
+      if (isdef(opts.onEnter)) opts.onEnter(ev)
+    }
+  }); //console.log('HALLO'); });
+  //mPlace(x,'cc'); //(x,0,20)
+  return x;
+}
 
 async function userLoad(uname) {
+	UI.nav.activate('no')
 	if (nundef(uname)) uname = localStorage.getItem('username');
 	//U = null;
 	//uname = null;
@@ -46,15 +74,19 @@ async function onclickColors() {
 		i++; if (i % 15 == 0) mDom(d, { w: '100%', h: 0 });
 	}
 }
-
-function onclickColor(ev) {
+async function onclickColor(ev) {
 	let c = ev.target.style.background;
 	c = colorHex(c);
-	console.log('color', c)
+	//console.log('color', c)
 	setColors(c);
 	//muss die color senden! aber was wenn kein user da ist?
 	if (U){
-		
+		U.color = c;
+		//console.log('u',U);
+		let data = { name: U.name, color: U.color };
+		o = { data: data, path: `users.${U.name}`, mode: 'cs' }; 
+		Serverdata = await uploadJson('save', o);
+		// await userLoad(U.name);
 	}
 }
 function setColors(c) {
@@ -70,12 +102,15 @@ function setColors(c) {
 
 	let cc = idealTextColor(c);	
 	let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
-	console.log('pal',pal); //hat 11 colors von black zu white, pal[5] ist die gewaehlte
+	let palc = colorPalette(cc);
+	//console.log('pal',pal); //hat 11 colors von black zu white, pal[5] ist die gewaehlte
 	// 0 1 2 3 4 5 6 7 8 9 10
 	function light(i=3){if (i<0)i=0;if (i>5)i=5;return pal[5+i];}
 	function dark(i=3){if (i<0)i=0;if (i>5)i=5;return pal[5-i];}
 	function simil(i=3){return cc=='white'?dark(i):light(i);} 
 	function contrast(i=3){return cc=='white'?light(i):dark(i);} 
+
+	//let list=	
 
 	//muss immer dann wenn U geaendert wird called werden!
 	setCssVar('--bgBody', c);
@@ -93,6 +128,8 @@ function setColors(c) {
 	// setCssVar('--fgDocument', rColor())
 	setCssVar('--fgTitle', contrast(4))
 	setCssVar('--fgSubtitle', contrast(3))
+
+	//if (isdef(DA.calendar)) DA.calendar.setColors()
 }
 
 

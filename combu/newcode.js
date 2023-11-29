@@ -1070,7 +1070,7 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	}
 	function activate(ev) {
 		//currently selected menu button
-		delete DA.calendar;	mClear('dMain');
+		delete DA.calendar;	mClear('dMain');mClear(dTitle)
 	
 
 		let links = document.getElementsByClassName('nav-link');
@@ -1705,14 +1705,6 @@ async function onclickUser() {
 	//wenn der user schon bekannt ist dann soll ihn einfach laden
 
 	await userLoad(uname);
-}
-async function updateUserColor(ev) {
-	let c = ev.target.style.background;
-	setU({ name: U.name, color: colorHex(c) });
-	let data = { name: U.name, color: U.color };
-	o = { data: data, path: `users.${U.name}`, mode: 'c' }; 
-	Serverdata = await uploadJson('save', o);
-	await userLoad(U.name);
 }
 
 //#endregion user

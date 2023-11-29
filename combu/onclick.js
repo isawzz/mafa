@@ -61,7 +61,7 @@ async function onclickNext() { showImageBatch(1); }
 async function onclickSchedule() {
 	showTitle('Calendar');
 	let d1 = mDiv('dMain', { w: 800, h: 800 }); //, bg: 'white' })
-	let x = DA.calendar = uiTypeCalendar(d1, null, null, getConfig('events'));
+	let x = DA.calendar = uiTypeCalendar(d1, U?U.color:rColor(),null, null, getConfig('events'));
 }
 async function onclickUpload() {
 	//console.log('onclickUpload');

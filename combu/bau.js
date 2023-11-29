@@ -1,4 +1,46 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function generateGradientColor(startColor, endColor, steps) {
+  // Create an empty array to store the gradient colors
+  const gradientColors = [];
+
+  // Iterate over the number of steps
+  for (let i = 0; i < steps; i++) {
+    // Calculate the step size
+    const stepSize = 1 / steps;
+
+    // Calculate the current color
+    const currentColor = startColor + (endColor - startColor) * stepSize;
+
+    // Add the current color to the gradient colors array
+    gradientColors.push(currentColor);
+  }
+
+  // Return the gradient colors array
+  return gradientColors;
+}
+
+
+
+
 function getComplementaryColor(hexColor) {
 	// Remove the hash symbol if present
 	hexColor = hexColor.replace(/^#/, '');
@@ -208,7 +250,7 @@ async function serverUpdate(route, o) {
 }
 function showWheel(list,bg) {
 	mClear('dMessage');
-	let dw1 = mDom('dMessage', { display: 'flex', gap: 5, bg: bg, matop: 5, padding: 5 });
+	let dw1 = mDom('dMessage', { display: 'flex', 'flex-wrap':'wrap', gap: 5, bg: bg, matop: 5, padding: 5 });
 	for (const x of list) { mDom(dw1, { w: 90, h: 50, bg: x, fg: idealTextColor(x.substring(0, 7)) }, { html: x }); }
 	return dw1;
 }

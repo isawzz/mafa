@@ -333,6 +333,14 @@ async function onclickUser(){
 		onclickUser();
 	}
 }
+async function updateUserColor(ev) {
+	let c = ev.target.style.background;
+	setU({ name: U.name, color: colorHex(c) });
+	let data = { name: U.name, color: U.color };
+	o = { data: data, path: `users.${U.name}`, mode: 'c' }; 
+	Serverdata = await uploadJson('save', o);
+	await userLoad(U.name);
+}
 
 //#endregion
 
@@ -2978,6 +2986,31 @@ function filterImages(ev){
 //#endregion
 
 //#region calendar (combu)
+function mist(){
+	//info.wheel = list; //[];
+	//let x=colorMix(c,cc,50);
+
+	// let o=new Color(c);
+	// const contrastRatio = color.contrast('#ffffff'); // 1:1
+	// const complementaryColor = color.complement(); // #00ff00 (Green)
+	// const analogousColors = color.analogous(); // ['#ff8000', '#ffff00', '#00ff80']
+	// const triadicColors = color.triadic(); // ['#ff0080', '#00ff00', '#8000ff']
+	// console.log('!!!!!',contrastRatio,complementaryColor,analogousColors,triadicColors);
+	
+	// for (let i = 0; i < 12; i++) {
+	//   //let c1=colorMix(c,coin()?'white':'black',10+i*(80/12))
+	//   // let c1=colorMix(c,coin()?'white':'silver',10+i*(80/12))
+	//   // let c1=colorMix(x,'silver',10+i*(80/12))
+	//   let c1 = triadicColors[i%3];
+	//   info.wheel.push(c1); //rColor('light', .5));
+	// }
+	//for(let i=0;i<12;i++) {      wheel[i]=list[i];    }
+	let m = currentDate.getMonth();
+	console.log('__________m', m);
+
+	for (const d of dDays) { mStyle(d, { bg: info.wheel[m] }); }
+
+}
 function muell(){
 	console.log('clicked on day',idDay);
 	let tsEventDay = firstNumber(idDay);
