@@ -1,10 +1,10 @@
 users:
   felix:
     name: felix
-    color: '#5500ff'
+    color: '#70cdc3'
   amanda:
     name: amanda
-    color: '#00aaff'
+    color: '#80ff00'
 events:
   n_1698908400000_1698942654534:
     id: n_1698908400000_1698942654534
@@ -95,6 +95,51 @@ events:
     to: null
     title: ''
     text: lego
+    subscribers: []
+  e_1699516800000_1700954375978:
+    id: e_1699516800000_1700954375978
+    created: 1700954375978
+    day: '1699516800000'
+    from: null
+    to: null
+    title: ''
+    text: eis
+    subscribers: []
+  c_1701072000000_1700954389187:
+    id: c_1701072000000_1700954389187
+    created: 1700954389187
+    day: '1701072000000'
+    from: null
+    to: null
+    title: ''
+    text: geburtstag
+    subscribers: []
+  g_1702972800000_1700956333293:
+    id: g_1702972800000_1700956333293
+    created: 1700956333293
+    day: '1702972800000'
+    from: null
+    to: null
+    title: ''
+    text: palatschinken
+    subscribers: []
+  i_1702800000000_1700956343456:
+    id: i_1702800000000_1700956343456
+    created: 1700956343456
+    day: '1702800000000'
+    from: null
+    to: null
+    title: ''
+    text: felix
+    subscribers: []
+  u_1703145600000_1700956358761:
+    id: u_1703145600000_1700956358761
+    created: 1700956358761
+    day: '1703145600000'
+    from: null
+    to: null
+    title: ''
+    text: violine
     subscribers: []
 text: I am TOMAS
 pos: 22

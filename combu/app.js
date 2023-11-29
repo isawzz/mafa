@@ -189,7 +189,7 @@ app.post('/event', (req, res) => {
 	//update this event!
 	//ich sollte am server ein Config dict haben!
 
-	res.json({ message: `event ${event.id} updated!` });
+	res.json({ message: `event ${event.id} updated!`, config:Config });
 	// console.log('req',Object.keys(req.query)); //Object.keys(req.body));
 	// res.json({msg:'YEAH!!!!'});
 });

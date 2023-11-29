@@ -1,3 +1,4 @@
+var dNav;
 var Session = {};
 var ClientData = {};
 var ClientId;

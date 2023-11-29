@@ -15079,7 +15079,15 @@ function colorPalSet(chStart, nHues = 2, { ch2, lum = 50, sat = 100, lumSatMode 
   }
   return palettes;
 }
-function colorPalShade(color) {
+function colorPalShade(color,min=-0.8,max=0.8,step=0.2) {
+  let res = [];
+  for (let frac = min; frac <= max; frac += step) {
+    let c = pSBC(frac, color, undefined, true);
+    res.push(c);
+  }
+  return res;
+}
+function colorPalShade(color,min=-0.8,max=0.8,step=0.2) {
   let res = [];
   for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
     let c = pSBC(frac, color, undefined, true);
@@ -28085,9 +28093,9 @@ function getpal(ipal_dep = -1, ihue = 0, bOrf = 'b', pal) {
   else if (ihue >= nHues) ihue %= nHues;
   return p[ipal_dep][ihue][bOrf];
 }
-function getPalette(color, type = 'shade') {
+function getPalette(color, type = 'shade', min=-0.8,max=0.8,step=0.2) {
   color = colorFrom(color);
-  return colorPalShade(color);
+  return colorPalShade(color,min,max,step);
 }
 function getPaletteFromHues(hues) {
   let colors = hues.map(h => colorFromHue(h));
@@ -31855,14 +31863,27 @@ function idealFontsizeX(elem, wmax, hmax, fz, fzmin) {
     } else tStyles.fz -= 1;
   }
 }
-function idealTextColor(bg, grayPreferred = false) {
-  const nThreshold = 105;
+function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
+  //const nThreshold = 105;
   if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
   rgb = hexToRgb(bg);
   r = rgb.r;
   g = rgb.g;
   b = rgb.b;
-  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114; //console.log(255-bgDelta)
+  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+  return foreColor;
+}
+function idealTextColorA(bg, grayPreferred = false, nThreshold = 105) {
+  //const nThreshold = 105;
+  if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
+  rgb = hexToRgb(bg);
+  r = rgb.r;
+  g = rgb.g;
+  b = rgb.b;
+  // var bgDelta = r * 0.299 + g * 0.587 + b * 0.114; console.log(255-bgDelta)
+  var bgDelta = r * 0.22 + g * 0.4 + b * 0.13; //console.log(255-bgDelta)
   var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
   if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
   return foreColor;
@@ -43719,7 +43740,6 @@ function mpLineup(dParent, keys, bgs, fg, textColor, texts) {
 }
 function mPopup(content, dParent, styles, id) {
   if (isdef(mBy(id))) mRemove(id);
-  
   mIfNotRelative(dParent);
   if (nundef(styles)) styles = { top: 0, left: 0 };
   styles.position = 'absolute';

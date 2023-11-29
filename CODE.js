@@ -1,5 +1,291 @@
 
+//#region colors
+function switchToMenu(ev) {
+	let mnew=isString(ev)?ev:ev.target.innerHTML;
+	console.log('switching to',mnew);
+	delete DA.calendar;
+	mClear('dMain');
+	// let p = mBy('dPopup');
+	// console.log('............', p)
+	// if (p) p.remove();
+}
+function __getColor(darkness) {
+	let theme = U && U.ccontrast == 'white' ? 'dark' : 'light';
+	if (theme) darkness = 7 - darkness;
+	let c = getCSSVariable(`--pal${darkness}`);
+	console.log('theme', theme, darkness, c)
+	return c;
+}
+function getColor(className) {
+	className = capitalize(className);
+	let c = getCSSVariable(`--fg${className}`);
+	console.log('getColor', className, c);
+	return 'white';
+	let theme = U && U.ccontrast == 'white' ? 'dark' : 'light';
+	if (theme) darkness = 7 - darkness;
+	c = getCSSVariable(`--pal${darkness}`);
+	console.log('theme', theme, darkness, c)
+	return c;
+}
+
+function showColors(dParent, list, fOnclick, fHtml = x => '', id = 'dPopup') {
+	if (!isList(list)) { list = M.playerColors; fOnclick = onclickColor; }
+
+	let dp=mBy('dMain')
+	//popup!
+	// if (nundef(dParent)) {
+	// 	dParent = document.body;
+	// 	if (mBy(id)) { console.log('...removing', mBy(id)); mBy(id).remove(); }
+	// 	mIfNotRelative(dParent);
+	// 	dp = mDom(dParent, { position: 'absolute', top: 52, left: 6, bg: 'white', hmin: 100 }, { id: id });
+	// } else {
+	// 	dParent = toElem(dParent); mClear(dParent);
+	// 	dp = mDom(dParent, { bg: 'white', hmin: 100 }, { id: id });
+	// }
+	// mButtonX(dp, 30, id);
+	// let d = mDom(dp, { padding: 34, display: 'flex', gap: '2px 4px', wrap: true });
+
+	let d = mDom(dp, { hpadding:20, display: 'flex', gap: '2px 4px', wrap: true });
+
+	let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
+	list = list.concat(grays);
+
+	//3x3x3x5 colors sind es + 15 grays
+	let i = 0;
+	for (const c of list) {
+		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
+		if (isdef(fOnclick)) { dc.onclick = fOnclick; mStyle(dc, { cursor: 'pointer' }); }
+		i++; if (i % 15 == 0) mDom(d, { w: '100%', h: 0 });
+	}
+}
+function setU() { }
+
+function buildPaletteA(dParent,colorsList) {
+  let d=mDom(dParent);
+  mDiv(dParent,{},'palette')
+  mDiv(dParent,{},'complementary')
+  const paletteContainer = document.getElementById("palette");
+  const complementaryContainer = document.getElementById("complementary");
+  paletteContainer.innerHTML = "";
+  complementaryContainer.innerHTML = "";
+  colorsList = colorsList.map(x=>colorRGB(x,true))
+  const orderedByColor = orderByLuminance(colorsList);
+  console.log('ordered',orderedByColor)
+  const hslColors = convertRGBtoHSL(orderedByColor);
+  for (let i = 0; i < orderedByColor.length; i++) {
+    const hexColor = rgbToHexCOOL(orderedByColor[i]);
+    const hexColorComplementary = hslToHexCOOL(hslColors[i]);
+    if (i > 0) {
+      const difference = calculateColorDifference(
+        orderedByColor[i],
+        orderedByColor[i - 1]
+      );
+      if (difference < 120) {
+        continue;
+      }
+    }
+    const colorElement = document.createElement("div");
+    colorElement.style.backgroundColor = hexColor;
+    colorElement.appendChild(document.createTextNode(hexColor));
+    paletteContainer.appendChild(colorElement);
+    if (hslColors[i].h) {
+      const complementaryElement = document.createElement("div");
+      complementaryElement.style.backgroundColor = `hsl(${hslColors[i].h},${hslColors[i].s}%,${hslColors[i].l}%)`;
+      complementaryElement.appendChild(
+        document.createTextNode(hexColorComplementary)
+      );
+      complementaryContainer.appendChild(complementaryElement);
+    }
+  }
+}
+function setU(o) {
+  U = { name: o.name, color: o.color };
+  //let pal = getPalette(o.color,-1,1,.2);
+  //let pal = colorPalSet(colorFrom(o.color)); //, nHues = 2, { ch2, lum = 50, sat = 100, lumSatMode = 1, blendMode = 1, a } = {})
+  let color = o.color;
+  let pal = colorPalette(color); pal.unshift('black'); pal.push('white');
+  let icolor = pal.indexOf(color);
+  //console.log(pal)
+  let ccontrast = idealTextColor(color);
+  let icontrast = pal.indexOf(ccontrast);
+
+  //console.log('index of color=',icolor,'contrast',icontrast);
+  //console.log('was soll jetzt geschehen?');
+  //wenn der bg in user color gesetzt wird, muss der fg
+  U.theme = icontrast == 0 ? 'light' : 'dark';
+
+  let inc = icontrast == 0 ? 1 : -1;
+  setCssVar('--bgBody', pal[icolor]);
+  setCssVar('--bgLighter', pal[icolor + 3]);
+  setCssVar('--bgDarker', pal[icolor - 3]);
+  setCssVar('--bgNav', pal[icolor + 3 * inc]);
+  setCssVar('--bgButtonActive', pal[icolor]);
+
+  let i = icontrast;
+  for (const x of ['buttonDisabled', 'button']) {
+    let s = `--fg${capitalize(x)}`;
+    i += inc;
+    //console.log(i,pal[i])
+    setCssVar(s, pal[i]);
+  }
+  setCssVar('--fgTitle', ccontrast);
+  setCssVar('--fgSubtitle', pal[icontrast + inc]);
+  setCssVar('--fgButtonHover', pal[icontrast + inc]);
+  setCssVar('--fgButtonActive', pal[icontrast]);
+
+  let cc = U.compcolor = getComplementaryColor(U.color);
+  let pal2 = colorPalette(cc); pal2.unshift('black'); pal2.push('white');
+
+  //ich koennt erstmal den hue rausfinden
+  let hsl = colorHSL(color, true);
+  console.log('_____hsl', hsl);
+  //h ist 203
+  //nehme abstand 20 x 12 fuer 12 farben die anderen hue haben als color
+  //
+  let hue = hsl.h;
+  let diff = 30;
+  let hstart = (hue + diff); //das ist also 223
+  //suche 
+  let wheels = [[], [], [], []];
+  let p = 20;
+  for (i = hstart; i <= hstart + 235; i += 20) {
+    let h = i % 360;
+    let c1 = colorFromHSL(h, 100, 75);
+    //console.log('h',h,c1);
+    let c2 = colorMix(color, cc, p);
+    let c3 = colorTrans(c2, .5);
+    wheels[0].push(c3); p += 5;
+    wheels[1].push(getMatchingColor(color, p));
+    wheels[2].push(cc);
+    wheels[3].push(c1);
+  }
+  //console.log('wheel',wheels)
+  U.wheel = wheels[3];
+  //return;
+  if (isdef(DA.calendar)) {
+    let cal = DA.calendar;
+    //let im=cal.date.getMonth();
+    cal.setColors(wheels[3]); //color,cc); //wheel);
+  }
+
+  //console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+  let d = mBy('dPopup');
+  if (!d) return;
+  //console.log('d',d,d.firstChild,d.lastChild);
+  let ch = d.firstChild.children; //arrChildren(d);
+  //console.log('ch',ch)
+  removeChildrenFromIndex(d, 1)
+  let dw = mDom(d, { matop: 5 });
+  let dc = mDom(dw, { w: 90, h: 50, bg: color, fg: idealTextColor(color) }, { html: color });
+  let dcc = mDom(dw, { w: 90, h: 50, bg: cc, fg: idealTextColor(cc) }, { html: cc });
+  for (i = 0; i < wheels.length; i++) {
+    let dw1 = mDom(dw, { display: 'flex', gap: 5, bg: color, matop: 5, padding: 5 });
+    //console.log('wheels[i]',wheels[i])
+    for (const x of wheels[i]) {
+      //console.log('x',x)
+      mDom(dw1, { w: 90, h: 50, bg: x, fg: idealTextColor(x.substring(0, 7)) }, { html: x });
+    }
+  }
+}
+function onclickColor(ev) {
+	let c = ev.target.style.background;
+	c = colorHex(c);
+	console.log('color',c)
+	mStyle(document.body,{bg:c});
+	return;
+	console.log('clicked on', c);
+	if (isdef(U)) {
+		U.color = c;
+		showUser();
+	}
+
+}
+function restShowColors(){
+
+	let dp = mPopup('Colors', document.body, { margin: '40px 10%', bg: 'white', padding: 10 },'dPopup');
+	console.log('haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+	return;
+
+
+	d = mDom(dp); mFlexWrap(d); mStyle(dp, );
+	mStyle(d, { gap: 10 })
+	mButtonX(d, ev => dp.remove(), pos = 'tr', sz = 25, fg = 'dimgray')
+	for (const c of list) {
+		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
+		if (isdef(fOnclick)) { dc.onclick = fOnclick; mStyle(dc, { cursor: 'pointer' }); }
+	} //colorLum(c).toFixed(2) });	}
+	//mDom(d, { w: '100%' }, { html: 'HALLO<br>' })
+	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
+}
+
+//#endregion
+
 //#region user
+function showUser() {
+	mClear(dUser);
+	//mCenterCenterFlex(dUser); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+
+	let d;
+	if (U) {
+		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
+		//d = mDom(dUser, { cursor: 'pointer', fz: 18, rounding: 9, hpadding: 9 }, { html: U.name, className:'active' });
+		//mStyle(document.body, { bg: U.bg }); //colorLighter(U.color) });
+		let d1 = showImage('gear', dUser, { sz: 25 });
+		d1.onclick = ev => showColors(M.playerColors, updateUserColor);
+	} else {
+		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' }; //,'align-self': 'end'
+		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
+	}
+	d.onclick = onclickUser;
+}
+async function userLoad(uname) {
+	if (nundef(uname)){
+		//am anfang lookup username (!!!) in localstorage!
+		uname = localStorage.getItem('username');
+		assertion(nundef(uname) || isdef(Serverdata.config.users[uname]));
+	}
+
+	if (isdef(uname)) { let u = getUserdata(uname); if (isdef(u)) setU(u); }
+	if (!U) {
+		Serverdata = await addNewUser(uname);
+		console.log('added user', uname, Serverdata.session.users[uname])
+		U = Serverdata.session.users[uname];
+	}
+	showUser();
+}
+function muell() {
+
+  // U.ccontrast = ccontrast;
+  // U.pal = pal;
+  // U.bg = o.color;
+  // U.fg = ccontrast == 'white' ? pal[8] : pal[2];
+
+  //hier sollen die css colors gesetzt werden!
+  //let [hell,dunkel]=[pal[7],pal[1]];
+  //let inc=ccontrast=='white'?-1:1;
+  let i = idx - 1;
+  // for(const x of ['button','body']){
+  //   let s=`--bg${capitalize(x)}`;
+  //   i+=inc;
+  //   setCssVar(s,pal[i])
+  // }
+  setCssVar('--bgButton', 'transparent');
+  setCssVar('--bgBody', pal[idx]);
+  inc = ccontrast == 'white' ? 1 : -1;
+  i = idx + inc * 2;
+  for (const x of ['buttonDisabled', 'button', 'buttonActive', 'buttonHover']) {
+    let s = `--fg${capitalize(x)}`;
+    i += inc;
+    setCssVar(s, pal[i]);
+  }
+  setCssVar('--fgTitle', ccontrast);
+  setCssVar('--fgSubtitle', pal[9]);
+  // U.fg=o.color;
+  // U.bg=ccontrast == 'white'?pal[7]:pal[2];
+  // U.light=
+  // [U.fg,U.bg,U.light,U.dark]=[pal[4],pal]
+}
 async function onclickUser() {
 	let uname = await mPrompt(); //returns null if invalid!
 	console.log('onclickUser:', uname);
@@ -51,6 +337,125 @@ async function onclickUser(){
 //#endregion
 
 //#region Navbar
+function mNavbar_old(dParent, styles, pageTitle, titles, funcNames) {
+  //da wollt ich noch icons und iconfuncs dazutun!
+  if (nundef(funcNames)) {
+    //standard is that funcs are named: onclick${title}
+    funcNames = titles.map(x => `onclick${capitalize(x)}`);
+  }
+  function activate(ev) {
+    //currently selected menu button
+    let links = document.getElementsByClassName('nav-link');
+    //console.log('links',links)
+    let inner = ev.target.innerHTML;
+    for (const el of links) {
+      if (el.innerHTML == inner) mClass(el, 'active');
+      else mClassRemove(el, 'active');
+    }
+  }
+  function disable() {
+    let links = Array.from(document.getElementsByClassName('nav-link'));
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClass(el, 'disabled');
+    }
+  }
+  function enable() {
+    let links = document.getElementsByClassName('nav-link');
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClassRemove(el, 'disabled');
+      //if (isdef(el)) { mClass(el, 'active'); el.style.pointerEvents = 'auto' }
+    }
+  }
+  function extra() {
+    let html = `
+      <div class="navbar-expand">
+        <a class="navbar-brand a" href="#">${pageTitle}</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">`;
+    for (let i = 0; i < titles.length; i++) {
+      html += `
+          <li>
+            <a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+          </li>
+        `;
+    }
+    html += `
+        </ul>
+        </div>
+      </div>
+      `;
+    //let inner = document.body.innerHTML;
+    let x=mCreateFrom(html);
+    mAppend('dNav_old',x);
+    var ui = x; // mInsertFirst(document.body, mCreateFrom(html));
+    mStyle(ui, styles); //'#ffffffe0' });
+    return ui;
+    //document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+  }
+  var ui = extra();
+  mStyle(ui, { display: 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between' });
+  return { activate: activate, disable: disable, enable: enable, ui: ui };
+}
+function mNavbar(styles,pageTitle, titles, funcNames) {
+	//da wollt ich noch icons und iconfuncs dazutun!
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+
+	function activate(ev) {
+		let links = document.getElementsByClassName('nav-link');
+		//console.log('links',links)
+		let inner = ev.target.innerHTML;
+		for (const el of links) {
+			if (el.innerHTML == inner) mClass(el, 'active');
+			else mClassRemove(el, 'active');
+		}
+	}
+	function disable() {
+		let links = Array.from(document.getElementsByClassName('nav-link'));
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			//console.log('el',el)
+			if (isdef(el)) mClass(el, 'disabled');
+		}
+	}
+	function enable() {
+		let links = document.getElementsByClassName('nav-link');
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			if (isdef(el)) {
+				mClass(el, 'active');
+				el.style.pointerEvents = 'auto'
+			}
+		}
+	}
+
+	let html = `
+    <nav class="navbar navbar-expand" id="dNav">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		html += `
+				<li>
+					<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	var ui = mInsertFirst(document.body, mCreateFrom(html));
+	mStyle(ui, styles); //'#ffffffe0' });
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+	return { activate: activate, disable: disable, enable: enable, ui: ui };
+}
 function showNavbar(pageTitle, titles, funcNames) {
 	if (nundef(funcNames)) {
 		//standard is that funcs are named: onclick${title}
@@ -262,6 +667,34 @@ async function uploadImg2(img, unique, cat, name) {
 //#endregion
 
 //#region combu
+async function prelims() {
+	if (nundef(M.superdi)) {
+
+		Serverdata = await mGetRoute('load', { config: true, session: true }); console.log('Serverdata', Serverdata);
+		await loadCollections();
+		loadPlayerColors();
+
+		// let nav=mBy('dNav');
+		// mStyle(nav,{display:'flex','flex-wrap':'wrap','align-items':'center','justify-content': 'space-between'});
+
+
+		//console.log('M', M, 'Config', Config);
+
+		//let nav_old = mNavbar_old('dNav_old',{bg:getColor(0),fg:getColor(7)},'COMBU', ['add', 'play', 'schedule', 'view']);
+		
+		let nav = UI.nav = mNavbar('dNav',{},'COMBU', ['add', 'play', 'schedule', 'view']);
+		//console.log('nav',nav)
+		nav.disable('play');
+		// dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+		//mInsert(document.body, dTitle, 1);
+
+		dUser = mDom(nav.ui, {}, { id: 'dUser' });
+		await userLoad();
+
+
+	}
+
+}
 function sortByHueWithoutGrays(colors) {
   // Filter out the gray colors
   const nonGrayColors = colors.filter(color => !isGrayColor(color));
@@ -3285,6 +3718,38 @@ app.get('/submit', (req, res) => {
 //#endregion
 
 //#region mist
+async function ___loadUser(uname){
+	if (nundef(Config)) {Serverdata = await mGetRoute('load',{config:true,session:true}); console.log('Serverdata',Serverdata);}
+
+	let user;
+	if (nundef(uname)){
+		localStorage.setItem('user',JSON.stringify({name:'felix',color:'blue'}));
+		let info=localStorage.getItem('user');
+		if (info){
+			user = JSON.parse(info);
+			console.log('user found',user);
+		}
+		console.log('Session',Session,Config,Users);
+		//Config ist am anfang undefined!!!!!
+		let isloggedin = lookup(Session,['users',user.name]);
+		let isreg = lookup(Config,['users',user.name]);
+		let isme = U.name == user.name;	
+
+		if (!isme){
+			let result = await mGetRoute('login',user);
+			console.log('result',result)
+			//den user anmelden! dann erst anzeigen!
+			
+		}
+		showUser()
+	} else {
+		//no user has logged in on this computer before
+		showUser();
+	}
+	//show username in upper right corner
+	//load this users version of whatever is open right now!
+
+}
 function ___mCropResizer(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
 	console.log('w', worig, 'h', horig);
@@ -3788,3 +4253,21 @@ function fromOpenai() {
 
 }
 //#endregion
+
+//#region test
+async function test27_user() {
+	await prelims();
+	let nav = UI.nav.ui;
+	dUser = mDom(nav, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+	//showUser();
+}
+async function test25_user() {
+	await prelims();
+	let nav = UI.nav.ui;
+	dUser = mDom(nav, { fz: 20 }, { id: 'dUser' }); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+	//showUser();
+}
+
+//#endregion
+
+

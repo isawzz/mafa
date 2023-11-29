@@ -4,7 +4,7 @@ function calendarOpenDay(date, d, ev) {
   let d1 = addEditable(d, { w: 50 }, {
     onEnter: ev => {
       let inp = ev.target;
-      
+
       let o = { date: date.getTime(), text: inp.value, title: firstWord(inp.value) };
       onEventEdited(o, inp);
       //phpPost(o, 'addEvent');
@@ -68,16 +68,19 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
   const [cellWidth, gap] = [100, 10];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
   var dParent = toElem(dParent);
   const events = events1;
-  var container = mDiv(dParent, { bg: 'white' }, 'dCalendar');
+  var container = mDiv(dParent, {}, 'dCalendar');
   var currentDate = new Date();
   var today = new Date();
-  let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
+  // let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
+  let dTitle = mDiv(container, { w: 760, padding: gap, fg: getColor('title'), fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
   var dWeekdays = mGrid(1, 7, container, { gap: gap });
   var dDays = [];
   var info = {};
-  for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth, fg: '#247BA0' }, null, w) };
+  info.wheel = []; for (let i = 0; i < 12; i++) info.wheel.push(rColor('light', .5));
+  for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth, fg: getColor('subtitle') }, null, w) };
   var dGrid = mGrid(6, 7, container, { gap: gap });
   var dDate = mDiv(dTitle, { display: 'flex', gap: gap });
   var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
@@ -105,6 +108,31 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
     if (ui.style.opacity === 0) return null;
     return { div: dDays[i], events: [] };
   }
+  function setColors(list){ //c,cc) {
+    info.wheel = list; //[];
+    //let x=colorMix(c,cc,50);
+
+    // let o=new Color(c);
+    // const contrastRatio = color.contrast('#ffffff'); // 1:1
+    // const complementaryColor = color.complement(); // #00ff00 (Green)
+    // const analogousColors = color.analogous(); // ['#ff8000', '#ffff00', '#00ff80']
+    // const triadicColors = color.triadic(); // ['#ff0080', '#00ff00', '#8000ff']
+    // console.log('!!!!!',contrastRatio,complementaryColor,analogousColors,triadicColors);
+    
+    // for (let i = 0; i < 12; i++) {
+    //   //let c1=colorMix(c,coin()?'white':'black',10+i*(80/12))
+    //   // let c1=colorMix(c,coin()?'white':'silver',10+i*(80/12))
+    //   // let c1=colorMix(x,'silver',10+i*(80/12))
+    //   let c1 = triadicColors[i%3];
+    //   info.wheel.push(c1); //rColor('light', .5));
+    // }
+    //for(let i=0;i<12;i++) {      wheel[i]=list[i];    }
+    let m = currentDate.getMonth();
+    console.log('__________m', m);
+
+    for (const d of dDays) { mStyle(d, { bg: info.wheel[m] }); }
+
+  }
   function setDate(m, y) {
     currentDate.setMonth(m - 1);
     currentDate.setFullYear(y);
@@ -127,9 +155,12 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
     });
 
     mClear(dGrid); dDays.length = 0;
+    //console.log('dGrid',dGrid);
+    console.log('m',m,info.wheel[m])
     let outerStyles = {
       rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
-      paleft: gap / 2, w: cellWidth, hmin: cellWidth, fg: 'contrast', bg: rColor('light', .5)
+      paleft: gap / 2, w: cellWidth, hmin: cellWidth, fg: 'contrast', 
+      bg: info.wheel[m-1], //rColor('light', .5) //info.wheel[m-1],//rColor('light', .5)
     }
     for (const i of range(42)) {
       let cell = mDiv(dGrid, outerStyles);
@@ -163,8 +194,8 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
     for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
       const daySquare = dDays[i - 1];
       let date = new Date(year, month, i - paddingDays);
-      daySquare.innerText = i - paddingDays + (isSameDate(date,today) ? ' TODAY':'');
-      let d = mDom(daySquare, innerStyles, {id:date.getTime()});
+      daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
+      let d = mDom(daySquare, innerStyles, { id: date.getTime() });
       d.addEventListener('click', onclickDay); //ev => calendarOpenDay(date, daySquare.lastChild, ev));
     }
     updateEvents();
@@ -182,22 +213,23 @@ function uiTypeCalendar(dParent, month1, year1, events1 = []) {
         continue;
       }
       let dDay = dDays[dt.getDate() + info.dayOffset].children[0];
-      
+
       //console.log('add another input to',dt,dDay);
-      let d1 = addEditable(dDay, { w: '100%' }, { id:k, onEnter: onEventEdited, value: e.text });
+      let d1 = addEditable(dDay, { w: '100%' }, { id: k, onEnter: onEventEdited, value: e.text });
       //console.log(d1);
-          
+
       // let ch = arrChildren(dDay);
       // let d = ch[0]; 
       // let d1 = calendarAddExistingEvent(e, d);
       // e.div = d;
     }
+    mBy('dummy').focus();
   }
 
   setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
   populate();
 
-  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
+  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setColors, setDate, populate }
 }
 
 function makeContentEditable(elem, setter) {
@@ -222,8 +254,8 @@ function measureHeight(d) {
 }
 function addEditable(dParent, styles = {}, opts = {}) {
   //let html= `<p contenteditable="true">hallo</p>`; let x=mDom(dParent,{},{html:html});
-  addKeys({ tag: 'input', classes: 'plain' },opts)
-  addKeys({ w: '90%' },styles);
+  addKeys({ tag: 'input', classes: 'plain' }, opts)
+  addKeys({ wmax: '90%', box: true }, styles);
   let x = mDom(dParent, styles, opts); // { tag: 'input', classes: 'plain' });
   x.focus();
   x.addEventListener('keyup', ev => {

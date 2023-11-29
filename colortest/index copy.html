@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Color Palette Generator</title>
+	<style>
+		body {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+			background-color: #f8f8f8;
+		}
+
+		.color-box {
+			width: 100px;
+			height: 100px;
+			margin: 10px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+
+<body>
+	<script>
+		function standardHarmonyColor(hue, saturation = 100, lightness = 50) {
+			hue = (hue % 360 + 360) % 360;
+
+			const h = hue / 60;
+			const c = (1 - Math.abs(2 * lightness - 1)) * saturation;
+			const x = c * (1 - Math.abs((h % 2) - 1));
+			const m = lightness - c / 2;
+
+			let r, g, b;
+
+			if (h >= 0 && h < 1) {
+				[r, g, b] = [c, x, 0];
+			} else if (h >= 1 && h < 2) {
+				[r, g, b] = [x, c, 0];
+			} else if (h >= 2 && h < 3) {
+				[r, g, b] = [0, c, x];
+			} else if (h >= 3 && h < 4) {
+				[r, g, b] = [0, x, c];
+			} else if (h >= 4 && h < 5) {
+				[r, g, b] = [x, 0, c];
+			} else {
+				[r, g, b] = [c, 0, x];
+			}
+
+			r = Math.round((r + m) * 255);
+			g = Math.round((g + m) * 255);
+			b = Math.round((b + m) * 255);
+
+			return `rgb(${r}, ${g}, ${b})`;
+		}
+
+		function generateColorPalette(n) {
+			const palette = [];
+
+			for (let i = 0; i < n; i++) {
+				const hue = (360 / n) * i;
+				const color = standardHarmonyColor(hue);
+				palette.push(color);
+			}
+
+			return palette;
+		}
+
+		const numberOfColors = 15;
+		const colorPalette = generateColorPalette(numberOfColors);
+
+		colorPalette.forEach(color => {
+			const colorBox = document.createElement('div');
+			colorBox.style.backgroundColor = color;
+			colorBox.className = 'color-box';
+			document.body.appendChild(colorBox);
+		});
+	</script>
+</body>
+
+</html>

@@ -1,4 +1,27 @@
 //*** collections tests */
+async function test30_palette(){
+	let pal = getPalette('red');
+	console.log('pal',pal);
+	for(const c of pal){
+		mDom('dMain',{w:50,h:50,bg:c},{html:c})
+	}
+	//nimm pal[4]=orig color, pal[2]=dark, pal[6] und pal[7]
+	//buildPaletteA('dMain',['violet']);
+}
+async function test29_user(){
+	//localStorage.setItem('username','felix');
+	await prelims();
+}
+async function test28_allColors() {
+	await prelims();
+	showColors(M.playerColors,onclickColor)
+}
+function test26_rColors() {
+	loadPlayerColors();
+	let d = mBy('dMain'); mFlexWrap(d);
+	for (const c of plColors) { mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) }); }
+}
+
 async function test24_newPrelims(){
 	if (nundef(M.superdi)) {
 		Config = await mGetYaml('../y/config.yaml');

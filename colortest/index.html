@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Color Generation</title>
+	<style>
+		body {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			margin: 0;
+			background-color: #f8f8f8;
+		}
+
+		.color-box {
+			width: 100px;
+			height: 100px;
+			margin: 10px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="colorPalette"></div>
+
+    <script src="../colortest/ColorGen.js"></script>
+    <script src="../colortest/start.js"></script>
+
+	<script type="module">
+		import * as ColorGen from '../colortest/ColorGen.js';
+
+		function generateColors(baseColor) {
+			const numberOfColors = 5;
+			const colorPalette = ColorGen.standerHarmonyColor(numberOfColors, 30, 30, 30, undefined, 1, 1, 0.1, 0.1);
+
+			// Display colors on the page
+			colorPalette.forEach(color => {
+				const colorBox = document.createElement('div');
+				colorBox.style.backgroundColor = ColorGen.toCSSString(color);
+				colorBox.className = 'color-box';
+				document.body.appendChild(colorBox);
+			});
+		}
+
+		// Replace 'baseColor' with your desired base color
+		const baseColor = { r: 255, g: 0, b: 0 };
+		generateColors(baseColor);
+	</script>
+</body>
+
+</html>

@@ -78,98 +78,6 @@ function collectionAddEmpty(ev) { //val,inp){
 	M.byCollection[val] = [];
 	initCollection(val);
 }
-
-//#region colors
-function sortByHue(colors) {
-	const hslColors = colors.map(AhexToHSL);
-	hslColors.sort((a, b) => a.hue - b.hue);
-	const sortedHexColors = hslColors.map(AhslToHex);
-	return sortedHexColors;
-}
-function isGrayColor(color, diff = 60) {
-	const rgb = AhexToRgb(color);
-	//return rgb.r === rgb.g && rgb.g === rgb.b;
-
-	return Math.abs(rgb.r - rgb.g) + Math.abs(rgb.r - rgb.b) + Math.abs(rgb.g - rgb.b) < 3 * diff;
-}
-function AhexToHSL(hex) {
-	const rgb = AhexToRgb(hex);
-	const hsl = ArgbToHsl(rgb.r, rgb.g, rgb.b);
-	return hsl;
-}
-function AhslToHex(hsl) {
-	const rgb = AhslToRgb(hsl.hue, hsl.saturation, hsl.lightness);
-	return ArgbToHex(rgb.r, rgb.g, rgb.b);
-}
-function AhexToRgb(hex) {
-	// Remove the hash character if present
-	hex = hex.replace(/^#/, '');
-
-	// Parse the hex values to RGB
-	const bigint = parseInt(hex, 16);
-	const r = (bigint >> 16) & 255;
-	const g = (bigint >> 8) & 255;
-	const b = bigint & 255;
-
-	return { r, g, b };
-}
-function ArgbToHsl(r, g, b) {
-	r /= 255;
-	g /= 255;
-	b /= 255;
-
-	const max = Math.max(r, g, b);
-	const min = Math.min(r, g, b);
-	let h, s, l = (max + min) / 2;
-
-	if (max === min) {
-		h = s = 0;
-	} else {
-		const d = max - min;
-		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-		switch (max) {
-			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-			case g: h = (b - r) / d + 2; break;
-			case b: h = (r - g) / d + 4; break;
-		}
-
-		h /= 6;
-	}
-
-	return { hue: h, saturation: s, lightness: l };
-}
-function AhslToRgb(h, s, l) {
-	let r, g, b;
-
-	if (s === 0) {
-		r = g = b = l;
-	} else {
-		const hue2rgb = (p, q, t) => {
-			if (t < 0) t += 1;
-			if (t > 1) t -= 1;
-			if (t < 1 / 6) return p + (q - p) * 6 * t;
-			if (t < 1 / 2) return q;
-			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-			return p;
-		};
-
-		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		const p = 2 * l - q;
-
-		r = hue2rgb(p, q, h + 1 / 3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1 / 3);
-	}
-
-	return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
-}
-function ArgbToHex(r, g, b) {
-	return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
-}
-
-//#endregion
-
 function cropTo(tool, wnew, hnew) {
 	//calc center
 	let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
@@ -228,36 +136,6 @@ function filterImages(ev) {
 	showImageBatch(0);
 
 }
-
-//#region fleetingMessage
-function clearFleetingMessage() {
-	if (isdef(dFleetingMessage)) {
-		dFleetingMessage.remove();
-		dFleetingMessage = null;
-	}
-}
-function showFleetingMessage(msg, dParent, styles = {}, ms = 3000, msDelay = 0, fade = true) {
-	clearFleetingMessage();
-
-	dFleetingMessage = mDiv(dParent);
-	if (msDelay) {
-		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
-	} else {
-		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
-	}
-}
-function mFleetingMessage(msg, styles, ms, fade) {
-	if (isString(msg)) {
-		dFleetingMessage.innerHTML = msg;
-		mStyle(dFleetingMessage, styles);
-	} else {
-		mAppend(dFleetingMessage, msg);
-	}
-	if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
-	return dFleetingMessage;
-}
-//#endregion
-
 function focusNextSiblingOrSubmitOnEnter(ev, id) {
 	if (ev.key === 'Enter') {
 		ev.preventDefault();
@@ -290,7 +168,6 @@ function getMouseCoordinates(event) {
 	return { x: offsetX, y: offsetY };
 }
 function getSession() { return lookup(Serverdata.session, Array.from(arguments)); }
-function getUser(uname) { let u = Serverdata.config.users[uname]; return u ? jsCopy(u) : null; }
 async function imgAsync(dParent, styles, opts) {
 	let path = opts.src;
 	delete opts.src;
@@ -406,17 +283,21 @@ function loadPlayerColors() {
 	let [hstep, hmin, hmax] = [20, 0, 359]; //[20,30,60];
 	let [lstep, lmin, lmax] = [20, 50, 60]; //[20,30,60];
 	let [sstep, smin, smax] = [30, 70, 100]; //[20,60,100]; 
-	let [whites, blacks] = [[], []];
+	let [whites, blacks, all] = [[], [], []];
 	for (let h = hmin; h < hmax; h += hstep) {
 		for (let l = lmin; l <= lmax; l += lstep) {
 			for (let s = smin; s <= smax; s += sstep) {
-				let c = hslToHexCOOL({ h: h, s: s, l: l });
+				let o = { h: h, s: s, l: l };
+				let c = hslToHexCOOL(o);
 				//let c2=colorFromHSL(h,100,50); //rColor(50,1,15)
+				o.c = c;
+				all.push(o);
 				let fg = idealTextColor(c);
 				if (fg == 'white') whites.push(c); else blacks.push(c);
 			}
 		}
 	}
+	DA.allColors = all;
 	blacks.push('#FFDD33')
 	//console.log('num', whites.length, blacks.length)
 
@@ -435,7 +316,7 @@ function loadPlayerColors() {
 		"gul": "#6fccc3",
 		"lauren": BLUEGREEN,
 		"leo": "#C19450FF",
-		"mac": "ORANGE",
+		"mac": ORANGE,
 		"minnow": "#F28DB2",
 		"mimi": "#76AEEBFF",
 		"nasi": "#EC4169FF",
@@ -444,6 +325,13 @@ function loadPlayerColors() {
 		"sheeba": "gold",
 		"valerie": "lightgreen"
 	};
+
+	for (const plname in userColors) {
+		let uc = userColors[plname];
+		uc = colorHex(uc);
+		let already = firstCond(all, x => x.c.toLowerCase() == uc.substring(0, 7).toLowerCase());
+		if (already) console.log('present', uc);
+	}
 
 	ensureColorDict();
 	ensureColorNames();
@@ -459,9 +347,9 @@ function loadPlayerColors() {
 	let hsllist = list.map(x => colorHSL(x, true));
 	sortByMultipleProperties(hsllist, 'h', 'l');
 	list = hsllist.map(x => colorHex(x));
-	console.log('list', list.length)
+	//console.log('list', list.length)
 	list = arrRemoveDuplicates(list);
-	console.log('list', list.length)
+	//console.log('list', list.length)
 	M.playerColors = list;
 	return list;
 }
@@ -1174,18 +1062,20 @@ async function mGetRoute(route, o) {
 	// 	return 'ERROR 2';
 	// }
 }
-
-function mNavbar(pageTitle, titles, funcNames) {
+function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	//da wollt ich noch icons und iconfuncs dazutun!
 	if (nundef(funcNames)) {
 		//standard is that funcs are named: onclick${title}
 		funcNames = titles.map(x => `onclick${capitalize(x)}`);
 	}
-
 	function activate(ev) {
+		//currently selected menu button
+		delete DA.calendar;	mClear('dMain');
+	
+
 		let links = document.getElementsByClassName('nav-link');
 		//console.log('links',links)
-		let inner = ev.target.innerHTML;
+		let inner = isString(ev)?ev:ev.target.innerHTML;
 		for (const el of links) {
 			if (el.innerHTML == inner) mClass(el, 'active');
 			else mClassRemove(el, 'active');
@@ -1195,7 +1085,6 @@ function mNavbar(pageTitle, titles, funcNames) {
 		let links = Array.from(document.getElementsByClassName('nav-link'));
 		for (const w of arguments) {
 			let el = links.find(x => x.innerHTML == w);
-			//console.log('el',el)
 			if (isdef(el)) mClass(el, 'disabled');
 		}
 	}
@@ -1203,34 +1092,26 @@ function mNavbar(pageTitle, titles, funcNames) {
 		let links = document.getElementsByClassName('nav-link');
 		for (const w of arguments) {
 			let el = links.find(x => x.innerHTML == w);
-			if (isdef(el)) {
-				mClass(el, 'active');
-				el.style.pointerEvents = 'auto'
-			}
+			if (isdef(el)) mClassRemove(el, 'disabled');
+			//if (isdef(el)) { mClass(el, 'active'); el.style.pointerEvents = 'auto' }
 		}
 	}
 
-	let html = `
-    <nav class="navbar navbar-expand navbar-light">
-      <a class="navbar-brand a" href="#">${pageTitle}</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">`;
-	for (let i = 0; i < titles.length; i++) {
-		html += `
-				<li class="nav-item">
-					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
-				</li>
-			`;
+	function isThemeLight() { return !U || U.theme == 'light' ? true : false; }
+	function extra1() {
+		//console.log('dParent',dParent)
+		let ui = mDom(dParent, { display: 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between' });
+		mStyle(ui, { 'flex-flow': 'row nowrap' });
+		mClass(dParent, 'nav');
+		let d1 = mDom(ui, { display: 'flex', 'align-items': 'center', gap: 12 });
+		let title = mDom(d1, { fz: 20 }, { html: pageTitle, classes: 'title' });
+		let d2 = mDom(d1);
+		for (let i = 0; i < titles.length; i++) {
+			let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+		}
+		return ui;
 	}
-	html += `
-			</ul>
-			</div>
-		</nav>
-		`;
-	//let inner = document.body.innerHTML;
-	var ui = mInsertFirst(document.body, mCreateFrom(html));
-	mStyle(ui, { bg: '#ffffffc0' });
-	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+	var ui = extra1();
 	return { activate: activate, disable: disable, enable: enable, ui: ui };
 }
 async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isAlphanumeric) {
@@ -1239,6 +1120,7 @@ async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isA
 		// let d = mInput('dUser', {position:'absolute',top:30,right:0,w:100}, 'inpPrompt', placeholder, 'input', 1);
 		let d = mInput(dParent, { w: 100 }, 'inpPrompt', placeholder, 'input', 1);
 		d.focus();
+		//d.onblur = ev => resolve(null);
 		d.onkeyup = ev => {
 			if (ev.key == 'Enter') {
 				let val = ev.target.value;
@@ -1249,6 +1131,9 @@ async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isA
 					console.log('invalid input!');
 					resolve(null);
 				}
+			} else if (ev.key == 'Escape') {
+				console.log('escape!')
+				resolve(null);
 			}
 		};
 	});
@@ -1362,6 +1247,18 @@ function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	return imgDataUrl;
 
 }
+function removeChildrenFromIndex(element, startIndex) {
+	// Ensure the element is valid
+	if (!element || !element.children || startIndex < 0) {
+		console.error('Invalid arguments');
+		return;
+	}
+
+	// Remove children starting from the specified index
+	while (element.children.length > startIndex) {
+		element.removeChild(element.children[startIndex]);
+	}
+}
 async function resizeImage(img, newHeight) {
 	return new Promise((resolve, reject) => {
 		//console.log('resizing...')
@@ -1392,17 +1289,6 @@ function resizeTo(tool, wnew, hnew) {
 	}
 	redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
-function showColors(list, fOnclick, fHtml) {
-	if (!isList(list)) {list = M.playerColors;fOnclick=onclickColor;}
-	if (nundef(fHtml)) fHtml = x => '';
-	let d = mPopup('',mBy('dMain')); mFlexWrap(d); mStyle(d, { padding: 10, gap: 10 })
-	for (const c of list) {
-		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) }, { html: fHtml(c) });
-		if (isdef(fOnclick)) { dc.onclick = fOnclick; mStyle(dc, { cursor: 'pointer' }); }
-	} //colorLum(c).toFixed(2) });	}
-	//mDom(d, { w: '100%' }, { html: 'HALLO<br>' })
-	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
-}
 function showImage(key, dParent, styles = {}) {
 	let o = M.superdi[key];
 	if (nundef(o)) { console.log('showImage:key not found', key); return; }
@@ -1413,20 +1299,20 @@ function showImage(key, dParent, styles = {}) {
 		[w, h] = [dParent.offsetWidth, dParent.offsetHeight];
 		//console.log('w,h', w, h, dParent, styles)
 	} else {
-		addKeys({w:w,h:h},styles)
+		addKeys({ w: w, h: h }, styles)
 		dParent = mDom(dParent, styles);
 	}
-	let [sz, fz] = [.9 * w, .8 * h];
+	let [sz, fz, fg] = [.9 * w, .8 * h, valf(styles.fg, rColor())];
 	let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
 	mCenterCenterFlex(d1)
 	let el = null;
 	if (isdef(o.img)) {
 		el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
 	}
-	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
-	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 	assertion(el, 'PROBLEM mit' + key);
 	mStyle(el, { cursor: 'pointer' })
 	return d1;
@@ -1498,7 +1384,7 @@ function showSidebar(dParent) {
 }
 function showTitle(title, buttons = []) {
 	mClear(dTitle);
-	mDom(dTitle, {}, { tag: 'h1', html: title });
+	mDom(dTitle, {}, { tag: 'h1', html: title, classes: 'title' });
 	for (const b of buttons) {
 		mButton(b.caption, b.handler, dTitle, { w: 70, margin: 0 }, 'input');
 	}
@@ -1683,8 +1569,6 @@ async function uploadJson(route, o) {
 
 		if (response.ok) {
 			const data = await response.json();
-			if (isdef(data.session)) Session = data.session;
-			if (isdef(data.config)) Config = data.config;
 			return data;
 		} else {
 			return 'ERROR 1';
@@ -1693,4 +1577,143 @@ async function uploadJson(route, o) {
 		return 'ERROR 2';
 	}
 }
+
+//#region colors
+function sortByHue(colors) {
+	const hslColors = colors.map(AhexToHSL);
+	hslColors.sort((a, b) => a.hue - b.hue);
+	const sortedHexColors = hslColors.map(AhslToHex);
+	return sortedHexColors;
+}
+function isGrayColor(color, diff = 60) {
+	const rgb = AhexToRgb(color);
+	//return rgb.r === rgb.g && rgb.g === rgb.b;
+
+	return Math.abs(rgb.r - rgb.g) + Math.abs(rgb.r - rgb.b) + Math.abs(rgb.g - rgb.b) < 3 * diff;
+}
+function AhexToHSL(hex) {
+	const rgb = AhexToRgb(hex);
+	const hsl = ArgbToHsl(rgb.r, rgb.g, rgb.b);
+	return hsl;
+}
+function AhslToHex(hsl) {
+	const rgb = AhslToRgb(hsl.hue, hsl.saturation, hsl.lightness);
+	return ArgbToHex(rgb.r, rgb.g, rgb.b);
+}
+function AhexToRgb(hex) {
+	// Remove the hash character if present
+	hex = hex.replace(/^#/, '');
+
+	// Parse the hex values to RGB
+	const bigint = parseInt(hex, 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = bigint & 255;
+
+	return { r, g, b };
+}
+function ArgbToHsl(r, g, b) {
+	r /= 255;
+	g /= 255;
+	b /= 255;
+
+	const max = Math.max(r, g, b);
+	const min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
+
+	if (max === min) {
+		h = s = 0;
+	} else {
+		const d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+
+		h /= 6;
+	}
+
+	return { hue: h, saturation: s, lightness: l };
+}
+function AhslToRgb(h, s, l) {
+	let r, g, b;
+
+	if (s === 0) {
+		r = g = b = l;
+	} else {
+		const hue2rgb = (p, q, t) => {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		};
+
+		const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		const p = 2 * l - q;
+
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+
+	return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+}
+function ArgbToHex(r, g, b) {
+	return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
+}
+
+//#endregion
+
+//#region fleetingMessage
+function clearFleetingMessage() {
+	if (isdef(dFleetingMessage)) {
+		dFleetingMessage.remove();
+		dFleetingMessage = null;
+	}
+}
+function showFleetingMessage(msg, dParent, styles = {}, ms = 3000, msDelay = 0, fade = true) {
+	clearFleetingMessage();
+
+	dFleetingMessage = mDiv(dParent);
+	if (msDelay) {
+		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
+	} else {
+		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
+	}
+}
+function mFleetingMessage(msg, styles, ms, fade) {
+	if (isString(msg)) {
+		dFleetingMessage.innerHTML = msg;
+		mStyle(dFleetingMessage, styles);
+	} else {
+		mAppend(dFleetingMessage, msg);
+	}
+	if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
+	return dFleetingMessage;
+}
+//#endregion
+
+//#region user
+async function onclickUser() {
+	let uname = await mPrompt(); //returns null if invalid!
+	console.log('onclickUser:', uname);
+	//wenn der user schon bekannt ist dann soll ihn einfach laden
+
+	await userLoad(uname);
+}
+async function updateUserColor(ev) {
+	let c = ev.target.style.background;
+	setU({ name: U.name, color: colorHex(c) });
+	let data = { name: U.name, color: U.color };
+	o = { data: data, path: `users.${U.name}`, mode: 'c' }; 
+	Serverdata = await uploadJson('save', o);
+	await userLoad(U.name);
+}
+
+//#endregion user
 
