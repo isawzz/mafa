@@ -1,5 +1,6 @@
 function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
 
+  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
   const [cellWidth, gap] = [100, 10];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -15,10 +16,10 @@ function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
   var dDays = [];
   var info = {};
   //info.wheel = []; for (let i = 0; i < 12; i++) info.wheel.push(rColor('light', .5));
-  setColor(seedColor);
+  // setColor(seedColor);
   for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth }, null, w, 'subtitle') };
   var dGrid = mGrid(6, 7, container, { gap: gap });
-  var dDate = mDiv(dTitle, { display: 'flex', gap: gap });
+  var dDate = mDiv(dTitle, { display: 'flex', gap: gap },'dDate','','title');
   var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
   mButton('Prev',
     () => {
@@ -44,42 +45,48 @@ function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
     if (ui.style.opacity === 0) return null;
     return { div: dDays[i], events: [] };
   }
-  function setColor(seed){ //c,cc) {
-    info.wheel =mimali(seed,12);
-    // let list=[];
-    // for (let i = 0; i < 12; i++) { list.push(colorMix(seed,'orange',i*100/12));}
-    // info.wheel = list;
-  }
+  // function setColor(seed){ //c,cc) {
+  //   info.wheel =mimali(seed,12);
+  //   info.seedColor = seed;
+  // }
   function setDate(m, y) {
     currentDate.setMonth(m - 1);
     currentDate.setFullYear(y);
     mClear(dDate);
     dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
     dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
-    makeContentEditable(dMonth, ev => {
-      let d = ev.target;
-      if (d != dMonth) return;
-      let val = getCorrectMonth(d.innerHTML, months[currentDate.getMonth()]);
-      d.innerHTML = val[1];
-      currentDate.setMonth(val[0])
-    });
-    makeContentEditable(dYear, ev => {
-      let d = ev.target;
-      if (d != dYear) return;
-      let val = firstNumber(d.innerHTML);
-      currentDate.setFullYear(val);
-      d.innerHTML = val;
-    });
+    // makeContentEditable(dMonth, ev => {
+    //   let d = ev.target;
+    //   if (d != dMonth) return;
+    //   let val = getCorrectMonth(d.innerHTML, months[currentDate.getMonth()]);
+    //   d.innerHTML = val[1];
+    //   currentDate.setMonth(val[0])
+    // });
+    // makeContentEditable(dYear, ev => {
+    //   let d = ev.target;
+    //   if (d != dYear) return;
+    //   let val = firstNumber(d.innerHTML);
+    //   currentDate.setFullYear(val);
+    //   d.innerHTML = val;
+    // });
 
     mClear(dGrid); dDays.length = 0;
     //console.log('m',m,info.wheel[m])
     let outerStyles = {
       rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
-      paleft: gap / 2, w: cellWidth, hmin: cellWidth, fg: 'contrast', 
-      bg: info.wheel[m-1], //rColor('light', .5) //info.wheel[m-1],//rColor('light', .5)
+      paleft: gap / 2, w: cellWidth, hmin: cellWidth, 
+      bg:'black',fg:'white',
+      // fg: 'contrast', 
+      //bg: info.wheel[m-1], //rColor('light', .5) //info.wheel[m-1],//rColor('light', .5)
     }
+
+    let c=colorHex(mGetStyle('dNav','bg')); //info.seedColor; //info.wheel[m-1];
+    console.log('nav color is',c)
+    let dayColors=mimali(c,43).map(x=>colorHex(x))
+    console.log('dayColors',dayColors)
     for (const i of range(42)) {
       let cell = mDiv(dGrid, outerStyles);
+      mStyle(cell,{bg:dayColors[i],fg:'contrast'})
       dDays[i] = cell;
     }
     populate(currentDate);
@@ -145,7 +152,7 @@ function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
   setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
   populate();
 
-  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setColor, setDate, populate }
+  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
 }
 
 

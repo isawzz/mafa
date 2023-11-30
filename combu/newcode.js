@@ -1072,7 +1072,6 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 		//currently selected menu button
 		delete DA.calendar;	mClear('dMain');mClear(dTitle)
 	
-
 		let links = document.getElementsByClassName('nav-link');
 		//console.log('links',links)
 		let inner = isString(ev)?ev:ev.target.innerHTML;

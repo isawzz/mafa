@@ -14868,9 +14868,9 @@ function colorLighter(c, zero1 = .2, log = true) {
   c = colorFrom(c);
   return pSBC(zero1, c, undefined, !log);
 }
-function colorLum(cAny) {
+function colorLum(cAny,percent=false) {
   let hsl = colorHSL(cAny, true);
-  return hsl.l;
+  return percent?hsl.l*100:hsl.l;
 }
 function colorMap(spec) {
   const Colormap = {

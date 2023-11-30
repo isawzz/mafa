@@ -35,6 +35,9 @@ body{
 .title{
 	color: var(--fgTitle);
 }
+.subtitle{
+	color: var(--fgSubtitle);
+}
 .darker{
 	background: var(--bgDarker);
 }

@@ -1,7 +1,7 @@
 users:
   felix:
     name: felix
-    color: '#43d4f4'
+    color: '#000080'
   amanda:
     name: amanda
     color: '#62d926'
@@ -158,6 +158,15 @@ events:
     to: null
     title: ''
     text: violine
+    subscribers: []
+  r_1701331200000_1701358769005:
+    id: r_1701331200000_1701358769005
+    created: 1701358769005
+    day: '1701331200000'
+    from: null
+    to: null
+    title: ''
+    text: mozart
     subscribers: []
 text: I am TOMAS
 pos: 22

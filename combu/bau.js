@@ -1,22 +1,17 @@
 
+function colorToNumber(color='yellow') {
 
+	let c=colorRGB(color,true); console.log(c)
+  // Ensure each component is in the valid range (0-255)
+  red = c.r;// Math.max(0, Math.min(255, red));
+  green = c.g;//Math.max(0, Math.min(255, green));
+  blue = c.b;//Math.max(0, Math.min(255, blue));
 
+  // Combine components into a single integer
+  const numberRepresentation = (red << 16) + (green << 8) + blue;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return numberRepresentation;
+}
 
 function generateGradientColor(startColor, endColor, steps) {
   // Create an empty array to store the gradient colors
@@ -37,10 +32,6 @@ function generateGradientColor(startColor, endColor, steps) {
   // Return the gradient colors array
   return gradientColors;
 }
-
-
-
-
 function getComplementaryColor(hexColor) {
 	// Remove the hash symbol if present
 	hexColor = hexColor.replace(/^#/, '');
@@ -241,6 +232,14 @@ function mButtonX(dParent, sz = 30, id = 'dPopup') {
 	let o = M.superdi.xmark;
 	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: 'dimgray', display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 
+}
+function numberToColor(numberRepresentation) {
+  // Extract red, green, and blue components
+  const red = (numberRepresentation >> 16) & 255;
+  const green = (numberRepresentation >> 8) & 255;
+  const blue = numberRepresentation & 255;
+
+  return colorFrom({ r:red, g:green, b:blue });
 }
 async function serverUpdate(route, o) {
 	let data = await uploadJson(route, o)

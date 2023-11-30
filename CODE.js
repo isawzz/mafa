@@ -1,5 +1,20 @@
 
 //#region colors
+function mist(){
+	let color = new Color("p3", [0, 1, 0]);
+	color.steps("red", {
+		space: "lch",
+		outputSpace: "srgb",
+		maxDeltaE: 3, // max deltaE between consecutive steps
+		steps: 14 // min number of steps
+	});
+	let redgreen = color.range("red", {
+		space: "lch", // interpolation space
+		outputSpace: "srgb"
+	});
+	console.log('redgreen',redgreen(...wheel))	
+
+}
 function switchToMenu(ev) {
 	let mnew=isString(ev)?ev:ev.target.innerHTML;
 	console.log('switching to',mnew);

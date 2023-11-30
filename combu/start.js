@@ -2,23 +2,10 @@ onload = start;
 
 async function start() { test34_colorjs_YES(); }
 
-function mimali(c,n){
-	function whh(c1,c2){return generateArrayColors(colorHex(c1), colorHex(c2), 10);}
-	function genc(c,hinc){	let hsl=colorHSL(c,true);return colorHSLBuild((hsl.h+hinc)%360,hsl.s*100,hsl.l*100);}
-	function cinc(c,hinc,sinc,linc){let hsl=colorHSL(c,true);return colorHSLBuild((hsl.h+hinc)%360,clamp(hsl.s*100+sinc,0,100),clamp(hsl.l*100+linc,0,100));}
-	function arrd(c,hinc,sinc,linc,n){let r=[];for(let i=0;i<n;i++){r.push(cinc(c,hinc*i,sinc*i,linc*i));}return r;}
-
-	function light(c,lper=75){let hsl=colorHSL(c,true);return colorHSLBuild(hsl.h,hsl.s*100,lper);}
-	function sat(c,sper=100){let hsl=colorHSL(c,true);return colorHSLBuild(sper,hsl.s*100,hsl.l*100);}
-	function hue(c,hdeg){let hsl=colorHSL(c,true);return colorHSLBuild(hdeg,hsl.s*100,hsl.l*100);}
-
-	c=light(c,75);
-	c=cinc(c,30,0,0);
-	wheel=arrd(c,30,0,0,n);
-
-	return wheel;
+async function test35_light(){
+	await prelims();
+	//M.playerColors.map(x=>console.log(x,colorHSL(x,true).l * 100,colorLum(x,true)))
 }
-
 async function test34_colorjs_YES(){
 	await prelims();
 	UI.nav.activate('schedule');
@@ -72,7 +59,6 @@ async function test33_colorjs(){
 	//console.log('wheel',wheel)
 	showWheel(wheel, 'white'); // hat 12 colors
 }
-
 async function test32_colorjs(){
 	await prelims();
 	UI.nav.activate('schedule');
@@ -104,42 +90,6 @@ async function test32_colorjs(){
 	// wheel=wheel.map(x=>numberToColor(x));
 	// console.log('wheel',wheel)
 	showWheel(wheel, 'white'); // hat 12 colors
-}
-function colorToNumber(color='yellow') {
-
-	let c=colorRGB(color,true); console.log(c)
-  // Ensure each component is in the valid range (0-255)
-  red = c.r;// Math.max(0, Math.min(255, red));
-  green = c.g;//Math.max(0, Math.min(255, green));
-  blue = c.b;//Math.max(0, Math.min(255, blue));
-
-  // Combine components into a single integer
-  const numberRepresentation = (red << 16) + (green << 8) + blue;
-
-  return numberRepresentation;
-}
-function numberToColor(numberRepresentation) {
-  // Extract red, green, and blue components
-  const red = (numberRepresentation >> 16) & 255;
-  const green = (numberRepresentation >> 8) & 255;
-  const blue = numberRepresentation & 255;
-
-  return colorFrom({ r:red, g:green, b:blue });
-}
-function mist(){
-	let color = new Color("p3", [0, 1, 0]);
-	color.steps("red", {
-		space: "lch",
-		outputSpace: "srgb",
-		maxDeltaE: 3, // max deltaE between consecutive steps
-		steps: 14 // min number of steps
-	});
-	let redgreen = color.range("red", {
-		space: "lch", // interpolation space
-		outputSpace: "srgb"
-	});
-	console.log('redgreen',redgreen(...wheel))	
-
 }
 async function test31_colorjs(){
 	await prelims();

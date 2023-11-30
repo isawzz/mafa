@@ -88,8 +88,11 @@ async function onclickView() {
 	M.rows = 5; M.cols = 7;
 	M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
 	M.cells = [];
+	//find out nav color = frame color
+	let bg=mGetStyle('dNav','bg');
+
 	for (let i = 0; i < M.rows * M.cols; i++) {
-		let d = mDom(M.grid, { bg: 'sienna', box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		let d = mDom(M.grid, { bg: bg, box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
 		//d.onclick = onclickItem;
 		mCenterCenterFlex(d);
 		M.cells.push(d);
