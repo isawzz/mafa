@@ -81,9 +81,9 @@ function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
     }
 
     let c=colorHex(mGetStyle('dNav','bg')); //info.seedColor; //info.wheel[m-1];
-    console.log('nav color is',c)
+    //console.log('nav color is',c)
     let dayColors=mimali(c,43).map(x=>colorHex(x))
-    console.log('dayColors',dayColors)
+    //console.log('dayColors',dayColors)
     for (const i of range(42)) {
       let cell = mDiv(dGrid, outerStyles);
       mStyle(cell,{bg:dayColors[i],fg:'contrast'})

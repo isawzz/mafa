@@ -1,10 +1,10 @@
 users:
   felix:
     name: felix
-    color: '#000080'
+    color: '#89cffa'
   amanda:
     name: amanda
-    color: '#62d926'
+    color: '#f28cb2'
   ac:
     name: ac
     color: '#7c68ee'
