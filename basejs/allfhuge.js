@@ -43174,7 +43174,7 @@ function mMultiline(s, tabvalue, dParent, styles, classes) {
 }
 function mNode(o, dParent, title) {
   recConvertLists(o);
-  console.log('mNode o', o);
+  //console.log('mNode o', o);
   let d = mCreate('div');
   mYaml(d, o);
   let pre = d.getElementsByTagName('pre')[0];
@@ -44245,6 +44245,7 @@ function mStyle(elem, styles, unit = 'px') {
   }
   if (isdef(styles.vmargin) || isdef(styles.hmargin)) {
     styles.margin = valf(styles.vmargin, 0) + unit + ' ' + valf(styles.hmargin, 0) + unit;
+    //console.log('margin should be',styles.margin)
   }
   if (isdef(styles.upperRounding) || isdef(styles.lowerRounding)) {
     let rtop = '' + valf(styles.upperRounding, 0) + unit;

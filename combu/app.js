@@ -7,6 +7,41 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const yaml = require('js-yaml');
 
+//#region crypto
+const crypto = require('crypto');
+
+// Generate key pair
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+  modulusLength: 2048, // You can adjust the modulus length based on your security requirements
+  publicKeyEncoding: { type: 'spki', format: 'pem' },
+  privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+});
+
+//console.log('Public Key:', publicKey);
+//console.log('Private Key:', privateKey);
+console.log('...keys generated')
+
+// Function to decrypt data using Node.js crypto module
+function decryptData(encryptedData, privateKey) {
+  const privateKeyBuffer = Buffer.from(privateKey, 'base64');
+  const decryptedBuffer = crypto.privateDecrypt(
+    { key: privateKeyBuffer, passphrase: '' }, // Use a passphrase if your private key is encrypted
+    Buffer.from(encryptedData, 'base64')
+  );
+
+  return decryptedBuffer.toString('utf8');
+}
+
+// Example: Decrypt data received from the client
+// const encryptedDataFromClient = '...'; // Replace with the actual encrypted data received from the client
+// const privateKey = '...'; // Replace with your actual private key
+// const decryptedData = decryptData(encryptedDataFromClient, privateKey);
+// console.log('Decrypted Data:', decryptedData);
+
+// Save the decrypted data or perform other operations as needed
+
+//#endregion
+
 console.log('**************\n__dirname', __dirname);
 const uploadDirectory = path.join(__dirname, '..', 'y');
 const configFile = path.join(uploadDirectory, 'config.yaml');
@@ -39,6 +74,13 @@ function copyKeys(ofrom, oto, except = {}, only = null) {
 	return oto;
 }
 function isdef(x) { return x !== null && x !== undefined; }
+function isEmpty(arr) {
+  return arr === undefined || !arr
+    || (isString(arr) && (arr == 'undefined' || arr == ''))
+    || (Array.isArray(arr) && arr.length == 0)
+    || Object.entries(arr).length === 0;
+}
+function isString(param) { return typeof param == 'string'; }
 function lookup(dict, keys) {
   let d = dict;
   let ilast = keys.length - 1;
@@ -170,28 +212,31 @@ app.post('/upload', (req, res) => {
 });
 app.post('/event', (req, res) => {
 	const event = req.body;
-	//console.log('Received data:', event);
-
-	Config.events[event.id] = event;
-	showEvents()
+	let uname = event.user;
+	console.log('...user',uname)
+	let fname = path.join(uploadDirectory, 'users',uname+'.yaml');
+	if (nundef(Users[uname])) {
+		let exists = fs.existsSync(fname);
+		if (exists){
+			const yamlFile = fs.readFileSync(fname, 'utf8');
+			Users[uname] = yaml.load(yamlFile);
+		}else Users[uname]={};
+	}
+	let udata=Users[uname]; 
+	
+	//if event.text is empty and this event exists, delete it! otherwise save it
+	if (isEmpty(event.text)){
+		let e=lookup(udata,['events',event.id]);
+		if (e) delete udata.events[event.id];
+	} else lookupSetOverride(udata,['events',event.id],event);
 
 	try {
-		// Convert the JavaScript object to a YAML string
-		const yamlData = yaml.dump(Config);
-
-		// Write the YAML string to a file
-		fs.writeFileSync(path.join(uploadDirectory, 'config.yaml'), yamlData, 'utf8');
-		console.log('Config file updated successfully.');
+		const yamlData = yaml.dump(udata);
+		fs.writeFileSync(fname, yamlData, 'utf8');
 	} catch (error) {
 		console.error('Error writing YAML file:', error);
 	}
-	// Process the received JSON object as needed
-	//update this event!
-	//ich sollte am server ein Config dict haben!
-
-	res.json({ message: `event ${event.id} updated!`, config:Config });
-	// console.log('req',Object.keys(req.query)); //Object.keys(req.body));
-	// res.json({msg:'YEAH!!!!'});
+	res.json({ message: `event ${event.id} updated!`, user:udata });
 });
 app.post('/save', (req, res) => {
 	const body = req.body;
@@ -248,9 +293,21 @@ app.post('/save', (req, res) => {
 	}
 	res.json({ message: `save mode:${mode} ${fname} *** successful ***`, config: Config, session: Session });
 });
+app.post('/newuser', (req, res) => {
+	let name = req.body.name;
+	let data = req.body;
+	console.log('data',data)
+	let fname = path.join(uploadDirectory, 'users', name+'.yaml');
+	lookupSetOverride(Config,['users',name],data);
+	lookupSetOverride(Session,['users',name],data);
+	let y = yaml.dump(data);
+	fs.writeFileSync(fname, y, 'utf8');
+	saveConfig();
+	res.json({ message: `added user ${name} *** successful ***`, config: Config, session: Session });
+});
 app.get('/load', (req, res) => {
 	try {
-		console.log('______\nquery',req.query);
+		//console.log('______\nquery',req.query);
 		let params = req.query;
 		let result={};
 		if (params.config) result.config=Config;

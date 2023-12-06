@@ -22,21 +22,33 @@ async function onclickAdd() {
 
 
 }
-function onclickDay(ev) {
-	//id kann ja nur die day id sein!!!!
-	let tsDay = evToId(ev); //ev.target.getAttribute('date'); //evToTargetAttribute(ev,'date'); //ts for this day
-	let tsCreated = Date.now()
-	let id = generateEventId(tsDay, tsCreated);
-	let o = { id: id, created: tsCreated, day: tsDay, from: null, to: null, title: '', text: '', user: ClientData.userid, subscribers: [] };
+async function onclickColors() {
+	showTitle('Set Color Theme');
+	//showColors('dMain', M.playerColors, onclickColor);
+	let d = mDom('dMain', { hpadding:20, display: 'flex', gap: '2px 4px', wrap: true });
 
-	Serverdata.config.events[id] = o;
-	// console.log(id,o);
+	let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
+	list = M.playerColors.concat(grays);
 
-	let d1 = addEditable(ev.target, { w: '100%' }, { id: id, onEnter: onEventEdited });
-	//console.log(d1);
-
-	//trag dieses event ein!
-	//soll ich das event hier eintragen oder erst wenn es einen content hat?
+	//3x3x3x5 colors sind es + 15 grays
+	let i = 0;
+	for (const c of list) {
+		let dc = mDom(d, { w: 50, h: 50, bg: c, fg: idealTextColor(c) });
+		dc.onclick = onclickColor; 
+		mStyle(dc, { cursor: 'pointer' }); 
+		i++; if (i % 15 == 0) mDom(d, { w: '100%', h: 0 });
+	}
+}
+async function onclickColor(ev) {
+	let c = ev.target.style.background;
+	c = colorHex(c);
+	setColors(c);
+	if (U){
+		U.color = c;
+		let data = { name: U.name, color: U.color };
+		o = { data: data, path: `users.${U.name}`, mode: 'cs' }; 
+		Serverdata = await uploadJson('save', o);
+	}
 }
 async function onclickItem(ev) {
 	//the key of the superdi item should be saved in 'key' attribute
@@ -59,9 +71,11 @@ async function onclickPlay() { alert('COMING SOON!'); } //test0_addToCollection(
 async function onclickPrev() { showImageBatch(-1); }
 async function onclickNext() { showImageBatch(1); }
 async function onclickSchedule() {
+	//if no user, set user to shared
+	if (!U) {console.log('you have to be logged in to use this menu!!!'); return;}
 	showTitle('Calendar');
 	let d1 = mDiv('dMain', { w: 800, h: 800 }); //, bg: 'white' })
-	let x = DA.calendar = uiTypeCalendar(d1, U?U.color:rColor(),null, null, getConfig('events'));
+	let x = DA.calendar = uiTypeCalendar(d1, U?U.color:rColor(),null, null, getEvents());
 }
 async function onclickUpload() {
 	//console.log('onclickUpload');
@@ -77,6 +91,13 @@ async function onclickUpload() {
 	//console.log('uploaded', data);
 	await updateCollections();
 
+}
+async function onclickUser() {
+	let uname = await mPrompt(); //returns null if invalid!
+	console.log('onclickUser:', uname);
+	//wenn der user schon bekannt ist dann soll ihn einfach laden
+
+	await userLoad(uname);
 }
 async function onclickView() {
 	showTitle('Collection:');
@@ -127,19 +148,4 @@ async function ondropPreviewImage(url, key) {
 		mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
 		mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
 	}
-}
-async function onEventEdited(ev) {
-	let id = evToId(ev);
-	let o = Serverdata.config.events[id];
-	let inp = mBy(id);
-	if (inp.value) {
-		//console.log('send value',inp.value,'to server')
-		o.text = inp.value;
-		await serverUpdate('event',o)
-	}
-
-	//console.log('event',id,o,inp)
-	//ich moecht das event mit await an den node js server schicken,
-	//dort saven mit der id oder einer neuen id
-
 }

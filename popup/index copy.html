@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Event Popup Form</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			margin: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+
+		.popup {
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			overflow: hidden;
+			max-width: 400px;
+			width: 100%;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 8px;
+			color: #333;
+		}
+
+		input,
+		textarea {
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			margin-bottom: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+		}
+
+		button {
+			background-color: #4caf50;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="popup">
+		<h2>Event Details</h2>
+		<form>
+			<div class="form-group">
+				<label for="eventTime">Event Time:</label>
+				<input type="text" id="eventTime" name="eventTime" placeholder="Enter time from to" required>
+			</div>
+			<div class="form-group">
+				<label for="subscribe">Subscribe:</label>
+				<input type="text" id="subscribe" name="subscribe" placeholder="Enter your name">
+			</div>
+			<div class="form-group">
+				<label for="comment">Add a Comment:</label>
+				<textarea id="comment" name="comment" placeholder="Write your comment here"></textarea>
+			</div>
+			<button type="submit">Submit</button>
+		</form>
+	</div>
+</body>
+
+</html>

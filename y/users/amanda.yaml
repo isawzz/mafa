@@ -1,0 +1,40 @@
+name: amanda
+color: '#0055ff'
+events:
+  y_1701417600000_1701617690700:
+    id: y_1701417600000_1701617690700
+    created: 1701617690700
+    day: '1701417600000'
+    time: ''
+    text: backen
+    user: amanda
+    shared: false
+    subscribers: []
+  l_1701763200000_1701617695679:
+    id: l_1701763200000_1701617695679
+    created: 1701617695679
+    day: '1701763200000'
+    time: 14h
+    text: reiten
+    user: amanda
+    shared: false
+    subscribers: []
+  h_1701849600000_1701663481345:
+    id: h_1701849600000_1701663481345
+    created: 1701663481345
+    day: '1701849600000'
+    time: 9h
+    text: |
+      nussbrezel
+    user: amanda
+    shared: false
+    subscribers: []
+  p_1702281600000_1701705622122:
+    id: p_1702281600000_1701705622122
+    created: 1701705622122
+    day: '1702281600000'
+    time: ''
+    text: dance
+    user: amanda
+    shared: false
+    subscribers: []

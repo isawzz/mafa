@@ -1,4 +1,9 @@
 {
+	"editor.quickSuggestions": {
+		"other": false,
+		"comments": false,
+		"strings": false
+	},
 	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
 	"editor.codeLens": false,
@@ -15,7 +20,7 @@
   "terminal.integrated.fontSize": 18,
   "debug.console.fontSize": 18,
   "git.enableSmartCommit": true,
-  "window.zoomLevel": 0,
+  "window.zoomLevel": 1,
   "breadcrumbs.enabled": false,
   "editor.minimap.enabled": false,
   "terminal.integrated.defaultProfile.windows": "Command Prompt",

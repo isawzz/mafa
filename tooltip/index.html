@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tooltip Example</title>
+	<style>
+		/* Tooltip container style */
+		.tooltip {
+			position: absolute;
+			display: none;
+			background-color: #333;
+			color: #fff;
+			padding: 5px;
+			border-radius: 3px;
+			font-size: 14px;
+		}
+
+		/* Add some styles to the element for visual feedback */
+		#tooltipElement {
+			position: relative;
+			width: 200px;
+			height: 100px;
+			background-color: lightblue;
+			text-align: center;
+			line-height: 100px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+
+	<!-- HTML element with an ID for reference in JavaScript -->
+	<div id="tooltipElement">Hover me for a tooltip</div>
+
+	<!-- Tooltip container -->
+	<div id="tooltip" class="tooltip">This is a tooltip</div>
+
+	<script>
+		// Get the element and tooltip by their IDs
+		const element = document.getElementById('tooltipElement');
+		const tooltip = document.getElementById('tooltip');
+
+		// Add an "on mouse hover" event handler
+		element.addEventListener('mouseover', function () {
+			// Calculate the position of the tooltip
+			const rect = element.getBoundingClientRect();
+			const tooltipTop = rect.top - tooltip.offsetHeight - 10;
+			const tooltipLeft = rect.left + (element.offsetWidth - tooltip.offsetWidth) / 2;
+
+			// Set the position of the tooltip
+			tooltip.style.top = tooltipTop + 'px';
+			tooltip.style.left = tooltipLeft + 'px';
+
+			// Display the tooltip
+			tooltip.style.display = 'block';
+		});
+
+		// Add an "on mouse leave" event handler
+		element.addEventListener('mouseout', function () {
+			// Hide the tooltip when the mouse leaves the element
+			tooltip.style.display = 'none';
+		});
+	</script>
+
+</body>
+
+</html>

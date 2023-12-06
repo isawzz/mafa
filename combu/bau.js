@@ -1,263 +1,119 @@
 
-function colorToNumber(color='yellow') {
-
-	let c=colorRGB(color,true); console.log(c)
-  // Ensure each component is in the valid range (0-255)
-  red = c.r;// Math.max(0, Math.min(255, red));
-  green = c.g;//Math.max(0, Math.min(255, green));
-  blue = c.b;//Math.max(0, Math.min(255, blue));
-
-  // Combine components into a single integer
-  const numberRepresentation = (red << 16) + (green << 8) + blue;
-
-  return numberRepresentation;
+function getEvents() { return U.data.events; }
+function getEvent(id) { return U.data.events[id]; } //lookup(U.Serverdata,['config','events',id]);//evToEventObject(ev);
+function setEvent(id, o) { 
+	//console.log('text',o.text)
+	Items[id] = lookupSetOverride(U.data, ['events', id], o); 
+	mBy(id).value=o.text;
+	return o; 
+} 
+async function deleteEvent(id){
+	let result = await simpleUpload('event', {id:id,user:U.name}); 
+	delete Items[id]; 
+	mBy(id).remove(); 
+	//console.log('result', result);  
+}
+async function updateEvent(id, o) { 
+	let result = await simpleUpload('event', o); 
+	setEvent(id, o); 
+	console.log('result', result); 
 }
 
-function generateGradientColor(startColor, endColor, steps) {
-  // Create an empty array to store the gradient colors
-  const gradientColors = [];
+function onclickDay(ev) {
+	let tsDay = evToId(ev);
+	let tsCreated = Date.now()
+	let id = generateEventId(tsDay, tsCreated);
+	let uname = U ? U.name : 'guest';
+	let o = { id: id, created: tsCreated, day: tsDay, time: '', text: '', user: uname, shared: false, subscribers: [] };
+	Items[id] = o;
+	let d1 = addEditable(ev.target, { w: '100%' }, { id: id, onEnter: onEventEdited, onclick: onclickExistingEvent });
 
-  // Iterate over the number of steps
-  for (let i = 0; i < steps; i++) {
-    // Calculate the step size
-    const stepSize = 1 / steps;
-
-    // Calculate the current color
-    const currentColor = startColor + (endColor - startColor) * stepSize;
-
-    // Add the current color to the gradient colors array
-    gradientColors.push(currentColor);
-  }
-
-  // Return the gradient colors array
-  return gradientColors;
 }
-function getComplementaryColor(hexColor) {
-	// Remove the hash symbol if present
-	hexColor = hexColor.replace(/^#/, '');
-
-	// Convert hex to RGB
-	const r = parseInt(hexColor.slice(0, 2), 16);
-	const g = parseInt(hexColor.slice(2, 4), 16);
-	const b = parseInt(hexColor.slice(4, 6), 16);
-
-	// Calculate complementary color
-	const compR = 255 - r;
-	const compG = 255 - g;
-	const compB = 255 - b;
-
-	// Convert RGB back to hex
-	const compHexColor = `#${compR.toString(16).padStart(2, '0')}${compG.toString(16).padStart(2, '0')}${compB.toString(16).padStart(2, '0')}`;
-
-	return compHexColor;
-}
-function getSimilarColor(hexColor) {
-	hexColor = hexColor.replace(/^#/, '');
-
-	const r = parseInt(hexColor.slice(0, 2), 16);
-	const g = parseInt(hexColor.slice(2, 4), 16);
-	const b = parseInt(hexColor.slice(4, 6), 16);
-
-	const hslColor = rgbToHsl(r, g, b);
-
-	// Adjust the hue, saturation, and lightness
-	const adjustedColor = hslToRgb(hslColor.h, Math.min(hslColor.s + 20, 100), Math.min(hslColor.l + 10, 100));
-
-	const adjustedHexColor = `#${adjustedColor.r.toString(16).padStart(2, '0')}${adjustedColor.g.toString(16).padStart(2, '0')}${adjustedColor.b.toString(16).padStart(2, '0')}`;
-
-	return adjustedHexColor;
-
-	// Convert RGB to HSL
-	function rgbToHsl(r, g, b) {
-		r /= 255;
-		g /= 255;
-		b /= 255;
-
-		const max = Math.max(r, g, b);
-		const min = Math.min(r, g, b);
-
-		let h, s, l = (max + min) / 2;
-
-		if (max === min) {
-			h = s = 0; // grayscale
-		} else {
-			const d = max - min;
-			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-			switch (max) {
-				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-				case g: h = (b - r) / d + 2; break;
-				case b: h = (r - g) / d + 4; break;
-			}
-
-			h /= 6;
-		}
-
-		return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
-	}
-
-	// Convert HSL to RGB
-	function hslToRgb(h, s, l) {
-		h /= 360;
-		s /= 100;
-		l /= 100;
-
-		let r, g, b;
-
-		if (s === 0) {
-			r = g = b = l; // achromatic
-		} else {
-			const hue2rgb = (p, q, t) => {
-				if (t < 0) t += 1;
-				if (t > 1) t -= 1;
-				if (t < 1 / 6) return p + (q - p) * 6 * t;
-				if (t < 1 / 2) return q;
-				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-				return p;
-			};
-
-			const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-			const p = 2 * l - q;
-
-			r = hue2rgb(p, q, h + 1 / 3);
-			g = hue2rgb(p, q, h);
-			b = hue2rgb(p, q, h - 1 / 3);
-		}
-
-		return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+async function onEventEdited(ev) {
+	let id = evToId(ev);
+	let o = Items[id];
+	let inp = mBy(id);
+	if (inp.value) {
+		o.text = inp.value;
+		//o.text = await(encryptData(inp.value));
+		console.log('text',o.text);
+		await updateEvent(id, o);
 	}
 }
-function getMatchingColor(hexColor, diff) {
-	// Remove the hash symbol if present
-	hexColor = hexColor.replace(/^#/, '');
+function onclickExistingEvent(ev) { showEventOpen(evToId(ev)); }
 
-	// Convert hex to RGB
-	const r = parseInt(hexColor.slice(0, 2), 16);
-	const g = parseInt(hexColor.slice(2, 4), 16);
-	const b = parseInt(hexColor.slice(4, 6), 16);
+async function onclickSetEditedEvent(id, text, time) {
+	let e = getEvent(id);
+	e.time = time;
+	e.text = text;
+	await updateEvent(id, e);
+	closePopup();
+}
+function showEventOpen(id) {
 
-	// Convert RGB to HSL
-	const hslColor = rgbToHsl(r, g, b);
+	let e = getEvent(id);
 
-	// Adjust the hue (e.g., increase by 180 degrees)
-	const adjustedHue = (hslColor.h + diff) % 360;
+	let date = new Date(Number(e.day));
+	let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
+	console.log('day', `${day}.${month}.${year}`);
+	let time = e.time;
 
-	// Convert back to RGB
-	const matchingColor = hslToRgb(adjustedHue, hslColor.s, hslColor.l);
 
-	// Convert RGB back to hex
-	const matchingHexColor = `#${matchingColor.r.toString(16).padStart(2, '0')}${matchingColor.g.toString(16).padStart(2, '0')}${matchingColor.b.toString(16).padStart(2, '0')}`;
+	let popup = openPopup();
 
-	return matchingHexColor;
+	let d = mBy(id); //input element for this event!
+	console.log('d', d)
+	let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 120];
 
-	// Convert RGB to HSL
-	function rgbToHsl(r, g, b) {
-		r /= 255;
-		g /= 255;
-		b /= 255;
+	mStyle(popup, { left: x + w / 2 - wp / 2, top: y + h / 2 - hp / 2, w:wp, h:hp });
 
-		const max = Math.max(r, g, b);
-		const min = Math.min(r, g, b);
+	let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
+	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
+	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
+	mOnEnter(inpt);
+	let ta = mDom(popup, { rounding: 4, matop:7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 3, value: e.text });
 
-		let h, s, l = (max + min) / 2;
+	let line=mDom(popup,{matop:6,w:'100%'}); //,'align-items':'space-between'});
+	let buttons=mDom(line,{display:'inline-block'});
+	let bsend=mButton('Send*', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons, {fg:'red'});
+	mTooltip(bsend,'data are being sent to the server!')
+	let blocal=mButton('Save local*', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons,{hmargin:10});
+	mTooltip(blocal,'data are kept locally only, but you need to load this data at login!')
+	//mButton('Cancel', () => closePopup(), buttons,{hmargin:10})
+	mButton('Delete', () => {deleteEvent(id);closePopup();}, buttons, )
+	mDom(line,{fz:'90%',maright:5,float:'right',},{html:`by ${e.user}`});
 
-		if (max === min) {
-			h = s = 0; // grayscale
-		} else {
-			const d = max - min;
-			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+	//mNode(e, popup)
 
-			switch (max) {
-				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-				case g: h = (b - r) / d + 2; break;
-				case b: h = (r - g) / d + 4; break;
-			}
+}
+async function simpleUpload(route, o) {
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	server += `/${route}`;
 
-			h /= 6;
-		}
+	const response = await fetch(server, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors',
+		body: JSON.stringify(o)
+	});
 
-		return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+	if (response.ok) {
+		const data = await response.json();
+		return data;
+	} else {
+		return 'ERROR 1';
 	}
-
-	// Convert HSL to RGB
-	function hslToRgb(h, s, l) {
-		h /= 360;
-		s /= 100;
-		l /= 100;
-
-		let r, g, b;
-
-		if (s === 0) {
-			r = g = b = l; // achromatic
-		} else {
-			const hue2rgb = (p, q, t) => {
-				if (t < 0) t += 1;
-				if (t > 1) t -= 1;
-				if (t < 1 / 6) return p + (q - p) * 6 * t;
-				if (t < 1 / 2) return q;
-				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-				return p;
-			};
-
-			const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-			const p = 2 * l - q;
-
-			r = hue2rgb(p, q, h + 1 / 3);
-			g = hue2rgb(p, q, h);
-			b = hue2rgb(p, q, h - 1 / 3);
-		}
-
-		return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
-	}
-
-	// // Example usage:
-	// const hexColor = '#3498db'; // Replace with your hex color
-	// const matchingColor = getMatchingColor(hexColor);
-
-	// console.log(`Matching color for ${hexColor} is ${matchingColor}`);
-
-}
-function ____mButtonX(dParent, handler, pos = 'tr', sz = 25, color = 'white') {
-	// let d2 = mDiv(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' }, null, `<i class="fa fa-times" style="font-size:${sz}px;"></i>`, 'btnX');
-	let d2 = mDom(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' });
-	showImage('times', d2, { fg: color })
-	mPlace(d2, pos, 2);
-	d2.onclick = handler;
-	return d2;
-}
-function mButtonX(dParent, sz = 30, id = 'dPopup') {
-	mIfNotRelative(dParent);
-	let bx = mDom(dParent, { position: 'absolute', top: -2, right: -5, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
-	bx.onclick = () => mBy(id).remove();
-	let o = M.superdi.xmark;
-	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: 'dimgray', display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-
-}
-function numberToColor(numberRepresentation) {
-  // Extract red, green, and blue components
-  const red = (numberRepresentation >> 16) & 255;
-  const green = (numberRepresentation >> 8) & 255;
-  const blue = numberRepresentation & 255;
-
-  return colorFrom({ r:red, g:green, b:blue });
-}
-async function serverUpdate(route, o) {
-	let data = await uploadJson(route, o)
-	if (isdef(data.session)) Session = data.session;
-	if (isdef(data.config)) Config = data.config;
-
-}
-function showWheel(list,bg) {
-	mClear('dMessage');
-	let dw1 = mDom('dMessage', { display: 'flex', 'flex-wrap':'wrap', gap: 5, bg: bg, matop: 5, padding: 5 });
-	for (const x of list) { mDom(dw1, { w: 90, h: 50, bg: x, fg: idealTextColor(x.substring(0, 7)) }, { html: x }); }
-	return dw1;
-}
-async function userLogin(name, color) {
-	//let data = await uploadJson('save',{data:{}})
 }
 
+function mTooltip(elem,content){
+	mIfNotRelative(elem);
+	let d=mDom(elem,{display:'none',rounding:6,padding:2,h:60,wmin:120,bg:'dimgrey',fg:'white',position:'absolute',bottom:22},{html:content});
 
+	elem.onmouseover=()=>d.style.display='block';
+	elem.onmouseout=()=>d.style.display='none';
+
+}
 
 
 

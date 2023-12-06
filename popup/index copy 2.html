@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Event Popup Form</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			margin: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+
+		.popup {
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			overflow: hidden;
+			max-width: 400px;
+			width: 100%;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 8px;
+			color: #333;
+		}
+
+		input,
+		textarea {
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			margin-bottom: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+		}
+
+		button {
+			background-color: #4caf50;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+
+		.comments {
+			margin-top: 20px;
+		}
+
+		.comment {
+			margin-bottom: 10px;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			background-color: #f9f9f9;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="popup">
+		<h2>Event Details</h2>
+		<form>
+			<div class="form-group">
+				<label for="startTime">Start Time:</label>
+				<input type="time" id="startTime" name="startTime" required>
+			</div>
+			<div class="form-group">
+				<label for="endTime">End Time:</label>
+				<input type="time" id="endTime" name="endTime" required>
+			</div>
+			<div class="form-group">
+				<label for="subscribe">Subscribe:</label>
+				<input type="checkbox" id="subscribe" name="subscribe"> Subscribe to the event
+			</div>
+			<div class="form-group">
+				<label for="comment">Add a Comment:</label>
+				<textarea id="comment" name="comment" placeholder="Write your comment here"></textarea>
+			</div>
+			<button type="submit">Submit</button>
+		</form>
+
+		<div class="comments">
+			<h3>Comments</h3>
+			<div class="comment">Great event! Looking forward to it.</div>
+			<div class="comment">I'll be there!</div>
+			<!-- Additional comments would go here -->
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,4 +1,22 @@
 
+function addEditable(dParent, styles = {}, opts = {}) {
+	//let html= `<p contenteditable="true">hallo</p>`; let x=mDom(dParent,{},{html:html});
+	addKeys({ tag: 'input', classes: 'plain' }, opts)
+	addKeys({ wmax: '90%', box: true }, styles);
+	let x = mDom(dParent, styles, opts); // { tag: 'input', classes: 'plain' });
+	x.focus();
+	x.addEventListener('keyup', ev => {
+		if (ev.key == 'Enter') {
+			mBy('dummy').focus();
+			// let text=x.value;
+			// let d=mDiv(dParent,{},null,x.value);
+			// x.remove();
+			if (isdef(opts.onEnter)) opts.onEnter(ev)
+		}
+	}); //console.log('HALLO'); });
+	//mPlace(x,'cc'); //(x,0,20)
+	return x;
+}
 function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);
 	return arr;
@@ -352,6 +370,15 @@ function loadPlayerColors() {
 	//console.log('list', list.length)
 	M.playerColors = list;
 	return list;
+}
+function mButtonX(dParent, sz = 30, offset=0, id=null) {
+	mIfNotRelative(dParent);
+	let popup = isdef(id) ? mBy(id) : dParent;
+	if (nundef(id)) id = dParent.id;
+	let bx = mDom(dParent, { position: 'absolute', top: -2+offset, right: -5+offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
+	bx.onclick = ev => { evNoBubble(ev); popup.remove() };
+	let o = M.superdi.xmark;
+	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: 'dimgray', display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
 function mCropper(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
@@ -1070,11 +1097,11 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	}
 	function activate(ev) {
 		//currently selected menu button
-		delete DA.calendar;	mClear('dMain');mClear(dTitle)
-	
+		delete DA.calendar; mClear('dMain'); mClear(dTitle)
+
 		let links = document.getElementsByClassName('nav-link');
 		//console.log('links',links)
-		let inner = isString(ev)?ev:ev.target.innerHTML;
+		let inner = isString(ev) ? ev : ev.target.innerHTML;
 		for (const el of links) {
 			if (el.innerHTML == inner) mClass(el, 'active');
 			else mClassRemove(el, 'active');
@@ -1113,6 +1140,16 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	var ui = extra1();
 	return { activate: activate, disable: disable, enable: enable, ui: ui };
 }
+function mOnEnter(elem, setter) {
+	elem.addEventListener('keydown', ev => {
+		if (ev.key == 'Enter') {
+			ev.preventDefault();
+			mBy('dummy').focus();
+			if (setter) setter(ev);
+		}
+	});
+
+}
 async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isAlphanumeric) {
 	return new Promise((resolve, reject) => {
 		mClear(dParent)
@@ -1131,7 +1168,7 @@ async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isA
 					resolve(null);
 				}
 			} else if (ev.key == 'Escape') {
-				console.log('escape!')
+				//console.log('esc!')
 				resolve(null);
 			}
 		};
@@ -1287,6 +1324,53 @@ function resizeTo(tool, wnew, hnew) {
 		wnew = aspectRatio * hnew;
 	}
 	redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
+}
+async function serverUpdate(route, o) { Serverdata = await uploadJson(route, o); }
+function setColors(c) {
+	let hsl = colorHSL(c, true);
+	let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
+	let hstart = (hue + diff); //das ist also 223
+	for (i = hstart; i <= hstart + 235; i += 20) {
+		let h = i % 360;
+		let c1 = colorFromHSL(h, 100, 75);
+		wheel.push(c1);
+	}
+	//console.log('wheel', wheel); showWheel(wheel, c); // hat 12 colors
+
+	let cc = idealTextColor(c);
+	let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
+	let palc = colorPalette(cc);
+	//console.log('pal',pal); //hat 11 colors von black zu white, pal[5] ist die gewaehlte
+	// 0 1 2 3 4 5 6 7 8 9 10
+	function light(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 + i]; }
+	function dark(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 - i]; }
+	function simil(i = 3) { return cc == 'white' ? dark(i) : light(i); }
+	function contrast(i = 3) { return cc == 'white' ? light(i) : dark(i); }
+
+	//let list=	
+
+	//muss immer dann wenn U geaendert wird called werden!
+	setCssVar('--bgBody', c);
+	setCssVar('--bgButton', 'transparent')
+	setCssVar('--bgButtonActive', light(3))
+	setCssVar('--bgNav', simil(2))
+	setCssVar('--bgLighter', light())
+	setCssVar('--bgDarker', dark())
+
+	setCssVar('--fgButton', contrast(3))
+	setCssVar('--fgButtonActive', cc == 'black' ? dark(2) : c)
+	setCssVar('--fgButtonDisabled', 'silver')
+	setCssVar('--fgButtonHover', contrast(5))
+	// setCssVar('--bgDocument', rColor())
+	// setCssVar('--fgDocument', rColor())
+	setCssVar('--fgTitle', contrast(4))
+	setCssVar('--fgSubtitle', contrast(3))
+}
+function showWheel(list, bg) {
+	mClear('dMessage');
+	let dw1 = mDom('dMessage', { display: 'flex', 'flex-wrap': 'wrap', gap: 5, bg: bg, matop: 5, padding: 5 });
+	for (const x of list) { mDom(dw1, { w: 90, h: 50, bg: x, fg: idealTextColor(x.substring(0, 7)) }, { html: x }); }
+	return dw1;
 }
 function showImage(key, dParent, styles = {}) {
 	let o = M.superdi[key];
@@ -1576,6 +1660,37 @@ async function uploadJson(route, o) {
 		return 'ERROR 2';
 	}
 }
+async function userLoad(uname) {
+	UI.nav.activate('no')
+	if (nundef(uname)) uname = localStorage.getItem('username');
+	//U = null;
+	//uname = null;
+	if (isdef(uname) && (!U || U.name != uname)) {
+		//what if the current U has unsaved data??? TODO
+		let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
+		if (!data) {
+			console.log('adding new user!!!', uname);
+			data = { name: uname, color: rChoose(M.playerColors) };
+			await serverUpdate('newuser', data);
+		}
+		assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
+		localStorage.setItem('username', uname);
+		U = data;
+		U.data = await mGetYaml(`../y/users/${uname}.yaml`);
+	}
+	mClear(dUser);
+	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+
+	let d;
+	if (U) {
+		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
+		setColors(U.color)
+	} else {
+		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' };
+		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
+	}
+	d.onclick = onclickUser;
+}
 
 //#region colors
 function sortByHue(colors) {
@@ -1696,15 +1811,4 @@ function mFleetingMessage(msg, styles, ms, fade) {
 	return dFleetingMessage;
 }
 //#endregion
-
-//#region user
-async function onclickUser() {
-	let uname = await mPrompt(); //returns null if invalid!
-	console.log('onclickUser:', uname);
-	//wenn der user schon bekannt ist dann soll ihn einfach laden
-
-	await userLoad(uname);
-}
-
-//#endregion user
 

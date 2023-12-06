@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Form Builder</title>
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<script type="text/template" id="formTmpl">
+  <form name="<%= name %>">
+    <div id="fields"></div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+  </form>
+</script>
+    
+
+<script type="text/template" id="inputTmpl">
+  <div class="form-group">
+    <label for="<%= name %>"><%= name %></label>
+    <input class="form-control" type="text" name="<%= name %>" placeholder="<%= placeholder %>" <%= required ? 'required' : '' %>>
+  </div>
+</script>
+  
+<script type="text/template" id="emailTmpl">
+  <div class="form-group">
+    <label for="<%= name %>"><%= name %></label>
+    <input class="form-control" type="email" name="<%= name %>" placeholder="<%= placeholder %>" <%= required ? 'required' : '' %>>
+  </div>
+</script>
+
+<div class="container">
+
+  <h1>Build a Form</h1>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form name="builder">
+
+        <div class="page-header">
+          <h2>Add New Field</h2>
+        </div>
+
+        <div class="form-group">
+          <label for="fieldType">Type</label>
+          <select id="typeInput" name="fieldType" class="form-control">
+            <option value="input">Basic Input</option>
+            <option value="password">Password</option>
+            <option value="email">Email</option>
+            <option value="tel">Phone</option>
+            <option value="textarea">Text Area</option>
+            <option value="select">Dropdown</option>
+            <option value="radio">Radio</option>
+            <option value="checkbox">Checkbox</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Field Name</label>
+          <input id="nameInput" type="text" class="form-control" placeholder="Enter a field name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="placeholder">Placeholder</label>
+          <input id="placeholderInput" type="text" class="form-control"
+          placeholder="Enter a placeholder">
+        </div>
+
+        <div class="checkbox">
+          <label>
+            <input id="requiredInput" type="checkbox"> Required?
+          </label>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Add Field</button>
+
+      </form>
+    </div>
+  </div>
+
+  <div id="preview"></div>
+
+  <button id="create" class="btn btn-primary">Save Form</button>
+  
+</div>
+<!-- partial -->
+  <script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script  src="../popup1/script.js"></script>
+
+</body>
+</html>

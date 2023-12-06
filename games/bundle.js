@@ -2972,7 +2972,7 @@ function mMagnifyOnHoverControlRemove(elem) {
 function mMeasure(d) { let r = getRect(d); mStyle(d, { w: r.w, h: r.h }); return r; }
 function mNode(o, dParent, title) {
 	recConvertLists(o);
-	console.log('mNode o', o);
+	//console.log('mNode o', o);
 	let d = mCreate('div');
 	mYaml(d, o);
 	let pre = d.getElementsByTagName('pre')[0];

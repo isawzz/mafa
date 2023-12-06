@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Event Popup Form</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f4f4f4;
+			margin: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+		}
+
+		.popup {
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+			overflow: hidden;
+			max-width: 400px;
+			width: 100%;
+			padding: 20px;
+			box-sizing: border-box;
+		}
+
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 8px;
+			color: #333;
+		}
+
+		input,
+		textarea {
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			margin-bottom: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+		}
+
+		button {
+			background-color: #4caf50;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 16px;
+			margin-right: 10px;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+
+		.cancel-button {
+			background-color: #ddd;
+			color: #333;
+		}
+
+		.subscribe-group {
+			display: flex;
+			align-items: center;
+			margin-bottom: 20px;
+		}
+
+		#subscribe {
+			margin-right: 10px;
+		}
+
+		.subscribed-list {
+			margin-left: 30px;
+			color: #666;
+		}
+
+		.subscribed-list h4 {
+			margin-top: 0;
+		}
+
+		.subscribed-list-item {
+			margin-bottom: 5px;
+		}
+
+		.comments {
+			margin-top: 20px;
+		}
+
+		.comment {
+			margin-bottom: 10px;
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			background-color: #f9f9f9;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="popup">
+		<h2>Event Details</h2>
+		<form>
+			<div class="form-group">
+				<label for="eventTime">Event Time:</label>
+				<input type="time" id="eventTime" name="eventTime" required>
+			</div>
+			<div class="subscribe-group form-group">
+				<input type="checkbox" id="subscribe" name="subscribe">
+				<label for="subscribe">Subscribe to the event</label>
+				<div class="subscribed-list">
+					<h4>Subscribed People:</h4>
+					<div class="subscribed-list-item">John Doe</div>
+					<div class="subscribed-list-item">Jane Smith</div>
+					<!-- Additional subscribed people would go here -->
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="comment">Add a Comment:</label>
+				<textarea id="comment" name="comment" placeholder="Write your comment here"></textarea>
+			</div>
+			<button type="submit">Submit</button>
+			<button type="button" class="cancel-button" onclick="closeForm()">Cancel</button>
+		</form>
+
+		<div class="comments">
+			<h3>Comments</h3>
+			<div class="comment">Great event! Looking forward to it.</div>
+			<div class="comment">I'll be there!</div>
+			<!-- Additional comments would go here -->
+		</div>
+	</div>
+
+	<script>
+		function closeForm() {
+			// You can implement additional logic here if needed
+			document.querySelector('.popup').style.display = 'none';
+		}
+	</script>
+</body>
+
+</html>

@@ -1,4 +1,89 @@
 //*** collections tests */
+async function test33_colorjs(){
+	await prelims();
+	UI.nav.activate('schedule');
+	onclickSchedule();
+
+
+
+	let c,hsl,c1,c2,c3,c4,c5,hsl1,hsl2,hsl3;
+	c=U.color;
+	hsl=colorHSL(c,true);
+
+	//console.log(colorHex('yellow'))
+	function wh(c1,c2){return generateArrayColors(colorHex(c1), colorHex(c2), 10);}
+	let wheel = wh(c,'yellow').concat(wh('yellow','red')); //generateArrayColors(c, '#ffff00', 10); //arrRepeat(12,'orange');
+	//wheel = wh('yellow','red')
+
+	function whh(c1,c2){return generateArrayColors(colorHex(c1), colorHex(c2), 10);}
+	function genc(c,hinc){	let hsl=colorHSL(c,true);return colorHSLBuild((hsl.h+hinc)%360,hsl.s*100,hsl.l*100);}
+	function cinc(c,hinc,sinc,linc){let hsl=colorHSL(c,true);return colorHSLBuild((hsl.h+hinc)%360,clamp(hsl.s*100+sinc,0,100),clamp(hsl.l*100+linc,0,100));}
+	function arrd(c,hinc,sinc,linc,n){let r=[];for(let i=0;i<n;i++){r.push(cinc(c,hinc*i,sinc*i,linc*i));}return r;}
+
+	function light(c,lper=75){let hsl=colorHSL(c,true);return colorHSLBuild(hsl.h,hsl.s*100,lper);}
+	function sat(c,sper=100){let hsl=colorHSL(c,true);return colorHSLBuild(sper,hsl.s*100,hsl.l*100);}
+	function hue(c,hdeg){let hsl=colorHSL(c,true);return colorHSLBuild(hdeg,hsl.s*100,hsl.l*100);}
+
+	c=light(c,75);
+	c=cinc(c,30,0,0);
+	wheel=arrd(c,30,0,0,12);
+	console.log(wheel);
+
+	hsl=colorHSL(c,true);
+	console.log('hsl',hsl);
+	c1=colorHSLBuild(hsl.h,hsl.s*100,hsl.l*100);
+	hsl1=colorHSL(c1,true);
+	console.log('hsl1',hsl1);
+	c2=genc(c1,30); console.log('c2 raw',c2)
+	hsl2=colorHSL(c2,true);
+	console.log('hsl2',hsl2);
+
+	c3=cinc(c2,30,10,20);
+	hsl3=colorHSL(c3,true);
+	console.log('hsl3',hsl3);
+
+	//console.log(genc('red',0));
+	//return;
+	//console.log('wheel',wheel)
+	showWheel(wheel, 'white'); // hat 12 colors
+}
+async function test32_colorjs(){
+	await prelims();
+	UI.nav.activate('schedule');
+	onclickSchedule();
+
+	let wheel = arrRepeat(12,'orange');
+
+	var rainbow = new Rainbow();
+
+	let c1=U.color; //BLUEGREEN;
+	console.log('color',c1);
+	let c2=getMatchingColor(c1,90);
+	let c3=getMatchingColor(c2,90);
+	c3=getComplementaryColor(c1);
+
+
+	//return;
+
+	rainbow.setSpectrum(c1,c3); //rColor(75),rColor(75)); //'red','green'); //'#ffffff', '#3E296B');
+	rainbow.setNumberRange(1, 12); 
+	//rainbow.colourAt(number); // based on the numbers from your array, this would return the color you want
+	wheel=[];
+	for(let i=0;i<12;i++) wheel.push('#'+rainbow.colourAt(i));
+	//shuffle(wheel)
+	console.log('wheel',wheel)
+
+	// wheel = generateGradientColor(colorToNumber('red'),colorToNumber('blue'),5); //rColor(75,.5), rColor(75,.5), 12);
+	// console.log('wheel',wheel)
+	// wheel=wheel.map(x=>numberToColor(x));
+	// console.log('wheel',wheel)
+	showWheel(wheel, 'white'); // hat 12 colors
+}
+async function test31_colorjs(){
+	await prelims();
+	UI.nav.activate('colors');
+	onclickColors();
+}
 async function test30_palette(){
 	let pal = getPalette('red');
 	console.log('pal',pal);
@@ -21,7 +106,6 @@ function test26_rColors() {
 	let d = mBy('dMain'); mFlexWrap(d);
 	for (const c of plColors) { mDom(d, { w: 90, h: 25, bg: c, fg: 'white' }, { html: colorFrom(c) }); }
 }
-
 async function test24_newPrelims(){
 	if (nundef(M.superdi)) {
 		Config = await mGetYaml('../y/config.yaml');
@@ -357,7 +441,7 @@ async function test8_addDrop(){
 	await onclickAdd();
 	ondropPreviewImage('../y/bubblebath.png')
 }
-async function YES_test7_calendar(){
+async function NO_test7_calendar(){
 	await prelims();
 
 	showTitle('Add to Collections');
@@ -448,7 +532,6 @@ async function test1_showCollection() {
 	dTitle.innerHTML = 'View Collections';
 	mClear('dMain')
 }
-
 async function test0_addToCollection() {
 	await loadCollections();
 	let [emos, cats] = [M.emos, M.categories];

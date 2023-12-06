@@ -1,5 +1,260 @@
 
+//#region m
+function openPopup(ev) {
+  // Create the popup div
+  let popup = document.createElement('div');
+
+	let defStyle = {padding:25,bg:'white',fg:'black',zIndex:1000,rounding:12,position:'fixed',boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',wmin:300,hmin:200,border: '1px solid #ccc',};
+	mStyle(popup,defStyle);
+
+	//do whatever inside of popup
+	popup.innerHTML = 'hallo das ist ein schoenes kleines popup window!'
+	
+	//mStyle(popup,{box:true,top:'50%',left:'50%',transform: 'translate(-50%, -50%)'}); //position centered
+
+	let [w,h]=[popup.offsetWidth,popup.offsetHeight];
+	mStyle(popup,{left:ev.clientX-w/2,top:ev.clientY-h / 2});
+
+	mButtonX(popup,25,4);
+  document.body.appendChild(popup);
+	return popup;
+}
+function ____mButtonX(dParent, handler, pos = 'tr', sz = 25, color = 'white') {
+	// let d2 = mDiv(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' }, null, `<i class="fa fa-times" style="font-size:${sz}px;"></i>`, 'btnX');
+	let d2 = mDom(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' });
+	showImage('times', d2, { fg: color })
+	mPlace(d2, pos, 2);
+	d2.onclick = handler;
+	return d2;
+}
+//#endregion
+
 //#region colors
+function colorToNumber(color='yellow') {
+
+	let c=colorRGB(color,true); console.log(c)
+  // Ensure each component is in the valid range (0-255)
+  red = c.r;// Math.max(0, Math.min(255, red));
+  green = c.g;//Math.max(0, Math.min(255, green));
+  blue = c.b;//Math.max(0, Math.min(255, blue));
+
+  // Combine components into a single integer
+  const numberRepresentation = (red << 16) + (green << 8) + blue;
+
+  return numberRepresentation;
+}
+function numberToColor(numberRepresentation) {
+  // Extract red, green, and blue components
+  const red = (numberRepresentation >> 16) & 255;
+  const green = (numberRepresentation >> 8) & 255;
+  const blue = numberRepresentation & 255;
+
+  return colorFrom({ r:red, g:green, b:blue });
+}
+function generateGradientColor(startColor, endColor, steps) {
+  // Create an empty array to store the gradient colors
+  const gradientColors = [];
+
+  // Iterate over the number of steps
+  for (let i = 0; i < steps; i++) {
+    // Calculate the step size
+    const stepSize = 1 / steps;
+
+    // Calculate the current color
+    const currentColor = startColor + (endColor - startColor) * stepSize;
+
+    // Add the current color to the gradient colors array
+    gradientColors.push(currentColor);
+  }
+
+  // Return the gradient colors array
+  return gradientColors;
+}
+function getComplementaryColor(hexColor) {
+	// Remove the hash symbol if present
+	hexColor = hexColor.replace(/^#/, '');
+
+	// Convert hex to RGB
+	const r = parseInt(hexColor.slice(0, 2), 16);
+	const g = parseInt(hexColor.slice(2, 4), 16);
+	const b = parseInt(hexColor.slice(4, 6), 16);
+
+	// Calculate complementary color
+	const compR = 255 - r;
+	const compG = 255 - g;
+	const compB = 255 - b;
+
+	// Convert RGB back to hex
+	const compHexColor = `#${compR.toString(16).padStart(2, '0')}${compG.toString(16).padStart(2, '0')}${compB.toString(16).padStart(2, '0')}`;
+
+	return compHexColor;
+}
+function getSimilarColor(hexColor) {
+	hexColor = hexColor.replace(/^#/, '');
+
+	const r = parseInt(hexColor.slice(0, 2), 16);
+	const g = parseInt(hexColor.slice(2, 4), 16);
+	const b = parseInt(hexColor.slice(4, 6), 16);
+
+	const hslColor = rgbToHsl(r, g, b);
+
+	// Adjust the hue, saturation, and lightness
+	const adjustedColor = hslToRgb(hslColor.h, Math.min(hslColor.s + 20, 100), Math.min(hslColor.l + 10, 100));
+
+	const adjustedHexColor = `#${adjustedColor.r.toString(16).padStart(2, '0')}${adjustedColor.g.toString(16).padStart(2, '0')}${adjustedColor.b.toString(16).padStart(2, '0')}`;
+
+	return adjustedHexColor;
+
+	// Convert RGB to HSL
+	function rgbToHsl(r, g, b) {
+		r /= 255;
+		g /= 255;
+		b /= 255;
+
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+
+		let h, s, l = (max + min) / 2;
+
+		if (max === min) {
+			h = s = 0; // grayscale
+		} else {
+			const d = max - min;
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+			switch (max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+
+			h /= 6;
+		}
+
+		return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+	}
+
+	// Convert HSL to RGB
+	function hslToRgb(h, s, l) {
+		h /= 360;
+		s /= 100;
+		l /= 100;
+
+		let r, g, b;
+
+		if (s === 0) {
+			r = g = b = l; // achromatic
+		} else {
+			const hue2rgb = (p, q, t) => {
+				if (t < 0) t += 1;
+				if (t > 1) t -= 1;
+				if (t < 1 / 6) return p + (q - p) * 6 * t;
+				if (t < 1 / 2) return q;
+				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+				return p;
+			};
+
+			const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			const p = 2 * l - q;
+
+			r = hue2rgb(p, q, h + 1 / 3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1 / 3);
+		}
+
+		return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+	}
+}
+function getMatchingColor(hexColor, diff) {
+	// Remove the hash symbol if present
+	hexColor = hexColor.replace(/^#/, '');
+
+	// Convert hex to RGB
+	const r = parseInt(hexColor.slice(0, 2), 16);
+	const g = parseInt(hexColor.slice(2, 4), 16);
+	const b = parseInt(hexColor.slice(4, 6), 16);
+
+	// Convert RGB to HSL
+	const hslColor = rgbToHsl(r, g, b);
+
+	// Adjust the hue (e.g., increase by 180 degrees)
+	const adjustedHue = (hslColor.h + diff) % 360;
+
+	// Convert back to RGB
+	const matchingColor = hslToRgb(adjustedHue, hslColor.s, hslColor.l);
+
+	// Convert RGB back to hex
+	const matchingHexColor = `#${matchingColor.r.toString(16).padStart(2, '0')}${matchingColor.g.toString(16).padStart(2, '0')}${matchingColor.b.toString(16).padStart(2, '0')}`;
+
+	return matchingHexColor;
+
+	// Convert RGB to HSL
+	function rgbToHsl(r, g, b) {
+		r /= 255;
+		g /= 255;
+		b /= 255;
+
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+
+		let h, s, l = (max + min) / 2;
+
+		if (max === min) {
+			h = s = 0; // grayscale
+		} else {
+			const d = max - min;
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+			switch (max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+
+			h /= 6;
+		}
+
+		return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+	}
+
+	// Convert HSL to RGB
+	function hslToRgb(h, s, l) {
+		h /= 360;
+		s /= 100;
+		l /= 100;
+
+		let r, g, b;
+
+		if (s === 0) {
+			r = g = b = l; // achromatic
+		} else {
+			const hue2rgb = (p, q, t) => {
+				if (t < 0) t += 1;
+				if (t > 1) t -= 1;
+				if (t < 1 / 6) return p + (q - p) * 6 * t;
+				if (t < 1 / 2) return q;
+				if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+				return p;
+			};
+
+			const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			const p = 2 * l - q;
+
+			r = hue2rgb(p, q, h + 1 / 3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1 / 3);
+		}
+
+		return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+	}
+
+	// // Example usage:
+	// const hexColor = '#3498db'; // Replace with your hex color
+	// const matchingColor = getMatchingColor(hexColor);
+
+	// console.log(`Matching color for ${hexColor} is ${matchingColor}`);
+
+}
 function mist(){
 	let color = new Color("p3", [0, 1, 0]);
 	color.steps("red", {
@@ -3001,6 +3256,460 @@ function filterImages(ev){
 //#endregion
 
 //#region calendar (combu)
+function showEventOpen(ev) {
+
+	let id = evToId(ev);
+	let e = getEvent(id);
+	//console.log('event found',e);
+
+	let popup = openPopup(ev);
+	
+
+
+	// if (e && mBy('dOpenEvent')) mBy('dOpenEvent').remove();
+	// console.log('ev',ev)
+	// let [x,y]=[ev.clientX,ev.clientY];
+	// let d = mDom('dExtra',{wmin:300,hmin:300,position:'absolute',left:250,bg:'white',hpadding:20},{id:'dOpenEvent'});
+
+	mNode(e, popup)
+
+}
+
+function evToEventObject(ev) {
+  let inp = ev.target;
+  let o = U.events[inp.id]; //Config.events[firstNumber(inp.id)];
+  return o;
+}
+
+function onclickDay(ev) {
+	//id kann ja nur die day id sein!!!!
+	let tsDay = evToId(ev); //ev.target.getAttribute('date'); //evToTargetAttribute(ev,'date'); //ts for this day
+	let tsCreated = Date.now()
+	let id = generateEventId(tsDay, tsCreated);
+	let o = { id: id, created: tsCreated, day: tsDay, from: null, to: null, title: '', text: '', user: ClientData.userid, subscribers: [] };
+
+	Serverdata.config.events[id] = o;
+	// console.log(id,o);
+
+	let d1 = addEditable(ev.target, { w: '100%' }, { id: id, onEnter: onEventEdited });
+	//console.log(d1);
+
+	//trag dieses event ein!
+	//soll ich das event hier eintragen oder erst wenn es einen content hat?
+}
+async function onEventEdited(ev) {
+	let id = evToId(ev);
+	let o = Serverdata.config.events[id];
+	let inp = mBy(id);
+	if (inp.value) {
+		//console.log('send value',inp.value,'to server')
+		o.text = inp.value;
+		await serverUpdate('event',o)
+	}
+
+	//console.log('event',id,o,inp)
+	//ich moecht das event mit await an den node js server schicken,
+	//dort saven mit der id oder einer neuen id
+
+}
+
+function saveEvent(o) {
+  let inp = o.div.lastChild;
+  //delete o.div;
+  console.log('o', o);
+  mStyle(inp, {
+    fz: 10, cursor: 'pointer',
+    padding: 3, bg: '#58bae4', fg: 'white', rounding: 5, hmax: 55,
+    overflow: 'hidden'
+  });
+  inp.setAttribute('readonly', true);
+  inp.onclick = ev => editEvent(ev, o)
+
+
+
+  // if (DA.sessionType != 'live') {
+  // }else{
+  //   Config.events.push(o);
+  //   localStorage.setItem('events', JSON.stringify(Config.events));
+  // }
+}
+//******** */
+function _detectSessionType() {
+
+  //console.log('window.location', window.location.href);
+  let loc = window.location.href;
+  DA.sessionType = loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php' : 'live';
+}
+function getCorrectMonth(s, val) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  let n = firstNumber(s);
+  if (n >= 1 && n <= 12) return [n - 1, months[n - 1]];
+  s = s.substring(0, 3).toLowerCase();
+  for (const m of months) {
+    let m1 = m.substring(0, 3).toLowerCase();
+    if (s == m1) return [months.indexOf(m), m];
+  }
+  return val;
+}
+function getQuerystring(key) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == key) {
+      return pair[1];
+    }
+  }
+  return null;
+}
+function getUIDRelativeTo(arr) {
+  let max = isEmpty(arr) ? 0 : arrMax(arr, x => x.id);
+  //console.log('max',max,typeof max)
+  return Number(max) + 1;
+}
+function handleAddEvent(obj) {
+  //erst hier hat das event ein id!
+  //dieses id muss jetzt id von seinem input object sein
+  //inp ist lastChild vom children[0] vom dDays
+  //diese children[0] koennt ich nennen: d_[month]_[day]
+  Config.events.push(obj.event);
+  //console.log('event',obj)
+  localStorage.setItem('events', JSON.stringify(Config.events));
+  //console.log('storage:',JSON.parse(localStorage.getItem('events')));
+
+  //modify event input
+  //woher bekomm ich das input?
+
+
+
+
+
+
+
+
+
+
+
+
+  //downloadAsYaml(Config.events,'events'); //testing
+
+}
+function handleLogin(o) {
+  if (o.status == 'loggedin') {
+    //console.log('o',o)
+    showSuccessMessage('login successful!');
+    showLoggedin(o);
+    startLoggedIn(o);
+  } else if (o.status == 'wrong_pwd') {
+    showError('wrong password!!!');
+  } else if (o.status == 'not_registered') {
+    showError(`user ${o.id} not registered!!!`);
+    showPopupRegister();
+  }
+}
+function handleLogout(o) {
+  //console.log('handleLogout',o)
+  showLogin();
+}
+function handleRegister(o) {
+  //console.log('got register result!!!',o)
+  if (o.status == 'registered') {
+    showSuccessMessage('new registration successful!');
+    mBy('dRegister').remove();
+
+  } else if (o.status == 'duplicate') {
+    showError('username already registered!!!');
+  } else if (o.status == 'pwds_dont_match') {
+    showError(`passwords do not match!!!`);
+  }
+
+}
+function handleResult(result, cmd) {
+  //console.log('result',result);//return;
+  let obj = isEmptyOrWhiteSpace(result) ? { a: 1 } : JSON.parse(result);
+  //dates should be converted to dates, numbers should be converted to numbers
+  DA.result = jsCopy(obj);
+  switch (cmd) {
+    case "login": handleLogin(obj); break;
+    case "logout": handleLogout(obj); break;
+    case "register": handleRegister(obj); break;
+    case "assets": loadAssetsPhp(obj); startWithAssets(); break;
+    case "addEvent": handleAddEvent(obj); break;
+    default:
+      for (const k in obj) {
+        console.log(k, obj[k], typeof obj[k])
+      }
+  }
+}
+function isCorrectMonth(s) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  let n = firstNumber(s);
+
+  if (n >= 1 && n <= 12) return months[n - 1];
+  s = s.substring(0, 3).toLowerCase();
+  for (const m of months) {
+    let m1 = m.substring(0, 3).toLowerCase();
+    if (s == m1) return m;
+  }
+  return false;
+}
+async function loadAll() {
+  DA.sessionType = detectSessionType();
+  if (DA.sessionType == 'live') {
+    //load assets the live way form localhost
+    await loadAssetsLive('../qtest/');
+    //let events = DB.events = DB.events.map(x => x.date = new Date(x.date));
+    //console.log('users', DB.users)
+    //console.log('events', events)
+    //console.log('subscribed', DB.subscribed)
+    startWithAssets();
+  } else {
+    phpPost({}, 'assets');
+  }
+}
+async function loadAssetsLive(projectPath, basepath = '../base/') {
+  let path = basepath + 'assets/';
+  Config = DB = await route_path_yaml_dict(projectPath + 'config.yaml');
+  //console.log('from config',Config.events)
+
+  //localStorage.clear();
+  let events = localStorage.getItem('events');
+  // console.log('___*\nevents in loc:', events);
+  Config.events = isdef(events) ? JSON.parse(events) : [];
+  // console.log('events',Config.events)
+  //console.log('storage:',JSON.parse(localStorage.getItem('events')));
+  // Config.events1 = JSON.parse(localStorage.getItem('events'));
+  // console.log('events',Config.events1)
+  // console.log(typeof Config.events);
+  let users = localStorage.getItem('users');
+  Config.users = users ? JSON.parse(users) : [];
+  let subscribed = localStorage.getItem('subscribed');
+  Config.subscribed = subscribed ? JSON.parse(subscribed) : [];
+  Syms = await route_path_yaml_dict(path + 'allSyms.yaml');
+  SymKeys = Object.keys(Syms);
+  ByGroupSubgroup = await route_path_yaml_dict(path + 'symGSG.yaml');
+  C52 = await route_path_yaml_dict(path + 'c52.yaml');
+  Cinno = await route_path_yaml_dict(path + 'fe/inno.yaml');
+  Info = await route_path_yaml_dict(path + 'lists/info.yaml');
+  create_card_assets_c52();
+  KeySets = getKeySets();
+  // console.assert(isdef(Config), 'NO Config!!!!!!!!!!!!!!!!!!!!!!!!');
+  // return { users: dict2list(DB.users, 'name'), games: dict2list(Config.games, 'name'), tables: [] };
+}
+function makeContentEditable(elem, setter) {
+  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
+  elem.contentEditable = true;
+  elem.addEventListener('keydown', ev => {
+    if (ev.key == 'Enter') {
+      ev.preventDefault();
+      mBy('dummy').focus();
+      if (setter) setter(ev);
+    }
+  });
+}
+function mFlexLine(d, bg = 'white', fg = 'contrast') {
+  //console.log('h',d.clientHeight,d.innerHTML,d.offsetHeight);
+  mStyle(d, { bg: bg, fg: fg, display: 'flex', valign: 'center', hmin: measureHeight(d) });
+  mDiv(d, { fg: 'transparent' }, null, '|')
+}
+function measureHeight(d) {
+  let d2 = mDiv(d, { opacity: 0 }, null, 'HALLO');
+  return d2.clientHeight;
+}
+function queryDict() {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  let di = {};
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (isdef(pair[1])) di[pair[0]] = pair[1];
+  }
+  return di;
+}
+
+
+function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
+
+  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
+  const [cellWidth, gap] = [100, 10];
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  var dParent = toElem(dParent);
+  const events = events1;
+  var container = mDiv(dParent, {}, 'dCalendar');
+  var currentDate = new Date();
+  var today = new Date();
+  // let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
+  let dTitle = mDiv(container, { w: 760, padding: gap, fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' },{className:'title'});
+  var dWeekdays = mGrid(1, 7, container, { gap: gap });
+  var dDays = [];
+  var info = {};
+  //info.wheel = []; for (let i = 0; i < 12; i++) info.wheel.push(rColor('light', .5));
+  // setColor(seedColor);
+  for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth }, null, w, 'subtitle') };
+  var dGrid = mGrid(6, 7, container, { gap: gap });
+  var dDate = mDiv(dTitle, { display: 'flex', gap: gap },'dDate','','title');
+  var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
+  mButton('Prev',
+    () => {
+      let m = currentDate.getMonth();
+      let y = currentDate.getFullYear();
+      if (m == 0) setDate(12, y - 1); else setDate(m, y);
+    },
+    dButtons, { w: 70, margin: 0 }, 'input');
+  mButton('Next',
+    () => {
+      let m = currentDate.getMonth();
+      let y = currentDate.getFullYear();
+      if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
+    }, dButtons, { w: 70, margin: 0 }, 'input');
+  var dMonth, dYear;
+
+  function getDay(d) {
+    let i = d + info.dayOffset;
+    //console.log('i', i);
+    if (i < 1 || i > info.numDays) return null;
+    let ui = dDays[i];
+    //console.log('ui', ui)
+    if (ui.style.opacity === 0) return null;
+    return { div: dDays[i], events: [] };
+  }
+  // function setColor(seed){ //c,cc) {
+  //   info.wheel =mimali(seed,12);
+  //   info.seedColor = seed;
+  // }
+  function setDate(m, y) {
+    currentDate.setMonth(m - 1);
+    currentDate.setFullYear(y);
+    mClear(dDate);
+    dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
+    dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
+    // makeContentEditable(dMonth, ev => {
+    //   let d = ev.target;
+    //   if (d != dMonth) return;
+    //   let val = getCorrectMonth(d.innerHTML, months[currentDate.getMonth()]);
+    //   d.innerHTML = val[1];
+    //   currentDate.setMonth(val[0])
+    // });
+    // makeContentEditable(dYear, ev => {
+    //   let d = ev.target;
+    //   if (d != dYear) return;
+    //   let val = firstNumber(d.innerHTML);
+    //   currentDate.setFullYear(val);
+    //   d.innerHTML = val;
+    // });
+
+    mClear(dGrid); dDays.length = 0;
+    //console.log('m',m,info.wheel[m])
+    let outerStyles = {
+      rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
+      paleft: gap / 2, w: cellWidth, hmin: cellWidth, 
+      bg:'black',fg:'white',
+      // fg: 'contrast', 
+      //bg: info.wheel[m-1], //rColor('light', .5) //info.wheel[m-1],//rColor('light', .5)
+    }
+
+    let c=colorHex(mGetStyle('dNav','bg')); //info.seedColor; //info.wheel[m-1];
+    //console.log('nav color is',c)
+    let dayColors=mimali(c,43).map(x=>colorHex(x))
+    //console.log('dayColors',dayColors)
+    for (const i of range(42)) {
+      let cell = mDiv(dGrid, outerStyles);
+      mStyle(cell,{bg:dayColors[i],fg:'contrast'})
+      dDays[i] = cell;
+    }
+    populate(currentDate);
+    return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
+  }
+  function populate() {
+    let dt = currentDate;
+    const day = info.day = dt.getDate();
+    const month = info.month = dt.getMonth();
+    const year = info.year = dt.getFullYear();
+
+    const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
+    const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
+
+    const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+    const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+    info.dayOffset = paddingDays - 1;
+    for (const i of range(42)) {
+      if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
+    }
+    //restliche tage bis month ende sind ok
+    let innerStyles = { box: true, align: 'center', bg: 'beige', rounding: 4, w: '95%', hpadding: '2%', hmin: cellWidth - 28 };
+    for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
+      const daySquare = dDays[i - 1];
+      let date = new Date(year, month, i - paddingDays);
+      daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
+      let d = mDom(daySquare, innerStyles, { id: date.getTime() });
+      d.addEventListener('click', onclickDay); //ev => calendarOpenDay(date, daySquare.lastChild, ev));
+    }
+    updateEvents();
+  }
+  function updateEvents() {
+    //console.log('events',events);
+    for (const k in events) {
+      //console.log('hhhhhhhhhhhhhhhhhhhhhhhh')
+      let e = events[k];
+      let dt = new Date(Number(e.day));
+      //console.log('dt',dt)
+
+      if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) {
+        //console.log('YES!');
+        continue;
+      }
+      let dDay = dDays[dt.getDate() + info.dayOffset].children[0];
+
+      //console.log('add another input to',dt,dDay);
+      let d1 = addEditable(dDay, { w: '100%' }, { id: k, onEnter: onEventEdited, value: e.text });
+      //console.log(d1);
+
+      // let ch = arrChildren(dDay);
+      // let d = ch[0]; 
+      // let d1 = calendarAddExistingEvent(e, d);
+      // e.div = d;
+    }
+    mBy('dummy').focus();
+  }
+
+  setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
+  populate();
+
+  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
+}
 function mist(){
 	//info.wheel = list; //[];
 	//let x=colorMix(c,cc,50);
@@ -4318,4 +5027,5 @@ async function test25_user() {
 
 //#endregion
 
+let d1 = showImage('gear', dUser, { sz: 25 });	d1.onclick = onclickGear;
 

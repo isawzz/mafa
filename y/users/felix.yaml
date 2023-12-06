@@ -1,0 +1,12 @@
+name: felix
+color: '#fff81f'
+events:
+  z_1701504000000_1701534699145:
+    id: z_1701504000000_1701534699145
+    created: 1701534699145
+    day: '1701504000000'
+    time: ''
+    text: flug
+    user: felix
+    shared: false
+    subscribers: []
