@@ -1,6 +1,5 @@
 function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
 
-  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
   const [cellWidth, gap] = [100, 10];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -129,7 +128,7 @@ function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
       let dDay = dDays[dt.getDate() + info.dayOffset].children[0];
       let d1 = addEditable(dDay, { w: '100%' }, { id: k, onEnter: onEventEdited, onclick: onclickExistingEvent, value: e.text });
     }
-    mBy('dummy').focus();
+    mDummyFocus();
   }
 
   setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
@@ -178,12 +177,11 @@ function calendarAddExistingEvent(o, d) {
   //console.log('eventForDay', eventForDay);
 }
 function makeContentEditable(elem, setter) {
-  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
   elem.contentEditable = true;
   elem.addEventListener('keydown', ev => {
     if (ev.key == 'Enter') {
       ev.preventDefault();
-      mBy('dummy').focus();
+			mDummyFocus();
       if (setter) setter(ev);
     }
   });

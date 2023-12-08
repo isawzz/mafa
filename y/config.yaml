@@ -1,10 +1,1 @@
-users:
-  felix:
-    name: felix
-    color: '#1f8fff'
-  amanda:
-    name: amanda
-    color: '#6762f3'
-events: {}
 text: I am TOMAS
-pos: 22

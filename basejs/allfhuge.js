@@ -13036,7 +13036,7 @@ function changeToForInput(newListName, elid, defaultVal) {
 function changeUserTo(name) {
   if (name != Username) { saveUser(); }
   mBy('spUser').innerHTML = name;
-  loadUser(name);
+  showUser(name);
   startUnit();
 }
 function chat_2handleResult(result) {
@@ -36878,7 +36878,7 @@ function loadText(path, callback) {
   return 'ok';
 }
 function loadUrlToJSON(url, callback) { }
-function loadUser(newUser) {
+function showUser(newUser) {
   cleanupOldGame();
   Username = isdef(newUser) ? newUser : localStorage.getItem('user');
   if (nundef(Username)) Username = DEFAULTUSERNAME;

@@ -1,44 +1,76 @@
 onload = start;
 
-async function start() { test35_light(); }
+async function start() { test40_socketio(); }
 
-async function test35_light(){
+async function test40_socketio() {
+
+	await prelims();
+
+	let server = getServerurl();
+	Socket = io(server);
+	Socket.on('message', showChatMessage);
+	Socket.on('disconnect', x => console.log('>>disconnect:', x));
+	Socket.on('update', x => console.log('>>update:', x));
+
+	let dChat = mDom('dChat');
+	UI.chatInput = mInput(dChat, {}, '<your message>', 'input');
+	UI.chatWindow = mDom(dChat, { hmax: 300 }, { id: 'dChatWindow' });
+	mOnEnter(UI.chatInput, ev => Socket.emit('message', ev.target.value));
+
+}
+function showChatMessage() {
+	for (const arg of [...arguments]) {
+		console.log('arg', arg);
+		let d = mBy('dChatWindow');
+		if (d) mDom(d, {}, { html: arg })
+	}
+}
+async function test39_calendar() {
 	await prelims();
 	UI.nav.activate('schedule'); onclickSchedule();
-
-	//wie krieg ich das erste event?
-	let evs=getEvents();
-	let n=Object.values(evs).length;
-	console.log('events for',U.name,evs,n)
-	if (n<2) return;
-	let e=Object.values(evs)[1];
-	console.log('e',e)
-	showEventOpen(e.id);
-	// Example usage
-	//onclick=openPopup;
-	//let d=mPopup('Hallo','dMain',{})
-	//M.playerColors.map(x=>console.log(x,colorHSL(x,true).l * 100,colorLum(x,true)))
 }
-async function test34_colorjs_YES(){
-	await prelims();
-	UI.nav.activate('schedule'); onclickSchedule();
-}
-async function prelims() {
+async function test38_newprelims() {
 	if (nundef(M.superdi)) {
-
-		Serverdata = await mGetRoute('load', { config: true, session: true }); //console.log('Serverdata', Serverdata);
+		Serverdata = await mGetRoute('session');
 		await loadCollections();
 		loadPlayerColors();
 
-		let nav = UI.nav = mNavbar('dNav',{},'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
+		let nav = UI.nav = mNavbar('dNav', {}, 'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
 		nav.disable('play');
 
 		dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
-		//mInsert(document.body, dTitle, 1);
 
 		dUser = mDom(nav.ui, {}, { id: 'dUser' });
-		//console.log('alles ok!')
-		await userLoad();
+
+		U = getUser(localStorage.getItem('username'));
+		await showUser(U ? U.name : null);
+	}
+}
+async function YES_test37_allesNeu() {
+	Serverdata = await mGetRoute('config');
+	console.log('Serverdata', Serverdata);
+
+	//change something in Serverdata
+	//repost Serverdata
+	Serverdata.users.max = { name: 'max', color: 'orange' };
+	Serverdata = await mPostRoute('postConfig', Serverdata);
+	console.log('updated', Serverdata.users.max);
+}
+async function prelims() {
+	if (nundef(M.superdi)) {
+		Serverdata = await mGetRoute('session');
+		await loadCollections();
+		loadPlayerColors();
+
+		let nav = UI.nav = mNavbar('dNav', {}, 'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
+		nav.disable('play');
+
+		dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+
+		dUser = mDom(nav.ui, {}, { id: 'dUser' });
+
+		U = getUser(localStorage.getItem('username'));
+		await showUser(U ? U.name : null);
 	}
 }
 

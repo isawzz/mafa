@@ -45,9 +45,7 @@ async function onclickColor(ev) {
 	setColors(c);
 	if (U){
 		U.color = c;
-		let data = { name: U.name, color: U.color };
-		o = { data: data, path: `users.${U.name}`, mode: 'cs' }; 
-		Serverdata = await uploadJson('save', o);
+		await postUserChange();
 	}
 }
 async function onclickItem(ev) {
@@ -70,7 +68,9 @@ async function onclickItem(ev) {
 async function onclickPlay() { alert('COMING SOON!'); } //test0_addToCollection(); }
 async function onclickPrev() { showImageBatch(-1); }
 async function onclickNext() { showImageBatch(1); }
-async function onclickSchedule() {
+async function onclickSchedule() { showCalendarApp(); }
+function showCalendarApp(){
+
 	//if no user, set user to shared
 	if (!U) {console.log('you have to be logged in to use this menu!!!'); return;}
 	showTitle('Calendar');
@@ -95,9 +95,8 @@ async function onclickUpload() {
 async function onclickUser() {
 	let uname = await mPrompt(); //returns null if invalid!
 	console.log('onclickUser:', uname);
-	//wenn der user schon bekannt ist dann soll ihn einfach laden
-
-	await userLoad(uname);
+	if (isdef(uname) && (!U || U.name != uname)) {		await switchToUser(uname);	}
+	await showUser(uname);
 }
 async function onclickView() {
 	showTitle('Collection:');

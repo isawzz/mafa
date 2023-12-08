@@ -1,12 +1,24 @@
 
-function getEvents() { return U.data.events; }
-function getEvent(id) { return U.data.events[id]; } //lookup(U.Serverdata,['config','events',id]);//evToEventObject(ev);
+function closeApps(){
+	if (isdef(DA.calendar)) {closePopup(); delete DA.calendar; }
+	mClear('dMain'); 
+	mClear(dTitle);
+}
+
+function getUser(uname){return lookup(Serverdata,['users',uname]);}
+function getEvents() { return lookup(Serverdata,['users',uname]); }
+function getEvent(id) { return lookup(U,['data','events',id]); } //lookup(U.Serverdata,['config','events',id]);//evToEventObject(ev);
 function setEvent(id, o) { 
 	//console.log('text',o.text)
 	Items[id] = lookupSetOverride(U.data, ['events', id], o); 
-	mBy(id).value=o.text;
+	mBy(id).value=stringBefore(o.text,'\n');
 	return o; 
 } 
+function getServerurl(){
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	return server;
+}
 async function deleteEvent(id){
 	let result = await simpleUpload('event', {id:id,user:U.name}); 
 	delete Items[id]; 
@@ -51,35 +63,41 @@ async function onclickSetEditedEvent(id, text, time) {
 }
 function showEventOpen(id) {
 
-	let e = getEvent(id);
+	let e = getEvent(id); 
+	if (!e) return;
 
 	let date = new Date(Number(e.day));
 	let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
 	console.log('day', `${day}.${month}.${year}`);
 	let time = e.time;
-
-
 	let popup = openPopup();
-
 	let d = mBy(id); //input element for this event!
 	console.log('d', d)
-	let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 120];
+	let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
 
-	mStyle(popup, { left: x + w / 2 - wp / 2, top: y + h / 2 - hp / 2, w:wp, h:hp });
+	let [left,top]=[Math.max(10,x + w / 2 - wp / 2),Math.min(window.innerHeight-hp-60,y + h / 2 - hp / 2)]
+	console.log('left,top',left,top)
+	mStyle(popup, { left: left, top: top, w:wp, h:hp });
 
 	let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
 	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
 	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
 	mOnEnter(inpt);
-	let ta = mDom(popup, { rounding: 4, matop:7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 3, value: e.text });
+	let ta = mDom(popup, { rounding: 4, matop:7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
 
 	let line=mDom(popup,{matop:6,w:'100%'}); //,'align-items':'space-between'});
 	let buttons=mDom(line,{display:'inline-block'});
-	let bsend=mButton('Send*', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons, {fg:'red'});
-	mTooltip(bsend,'data are being sent to the server!')
-	let blocal=mButton('Save local*', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons,{hmargin:10});
-	mTooltip(blocal,'data are kept locally only, but you need to load this data at login!')
-	//mButton('Cancel', () => closePopup(), buttons,{hmargin:10})
+
+	//variant 1: nur server send
+	let bsend=mButton('Save', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons, {fg:'red'});
+	mButton('Cancel', () => closePopup(), buttons,{hmargin:10})
+
+	//variant 2: save server or download
+	// let bsend=mButton('Send*', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons, {fg:'red'});
+	// mTooltip(bsend,'data are being sent to the server!')
+	// let blocal=mButton('Save local*', () => onclickSetEditedEvent(id, ta.value, inpt.value), buttons,{hmargin:10});
+	// mTooltip(blocal,'data are kept locally only, but you need to load this data at login!')
+
 	mButton('Delete', () => {deleteEvent(id);closePopup();}, buttons, )
 	mDom(line,{fz:'90%',maright:5,float:'right',},{html:`by ${e.user}`});
 
@@ -87,8 +105,7 @@ function showEventOpen(id) {
 
 }
 async function simpleUpload(route, o) {
-	let type = detectSessionType();
-	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	let server = getServerurl();
 	server += `/${route}`;
 
 	const response = await fetch(server, {
@@ -106,14 +123,6 @@ async function simpleUpload(route, o) {
 	}
 }
 
-function mTooltip(elem,content){
-	mIfNotRelative(elem);
-	let d=mDom(elem,{display:'none',rounding:6,padding:2,h:60,wmin:120,bg:'dimgrey',fg:'white',position:'absolute',bottom:22},{html:content});
-
-	elem.onmouseover=()=>d.style.display='block';
-	elem.onmouseout=()=>d.style.display='none';
-
-}
 
 
 

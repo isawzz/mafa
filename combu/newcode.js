@@ -7,7 +7,7 @@ function addEditable(dParent, styles = {}, opts = {}) {
 	x.focus();
 	x.addEventListener('keyup', ev => {
 		if (ev.key == 'Enter') {
-			mBy('dummy').focus();
+			mDummyFocus();
 			// let text=x.value;
 			// let d=mDiv(dParent,{},null,x.value);
 			// x.remove();
@@ -242,8 +242,7 @@ async function loadCollections() {
 }
 async function loadCollectionsFromDirs() {
 	if (nundef(M.emos)) {
-		let type = detectSessionType();
-		let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+		let server = getServerurl();
 		let emos = await mGetYaml('../assets/m.yaml');
 		let amanda = await mGetFiles(server, '../assets/img/amanda')
 		let airport = await mGetFiles(server, '../assets/img/airport');
@@ -371,11 +370,19 @@ function loadPlayerColors() {
 	M.playerColors = list;
 	return list;
 }
-function mButtonX(dParent, sz = 30, offset=0, id=null) {
+async function loadUserdata(uname) {
+	//hier muss user reloaden! weil koennte auf anderem browser geaendert worden sein!
+	let data = await mGetRoute('user', { user: uname });
+	console.log('data',data)
+	if (!data) { data = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
+	else Serverdata.users[uname] = data;
+	return data;
+}
+function mButtonX(dParent, sz = 30, offset = 0, id = null) {
 	mIfNotRelative(dParent);
 	let popup = isdef(id) ? mBy(id) : dParent;
 	if (nundef(id)) id = dParent.id;
-	let bx = mDom(dParent, { position: 'absolute', top: -2+offset, right: -5+offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
+	let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
 	bx.onclick = ev => { evNoBubble(ev); popup.remove() };
 	let o = M.superdi.xmark;
 	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: 'dimgray', display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
@@ -1064,9 +1071,8 @@ async function mGetJsonCors(url) {
 	//console.log('json', json)
 	return json;
 }
-async function mGetRoute(route, o) {
-	let type = detectSessionType();
-	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+async function mGetRoute(route, o = {}) {
+	let server = getServerurl();
 	server += `/${route}?`;
 	for (const k in o) { server += `${k}=${o[k]}&`; }
 	const response = await fetch(server, {
@@ -1075,19 +1081,6 @@ async function mGetRoute(route, o) {
 		mode: 'cors',
 	});
 	return tryJSONParse(await response.text());
-	// try {
-
-	// 	if (response.ok) {
-	// 		const data = await response.json();
-	// 		if (isdef(data.session)) Session = data.session;
-	// 		if (isdef(data.config)) Config = data.config;
-	// 		return data;
-	// 	} else {
-	// 		return 'ERROR 1';
-	// 	}
-	// } catch (error) {
-	// 	return 'ERROR 2';
-	// }
 }
 function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	//da wollt ich noch icons und iconfuncs dazutun!
@@ -1097,7 +1090,7 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	}
 	function activate(ev) {
 		//currently selected menu button
-		delete DA.calendar; mClear('dMain'); mClear(dTitle)
+		closeApps();
 
 		let links = document.getElementsByClassName('nav-link');
 		//console.log('links',links)
@@ -1140,15 +1133,37 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
 	var ui = extra1();
 	return { activate: activate, disable: disable, enable: enable, ui: ui };
 }
+function mDummyFocus(){
+	if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
+	mBy('dummy').focus();
+}
 function mOnEnter(elem, setter) {
 	elem.addEventListener('keydown', ev => {
 		if (ev.key == 'Enter') {
 			ev.preventDefault();
-			mBy('dummy').focus();
+			mDummyFocus();
 			if (setter) setter(ev);
 		}
 	});
 
+}
+async function mPostRoute(route, o = {}) {
+	let server = getServerurl();
+	server += `/${route}`;
+
+	const response = await fetch(server, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors',
+		body: JSON.stringify(o)
+	});
+
+	if (response.ok) {
+		const data = await response.json();
+		return data;
+	} else {
+		return 'ERROR 1';
+	}
 }
 async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isAlphanumeric) {
 	return new Promise((resolve, reject) => {
@@ -1263,6 +1278,18 @@ async function mSleep(ms = 1000) {
 				console.log('param should be less than 3001');
 			}
 		});
+}
+function mTooltip(elem, content) {
+	mIfNotRelative(elem);
+	let d = mDom(elem, { display: 'none', rounding: 6, padding: 2, h: 60, wmin: 120, bg: 'dimgrey', fg: 'white', position: 'absolute', bottom: 22 }, { html: content });
+
+	elem.onmouseover = () => d.style.display = 'block';
+	elem.onmouseout = () => d.style.display = 'none';
+
+}
+async function postUserChange(data) {
+	data = valf(data, U)
+	return Serverdata.users[data.name] = await mPostRoute('postUser', data);
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
 	//console.log('ausschnitt:', x, y, wold, hold);
@@ -1582,8 +1609,7 @@ async function uploadImg(img, unique, coll, name) {
 			formData.append('image', blob, unique + '.png');
 			formData.append('collection', coll);
 			formData.append('name', name);
-			let type = detectSessionType();
-			let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+			let server = getServerurl();
 			server += '/upload';
 
 			try {
@@ -1626,8 +1652,7 @@ async function uploadImg2(img, path) {
 	let o = { data: { image: dataUrl }, path: valf(path, 'out.png'), mode: 'wi' };
 
 	return await uploadJson('save', o);
-	let type = detectSessionType();
-	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	let server = getServerurl();
 	server += `/save`;
 	const response = await fetch(server, {
 		method: 'POST',
@@ -1638,8 +1663,7 @@ async function uploadImg2(img, path) {
 	return await response.json();
 }
 async function uploadJson(route, o) {
-	let type = detectSessionType();
-	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	let server = getServerurl();
 	server += `/${route}`;
 
 	try {
@@ -1660,27 +1684,13 @@ async function uploadJson(route, o) {
 		return 'ERROR 2';
 	}
 }
-async function userLoad(uname) {
+async function showUser(uname) {
+	//what if the current U has unsaved data??? TODO
 	UI.nav.activate('no')
-	if (nundef(uname)) uname = localStorage.getItem('username');
 	//U = null;
 	//uname = null;
-	if (isdef(uname) && (!U || U.name != uname)) {
-		//what if the current U has unsaved data??? TODO
-		let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
-		if (!data) {
-			console.log('adding new user!!!', uname);
-			data = { name: uname, color: rChoose(M.playerColors) };
-			await serverUpdate('newuser', data);
-		}
-		assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
-		localStorage.setItem('username', uname);
-		U = data;
-		U.data = await mGetYaml(`../y/users/${uname}.yaml`);
-	}
 	mClear(dUser);
 	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
-
 	let d;
 	if (U) {
 		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
@@ -1691,7 +1701,11 @@ async function userLoad(uname) {
 	}
 	d.onclick = onclickUser;
 }
+async function switchToUser(uname){
+	U = await loadUserdata(uname);
+	localStorage.setItem('username', uname);
 
+}
 //#region colors
 function sortByHue(colors) {
 	const hslColors = colors.map(AhexToHSL);

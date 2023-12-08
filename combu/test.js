@@ -1,4 +1,42 @@
-//*** collections tests */
+async function test36_loadAllEvents(){
+	await prelims();
+	return;
+	let users = Serverdata.config.users;
+	console.log('users',users);
+	let allEvents = {};
+	for(const uname in users){
+		let evs = await mGetYaml(`../y/users/${uname}.yaml`);
+		addKeys(evs.events,allEvents);
+	}
+	console.log('allEvents',allEvents);
+	DA.allEvents = allEvents;
+	let x = DA.calendar = uiTypeCalendar(d1, U?U.color:rColor(),null, null, allEvents);
+
+
+}
+async function test35_light() {
+	await prelims();
+	UI.nav.activate('schedule'); onclickSchedule();
+
+	//wie krieg ich das erste event?
+	let evs = getEvents();
+	if (nundef(evs)) return;
+	console.log('events', evs)
+	let n = Object.values(evs).length;
+	console.log('events for', U.name, evs, n)
+	if (n < 2) return;
+	let e = Object.values(evs)[1];
+	console.log('e', e)
+	showEventOpen(e.id);
+	// Example usage
+	//onclick=openPopup;
+	//let d=mPopup('Hallo','dMain',{})
+	//M.playerColors.map(x=>console.log(x,colorHSL(x,true).l * 100,colorLum(x,true)))
+}
+async function test34_colorjs_YES() {
+	await prelims();
+	UI.nav.activate('schedule'); onclickSchedule();
+}
 async function test33_colorjs(){
 	await prelims();
 	UI.nav.activate('schedule');

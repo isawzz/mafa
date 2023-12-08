@@ -1,3 +1,152 @@
+//#region approutes von nodejs 
+app.get("/", (req, res) => { res.sendFile(path.join(__dirname, "index.html")); });
+
+app.get('/filenames', async (req, res) => {
+	const { directory: dir } = req.query;
+	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
+	try {
+		const directoryPath = dir.startsWith('C:') ? dir : path.join(__dirname, dir);
+		console.log('dirpath', directoryPath)
+		const files = await fsp.readdir(directoryPath);
+		res.json({ files });
+	} catch (err) {
+		res.status(500).json({ error: 'Error reading directory', details: err.message });
+	}
+});
+app.get('/login', (req, res) => {
+	console.log('______\n/login!!!!! query', req.query);
+	let u = req.query;
+	let uname = u.name;
+	if (nundef(uname)) { res.json({ message: 'ERROR! missing name' }); return; }
+	let uconf = lookup(Config, ['users', uname]);
+	if (!uconf || uconf.color != u.color) { uconf = lookupSetOverride(Config, ['users', uname], u); saveConfig(); }
+	let usession = lookupSetOverride(Session, ['users', uname], u);
+	//now user is registered as well as loggedIn and with correct color!
+	res.json({ session: Session, config: Config, message: `user ${uname} logged in!` });
+})
+
+app.post('/upload', (req, res) => {
+	console.log(Object.keys(req.body)); //'req.body',req.body)
+	const uploadedFile = req.files.image; // 'image' is the field name in the form
+	uploadedFile.mv(path.join(uploadDirectory, 'img', uploadedFile.name), (err) => {
+		if (err) { return res.status(500).send(err); }
+		const fileSizeInBytes = uploadedFile.size;
+		const fileName = uploadedFile.name;
+		let [unique, ext] = fileName.split('.');
+		console.log('filename', fileName)
+		const fileSizeInKB = fileSizeInBytes / 1024; // KB
+		const fileSizeInMB = fileSizeInKB / 1024; // MB
+		console.log('!!!!', req.body.category, req.body.name);
+		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${unique}:\n  cat: ${req.body.collection}\n  coll: ${req.body.collection}\n  name: ${req.body.name}\n  ext: ${ext}`, err => { if (err) console.log('error:', err); });
+		res.json({
+			message: 'File uploaded successfully',
+			fileName: fileName,
+			fileSizeInBytes: fileSizeInBytes,
+			fileSizeInKB: fileSizeInKB,
+			fileSizeInMB: fileSizeInMB,
+		});
+	});
+});
+app.post('/event', (req, res) => {
+	const event = req.body;
+	let uname = event.user;
+	console.log('...user', uname)
+	let fname = path.join(uploadDirectory, 'users', uname + '.yaml');
+	if (nundef(Users[uname])) {
+		let exists = fs.existsSync(fname);
+		if (exists) {
+			const yamlFile = fs.readFileSync(fname, 'utf8');
+			Users[uname] = yaml.load(yamlFile);
+		} else Users[uname] = {};
+	}
+	let udata = Users[uname];
+
+	//if event.text is empty and this event exists, delete it! otherwise save it
+	if (isEmpty(event.text)) {
+		let e = lookup(udata, ['events', event.id]);
+		if (e) delete udata.events[event.id];
+	} else lookupSetOverride(udata, ['events', event.id], event);
+
+	try {
+		const yamlData = yaml.dump(udata);
+		fs.writeFileSync(fname, yamlData, 'utf8');
+	} catch (error) {
+		console.error('Error writing YAML file:', error);
+	}
+	res.json({ message: `event ${event.id} updated!`, user: udata });
+});
+app.post('/save', (req, res) => {
+	const body = req.body;
+	const data = body.data; //some json object or base64 image data (or undef)
+	const fname = isdef(body.path) ? path.join(__dirname, body.path) : ''; // 
+	const mode = body.mode;
+
+	console.log('save:', mode, 'to', fname); //, '\n', data);
+	try {
+		if (mode == 'a') {
+			fs.appendFileSync(fname, data, 'utf8');
+		} else if (mode == 'cs') {
+			if (data) {
+				lookupSetOverride(Config, body.path.split('.'), data);
+				lookupSetOverride(Session, body.path.split('.'), data);
+			}
+			saveConfig();
+		} else if (mode == 'w') {
+			fs.writeFileSync(fname, data, 'utf8');
+		} else if (mode == 'wi') {
+			var base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+			fs.writeFileSync(fname, base64Data, 'base64'); //, function(err) {  console.log('ERROR img upload: '+fname);});
+		} else if (mode == '_ac') {
+			addKeys(data, Config);
+		} else if (mode == '_wc') {
+			copyKeys(data, Config);
+		} else if (mode == 'ay') {
+			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
+			addKeys(data, di);
+			let y = yaml.dump(di);
+			fs.writeFileSync(fname, y, 'utf8');
+		} else if (mode == 'wy') {
+			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
+			copyKeys(data, di);
+			let y = yaml.dump(di);
+			fs.writeFileSync(fname, y, 'utf8');
+		} else if (mode == 'as' || mode == 's') {
+			lookupSet(Session, body.path.split('.'), data);
+			console.log('Session', Session)
+		} else if (mode == 'ws') {
+			lookupSetOverride(Session, body.path.split('.'), data);
+			console.log('Session', Session)
+		} else if (mode == 'ac') {
+			lookupSet(Config, body.path.split('.'), data);
+			let y = yaml.dump(Config);
+			fs.writeFileSync(configFile, y, 'utf8');
+		} else if (mode == 'wc' || mode == 'c') {
+			if (data) lookupSetOverride(Config, body.path.split('.'), data);
+			saveConfig();
+		}
+		console.log('*** success ***');
+	} catch (error) {
+		console.error('Error updating file:', error);
+	}
+	res.json({ message: `save mode:${mode} ${fname} *** successful ***`, config: Config, session: Session });
+});
+app.get('/load', (req, res) => {
+	try {
+		//console.log('______\nquery',req.query);
+		let params = req.query;
+		let result = {};
+		if (params.config) result.config = Config;
+		if (params.session) result.session = Session;
+
+		//const yamlFile = fs.readFileSync('path/to/your/file.yaml', 'utf8');	const data = yaml.load(yamlFile);
+
+		res.json(result);
+	} catch (error) {
+		console.error('Error reading or parsing the YAML file:', error);
+	}
+});
+
+//#endregion
 
 //#region m
 function openPopup(ev) {
@@ -491,6 +640,64 @@ function restShowColors(){
 //#endregion
 
 //#region user
+async function loadUserdata(uname) {
+	//hier muss user reloaden! weil koennte auf anderem browser geaendert worden sein!
+	let data = await mGetRoute('user',{user:uname});
+	if (!data) {
+		data = await postUserChange({ name: uname, color: rChoose(M.playerColors) });
+		// console.log('adding new user!!!', uname);
+		// data = { name: uname, color: rChoose(M.playerColors) };
+		// data = await mPostRoute('postUser', data);
+	} else	Serverdata.users[uname] = data;
+	//console.log('data',data);
+	return data;
+}
+
+async function loadUserdata_mist(){
+	let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
+	if (!data) {
+		console.log('adding new user!!!', uname);
+		data = { name: uname, color: rChoose(M.playerColors) };
+		await serverUpdate('newuser', data);
+	}
+	assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
+	localStorage.setItem('username', uname);
+	U = data;
+	U.data = await mGetYaml(`../y/users/${uname}.yaml`);
+	return U;
+}
+
+async function userLoad(uname) {
+	UI.nav.activate('no')
+	if (nundef(uname)) uname = localStorage.getItem('username');
+	//U = null;
+	//uname = null;
+	if (isdef(uname) && (!U || U.name != uname)) {
+		//what if the current U has unsaved data??? TODO
+		let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
+		if (!data) {
+			console.log('adding new user!!!', uname);
+			data = { name: uname, color: rChoose(M.playerColors) };
+			await serverUpdate('newuser', data);
+		}
+		assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
+		localStorage.setItem('username', uname);
+		U = data;
+		U.data = await mGetYaml(`../y/users/${uname}.yaml`);
+	}
+	mClear(dUser);
+	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+
+	let d;
+	if (U) {
+		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
+		setColors(U.color)
+	} else {
+		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' };
+		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
+	}
+	d.onclick = onclickUser;
+}
 function showUser() {
 	mClear(dUser);
 	//mCenterCenterFlex(dUser); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
@@ -945,6 +1152,24 @@ async function uploadImg2(img, unique, cat, name) {
 //#endregion
 
 //#region combu
+async function prelims() {
+	if (nundef(M.superdi)) {
+
+		Serverdata = await mGetRoute('load', { config: true, session: true }); //console.log('Serverdata', Serverdata);
+		await loadCollections();
+		loadPlayerColors();
+
+		let nav = UI.nav = mNavbar('dNav', {}, 'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
+		nav.disable('play');
+
+		dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+		//mInsert(document.body, dTitle, 1);
+
+		dUser = mDom(nav.ui, {}, { id: 'dUser' });
+		//console.log('alles ok!')
+		await showUser();
+	}
+}
 async function prelims() {
 	if (nundef(M.superdi)) {
 
@@ -4288,6 +4513,27 @@ async function saveCanvas(ev) {
 //#endregion
 
 //#region nodejs
+
+async function init() {
+	try {
+		const yamlFile = fs.readFileSync(configFile, 'utf8');
+		Session.config = yaml.load(yamlFile);
+		let userfiles = await getFiles('../y/users');
+		Session.users = {};
+		for (const fname of userfiles) {
+			let uname = fname.substring(0, fname.length - 5);
+			// console.log('uname',uname);
+			let p = path.join(uploadDirectory, 'users', fname);
+			//console.log('path',p)
+			let f = fs.readFileSync(p, 'utf8');
+			Session.users[uname] = yaml.load(f);
+		}
+		app.listen(PORT, () => console.log(`Server on port ${PORT}`));
+	} catch (error) {
+		console.error('Error reading or parsing the YAML file:', error);
+	}
+}
+
 
 //#region newest combu/app.js
 const express = require("express");
