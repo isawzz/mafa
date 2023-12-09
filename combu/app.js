@@ -1,3 +1,4 @@
+//#region require - constants
 const express = require("express");
 const bodyParser = require('body-parser');
 const fileUpload = require("express-fileupload");
@@ -6,6 +7,21 @@ const fsp = require('fs').promises;
 const path = require("path");
 const PORT = process.env.PORT || 3000;
 const yaml = require('js-yaml');
+//console.log('**************\n__dirname', __dirname);
+const uploadDirectory = path.join(__dirname, '..', 'y');
+const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
+const configFile = path.join(uploadDirectory, 'config.yaml');
+const usersFile = path.join(dbDirectory, 'users.yaml');
+const eventsFile = path.join(dbDirectory, 'events.yaml');
+var Session = {}; // session ist nur fuer temp data: just mem
+
+const app = express();
+app.use(bodyParser.json({ limit: '200mb' })); //works!!!
+//app.use(express.json({ limit: '200mb' }));  //doesn't work
+app.use(fileUpload());
+const cors = require('cors'); app.use(cors());
+app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
+//#endregion
 
 //#region crypto
 const crypto = require('crypto');
@@ -41,18 +57,6 @@ function decryptData(encryptedData, privateKey) {
 // Save the decrypted data or perform other operations as needed
 
 //#endregion
-
-//console.log('**************\n__dirname', __dirname);
-const uploadDirectory = path.join(__dirname, '..', 'y');
-const configFile = path.join(uploadDirectory, 'config.yaml');
-var Session = {}; // session ist nur fuer temp data: just mem
-
-const app = express();
-app.use(bodyParser.json({ limit: '200mb' })); //works!!!
-//app.use(express.json({ limit: '200mb' }));  //doesn't work
-app.use(fileUpload());
-const cors = require('cors'); app.use(cors());
-app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 
 //#region functions
 function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
@@ -190,13 +194,10 @@ function saveUser(uname) {
 	let p = path.join(uploadDirectory, 'users', uname + '.yaml');
 	let y = yaml.dump(Session.users[uname]); fs.writeFileSync(p, y, 'utf8');
 }
-//#endregion
-
-//#region sqlite3
-const sqlite3 = require('sqlite3');
-
-const db = new sqlite3.Database(path.join(uploadDirectory,'example.db'), (err) => {});
-//CREATE READ UPDATE DELETE CRUD
+function valf() {
+  for (const arg of arguments) if (isdef(arg)) return arg;
+  return null;
+}
 //#endregion
 
 app.get('/user', (req, res) => {
@@ -219,9 +220,9 @@ app.post('/postUser', (req, res) => {
 	let data = req.body;
 	console.log('<== post user')
 	//console.log('data', data)
-	let fname = path.join(uploadDirectory, 'users', name + '.yaml');
+	let fname = path.join(dbDirectory, 'users.yaml');
 	lookupSetOverride(Session, ['users', name], data);
-	let y = yaml.dump(data);
+	let y = yaml.dump(Session.users);
 	fs.writeFileSync(fname, y, 'utf8');
 	res.json(data);
 });
@@ -241,42 +242,47 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, { cors: { origins: '*', } });//live-server: brauch ich cors!
-const UserByClientId={};
+const UserByClientId = {};
 io.on('connection', (client) => {
 	//handle_connect(client.id);
 	//client.emit('message','hello')
-	client.on('login', x=>handle_login(x,client.id));
+	client.on('login', x => handle_login(x, client.id));
 	client.on('message', handle_message);
 	client.on('update', handle_update);
 	client.on('disconnect', handle_disconnect); // ()=>handle_disconnect(socket.id));
 });
 function handle_connect(id) { console.log('connected', id); io.emit('message', 'someone logged in!'); }
 function handle_disconnect(x) { console.log('io.disconnected', x); io.emit('message', x); }
-function handle_login(x,id) { 
-	console.log('login:', x,id); 
+function handle_login(x, id) {
+	console.log('login:', x, id);
 	UserByClientId[x] = id;
-	io.emit('message', `${x} logged in!`); 
+	io.emit('message', `${x} logged in!`);
 }
 function handle_message(x) { console.log('got message', arguments); io.emit('message', x); }
 function handle_update(x) { console.log('got update', x); io.emit('update', x); }
 //#endregion
 
-
-
 async function init() {
-	const yamlFile = fs.readFileSync(configFile, 'utf8');
+	let yamlFile = fs.readFileSync(configFile, 'utf8');
 	Session.config = yaml.load(yamlFile);
-	let userfiles = await getFiles('../y/users');
-	Session.users = {};
-	for (const fname of userfiles) {
-		let uname = fname.substring(0, fname.length - 5);
-		// console.log('uname',uname);
-		let p = path.join(uploadDirectory, 'users', fname);
-		//console.log('path',p)
-		let f = fs.readFileSync(p, 'utf8');
-		Session.users[uname] = yaml.load(f);
-	}
-	server.listen(PORT, () => console.log('listening on port ' + PORT));	
+	yamlFile = fs.readFileSync(usersFile, 'utf8');
+	Session.users = valf(yaml.load(yamlFile),{});
+	yamlFile = fs.readFileSync(eventsFile, 'utf8');
+	Session.events = valf(yaml.load(yamlFile),{});
+
+	console.log('Session',Session)
+
+	// let userfiles = await getFiles('../y/users');
+	// Session.users = {};
+	// for (const fname of userfiles) {
+	// 	let uname = fname.substring(0, fname.length - 5);
+	// 	// console.log('uname',uname);
+	// 	let p = path.join(uploadDirectory, 'users', fname);
+	// 	//console.log('path',p)
+	// 	let f = fs.readFileSync(p, 'utf8');
+	// 	Session.users[uname] = yaml.load(f);
+	// }
+	server.listen(PORT, () => console.log('listening on port ' + PORT));
 	//app.listen(PORT, () => console.log(`Server on port ${PORT}`));
 }
 init();

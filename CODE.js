@@ -1,3 +1,327 @@
+
+
+//#region db
+
+//#region ai generated SimpleDatabase
+class SimpleDatabase {
+  constructor() {
+    this.data = new Map();
+  }
+
+  // Insert or update a key-value pair
+  set(key, value) {
+    this.data.set(key, value);
+  }
+
+  // Retrieve the value associated with a key
+  get(key) {
+    return this.data.get(key);
+  }
+
+  // Remove a key-value pair
+  remove(key) {
+    this.data.delete(key);
+  }
+
+  // Get all keys in the database
+  getKeys() {
+    return Array.from(this.data.keys());
+  }
+
+  // Get all values in the database
+  getValues() {
+    return Array.from(this.data.values());
+  }
+
+  // Get all key-value pairs in the database
+  getAll() {
+    return Array.from(this.data.entries());
+  }
+}
+
+// Example usage:
+let db = new SimpleDatabase();
+
+// Insert data
+db.set('name', 'John');
+db.set('age', 25);
+db.set('city', 'Example City');
+
+// Retrieve data
+console.log('Name:', db.get('name')); // Output: John
+console.log('Age:', db.get('age')); // Output: 25
+
+// Remove a key-value pair
+db.remove('age');
+
+// Get all keys
+console.log('Keys:', db.getKeys()); // Output: ['name', 'city']
+
+// Get all values
+console.log('Values:', db.getValues()); // Output: ['John', 'Example City']
+
+// Get all key-value pairs
+console.log('All:', db.getAll()); // Output: [['name', 'John'], ['city', 'Example City']]
+
+
+
+
+//#endregion
+
+//#region sqlite3
+const sqlite3 = require('sqlite3').verbose();
+const dbPath = path.join(uploadDirectory, 'db', 'database.db');
+console.log(`SQLite3 version: ${sqlite3.version}`);
+
+// Step 1: Open a SQLite database connection
+db = new sqlite3.Database(dbPath, (err) => {
+	if (err) {
+		console.error('Error opening database:', err.message);
+	} else {
+		console.log('Connected to the SQLite database');
+	}
+});
+
+function createDB() {
+	// Step 2: Create 'users' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS users (
+			id INTEGER PRIMARY KEY,
+			name TEXT,
+			color TEXT
+		)
+	`);
+	// Step 3: Create 'events' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS events (
+			id INTEGER PRIMARY KEY,
+			userid INTEGER,
+			text TEXT,
+			time TEXT,
+			date TEXT,
+			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			shared TEXT,
+			period TEXT,
+			FOREIGN KEY (userid) REFERENCES users (id)
+		)
+	`);
+
+	// Step 4: Create 'ownEvents' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS ownEvents (
+			userid INTEGER,
+			eventid INTEGER,
+			FOREIGN KEY (userid) REFERENCES users (id),
+			FOREIGN KEY (eventid) REFERENCES events (id),
+			PRIMARY KEY (userid, eventid)
+		)
+	`);
+
+	// Step 5: Create 'subscribedEvents' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS subscribedEvents (
+			userid INTEGER,
+			eventid INTEGER,
+			FOREIGN KEY (userid) REFERENCES users (id),
+			FOREIGN KEY (eventid) REFERENCES events (id),
+			PRIMARY KEY (userid, eventid)
+		)
+	`);
+
+	// Step 6: Create 'friends' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS friends (
+			userid1 INTEGER,
+			userid2 INTEGER,
+			FOREIGN KEY (userid1) REFERENCES users (id),
+			FOREIGN KEY (userid2) REFERENCES users (id),
+			PRIMARY KEY (userid1, userid2)
+		)
+	`);
+}
+
+async function testDB_events() {
+	const query = 'SELECT * FROM events';
+	const db = await sqlitePromise.open(dbPath, { Promise });
+
+	await db.all(query, [], (err, rows) => {
+		if (err) {
+			console.error(err.message);
+		} else {
+			// Convert rows to JavaScript objects
+			// id INTEGER PRIMARY KEY,
+			// userid INTEGER,
+			// text TEXT,
+			// time TEXT,
+			// date TEXT,
+			// created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			// shared TEXT,
+			// period TEXT,
+			// FOREIGN KEY (userid) REFERENCES users (id)
+			const fields=['id','userid','time','text','date','created','shared','period'];
+			let arr=[];
+			for(const row of rows){
+				let o={};
+				for(const k of fields){
+					o[k]=row[k];
+				}
+				arr.push(o);
+			}
+			//const data = rows.map(row => {} ({ id: row.id, userid: row.userid, color: row.color }));
+
+			// Serialize JavaScript objects to YAML
+			const yamlData = yaml.dump(arr);
+
+			// Save YAML data to a file
+			fs.writeFileSync(path.join(uploadDirectory,'events.yaml'), yamlData);
+
+			console.log('Data converted and saved to output.yaml');
+		}
+
+		// Close SQLite database connection
+		db.close();
+	});
+}
+async function testDB_users() {
+	const query = 'SELECT * FROM users';
+	const db = await sqlitePromise.open(dbPath, { Promise });
+
+	await db.all(query, [], (err, rows) => {
+		if (err) {
+			console.error(err.message);
+		} else {
+			// Convert rows to JavaScript objects
+			const data = rows.map(row => ({ id: row.id, name: row.name, color: row.color }));
+
+			// Serialize JavaScript objects to YAML
+			const yamlData = yaml.dump(data);
+
+			// Save YAML data to a file
+			fs.writeFileSync(path.join(uploadDirectory,'users.yaml'), yamlData);
+
+			console.log('Data converted and saved to users.yaml');
+		}
+
+		// Close SQLite database connection
+		db.close();
+	});
+
+}
+async function testDB(){
+	await testDB_users();
+	await testDB_events();
+}
+function createUser(name, color) {
+  const insertQuery = 'INSERT INTO users (name, color) VALUES (?, ?)';
+  const values = [name, color];
+
+  db.run(insertQuery, values, function (err) {
+    if (err) {
+      console.error('Error creating user:', err.message);
+    } else {
+      console.log(`User created with ID: ${this.lastID}`);
+    }
+  });
+}
+createUser('felix','blue');
+
+testDB_users();
+testDB_events();
+
+//#endregion
+
+
+//*************** trial 2 */
+const sqlite3 = require('sqlite3'); //const sqlite3 = require('sqlite3').verbose();
+
+const users = new sqlite3.Database(path.join(uploadDirectory,db,'users.db'), (err) => {});
+const events = new sqlite3.Database(path.join(uploadDirectory,db,'events.db'), (err) => {});
+
+// Step 2: Create 'events' table
+events.run(`
+  CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY,
+    userid TEXT,
+    text TEXT,
+    time TEXT,
+    date TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    shared TEXT,
+    period TEXT
+  )
+`);
+
+// Step 3: Insert an event into the 'events' table
+function insertEvent(event) {
+  const insertQuery = `
+    INSERT INTO events (userid, text, time, date, shared, period)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+  const values = [event.userid, event.text, event.time, event.date, event.shared, event.period];
+
+  events.run(insertQuery, values, function (err) {
+    if (err) {
+      console.error('Error inserting event:', err.message);
+    } else {
+      console.log(`Event inserted with ID: ${this.lastID}`);
+    }
+  });
+}
+
+// Step 4: Retrieve events for a specific userid and month
+function getEventsByUserIdAndMonth(userid, month) {
+  const selectQuery = `
+    SELECT *
+    FROM events
+    WHERE userid = ? AND strftime('%Y-%m', date) = ?
+  `;
+
+  events.all(selectQuery, [userid, month], (err, rows) => {
+    if (err) {
+      console.error('Error getting events:', err.message);
+    } else {
+      console.log(`Events for ${userid} in ${month}:`, rows);
+    }
+  });
+}
+
+// // Example usage
+// const event1 = {
+//   userid: 'user123',
+//   text: 'Event 1',
+//   time: '12:00 PM',
+//   date: '2023-11-15',
+//   shared: 'all',
+//   period: 'weekday',
+// };
+
+// const event2 = {
+//   userid: 'user123',
+//   text: 'Event 2',
+//   time: '3:30 PM',
+//   date: '2023-11-20',
+//   shared: 'friends',
+//   period: 'none',
+// };
+
+// insertEvent(event1);
+// insertEvent(event2);
+
+// getEventsByUserIdAndMonth('user123', '2023-11');
+
+// // Step 5: Close the SQLite database connection
+// db.close((err) => {
+//   if (err) {
+//     console.error('Error closing database:', err.message);
+//   } else {
+//     console.log('Closed the SQLite database connection');
+//   }
+// });
+
+//CREATE READ UPDATE DELETE CRUD
+
+//#endregion
+
 //#region approutes von nodejs 
 app.get("/", (req, res) => { res.sendFile(path.join(__dirname, "index.html")); });
 
@@ -4534,6 +4858,43 @@ async function init() {
 	}
 }
 
+
+//#region cors error
+const express = require("express");
+var app = express();
+const http = require("http").createServer(app);
+// const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: "http://localhost:8080",
+    methods: ["GET", "POST"]
+  }
+});
+
+const port = process.env.PORT || 3000;
+try {
+  http.listen(port, () => {
+    console.log("listening on localhost:" + port);
+  });
+} catch (e) {
+  console.error("Server failed to listen " + e);
+}
+
+CLIENT:
+const socket = io('http://localhost:3000', {
+  extraHeaders: {
+      "Access-Control-Allow-Origin": "http://localhost:8080"
+  },
+  // transports: ['websocket']
+});
+
+socket.connect();
+socket.on("connect_error", (err) => {
+  console.log(`connect_error due to ${err.message}`);
+});
+
+
+//#endregion
 
 //#region newest combu/app.js
 const express = require("express");
