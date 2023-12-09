@@ -5,9 +5,9 @@ const fileUpload = require("express-fileupload");
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require("path");
-const PORT = process.env.PORT || 3000;
 const yaml = require('js-yaml');
 //console.log('**************\n__dirname', __dirname);
+const PORT = process.env.PORT || 3000;
 const uploadDirectory = path.join(__dirname, '..', 'y');
 const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
 const configFile = path.join(uploadDirectory, 'config.yaml');
@@ -21,41 +21,6 @@ app.use(bodyParser.json({ limit: '200mb' })); //works!!!
 app.use(fileUpload());
 const cors = require('cors'); app.use(cors());
 app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
-//#endregion
-
-//#region crypto
-const crypto = require('crypto');
-
-// Generate key pair
-const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
-	modulusLength: 2048, // You can adjust the modulus length based on your security requirements
-	publicKeyEncoding: { type: 'spki', format: 'pem' },
-	privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
-});
-
-//console.log('Public Key:', publicKey);
-//console.log('Private Key:', privateKey);
-//console.log('...keys generated')
-
-// Function to decrypt data using Node.js crypto module
-function decryptData(encryptedData, privateKey) {
-	const privateKeyBuffer = Buffer.from(privateKey, 'base64');
-	const decryptedBuffer = crypto.privateDecrypt(
-		{ key: privateKeyBuffer, passphrase: '' }, // Use a passphrase if your private key is encrypted
-		Buffer.from(encryptedData, 'base64')
-	);
-
-	return decryptedBuffer.toString('utf8');
-}
-
-// Example: Decrypt data received from the client
-// const encryptedDataFromClient = '...'; // Replace with the actual encrypted data received from the client
-// const privateKey = '...'; // Replace with your actual private key
-// const decryptedData = decryptData(encryptedDataFromClient, privateKey);
-// console.log('Decrypted Data:', decryptedData);
-
-// Save the decrypted data or perform other operations as needed
-
 //#endregion
 
 //#region functions

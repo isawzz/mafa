@@ -4857,7 +4857,40 @@ async function init() {
 		console.error('Error reading or parsing the YAML file:', error);
 	}
 }
+//#region crypto
+const crypto = require('crypto');
 
+// Generate key pair
+const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
+	modulusLength: 2048, // You can adjust the modulus length based on your security requirements
+	publicKeyEncoding: { type: 'spki', format: 'pem' },
+	privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+});
+
+//console.log('Public Key:', publicKey);
+//console.log('Private Key:', privateKey);
+//console.log('...keys generated')
+
+// Function to decrypt data using Node.js crypto module
+function decryptData(encryptedData, privateKey) {
+	const privateKeyBuffer = Buffer.from(privateKey, 'base64');
+	const decryptedBuffer = crypto.privateDecrypt(
+		{ key: privateKeyBuffer, passphrase: '' }, // Use a passphrase if your private key is encrypted
+		Buffer.from(encryptedData, 'base64')
+	);
+
+	return decryptedBuffer.toString('utf8');
+}
+
+// Example: Decrypt data received from the client
+// const encryptedDataFromClient = '...'; // Replace with the actual encrypted data received from the client
+// const privateKey = '...'; // Replace with your actual private key
+// const decryptedData = decryptData(encryptedDataFromClient, privateKey);
+// console.log('Decrypted Data:', decryptedData);
+
+// Save the decrypted data or perform other operations as needed
+
+//#endregion
 
 //#region cors error
 const express = require("express");

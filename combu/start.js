@@ -9,7 +9,7 @@ async function test41_allNewApp(){
 
 async function prelims() {
 	if (nundef(M.superdi)) {
-		Serverdata = await mGetRoute('session');
+		Serverdata = await mGetRoute('session'); //hier wird gesamte session geladen!!!
 		await loadCollections();
 		loadPlayerColors();
 
