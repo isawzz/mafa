@@ -15,21 +15,22 @@ async function start() {
 	//downloadAsText(text, 'closure', 'js');
 	//downloadAsText(css, 'final', 'css');
 	//#endregion
-
+	let text,css,project;
 	let glitches = ['startsWith', 'endsWith'];
-	//let text = '<please call closureFromProject>', css='';
-	[text, css] = await closureFromProject('combufull', glitches, ['downloadAsText','onclickColors','onclickSchedule','onclickView','onclickAdd']); 
-	// [text, css] = await closureFromProject('coding', glitches, ['downloadAsText']); 
-	// [text, css] = await closureFromProject('spiel', glitches); 
-	// [text, css] = await closureFromProject('testa', glitches); 
-	// [text, css] = await closureFromProject('testphp', glitches); 
-	// [text, css] = await closureFromProject('tiere', glitches.concat(['expand', 'drop']), ['allowDrop','dropImage']);
+	text = '<please call closureFromProject>', css='';
+	[text, css, project] = await closureFromProject('combufull', glitches, ['downloadAsText','onclickColors','onclickSchedule','onclickView','onclickAdd']); 
+	// [text, css, project] = await closureFromProject('coding', glitches, ['downloadAsText']); 
+	// [text, css, project] = await closureFromProject('spiel', glitches); 
+	// [text, css, project] = await closureFromProject('testa', glitches); 
+	// [text, css, project] = await closureFromProject('testphp', glitches); 
+	// [text, css, project] = await closureFromProject('tiere', glitches.concat(['expand', 'drop']), ['allowDrop','dropImage']);
 
 	//text = await combineClosures(['coding','spiel','testa','tiere']); 
 	// cssFromFiles(files, dir = '', types = ['root', 'tag', 'class', 'id', 'keyframes'])
 	//downloadAsText(css,'final','css');
 
-	AU.ta.value = text; 
+	//AU.ta.value = text; 
+	AU.ta.value = project; //if want only functions not in allfhuge.js!
 	AU.css.value = css; 
 
 }
@@ -87,6 +88,7 @@ async function closureFromProject(project, ignoreList=[], addList=[]) {
 	let funclist = await codeParseFile('../basejs/allfhuge.js');
 	let list = globlist.concat(funclist); //keylist in order of loading!
 	let bykey = list2dict(list, 'key');
+	DA.diglobal = Object.keys(bykey); //list2dict(list, 'key');
 	let bytype = {};
 	for (const k in bykey) { let o = bykey[k]; lookupAddIfToList(bytype, [o.type], o); }
 	//get .js files from project
@@ -110,6 +112,7 @@ async function closureFromProject(project, ignoreList=[], addList=[]) {
 
 	//alle keys in bykey und in mykey sind unique. aber es kann same key in beiden geben
 	//welchen code nehm ich dann?
+	DA.duplicates = [];
 	let dupltext = '';
 	for (const k in mykey) {
 		let onew = mykey[k];
@@ -121,6 +124,7 @@ async function closureFromProject(project, ignoreList=[], addList=[]) {
 			oold.oldcode = oold.code;
 			oold.code = onew.code;
 			dupltext += oold.oldcode + '\n' + oold.code + '\n';
+			DA.duplicates.push(k);
 		} else {
 			bykey[k] = onew; //add new element to bykey
 			lookupAddIfToList(bytype, [onew.type], onew);
@@ -162,12 +166,13 @@ async function closureFromProject(project, ignoreList=[], addList=[]) {
 	funckeys = sortCaseInsensitive(funckeys);
 
 
-
 	//generate
-	let closuretext = '';
+	let closuretext = '', justproject = '';
+	console.log('DA.diglobal',DA.diglobal)
 	for (const k of cvckeys) { closuretext += byKeyMinimized[k].code + '\n'; }
 	for (const k of funckeys) { 
 		closuretext += byKeyMinimized[k].code + '\n'; 
+		if (DA.duplicates.includes(k) || !DA.diglobal.includes(k)) justproject += byKeyMinimized[k].code + '\n'; 
 	}
 
 	//css closure as well!
@@ -284,7 +289,7 @@ async function closureFromProject(project, ignoreList=[], addList=[]) {
 		}
 	}
 
-	return [closuretext, csstext];
+	return [closuretext, csstext, justproject];
 }
 async function codebaseExtendFromProject(project) {
 	// read in codebase
