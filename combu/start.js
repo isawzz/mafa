@@ -4,7 +4,7 @@ async function start() { test41_allNewApp(); }
 
 async function test41_allNewApp(){
 	await prelims();
-
+	//was will ich als naechstes?
 }
 
 async function prelims() {
