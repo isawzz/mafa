@@ -4,7 +4,8 @@ async function start() { test41_allNewApp(); }
 
 async function test41_allNewApp(){
 	await prelims();
-	//was will ich als naechstes?
+	onclickSchedule();
+	//was will ich als naechstes? fix calendar!
 }
 
 async function prelims() {
@@ -20,8 +21,10 @@ async function prelims() {
 
 		dUser = mDom(nav.ui, {}, { id: 'dUser' });
 
-		U = getUser(localStorage.getItem('username'));
-		await showUser(U ? U.name : null);
+		let uname = localStorage.getItem('username');
+		//console.log('uname',uname)
+		if (isdef(uname)) U = await getUser(uname);
+		await showUser(uname);
 
 		let server = getServerurl();
 		Socket = io(server);

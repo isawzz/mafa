@@ -41943,7 +41943,7 @@ function measureText1(text, fz, family, weight = 900) {
   let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   return { w: metrics.width, h: actualHeight };
 }
-function measureTextX(text, fz, family, weight = 900) {
+function measureTextX(text, fz, family='arial', weight = 900) {
   let sFont = '' + weight + ' ' + fz + 'px ' + family;
   sFont = sFont.trim();
   var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'));
@@ -41952,7 +41952,7 @@ function measureTextX(text, fz, family, weight = 900) {
   var metrics = context.measureText(text);
   let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   console.log(metrics.width, actualHeight, fz)
-  return { w: metrics.width, h: actualHeight, fz: fz };
+  return { w: metrics.width, h: actualHeight, fz: fz, metrics:metrics };
 }
 function measureWord(w, fz) { let styles = { fz: fz, family: 'arial' }; return getSizeWithStyles(w, styles); }
 function mEdit(label, value, dParent, handler, styles, classes, id) {
@@ -42504,7 +42504,8 @@ function mgPos(card, el, x = 0, y = 0, unit = '%', anchor = 'center') {
 function mGrid(rows, cols, dParent, styles = {}) {
   let d = mDiv(dParent, styles);
   d.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
-  d.style.gridTemplateRows = 'repeat(' + rows + ',1fr)';
+  d.style.gridTemplateRows = 'repeat(' + rows + ',auto)';
+  //d.style.gridTemplateRows = 'repeat(' + rows + ',1fr)'; //dann werden alle rows gleich hoch!
   d.style.display = 'inline-grid';
   d.style.padding = valf(styles.padding, styles.gap) + 'px';
   return d;

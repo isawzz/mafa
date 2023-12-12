@@ -160,15 +160,15 @@ function saveUser(uname) {
 	let y = yaml.dump(Session.users[uname]); fs.writeFileSync(p, y, 'utf8');
 }
 function valf() {
-  for (const arg of arguments) if (isdef(arg)) return arg;
-  return null;
+	for (const arg of arguments) if (isdef(arg)) return arg;
+	return null;
 }
 //#endregion
 
 app.get('/user', (req, res) => {
 	let params = req.query;
 	console.log('==> get user:\n params', params)
-	let data = lookup(Session, ['users', params.user]);
+	let data = lookup(Session, ['users', params.uname]);
 	//console.log(data)
 	res.json(data);
 });
@@ -176,9 +176,29 @@ app.get('/config', (req, res) => {
 	console.log('==> get config')
 	res.json(Session.config);
 });
+app.get('/event', (req, res) => {
+	let params = req.query;
+	console.log('==> get event:\n params', params)
+	let data = lookup(Session, ['events', params.id]);
+	//console.log(data)
+	res.json(data);
+});
+app.get('/events', (req, res) => { return res.json(lookup(Session, ['events'])); });
 app.get('/session', (req, res) => {
 	console.log('==> get session')
 	res.json(Session);
+});
+app.post('/postEvent', (req, res) => {
+	let id = req.body.id;
+	let data = req.body;
+	console.log('<== post event')
+	//console.log('data', data)
+	let fname = path.join(dbDirectory, 'events.yaml');
+
+	if (isEmpty(data.text)) delete Session.events[id]; else lookupSetOverride(Session, ['events', id], data);
+	let y = yaml.dump(Session.events);
+	fs.writeFileSync(fname, y, 'utf8');
+	res.json(data);
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
@@ -231,11 +251,11 @@ async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');
 	Session.config = yaml.load(yamlFile);
 	yamlFile = fs.readFileSync(usersFile, 'utf8');
-	Session.users = valf(yaml.load(yamlFile),{});
+	Session.users = valf(yaml.load(yamlFile), {});
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
-	Session.events = valf(yaml.load(yamlFile),{});
+	Session.events = valf(yaml.load(yamlFile), {});
 
-	console.log('Session',Session)
+	console.log('Session', Session)
 
 	// let userfiles = await getFiles('../y/users');
 	// Session.users = {};

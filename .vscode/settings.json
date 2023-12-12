@@ -1,9 +1,11 @@
 {
 	"editor.quickSuggestions": {
-		"other": false,
+		"other": true,
 		"comments": false,
-		"strings": false
+		"strings": true
 	},
+	"editor.tabCompletion": "onlySnippets",
+	// "editor.tabCompletion": "on",
 	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
 	"editor.codeLens": false,
@@ -13,7 +15,6 @@
 	"editor.glyphMargin": false,
 	"editor.gotoLocation.alternativeImplementationCommand": "editor.action.goToReferences",
 	"editor.gotoLocation.alternativeReferenceCommand": "editor.action.goToTypeDefinition",
-	"editor.tabCompletion": "on",
 	"editor.wordBasedSuggestionsMode": "allDocuments",
 	"extensions.ignoreRecommendations": true,
   "editor.fontSize": 15,

@@ -3,4 +3,10 @@ felix:
   color: '#1f8fff'
 amanda:
   name: amanda
-  color: '#800080'
+  color: '#2e8a56'
+max:
+  name: max
+  color: '#999999'
+lauren:
+  name: lauren
+  color: '#ffc400'

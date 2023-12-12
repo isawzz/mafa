@@ -48,19 +48,6 @@ async function YES_test37_allesNeu() {
 }
 async function test36_loadAllEvents(){
 	await prelims();
-	return;
-	let users = Serverdata.config.users;
-	console.log('users',users);
-	let allEvents = {};
-	for(const uname in users){
-		let evs = await mGetYaml(`../y/users/${uname}.yaml`);
-		addKeys(evs.events,allEvents);
-	}
-	console.log('allEvents',allEvents);
-	DA.allEvents = allEvents;
-	let x = DA.calendar = uiTypeCalendar(d1, U?U.color:rColor(),null, null, allEvents);
-
-
 }
 async function test35_light() {
 	await prelims();
@@ -538,7 +525,7 @@ async function NO_test7_calendar(){
 	Config.events = [
 		
 	]
-  let x = DA.calendar = uiTypeCalendar(d1, null, null, Config.events);
+  let x = DA.calendar = uiTypeCalendar(d1);
 
 }
 async function test6_showAll() {

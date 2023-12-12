@@ -1,0 +1,45 @@
+z_1704787200000_1702334962518:
+  id: z_1704787200000_1702334962518
+  created: 1702334962518
+  day: '1704787200000'
+  time: ''
+  text: mozart
+  user: lauren
+  shared: false
+  subscribers: []
+p_1706083200000_1702334981426:
+  id: p_1706083200000_1702334981426
+  created: 1702334981426
+  day: '1706083200000'
+  time: ''
+  text: beethoven
+  user: lauren
+  shared: false
+  subscribers: []
+a_1701763200000_1702349909550:
+  id: a_1701763200000_1702349909550
+  created: 1702349909550
+  day: '1701763200000'
+  time: 4h30
+  text: violine
+  user: lauren
+  shared: false
+  subscribers: []
+d_1702368000000_1702385243221:
+  id: d_1702368000000_1702385243221
+  created: 1702385243221
+  day: '1702368000000'
+  time: ''
+  text: skype
+  user: felix
+  shared: false
+  subscribers: []
+e_1701590400000_1702391253679:
+  id: e_1701590400000_1702391253679
+  created: 1702391253679
+  day: '1701590400000'
+  time: ''
+  text: hallo
+  user: felix
+  shared: false
+  subscribers: []

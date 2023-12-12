@@ -1,505 +1,553 @@
 
-
-//#region db
-
-//#region ai generated SimpleDatabase
-class SimpleDatabase {
-  constructor() {
-    this.data = new Map();
-  }
-
-  // Insert or update a key-value pair
-  set(key, value) {
-    this.data.set(key, value);
-  }
-
-  // Retrieve the value associated with a key
-  get(key) {
-    return this.data.get(key);
-  }
-
-  // Remove a key-value pair
-  remove(key) {
-    this.data.delete(key);
-  }
-
-  // Get all keys in the database
-  getKeys() {
-    return Array.from(this.data.keys());
-  }
-
-  // Get all values in the database
-  getValues() {
-    return Array.from(this.data.values());
-  }
-
-  // Get all key-value pairs in the database
-  getAll() {
-    return Array.from(this.data.entries());
-  }
-}
-
-// Example usage:
-let db = new SimpleDatabase();
-
-// Insert data
-db.set('name', 'John');
-db.set('age', 25);
-db.set('city', 'Example City');
-
-// Retrieve data
-console.log('Name:', db.get('name')); // Output: John
-console.log('Age:', db.get('age')); // Output: 25
-
-// Remove a key-value pair
-db.remove('age');
-
-// Get all keys
-console.log('Keys:', db.getKeys()); // Output: ['name', 'city']
-
-// Get all values
-console.log('Values:', db.getValues()); // Output: ['John', 'Example City']
-
-// Get all key-value pairs
-console.log('All:', db.getAll()); // Output: [['name', 'John'], ['city', 'Example City']]
-
-
-
-
-//#endregion
-
-//#region sqlite3
-const sqlite3 = require('sqlite3').verbose();
-const dbPath = path.join(uploadDirectory, 'db', 'database.db');
-console.log(`SQLite3 version: ${sqlite3.version}`);
-
-// Step 1: Open a SQLite database connection
-db = new sqlite3.Database(dbPath, (err) => {
-	if (err) {
-		console.error('Error opening database:', err.message);
-	} else {
-		console.log('Connected to the SQLite database');
-	}
-});
-
-function createDB() {
-	// Step 2: Create 'users' table
-	db.run(`
-		CREATE TABLE IF NOT EXISTS users (
-			id INTEGER PRIMARY KEY,
-			name TEXT,
-			color TEXT
-		)
-	`);
-	// Step 3: Create 'events' table
-	db.run(`
-		CREATE TABLE IF NOT EXISTS events (
-			id INTEGER PRIMARY KEY,
-			userid INTEGER,
-			text TEXT,
-			time TEXT,
-			date TEXT,
-			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			shared TEXT,
-			period TEXT,
-			FOREIGN KEY (userid) REFERENCES users (id)
-		)
-	`);
-
-	// Step 4: Create 'ownEvents' table
-	db.run(`
-		CREATE TABLE IF NOT EXISTS ownEvents (
-			userid INTEGER,
-			eventid INTEGER,
-			FOREIGN KEY (userid) REFERENCES users (id),
-			FOREIGN KEY (eventid) REFERENCES events (id),
-			PRIMARY KEY (userid, eventid)
-		)
-	`);
-
-	// Step 5: Create 'subscribedEvents' table
-	db.run(`
-		CREATE TABLE IF NOT EXISTS subscribedEvents (
-			userid INTEGER,
-			eventid INTEGER,
-			FOREIGN KEY (userid) REFERENCES users (id),
-			FOREIGN KEY (eventid) REFERENCES events (id),
-			PRIMARY KEY (userid, eventid)
-		)
-	`);
-
-	// Step 6: Create 'friends' table
-	db.run(`
-		CREATE TABLE IF NOT EXISTS friends (
-			userid1 INTEGER,
-			userid2 INTEGER,
-			FOREIGN KEY (userid1) REFERENCES users (id),
-			FOREIGN KEY (userid2) REFERENCES users (id),
-			PRIMARY KEY (userid1, userid2)
-		)
-	`);
-}
-
-async function testDB_events() {
-	const query = 'SELECT * FROM events';
-	const db = await sqlitePromise.open(dbPath, { Promise });
-
-	await db.all(query, [], (err, rows) => {
-		if (err) {
-			console.error(err.message);
-		} else {
-			// Convert rows to JavaScript objects
-			// id INTEGER PRIMARY KEY,
-			// userid INTEGER,
-			// text TEXT,
-			// time TEXT,
-			// date TEXT,
-			// created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			// shared TEXT,
-			// period TEXT,
-			// FOREIGN KEY (userid) REFERENCES users (id)
-			const fields=['id','userid','time','text','date','created','shared','period'];
-			let arr=[];
-			for(const row of rows){
-				let o={};
-				for(const k of fields){
-					o[k]=row[k];
-				}
-				arr.push(o);
-			}
-			//const data = rows.map(row => {} ({ id: row.id, userid: row.userid, color: row.color }));
-
-			// Serialize JavaScript objects to YAML
-			const yamlData = yaml.dump(arr);
-
-			// Save YAML data to a file
-			fs.writeFileSync(path.join(uploadDirectory,'events.yaml'), yamlData);
-
-			console.log('Data converted and saved to output.yaml');
-		}
-
-		// Close SQLite database connection
-		db.close();
-	});
-}
-async function testDB_users() {
-	const query = 'SELECT * FROM users';
-	const db = await sqlitePromise.open(dbPath, { Promise });
-
-	await db.all(query, [], (err, rows) => {
-		if (err) {
-			console.error(err.message);
-		} else {
-			// Convert rows to JavaScript objects
-			const data = rows.map(row => ({ id: row.id, name: row.name, color: row.color }));
-
-			// Serialize JavaScript objects to YAML
-			const yamlData = yaml.dump(data);
-
-			// Save YAML data to a file
-			fs.writeFileSync(path.join(uploadDirectory,'users.yaml'), yamlData);
-
-			console.log('Data converted and saved to users.yaml');
-		}
-
-		// Close SQLite database connection
-		db.close();
-	});
-
-}
-async function testDB(){
-	await testDB_users();
-	await testDB_events();
-}
-function createUser(name, color) {
-  const insertQuery = 'INSERT INTO users (name, color) VALUES (?, ?)';
-  const values = [name, color];
-
-  db.run(insertQuery, values, function (err) {
-    if (err) {
-      console.error('Error creating user:', err.message);
-    } else {
-      console.log(`User created with ID: ${this.lastID}`);
-    }
+//#region async (awaitable event: img unload)
+async function loadImageAsync(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.src = url;
   });
 }
-createUser('felix','blue');
-
-testDB_users();
-testDB_events();
-
 //#endregion
 
+//#region calendar (combu)
+function uiTypeEvent(dParent,o){
+	if (nundef(DA.calendar)) return;
+	let cal=DA.calendar;
+	let dt = new Date(Number(o.day));
+	if (dt.getMonth() != cal.info.month || dt.getFullYear() != cal.info.year) return null;
+	let dDay = cal.getDayDiv(dt); 
+	Items[o.id]=o;
 
-//*************** trial 2 */
-const sqlite3 = require('sqlite3'); //const sqlite3 = require('sqlite3').verbose();
+	let ui = mDom(dDay,{ w: '100%' });
+	let inp = addEditable(ui, { w: '100%' }, { id: o.id, onEnter: onEventEdited, onclick: onclickExistingEvent, value: o.text });
 
-const users = new sqlite3.Database(path.join(uploadDirectory,db,'users.db'), (err) => {});
-const events = new sqlite3.Database(path.join(uploadDirectory,db,'events.db'), (err) => {});
 
-// Step 2: Create 'events' table
-events.run(`
-  CREATE TABLE IF NOT EXISTS events (
-    id INTEGER PRIMARY KEY,
-    userid TEXT,
-    text TEXT,
-    time TEXT,
-    date TEXT,
-    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    shared TEXT,
-    period TEXT
-  )
-`);
-
-// Step 3: Insert an event into the 'events' table
-function insertEvent(event) {
-  const insertQuery = `
-    INSERT INTO events (userid, text, time, date, shared, period)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `;
-  const values = [event.userid, event.text, event.time, event.date, event.shared, event.period];
-
-  events.run(insertQuery, values, function (err) {
-    if (err) {
-      console.error('Error inserting event:', err.message);
-    } else {
-      console.log(`Event inserted with ID: ${this.lastID}`);
-    }
-  });
+	return ui;
 }
 
-// Step 4: Retrieve events for a specific userid and month
-function getEventsByUserIdAndMonth(userid, month) {
-  const selectQuery = `
-    SELECT *
-    FROM events
-    WHERE userid = ? AND strftime('%Y-%m', date) = ?
-  `;
-
-  events.all(selectQuery, [userid, month], (err, rows) => {
-    if (err) {
-      console.error('Error getting events:', err.message);
-    } else {
-      console.log(`Events for ${userid} in ${month}:`, rows);
-    }
-  });
+function setEvent(id, o) {
+  Items[id] = lookupSetOverride(U.data, ['events', id], o);
+  mBy(id).value = stringBefore(o.text, '\n');
+  return o;
 }
+async function updateEvent(id, o) {
+  let result = await simpleUpload('event', o);
+  setEvent(id, o);
+  console.log('result', result);
+}
+async function onEventEdited(ev) {
+  let id = evToId(ev);
+  let o = Items[id];
+  let inp = mBy(id);
+  if (inp.value) {
+    o.text = inp.value;
+    console.log('text',o.text);
+    await updateEvent(id, o);
+  }
+}
+function showEventOpen(ev) {
 
-// // Example usage
-// const event1 = {
-//   userid: 'user123',
-//   text: 'Event 1',
-//   time: '12:00 PM',
-//   date: '2023-11-15',
-//   shared: 'all',
-//   period: 'weekday',
-// };
+	let id = evToId(ev);
+	let e = getEvent(id);
+	//console.log('event found',e);
 
-// const event2 = {
-//   userid: 'user123',
-//   text: 'Event 2',
-//   time: '3:30 PM',
-//   date: '2023-11-20',
-//   shared: 'friends',
-//   period: 'none',
-// };
-
-// insertEvent(event1);
-// insertEvent(event2);
-
-// getEventsByUserIdAndMonth('user123', '2023-11');
-
-// // Step 5: Close the SQLite database connection
-// db.close((err) => {
-//   if (err) {
-//     console.error('Error closing database:', err.message);
-//   } else {
-//     console.log('Closed the SQLite database connection');
-//   }
-// });
-
-//CREATE READ UPDATE DELETE CRUD
-
-//#endregion
-
-//#region approutes von nodejs 
-app.get("/", (req, res) => { res.sendFile(path.join(__dirname, "index.html")); });
-
-app.get('/filenames', async (req, res) => {
-	const { directory: dir } = req.query;
-	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
-	try {
-		const directoryPath = dir.startsWith('C:') ? dir : path.join(__dirname, dir);
-		console.log('dirpath', directoryPath)
-		const files = await fsp.readdir(directoryPath);
-		res.json({ files });
-	} catch (err) {
-		res.status(500).json({ error: 'Error reading directory', details: err.message });
-	}
-});
-app.get('/login', (req, res) => {
-	console.log('______\n/login!!!!! query', req.query);
-	let u = req.query;
-	let uname = u.name;
-	if (nundef(uname)) { res.json({ message: 'ERROR! missing name' }); return; }
-	let uconf = lookup(Config, ['users', uname]);
-	if (!uconf || uconf.color != u.color) { uconf = lookupSetOverride(Config, ['users', uname], u); saveConfig(); }
-	let usession = lookupSetOverride(Session, ['users', uname], u);
-	//now user is registered as well as loggedIn and with correct color!
-	res.json({ session: Session, config: Config, message: `user ${uname} logged in!` });
-})
-
-app.post('/upload', (req, res) => {
-	console.log(Object.keys(req.body)); //'req.body',req.body)
-	const uploadedFile = req.files.image; // 'image' is the field name in the form
-	uploadedFile.mv(path.join(uploadDirectory, 'img', uploadedFile.name), (err) => {
-		if (err) { return res.status(500).send(err); }
-		const fileSizeInBytes = uploadedFile.size;
-		const fileName = uploadedFile.name;
-		let [unique, ext] = fileName.split('.');
-		console.log('filename', fileName)
-		const fileSizeInKB = fileSizeInBytes / 1024; // KB
-		const fileSizeInMB = fileSizeInKB / 1024; // MB
-		console.log('!!!!', req.body.category, req.body.name);
-		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${unique}:\n  cat: ${req.body.collection}\n  coll: ${req.body.collection}\n  name: ${req.body.name}\n  ext: ${ext}`, err => { if (err) console.log('error:', err); });
-		res.json({
-			message: 'File uploaded successfully',
-			fileName: fileName,
-			fileSizeInBytes: fileSizeInBytes,
-			fileSizeInKB: fileSizeInKB,
-			fileSizeInMB: fileSizeInMB,
-		});
-	});
-});
-app.post('/event', (req, res) => {
-	const event = req.body;
-	let uname = event.user;
-	console.log('...user', uname)
-	let fname = path.join(uploadDirectory, 'users', uname + '.yaml');
-	if (nundef(Users[uname])) {
-		let exists = fs.existsSync(fname);
-		if (exists) {
-			const yamlFile = fs.readFileSync(fname, 'utf8');
-			Users[uname] = yaml.load(yamlFile);
-		} else Users[uname] = {};
-	}
-	let udata = Users[uname];
-
-	//if event.text is empty and this event exists, delete it! otherwise save it
-	if (isEmpty(event.text)) {
-		let e = lookup(udata, ['events', event.id]);
-		if (e) delete udata.events[event.id];
-	} else lookupSetOverride(udata, ['events', event.id], event);
-
-	try {
-		const yamlData = yaml.dump(udata);
-		fs.writeFileSync(fname, yamlData, 'utf8');
-	} catch (error) {
-		console.error('Error writing YAML file:', error);
-	}
-	res.json({ message: `event ${event.id} updated!`, user: udata });
-});
-app.post('/save', (req, res) => {
-	const body = req.body;
-	const data = body.data; //some json object or base64 image data (or undef)
-	const fname = isdef(body.path) ? path.join(__dirname, body.path) : ''; // 
-	const mode = body.mode;
-
-	console.log('save:', mode, 'to', fname); //, '\n', data);
-	try {
-		if (mode == 'a') {
-			fs.appendFileSync(fname, data, 'utf8');
-		} else if (mode == 'cs') {
-			if (data) {
-				lookupSetOverride(Config, body.path.split('.'), data);
-				lookupSetOverride(Session, body.path.split('.'), data);
-			}
-			saveConfig();
-		} else if (mode == 'w') {
-			fs.writeFileSync(fname, data, 'utf8');
-		} else if (mode == 'wi') {
-			var base64Data = data.image.replace(/^data:image\/png;base64,/, "");
-			fs.writeFileSync(fname, base64Data, 'base64'); //, function(err) {  console.log('ERROR img upload: '+fname);});
-		} else if (mode == '_ac') {
-			addKeys(data, Config);
-		} else if (mode == '_wc') {
-			copyKeys(data, Config);
-		} else if (mode == 'ay') {
-			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
-			addKeys(data, di);
-			let y = yaml.dump(di);
-			fs.writeFileSync(fname, y, 'utf8');
-		} else if (mode == 'wy') {
-			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
-			copyKeys(data, di);
-			let y = yaml.dump(di);
-			fs.writeFileSync(fname, y, 'utf8');
-		} else if (mode == 'as' || mode == 's') {
-			lookupSet(Session, body.path.split('.'), data);
-			console.log('Session', Session)
-		} else if (mode == 'ws') {
-			lookupSetOverride(Session, body.path.split('.'), data);
-			console.log('Session', Session)
-		} else if (mode == 'ac') {
-			lookupSet(Config, body.path.split('.'), data);
-			let y = yaml.dump(Config);
-			fs.writeFileSync(configFile, y, 'utf8');
-		} else if (mode == 'wc' || mode == 'c') {
-			if (data) lookupSetOverride(Config, body.path.split('.'), data);
-			saveConfig();
-		}
-		console.log('*** success ***');
-	} catch (error) {
-		console.error('Error updating file:', error);
-	}
-	res.json({ message: `save mode:${mode} ${fname} *** successful ***`, config: Config, session: Session });
-});
-app.get('/load', (req, res) => {
-	try {
-		//console.log('______\nquery',req.query);
-		let params = req.query;
-		let result = {};
-		if (params.config) result.config = Config;
-		if (params.session) result.session = Session;
-
-		//const yamlFile = fs.readFileSync('path/to/your/file.yaml', 'utf8');	const data = yaml.load(yamlFile);
-
-		res.json(result);
-	} catch (error) {
-		console.error('Error reading or parsing the YAML file:', error);
-	}
-});
-
-//#endregion
-
-//#region m
-function openPopup(ev) {
-  // Create the popup div
-  let popup = document.createElement('div');
-
-	let defStyle = {padding:25,bg:'white',fg:'black',zIndex:1000,rounding:12,position:'fixed',boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',wmin:300,hmin:200,border: '1px solid #ccc',};
-	mStyle(popup,defStyle);
-
-	//do whatever inside of popup
-	popup.innerHTML = 'hallo das ist ein schoenes kleines popup window!'
+	let popup = openPopup(ev);
 	
-	//mStyle(popup,{box:true,top:'50%',left:'50%',transform: 'translate(-50%, -50%)'}); //position centered
 
-	let [w,h]=[popup.offsetWidth,popup.offsetHeight];
-	mStyle(popup,{left:ev.clientX-w/2,top:ev.clientY-h / 2});
 
-	mButtonX(popup,25,4);
-  document.body.appendChild(popup);
-	return popup;
+	// if (e && mBy('dOpenEvent')) mBy('dOpenEvent').remove();
+	// console.log('ev',ev)
+	// let [x,y]=[ev.clientX,ev.clientY];
+	// let d = mDom('dExtra',{wmin:300,hmin:300,position:'absolute',left:250,bg:'white',hpadding:20},{id:'dOpenEvent'});
+
+	mNode(e, popup)
+
 }
-function ____mButtonX(dParent, handler, pos = 'tr', sz = 25, color = 'white') {
-	// let d2 = mDiv(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' }, null, `<i class="fa fa-times" style="font-size:${sz}px;"></i>`, 'btnX');
-	let d2 = mDom(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' });
-	showImage('times', d2, { fg: color })
-	mPlace(d2, pos, 2);
-	d2.onclick = handler;
-	return d2;
+
+function evToEventObject(ev) {
+  let inp = ev.target;
+  let o = U.events[inp.id]; //Config.events[firstNumber(inp.id)];
+  return o;
 }
+
+function onclickDay(ev) {
+	//id kann ja nur die day id sein!!!!
+	let tsDay = evToId(ev); //ev.target.getAttribute('date'); //evToTargetAttribute(ev,'date'); //ts for this day
+	let tsCreated = Date.now()
+	let id = generateEventId(tsDay, tsCreated);
+	let o = { id: id, created: tsCreated, day: tsDay, from: null, to: null, title: '', text: '', user: ClientData.userid, subscribers: [] };
+
+	Serverdata.config.events[id] = o;
+	// console.log(id,o);
+
+	let d1 = addEditable(ev.target, { w: '100%' }, { id: id, onEnter: onEventEdited });
+	//console.log(d1);
+
+	//trag dieses event ein!
+	//soll ich das event hier eintragen oder erst wenn es einen content hat?
+}
+async function onEventEdited(ev) {
+	let id = evToId(ev);
+	let o = Serverdata.config.events[id];
+	let inp = mBy(id);
+	if (inp.value) {
+		//console.log('send value',inp.value,'to server')
+		o.text = inp.value;
+		await serverUpdate('event',o)
+	}
+
+	//console.log('event',id,o,inp)
+	//ich moecht das event mit await an den node js server schicken,
+	//dort saven mit der id oder einer neuen id
+
+}
+
+function saveEvent(o) {
+  let inp = o.div.lastChild;
+  //delete o.div;
+  console.log('o', o);
+  mStyle(inp, {
+    fz: 10, cursor: 'pointer',
+    padding: 3, bg: '#58bae4', fg: 'white', rounding: 5, hmax: 55,
+    overflow: 'hidden'
+  });
+  inp.setAttribute('readonly', true);
+  inp.onclick = ev => editEvent(ev, o)
+
+
+
+  // if (DA.sessionType != 'live') {
+  // }else{
+  //   Config.events.push(o);
+  //   localStorage.setItem('events', JSON.stringify(Config.events));
+  // }
+}
+//******** */
+function _detectSessionType() {
+
+  //console.log('window.location', window.location.href);
+  let loc = window.location.href;
+  DA.sessionType = loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php' : 'live';
+}
+function getCorrectMonth(s, val) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  let n = firstNumber(s);
+  if (n >= 1 && n <= 12) return [n - 1, months[n - 1]];
+  s = s.substring(0, 3).toLowerCase();
+  for (const m of months) {
+    let m1 = m.substring(0, 3).toLowerCase();
+    if (s == m1) return [months.indexOf(m), m];
+  }
+  return val;
+}
+function getQuerystring(key) {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (pair[0] == key) {
+      return pair[1];
+    }
+  }
+  return null;
+}
+function getUIDRelativeTo(arr) {
+  let max = isEmpty(arr) ? 0 : arrMax(arr, x => x.id);
+  //console.log('max',max,typeof max)
+  return Number(max) + 1;
+}
+function handleAddEvent(obj) {
+  //erst hier hat das event ein id!
+  //dieses id muss jetzt id von seinem input object sein
+  //inp ist lastChild vom children[0] vom dDays
+  //diese children[0] koennt ich nennen: d_[month]_[day]
+  Config.events.push(obj.event);
+  //console.log('event',obj)
+  localStorage.setItem('events', JSON.stringify(Config.events));
+  //console.log('storage:',JSON.parse(localStorage.getItem('events')));
+
+  //modify event input
+  //woher bekomm ich das input?
+
+
+
+
+
+
+
+
+
+
+
+
+  //downloadAsYaml(Config.events,'events'); //testing
+
+}
+function handleLogin(o) {
+  if (o.status == 'loggedin') {
+    //console.log('o',o)
+    showSuccessMessage('login successful!');
+    showLoggedin(o);
+    startLoggedIn(o);
+  } else if (o.status == 'wrong_pwd') {
+    showError('wrong password!!!');
+  } else if (o.status == 'not_registered') {
+    showError(`user ${o.id} not registered!!!`);
+    showPopupRegister();
+  }
+}
+function handleLogout(o) {
+  //console.log('handleLogout',o)
+  showLogin();
+}
+function handleRegister(o) {
+  //console.log('got register result!!!',o)
+  if (o.status == 'registered') {
+    showSuccessMessage('new registration successful!');
+    mBy('dRegister').remove();
+
+  } else if (o.status == 'duplicate') {
+    showError('username already registered!!!');
+  } else if (o.status == 'pwds_dont_match') {
+    showError(`passwords do not match!!!`);
+  }
+
+}
+function handleResult(result, cmd) {
+  //console.log('result',result);//return;
+  let obj = isEmptyOrWhiteSpace(result) ? { a: 1 } : JSON.parse(result);
+  //dates should be converted to dates, numbers should be converted to numbers
+  DA.result = jsCopy(obj);
+  switch (cmd) {
+    case "login": handleLogin(obj); break;
+    case "logout": handleLogout(obj); break;
+    case "register": handleRegister(obj); break;
+    case "assets": loadAssetsPhp(obj); startWithAssets(); break;
+    case "addEvent": handleAddEvent(obj); break;
+    default:
+      for (const k in obj) {
+        console.log(k, obj[k], typeof obj[k])
+      }
+  }
+}
+function isCorrectMonth(s) {
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  let n = firstNumber(s);
+
+  if (n >= 1 && n <= 12) return months[n - 1];
+  s = s.substring(0, 3).toLowerCase();
+  for (const m of months) {
+    let m1 = m.substring(0, 3).toLowerCase();
+    if (s == m1) return m;
+  }
+  return false;
+}
+async function loadAll() {
+  DA.sessionType = detectSessionType();
+  if (DA.sessionType == 'live') {
+    //load assets the live way form localhost
+    await loadAssetsLive('../qtest/');
+    //let events = DB.events = DB.events.map(x => x.date = new Date(x.date));
+    //console.log('users', DB.users)
+    //console.log('events', events)
+    //console.log('subscribed', DB.subscribed)
+    startWithAssets();
+  } else {
+    phpPost({}, 'assets');
+  }
+}
+async function loadAssetsLive(projectPath, basepath = '../base/') {
+  let path = basepath + 'assets/';
+  Config = DB = await route_path_yaml_dict(projectPath + 'config.yaml');
+  //console.log('from config',Config.events)
+
+  //localStorage.clear();
+  let events = localStorage.getItem('events');
+  // console.log('___*\nevents in loc:', events);
+  Config.events = isdef(events) ? JSON.parse(events) : [];
+  // console.log('events',Config.events)
+  //console.log('storage:',JSON.parse(localStorage.getItem('events')));
+  // Config.events1 = JSON.parse(localStorage.getItem('events'));
+  // console.log('events',Config.events1)
+  // console.log(typeof Config.events);
+  let users = localStorage.getItem('users');
+  Config.users = users ? JSON.parse(users) : [];
+  let subscribed = localStorage.getItem('subscribed');
+  Config.subscribed = subscribed ? JSON.parse(subscribed) : [];
+  Syms = await route_path_yaml_dict(path + 'allSyms.yaml');
+  SymKeys = Object.keys(Syms);
+  ByGroupSubgroup = await route_path_yaml_dict(path + 'symGSG.yaml');
+  C52 = await route_path_yaml_dict(path + 'c52.yaml');
+  Cinno = await route_path_yaml_dict(path + 'fe/inno.yaml');
+  Info = await route_path_yaml_dict(path + 'lists/info.yaml');
+  create_card_assets_c52();
+  KeySets = getKeySets();
+  // console.assert(isdef(Config), 'NO Config!!!!!!!!!!!!!!!!!!!!!!!!');
+  // return { users: dict2list(DB.users, 'name'), games: dict2list(Config.games, 'name'), tables: [] };
+}
+function makeContentEditable(elem, setter) {
+  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
+  elem.contentEditable = true;
+  elem.addEventListener('keydown', ev => {
+    if (ev.key == 'Enter') {
+      ev.preventDefault();
+      mBy('dummy').focus();
+      if (setter) setter(ev);
+    }
+  });
+}
+function mFlexLine(d, bg = 'white', fg = 'contrast') {
+  //console.log('h',d.clientHeight,d.innerHTML,d.offsetHeight);
+  mStyle(d, { bg: bg, fg: fg, display: 'flex', valign: 'center', hmin: measureHeight(d) });
+  mDiv(d, { fg: 'transparent' }, null, '|')
+}
+function measureHeight(d) {
+  let d2 = mDiv(d, { opacity: 0 }, null, 'HALLO');
+  return d2.clientHeight;
+}
+function queryDict() {
+  var query = window.location.search.substring(1);
+  var vars = query.split("&");
+  let di = {};
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    if (isdef(pair[1])) di[pair[0]] = pair[1];
+  }
+  return di;
+}
+
+
+function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
+
+  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
+  const [cellWidth, gap] = [100, 10];
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  var dParent = toElem(dParent);
+  const events = events1;
+  var container = mDiv(dParent, {}, 'dCalendar');
+  var currentDate = new Date();
+  var today = new Date();
+  // let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
+  let dTitle = mDiv(container, { w: 760, padding: gap, fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' },{className:'title'});
+  var dWeekdays = mGrid(1, 7, container, { gap: gap });
+  var dDays = [];
+  var info = {};
+  //info.wheel = []; for (let i = 0; i < 12; i++) info.wheel.push(rColor('light', .5));
+  // setColor(seedColor);
+  for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth }, null, w, 'subtitle') };
+  var dGrid = mGrid(6, 7, container, { gap: gap });
+  var dDate = mDiv(dTitle, { display: 'flex', gap: gap },'dDate','','title');
+  var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
+  mButton('Prev',
+    () => {
+      let m = currentDate.getMonth();
+      let y = currentDate.getFullYear();
+      if (m == 0) setDate(12, y - 1); else setDate(m, y);
+    },
+    dButtons, { w: 70, margin: 0 }, 'input');
+  mButton('Next',
+    () => {
+      let m = currentDate.getMonth();
+      let y = currentDate.getFullYear();
+      if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
+    }, dButtons, { w: 70, margin: 0 }, 'input');
+  var dMonth, dYear;
+
+  function getDay(d) {
+    let i = d + info.dayOffset;
+    //console.log('i', i);
+    if (i < 1 || i > info.numDays) return null;
+    let ui = dDays[i];
+    //console.log('ui', ui)
+    if (ui.style.opacity === 0) return null;
+    return { div: dDays[i], events: [] };
+  }
+  // function setColor(seed){ //c,cc) {
+  //   info.wheel =mimali(seed,12);
+  //   info.seedColor = seed;
+  // }
+  function setDate(m, y) {
+    currentDate.setMonth(m - 1);
+    currentDate.setFullYear(y);
+    mClear(dDate);
+    dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
+    dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
+    // makeContentEditable(dMonth, ev => {
+    //   let d = ev.target;
+    //   if (d != dMonth) return;
+    //   let val = getCorrectMonth(d.innerHTML, months[currentDate.getMonth()]);
+    //   d.innerHTML = val[1];
+    //   currentDate.setMonth(val[0])
+    // });
+    // makeContentEditable(dYear, ev => {
+    //   let d = ev.target;
+    //   if (d != dYear) return;
+    //   let val = firstNumber(d.innerHTML);
+    //   currentDate.setFullYear(val);
+    //   d.innerHTML = val;
+    // });
+
+    mClear(dGrid); dDays.length = 0;
+    //console.log('m',m,info.wheel[m])
+    let outerStyles = {
+      rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
+      paleft: gap / 2, w: cellWidth, hmin: cellWidth, 
+      bg:'black',fg:'white',
+      // fg: 'contrast', 
+      //bg: info.wheel[m-1], //rColor('light', .5) //info.wheel[m-1],//rColor('light', .5)
+    }
+
+    let c=colorHex(mGetStyle('dNav','bg')); //info.seedColor; //info.wheel[m-1];
+    //console.log('nav color is',c)
+    let dayColors=mimali(c,43).map(x=>colorHex(x))
+    //console.log('dayColors',dayColors)
+    for (const i of range(42)) {
+      let cell = mDiv(dGrid, outerStyles);
+      mStyle(cell,{bg:dayColors[i],fg:'contrast'})
+      dDays[i] = cell;
+    }
+    populate(currentDate);
+    return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
+  }
+  function populate() {
+    let dt = currentDate;
+    const day = info.day = dt.getDate();
+    const month = info.month = dt.getMonth();
+    const year = info.year = dt.getFullYear();
+
+    const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
+    const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
+
+    const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+    const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+    info.dayOffset = paddingDays - 1;
+    for (const i of range(42)) {
+      if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
+    }
+    //restliche tage bis month ende sind ok
+    let innerStyles = { box: true, align: 'center', bg: 'beige', rounding: 4, w: '95%', hpadding: '2%', hmin: cellWidth - 28 };
+    for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
+      const daySquare = dDays[i - 1];
+      let date = new Date(year, month, i - paddingDays);
+      daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
+      let d = mDom(daySquare, innerStyles, { id: date.getTime() });
+      d.addEventListener('click', onclickDay); //ev => calendarOpenDay(date, daySquare.lastChild, ev));
+    }
+    updateEvents();
+  }
+  function updateEvents() {
+    //console.log('events',events);
+    for (const k in events) {
+      //console.log('hhhhhhhhhhhhhhhhhhhhhhhh')
+      let e = events[k];
+      let dt = new Date(Number(e.day));
+      //console.log('dt',dt)
+
+      if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) {
+        //console.log('YES!');
+        continue;
+      }
+      let dDay = dDays[dt.getDate() + info.dayOffset].children[0];
+
+      //console.log('add another input to',dt,dDay);
+      let d1 = addEditable(dDay, { w: '100%' }, { id: k, onEnter: onEventEdited, value: e.text });
+      //console.log(d1);
+
+      // let ch = arrChildren(dDay);
+      // let d = ch[0]; 
+      // let d1 = calendarAddExistingEvent(e, d);
+      // e.div = d;
+    }
+    mBy('dummy').focus();
+  }
+
+  setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
+  populate();
+
+  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
+}
+function mist(){
+	//info.wheel = list; //[];
+	//let x=colorMix(c,cc,50);
+
+	// let o=new Color(c);
+	// const contrastRatio = color.contrast('#ffffff'); // 1:1
+	// const complementaryColor = color.complement(); // #00ff00 (Green)
+	// const analogousColors = color.analogous(); // ['#ff8000', '#ffff00', '#00ff80']
+	// const triadicColors = color.triadic(); // ['#ff0080', '#00ff00', '#8000ff']
+	// console.log('!!!!!',contrastRatio,complementaryColor,analogousColors,triadicColors);
+	
+	// for (let i = 0; i < 12; i++) {
+	//   //let c1=colorMix(c,coin()?'white':'black',10+i*(80/12))
+	//   // let c1=colorMix(c,coin()?'white':'silver',10+i*(80/12))
+	//   // let c1=colorMix(x,'silver',10+i*(80/12))
+	//   let c1 = triadicColors[i%3];
+	//   info.wheel.push(c1); //rColor('light', .5));
+	// }
+	//for(let i=0;i<12;i++) {      wheel[i]=list[i];    }
+	let m = currentDate.getMonth();
+	console.log('__________m', m);
+
+	for (const d of dDays) { mStyle(d, { bg: info.wheel[m] }); }
+
+}
+function muell(){
+	console.log('clicked on day',idDay);
+	let tsEventDay = firstNumber(idDay);
+	let dte = new Date(tsEventDay)
+	let day=`${dte.get}`
+	console.log('clicked on date',dte);
+	let tsCreated = Date.now();
+	console.log('created',tsCreated,new Date(tsCreated));
+	let id = idDay;
+	let o = {inpId:idDay,day:tsEventDay,from:null,to:null,created:tsCreated,title:'',text:'',user:ClientData.userid,subscribers:[]};
+	//Config.Events
+	console.log('created event',o)
+	//start input field in this day element
+	//find a unique id for input field
+	//create an event for this input field
+	//event:{id,user,content,date,time}
+}
+
+
 //#endregion
 
 //#region colors
@@ -961,518 +1009,6 @@ function restShowColors(){
 	//	for (const c of list2) {		mDom(d, { w: 90, h: 25, bg: c, fg: idealTextColor(c) }, { html: c}); } //colorLum(c).toFixed(2) });	}
 }
 
-//#endregion
-
-//#region user
-async function loadUserdata(uname) {
-	//hier muss user reloaden! weil koennte auf anderem browser geaendert worden sein!
-	let data = await mGetRoute('user',{user:uname});
-	if (!data) {
-		data = await postUserChange({ name: uname, color: rChoose(M.playerColors) });
-		// console.log('adding new user!!!', uname);
-		// data = { name: uname, color: rChoose(M.playerColors) };
-		// data = await mPostRoute('postUser', data);
-	} else	Serverdata.users[uname] = data;
-	//console.log('data',data);
-	return data;
-}
-
-async function loadUserdata_mist(){
-	let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
-	if (!data) {
-		console.log('adding new user!!!', uname);
-		data = { name: uname, color: rChoose(M.playerColors) };
-		await serverUpdate('newuser', data);
-	}
-	assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
-	localStorage.setItem('username', uname);
-	U = data;
-	U.data = await mGetYaml(`../y/users/${uname}.yaml`);
-	return U;
-}
-
-async function userLoad(uname) {
-	UI.nav.activate('no')
-	if (nundef(uname)) uname = localStorage.getItem('username');
-	//U = null;
-	//uname = null;
-	if (isdef(uname) && (!U || U.name != uname)) {
-		//what if the current U has unsaved data??? TODO
-		let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
-		if (!data) {
-			console.log('adding new user!!!', uname);
-			data = { name: uname, color: rChoose(M.playerColors) };
-			await serverUpdate('newuser', data);
-		}
-		assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
-		localStorage.setItem('username', uname);
-		U = data;
-		U.data = await mGetYaml(`../y/users/${uname}.yaml`);
-	}
-	mClear(dUser);
-	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
-
-	let d;
-	if (U) {
-		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
-		setColors(U.color)
-	} else {
-		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' };
-		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
-	}
-	d.onclick = onclickUser;
-}
-function showUser() {
-	mClear(dUser);
-	//mCenterCenterFlex(dUser); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
-	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
-
-	let d;
-	if (U) {
-		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
-		//d = mDom(dUser, { cursor: 'pointer', fz: 18, rounding: 9, hpadding: 9 }, { html: U.name, className:'active' });
-		//mStyle(document.body, { bg: U.bg }); //colorLighter(U.color) });
-		let d1 = showImage('gear', dUser, { sz: 25 });
-		d1.onclick = ev => showColors(M.playerColors, updateUserColor);
-	} else {
-		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' }; //,'align-self': 'end'
-		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
-	}
-	d.onclick = onclickUser;
-}
-async function userLoad(uname) {
-	if (nundef(uname)){
-		//am anfang lookup username (!!!) in localstorage!
-		uname = localStorage.getItem('username');
-		assertion(nundef(uname) || isdef(Serverdata.config.users[uname]));
-	}
-
-	if (isdef(uname)) { let u = getUserdata(uname); if (isdef(u)) setU(u); }
-	if (!U) {
-		Serverdata = await addNewUser(uname);
-		console.log('added user', uname, Serverdata.session.users[uname])
-		U = Serverdata.session.users[uname];
-	}
-	showUser();
-}
-function muell() {
-
-  // U.ccontrast = ccontrast;
-  // U.pal = pal;
-  // U.bg = o.color;
-  // U.fg = ccontrast == 'white' ? pal[8] : pal[2];
-
-  //hier sollen die css colors gesetzt werden!
-  //let [hell,dunkel]=[pal[7],pal[1]];
-  //let inc=ccontrast=='white'?-1:1;
-  let i = idx - 1;
-  // for(const x of ['button','body']){
-  //   let s=`--bg${capitalize(x)}`;
-  //   i+=inc;
-  //   setCssVar(s,pal[i])
-  // }
-  setCssVar('--bgButton', 'transparent');
-  setCssVar('--bgBody', pal[idx]);
-  inc = ccontrast == 'white' ? 1 : -1;
-  i = idx + inc * 2;
-  for (const x of ['buttonDisabled', 'button', 'buttonActive', 'buttonHover']) {
-    let s = `--fg${capitalize(x)}`;
-    i += inc;
-    setCssVar(s, pal[i]);
-  }
-  setCssVar('--fgTitle', ccontrast);
-  setCssVar('--fgSubtitle', pal[9]);
-  // U.fg=o.color;
-  // U.bg=ccontrast == 'white'?pal[7]:pal[2];
-  // U.light=
-  // [U.fg,U.bg,U.light,U.dark]=[pal[4],pal]
-}
-async function onclickUser() {
-	let uname = await mPrompt(); //returns null if invalid!
-	console.log('onclickUser:', uname);
-  //wenn der user schon bekannt ist dann soll ihn einfach laden
-  
-	if (uname) {
-		let result = await addNewUser(uname);
-
-		console.log('result', result);
-		if (!result) { alert('login failed!'); return; }
-		U = result.session.users[uname];
-	}
-	showUser();
-}
-async function addNewUser(uname) {
-	// if (!isString(uname)) return false;
-	// uname = uname.toLowerCase().trim();
-	// //only letters please!
-	// let correct = true;
-	// for (const ch of toLetters(uname)) { if (!isLetter(ch)) correct = false; }
-	// if (!correct) return false;
-	//name is correct, so send it to session and update UI!
-	console.log('adding new user!!!', uname);
-	let data = { name: uname, color: valf(userColors[uname],rChoose(plColors))}; //rColor(50,1,15) };
-	o = { data: data, path: `users.${uname}`, mode: 's' }; //['users',uname]
-	return await uploadJson('save', o);
-	//phpPost(o, 'add_user');
-}
-
-async function onclickUser(){
-	console.log(U); //null am anfang!
-	if (!U) {
-		//let uname = prompt('Enter name: ');
-		let uname = await mPrompt(); 
-		console.log('uname',uname);
-		if (uname) {
-			let result  = await addNewUser(uname);
-			console.log('result',result);
-			if (!result) {alert('login failed!'); return;}
-			U=result.session.users[uname];
-		}
-	}else {
-		//this user is logging out, another one logged in
-		U=null;
-		onclickUser();
-	}
-}
-async function updateUserColor(ev) {
-	let c = ev.target.style.background;
-	setU({ name: U.name, color: colorHex(c) });
-	let data = { name: U.name, color: U.color };
-	o = { data: data, path: `users.${U.name}`, mode: 'c' }; 
-	Serverdata = await uploadJson('save', o);
-	await userLoad(U.name);
-}
-
-//#endregion
-
-//#region Navbar
-function mNavbar_old(dParent, styles, pageTitle, titles, funcNames) {
-  //da wollt ich noch icons und iconfuncs dazutun!
-  if (nundef(funcNames)) {
-    //standard is that funcs are named: onclick${title}
-    funcNames = titles.map(x => `onclick${capitalize(x)}`);
-  }
-  function activate(ev) {
-    //currently selected menu button
-    let links = document.getElementsByClassName('nav-link');
-    //console.log('links',links)
-    let inner = ev.target.innerHTML;
-    for (const el of links) {
-      if (el.innerHTML == inner) mClass(el, 'active');
-      else mClassRemove(el, 'active');
-    }
-  }
-  function disable() {
-    let links = Array.from(document.getElementsByClassName('nav-link'));
-    for (const w of arguments) {
-      let el = links.find(x => x.innerHTML == w);
-      if (isdef(el)) mClass(el, 'disabled');
-    }
-  }
-  function enable() {
-    let links = document.getElementsByClassName('nav-link');
-    for (const w of arguments) {
-      let el = links.find(x => x.innerHTML == w);
-      if (isdef(el)) mClassRemove(el, 'disabled');
-      //if (isdef(el)) { mClass(el, 'active'); el.style.pointerEvents = 'auto' }
-    }
-  }
-  function extra() {
-    let html = `
-      <div class="navbar-expand">
-        <a class="navbar-brand a" href="#">${pageTitle}</a>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">`;
-    for (let i = 0; i < titles.length; i++) {
-      html += `
-          <li>
-            <a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
-          </li>
-        `;
-    }
-    html += `
-        </ul>
-        </div>
-      </div>
-      `;
-    //let inner = document.body.innerHTML;
-    let x=mCreateFrom(html);
-    mAppend('dNav_old',x);
-    var ui = x; // mInsertFirst(document.body, mCreateFrom(html));
-    mStyle(ui, styles); //'#ffffffe0' });
-    return ui;
-    //document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-  }
-  var ui = extra();
-  mStyle(ui, { display: 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between' });
-  return { activate: activate, disable: disable, enable: enable, ui: ui };
-}
-function mNavbar(styles,pageTitle, titles, funcNames) {
-	//da wollt ich noch icons und iconfuncs dazutun!
-	if (nundef(funcNames)) {
-		//standard is that funcs are named: onclick${title}
-		funcNames = titles.map(x => `onclick${capitalize(x)}`);
-	}
-
-	function activate(ev) {
-		let links = document.getElementsByClassName('nav-link');
-		//console.log('links',links)
-		let inner = ev.target.innerHTML;
-		for (const el of links) {
-			if (el.innerHTML == inner) mClass(el, 'active');
-			else mClassRemove(el, 'active');
-		}
-	}
-	function disable() {
-		let links = Array.from(document.getElementsByClassName('nav-link'));
-		for (const w of arguments) {
-			let el = links.find(x => x.innerHTML == w);
-			//console.log('el',el)
-			if (isdef(el)) mClass(el, 'disabled');
-		}
-	}
-	function enable() {
-		let links = document.getElementsByClassName('nav-link');
-		for (const w of arguments) {
-			let el = links.find(x => x.innerHTML == w);
-			if (isdef(el)) {
-				mClass(el, 'active');
-				el.style.pointerEvents = 'auto'
-			}
-		}
-	}
-
-	let html = `
-    <nav class="navbar navbar-expand" id="dNav">
-      <a class="navbar-brand a" href="#">${pageTitle}</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">`;
-	for (let i = 0; i < titles.length; i++) {
-		html += `
-				<li>
-					<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
-				</li>
-			`;
-	}
-	html += `
-			</ul>
-			</div>
-		</nav>
-		`;
-	//let inner = document.body.innerHTML;
-	var ui = mInsertFirst(document.body, mCreateFrom(html));
-	mStyle(ui, styles); //'#ffffffe0' });
-	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-	return { activate: activate, disable: disable, enable: enable, ui: ui };
-}
-function showNavbar(pageTitle, titles, funcNames) {
-	if (nundef(funcNames)) {
-		//standard is that funcs are named: onclick${title}
-		funcNames = titles.map(x => `onclick${capitalize(x)}`);
-	}
-
-	function activate(ev){
-		let links = document.getElementsByClassName('nav-link');
-		//console.log('links',links)
-		let inner = ev.target.innerHTML;
-		for(const el of links){
-			if (el.innerHTML == inner) mClass(el, 'active');
-			else mClassRemove(el,'active');
-		}
-	}
-	function disable(){
-		let links = Array.from(document.getElementsByClassName('nav-link'));
-		for (const w of arguments) {
-			let el = links.find(x => x.innerHTML == w);
-			//console.log('el',el)
-			if (isdef(el)) mClass(el, 'disabled');
-		}
-	}
-	function enable(){
-		let links = document.getElementsByClassName('nav-link');
-		for (const w of arguments) {
-			let el = links.find(x => x.innerHTML == w);
-			if (isdef(el)) {
-				mClass(el, 'active');
-				el.style.pointerEvents = 'auto'
-			}
-		}
-	}
-	
-	let html = `
-    <nav class="navbar navbar-expand navbar-light bg-light">
-      <a class="navbar-brand a" href="#">${pageTitle}</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">`;
-	for (let i = 0; i < titles.length; i++) {
-		html += `
-				<li class="nav-item">
-					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
-				</li>
-			`;
-	}
-	html += `
-			</ul>
-			</div>
-      <div style="align-self:end" >
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item">
-						<a class="nav-link a" href="#" onclick="UI.nav.activate(event);">HALLO</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-		`;
-	//let inner = document.body.innerHTML;
-	var ui = mInsertFirst(document.body, mCreateFrom(html));
-	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-	return {activate:activate,disable:disable,enable:enable,ui:ui};
-}
-
-function showNavbar(pageTitle, titles, funcNames) {
-	if (nundef(funcNames)) {
-		//standard is that funcs are named: onclick${title}
-		funcNames = titles.map(x => `onclick${capitalize(x)}`);
-	}
-	let html = `
-    <nav class="navbar navbar-expand navbar-light bg-light">
-      <a class="navbar-brand a" href="#">${pageTitle}</a>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">`;
-	for (let i = 0; i < titles.length; i++) {
-		// html += `
-		// 		<li class="nav-item active">
-		// 			<a class="nav-link hoverHue a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
-		// 		</li>
-		// 	`;
-		html += `
-				<li class="nav-item">
-					<a class="nav-link a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
-				</li>
-			`;
-	}
-	html += `
-			</ul>
-			</div>
-		</nav>
-		`;
-	//let inner = document.body.innerHTML;
-	mInsertFirst(document.body, mCreateFrom(html));
-	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
-
-}
-function navbarActivate() {
-	let links = document.getElementsByClassName('nav-link');
-	for (const w of arguments) {
-		let el = links.find(x => x.innerHTML == w);
-		if (isdef(el)) {
-			mClass(el, 'active');
-			el.style.pointerEvents = 'auto'
-		}
-	}
-}
-function navbarDeactivate() {
-	let links = Array.from(document.getElementsByClassName('nav-link'));
-	//console.log('links',links)
-	for (const w of arguments) {
-		let el = links.find(x => x.innerHTML == w);
-		//console.log('el',el)
-		if (isdef(el)) {
-			mClassRemove(el.parentNode, 'active');
-			el.style.pointerEvents = 'none'
-		}
-	}
-}
-
-//#endregion
-
-//#region sidebar
-function show_sidebar(list, handler) {
-	dSidebar = mBy('dSidebar'); mClear(dSidebar); mStyle(dSidebar, { w: 200, h: window.innerHeight - 68, overy: 'auto' });
-	for (const k of list) {
-		let d = mDiv(dSidebar, { cursor: 'pointer', wmin: 100 }, null, k, 'hop1')
-		if (isdef(handler)) d.onclick = handler;
-	}
-}
-function sidebar_belinda() {
-	let html = `
-		<div id="md" style="display: flex">
-		<div id="sidebar" style="align-self: stretch;min-height:100vh"></div>
-		<div id="rightSide">
-			<div id="table" class="flexWrap"></div>
-		</div>
-		</div>
-		`;
-	function initSidebar() {
-		let dParent = mBy('sidebar');
-		clearElement(dParent);
-		dLeiste = mDiv(dParent);
-		mStyle(dLeiste, { 'min-width': 70, 'max-height': '100vh', display: 'flex', 'flex-flow': 'column wrap' });
-	}
-}
-function sidebar_coding() {
-	function test_ui_extended() {
-		mClear(document.body);
-		let d1 = mDom(document.body, {}, { classes: 'fullpage airport' });
-		let [dl, dr] = mColFlex(d1, [7, 2]);
-		for (const d of [dl, dr]) mStyle(d, { bg: rColor('blue', 'green', .5) })
-		mStyle(dr, { h: '100vh', fg: 'white' })
-		dSidebar = mDiv100(dr, { wmax: 240, overy: 'auto', overx: 'hidden' }, 'dSidebar'); //,{h:window.innerHeight},'dSidebar')
-		dLeft = dl;
-		onresize = create_left_side_extended;
-		create_left_side_extended();
-	}
-	function show_sidebar(list, handler) {
-		dSidebar = mBy('dSidebar');
-		mClear(dSidebar);
-		for (const k of list) {
-			let d = mDiv(dSidebar, { cursor: 'pointer', wmin: 100 }, null, k, 'hop1')
-			if (isdef(handler)) d.onclick = handler;
-		}
-	}
-
-}
-
-//#endregion
-
-//#region event async (awaitable event: img unload)
-async function loadImageAsync(url) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      resolve(img);
-    };
-    img.onerror = (error) => {
-      reject(error);
-    };
-    img.src = url;
-  });
-}
-//#endregion
-
-//#region simple image upload
-async function uploadImg2(img, unique, cat, name) {
-	let type = detectSessionType();
-	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
-	server += `/save`;
-	const canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-	const dataUrl = canvas.toDataURL('image/png');
-	console.log(dataUrl);
-	let o = { data: {image:dataUrl}, path: 'out.png', mode: 'wi' };
-
-	const response = await fetch(server, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		mode: 'cors',
-		body: JSON.stringify(o)
-	});
-	return await response.json();
-}
 //#endregion
 
 //#region combu
@@ -3725,6 +3261,328 @@ function _mDatalist(dParent, list, allowEdit = true) {
 
 //#endregion combu
 
+//#region db
+
+//#region ai generated SimpleDatabase
+class SimpleDatabase {
+  constructor() {
+    this.data = new Map();
+  }
+
+  // Insert or update a key-value pair
+  set(key, value) {
+    this.data.set(key, value);
+  }
+
+  // Retrieve the value associated with a key
+  get(key) {
+    return this.data.get(key);
+  }
+
+  // Remove a key-value pair
+  remove(key) {
+    this.data.delete(key);
+  }
+
+  // Get all keys in the database
+  getKeys() {
+    return Array.from(this.data.keys());
+  }
+
+  // Get all values in the database
+  getValues() {
+    return Array.from(this.data.values());
+  }
+
+  // Get all key-value pairs in the database
+  getAll() {
+    return Array.from(this.data.entries());
+  }
+}
+
+// Example usage:
+let db = new SimpleDatabase();
+
+// Insert data
+db.set('name', 'John');
+db.set('age', 25);
+db.set('city', 'Example City');
+
+// Retrieve data
+console.log('Name:', db.get('name')); // Output: John
+console.log('Age:', db.get('age')); // Output: 25
+
+// Remove a key-value pair
+db.remove('age');
+
+// Get all keys
+console.log('Keys:', db.getKeys()); // Output: ['name', 'city']
+
+// Get all values
+console.log('Values:', db.getValues()); // Output: ['John', 'Example City']
+
+// Get all key-value pairs
+console.log('All:', db.getAll()); // Output: [['name', 'John'], ['city', 'Example City']]
+
+
+
+
+//#endregion
+
+//#region sqlite3
+const sqlite3 = require('sqlite3').verbose();
+const dbPath = path.join(uploadDirectory, 'db', 'database.db');
+console.log(`SQLite3 version: ${sqlite3.version}`);
+
+// Step 1: Open a SQLite database connection
+db = new sqlite3.Database(dbPath, (err) => {
+	if (err) {
+		console.error('Error opening database:', err.message);
+	} else {
+		console.log('Connected to the SQLite database');
+	}
+});
+
+function createDB() {
+	// Step 2: Create 'users' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS users (
+			id INTEGER PRIMARY KEY,
+			name TEXT,
+			color TEXT
+		)
+	`);
+	// Step 3: Create 'events' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS events (
+			id INTEGER PRIMARY KEY,
+			userid INTEGER,
+			text TEXT,
+			time TEXT,
+			date TEXT,
+			created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			shared TEXT,
+			period TEXT,
+			FOREIGN KEY (userid) REFERENCES users (id)
+		)
+	`);
+
+	// Step 4: Create 'ownEvents' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS ownEvents (
+			userid INTEGER,
+			eventid INTEGER,
+			FOREIGN KEY (userid) REFERENCES users (id),
+			FOREIGN KEY (eventid) REFERENCES events (id),
+			PRIMARY KEY (userid, eventid)
+		)
+	`);
+
+	// Step 5: Create 'subscribedEvents' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS subscribedEvents (
+			userid INTEGER,
+			eventid INTEGER,
+			FOREIGN KEY (userid) REFERENCES users (id),
+			FOREIGN KEY (eventid) REFERENCES events (id),
+			PRIMARY KEY (userid, eventid)
+		)
+	`);
+
+	// Step 6: Create 'friends' table
+	db.run(`
+		CREATE TABLE IF NOT EXISTS friends (
+			userid1 INTEGER,
+			userid2 INTEGER,
+			FOREIGN KEY (userid1) REFERENCES users (id),
+			FOREIGN KEY (userid2) REFERENCES users (id),
+			PRIMARY KEY (userid1, userid2)
+		)
+	`);
+}
+
+async function testDB_events() {
+	const query = 'SELECT * FROM events';
+	const db = await sqlitePromise.open(dbPath, { Promise });
+
+	await db.all(query, [], (err, rows) => {
+		if (err) {
+			console.error(err.message);
+		} else {
+			// Convert rows to JavaScript objects
+			// id INTEGER PRIMARY KEY,
+			// userid INTEGER,
+			// text TEXT,
+			// time TEXT,
+			// date TEXT,
+			// created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			// shared TEXT,
+			// period TEXT,
+			// FOREIGN KEY (userid) REFERENCES users (id)
+			const fields=['id','userid','time','text','date','created','shared','period'];
+			let arr=[];
+			for(const row of rows){
+				let o={};
+				for(const k of fields){
+					o[k]=row[k];
+				}
+				arr.push(o);
+			}
+			//const data = rows.map(row => {} ({ id: row.id, userid: row.userid, color: row.color }));
+
+			// Serialize JavaScript objects to YAML
+			const yamlData = yaml.dump(arr);
+
+			// Save YAML data to a file
+			fs.writeFileSync(path.join(uploadDirectory,'events.yaml'), yamlData);
+
+			console.log('Data converted and saved to output.yaml');
+		}
+
+		// Close SQLite database connection
+		db.close();
+	});
+}
+async function testDB_users() {
+	const query = 'SELECT * FROM users';
+	const db = await sqlitePromise.open(dbPath, { Promise });
+
+	await db.all(query, [], (err, rows) => {
+		if (err) {
+			console.error(err.message);
+		} else {
+			// Convert rows to JavaScript objects
+			const data = rows.map(row => ({ id: row.id, name: row.name, color: row.color }));
+
+			// Serialize JavaScript objects to YAML
+			const yamlData = yaml.dump(data);
+
+			// Save YAML data to a file
+			fs.writeFileSync(path.join(uploadDirectory,'users.yaml'), yamlData);
+
+			console.log('Data converted and saved to users.yaml');
+		}
+
+		// Close SQLite database connection
+		db.close();
+	});
+
+}
+async function testDB(){
+	await testDB_users();
+	await testDB_events();
+}
+function createUser(name, color) {
+  const insertQuery = 'INSERT INTO users (name, color) VALUES (?, ?)';
+  const values = [name, color];
+
+  db.run(insertQuery, values, function (err) {
+    if (err) {
+      console.error('Error creating user:', err.message);
+    } else {
+      console.log(`User created with ID: ${this.lastID}`);
+    }
+  });
+}
+createUser('felix','blue');
+
+testDB_users();
+testDB_events();
+
+//#endregion
+
+
+//*************** trial 2 */
+const sqlite3 = require('sqlite3'); //const sqlite3 = require('sqlite3').verbose();
+
+const users = new sqlite3.Database(path.join(uploadDirectory,db,'users.db'), (err) => {});
+const events = new sqlite3.Database(path.join(uploadDirectory,db,'events.db'), (err) => {});
+
+// Step 2: Create 'events' table
+events.run(`
+  CREATE TABLE IF NOT EXISTS events (
+    id INTEGER PRIMARY KEY,
+    userid TEXT,
+    text TEXT,
+    time TEXT,
+    date TEXT,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    shared TEXT,
+    period TEXT
+  )
+`);
+
+// Step 3: Insert an event into the 'events' table
+function insertEvent(event) {
+  const insertQuery = `
+    INSERT INTO events (userid, text, time, date, shared, period)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+  const values = [event.userid, event.text, event.time, event.date, event.shared, event.period];
+
+  events.run(insertQuery, values, function (err) {
+    if (err) {
+      console.error('Error inserting event:', err.message);
+    } else {
+      console.log(`Event inserted with ID: ${this.lastID}`);
+    }
+  });
+}
+
+// Step 4: Retrieve events for a specific userid and month
+function getEventsByUserIdAndMonth(userid, month) {
+  const selectQuery = `
+    SELECT *
+    FROM events
+    WHERE userid = ? AND strftime('%Y-%m', date) = ?
+  `;
+
+  events.all(selectQuery, [userid, month], (err, rows) => {
+    if (err) {
+      console.error('Error getting events:', err.message);
+    } else {
+      console.log(`Events for ${userid} in ${month}:`, rows);
+    }
+  });
+}
+
+// // Example usage
+// const event1 = {
+//   userid: 'user123',
+//   text: 'Event 1',
+//   time: '12:00 PM',
+//   date: '2023-11-15',
+//   shared: 'all',
+//   period: 'weekday',
+// };
+
+// const event2 = {
+//   userid: 'user123',
+//   text: 'Event 2',
+//   time: '3:30 PM',
+//   date: '2023-11-20',
+//   shared: 'friends',
+//   period: 'none',
+// };
+
+// insertEvent(event1);
+// insertEvent(event2);
+
+// getEventsByUserIdAndMonth('user123', '2023-11');
+
+// // Step 5: Close the SQLite database connection
+// db.close((err) => {
+//   if (err) {
+//     console.error('Error closing database:', err.message);
+//   } else {
+//     console.log('Closed the SQLite database connection');
+//   }
+// });
+
+//CREATE READ UPDATE DELETE CRUD
+
+//#endregion
+
 //#region filterImages (combu)
 function filterCollection(ev) {
 	console.log('changing collection!!!!!!!!!!!!!!!!');
@@ -3802,507 +3660,6 @@ function filterImages(ev){
 
 
 }
-//#endregion
-
-//#region calendar (combu)
-function showEventOpen(ev) {
-
-	let id = evToId(ev);
-	let e = getEvent(id);
-	//console.log('event found',e);
-
-	let popup = openPopup(ev);
-	
-
-
-	// if (e && mBy('dOpenEvent')) mBy('dOpenEvent').remove();
-	// console.log('ev',ev)
-	// let [x,y]=[ev.clientX,ev.clientY];
-	// let d = mDom('dExtra',{wmin:300,hmin:300,position:'absolute',left:250,bg:'white',hpadding:20},{id:'dOpenEvent'});
-
-	mNode(e, popup)
-
-}
-
-function evToEventObject(ev) {
-  let inp = ev.target;
-  let o = U.events[inp.id]; //Config.events[firstNumber(inp.id)];
-  return o;
-}
-
-function onclickDay(ev) {
-	//id kann ja nur die day id sein!!!!
-	let tsDay = evToId(ev); //ev.target.getAttribute('date'); //evToTargetAttribute(ev,'date'); //ts for this day
-	let tsCreated = Date.now()
-	let id = generateEventId(tsDay, tsCreated);
-	let o = { id: id, created: tsCreated, day: tsDay, from: null, to: null, title: '', text: '', user: ClientData.userid, subscribers: [] };
-
-	Serverdata.config.events[id] = o;
-	// console.log(id,o);
-
-	let d1 = addEditable(ev.target, { w: '100%' }, { id: id, onEnter: onEventEdited });
-	//console.log(d1);
-
-	//trag dieses event ein!
-	//soll ich das event hier eintragen oder erst wenn es einen content hat?
-}
-async function onEventEdited(ev) {
-	let id = evToId(ev);
-	let o = Serverdata.config.events[id];
-	let inp = mBy(id);
-	if (inp.value) {
-		//console.log('send value',inp.value,'to server')
-		o.text = inp.value;
-		await serverUpdate('event',o)
-	}
-
-	//console.log('event',id,o,inp)
-	//ich moecht das event mit await an den node js server schicken,
-	//dort saven mit der id oder einer neuen id
-
-}
-
-function saveEvent(o) {
-  let inp = o.div.lastChild;
-  //delete o.div;
-  console.log('o', o);
-  mStyle(inp, {
-    fz: 10, cursor: 'pointer',
-    padding: 3, bg: '#58bae4', fg: 'white', rounding: 5, hmax: 55,
-    overflow: 'hidden'
-  });
-  inp.setAttribute('readonly', true);
-  inp.onclick = ev => editEvent(ev, o)
-
-
-
-  // if (DA.sessionType != 'live') {
-  // }else{
-  //   Config.events.push(o);
-  //   localStorage.setItem('events', JSON.stringify(Config.events));
-  // }
-}
-//******** */
-function _detectSessionType() {
-
-  //console.log('window.location', window.location.href);
-  let loc = window.location.href;
-  DA.sessionType = loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php' : 'live';
-}
-function getCorrectMonth(s, val) {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  let n = firstNumber(s);
-  if (n >= 1 && n <= 12) return [n - 1, months[n - 1]];
-  s = s.substring(0, 3).toLowerCase();
-  for (const m of months) {
-    let m1 = m.substring(0, 3).toLowerCase();
-    if (s == m1) return [months.indexOf(m), m];
-  }
-  return val;
-}
-function getQuerystring(key) {
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
-    if (pair[0] == key) {
-      return pair[1];
-    }
-  }
-  return null;
-}
-function getUIDRelativeTo(arr) {
-  let max = isEmpty(arr) ? 0 : arrMax(arr, x => x.id);
-  //console.log('max',max,typeof max)
-  return Number(max) + 1;
-}
-function handleAddEvent(obj) {
-  //erst hier hat das event ein id!
-  //dieses id muss jetzt id von seinem input object sein
-  //inp ist lastChild vom children[0] vom dDays
-  //diese children[0] koennt ich nennen: d_[month]_[day]
-  Config.events.push(obj.event);
-  //console.log('event',obj)
-  localStorage.setItem('events', JSON.stringify(Config.events));
-  //console.log('storage:',JSON.parse(localStorage.getItem('events')));
-
-  //modify event input
-  //woher bekomm ich das input?
-
-
-
-
-
-
-
-
-
-
-
-
-  //downloadAsYaml(Config.events,'events'); //testing
-
-}
-function handleLogin(o) {
-  if (o.status == 'loggedin') {
-    //console.log('o',o)
-    showSuccessMessage('login successful!');
-    showLoggedin(o);
-    startLoggedIn(o);
-  } else if (o.status == 'wrong_pwd') {
-    showError('wrong password!!!');
-  } else if (o.status == 'not_registered') {
-    showError(`user ${o.id} not registered!!!`);
-    showPopupRegister();
-  }
-}
-function handleLogout(o) {
-  //console.log('handleLogout',o)
-  showLogin();
-}
-function handleRegister(o) {
-  //console.log('got register result!!!',o)
-  if (o.status == 'registered') {
-    showSuccessMessage('new registration successful!');
-    mBy('dRegister').remove();
-
-  } else if (o.status == 'duplicate') {
-    showError('username already registered!!!');
-  } else if (o.status == 'pwds_dont_match') {
-    showError(`passwords do not match!!!`);
-  }
-
-}
-function handleResult(result, cmd) {
-  //console.log('result',result);//return;
-  let obj = isEmptyOrWhiteSpace(result) ? { a: 1 } : JSON.parse(result);
-  //dates should be converted to dates, numbers should be converted to numbers
-  DA.result = jsCopy(obj);
-  switch (cmd) {
-    case "login": handleLogin(obj); break;
-    case "logout": handleLogout(obj); break;
-    case "register": handleRegister(obj); break;
-    case "assets": loadAssetsPhp(obj); startWithAssets(); break;
-    case "addEvent": handleAddEvent(obj); break;
-    default:
-      for (const k in obj) {
-        console.log(k, obj[k], typeof obj[k])
-      }
-  }
-}
-function isCorrectMonth(s) {
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  let n = firstNumber(s);
-
-  if (n >= 1 && n <= 12) return months[n - 1];
-  s = s.substring(0, 3).toLowerCase();
-  for (const m of months) {
-    let m1 = m.substring(0, 3).toLowerCase();
-    if (s == m1) return m;
-  }
-  return false;
-}
-async function loadAll() {
-  DA.sessionType = detectSessionType();
-  if (DA.sessionType == 'live') {
-    //load assets the live way form localhost
-    await loadAssetsLive('../qtest/');
-    //let events = DB.events = DB.events.map(x => x.date = new Date(x.date));
-    //console.log('users', DB.users)
-    //console.log('events', events)
-    //console.log('subscribed', DB.subscribed)
-    startWithAssets();
-  } else {
-    phpPost({}, 'assets');
-  }
-}
-async function loadAssetsLive(projectPath, basepath = '../base/') {
-  let path = basepath + 'assets/';
-  Config = DB = await route_path_yaml_dict(projectPath + 'config.yaml');
-  //console.log('from config',Config.events)
-
-  //localStorage.clear();
-  let events = localStorage.getItem('events');
-  // console.log('___*\nevents in loc:', events);
-  Config.events = isdef(events) ? JSON.parse(events) : [];
-  // console.log('events',Config.events)
-  //console.log('storage:',JSON.parse(localStorage.getItem('events')));
-  // Config.events1 = JSON.parse(localStorage.getItem('events'));
-  // console.log('events',Config.events1)
-  // console.log(typeof Config.events);
-  let users = localStorage.getItem('users');
-  Config.users = users ? JSON.parse(users) : [];
-  let subscribed = localStorage.getItem('subscribed');
-  Config.subscribed = subscribed ? JSON.parse(subscribed) : [];
-  Syms = await route_path_yaml_dict(path + 'allSyms.yaml');
-  SymKeys = Object.keys(Syms);
-  ByGroupSubgroup = await route_path_yaml_dict(path + 'symGSG.yaml');
-  C52 = await route_path_yaml_dict(path + 'c52.yaml');
-  Cinno = await route_path_yaml_dict(path + 'fe/inno.yaml');
-  Info = await route_path_yaml_dict(path + 'lists/info.yaml');
-  create_card_assets_c52();
-  KeySets = getKeySets();
-  // console.assert(isdef(Config), 'NO Config!!!!!!!!!!!!!!!!!!!!!!!!');
-  // return { users: dict2list(DB.users, 'name'), games: dict2list(Config.games, 'name'), tables: [] };
-}
-function makeContentEditable(elem, setter) {
-  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
-  elem.contentEditable = true;
-  elem.addEventListener('keydown', ev => {
-    if (ev.key == 'Enter') {
-      ev.preventDefault();
-      mBy('dummy').focus();
-      if (setter) setter(ev);
-    }
-  });
-}
-function mFlexLine(d, bg = 'white', fg = 'contrast') {
-  //console.log('h',d.clientHeight,d.innerHTML,d.offsetHeight);
-  mStyle(d, { bg: bg, fg: fg, display: 'flex', valign: 'center', hmin: measureHeight(d) });
-  mDiv(d, { fg: 'transparent' }, null, '|')
-}
-function measureHeight(d) {
-  let d2 = mDiv(d, { opacity: 0 }, null, 'HALLO');
-  return d2.clientHeight;
-}
-function queryDict() {
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  let di = {};
-  for (var i = 0; i < vars.length; i++) {
-    var pair = vars[i].split("=");
-    if (isdef(pair[1])) di[pair[0]] = pair[1];
-  }
-  return di;
-}
-
-
-function uiTypeCalendar(dParent, seedColor, month1, year1, events1 = []) {
-
-  if (nundef(mBy('dummy'))) addDummy(document.body, 'cc');
-  const [cellWidth, gap] = [100, 10];
-  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-  var dParent = toElem(dParent);
-  const events = events1;
-  var container = mDiv(dParent, {}, 'dCalendar');
-  var currentDate = new Date();
-  var today = new Date();
-  // let dTitle = mDiv(container, { w: 760, padding: gap, fg: '#d36c6c', fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' });
-  let dTitle = mDiv(container, { w: 760, padding: gap, fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' },{className:'title'});
-  var dWeekdays = mGrid(1, 7, container, { gap: gap });
-  var dDays = [];
-  var info = {};
-  //info.wheel = []; for (let i = 0; i < 12; i++) info.wheel.push(rColor('light', .5));
-  // setColor(seedColor);
-  for (const w of weekdays) { mDiv(dWeekdays, { w: cellWidth }, null, w, 'subtitle') };
-  var dGrid = mGrid(6, 7, container, { gap: gap });
-  var dDate = mDiv(dTitle, { display: 'flex', gap: gap },'dDate','','title');
-  var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
-  mButton('Prev',
-    () => {
-      let m = currentDate.getMonth();
-      let y = currentDate.getFullYear();
-      if (m == 0) setDate(12, y - 1); else setDate(m, y);
-    },
-    dButtons, { w: 70, margin: 0 }, 'input');
-  mButton('Next',
-    () => {
-      let m = currentDate.getMonth();
-      let y = currentDate.getFullYear();
-      if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
-    }, dButtons, { w: 70, margin: 0 }, 'input');
-  var dMonth, dYear;
-
-  function getDay(d) {
-    let i = d + info.dayOffset;
-    //console.log('i', i);
-    if (i < 1 || i > info.numDays) return null;
-    let ui = dDays[i];
-    //console.log('ui', ui)
-    if (ui.style.opacity === 0) return null;
-    return { div: dDays[i], events: [] };
-  }
-  // function setColor(seed){ //c,cc) {
-  //   info.wheel =mimali(seed,12);
-  //   info.seedColor = seed;
-  // }
-  function setDate(m, y) {
-    currentDate.setMonth(m - 1);
-    currentDate.setFullYear(y);
-    mClear(dDate);
-    dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
-    dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
-    // makeContentEditable(dMonth, ev => {
-    //   let d = ev.target;
-    //   if (d != dMonth) return;
-    //   let val = getCorrectMonth(d.innerHTML, months[currentDate.getMonth()]);
-    //   d.innerHTML = val[1];
-    //   currentDate.setMonth(val[0])
-    // });
-    // makeContentEditable(dYear, ev => {
-    //   let d = ev.target;
-    //   if (d != dYear) return;
-    //   let val = firstNumber(d.innerHTML);
-    //   currentDate.setFullYear(val);
-    //   d.innerHTML = val;
-    // });
-
-    mClear(dGrid); dDays.length = 0;
-    //console.log('m',m,info.wheel[m])
-    let outerStyles = {
-      rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
-      paleft: gap / 2, w: cellWidth, hmin: cellWidth, 
-      bg:'black',fg:'white',
-      // fg: 'contrast', 
-      //bg: info.wheel[m-1], //rColor('light', .5) //info.wheel[m-1],//rColor('light', .5)
-    }
-
-    let c=colorHex(mGetStyle('dNav','bg')); //info.seedColor; //info.wheel[m-1];
-    //console.log('nav color is',c)
-    let dayColors=mimali(c,43).map(x=>colorHex(x))
-    //console.log('dayColors',dayColors)
-    for (const i of range(42)) {
-      let cell = mDiv(dGrid, outerStyles);
-      mStyle(cell,{bg:dayColors[i],fg:'contrast'})
-      dDays[i] = cell;
-    }
-    populate(currentDate);
-    return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
-  }
-  function populate() {
-    let dt = currentDate;
-    const day = info.day = dt.getDate();
-    const month = info.month = dt.getMonth();
-    const year = info.year = dt.getFullYear();
-
-    const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
-    const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
-
-    const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-    });
-    const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
-    info.dayOffset = paddingDays - 1;
-    for (const i of range(42)) {
-      if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
-    }
-    //restliche tage bis month ende sind ok
-    let innerStyles = { box: true, align: 'center', bg: 'beige', rounding: 4, w: '95%', hpadding: '2%', hmin: cellWidth - 28 };
-    for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
-      const daySquare = dDays[i - 1];
-      let date = new Date(year, month, i - paddingDays);
-      daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
-      let d = mDom(daySquare, innerStyles, { id: date.getTime() });
-      d.addEventListener('click', onclickDay); //ev => calendarOpenDay(date, daySquare.lastChild, ev));
-    }
-    updateEvents();
-  }
-  function updateEvents() {
-    //console.log('events',events);
-    for (const k in events) {
-      //console.log('hhhhhhhhhhhhhhhhhhhhhhhh')
-      let e = events[k];
-      let dt = new Date(Number(e.day));
-      //console.log('dt',dt)
-
-      if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) {
-        //console.log('YES!');
-        continue;
-      }
-      let dDay = dDays[dt.getDate() + info.dayOffset].children[0];
-
-      //console.log('add another input to',dt,dDay);
-      let d1 = addEditable(dDay, { w: '100%' }, { id: k, onEnter: onEventEdited, value: e.text });
-      //console.log(d1);
-
-      // let ch = arrChildren(dDay);
-      // let d = ch[0]; 
-      // let d1 = calendarAddExistingEvent(e, d);
-      // e.div = d;
-    }
-    mBy('dummy').focus();
-  }
-
-  setDate(valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
-  populate();
-
-  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDay, setDate, populate }
-}
-function mist(){
-	//info.wheel = list; //[];
-	//let x=colorMix(c,cc,50);
-
-	// let o=new Color(c);
-	// const contrastRatio = color.contrast('#ffffff'); // 1:1
-	// const complementaryColor = color.complement(); // #00ff00 (Green)
-	// const analogousColors = color.analogous(); // ['#ff8000', '#ffff00', '#00ff80']
-	// const triadicColors = color.triadic(); // ['#ff0080', '#00ff00', '#8000ff']
-	// console.log('!!!!!',contrastRatio,complementaryColor,analogousColors,triadicColors);
-	
-	// for (let i = 0; i < 12; i++) {
-	//   //let c1=colorMix(c,coin()?'white':'black',10+i*(80/12))
-	//   // let c1=colorMix(c,coin()?'white':'silver',10+i*(80/12))
-	//   // let c1=colorMix(x,'silver',10+i*(80/12))
-	//   let c1 = triadicColors[i%3];
-	//   info.wheel.push(c1); //rColor('light', .5));
-	// }
-	//for(let i=0;i<12;i++) {      wheel[i]=list[i];    }
-	let m = currentDate.getMonth();
-	console.log('__________m', m);
-
-	for (const d of dDays) { mStyle(d, { bg: info.wheel[m] }); }
-
-}
-function muell(){
-	console.log('clicked on day',idDay);
-	let tsEventDay = firstNumber(idDay);
-	let dte = new Date(tsEventDay)
-	let day=`${dte.get}`
-	console.log('clicked on date',dte);
-	let tsCreated = Date.now();
-	console.log('created',tsCreated,new Date(tsCreated));
-	let id = idDay;
-	let o = {inpId:idDay,day:tsEventDay,from:null,to:null,created:tsCreated,title:'',text:'',user:ClientData.userid,subscribers:[]};
-	//Config.Events
-	console.log('created event',o)
-	//start input field in this day element
-	//find a unique id for input field
-	//create an event for this input field
-	//event:{id,user,content,date,time}
-}
-
-
 //#endregion
 
 //#region imgSplit
@@ -4461,6 +3818,379 @@ function mist() {
 	}
 }
 
+//#endregion
+
+//#region m
+function measureElement(el) {
+  let info = window.getComputedStyle(el, null);
+	return {w:info.width,h:info.height};
+}
+function measureHeight(dParent,styles={}){
+	let d=mDom(dParent,styles,{html:'Hql'});
+	let s=measureElement(d);
+	d.remove();
+	return s.height;
+}
+function uiTypeEvent(dParent,o){
+	Items[o.id]=o;
+	//console.log('hallo!')
+	//ui=mDom(dParent,{w:'100%',h:12,bg:'red'});
+	let fz=12;
+	let d=mDom(dParent,{fz:fz},{html:'Hql'});
+	let s=measureElement(d);
+	d.remove();
+	console.log('s',s)
+	let h=s.h;
+
+	// let size=measureText('Hql',measureTextX('Hql',{fz:fz});
+	// console.log(size);
+	let ui=mDom(dParent,{w:'100%',fz:fz,h:h,bg:'red'},{html:rWord()});
+
+
+	return ui;
+}
+function openPopup(ev) {
+  // Create the popup div
+  let popup = document.createElement('div');
+
+	let defStyle = {padding:25,bg:'white',fg:'black',zIndex:1000,rounding:12,position:'fixed',boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',wmin:300,hmin:200,border: '1px solid #ccc',};
+	mStyle(popup,defStyle);
+
+	//do whatever inside of popup
+	popup.innerHTML = 'hallo das ist ein schoenes kleines popup window!'
+	
+	//mStyle(popup,{box:true,top:'50%',left:'50%',transform: 'translate(-50%, -50%)'}); //position centered
+
+	let [w,h]=[popup.offsetWidth,popup.offsetHeight];
+	mStyle(popup,{left:ev.clientX-w/2,top:ev.clientY-h / 2});
+
+	mButtonX(popup,25,4);
+  document.body.appendChild(popup);
+	return popup;
+}
+function ____mButtonX(dParent, handler, pos = 'tr', sz = 25, color = 'white') {
+	// let d2 = mDiv(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' }, null, `<i class="fa fa-times" style="font-size:${sz}px;"></i>`, 'btnX');
+	let d2 = mDom(dParent, { fg: color, w: sz, h: sz, cursor: 'pointer' });
+	showImage('times', d2, { fg: color })
+	mPlace(d2, pos, 2);
+	d2.onclick = handler;
+	return d2;
+}
+//#endregion
+
+//#region Navbar
+function mNavbar_old(dParent, styles, pageTitle, titles, funcNames) {
+  //da wollt ich noch icons und iconfuncs dazutun!
+  if (nundef(funcNames)) {
+    //standard is that funcs are named: onclick${title}
+    funcNames = titles.map(x => `onclick${capitalize(x)}`);
+  }
+  function activate(ev) {
+    //currently selected menu button
+    let links = document.getElementsByClassName('nav-link');
+    //console.log('links',links)
+    let inner = ev.target.innerHTML;
+    for (const el of links) {
+      if (el.innerHTML == inner) mClass(el, 'active');
+      else mClassRemove(el, 'active');
+    }
+  }
+  function disable() {
+    let links = Array.from(document.getElementsByClassName('nav-link'));
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClass(el, 'disabled');
+    }
+  }
+  function enable() {
+    let links = document.getElementsByClassName('nav-link');
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClassRemove(el, 'disabled');
+      //if (isdef(el)) { mClass(el, 'active'); el.style.pointerEvents = 'auto' }
+    }
+  }
+  function extra() {
+    let html = `
+      <div class="navbar-expand">
+        <a class="navbar-brand a" href="#">${pageTitle}</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">`;
+    for (let i = 0; i < titles.length; i++) {
+      html += `
+          <li>
+            <a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+          </li>
+        `;
+    }
+    html += `
+        </ul>
+        </div>
+      </div>
+      `;
+    //let inner = document.body.innerHTML;
+    let x=mCreateFrom(html);
+    mAppend('dNav_old',x);
+    var ui = x; // mInsertFirst(document.body, mCreateFrom(html));
+    mStyle(ui, styles); //'#ffffffe0' });
+    return ui;
+    //document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+  }
+  var ui = extra();
+  mStyle(ui, { display: 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between' });
+  return { activate: activate, disable: disable, enable: enable, ui: ui };
+}
+function mNavbar(styles,pageTitle, titles, funcNames) {
+	//da wollt ich noch icons und iconfuncs dazutun!
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+
+	function activate(ev) {
+		let links = document.getElementsByClassName('nav-link');
+		//console.log('links',links)
+		let inner = ev.target.innerHTML;
+		for (const el of links) {
+			if (el.innerHTML == inner) mClass(el, 'active');
+			else mClassRemove(el, 'active');
+		}
+	}
+	function disable() {
+		let links = Array.from(document.getElementsByClassName('nav-link'));
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			//console.log('el',el)
+			if (isdef(el)) mClass(el, 'disabled');
+		}
+	}
+	function enable() {
+		let links = document.getElementsByClassName('nav-link');
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			if (isdef(el)) {
+				mClass(el, 'active');
+				el.style.pointerEvents = 'auto'
+			}
+		}
+	}
+
+	let html = `
+    <nav class="navbar navbar-expand" id="dNav">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		html += `
+				<li>
+					<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	var ui = mInsertFirst(document.body, mCreateFrom(html));
+	mStyle(ui, styles); //'#ffffffe0' });
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+	return { activate: activate, disable: disable, enable: enable, ui: ui };
+}
+function showNavbar(pageTitle, titles, funcNames) {
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+
+	function activate(ev){
+		let links = document.getElementsByClassName('nav-link');
+		//console.log('links',links)
+		let inner = ev.target.innerHTML;
+		for(const el of links){
+			if (el.innerHTML == inner) mClass(el, 'active');
+			else mClassRemove(el,'active');
+		}
+	}
+	function disable(){
+		let links = Array.from(document.getElementsByClassName('nav-link'));
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			//console.log('el',el)
+			if (isdef(el)) mClass(el, 'disabled');
+		}
+	}
+	function enable(){
+		let links = document.getElementsByClassName('nav-link');
+		for (const w of arguments) {
+			let el = links.find(x => x.innerHTML == w);
+			if (isdef(el)) {
+				mClass(el, 'active');
+				el.style.pointerEvents = 'auto'
+			}
+		}
+	}
+	
+	let html = `
+    <nav class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		html += `
+				<li class="nav-item">
+					<a class="nav-link a" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+      <div style="align-self:end" >
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link a" href="#" onclick="UI.nav.activate(event);">HALLO</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	var ui = mInsertFirst(document.body, mCreateFrom(html));
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+	return {activate:activate,disable:disable,enable:enable,ui:ui};
+}
+
+function showNavbar(pageTitle, titles, funcNames) {
+	if (nundef(funcNames)) {
+		//standard is that funcs are named: onclick${title}
+		funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	}
+	let html = `
+    <nav class="navbar navbar-expand navbar-light bg-light">
+      <a class="navbar-brand a" href="#">${pageTitle}</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">`;
+	for (let i = 0; i < titles.length; i++) {
+		// html += `
+		// 		<li class="nav-item active">
+		// 			<a class="nav-link hoverHue a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
+		// 		</li>
+		// 	`;
+		html += `
+				<li class="nav-item">
+					<a class="nav-link a" href="#" onclick="${funcNames[i]}()">${titles[i]}</a>
+				</li>
+			`;
+	}
+	html += `
+			</ul>
+			</div>
+		</nav>
+		`;
+	//let inner = document.body.innerHTML;
+	mInsertFirst(document.body, mCreateFrom(html));
+	//document.body.insertAdjacentElement(0,mCreateFrom(html)); //innerHTML += html + inner;
+
+}
+function navbarActivate() {
+	let links = document.getElementsByClassName('nav-link');
+	for (const w of arguments) {
+		let el = links.find(x => x.innerHTML == w);
+		if (isdef(el)) {
+			mClass(el, 'active');
+			el.style.pointerEvents = 'auto'
+		}
+	}
+}
+function navbarDeactivate() {
+	let links = Array.from(document.getElementsByClassName('nav-link'));
+	//console.log('links',links)
+	for (const w of arguments) {
+		let el = links.find(x => x.innerHTML == w);
+		//console.log('el',el)
+		if (isdef(el)) {
+			mClassRemove(el.parentNode, 'active');
+			el.style.pointerEvents = 'none'
+		}
+	}
+}
+
+//#endregion
+
+//#region sidebar
+function show_sidebar(list, handler) {
+	dSidebar = mBy('dSidebar'); mClear(dSidebar); mStyle(dSidebar, { w: 200, h: window.innerHeight - 68, overy: 'auto' });
+	for (const k of list) {
+		let d = mDiv(dSidebar, { cursor: 'pointer', wmin: 100 }, null, k, 'hop1')
+		if (isdef(handler)) d.onclick = handler;
+	}
+}
+function sidebar_belinda() {
+	let html = `
+		<div id="md" style="display: flex">
+		<div id="sidebar" style="align-self: stretch;min-height:100vh"></div>
+		<div id="rightSide">
+			<div id="table" class="flexWrap"></div>
+		</div>
+		</div>
+		`;
+	function initSidebar() {
+		let dParent = mBy('sidebar');
+		clearElement(dParent);
+		dLeiste = mDiv(dParent);
+		mStyle(dLeiste, { 'min-width': 70, 'max-height': '100vh', display: 'flex', 'flex-flow': 'column wrap' });
+	}
+}
+function sidebar_coding() {
+	function test_ui_extended() {
+		mClear(document.body);
+		let d1 = mDom(document.body, {}, { classes: 'fullpage airport' });
+		let [dl, dr] = mColFlex(d1, [7, 2]);
+		for (const d of [dl, dr]) mStyle(d, { bg: rColor('blue', 'green', .5) })
+		mStyle(dr, { h: '100vh', fg: 'white' })
+		dSidebar = mDiv100(dr, { wmax: 240, overy: 'auto', overx: 'hidden' }, 'dSidebar'); //,{h:window.innerHeight},'dSidebar')
+		dLeft = dl;
+		onresize = create_left_side_extended;
+		create_left_side_extended();
+	}
+	function show_sidebar(list, handler) {
+		dSidebar = mBy('dSidebar');
+		mClear(dSidebar);
+		for (const k of list) {
+			let d = mDiv(dSidebar, { cursor: 'pointer', wmin: 100 }, null, k, 'hop1')
+			if (isdef(handler)) d.onclick = handler;
+		}
+	}
+
+}
+
+//#endregion
+
+//#region simple image upload
+async function uploadImg2(img, unique, cat, name) {
+	let type = detectSessionType();
+	let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
+	server += `/save`;
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+	const dataUrl = canvas.toDataURL('image/png');
+	console.log(dataUrl);
+	let o = { data: {image:dataUrl}, path: 'out.png', mode: 'wi' };
+
+	const response = await fetch(server, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors',
+		body: JSON.stringify(o)
+	});
+	return await response.json();
+}
 //#endregion
 
 //#region test0
@@ -4833,6 +4563,501 @@ async function saveCanvas(ev) {
 }
 
 
+
+//#endregion
+
+//#region user
+async function loadUserdata(uname) {
+	//hier muss user reloaden! weil koennte auf anderem browser geaendert worden sein!
+	let data = await mGetRoute('user',{user:uname});
+	if (!data) {
+		data = await postUserChange({ name: uname, color: rChoose(M.playerColors) });
+		// console.log('adding new user!!!', uname);
+		// data = { name: uname, color: rChoose(M.playerColors) };
+		// data = await mPostRoute('postUser', data);
+	} else	Serverdata.users[uname] = data;
+	//console.log('data',data);
+	return data;
+}
+
+async function loadUserdata_mist(){
+	let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
+	if (!data) {
+		console.log('adding new user!!!', uname);
+		data = { name: uname, color: rChoose(M.playerColors) };
+		await serverUpdate('newuser', data);
+	}
+	assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
+	localStorage.setItem('username', uname);
+	U = data;
+	U.data = await mGetYaml(`../y/users/${uname}.yaml`);
+	return U;
+}
+
+async function userLoad(uname) {
+	UI.nav.activate('no')
+	if (nundef(uname)) uname = localStorage.getItem('username');
+	//U = null;
+	//uname = null;
+	if (isdef(uname) && (!U || U.name != uname)) {
+		//what if the current U has unsaved data??? TODO
+		let data = lookup(Serverdata.session, ['users', uname]) ?? lookup(Serverdata.config, ['users', uname]);
+		if (!data) {
+			console.log('adding new user!!!', uname);
+			data = { name: uname, color: rChoose(M.playerColors) };
+			await serverUpdate('newuser', data);
+		}
+		assertion(data, "WTK??? userLoad!!!!!!!!!!!!!!!! " + uname);
+		localStorage.setItem('username', uname);
+		U = data;
+		U.data = await mGetYaml(`../y/users/${uname}.yaml`);
+	}
+	mClear(dUser);
+	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+
+	let d;
+	if (U) {
+		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
+		setColors(U.color)
+	} else {
+		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' };
+		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
+	}
+	d.onclick = onclickUser;
+}
+function showUser() {
+	mClear(dUser);
+	//mCenterCenterFlex(dUser); //, bg:'red', 'align-self': 'end' , 'justify-self':'center'},{id:'dUser'});
+	mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+
+	let d;
+	if (U) {
+		d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
+		//d = mDom(dUser, { cursor: 'pointer', fz: 18, rounding: 9, hpadding: 9 }, { html: U.name, className:'active' });
+		//mStyle(document.body, { bg: U.bg }); //colorLighter(U.color) });
+		let d1 = showImage('gear', dUser, { sz: 25 });
+		d1.onclick = ev => showColors(M.playerColors, updateUserColor);
+	} else {
+		let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' }; //,'align-self': 'end'
+		d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
+	}
+	d.onclick = onclickUser;
+}
+async function userLoad(uname) {
+	if (nundef(uname)){
+		//am anfang lookup username (!!!) in localstorage!
+		uname = localStorage.getItem('username');
+		assertion(nundef(uname) || isdef(Serverdata.config.users[uname]));
+	}
+
+	if (isdef(uname)) { let u = getUserdata(uname); if (isdef(u)) setU(u); }
+	if (!U) {
+		Serverdata = await addNewUser(uname);
+		console.log('added user', uname, Serverdata.session.users[uname])
+		U = Serverdata.session.users[uname];
+	}
+	showUser();
+}
+function muell() {
+
+  // U.ccontrast = ccontrast;
+  // U.pal = pal;
+  // U.bg = o.color;
+  // U.fg = ccontrast == 'white' ? pal[8] : pal[2];
+
+  //hier sollen die css colors gesetzt werden!
+  //let [hell,dunkel]=[pal[7],pal[1]];
+  //let inc=ccontrast=='white'?-1:1;
+  let i = idx - 1;
+  // for(const x of ['button','body']){
+  //   let s=`--bg${capitalize(x)}`;
+  //   i+=inc;
+  //   setCssVar(s,pal[i])
+  // }
+  setCssVar('--bgButton', 'transparent');
+  setCssVar('--bgBody', pal[idx]);
+  inc = ccontrast == 'white' ? 1 : -1;
+  i = idx + inc * 2;
+  for (const x of ['buttonDisabled', 'button', 'buttonActive', 'buttonHover']) {
+    let s = `--fg${capitalize(x)}`;
+    i += inc;
+    setCssVar(s, pal[i]);
+  }
+  setCssVar('--fgTitle', ccontrast);
+  setCssVar('--fgSubtitle', pal[9]);
+  // U.fg=o.color;
+  // U.bg=ccontrast == 'white'?pal[7]:pal[2];
+  // U.light=
+  // [U.fg,U.bg,U.light,U.dark]=[pal[4],pal]
+}
+async function onclickUser() {
+	let uname = await mPrompt(); //returns null if invalid!
+	console.log('onclickUser:', uname);
+  //wenn der user schon bekannt ist dann soll ihn einfach laden
+  
+	if (uname) {
+		let result = await addNewUser(uname);
+
+		console.log('result', result);
+		if (!result) { alert('login failed!'); return; }
+		U = result.session.users[uname];
+	}
+	showUser();
+}
+async function addNewUser(uname) {
+	// if (!isString(uname)) return false;
+	// uname = uname.toLowerCase().trim();
+	// //only letters please!
+	// let correct = true;
+	// for (const ch of toLetters(uname)) { if (!isLetter(ch)) correct = false; }
+	// if (!correct) return false;
+	//name is correct, so send it to session and update UI!
+	console.log('adding new user!!!', uname);
+	let data = { name: uname, color: valf(userColors[uname],rChoose(plColors))}; //rColor(50,1,15) };
+	o = { data: data, path: `users.${uname}`, mode: 's' }; //['users',uname]
+	return await uploadJson('save', o);
+	//phpPost(o, 'add_user');
+}
+
+async function onclickUser(){
+	console.log(U); //null am anfang!
+	if (!U) {
+		//let uname = prompt('Enter name: ');
+		let uname = await mPrompt(); 
+		console.log('uname',uname);
+		if (uname) {
+			let result  = await addNewUser(uname);
+			console.log('result',result);
+			if (!result) {alert('login failed!'); return;}
+			U=result.session.users[uname];
+		}
+	}else {
+		//this user is logging out, another one logged in
+		U=null;
+		onclickUser();
+	}
+}
+async function updateUserColor(ev) {
+	let c = ev.target.style.background;
+	setU({ name: U.name, color: colorHex(c) });
+	let data = { name: U.name, color: U.color };
+	o = { data: data, path: `users.${U.name}`, mode: 'c' }; 
+	Serverdata = await uploadJson('save', o);
+	await userLoad(U.name);
+}
+
+//#endregion
+
+//******* NODE JS *********/
+//#region approutes von nodejs 
+app.get("/", (req, res) => { res.sendFile(path.join(__dirname, "index.html")); });
+
+app.get('/filenames', async (req, res) => {
+	const { directory: dir } = req.query;
+	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
+	try {
+		const directoryPath = dir.startsWith('C:') ? dir : path.join(__dirname, dir);
+		console.log('dirpath', directoryPath)
+		const files = await fsp.readdir(directoryPath);
+		res.json({ files });
+	} catch (err) {
+		res.status(500).json({ error: 'Error reading directory', details: err.message });
+	}
+});
+app.get('/login', (req, res) => {
+	console.log('______\n/login!!!!! query', req.query);
+	let u = req.query;
+	let uname = u.name;
+	if (nundef(uname)) { res.json({ message: 'ERROR! missing name' }); return; }
+	let uconf = lookup(Config, ['users', uname]);
+	if (!uconf || uconf.color != u.color) { uconf = lookupSetOverride(Config, ['users', uname], u); saveConfig(); }
+	let usession = lookupSetOverride(Session, ['users', uname], u);
+	//now user is registered as well as loggedIn and with correct color!
+	res.json({ session: Session, config: Config, message: `user ${uname} logged in!` });
+})
+
+app.post('/upload', (req, res) => {
+	console.log(Object.keys(req.body)); //'req.body',req.body)
+	const uploadedFile = req.files.image; // 'image' is the field name in the form
+	uploadedFile.mv(path.join(uploadDirectory, 'img', uploadedFile.name), (err) => {
+		if (err) { return res.status(500).send(err); }
+		const fileSizeInBytes = uploadedFile.size;
+		const fileName = uploadedFile.name;
+		let [unique, ext] = fileName.split('.');
+		console.log('filename', fileName)
+		const fileSizeInKB = fileSizeInBytes / 1024; // KB
+		const fileSizeInMB = fileSizeInKB / 1024; // MB
+		console.log('!!!!', req.body.category, req.body.name);
+		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${unique}:\n  cat: ${req.body.collection}\n  coll: ${req.body.collection}\n  name: ${req.body.name}\n  ext: ${ext}`, err => { if (err) console.log('error:', err); });
+		res.json({
+			message: 'File uploaded successfully',
+			fileName: fileName,
+			fileSizeInBytes: fileSizeInBytes,
+			fileSizeInKB: fileSizeInKB,
+			fileSizeInMB: fileSizeInMB,
+		});
+	});
+});
+app.post('/event', (req, res) => {
+	const event = req.body;
+	let uname = event.user;
+	console.log('...user', uname)
+	let fname = path.join(uploadDirectory, 'users', uname + '.yaml');
+	if (nundef(Users[uname])) {
+		let exists = fs.existsSync(fname);
+		if (exists) {
+			const yamlFile = fs.readFileSync(fname, 'utf8');
+			Users[uname] = yaml.load(yamlFile);
+		} else Users[uname] = {};
+	}
+	let udata = Users[uname];
+
+	//if event.text is empty and this event exists, delete it! otherwise save it
+	if (isEmpty(event.text)) {
+		let e = lookup(udata, ['events', event.id]);
+		if (e) delete udata.events[event.id];
+	} else lookupSetOverride(udata, ['events', event.id], event);
+
+	try {
+		const yamlData = yaml.dump(udata);
+		fs.writeFileSync(fname, yamlData, 'utf8');
+	} catch (error) {
+		console.error('Error writing YAML file:', error);
+	}
+	res.json({ message: `event ${event.id} updated!`, user: udata });
+});
+app.post('/save', (req, res) => {
+	const body = req.body;
+	const data = body.data; //some json object or base64 image data (or undef)
+	const fname = isdef(body.path) ? path.join(__dirname, body.path) : ''; // 
+	const mode = body.mode;
+
+	console.log('save:', mode, 'to', fname); //, '\n', data);
+	try {
+		if (mode == 'a') {
+			fs.appendFileSync(fname, data, 'utf8');
+		} else if (mode == 'cs') {
+			if (data) {
+				lookupSetOverride(Config, body.path.split('.'), data);
+				lookupSetOverride(Session, body.path.split('.'), data);
+			}
+			saveConfig();
+		} else if (mode == 'w') {
+			fs.writeFileSync(fname, data, 'utf8');
+		} else if (mode == 'wi') {
+			var base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+			fs.writeFileSync(fname, base64Data, 'base64'); //, function(err) {  console.log('ERROR img upload: '+fname);});
+		} else if (mode == '_ac') {
+			addKeys(data, Config);
+		} else if (mode == '_wc') {
+			copyKeys(data, Config);
+		} else if (mode == 'ay') {
+			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
+			addKeys(data, di);
+			let y = yaml.dump(di);
+			fs.writeFileSync(fname, y, 'utf8');
+		} else if (mode == 'wy') {
+			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
+			copyKeys(data, di);
+			let y = yaml.dump(di);
+			fs.writeFileSync(fname, y, 'utf8');
+		} else if (mode == 'as' || mode == 's') {
+			lookupSet(Session, body.path.split('.'), data);
+			console.log('Session', Session)
+		} else if (mode == 'ws') {
+			lookupSetOverride(Session, body.path.split('.'), data);
+			console.log('Session', Session)
+		} else if (mode == 'ac') {
+			lookupSet(Config, body.path.split('.'), data);
+			let y = yaml.dump(Config);
+			fs.writeFileSync(configFile, y, 'utf8');
+		} else if (mode == 'wc' || mode == 'c') {
+			if (data) lookupSetOverride(Config, body.path.split('.'), data);
+			saveConfig();
+		}
+		console.log('*** success ***');
+	} catch (error) {
+		console.error('Error updating file:', error);
+	}
+	res.json({ message: `save mode:${mode} ${fname} *** successful ***`, config: Config, session: Session });
+});
+app.get('/load', (req, res) => {
+	try {
+		//console.log('______\nquery',req.query);
+		let params = req.query;
+		let result = {};
+		if (params.config) result.config = Config;
+		if (params.session) result.session = Session;
+
+		//const yamlFile = fs.readFileSync('path/to/your/file.yaml', 'utf8');	const data = yaml.load(yamlFile);
+
+		res.json(result);
+	} catch (error) {
+		console.error('Error reading or parsing the YAML file:', error);
+	}
+});
+
+//#endregion
+
+//#region app.js neuer:
+app.get("/", (req, res) => { res.sendFile(path.join(__dirname, "index.html")); });
+
+app.get('/filenames', async (req, res) => {
+	const { directory: dir } = req.query;
+	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
+	try {
+		const directoryPath = dir.startsWith('C:') ? dir : path.join(__dirname, dir);
+		console.log('dirpath', directoryPath)
+		const files = await fsp.readdir(directoryPath);
+		res.json({ files });
+	} catch (err) {
+		res.status(500).json({ error: 'Error reading directory', details: err.message });
+	}
+});
+app.get('/login', (req, res) => {
+	console.log('______\n/login!!!!! query', req.query);
+	let u = req.query;
+	let uname = u.name;
+	if (nundef(uname)) { res.json({ message: 'ERROR! missing name' }); return; }
+	let uconf = lookup(Config, ['users', uname]);
+	if (!uconf || uconf.color != u.color) { uconf = lookupSetOverride(Config, ['users', uname], u); saveConfig(); }
+	let usession = lookupSetOverride(Session, ['users', uname], u);
+	//now user is registered as well as loggedIn and with correct color!
+	res.json({ session: Session, config: Config, message: `user ${uname} logged in!` });
+})
+
+app.post('/upload', (req, res) => {
+	console.log(Object.keys(req.body)); //'req.body',req.body)
+	const uploadedFile = req.files.image; // 'image' is the field name in the form
+	uploadedFile.mv(path.join(uploadDirectory, 'img', uploadedFile.name), (err) => {
+		if (err) { return res.status(500).send(err); }
+		const fileSizeInBytes = uploadedFile.size;
+		const fileName = uploadedFile.name;
+		let [unique, ext] = fileName.split('.');
+		console.log('filename', fileName)
+		const fileSizeInKB = fileSizeInBytes / 1024; // KB
+		const fileSizeInMB = fileSizeInKB / 1024; // MB
+		console.log('!!!!', req.body.category, req.body.name);
+		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${unique}:\n  cat: ${req.body.collection}\n  coll: ${req.body.collection}\n  name: ${req.body.name}\n  ext: ${ext}`, err => { if (err) console.log('error:', err); });
+		res.json({
+			message: 'File uploaded successfully',
+			fileName: fileName,
+			fileSizeInBytes: fileSizeInBytes,
+			fileSizeInKB: fileSizeInKB,
+			fileSizeInMB: fileSizeInMB,
+		});
+	});
+});
+app.post('/event', (req, res) => {
+	const event = req.body;
+	let uname = event.user;
+	console.log('...user', uname)
+	let fname = path.join(uploadDirectory, 'users', uname + '.yaml');
+	if (nundef(Users[uname])) {
+		let exists = fs.existsSync(fname);
+		if (exists) {
+			const yamlFile = fs.readFileSync(fname, 'utf8');
+			Users[uname] = yaml.load(yamlFile);
+		} else Users[uname] = {};
+	}
+	let udata = Users[uname];
+
+	//if event.text is empty and this event exists, delete it! otherwise save it
+	if (isEmpty(event.text)) {
+		let e = lookup(udata, ['events', event.id]);
+		if (e) delete udata.events[event.id];
+	} else lookupSetOverride(udata, ['events', event.id], event);
+
+	try {
+		const yamlData = yaml.dump(udata);
+		fs.writeFileSync(fname, yamlData, 'utf8');
+	} catch (error) {
+		console.error('Error writing YAML file:', error);
+	}
+	res.json({ message: `event ${event.id} updated!`, user: udata });
+});
+app.post('/save', (req, res) => {
+	const body = req.body;
+	const data = body.data; //some json object or base64 image data (or undef)
+	const fname = isdef(body.path) ? path.join(__dirname, body.path) : ''; // 
+	const mode = body.mode;
+
+	console.log('save:', mode, 'to', fname); //, '\n', data);
+	try {
+		if (mode == 'a') {
+			fs.appendFileSync(fname, data, 'utf8');
+		} else if (mode == 'cs') {
+			if (data) {
+				lookupSetOverride(Config, body.path.split('.'), data);
+				lookupSetOverride(Session, body.path.split('.'), data);
+			}
+			saveConfig();
+		} else if (mode == 'w') {
+			fs.writeFileSync(fname, data, 'utf8');
+		} else if (mode == 'wi') {
+			var base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+			fs.writeFileSync(fname, base64Data, 'base64'); //, function(err) {  console.log('ERROR img upload: '+fname);});
+		} else if (mode == '_ac') {
+			addKeys(data, Config);
+		} else if (mode == '_wc') {
+			copyKeys(data, Config);
+		} else if (mode == 'ay') {
+			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
+			addKeys(data, di);
+			let y = yaml.dump(di);
+			fs.writeFileSync(fname, y, 'utf8');
+		} else if (mode == 'wy') {
+			let di = yaml.load(fs.readFileSync(fname, 'utf8'));
+			copyKeys(data, di);
+			let y = yaml.dump(di);
+			fs.writeFileSync(fname, y, 'utf8');
+		} else if (mode == 'as' || mode == 's') {
+			lookupSet(Session, body.path.split('.'), data);
+			console.log('Session', Session)
+		} else if (mode == 'ws') {
+			lookupSetOverride(Session, body.path.split('.'), data);
+			console.log('Session', Session)
+		} else if (mode == 'ac') {
+			lookupSet(Config, body.path.split('.'), data);
+			let y = yaml.dump(Config);
+			fs.writeFileSync(configFile, y, 'utf8');
+		} else if (mode == 'wc' || mode == 'c') {
+			if (data) lookupSetOverride(Config, body.path.split('.'), data);
+			saveConfig();
+		}
+		console.log('*** success ***');
+	} catch (error) {
+		console.error('Error updating file:', error);
+	}
+	res.json({ message: `save mode:${mode} ${fname} *** successful ***`, config: Config, session: Session });
+});
+app.post('/newuser', (req, res) => {
+	let name = req.body.name;
+	let data = req.body;
+	console.log('data', data)
+	let fname = path.join(uploadDirectory, 'users', name + '.yaml');
+	lookupSetOverride(Config, ['users', name], data);
+	lookupSetOverride(Session, ['users', name], data);
+	let y = yaml.dump(data);
+	fs.writeFileSync(fname, y, 'utf8');
+	saveConfig();
+	res.json({ message: `added user ${name} *** successful ***`, config: Config, session: Session });
+});
+app.get('/load', (req, res) => {
+	try {
+		//console.log('______\nquery',req.query);
+		let params = req.query;
+		let result = {};
+		if (params.config) result.config = Config;
+		if (params.session) result.session = Session;
+
+		//const yamlFile = fs.readFileSync('path/to/your/file.yaml', 'utf8');	const data = yaml.load(yamlFile);
+
+		res.json(result);
+	} catch (error) {
+		console.error('Error reading or parsing the YAML file:', error);
+	}
+});
 
 //#endregion
 
