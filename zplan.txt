@@ -10,6 +10,12 @@ ____mafa
 	jetzt muss ich alle keys normalizen: ' ' und - wird ersetzt durch _
 
 
+chat removen! chat kann optionale rechte sidebar sein!
+was ist bei einem modd calendar anders?
+1. alles muss private sein!
+2. autotime setting!
+3. vielleicht paar emoticons geben auf seitenleiste
+
 
 
 
