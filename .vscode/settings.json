@@ -5,6 +5,9 @@
 		"strings": true
 	},
 	"editor.tabCompletion": "onlySnippets",
+	"editor.acceptSuggestionOnCommitCharacter": false,
+	"editor.acceptSuggestionOnEnter": "off",
+	"editor.suggestOnTriggerCharacters": true,
 	// "editor.tabCompletion": "on",
 	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
