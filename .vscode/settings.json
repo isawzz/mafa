@@ -8,7 +8,7 @@
 	"editor.acceptSuggestionOnCommitCharacter": false,
 	"editor.acceptSuggestionOnEnter": "off",
 	"editor.suggestOnTriggerCharacters": true,
-	// "editor.tabCompletion": "on",
+	//"editor.tabCompletion": "on",
 	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
 	"editor.codeLens": false,

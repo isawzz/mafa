@@ -1,45 +1,45 @@
-z_1704787200000_1702334962518:
-  id: z_1704787200000_1702334962518
-  created: 1702334962518
-  day: '1704787200000'
-  time: ''
-  text: mozart
-  user: lauren
-  shared: false
-  subscribers: []
-p_1706083200000_1702334981426:
-  id: p_1706083200000_1702334981426
-  created: 1702334981426
-  day: '1706083200000'
-  time: ''
-  text: beethoven
-  user: lauren
-  shared: false
-  subscribers: []
-a_1701763200000_1702349909550:
-  id: a_1701763200000_1702349909550
-  created: 1702349909550
-  day: '1701763200000'
-  time: 4h30
-  text: violine
-  user: lauren
-  shared: false
-  subscribers: []
-d_1702368000000_1702385243221:
-  id: d_1702368000000_1702385243221
-  created: 1702385243221
-  day: '1702368000000'
-  time: ''
-  text: skype
+v_1701590400000_1702480465137:
+  id: v_1701590400000_1702480465137
+  created: 1702480465137
+  day: '1701590400000'
+  time: 9h
+  text: geige
   user: felix
   shared: false
   subscribers: []
-e_1701590400000_1702391253679:
-  id: e_1701590400000_1702391253679
-  created: 1702391253679
-  day: '1701590400000'
+v_1702800000000_1702480993896:
+  id: v_1702800000000_1702480993896
+  created: 1702480993896
+  day: '1702800000000'
+  time: ''
+  text: fe kommt an
+  user: felix
+  shared: false
+  subscribers: []
+i_1701676800000_1702481134349:
+  id: i_1701676800000_1702481134349
+  created: 1702481134349
+  day: '1701676800000'
+  time: ''
+  text: wieso???
+  user: felix
+  shared: false
+  subscribers: []
+l_1701763200000_1702481386709:
+  id: l_1701763200000_1702481386709
+  created: 1702481386709
+  day: '1701763200000'
   time: ''
   text: hallo
+  user: felix
+  shared: false
+  subscribers: []
+f_1701590400000_1702481536492:
+  id: f_1701590400000_1702481536492
+  created: 1702481536492
+  day: '1701590400000'
+  time: ''
+  text: ja sehr gut
   user: felix
   shared: false
   subscribers: []

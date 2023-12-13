@@ -641,6 +641,20 @@ html {
 .no_events {
   pointer-events: none;
 }
+.no_outline{
+  outline: none;
+  box-shadow: none;
+  border: 0px solid green;
+}
+.no_outline:hover{
+  outline: none;
+}
+.no_outline:active{
+  outline: none;
+}
+.no_outline:focus{
+  outline: none;
+}
 .noCursor {
   cursor: none;
 }

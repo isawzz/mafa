@@ -15,6 +15,90 @@ async function loadImageAsync(url) {
 //#endregion
 
 //#region calendar (combu)
+function uiTypeEvent(dParent,o,styles={}){
+	Items[o.id]=o;
+
+	// let styles1 = jsCopy(styles);
+	// let ui=mDom(dParent,styles1); //,{html:rWord()});
+	// styles1.h=styles.h+14
+
+	let ui=mDom(dParent,styles,{id:o.id}); //,{html:rWord()});
+	mFlexLR(ui);
+	mStyle(ui,{'align-items': 'center','align-content':'center'})
+	//console.log('styles',styles)
+
+	//addKeys({weight:'normal',box:true},styles);  //addKeys({ wmax: '90%', box: true }, styles);
+
+	let opts={ onEnter: onEventEdited, onclick: onclickExistingEvent, value: o.text };
+	addKeys({ tag: 'input', classes: 'plain' }, opts);
+	//console.log('parentWidth',dParent.style.width,mGetStyle(dParent,'w'))
+	let [wtotal,wbutton]=[mGetStyle(dParent,'w'),20];
+  let inp = mDom(ui, {matop:2,maleft:2,box:true,w:wtotal-wbutton}, opts);
+	//console.log('styles',styles)
+	//console.log('opts',opts)
+  //x.focus();
+  inp.addEventListener('keyup', ev => {
+    if (ev.key == 'Enter') {
+      mDummyFocus();
+      if (isdef(opts.onEnter)) opts.onEnter(ev)
+    }
+  });
+
+	let dr = mDom(ui, {box:true,w:wbutton,fg:'gray'});//,bg:'blue'});
+	mStyle(dr,{fz:styles.fz+5,family:'pictoFa',box:true,cursor:'pointer',className:'hop1'});//matop:2,border:'red',bg:'blue',fg:'white'});
+	let sym = M.superdi.pen_square;
+	dr.innerHTML=String.fromCharCode('0x' + sym.fa); //'A'
+	dr.onclick=ev=>evNoBubble(ev);
+
+
+	return ui;
+}
+function restrestrest(){
+
+  let ui = mDom(dParent, styles, { id: o.id });
+
+  //mFlexLR(ui);
+  //mStyle(ui, { 'align-items': 'center', 'align-content': 'center' });
+  //mStyle(ui, { box:true, display: 'flex', 'justify-content': 'space-between' });
+
+  //let inp = mDom(ui, { display:'inline',bg:'blue',box: true, w: wtotal - wbutton }, { value: o.text, tag: 'input', classes: 'plain' });
+  let inp = mDom(ui, { outline:'none',border:0,'box-shadow': 'none',display:'inline',w: wtotal - wbutton }, { value: o.text, tag: 'input' });
+  inp.onclick = ev => evNoBubble(ev)
+  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(o.id, inp.value); } });
+
+  console.log('h',h)
+  let but = mDom(ui, { display:'inline',bg:'red',box: true, w: wbutton, fg: 'gray' });
+  mStyle(but, { fz: h,h:h,hline:h, family: 'pictoFa', box: true, cursor: 'pointer', className: 'hop1' });
+  let sym = M.superdi.pen_square;
+  but.innerHTML = String.fromCharCode('0x' + sym.fa);
+  but.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
+  return ui;
+}
+
+function restUiTypeEvent(){
+
+	let ui = mDom(dParent,{ w: '100%',paright:2, box:true });
+	//109x88
+	
+	let [dl, dr] = mColFlex(ui, [12,1]);
+
+	let inp = addEditable(dl, { w:'100%' }, { id: o.id, onEnter: onEventEdited, onclick: onclickExistingEvent, value: o.text });
+  // let bx = mDom(dr, { w: '100%', h: '100%', cursor: 'pointer',halign:'center',valign:'center' }, { className: 'hop1' });
+  // bx.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev) };
+
+	// let d1=mDom(ui,{w:22,h:20,bg:'silver',border:'dimgray',rounding:'50%',align:'center'});
+	//let sz=27;
+	//let sym = showImage('pen_square', dr, {fg:'white',bg:'green',padding:0, w:sz,h:sz,className:'hop1'});
+
+	mStyle(dr,{matop:2,border:'red',family:'pictoFa',box:true, w:20,h:21,bg:'blue',fg:'white'});
+	let sym = M.superdi('pen_square');
+	dr.innerHTML=String.fromCharCode('0x' + sym.fa); //'A'
+
+	//<div style="font-size: 21.6px; line-height: 21.6px; font-family: pictoFa; background: rgba(0, 0, 0, 0); color: rgb(255, 255, 255); display: inline; cursor: pointer;"></div>
+	
+
+	return ui;
+}
 function uiTypeEvent(dParent,o){
 	if (nundef(DA.calendar)) return;
 	let cal=DA.calendar;

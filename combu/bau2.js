@@ -5,30 +5,34 @@ async function deleteEvent(id) {
   delete Items[id];
   mBy(id).remove();
 }
-function onclickDay(d,styles) {
+function onclickDay(d, styles) {
   let tsDay = d.id; //evToId(ev);
   let tsCreated = Date.now();
   let id = generateEventId(tsDay, tsCreated);
   let uname = U ? U.name : 'guest';
   let o = { id: id, created: tsCreated, day: tsDay, time: '', text: '', user: uname, shared: false, subscribers: [] };
   Items[id] = o;
-  let d1 = uiTypeEvent(d,o,styles); //addEditable(d, { w: '100%' }, { id: id, onEnter: ()=>onEventEdited(id,mBy(id).value), onclick: onclickExistingEvent });
+  let x = uiTypeEvent(d, o, styles); //addEditable(d, { w: '100%' }, { id: id, onEnter: ()=>onEventEdited(id,mBy(id).value), onclick: onclickExistingEvent });
+  x.inp.focus();
 }
 async function onEventEdited(id, text, time) {
+  console.log(id,text,time)
   let e = Items[id];
-	//console.log('e',e,'text',text);
-	if (nundef(time)) {
-		[time,text]=extractTime(text);
-	}
+  //console.log('e',e,'text',text);
+  if (nundef(time)) {
+    [time, text] = extractTime(text);
+  }
   e.time = time;
   e.text = text;
-	//console.log('time',time,'text',text);
+  //console.log('time',time,'text',text);
   let result = await simpleUpload('postEvent', e);
+  console.log('result',result)
   Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
-  mBy(id).value = stringBefore(e.text, '\n');
+  //console.log('mBy(id)',mBy(id))
+  mBy(id).firstChild.value = getEventValue(e); // e.time + ' ' + stringBefore(e.text, '\n');
   closePopup();
 }
-function rWord(n=6){return rLetters(n).join('');}
+function rWord(n = 6) { return rLetters(n).join(''); }
 function showEventOpen(id) {
   let e = Items[id];
   if (!e) return;
@@ -55,65 +59,36 @@ function showEventOpen(id) {
   mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons,)
   mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
 }
-function uiTypeEvent(dParent,o,styles={}){
-	Items[o.id]=o;
-
-	// let styles1 = jsCopy(styles);
-	// let ui=mDom(dParent,styles1); //,{html:rWord()});
-	// styles1.h=styles.h+14
-
-	let ui=mDom(dParent,styles,{id:o.id}); //,{html:rWord()});
-	mFlexLR(ui);
-	mStyle(ui,{'align-items': 'center','align-content':'center'})
-	//console.log('styles',styles)
-
-	//addKeys({weight:'normal',box:true},styles);  //addKeys({ wmax: '90%', box: true }, styles);
-
-	let opts={ onEnter: onEventEdited, onclick: onclickExistingEvent, value: o.text };
-	addKeys({ tag: 'input', classes: 'plain' }, opts);
-	//console.log('parentWidth',dParent.style.width,mGetStyle(dParent,'w'))
-	let [wtotal,wbutton]=[mGetStyle(dParent,'w'),20];
-  let inp = mDom(ui, {matop:2,maleft:2,box:true,w:wtotal-wbutton}, opts);
-	console.log('styles',styles)
-	console.log('opts',opts)
-  //x.focus();
-  inp.addEventListener('keyup', ev => {
-    if (ev.key == 'Enter') {
-      mDummyFocus();
-      if (isdef(opts.onEnter)) opts.onEnter(ev)
-    }
-  });
-
-	let dr = mDom(ui, {box:true,w:wbutton,fg:'gray'});//,bg:'blue'});
-	mStyle(dr,{fz:styles.fz+5,family:'pictoFa',box:true,cursor:'pointer',className:'hop1'});//matop:2,border:'red',bg:'blue',fg:'white'});
-	let sym = M.superdi.pen_square;
-	dr.innerHTML=String.fromCharCode('0x' + sym.fa); //'A'
-	dr.onclick=ev=>evNoBubble(ev);
-
-
-	return ui;
+function getEventValue(o){
+  if (isEmpty(o.time)) return o.text;
+  return o.time + ' ' + stringBefore(o.text, '\n');
 }
-function restUiTypeEvent(){
+function uiTypeEvent(dParent, o, styles = {}) {
 
-	let ui = mDom(dParent,{ w: '100%',paright:2, box:true });
-	//109x88
-	
-	let [dl, dr] = mColFlex(ui, [12,1]);
-
-	let inp = addEditable(dl, { w:'100%' }, { id: o.id, onEnter: onEventEdited, onclick: onclickExistingEvent, value: o.text });
-  // let bx = mDom(dr, { w: '100%', h: '100%', cursor: 'pointer',halign:'center',valign:'center' }, { className: 'hop1' });
-  // bx.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev) };
-
-	// let d1=mDom(ui,{w:22,h:20,bg:'silver',border:'dimgray',rounding:'50%',align:'center'});
-	//let sz=27;
-	//let sym = showImage('pen_square', dr, {fg:'white',bg:'green',padding:0, w:sz,h:sz,className:'hop1'});
-
-	mStyle(dr,{matop:2,border:'red',family:'pictoFa',box:true, w:20,h:21,bg:'blue',fg:'white'});
-	let sym = M.superdi('pen_square');
-	dr.innerHTML=String.fromCharCode('0x' + sym.fa); //'A'
-
-	//<div style="font-size: 21.6px; line-height: 21.6px; font-family: pictoFa; background: rgba(0, 0, 0, 0); color: rgb(255, 255, 255); display: inline; cursor: pointer;"></div>
-	
-
-	return ui;
+  console.log('styles.hmin',styles.hmin)
+  //console.log(dParent,o)
+  Items[o.id] = o;
+  let id=o.id;
+  //console.log('styles',styles)
+  let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
+  //mStyle(ui,{cursor:'normal','pointer-events':'none',overflow:'hidden',display:'flex',gap:2,padding:2,'align-items':'center'}); //,'justify-items':'center'})
+  mStyle(ui,{overflow:'hidden',display:'flex',gap:2,padding:2,'align-items':'center'}); //,'justify-items':'center'})
+  
+  let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
+  
+  let fz = 15;
+  let stInput={overflow:'hidden',hline:fz*4/5,fz:fz,h:h,border:'solid 1px silver',box:true,margin:0,padding:0 };
+  let inp=mDom(ui,stInput,{html:o.text,tag:'input',className:'no_outline',onclick:ev => {evNoBubble(ev)}}); //;selectText(ev.target);}});
+  inp.value = getEventValue(o);
+  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
+  
+  fz=14;
+  let stButton={overflow:'hidden',hline:fz*4/5,fz:fz,box:true,fg:'silver',bg:'white',family: 'pictoFa',display:'flex'};
+  let b=mDom(ui,stButton,{html:String.fromCharCode('0x' + M.superdi.pen_square.fa)});
+  ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
+  mStyle(inp,{w:wtotal-wbutton});
+  // let b2=mDom(ui,stButton,{html:String.fromCharCode('0x' + M.superdi.window_close.fa)});
+  // b2.onclick = ev => { evNoBubble(ev); deleteEvent(o.id); }
+  // mStyle(inp,{w:wtotal-2*wbutton});
+  return {ui:ui,inp:inp,id:id};
 }

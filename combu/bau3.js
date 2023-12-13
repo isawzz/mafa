@@ -10,7 +10,7 @@ function uiTypeCalendar(dParent) {
 	innerStyles.hmin=`calc( 100% - 23px )`;//hcell-32
 	let fz=12;
 	let h=measureHeight(dParent,{fz:fz});
-	console.log('h',h);
+	//console.log('h',h);
 	let eventStyles={fz:fz,hmin:h,w:'100%'};
 
 	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
