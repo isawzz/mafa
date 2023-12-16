@@ -1096,6 +1096,46 @@ function restShowColors(){
 //#endregion
 
 //#region combu
+function windowToggler(){
+	b=mDom(d,stButton,{html:String.fromCharCode('0x' + M.superdi.comment_sms.fa6),className:'hop1'});
+	mStyle(b,{fg:'yellow'});
+  b.onclick = ev => { evNoBubble(ev); onclickLeft(ev); }
+
+	// style['text-shadow']='0 0 0 red';
+	if (nundef(DA.toggle)) DA.toggle={left:{w:20},right:{w:20}};
+	function getDiv(id){return mBy('d'+capitalize(id));}
+	function on(id,b){
+		let d=getDiv(id);
+
+		if (isdef(b)) mStyle(b,{fg:'lime'})
+		return DA.toggle[id].w>20;
+	}
+	function off(id,b){
+		let d=mBy(id);
+		if (isdef(b)) mStyle(b,{fg:'coral'})
+		return DA.toggle[id]=false;
+	}
+	function toggle(id,b){
+		return DA.toggle[id]===true?off(id,b):on(id,b);
+	}
+	function isOn(id){return DA.toggle[id];}
+	return {isOn,on,off,toggle};
+}
+function onclickLeft(ev){
+	let ison=UI.toggler.toggle('dSidebar',ev.target);
+	let d = mDom('dSidebar');mClear(d);
+	if (ison){
+		mStyle('dPage',{'grid-template-columns':`${UI.toggler.isOn('sidebar')?70:20}px auto 200px`});
+
+		UI.chatInput = mInput(d, {}, '<your message>', 'input');
+		UI.chatWindow = mDom(d, { hmax: 300 }, { id: 'dChatWindow' });
+		mOnEnter(UI.chatInput, ev => Socket.emit('message', ev.target.value));
+	}else{
+		mStyle('dPage',{'grid-template-columns':`${UI.toggler.isOn('sidebar')?70:20}px auto 20px`});
+
+	}
+
+}
 async function prelims() {
 	if (nundef(M.superdi)) {
 

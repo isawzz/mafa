@@ -1,12 +1,4 @@
 :root{
-	/* --pal0: #000000ff;
-	--pal1: #00000080;
-	--pal2: #33333380;
-	--pal3: #66666680;
-	--pal4: #99999980;
-	--pal5: #cccccc80;
-	--pal6: #ffffff80;
-	--pal7: #ffffffff; */
 	--bgBody: blue;
 	--bgButton: null;
 	--bgButtonActive: red;
@@ -27,42 +19,13 @@ body{
 	margin:0;
 	background: var(--bgBody) !important;
 }
-.p10{
-	box-sizing: border-box;
-	padding: 5px 10px;
-}
-/* #region bs4 nav */
-.title{
-	color: var(--fgTitle);
-}
-.subtitle{
-	color: var(--fgSubtitle);
-}
-.darker{
-	background: var(--bgDarker);
-}
-.lighter{
-	background: var(--bgLighter);
-}
-.nav{
-	background: var(--bgNav) !important;
-}
-.nav-link { 
-	display: block; 
-	padding: .5rem 1rem;
-	text-decoration: none;
-	background: var(--bgButton) !important;
-	color: var(--fgButton) !important;
-	border-radius: 50%;
-}
 .active { 
 	color: var(--fgButtonActive) !important;
 	background: var(--bgButtonActive) !important;
 } 
-.nav-link:hover { 
-	color: var(--fgButtonHover) !important;
+.darker{
+	background: var(--bgDarker);
 }
-
 .disabled {
   opacity: .6;
 	pointer-events: none;
@@ -92,6 +55,13 @@ body{
 .framedPicture {
   outline: solid 8px yellow;
   outline-offset: -6px;
+}
+.h100{
+	/* border:1px red solid; */
+	/* padding: 10px; */
+	/* min-width: 20px; */
+	min-height:100vh;
+	/* box-sizing: border-box; */
 }
 .hop1 {
   opacity: 0.7;
@@ -127,6 +97,23 @@ body{
 .input:focus{
 	outline: none;
 }
+.lighter{
+	background: var(--bgLighter);
+}
+.nav{
+	background: var(--bgNav) !important;
+}
+.nav-link { 
+	display: block; 
+	padding: .5rem 1rem;
+	text-decoration: none;
+	background: var(--bgButton) !important;
+	color: var(--fgButton) !important;
+	border-radius: 50%;
+}
+.nav-link:hover { 
+	color: var(--fgButtonHover) !important;
+}
 .no_outline{
   outline: none;
   box-shadow: none;
@@ -139,6 +126,22 @@ body{
 }
 .no_outline:focus{
   outline: none;
+}
+.over0{
+	overflow: hidden;
+}
+.p10{
+	box-sizing: border-box;
+	padding: 5px 10px;
+}
+.p10hide{
+	box-sizing: border-box;
+	padding: 5px 10px;
+}
+.p10hide:empty {
+	padding: 0;
+	margin: 0;
+	border: none;
 }
 .section {
 	border-radius: 10px;
@@ -153,6 +156,18 @@ body{
 	padding: 0;
 	margin: 0;
 	border: none;
+}
+.subtitle{
+	color: var(--fgSubtitle);
+}
+.title{
+	color: var(--fgTitle);
+}
+.translow{
+	/* transition: all 0.5s ease-in-out; */
+	/*transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /*bounce back effect */
+	transition: all 0.5s cubic-bezier(0.5, 0, 0.5, 1);
+
 }
 .w80{
 	width: 80px;

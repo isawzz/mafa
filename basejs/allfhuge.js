@@ -14993,14 +14993,16 @@ function colorMellow(c, zero1 = .3, factorLum = .5) {
   return res;
 }
 function colorMix(c1, c2, percent = 50) {
-  return pSBC(percent / 100, colorHex(c1), colorHex(c2), true);
+  return pSBC(percent / 100, colorHex(c2), colorHex(c1), true);
+}
+function colorMix1(c1,c2,percent){
   let o1 = colorRGB(c1, true); let rgbA = [o1.r, o1.g, o1.b];
   let o2 = colorRGB(c2, true); let rgbB = [o2.r, o2.g, o2.b];
   amountToMix = percent / 100;
   var r = colorChannelMixer(rgbA[0], rgbB[0], amountToMix);
   var g = colorChannelMixer(rgbA[1], rgbB[1], amountToMix);
   var b = colorChannelMixer(rgbA[2], rgbB[2], amountToMix);
-  return "rgb(" + r + "," + g + "," + b + ")";
+  return colorHex("rgb(" + r + "," + g + "," + b + ")");
 }
 function colorMixer(rgbA, rgbB, amountToMix) {
   var r = colorChannelMixer(rgbA[0], rgbB[0], amountToMix);
@@ -71640,6 +71642,17 @@ function utter(text, r = .5, p = .8, v = .5, voiceDesc, callback = null) {
 function valf() {
   for (const arg of arguments) if (isdef(arg)) return arg;
   return null;
+}
+function valfKey(o,arr){
+	for(const w of arr){if (isdef(o[w])) return w;}
+	return null;
+}
+function valfHtml(key){
+	let o=M.superdi[key];
+	let di={text:'emoNoto',fa6:'fa6',fa:'pictoFa',ga:'pictoGame'};
+	let k1=valfKey(o,Object.keys(di));
+	if (k1) return {html:String.fromCharCode('0x' + o[k1]),family:di[k1]}
+	return null;
 }
 function valfi() {
   for (const arg of arguments) {

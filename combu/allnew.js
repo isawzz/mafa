@@ -90,6 +90,11 @@ function cropTo(tool, wnew, hnew) {
   let ynew = y + (hnew - h) / 2;
   redrawImage(img, dParent, xnew, ynew, wnew, wnew, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
+async function deleteEvent(id) {
+  let result = await simpleUpload('postEvent', { id });
+  delete Items[id];
+  mBy(id).remove();
+}
 function filterImages(ev) {
   let s = ev.target.value.toLowerCase().trim();
   if (isEmpty(s)) return;
@@ -121,6 +126,9 @@ function generateArrayColors(startColor, endColor, numSteps) {
   return colors;
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
+function getButtonId(key){return 'b'+capitalize(key);}
+function getDivId(key){return 'd'+capitalize(key);}
+function getIdKey(elem){let id = mBy(elem).id; return id.substring(1).toLowerCase(); }
 function getMouseCoordinates(event) {
   const image = event.target;
   const offsetX = event.clientX +
@@ -131,11 +139,16 @@ function getMouseCoordinates(event) {
     124;
   return { x: offsetX, y: offsetY };
 }
+function getEventValue(o){
+  if (isEmpty(o.time)) return o.text;
+  return o.time + ' ' + stringBefore(o.text, '\n');
+}
 function getServerurl() {
   let type = detectSessionType();
   let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
   return server;
 }
+function getUname(){return U?U.name:'guest'}
 function initCollection(name) {
   let list = [];
   if (name == 'all' || isEmpty(name)) {
@@ -689,6 +702,16 @@ async function onclickColors() {
     i++; if (i % 15 == 0) mDom(d, { w: '100%', h: 0 });
   }
 }
+function onclickDay(d, styles) {
+  let tsDay = d.id; //evToId(ev);
+  let tsCreated = Date.now();
+  let id = generateEventId(tsDay, tsCreated);
+  let uname = U ? U.name : 'guest';
+  let o = { id: id, created: tsCreated, day: tsDay, time: '', text: '', user: uname, shared: false, subscribers: [] };
+  Items[id] = o;
+  let x = uiTypeEvent(d, o, styles); //addEditable(d, { w: '100%' }, { id: id, onEnter: ()=>onEventEdited(id,mBy(id).value), onclick: onclickExistingEvent });
+  x.inp.focus();
+}
 function onclickExistingEvent(ev) { evNoBubble(ev);showEventOpen(evToId(ev)); }
 async function onclickItem(ev) {
   let elem = ev.target;
@@ -723,7 +746,7 @@ async function onclickView() {
   showTitle('Collection:');
   dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
   let d1 = mDiv('dMain'); mFlex(d1);
-  showSidebar(d1);
+  //showSidebar(d1);
   M.rows = 5; M.cols = 7;
   M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
   M.cells = [];
@@ -757,6 +780,23 @@ async function ondropPreviewImage(url, key) {
     mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
     mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
   }
+}
+async function onEventEdited(id, text, time) {
+  console.log(id,text,time)
+  let e = Items[id];
+  //console.log('e',e,'text',text);
+  if (nundef(time)) {
+    [time, text] = extractTime(text);
+  }
+  e.time = time;
+  e.text = text;
+  //console.log('time',time,'text',text);
+  let result = await simpleUpload('postEvent', e);
+  console.log('result',result)
+  Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
+  //console.log('mBy(id)',mBy(id))
+  mBy(id).firstChild.value = getEventValue(e); // e.time + ' ' + stringBefore(e.text, '\n');
+  closePopup();
 }
 function openPopup(name = 'dPopup') {
   closePopup();
@@ -832,6 +872,7 @@ function resizeTo(tool, wnew, hnew) {
   }
   redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
+function rWord(n = 6) { return rLetters(n).join(''); }
 function setColors(c) {
   let hsl = colorHSL(c, true);
   let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
@@ -867,12 +908,41 @@ function showCalendarApp() {
   let d1 = mDiv('dMain', { w: 800, h: 800 }); //, bg: 'white' })
   let x = DA.calendar = uiTypeCalendar(d1);
 }
-function showChatMessage() {
-  for (const arg of [...arguments]) {
-    console.log('arg', arg);
-    let d = mBy('dChatWindow');
-    if (d) mDom(d, {}, { html: arg })
-  }
+function showChatMessage(o) {
+  let d = mBy('dChatWindow'); if (nundef(d)) return;
+  if (o.user==getUname()) mDom(d, {align:'right'}, { html: `${o.msg}` })
+  else mDom(d, {align:'left'}, { html: `${o.user}: ${o.msg}` })
+  // for (const arg of [...arguments]) {
+  //   console.log('arg', arg);
+  //   let d = mBy('dChatWindow');
+  //   if (d) mDom(d, {}, { html: arg })
+  // }
+}
+function showEventOpen(id) {
+  let e = Items[id];
+  if (!e) return;
+  let date = new Date(Number(e.day));
+  let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
+  //console.log('day', `${day}.${month}.${year}`);
+  let time = e.time;
+  let popup = openPopup();
+  let d = mBy(id);
+  //console.log('d', d)
+  let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
+  let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
+  //console.log('left,top', left, top)
+  mStyle(popup, { left: left, top: top, w: wp, h: hp });
+  let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
+  let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
+  let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
+  mOnEnter(inpt);
+  let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
+  let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
+  let buttons = mDom(line, { display: 'inline-block' });
+  let bsend = mButton('Save', () => onEventEdited(id, ta.value, inpt.value), buttons);
+  mButton('Cancel', () => closePopup(), buttons, { hmargin: 10 })
+  mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
+  mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
 }
 function showImageBatch(inc = 0) {
   let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
@@ -978,19 +1048,36 @@ async function switchToUser(uname) {
   U = await getUser(uname);
   localStorage.setItem('username', uname);
 }
-async function test40_socketio() {
-  await prelims();
-  console.log('Serverdata', Serverdata)
-  let server = getServerurl();
-  Socket = io(server);
-  Socket.on('message', showChatMessage);
-  Socket.on('disconnect', x => console.log('>>disconnect:', x));
-  Socket.on('update', x => console.log('>>update:', x));
-  let dChat = mDom('dChat');
-  UI.chatInput = mInput(dChat, {}, '<your message>', 'input');
-  UI.chatWindow = mDom(dChat, { hmax: 300 }, { id: 'dChatWindow' });
-  mOnEnter(UI.chatInput, ev => Socket.emit('message', ev.target.value));
+function toggleAdd(key,sym){
+  fz=30;
+	let info = valfHtml(sym);
+	let b;
+	if (info){
+		let stButton={overflow:'hidden',fz:fz,box:true,fg:rColor(),family: info.family,cursor:'pointer'};
+		b=mDom('dToolbar',stButton,{id:getButtonId(key),html:info.html,className:'hop1'});
+	}else{
+		b=mButton(sym,'dToolbar')
+	}
+  b.onclick = toggleClick; 
+	let d=mBy(getDivId(key));
+	if (nundef(DA.toggle)) DA.toggle={};
+	let t = DA.toggle[key]={key:key,button:b,div:d,state:0,states:[...arguments].slice(2)};
+	toggleShow(t);
 }
+function toggleClick(ev){ 
+	let t=toggleGet(ev);
+	let i = t.state = (t.state+1)%t.states.length;
+	toggleShow(t);
+}
+function toggleShow(t,state){
+	if (nundef(state)) state = t.states[t.state];
+	let d=iDiv(t); mStyle(d,state);
+	let percent = 100*t.state/(t.states.length-1);
+	//console.log('percent open',percent)
+	mStyle(t.button,{bg:colorMix('lime','red',percent)});
+}
+function toggleGet(ev){let key = getIdKey(evToId(ev));let toggle=DA.toggle[key]; return toggle;}
+
 function tryJSONParse(astext) {
   try {
     const data = JSON.parse(astext);
@@ -999,6 +1086,147 @@ function tryJSONParse(astext) {
     console.log('text', astext)
     return { message: 'ERROR', text: astext }
   }
+}
+function uiTypeCalendar(dParent) {
+	const [wcell,hcell, gap] = [120,100, 10];
+	let outerStyles = {
+		rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
+		paleft: gap / 2, w: wcell, hmin: hcell,
+		bg: 'black', fg: 'white', cursor: 'pointer'
+	}
+	let innerStyles = { box: true, padding: 0, align: 'center', bg: 'beige', rounding: 4};//, w: '95%', hmin: `calc( 100% - 24px )` }; //cellWidth - 28 };
+	innerStyles.w=wcell-11.75;
+	innerStyles.hmin=`calc( 100% - 23px )`;//hcell-32
+	let fz=12;
+	let h=measureHeight(dParent,{fz:fz});
+	//console.log('h',h);
+	let eventStyles={fz:fz,hmin:h,w:'100%'};
+
+	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	var dParent = toElem(dParent);
+	var container = mDiv(dParent, {}, 'dCalendar');
+	var currentDate = new Date();
+	var today = new Date();
+	let dTitle = mDiv(container, { w: 760, padding: gap, fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' }, { className: 'title' });
+	var dWeekdays = mGrid(1, 7, container, { gap: gap });
+	var dDays = [];
+	var info = {};
+	for (const w of weekdays) { mDiv(dWeekdays, { w: wcell }, null, w, 'subtitle') };
+	var dGrid = mGrid(6, 7, container, { gap: gap });
+	var dDate = mDiv(dTitle, { display: 'flex', gap: gap }, 'dDate', '', 'title');
+	var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
+	mButton('Prev',
+		() => {
+			let m = currentDate.getMonth();
+			let y = currentDate.getFullYear();
+			if (m == 0) setDate(12, y - 1); else setDate(m, y);
+		},
+		dButtons, { w: 70, margin: 0 }, 'input');
+	mButton('Next',
+		() => {
+			let m = currentDate.getMonth();
+			let y = currentDate.getFullYear();
+			if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
+		}, dButtons, { w: 70, margin: 0 }, 'input');
+	var dMonth, dYear;
+	function getDayDiv(dt) {
+		if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) return null;
+		let i = dt.getDate() + info.dayOffset;
+		if (i < 1 || i > info.numDays) return null;
+		let ui = dDays[i];
+		if (ui.style.opacity === 0) return null;
+		return ui.children[0]; // { div: udDays[i], events: [] };
+	}
+	function setDate(m, y) {
+		currentDate.setMonth(m - 1);
+		currentDate.setFullYear(y);
+		mClear(dDate);
+		dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
+		dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
+		mClear(dGrid);
+		dDays.length = 0;
+		let c = colorHex(mGetStyle('dNav', 'bg')); //info.seedColor; //info.wheel[m-1];
+		let dayColors = mimali(c, 43).map(x => colorHex(x))
+		for (const i of range(42)) {
+			let cell = mDiv(dGrid, outerStyles);
+			mStyle(cell, { bg: dayColors[i], fg: 'contrast' })
+			dDays[i] = cell;
+		}
+		populate(currentDate);
+		refreshEvents();
+		return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
+	}
+	function populate() {
+		let dt = currentDate;
+		const day = info.day = dt.getDate();
+		const month = info.month = dt.getMonth();
+		const year = info.year = dt.getFullYear();
+		const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
+		const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
+		const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'numeric',
+			day: 'numeric',
+		});
+		const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+		info.dayOffset = paddingDays - 1;
+		for (const i of range(42)) {
+			if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
+		}
+		for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
+			const daySquare = dDays[i - 1];
+			let date = new Date(year, month, i - paddingDays);
+			daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
+			let d = mDom(daySquare, innerStyles, { id: date.getTime() });
+			daySquare.onclick = ev => { evNoBubble(ev); onclickDay(d,eventStyles); }
+		}
+	}
+	async function refreshEvents() {
+		let events = await getEvents();
+		//console.log('events', events)
+		for (const k in events) {
+			let o = events[k];
+			let dt = new Date(Number(o.day));
+			let dDay = getDayDiv(dt); 
+			if (!dDay) continue; //this event is not visible in current view
+			uiTypeEvent(dDay,o,eventStyles);
+		}
+		mDummyFocus();
+	}
+	setDate(currentDate.getMonth() + 1, currentDate.getFullYear()); //valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
+	//populate();
+	return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
+}
+function uiTypeEvent(dParent, o, styles = {}) {
+
+  console.log('styles.hmin',styles.hmin)
+  //console.log(dParent,o)
+  Items[o.id] = o;
+  let id=o.id;
+  //console.log('styles',styles)
+  let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
+  //mStyle(ui,{cursor:'normal','pointer-events':'none',overflow:'hidden',display:'flex',gap:2,padding:2,'align-items':'center'}); //,'justify-items':'center'})
+  mStyle(ui,{overflow:'hidden',display:'flex',gap:2,padding:2,'align-items':'center'}); //,'justify-items':'center'})
+  
+  let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
+  
+  let fz = 15;
+  let stInput={overflow:'hidden',hline:fz*4/5,fz:fz,h:h,border:'solid 1px silver',box:true,margin:0,padding:0 };
+  let inp=mDom(ui,stInput,{html:o.text,tag:'input',className:'no_outline',onclick:ev => {evNoBubble(ev)}}); //;selectText(ev.target);}});
+  inp.value = getEventValue(o);
+  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
+  
+  fz=14;
+  let stButton={overflow:'hidden',hline:fz*4/5,fz:fz,box:true,fg:'silver',bg:'white',family: 'pictoFa',display:'flex'};
+  let b=mDom(ui,stButton,{html:String.fromCharCode('0x' + M.superdi.pen_square.fa)});
+  ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
+  mStyle(inp,{w:wtotal-wbutton});
+  // let b2=mDom(ui,stButton,{html:String.fromCharCode('0x' + M.superdi.window_close.fa)});
+  // b2.onclick = ev => { evNoBubble(ev); deleteEvent(o.id); }
+  // mStyle(inp,{w:wtotal-2*wbutton});
+  return {ui:ui,inp:inp,id:id};
 }
 async function updateCollections() {
   let imgs = await mGetYaml('../y/m2.yaml');
