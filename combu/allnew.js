@@ -738,7 +738,7 @@ async function onclickUpload() {
 }
 async function onclickUser() {
   let uname = await mPrompt();
-  console.log('onclickUser:', uname);
+  //console.log('onclickUser:', uname);
   if (isdef(uname) && (!U || U.name != uname)) { await switchToUser(uname); }
   await showUser(uname);
 }
@@ -1200,8 +1200,7 @@ function uiTypeCalendar(dParent) {
 	return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
 }
 function uiTypeEvent(dParent, o, styles = {}) {
-
-  console.log('styles.hmin',styles.hmin)
+  //console.log('styles.hmin',styles.hmin)
   //console.log(dParent,o)
   Items[o.id] = o;
   let id=o.id;

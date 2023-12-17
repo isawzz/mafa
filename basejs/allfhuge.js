@@ -42871,7 +42871,7 @@ function minimaxCopy(node, depth, alpha, beta, maxDepth, maxim) {
 function minimizeObjects() { let ids = getDefaultObjectIds(); ids.map(x => UIS[x].minimize()); }
 function mInner(html, dParent, styles) { dParent.innerHTML = html; if (isdef(styles)) mStyle(dParent, styles); }
 function mInput(dParent, styles, id, placeholder, classtr = 'input', tabindex = null, value = '', selectOnClick = false, type = "text") {
-  let html = selectOnClick ? `<input type="${type}" onclick="this.select();" id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">` : `<input type="${type}" id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">`;
+  let html = `<input type="${type}" autocomplete="off" ${selectOnClick ? 'onclick="this.select();"':''} id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">`;
   let d = mAppend(dParent, mCreateFrom(html));
   if (isdef(styles)) mStyle(d, styles);
   return d;
