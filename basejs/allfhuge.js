@@ -21048,6 +21048,16 @@ function evStop(ev) {
   ev.stopImmediatePropagation();
   ev.cancelBubble = true;
 }
+function evToAttr(ev, attr) {
+  let elem = ev.target;
+  let val=null;
+  while(nundef(val) && isdef(elem)){
+    val = elem.getAttribute(attr);
+    if (isdef(val)) return {val,elem};
+    elem = elem.parentNode;
+  }
+  return null;
+}
 function evToClass(ev, className) {
   let elem = findParentWithClass(className);
   return elem;
@@ -21088,8 +21098,12 @@ function evToProp(ev, prop) {
   return isdef(x) ? x.getAttribute(prop) : null;
 }
 function evToTargetAttribute(ev, attr) {
-  let val = ev.target.getAttribute(attr);
-  if (nundef(val)) { val = ev.target.parentNode.getAttribute(attr); }
+  let elem = ev.target;
+  let val=null;
+  while(nundef(val) && isdef(elem)){
+    val = elem.getAttribute(attr);
+    elem = elem.parentNode;
+  }
   return val;
 }
 function ex00_sidebar(sidebar) {

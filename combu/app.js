@@ -212,7 +212,6 @@ app.post('/postUser', (req, res) => {
 	res.json(data);
 });
 app.post('/postConfig', (req, res) => {
-	//body is supposed to be serverdata.
 	console.log('<== post config')
 	let newConfig = req.body;
 	let oldConfig = Session.config;
@@ -220,6 +219,20 @@ app.post('/postConfig', (req, res) => {
 	let y = yaml.dump(Session.config);
 	fs.writeFileSync(configFile, y, 'utf8');
 	res.json(Session.config);
+});
+app.post('/postImage', (req, res) => {
+	console.log('<== post image')
+	const data = req.body;
+	//const data = body.data; //some json object or base64 image data (or undef)
+	let fname = path.join(uploadDirectory,'img', data.path);
+	console.log('fname',fname)
+	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+	fs.writeFileSync(fname, base64Data, 'base64'); 
+	fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
+	res.json({
+		message: 'File uploaded successfully',
+		fileName: fname,
+	});
 });
 
 //#region socket io
@@ -271,4 +284,15 @@ async function init() {
 	//app.listen(PORT, () => console.log(`Server on port ${PORT}`));
 }
 init();
+
+
+
+
+
+
+
+
+
+
+
 

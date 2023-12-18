@@ -41,6 +41,19 @@ body{
 	/* margin: 20px auto; */
 	display: inline-block;
 }
+.ellipsis {
+	/* width: 200px;  */
+	white-space: nowrap; /* Prevent text from wrapping to the next line */
+	overflow: hidden; /* Hide the overflow text */
+	text-overflow: ellipsis; /* Display ellipsis for overflow text */
+	cursor:default;
+	/* border: 1px solid #ccc; */
+}
+.ellipsis:hover{
+	text-overflow: clip; /* Display ellipsis for overflow text */
+	width: auto;
+	overflow:visible;
+}
 .fa {
   font-family: var(--fa-style-family, "fafont");
   font-weight: var(--fa-style, 900); 
@@ -113,6 +126,10 @@ body{
 }
 .nav-link:hover { 
 	color: var(--fgButtonHover) !important;
+}
+.no_events{
+		pointer-events: none;
+
 }
 .no_outline{
   outline: none;

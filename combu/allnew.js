@@ -11,47 +11,6 @@ function addEditable(dParent, styles = {}, opts = {}) {
   });
   return x;
 }
-function addToolX(cropper, d) {
-  let img = cropper.img;
-  function createCropTool() {
-    let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
-    let handler = cropper.setSize;
-    mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
-    let [w, h] = [img.offsetWidth, img.offsetHeight];
-    if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, handler, 'rSizes', false)
-    if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, handler, 'rSizes', false)
-    if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, handler, 'rSizes', false)
-    if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, handler, 'rSizes', false)
-    if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, handler, 'rSizes', false)
-    if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, handler, 'rSizes', false)
-    else {
-      let [w1, h1] = [w, w / .7];
-      let [w2, h2] = [h * .7, h];
-      if (w1 < w2) mRadio(`${w1} x ${h1} (card)`, [w1, h1], 'rSizes', rg, {}, handler, 'rSizes', false)
-      else mRadio(`${w2} x ${h2} (card)`, [w2, h2], 'rSizes', rg, {}, handler, 'rSizes', false)
-    }
-    if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, handler, 'rSizes', false)
-    else {
-      let [w1, h1] = [w, w * .7];
-      let [w2, h2] = [h / .7, h];
-      if (w1 < w2) mRadio(`${w1} x ${h1} (landscape)`, [w1, h1], 'rSizes', rg, {}, handler, 'rSizes', false)
-      else mRadio(`${w2} x ${h2} (landscape)`, [w2, h2], 'rSizes', rg, {}, handler, 'rSizes', false)
-    }
-    mDom(rg, { fz: 14, margin: 12 }, { html: '(or use mouse to select)' });
-    return rg;
-  }
-  function createSquareTool() {
-    let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-    let handler = x => squareTo(cropper, x);
-    mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
-    for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
-      mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
-    }
-    return rg;
-  }
-  let rgCrop = createCropTool();
-  let rgResize = createSquareTool();
-}
 function AhexToRgb(hex) {
   hex = hex.replace(/^#/, '');
   const bigint = parseInt(hex, 16);
@@ -95,6 +54,23 @@ async function deleteEvent(id) {
   delete Items[id];
   mBy(id).remove();
 }
+function extractTime(input) {
+  // Regular expression to match a number between 0 and 23 followed by 'h' or ':' and the word up to the next whitespace
+  const regex = /\b([0-9]|1[0-9]|2[0-3])[h:]\S*\b/g;
+
+  // Match the pattern in the input string
+  const match = input.match(regex);
+
+  if (match) {
+    // Remove the matched word from the input string
+    const result = input.replace(regex, '').trim();
+    // Return the removed word (including the full word up to the next whitespace) and the modified string
+    return [match[0], result];
+  } else {
+    // Return an empty string and the original input if no match is found
+    return ['', input];
+  }
+}
 function filterImages(ev) {
   let s = ev.target.value.toLowerCase().trim();
   if (isEmpty(s)) return;
@@ -126,9 +102,9 @@ function generateArrayColors(startColor, endColor, numSteps) {
   return colors;
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
-function getButtonId(key){return 'b'+capitalize(key);}
-function getDivId(key){return 'd'+capitalize(key);}
-function getIdKey(elem){let id = mBy(elem).id; return id.substring(1).toLowerCase(); }
+function getButtonId(key) { return 'b' + capitalize(key); }
+function getDivId(key) { return 'd' + capitalize(key); }
+function getIdKey(elem) { let id = mBy(elem).id; return id.substring(1).toLowerCase(); }
 function getMouseCoordinates(event) {
   const image = event.target;
   const offsetX = event.clientX +
@@ -139,7 +115,7 @@ function getMouseCoordinates(event) {
     124;
   return { x: offsetX, y: offsetY };
 }
-function getEventValue(o){
+function getEventValue(o) {
   if (isEmpty(o.time)) return o.text;
   return o.time + ' ' + stringBefore(o.text, '\n');
 }
@@ -148,7 +124,7 @@ function getServerurl() {
   let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
   return server;
 }
-function getUname(){return U?U.name:'guest'}
+function getUname() { return U ? U.name : 'guest' }
 function initCollection(name) {
   let list = [];
   if (name == 'all' || isEmpty(name)) {
@@ -156,7 +132,7 @@ function initCollection(name) {
   } else if (isdef(M.byCollection[name])) {
     list = M.byCollection[name];
   } else return;
-  localStorage.setItem('collection',name)
+  localStorage.setItem('collection', name)
   mClear(dMenu);
   let dParent = dMenu;
   let colls = M.collections;
@@ -526,13 +502,13 @@ function mDummyFocus() {
 }
 function measureElement(el) {
   let info = window.getComputedStyle(el, null);
-	return {w:info.width,h:info.height};
+  return { w: info.width, h: info.height };
 }
-function measureHeight(dParent,styles={}){
-	let d=mDom(dParent,styles,{html:'Hql'});
-	let s=measureElement(d);
-	d.remove();
-	return firstNumber(s.h);
+function measureHeight(dParent, styles = {}) {
+  let d = mDom(dParent, styles, { html: 'Hql' });
+  let s = measureElement(d);
+  d.remove();
+  return firstNumber(s.h);
 }
 async function mGetRoute(route, o = {}) {
   let server = getServerurl();
@@ -670,13 +646,14 @@ async function onclickAdd() {
   let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { ev.preventDefault(); return false; } });
   mDom(dForm, {}, { html: 'Collection:' }); let dl = mDatalist(dForm, colls);
   mDom(dForm, { h: 10 })
-  mDom(dForm, {}, { html: 'Name:' }); let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>" });
+  mDom(dForm, {}, { html: 'Name:' }); 
+  let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>", autocomplete:"off" });
   mDom(dForm, { h: 10 })
   UI.dTool = mDom(dForm)
   UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
   UI.dForm = dForm;
   UI.dButtons = mDom(dTitle, { display: 'inline-block' });
-  UI.imgCat = dl.inpElem;
+  UI.imgColl = dl.inpElem;
   UI.imgName = inpName;
 }
 async function onclickColor(ev) {
@@ -712,16 +689,23 @@ function onclickDay(d, styles) {
   let x = uiTypeEvent(d, o, styles); //addEditable(d, { w: '100%' }, { id: id, onEnter: ()=>onEventEdited(id,mBy(id).value), onclick: onclickExistingEvent });
   x.inp.focus();
 }
-function onclickExistingEvent(ev) { evNoBubble(ev);showEventOpen(evToId(ev)); }
+function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickItem(ev) {
-  let elem = ev.target;
-  let key = ev.target.getAttribute('key');
+  evNoBubble(ev);
+	let o=evToAttr(ev,'key');
+	if (!o) return;
+	let [key,elem]=[o.val,o.elem];
+  //console.log('click',ev.target,o.val,o.elem);
+  //let elem = ev.target;
+  //let key = ev.target.getAttribute('key');
+	if (nundef(key)) {console.log('no key'); return; }
   if (nundef(Items[key])) {
+		//console.log('found Item',key)
     let o = M.superdi[key];
     Items[key] = { selected: false };
     addKeys(o, Items[key]);
   }
-  Items[key].div = elem.parentNode;
+  Items[key].div = elem; //elem.parentNode;
   if (nundef(M.selectedImages)) M.selectedImages = [];
   toggleSelectionOfPicture(Items[key], M.selectedImages);
 }
@@ -732,7 +716,7 @@ async function onclickUpload() {
   let img = UI.img;
   let name = valnwhite(UI.imgName.value, rUID('img'));
   let unique = isdef(M.superdi[name]) ? rUID('img') : name;
-  let cat = valnwhite(UI.imgCat.value, 'other');
+  let cat = valnwhite(UI.imgColl.value, 'other');
   let data = await uploadImg(img, unique, cat, name);
   await updateCollections();
 }
@@ -752,16 +736,16 @@ async function onclickView() {
   M.cells = [];
   let bg = mGetStyle('dNav', 'bg');
   for (let i = 0; i < M.rows * M.cols; i++) {
-    let d = mDom(M.grid, { bg: bg, box: true, padding: 8, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    let d = mDom(M.grid, { bg: bg, fg:'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
     mCenterCenterFlex(d);
     M.cells.push(d);
   }
-  initCollection(valf(localStorage.getItem('collection'),'animals'));
+  initCollection(valf(localStorage.getItem('collection'), 'animals'));
 }
 async function ondropPreviewImage(url, key) {
   if (isdef(key)) {
     let o = M.superdi[key];
-    UI.imgCat.value = o.cats[0];
+    UI.imgColl.value = o.cats[0];
     UI.imgName.value = o.friendly;
   }
   let dParent = UI.dDrop;
@@ -782,7 +766,7 @@ async function ondropPreviewImage(url, key) {
   }
 }
 async function onEventEdited(id, text, time) {
-  console.log(id,text,time)
+  console.log(id, text, time)
   let e = Items[id];
   //console.log('e',e,'text',text);
   if (nundef(time)) {
@@ -792,7 +776,7 @@ async function onEventEdited(id, text, time) {
   e.text = text;
   //console.log('time',time,'text',text);
   let result = await simpleUpload('postEvent', e);
-  console.log('result',result)
+  //console.log('result',result)
   Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
   //console.log('mBy(id)',mBy(id))
   mBy(id).firstChild.value = getEventValue(e); // e.time + ' ' + stringBefore(e.text, '\n');
@@ -824,28 +808,6 @@ async function encryptData(data) {
     dataBuffer
   );
   return new Uint8Array(encryptedBuffer).toString();
-}
-async function prelims() {
-  if (nundef(M.superdi)) {
-    Serverdata = await mGetRoute('session');
-    await loadCollections();
-    loadPlayerColors();
-    let nav = UI.nav = mNavbar('dNav', {}, 'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
-    nav.disable('play');
-    dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
-    dUser = mDom(nav.ui, {}, { id: 'dUser' });
-    U = getUser(localStorage.getItem('username'));
-    await showUser(U ? U.name : null);
-    let server = getServerurl();
-    Socket = io(server);
-    Socket.on('message', showChatMessage);
-    Socket.on('disconnect', x => console.log('>>disconnect:', x));
-    Socket.on('update', x => console.log('>>update:', x));
-    let dChat = mDom('dChat');
-    UI.chatInput = mInput(dChat, {}, '<your message>', 'input');
-    UI.chatWindow = mDom(dChat, { hmax: 300 }, { id: 'dChatWindow' });
-    mOnEnter(UI.chatInput, ev => Socket.emit('message', ev.target.value));
-  }
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
   let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
@@ -910,13 +872,28 @@ function showCalendarApp() {
 }
 function showChatMessage(o) {
   let d = mBy('dChatWindow'); if (nundef(d)) return;
-  if (o.user==getUname()) mDom(d, {align:'right'}, { html: `${o.msg}` })
-  else mDom(d, {align:'left'}, { html: `${o.user}: ${o.msg}` })
+  if (o.user == getUname()) mDom(d, { align: 'right' }, { html: `${o.msg}` })
+  else mDom(d, { align: 'left' }, { html: `${o.user}: ${o.msg}` })
   // for (const arg of [...arguments]) {
   //   console.log('arg', arg);
   //   let d = mBy('dChatWindow');
   //   if (d) mDom(d, {}, { html: arg })
   // }
+}
+function showChatWindow(){
+	//mStyle('dMain',{bg:'#ffffff40'})
+	let dChat = mDom('dRight',{padding:10,fg:'white',box:true},{id:'dChat',html:'Chatbox'});
+	//UI.chatInput = mInput(dChat, {}, '<your message>', 'input');
+	UI.chatInput = mInput(dChat, { w:260 }, 'inpChat', '<your message>', 'input', 1);
+	UI.chatWindow = mDom(dChat, {  }, { id: 'dChatWindow' });
+	mOnEnter(UI.chatInput, ev => {
+		let inp = ev.target;
+		Socket.emit('message', {user:U.name,msg:ev.target.value});
+		ev.target.value = '';
+
+	});
+
+
 }
 function showEventOpen(id) {
   let e = Items[id];
@@ -944,6 +921,32 @@ function showEventOpen(id) {
   mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
   mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
 }
+function showImage(key, dParent, styles = {}) {
+  let o = M.superdi[key];
+  if (nundef(o)) { console.log('showImage:key not found', key); return; }
+  let [w, h] = [valf(styles.w, styles.sz), valf(styles.h, styles.sz)];
+  if (nundef(w)) {
+    mClear(dParent);
+    [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+  } else {
+    addKeys({ w: w, h: h }, styles)
+    dParent = mDom(dParent, styles);
+  }
+  let [sz, fz, fg] = [.9 * w, .8 * h, valf(styles.fg, rColor())];
+  let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
+  mCenterCenterFlex(d1)
+  let el = null;
+  if (isdef(o.img)) {
+    el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+  }
+  else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+  else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+  else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+  assertion(el, 'PROBLEM mit' + key);
+  mStyle(el, { cursor: 'pointer' })
+  return d1;
+}
 function showImageBatch(inc = 0) {
   let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
   if (isEmpty(keys)) showFleetingMessage('nothing has been added to this collection yet!', 'dMessage', { margin: 10 }, 5000)
@@ -961,28 +964,25 @@ function showImageBatch(inc = 0) {
 }
 function showImageInBatch(key, dParent, styles = {}) {
   let o = M.superdi[key];
-  try {
-    addKeys({ bg: rColor() }, styles);
-    mClear(dParent);
-    [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
-    let [sz, fz] = [.9 * w, .8 * h];
-    let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
-    mCenterCenterFlex(d1)
-    let el = null;
-    if (isdef(o.img)) {
-      el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
-    }
-    else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
-    else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-    else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-    else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-    assertion(el, 'PROBLEM mit' + key);
-    mStyle(el, { cursor: 'pointer' })
-    el.onclick = onclickItem;
-    el.setAttribute('key', key)
-  } catch {
-    console.log('ERROR showImage:', key, o)
+  addKeys({ bg: rColor() }, styles);
+  mClear(dParent);
+  [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+  let [sz, fz] = [.9 * w, .8 * h];
+  let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding:11, box:true });//overflow: 'hidden', 
+  mCenterCenterFlex(d1)
+  let el = null;
+  if (isdef(o.img)) {
+    el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
   }
+  else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+  else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+  else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+  assertion(el, 'PROBLEM mit' + key);
+  let label=mDom(d1,{fz:11},{html:key,className:'ellipsis'}); //,w:'100%'
+  mStyle(d1, { cursor: 'pointer' });
+  d1.onclick = onclickItem;
+  d1.setAttribute('key', key)
 }
 function showSidebar(dParent) {
   dSidebar = mDom(dParent, { 'align-self': 'stretch', hmin: '100vh' }, { id: 'dSidebar' });
@@ -1048,35 +1048,35 @@ async function switchToUser(uname) {
   U = await getUser(uname);
   localStorage.setItem('username', uname);
 }
-function toggleAdd(key,sym){
-  fz=30;
-	let info = valfHtml(sym);
-	let b;
-	if (info){
-		let stButton={overflow:'hidden',fz:fz,box:true,fg:rColor(),family: info.family,cursor:'pointer'};
-		b=mDom('dToolbar',stButton,{id:getButtonId(key),html:info.html,className:'hop1'});
-	}else{
-		b=mButton(sym,'dToolbar')
-	}
-  b.onclick = toggleClick; 
-	let d=mBy(getDivId(key));
-	if (nundef(DA.toggle)) DA.toggle={};
-	let t = DA.toggle[key]={key:key,button:b,div:d,state:0,states:[...arguments].slice(2)};
-	toggleShow(t);
+function toggleAdd(key, sym) {
+  fz = 30;
+  let info = valfHtml(sym);
+  let b;
+  if (info) {
+    let stButton = { overflow: 'hidden', fz: fz, box: true, fg: rColor(), family: info.family, cursor: 'pointer' };
+    b = mDom('dToolbar', stButton, { id: getButtonId(key), html: info.html, className: 'hop1' });
+  } else {
+    b = mButton(sym, 'dToolbar')
+  }
+  b.onclick = toggleClick;
+  let d = mBy(getDivId(key));
+  if (nundef(DA.toggle)) DA.toggle = {};
+  let t = DA.toggle[key] = { key: key, button: b, div: d, state: 0, states: [...arguments].slice(2) };
+  toggleShow(t);
 }
-function toggleClick(ev){ 
-	let t=toggleGet(ev);
-	let i = t.state = (t.state+1)%t.states.length;
-	toggleShow(t);
+function toggleClick(ev) {
+  let t = toggleGet(ev);
+  let i = t.state = (t.state + 1) % t.states.length;
+  toggleShow(t);
 }
-function toggleShow(t,state){
-	if (nundef(state)) state = t.states[t.state];
-	let d=iDiv(t); mStyle(d,state);
-	let percent = 100*t.state/(t.states.length-1);
-	//console.log('percent open',percent)
-	mStyle(t.button,{bg:colorMix('lime','red',percent)});
+function toggleShow(t, state) {
+  if (nundef(state)) state = t.states[t.state];
+  let d = iDiv(t); mStyle(d, state);
+  let percent = 100 * t.state / (t.states.length - 1);
+  //console.log('percent open',percent)
+  mStyle(t.button, { bg: colorMix('lime', 'red', percent) });
 }
-function toggleGet(ev){let key = getIdKey(evToId(ev));let toggle=DA.toggle[key]; return toggle;}
+function toggleGet(ev) { let key = getIdKey(evToId(ev)); let toggle = DA.toggle[key]; return toggle; }
 
 function tryJSONParse(astext) {
   try {
@@ -1088,144 +1088,144 @@ function tryJSONParse(astext) {
   }
 }
 function uiTypeCalendar(dParent) {
-	const [wcell,hcell, gap] = [120,100, 10];
-	let outerStyles = {
-		rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
-		paleft: gap / 2, w: wcell, hmin: hcell,
-		bg: 'black', fg: 'white', cursor: 'pointer'
-	}
-	let innerStyles = { box: true, padding: 0, align: 'center', bg: 'beige', rounding: 4};//, w: '95%', hmin: `calc( 100% - 24px )` }; //cellWidth - 28 };
-	innerStyles.w=wcell-11.75;
-	innerStyles.hmin=`calc( 100% - 23px )`;//hcell-32
-	let fz=12;
-	let h=measureHeight(dParent,{fz:fz});
-	//console.log('h',h);
-	let eventStyles={fz:fz,hmin:h,w:'100%'};
+  const [wcell, hcell, gap] = [120, 100, 10];
+  let outerStyles = {
+    rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
+    paleft: gap / 2, w: wcell, hmin: hcell,
+    bg: 'black', fg: 'white', cursor: 'pointer'
+  }
+  let innerStyles = { box: true, padding: 0, align: 'center', bg: 'beige', rounding: 4 };//, w: '95%', hmin: `calc( 100% - 24px )` }; //cellWidth - 28 };
+  innerStyles.w = wcell - 11.75;
+  innerStyles.hmin = `calc( 100% - 23px )`;//hcell-32
+  let fz = 12;
+  let h = measureHeight(dParent, { fz: fz });
+  //console.log('h',h);
+  let eventStyles = { fz: fz, hmin: h, w: '100%' };
 
-	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-	var dParent = toElem(dParent);
-	var container = mDiv(dParent, {}, 'dCalendar');
-	var currentDate = new Date();
-	var today = new Date();
-	let dTitle = mDiv(container, { w: 760, padding: gap, fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' }, { className: 'title' });
-	var dWeekdays = mGrid(1, 7, container, { gap: gap });
-	var dDays = [];
-	var info = {};
-	for (const w of weekdays) { mDiv(dWeekdays, { w: wcell }, null, w, 'subtitle') };
-	var dGrid = mGrid(6, 7, container, { gap: gap });
-	var dDate = mDiv(dTitle, { display: 'flex', gap: gap }, 'dDate', '', 'title');
-	var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
-	mButton('Prev',
-		() => {
-			let m = currentDate.getMonth();
-			let y = currentDate.getFullYear();
-			if (m == 0) setDate(12, y - 1); else setDate(m, y);
-		},
-		dButtons, { w: 70, margin: 0 }, 'input');
-	mButton('Next',
-		() => {
-			let m = currentDate.getMonth();
-			let y = currentDate.getFullYear();
-			if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
-		}, dButtons, { w: 70, margin: 0 }, 'input');
-	var dMonth, dYear;
-	function getDayDiv(dt) {
-		if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) return null;
-		let i = dt.getDate() + info.dayOffset;
-		if (i < 1 || i > info.numDays) return null;
-		let ui = dDays[i];
-		if (ui.style.opacity === 0) return null;
-		return ui.children[0]; // { div: udDays[i], events: [] };
-	}
-	function setDate(m, y) {
-		currentDate.setMonth(m - 1);
-		currentDate.setFullYear(y);
-		mClear(dDate);
-		dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
-		dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
-		mClear(dGrid);
-		dDays.length = 0;
-		let c = colorHex(mGetStyle('dNav', 'bg')); //info.seedColor; //info.wheel[m-1];
-		let dayColors = mimali(c, 43).map(x => colorHex(x))
-		for (const i of range(42)) {
-			let cell = mDiv(dGrid, outerStyles);
-			mStyle(cell, { bg: dayColors[i], fg: 'contrast' })
-			dDays[i] = cell;
-		}
-		populate(currentDate);
-		refreshEvents();
-		return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
-	}
-	function populate() {
-		let dt = currentDate;
-		const day = info.day = dt.getDate();
-		const month = info.month = dt.getMonth();
-		const year = info.year = dt.getFullYear();
-		const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
-		const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
-		const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
-			weekday: 'long',
-			year: 'numeric',
-			month: 'numeric',
-			day: 'numeric',
-		});
-		const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
-		info.dayOffset = paddingDays - 1;
-		for (const i of range(42)) {
-			if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
-		}
-		for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
-			const daySquare = dDays[i - 1];
-			let date = new Date(year, month, i - paddingDays);
-			daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
-			let d = mDom(daySquare, innerStyles, { id: date.getTime() });
-			daySquare.onclick = ev => { evNoBubble(ev); onclickDay(d,eventStyles); }
-		}
-	}
-	async function refreshEvents() {
-		let events = await getEvents();
-		//console.log('events', events)
-		for (const k in events) {
-			let o = events[k];
-			let dt = new Date(Number(o.day));
-			let dDay = getDayDiv(dt); 
-			if (!dDay) continue; //this event is not visible in current view
-			uiTypeEvent(dDay,o,eventStyles);
-		}
-		mDummyFocus();
-	}
-	setDate(currentDate.getMonth() + 1, currentDate.getFullYear()); //valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
-	//populate();
-	return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var dParent = toElem(dParent);
+  var container = mDiv(dParent, {}, 'dCalendar');
+  var currentDate = new Date();
+  var today = new Date();
+  let dTitle = mDiv(container, { w: 760, padding: gap, fz: 26, family: 'sans-serif', display: 'flex', justify: 'space-between' }, { className: 'title' });
+  var dWeekdays = mGrid(1, 7, container, { gap: gap });
+  var dDays = [];
+  var info = {};
+  for (const w of weekdays) { mDiv(dWeekdays, { w: wcell }, null, w, 'subtitle') };
+  var dGrid = mGrid(6, 7, container, { gap: gap });
+  var dDate = mDiv(dTitle, { display: 'flex', gap: gap }, 'dDate', '', 'title');
+  var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
+  mButton('Prev',
+    () => {
+      let m = currentDate.getMonth();
+      let y = currentDate.getFullYear();
+      if (m == 0) setDate(12, y - 1); else setDate(m, y);
+    },
+    dButtons, { w: 70, margin: 0 }, 'input');
+  mButton('Next',
+    () => {
+      let m = currentDate.getMonth();
+      let y = currentDate.getFullYear();
+      if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
+    }, dButtons, { w: 70, margin: 0 }, 'input');
+  var dMonth, dYear;
+  function getDayDiv(dt) {
+    if (dt.getMonth() != currentDate.getMonth() || dt.getFullYear() != currentDate.getFullYear()) return null;
+    let i = dt.getDate() + info.dayOffset;
+    if (i < 1 || i > info.numDays) return null;
+    let ui = dDays[i];
+    if (ui.style.opacity === 0) return null;
+    return ui.children[0]; // { div: udDays[i], events: [] };
+  }
+  function setDate(m, y) {
+    currentDate.setMonth(m - 1);
+    currentDate.setFullYear(y);
+    mClear(dDate);
+    dMonth = mDiv(dDate, {}, 'dMonth', `${currentDate.toLocaleDateString('en-us', { month: 'long' })}`);
+    dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
+    mClear(dGrid);
+    dDays.length = 0;
+    let c = colorHex(mGetStyle('dNav', 'bg')); //info.seedColor; //info.wheel[m-1];
+    let dayColors = mimali(c, 43).map(x => colorHex(x))
+    for (const i of range(42)) {
+      let cell = mDiv(dGrid, outerStyles);
+      mStyle(cell, { bg: dayColors[i], fg: 'contrast' })
+      dDays[i] = cell;
+    }
+    populate(currentDate);
+    refreshEvents();
+    return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
+  }
+  function populate() {
+    let dt = currentDate;
+    const day = info.day = dt.getDate();
+    const month = info.month = dt.getMonth();
+    const year = info.year = dt.getFullYear();
+    const firstDayOfMonth = info.firstDay = new Date(year, month, 1);
+    const daysInMonth = info.numDays = new Date(year, month + 1, 0).getDate();
+    const dateString = info.dayString = firstDayOfMonth.toLocaleDateString('en-us', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+    const paddingDays = weekdays.indexOf(dateString.split(', ')[0]);
+    info.dayOffset = paddingDays - 1;
+    for (const i of range(42)) {
+      if (i < paddingDays || i >= paddingDays + daysInMonth) { mStyle(dDays[i], { opacity: 0 }); }
+    }
+    for (let i = paddingDays + 1; i <= paddingDays + daysInMonth; i++) {
+      const daySquare = dDays[i - 1];
+      let date = new Date(year, month, i - paddingDays);
+      daySquare.innerText = i - paddingDays + (isSameDate(date, today) ? ' TODAY' : '');
+      let d = mDom(daySquare, innerStyles, { id: date.getTime() });
+      daySquare.onclick = ev => { evNoBubble(ev); onclickDay(d, eventStyles); }
+    }
+  }
+  async function refreshEvents() {
+    let events = await getEvents();
+    //console.log('events', events)
+    for (const k in events) {
+      let o = events[k];
+      let dt = new Date(Number(o.day));
+      let dDay = getDayDiv(dt);
+      if (!dDay) continue; //this event is not visible in current view
+      uiTypeEvent(dDay, o, eventStyles);
+    }
+    mDummyFocus();
+  }
+  setDate(currentDate.getMonth() + 1, currentDate.getFullYear()); //valf(month1, currentDate.getMonth() + 1), valf(year1, currentDate.getFullYear()));
+  //populate();
+  return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
 }
 function uiTypeEvent(dParent, o, styles = {}) {
   //console.log('styles.hmin',styles.hmin)
   //console.log(dParent,o)
   Items[o.id] = o;
-  let id=o.id;
+  let id = o.id;
   //console.log('styles',styles)
   let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
   //mStyle(ui,{cursor:'normal','pointer-events':'none',overflow:'hidden',display:'flex',gap:2,padding:2,'align-items':'center'}); //,'justify-items':'center'})
-  mStyle(ui,{overflow:'hidden',display:'flex',gap:2,padding:2,'align-items':'center'}); //,'justify-items':'center'})
-  
+  mStyle(ui, { overflow: 'hidden', display: 'flex', gap: 2, padding: 2, 'align-items': 'center' }); //,'justify-items':'center'})
+
   let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
-  
+
   let fz = 15;
-  let stInput={overflow:'hidden',hline:fz*4/5,fz:fz,h:h,border:'solid 1px silver',box:true,margin:0,padding:0 };
-  let inp=mDom(ui,stInput,{html:o.text,tag:'input',className:'no_outline',onclick:ev => {evNoBubble(ev)}}); //;selectText(ev.target);}});
+  let stInput = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, h: h, border: 'solid 1px silver', box: true, margin: 0, padding: 0 };
+  let inp = mDom(ui, stInput, { html: o.text, tag: 'input', className: 'no_outline', onclick: ev => { evNoBubble(ev) } }); //;selectText(ev.target);}});
   inp.value = getEventValue(o);
   inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
-  
-  fz=14;
-  let stButton={overflow:'hidden',hline:fz*4/5,fz:fz,box:true,fg:'silver',bg:'white',family: 'pictoFa',display:'flex'};
-  let b=mDom(ui,stButton,{html:String.fromCharCode('0x' + M.superdi.pen_square.fa)});
+
+  fz = 14;
+  let stButton = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, box: true, fg: 'silver', bg: 'white', family: 'pictoFa', display: 'flex' };
+  let b = mDom(ui, stButton, { html: String.fromCharCode('0x' + M.superdi.pen_square.fa) });
   ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
-  mStyle(inp,{w:wtotal-wbutton});
+  mStyle(inp, { w: wtotal - wbutton });
   // let b2=mDom(ui,stButton,{html:String.fromCharCode('0x' + M.superdi.window_close.fa)});
   // b2.onclick = ev => { evNoBubble(ev); deleteEvent(o.id); }
   // mStyle(inp,{w:wtotal-2*wbutton});
-  return {ui:ui,inp:inp,id:id};
+  return { ui: ui, inp: inp, id: id };
 }
 async function updateCollections() {
   let imgs = await mGetYaml('../y/m2.yaml');

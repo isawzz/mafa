@@ -635,7 +635,7 @@ async function test0_addToCollection() {
 	UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
 	UI.dForm = dForm;
 	UI.dButtons = mDom(dForm, { display: 'inline-block' });
-	UI.imgCat = dl.inpElem;
+	UI.imgColl = dl.inpElem;
 	UI.imgName = inpName;
 
 }
