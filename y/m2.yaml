@@ -28,8 +28,3 @@ waterball:
   coll: all
   name: waterball
   ext: png
-das:
-  cat: animals
-  coll: animals
-  name: das
-  ext: png

@@ -11,6 +11,47 @@ function addEditable(dParent, styles = {}, opts = {}) {
   });
   return x;
 }
+function addToolX(cropper, d) {
+  let img = cropper.img;
+  function createCropTool() {
+    let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
+    let handler = cropper.setSize;
+    mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
+    let [w, h] = [img.offsetWidth, img.offsetHeight];
+    if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, handler, 'rSizes', false)
+    if (w >= 200 && h >= 200) mRadio('200 x 200 (small)', [200, 200], 'rSizes', rg, {}, handler, 'rSizes', false)
+    if (w >= 300 && h >= 300) mRadio('300 x 300 (medium)', [300, 300], 'rSizes', rg, {}, handler, 'rSizes', false)
+    if (w >= 400 && h >= 400) mRadio('400 x 400 (large)', [400, 400], 'rSizes', rg, {}, handler, 'rSizes', false)
+    if (w >= 500 && h >= 500) mRadio('500 x 500 (xlarge)', [500, 500], 'rSizes', rg, {}, handler, 'rSizes', false)
+    if (w >= 140 && h >= 200) mRadio('140 x 200 (card)', [140, 200], 'rSizes', rg, {}, handler, 'rSizes', false)
+    else {
+      let [w1, h1] = [w, w / .7];
+      let [w2, h2] = [h * .7, h];
+      if (w1 < w2) mRadio(`${w1} x ${h1} (card)`, [w1, h1], 'rSizes', rg, {}, handler, 'rSizes', false)
+      else mRadio(`${w2} x ${h2} (card)`, [w2, h2], 'rSizes', rg, {}, handler, 'rSizes', false)
+    }
+    if (w >= 200 && h >= 140) mRadio('200 x 140 (landscape)', [200, 140], 'rSizes', rg, {}, handler, 'rSizes', false)
+    else {
+      let [w1, h1] = [w, w * .7];
+      let [w2, h2] = [h / .7, h];
+      if (w1 < w2) mRadio(`${w1} x ${h1} (landscape)`, [w1, h1], 'rSizes', rg, {}, handler, 'rSizes', false)
+      else mRadio(`${w2} x ${h2} (landscape)`, [w2, h2], 'rSizes', rg, {}, handler, 'rSizes', false)
+    }
+    mDom(rg, { fz: 14, margin: 12 }, { html: '(or use mouse to select)' });
+    return rg;
+  }
+  function createSquareTool() {
+    let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
+    let handler = x => squareTo(cropper, x);
+    mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
+    for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
+      mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
+    }
+    return rg;
+  }
+  let rgCrop = createCropTool();
+  let rgResize = createSquareTool();
+}
 function AhexToRgb(hex) {
   hex = hex.replace(/^#/, '');
   const bigint = parseInt(hex, 16);
@@ -125,6 +166,15 @@ function getServerurl() {
   return server;
 }
 function getUname() { return U ? U.name : 'guest' }
+function imgToDataUrl(img){
+	const canvas = document.createElement('canvas');
+	canvas.width = img.width;
+	canvas.height = img.height;
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	const dataUrl = canvas.toDataURL('image/png');
+	return dataUrl;
+}
 function initCollection(name) {
   let list = [];
   if (name == 'all' || isEmpty(name)) {
@@ -590,7 +640,7 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
     return ui;
   }
   var ui = extra1();
-  return { activate: activate, disable: disable, enable: enable, ui: ui };
+  return { activate: activate, disable: disable, enable: enable, ui: ui, div: dParent.firstChild };
 }
 function mOnEnter(elem, setter) {
   elem.addEventListener('keydown', ev => {
@@ -716,9 +766,13 @@ async function onclickUpload() {
   let img = UI.img;
   let name = valnwhite(UI.imgName.value, rUID('img'));
   let unique = isdef(M.superdi[name]) ? rUID('img') : name;
-  let cat = valnwhite(UI.imgColl.value, 'other');
-  let data = await uploadImg(img, unique, cat, name);
-  await updateCollections();
+	unique = normalizeString(unique);
+  let coll = valnwhite(UI.imgColl.value, 'other');
+	let dataUrl = imgToDataUrl(img);
+	let o = { image: dataUrl, name:name, unique:unique, coll:coll, path: unique+'.png', ext:'png' };
+	let resp = await mPostRoute('postImage',o);
+	console.log('resp',resp)
+	await updateCollections();
 }
 async function onclickUser() {
   let uname = await mPrompt();
@@ -1048,21 +1102,22 @@ async function switchToUser(uname) {
   U = await getUser(uname);
   localStorage.setItem('username', uname);
 }
-function toggleAdd(key, sym) {
-  fz = 30;
+function toggleAdd(key, sym, dParent, styles) {
+  addKeys({fz: 20,rounding:'50%', padding:5, fg: rColor()},styles);
   let info = valfHtml(sym);
   let b;
   if (info) {
-    let stButton = { overflow: 'hidden', fz: fz, box: true, fg: rColor(), family: info.family, cursor: 'pointer' };
-    b = mDom('dToolbar', stButton, { id: getButtonId(key), html: info.html, className: 'hop1' });
+    let stButton = copyKeys({ overflow: 'hidden', box: true, family: info.family, cursor: 'pointer' },styles);
+    b = mDom(dParent, stButton, { id: getButtonId(key), html: info.html, className: 'hop1' });
   } else {
     b = mButton(sym, 'dToolbar')
   }
   b.onclick = toggleClick;
   let d = mBy(getDivId(key));
   if (nundef(DA.toggle)) DA.toggle = {};
-  let t = DA.toggle[key] = { key: key, button: b, div: d, state: 0, states: [...arguments].slice(2) };
+  let t = DA.toggle[key] = { key: key, button: b, div: d, state: 0, states: [...arguments].slice(4) };
   toggleShow(t);
+  return t;
 }
 function toggleClick(ev) {
   let t = toggleGet(ev);

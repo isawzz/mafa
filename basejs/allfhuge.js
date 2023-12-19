@@ -30743,7 +30743,7 @@ function hasSameProps(o1, o2) {
   let diff = propDiff(o1, o2);
   return !diff.hasChanged;
 }
-function hasWhiteSpace(s) { return /\s/g.test(s); }
+function hasWhiteSpace(ch) { return /\s/.test(ch) }
 function helleFarbe(contrastTo, minDiff = 25, mod = 30, start = 0) {
   let wheel = getHueWheel(contrastTo, minDiff, mod, start);
   let hue = chooseRandom(wheel);
@@ -31920,7 +31920,7 @@ function iDetect(itemInfoKey) {
   }
   return [item, info, key];
 }
-function iDiv(i) { return isdef(i.live) ? i.live.div : isdef(i.div) ? i.div : i; }
+function iDiv(i) { return isdef(i.live) ? i.live.div : valf(i.div, i.ui,i);  } //isdef(i.div) ? i.div : i; }
 function iDivs(ilist) { return isEmpty(ilist) ? [] : isItem(ilist[0]) ? ilist.map(x => iDiv(x)) : ilist; }
 function iDoor(r1, dir, r2, styles = {}) {
   r1 = isString(r1) ? Items[r1] : r1;
@@ -33415,7 +33415,7 @@ function inno_get_hand_actions(otree, uname) {
   otree[uname].hand.map(x => actions.push(`${uname}.hand.${x}`));
   return actions;
 }
-function inno_get_id(c) { return normalize_string(c.name); }
+function inno_get_id(c) { return normalizeString(c.name); }
 function inno_get_object_keys(otree) {
   let keys = {}; for (const k in InnoById) keys[k] = true;
   for (const k of otree.plorder) keys[k] = true;
@@ -35423,8 +35423,7 @@ function isVisibleToPlayer(o, player) {
   if (vis && vis.includes(player)) return true;
 }
 function isWestRoom(house, room) { return isCloseTo(room.rect.l, house.rect.l, house.wallWidth); }
-function isWhiteSpace(ch) { return /\s/.test(ch) }
-function isWhiteSpace1(s) { let white = new RegExp(/^\s$/); return white.test(s.charAt(0)); }
+function isWhiteSpace(s) { let white = new RegExp(/^\s$/); return white.test(s.charAt(0)); }
 function isWhiteSpace2(ch) {
   const alphanum = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_';
   return !alphanum.includes(ch);
@@ -45525,12 +45524,6 @@ function normalize_bid(bid) {
   }
   return bid;
 }
-function normalize_string(s, sep = '_') {
-  s = s.toLowerCase().trim();
-  let res = '';
-  for (let i = 0; i < s.length; i++) { if (isAlphaNum(s[i])) res += s[i]; else if (s[i] == ' ') res += sep; }
-  return res;
-}
 function normalizeDict(t) {
   let tNew = {};
   let keys = Object.keys(t);
@@ -45572,6 +45565,12 @@ function normalizeSpecKeyProp(o, prop, num) {
     console.log('SOLLTE NIEEEEEEEEEEEEEEEEEEE VORKOMMEN!!!!!!');
     o[prop] = newlist;
   }
+}
+function normalizeString(s, sep = '_') {
+  s = s.toLowerCase().trim();
+  let res = '';
+  for (let i = 0; i < s.length; i++) { if (isAlphaNum(s[i])) res += s[i]; else res += sep; }
+  return res;
 }
 function normalizeToList(n, prop) {
   let val = n[prop];
@@ -71676,7 +71675,11 @@ function valfi() {
 }
 function valnwhite() {
   for (const arg of arguments) {
-    if (nundef(arg) || isEmpty(arg) || isWhiteSpace(arg)) continue;
+    console.log('arg',arg)
+    if (nundef(arg) || isEmpty(arg) || isWhiteSpace(arg)) {
+      console.log('white',arg);
+      continue;
+    }
     return arg;
   }
   return null;

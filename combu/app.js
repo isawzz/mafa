@@ -223,6 +223,7 @@ app.post('/postConfig', (req, res) => {
 app.post('/postImage', (req, res) => {
 	console.log('<== post image')
 	const data = req.body;
+	console.log('data',data.name,data.unique,data.path,data.coll)
 	//const data = body.data; //some json object or base64 image data (or undef)
 	let fname = path.join(uploadDirectory,'img', data.path);
 	console.log('fname',fname)
