@@ -17,14 +17,17 @@ async function test41_allNewApp(){
 	await onclickSchedule();
 }
 
-//function openChat(){mStyle(mBy('dPage')}
 async function prelims() {
 	if (nundef(M.superdi)) {
 		Serverdata = await mGetRoute('session'); //hier wird gesamte session geladen!!!
 		await loadCollections();
 		loadPlayerColors();
 
+		// let navlinks =['add', 'play', 'schedule', 'view', 'colors']
+		// let funcNames = titles.map(x => `onclick${capitalize(x)}`);
+		
 		let nav = UI.nav = mNavbar('dNav', {}, 'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
+
 		console.log('nav',nav)
 		nav.disable('play');
 

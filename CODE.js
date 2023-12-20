@@ -4040,6 +4040,109 @@ function ____mButtonX(dParent, handler, pos = 'tr', sz = 25, color = 'white') {
 //#endregion
 
 //#region Navbar
+function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
+  if (nundef(funcNames)) {
+    funcNames = titles.map(x => `onclick${capitalize(x)}`);
+  }
+  function activate(ev) {
+    closeApps();
+    let links = document.getElementsByClassName('nav-link');
+    let inner = isString(ev) ? ev : ev.target.innerHTML;
+    for (const el of links) {
+      if (el.innerHTML == inner) mClass(el, 'active');
+      else mClassRemove(el, 'active');
+    }
+  }
+  function disable() {
+    let links = Array.from(document.getElementsByClassName('nav-link'));
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClass(el, 'disabled');
+    }
+  }
+  function enable() {
+    let links = document.getElementsByClassName('nav-link');
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClassRemove(el, 'disabled');
+    }
+  }
+  function isThemeLight() { return !U || U.theme == 'light' ? true : false; }
+  function _extra1() {
+    let ui = mDom(dParent, { display: 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between' });
+    mStyle(ui, { 'flex-flow': 'row nowrap' });
+    mClass(dParent, 'nav');
+    let d1 = mDom(ui, { display: 'flex', 'align-items': 'center', gap: 12 });
+    let title = mDom(d1, { fz: 20 }, { html: pageTitle, classes: 'title' });
+    let d2 = mDom(d1);
+    for (let i = 0; i < titles.length; i++) {
+      let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+    }
+    return ui;
+  }
+  function extra1() {
+    let ui = mDom(dParent, { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+    mClass(dParent, 'nav');
+    let stflex={display:'flex','align-items': 'center'};
+    let [dl,dr]=[mDom(ui,stflex),mDom(ui,stflex)]; 
+    //let d1 = mDom(dl, { display: 'flex', 'align-items': 'center', gap: 12 });
+    let title = mDom(dl, { fz: 20 }, { html: pageTitle, classes: 'title' });
+    let d2 = mDom(dl);
+    for (let i = 0; i < titles.length; i++) {
+      let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+    }
+    return ui;
+  }
+  var ui = extra1();
+  return { activate: activate, disable: disable, enable: enable, isThemeLight: isThemeLight, ui: ui };
+}
+
+async function prelims() {
+	if (nundef(M.superdi)) {
+		Serverdata = await mGetRoute('session'); //hier wird gesamte session geladen!!!
+		await loadCollections();
+		loadPlayerColors();
+
+		// let navlinks =['add', 'play', 'schedule', 'view', 'colors']
+		// let funcNames = titles.map(x => `onclick${capitalize(x)}`);
+		
+		let nav = UI.nav = mNavbar('dNav', {}, 'COMBU', ['add', 'play', 'schedule', 'view', 'colors']);
+
+		console.log('nav',nav)
+		nav.disable('play');
+
+		dUser = mDom(nav.ui, {}, { id: 'dUser' });
+
+		let dt=iDiv(nav);
+		console.log('dt',dt)
+		let t1=toggleAdd('left','arrow_down_long',dt,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
+		mInsert(dt.firstChild,t1.button,0)
+		let t2=toggleAdd('right','arrow_down_long',dt, {hpadding:9,vpadding:5},{w:0},{w:300});
+		//mInsert(dt,t2.button,0)
+		// let t2=toggleAdd('right','arrow_right_long',{w:0},{w:300});
+
+		dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+
+
+		let uname = localStorage.getItem('username');
+		//console.log('uname',uname)
+		if (isdef(uname)) U = await getUser(uname);
+		await showUser(uname);
+
+		let server = getServerurl();
+		Socket = io(server);
+		Socket.on('message', showChatMessage);
+		Socket.on('disconnect', x => console.log('>>disconnect:', x));
+		Socket.on('update', x => console.log('>>update:', x));
+	
+		showChatWindow();
+
+		//let d=mBy('dToolbar');mFlex(d);mStyle('dToolbar',{gap:12});
+		// let t1=toggleAdd(UI.nav,'left','arrow_left_long',{w:0,wmin:0},{wmin:100});
+		// let t2=toggleAdd('right','arrow_right_long',{w:0},{w:300});
+	
+	}
+}
 function mNavbar_old(dParent, styles, pageTitle, titles, funcNames) {
   //da wollt ich noch icons und iconfuncs dazutun!
   if (nundef(funcNames)) {
