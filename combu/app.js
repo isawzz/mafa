@@ -1,7 +1,7 @@
 //#region require - constants
 const express = require("express");
 const bodyParser = require('body-parser');
-const fileUpload = require("express-fileupload");
+//const fileUpload = require("express-fileupload");
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require("path");
@@ -18,7 +18,7 @@ var Session = {}; // session ist nur fuer temp data: just mem
 const app = express();
 app.use(bodyParser.json({ limit: '200mb' })); //works!!!
 //app.use(express.json({ limit: '200mb' }));  //doesn't work
-app.use(fileUpload());
+//app.use(fileUpload());
 const cors = require('cors'); app.use(cors());
 app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 //#endregion
@@ -178,7 +178,7 @@ app.get('/config', (req, res) => {
 });
 app.get('/event', (req, res) => {
 	let params = req.query;
-	console.log('==> get event:\n params', params)
+	console.log('==> get event:\n params', Object.keys(params))
 	let data = lookup(Session, ['events', params.id]);
 	//console.log(data)
 	res.json(data);
@@ -269,7 +269,7 @@ async function init() {
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
 	Session.events = valf(yaml.load(yamlFile), {});
 
-	console.log('Session', Session)
+	//console.log('Session', Session)
 
 	// let userfiles = await getFiles('../y/users');
 	// Session.users = {};

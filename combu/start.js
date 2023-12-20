@@ -1,7 +1,10 @@
 onload = start;
 
-async function start() { test42_toolbar(); }
+async function start() { test43(); } //test42_toolbar(); }
 
+async function test43(){
+	await prelims();
+}
 async function test42_toolbar(){
 	await prelims();
 	await onclickAdd();
