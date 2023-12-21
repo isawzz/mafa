@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert Rotated and Translated Image to Data URL</title>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    img {
+      transform-origin: top left; /* Set the rotation origin to the top-left corner */
+      transform: rotate(90deg) translateY(-800px); /* Rotate and translate the image */
+      position: absolute; /* Position the image absolutely for demonstration */
+    }
+  </style>
+</head>
+<body>
+
+<img id="rotatedImage" src="../assets/games/nations/civs/korea.jpg" height="800" width="400" alt="Rotated and Translated Image">
+
+<script>
+  // Wait for the image to load before performing operations
+  window.onload = function() {
+    // Get the image and canvas elements
+    var img = document.getElementById('rotatedImage');
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+
+    // Set canvas size to match the rotated and translated image size
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    // Draw the rotated and translated image on the canvas
+    context.setTransform(1, 0, 0, 1, 0, 0); // Reset the transformation matrix
+    context.translate(0,800); // Apply the translation
+    context.rotate((90 * Math.PI) / 180); // Apply the rotation
+    context.drawImage(img, 0, 0); // Draw the image
+
+    // Get the data URL of the canvas
+    var dataURL = canvas.toDataURL('image/jpeg'); // Change 'image/jpeg' to the desired format
+
+    // Log the data URL to the console
+    console.log('Data URL:', dataURL);
+    document.body.appendChild(canvas)
+  };
+</script>
+
+</body>
+</html>
