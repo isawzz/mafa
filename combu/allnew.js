@@ -599,6 +599,38 @@ function mixColors(color1, color2, weight) {
   const hex = colorHex({ r: r, g: g, b: b }); // '#' + r.toString(16) + g.toString(16) + b.toString(16);
   return hex;
 }
+function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
+	let ui = mDom(dParent, { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+	mClass(dParent, 'nav');
+	let stflex={gap:10, display:'flex','align-items': 'center'};
+	let [dl,dr]=[mDom(ui,stflex),mDom(ui,stflex)]; 
+
+  function activate(ev) {
+    closeApps();
+    let links = document.getElementsByClassName('nav-link');
+    let inner = isString(ev) ? ev : ev.target.innerHTML;
+    for (const el of links) {
+      if (el.innerHTML == inner) mClass(el, 'active');
+      else mClassRemove(el, 'active');
+    }
+  }
+  function disable() {
+    let links = Array.from(document.getElementsByClassName('nav-link'));
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClass(el, 'disabled');
+    }
+  }
+  function enable() {
+    let links = document.getElementsByClassName('nav-link');
+    for (const w of arguments) {
+      let el = links.find(x => x.innerHTML == w);
+      if (isdef(el)) mClassRemove(el, 'disabled');
+    }
+  }
+  function isThemeLight() { return !U || U.theme == 'light' ? true : false; }
+  return { activate: activate, disable: disable, enable: enable, isThemeLight: isThemeLight, ui: ui, dleft:dl,dright:dr };
+}
 function mOnEnter(elem, setter) {
   elem.addEventListener('keydown', ev => {
     if (ev.key == 'Enter') {
@@ -663,6 +695,22 @@ async function onclickAdd() {
   UI.imgColl = dl.inpElem;
   UI.imgName = inpName;
 }
+async function onclickCollections() {
+  showTitle('Collection:');
+  dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+  let d1 = mDiv('dMain'); mFlex(d1);
+  //showSidebar(d1);
+  M.rows = 5; M.cols = 7;
+  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
+  M.cells = [];
+  let bg = mGetStyle('dNav', 'bg');
+  for (let i = 0; i < M.rows * M.cols; i++) {
+    let d = mDom(M.grid, { bg: bg, fg:'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    mCenterCenterFlex(d);
+    M.cells.push(d);
+  }
+  initCollection(valf(localStorage.getItem('collection'), 'animals'));
+}
 async function onclickColor(ev) {
   let c = ev.target.style.background;
   c = colorHex(c);
@@ -718,7 +766,8 @@ async function onclickItem(ev) {
 }
 async function onclickNext() { showImageBatch(1); }
 async function onclickPrev() { showImageBatch(-1); }
-async function onclickSchedule() { showCalendarApp(); }
+async function onclickPlan() { showCalendarApp(); }
+async function onclickTest() { console.log('nations!!!!');}
 async function onclickUpload() {
   let img = UI.img;
   let name = valnwhite(UI.imgName.value, rUID('img'));
@@ -995,10 +1044,24 @@ function showImageInBatch(key, dParent, styles = {}) {
   d1.onclick = onclickItem;
   d1.setAttribute('key', key)
 }
-function showSidebar(dParent) {
-  dSidebar = mDom(dParent, { 'align-self': 'stretch', hmin: '100vh' }, { id: 'dSidebar' });
-  dLeiste = mDiv(dParent);
-  mStyle(dLeiste, { wmin: 70, hmin: '100vh', display: 'flex', 'flex-flow': 'column wrap' });
+function showNavbar(){
+	let titles =['collections', 'play', 'plan', 'colors'];
+	let funcNames = titles.map(x => `onclick${capitalize(x)}`);
+	
+	let nav = UI.nav = mNavbar('dNav');
+
+	let [dl,dr]=[nav.dleft,nav.dright];
+	//let t1=toggleAdd('left','arrow_down_long',dl,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
+	let title = mDom(dl, { fz: 20 }, { html: 'COMBU', classes: 'title' });
+	let d2 = mDom(dl);
+	for (let i = 0; i < titles.length; i++) {
+		let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+	}
+
+	dUser = mDom(dr, {}, { id: 'dUser' });
+	let t2=toggleAdd('right','arrow_down_long',dr, {hpadding:9,vpadding:5},{w:0},{w:300});
+	nav.disable('play');
+
 }
 function showTitle(title, buttons = []) {
   mClear(dTitle);

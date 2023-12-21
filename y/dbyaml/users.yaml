@@ -1,6 +1,6 @@
 felix:
   name: felix
-  color: '#2662d9'
+  color: '#1f8fff'
 amanda:
   name: amanda
   color: '#2e8a56'
@@ -13,3 +13,6 @@ lauren:
 lili:
   name: lili
   color: '#89cffa'
+mitra:
+  name: mitra
+  color: '#ff00aa'

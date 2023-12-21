@@ -4040,6 +4040,33 @@ function ____mButtonX(dParent, handler, pos = 'tr', sz = 25, color = 'white') {
 //#endregion
 
 //#region Navbar
+function _extra1() {
+	let ui = mDom(dParent, { display: 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between' });
+	mStyle(ui, { 'flex-flow': 'row nowrap' });
+	mClass(dParent, 'nav');
+	let d1 = mDom(ui, { display: 'flex', 'align-items': 'center', gap: 12 });
+	let title = mDom(d1, { fz: 20 }, { html: pageTitle, classes: 'title' });
+	let d2 = mDom(d1);
+	for (let i = 0; i < titles.length; i++) {
+		let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+	}
+	return ui;
+}
+function extra1() {
+	let ui = mDom(dParent, { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+	mClass(dParent, 'nav');
+	let stflex={display:'flex','align-items': 'center'};
+	let [dl,dr]=[mDom(ui,stflex),mDom(ui,stflex)]; 
+	//let d1 = mDom(dl, { display: 'flex', 'align-items': 'center', gap: 12 });
+	let title = mDom(dl, { fz: 20 }, { html: pageTitle, classes: 'title' });
+	let d2 = mDom(dl);
+	for (let i = 0; i < titles.length; i++) {
+		let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+	}
+	return ui;
+}
+var ui = extra1();
+
 function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
   if (nundef(funcNames)) {
     funcNames = titles.map(x => `onclick${capitalize(x)}`);
@@ -4384,6 +4411,12 @@ function navbarDeactivate() {
 //#endregion
 
 //#region sidebar
+function showSidebar(dParent) {
+  dSidebar = mDom(dParent, { 'align-self': 'stretch', hmin: '100vh' }, { id: 'dSidebar' });
+  dLeiste = mDiv(dParent);
+  mStyle(dLeiste, { wmin: 70, hmin: '100vh', display: 'flex', 'flex-flow': 'column wrap' });
+}
+
 function show_sidebar(list, handler) {
 	dSidebar = mBy('dSidebar'); mClear(dSidebar); mStyle(dSidebar, { w: 200, h: window.innerHeight - 68, overy: 'auto' });
 	for (const k of list) {
