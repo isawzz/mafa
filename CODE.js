@@ -5420,6 +5420,41 @@ app.get('/load', (req, res) => {
 //#endregion
 
 //#region nodejs
+//#region image processing
+function getImageBoundariesX(ctx,fromx, maxx){
+	let x=fromx;
+	let from,to;
+	while(x<=maxx && isWhitePixel(ctx,x,20)) x++;
+	from=x; //first non-white pixel
+	while(x<=maxx && !isWhitePixel(ctx,x,20)) x++;
+	to=x; //first white pixel
+	return {from,to};
+}
+function getImageBoundariesY(ctx,fromy, maxy){
+	let y=fromy;
+	let from,to;
+	while(y<=maxy && isWhitePixel(ctx,20,y)) y++;
+	from=y;
+	while(y<=maxy && !isWhitePixel(ctx,20,y)) y++;
+	to=y; //last non
+	return {from,to};
+}
+async function __splitImage(inputImagePath, outputDirectory, stem) {
+	const image = await loadImage(inputImagePath);
+	const canvas = createCanvas(image.width, image.height);
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(image, 0, 0, image.width, image.height);
+
+	let x=0, maxx=image.width, iPartX=0;
+	console.log('maxx',maxx)
+	while(x<10){
+		let xsum=getPixelSum(ctx,x,20,1,1);
+		console.log('from',x,'sum='+xsum);	
+		x++;
+	}
+}
+
+//#endregion
 
 async function init() {
 	try {
