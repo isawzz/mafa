@@ -634,6 +634,84 @@ function muell(){
 
 //#endregion
 
+//#region civs
+async function imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
+	if (isdef(mBy('img1'))) mBy('img1').remove();
+	mClear(imgParent);
+	// let img = mDom(imgParent, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', id: 'img1' });
+	let img = mDom(imgParent, { h: width }, { tag: 'img', id: 'img1' });
+	await loadImageAsync(src,img,onloadCiv,Array.from(arguments));
+}
+async function onloadCiv(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient){
+	let d = viewParent;
+	mClear(d);
+	let canvas = mDom(d, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+	let ctx = canvas.getContext('2d');
+	ctx.translate(img.height, 0)
+	ctx.rotate(90 * Math.PI / 180);
+
+	// ctx.fillStyle='yellow';
+	//ctx.fillRect(1,1,w,h);
+	ctx.drawImage(img, 0, 0, img.width, img.height)
+
+	if (downloadAtClient) downloadCanvas(canvas);
+	if (sendToServer) {
+		let dataUrl = canvas.toDataURL('image/png');
+		//let dataUrl = imgToDataUrl(canvas);
+		let unique = `civ_${name}_${rName()}`;
+		let o = { image: dataUrl, name: name, unique: unique, coll: 'nations', path: unique + '.png', ext: 'png' };
+		console.log('dataUrl');
+		let resp = await mPostRoute('postImage', o);
+		console.log('resp', resp);
+	}
+}
+async function __loadImageAsync(url,img,callback=null) {
+  return new Promise((resolve, reject) => {
+    //const img = new Image();
+    img.onload = () => {
+			if (callback) callback();
+      resolve(img);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.src = url;
+  });
+}
+
+async function __imgSaveAsLandscape(src, width, viewParent, sendToServer, downloadAtClient) {
+	if (isdef(mBy('img1'))) mBy('img1').remove();
+	let img = mDom(document.body, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', src: src, id: 'img1' });
+	img.onload = async () => {
+		let d = viewParent;
+		mClear(d);
+		let canvas = mDom(d, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+		let ctx = canvas.getContext('2d');
+		ctx.translate(img.height, 0)
+		ctx.rotate(90 * Math.PI / 180);
+
+		// ctx.fillStyle='yellow';
+		//ctx.fillRect(1,1,w,h);
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+
+		if (downloadAtClient) downloadCanvas(canvas);
+		if (sendToServer) {
+			let dataUrl = canvas.toDataURL('image/png');
+			//let dataUrl = imgToDataUrl(canvas);
+			let unique = `civ_${name}_${rName()}`;
+			let o = { image: dataUrl, name: name, unique: unique, coll: 'nations', path: unique + '.png', ext: 'png' };
+			console.log('dataUrl');
+			let resp = await mPostRoute('postImage', o);
+			console.log('resp', resp);
+		}
+
+
+	};
+
+}
+
+//#endregion
+
 //#region colors
 function colorToNumber(color='yellow') {
 

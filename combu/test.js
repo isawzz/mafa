@@ -1,3 +1,66 @@
+function test45() {
+	function weiterStart() {
+
+		let [d, img] = [mBy('d1'), mBy('img1')];
+		let canvas = mDom('d1', { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width }); let ctx = canvas.getContext('2d');
+		ctx.fillStyle = 'yellow';
+	
+		let [w, h] = [200, 400]
+	
+		ctx.translate(img.height, 0)
+		ctx.rotate(90 * Math.PI / 180);
+	
+		//ctx.fillRect(1,1,w,h);
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+	
+		downloadCanvas(canvas);
+	}
+	let dbody = document.body; dbody.innerHTML = '';
+	let d = mDom(dbody, { bg: 'skyblue', hmin: '100vh' }, { id: 'd1' });
+
+	let src = '../assets/img/emo/abacus.png'; //"../assets/games/nations/civs/japan.jpg"; //
+
+	let img = mDom(dbody, { position: 'absolute', top: 500, h: 800 }, { tag: 'img', src: src, id: 'img1' });
+	img.src = "../assets/games/nations/civs/japan.jpg";
+	img.onload = weiterStart;
+}
+async function test44() {
+	let dbody = document.body;
+	dbody.innerHTML = '';
+	let d = mDom(dbody, { bg: 'skyblue' });
+	let src = "../assets/games/nations/civs/japan.jpg"; //'../assets/img/emo/abacus.png'; //
+
+	d.innerHTML = 'HALLO'; //return;
+	let img = mDom(d, { visibility: 'hidden', position: 'absolute' }, { tag: 'img', src: src });
+	let canvas = mDom(d, {}, { tag: 'canvas', id: 'canvas' })
+	let link = mDom(dbody, {}, { tag: 'a', id: 'download', html: 'download', onclick: () => downloadCanvas(canvas) })
+
+	img.onload = () => {
+		rotateImage(img, 90);
+	}
+	//let canvas = mDom(d,{},{tag:'canvas',width:'100%',height:'100%'});
+}
+async function test43() {
+	await prelims();
+
+	//onclickPlay
+	showTitle('Nations');
+	//let d = mDom('dMain', { hpadding: 20, display: 'flex', gap: '2px 4px', wrap: true });
+	for (const civ of ['korea']) {
+		await saveCiv(civ);
+	}
+}
+async function test42_toolbar() {
+	await prelims();
+	await onclickAdd();
+	UI.imgName.value = 'dadadha das ist gut';
+	UI.imgColl.value = 'all';
+}
+
+async function test41_allNewApp() {
+	await prelims();
+	await onclickSchedule();
+}
 async function test40_socketio() {
   await prelims();
   console.log('Serverdata', Serverdata)

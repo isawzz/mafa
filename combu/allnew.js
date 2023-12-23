@@ -235,6 +235,19 @@ async function loadCollections() {
   M.names.sort();
   await updateCollections();
 }
+async function loadImageAsync(src,img) {
+  return new Promise((resolve, reject) => {
+    //const img = new Image();
+    img.onload = async () => {
+			//if (isdef(callback)) await callback(img,...params);
+      resolve(img);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+    img.src = src;
+  });
+}
 function loadPlayerColors() {
   let [hstep, hmin, hmax] = [20, 0, 359];
   let [lstep, lmin, lmax] = [20, 50, 60];
@@ -677,6 +690,53 @@ async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isA
     };
   });
 }
+async function nationsCivsToLandscape() {
+  async function imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
+    if (isdef(mBy('img1'))) mBy('img1').remove();
+    let img = mDom(imgParent, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', id: 'img1' });
+    await loadImageAsync(src,img); //hier ist img loaded!!!
+    await onloadCiv(img,...arguments);
+  }
+  async function onloadCiv(img,src, width, name, viewParent, imgParent, sendToServer, downloadAtClient){
+    let d = viewParent;
+    console.log('d',d)
+    console.log('img',img)
+    mClear(d);
+    let canvas = mDom(d, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+    let ctx = canvas.getContext('2d');
+    ctx.translate(img.height, 0)
+    ctx.rotate(90 * Math.PI / 180);
+  
+    // ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+    ctx.drawImage(img, 0, 0, img.width, img.height)
+    if (downloadAtClient) downloadCanvas(canvas);
+    if (sendToServer) {
+      let dataUrl = canvas.toDataURL('image/png');
+      //let dataUrl = imgToDataUrl(canvas);
+      let unique = `civ_${name}`; //_${rName()}`;
+      let path = `assets/games/nations/civs/${unique}.png`;
+      let o = { image: dataUrl, name: name, unique: unique, coll: 'nations', path: path, ext: 'png' };
+      console.log('dataUrl');
+      let resp = await mPostRoute('postImage', o);
+      console.log('resp', resp);
+    }
+  }
+  let dbody = document.body; dbody.innerHTML = '';
+	let d = mDom(dbody, { bg: 'skyblue', hmin: '100vh' }, { id: 'd1' });
+	// let dhidden = mDom(dbody);
+
+	let civlist=['america','arabia','china','egypt','ethiopia','greece','india','japan','korea','mali','mongolia','persia','poland','portugal','rome','venice','vikings'];
+	for (const civ of ['vikings']) {
+		let src = `../assets/games/nations/civs_old/${civ}.jpg`;
+		let width = 800;
+		let name = civ;
+		let viewParent = d;
+		let imgParent = dbody;
+		let sendToServer = true;
+		let downloadAtClient = false;
+		await imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
+	}
+}
 async function onclickAdd() {
   showTitle('Add to Collections');
   let colls = M.collections;
@@ -1045,7 +1105,7 @@ function showImageInBatch(key, dParent, styles = {}) {
   d1.setAttribute('key', key)
 }
 function showNavbar(){
-	let titles =['collections', 'play', 'plan', 'colors'];
+	let titles =['collections', 'NATIONS', 'plan', 'colors'];
 	let funcNames = titles.map(x => `onclick${capitalize(x)}`);
 	
 	let nav = UI.nav = mNavbar('dNav');
@@ -1060,7 +1120,7 @@ function showNavbar(){
 
 	dUser = mDom(dr, {}, { id: 'dUser' });
 	let t2=toggleAdd('right','arrow_down_long',dr, {hpadding:9,vpadding:5},{w:0},{w:300});
-	nav.disable('play');
+	// nav.disable('play');
 
 }
 function showTitle(title, buttons = []) {
