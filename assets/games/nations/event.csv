@@ -1,73 +1,49 @@
-Events,,,,,,,,
-,,,,,,,,
 Stage,No. of Architect,Name of Event 1,Impact,Name of Event 2,Impact,Famine (Food),,
 I,0,Rigveda,All: +1 Book per War and Battle one bought this round,Exodus,Most Food: +4 Food,-2,,
-I,0,Pax Romana,Most Military Strength: +1 VP,Han dynasty,"Most Stability:
-May take 1 Meeple and +3 Food",-2,,
-I,0,Hellenism,"Most Military Strength: +2 Stones
-Others: -2 Food",Ashokas conversion,All: May undeploy Military Meeple: +2 Book for each,-1,,
+I,0,Pax Romana,Most Military Strength: +1 VP,Han dynasty,"Most Stability: May take 1 Meeple and +3 Food",-2,,
+I,0,Hellenism,"Most Military Strength: +2 Stones - Others: -2 Food",Ashokas conversion,All: May undeploy Military Meeple: +2 Book for each,-1,,
 I,1,Shang Oracle Bones,Least Stability: -3 Book,Ionian Colonisation,Most Food: +3 Gold,-1,,
 I,1,Assyrian deportations,Least Military Strength: -3 Gold,Jain Ascetism,Most Stability: Regain all VP lost to War this round,0,,
 I,1,Sea Peoples,Least Military Strength: Remove Architect or -1 VP,Bronze Age Colapse,All except most Military Strength and/or Stability: -1 VP,-2,,
 I,1,Yello Turban Rebellion,Least Military Strength: -3 Food,Spartacus revolt,Least Stability: Go last and -1 Gold,-2,,
 I,1,Qin Unification,All: if Military Strength > War: +1 VP,Olympic games,Most Stability: Go first,-1,,
 I,1,Taoism,First to Pass: +3 Book,Philosophy,Most Stability: +1 VP,-1,,
-I,2,Attila,Least Military Strength: -3 Gold,Zoroastrian revival,"Most Stability:
-+4 Stone or others: -3 Food",-3,,
+I,2,Attila,Least Military Strength: -3 Gold,Zoroastrian revival,"Most Stability: +4 Stone or others: -3 Food",-3,,
 I,2,Aryan Migration,Least Military Strength: -3 Book,Code of Hammurabi,All except least Stability: +3 Food,-1,,
-I,2,Bread and GAmes,"Most Stability:
-+3 Food",Christianity,All: May -4 Food: +6 Book,0,,
+I,2,Bread and GAmes,"Most Stability: +3 Food",Christianity,All: May -4 Food: +6 Book,0,,
 II,1,Imperial Examination,All with a Medieval Advisor: +1 VP,Justinian Code,Most Stability: +1 VP,0,,
 II,1,Martyrdom of Ali,Least Military Strength: -1 VP,Scholasticism,Most Stability: +3 Book,-1,,
 II,1,Black Death,All: Remove 1 Meeple,Hunt for Prester John,Most Military Strength: +3 Book,-3,,
 II,0,Sack of Baghdad,Least Military Strength: -5 Book,Hanseatic Salt Trade,Most Food: +4 Gold,-2,,
-II,1,Chanson de Roland,"Least Military Strength: -1 Book
-Most Military Strength: +3 Book",Zanj Revolt,"Least Stability:
-Go last and -2 Food",-3,,
-II,0,Feudal dues,All: No change in turn order this round,Hajj from Mali,"Least Stability:
-Lose all Gold except 2",-2,,
+II,1,Chanson de Roland,"Least Military Strength: -1 Book - Most Military Strength: +3 Book",Zanj Revolt,"Least Stability: Go last and -2 Food",-3,,
+II,0,Feudal dues,All: No change in turn order this round,Hajj from Mali,"Least Stability: Lose all Gold except 2",-2,,
 II,3,Benedictine Rule,Most Stability: +4 Food,Paper Money,All: May -3 Food: +5 Gold,-1,,
-II,2,Ecological Collapse,"All:
--2 Food or Go last",Caste system,Least Stability: -4 Book,-4,,
-II,0,Peace of God,"Most Military Strength:
-If War was bought by another Nation: +4 Book",Council of Clermont,All: +1 VP per Medieval Colony,-2,,
-II,1,Fourth Crusade,"Most Military Strength: May -3 Gold: +1 VP
-Least Military Strength: -4 Book",Song Resistance,Most Stability: Regain all Food / Stone / Gold / Book / VP lost to War this round,-2,,
+II,2,Ecological Collapse,"All: -2 Food or Go last",Caste system,Least Stability: -4 Book,-4,,
+II,0,Peace of God,"Most Military Strength: If War was bought by another Nation: +4 Book",Council of Clermont,All: +1 VP per Medieval Colony,-2,,
+II,1,Fourth Crusade,"Most Military Strength: May -3 Gold: +1 VP - Least Military Strength: -4 Book",Song Resistance,Most Stability: Regain all Food / Stone / Gold / Book / VP lost to War this round,-2,,
 II,2,Stupor Mundi,Most bought Golden Ages this round: +4 Book,Great Schism,Least Stability: -3 Gold,-1,,
 II,2,Raid on Lindisfarne,Least Military Strength: -4 Gold,Iconoclasm,"Least Stability: -2 Gold, -2 Food",-1,,
-III,2,Magellan's expedition,All: +5 Gold per Colony bought this round,Papal Indulgence,"Most Stability: May hire 1 Architect for free
-Others: -2 Gold",-3,,
-III,1,Janissaries,Most Military Strength: May take 2 Meeples and +4 Stones,Council of Trent,"Most Stability:
-+5 Stone",-2,,
+III,2,Magellan's expedition,All: +5 Gold per Colony bought this round,Papal Indulgence,"Most Stability: May hire 1 Architect for free - Others: -2 Gold",-3,,
+III,1,Janissaries,Most Military Strength: May take 2 Meeples and +4 Stones,Council of Trent,"Most Stability: +5 Stone",-2,,
 III,0,Spice Trade,Most Food: +4 Gold,Muntzer Revolt,Least Stability: Go last and -3 Stone,-2,,
 III,3,Pilgrims,Most Food: Take 1 Meeple,Dutch Revolt,Least Stability: Go last and -3 Gold,-3,,
 III,0,Tulip Mania,Last to Pass: -1 VP,Kangxi Era,Most Stability: Go first and +3 Gold,-1,,
 III,1,Little Ice Age,All: May -3 Food or -5 Book,City Upon a Hill,Most Stability: +6 Book,-3,,
 III,1,African Slave Trade,Least Military Strength: -1 VP,Glorious revolution,Most Stability: May go last: +6 Gold,-4,,
 III,2,Absolute Monarchy,All nations with Antiquity or Medieval Advisor: -4 Book,Salem Witch Trials,Least Stability: -3 Gold or remove Advisor,-5,,
-III,1,Columbian Exchange,"Most Military Strength: +3 Food
-Least Military Strength: -3 Food",Expulsion of Jews,Least Stability: -5 Gold,-1,,
-III,2,Crop Rotation,"Most Stability:
-+6 Food",Merchantilism,All: May undeploy Military Meeple: +2 Book for each,-4,,
+III,1,Columbian Exchange,"Most Military Strength: +3 Food Least Military Strength: -3 Food",Expulsion of Jews,Least Stability: -5 Gold,-1,,
+III,2,Crop Rotation,"Most Stability: +6 Food",Merchantilism,All: May undeploy Military Meeple: +2 Book for each,-4,,
 III,0,Sinking of the Vasa,"Least Stability: -3 Gold or -10 Military Strength for ""Peace of Westphalia""",Peace of Westphalia,Least Military Strength: -5 Food,0,,
 III,1,Blackbeard,Least Military Strength: -5 Gold,Habeas Corpus Act,Most Stability: +1 VP,-2,,
-II II,1,Anarchism,Least Military Strength: -1 VP and remove Advisors,Great Exhibition,"Most Stability: May hire 2 Architect for free
-",-4,,
-II II,0,Californian Gold Rush,Most Military Strength: +8 Gold,Irish Potato Blight,"Least Stability:
--8 Food",-3,,
-II II,1,March to Moscow,"Least Food: Remove Colony, if none: -1 VP",Taiping Rebellion,"Least Stability:
-Go last and -10 Book",-5,,
+II II,1,Anarchism,Least Military Strength: -1 VP and remove Advisors,Great Exhibition,"Most Stability: May hire 2 Architect for free",-4,,
+II II,0,Californian Gold Rush,Most Military Strength: +8 Gold,Irish Potato Blight,"Least Stability: -8 Food",-3,,
+II II,1,March to Moscow,"Least Food: Remove Colony, if none: -1 VP",Taiping Rebellion,"Least Stability: Go last and -10 Book",-5,,
 II II,1,Eruption of Krakatoa,Least Food: -1 VP,First Vatican Council,Most Stability: +10 Book,-3,,
-II II,0,Tonghak movement,"Least Military Strength: -8 Book, +2 Stone",Sepoy Mutiny,"Least Stability:
-Go last and -5 Gold",-5,,
-II II,2,Entente Cordiale,Most Military Strength: May deploy 2 Meeple to Military for free,General Strike,"Least Stability:
--6 Stone",-4,,
+II II,0,Tonghak movement,"Least Military Strength: -8 Book, +2 Stone",Sepoy Mutiny,"Least Stability: Go last and -5 Gold",-5,,
+II II,2,Entente Cordiale,Most Military Strength: May deploy 2 Meeple to Military for free,General Strike,"Least Stability: -6 Stone",-4,,
 II II,1,Scramble for Africa,All: if at least 1 Industrial Colony: +1 VP,Dreyfus Affair,Least Stability: -8 Food,-4,,
 II II,0,Sokoto Caliphate,All: May -4 Food: +8 Gold,Tennis Court Oath,Least Stability: -7 Gold,-3,,
 II II,2,Weltpolitik,"All: +5 Gold, +5 Stone per Industrial Colony",Emigration,Least Stability: Remove 1 Meeple,-2,,
 II II,1,American revolution,"Least Military Strength: Remove Colony, if none: -1 VP",French Revolution,"Least Stability: Remove Advisor, if none: -2 VP",-2,,
 II II,3,Sick Man of Europe,Least Military Strength: -8 Gold,Women's Suffrage,Most Stability: +1 VP,-1,,
 II II,2,Romanticism,First to Pass: +5 Book,Industrial Revolution,Most Meeple in Industrial Buildings: +1 VP,-6,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
