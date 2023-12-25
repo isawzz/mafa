@@ -1,55 +1,18 @@
 onload = start;
 
-async function start() { test48_nationsLoadCardInfo(); } //test42_toolbar(); }
+async function start() { test50_imgToLandscape(); } //test42_toolbar(); }
 
 //#region nations tests
-async function test48_nationsLoadCardInfo(){
-	let listOfTypes = ['advisor','battle','building','colony','military','natural','war','wonder','event'];
-	let list=[];
-	for(const type of listOfTypes){
-		list = list.concat(await natCollectTypes(type));
-	}
-	let realList = []
-	for(const c of list){
-		if (isEmpty(c.Name)) console.log('no name',c); else realList.push(c);
-
-	}
-	console.log('final',realList.map(x=>x.Name));
-	let final = list2dict(realList,'key');
-	downloadAsYaml(final,'nationsCards')
-	//advisors:battles:32
+async function test50_imgToLandscape(){
+	let path = `../assets/games/nations/cards/age1_aeneid.jpg`;
+	//let resp = await imgToPortrait(path, 200, 'dMain', true, `age1_aeneid.jpg`);	console.log('resp',resp)
 }
-async function natCollectTypes(type){
-	let text = await mGetText(`../assets/games/nations/${type}.csv`);
-	let list = csv2list(text, hasHeadings = true);
-	console.log('list',list.length);
-	//let card = rChoose(list);
-	//console.log('card',card);
-	let diStage = {I:1,II:2,III:3,IV:4,'II II':4};
-	let di={},newlist=[];
-	for(const card of list){
-		if (type == 'event' && (isdef(card['Name of Event 1']) || isdef(card['Name of Event 2']))) {
-			let name1= card['Name of Event 1'];
-			let name2 = card['Name of Event 2'];
-			card.Name = isdef(name1)?name1:isdef(name2)?name2:null;
-		}
-		if (nundef(card.Name)) {console.log('no',card.Name);continue;}
-		let key = normalizeString(card.Name.toLowerCase());
-		let age = valf(diStage[card.Stage],0);
-		let fname= isdef(card.Stage)? `age${age}_`:'';
-		fname+=key; //normalizeString(card.Name.toLowerCase());
-		fname+='.jpg';
-		//console.log('n',fname);
-		card.Path = fname;
-		card.Type = type;
-		card.key = key;
-		if (isdef(age)) card.age = age; else console.log('no age',key)
-		if (isdef(di[key])) console.log('duplicate',key)
-		di[key]=card;
-		newlist.push(card)
-	}
-	return newlist;
-	//downloadAsYaml(list,'cards');
+async function test49_schircheCard(){
+	let path = '../assets/games/nations/cards/age1_aeneid.jpg';
+	//let img = mDom('dMain',{},{tag:'img',src:path});
+	let img = await loadImageAsync(path,mDom('dMain',{},{tag:'img'}));
+	console.log('img',img);
+
 
 }
 async function test47_oneCard(){

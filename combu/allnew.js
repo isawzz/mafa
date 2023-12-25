@@ -52,14 +52,6 @@ function addToolX(cropper, d) {
   let rgCrop = createCropTool();
   let rgResize = createSquareTool();
 }
-function AhexToRgb(hex) {
-  hex = hex.replace(/^#/, '');
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
 function arrRemoveDuplicates(arr) { return Array.from(new Set(arr)); }
 function closeApps() {
   if (isdef(DA.calendar)) { closePopup(); delete DA.calendar; }
@@ -82,6 +74,14 @@ function collectionAddEmpty(ev) {
   M.collections.sort()
   M.byCollection[val] = [];
   initCollection(val);
+}
+function colorHexToRgb(hex) {
+  hex = hex.replace(/^#/, '');
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return { r, g, b };
 }
 function cropTo(tool, wnew, hnew) {
   let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
@@ -207,7 +207,7 @@ function initFilter(list) {
 }
 function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; return true; } }
 function isGrayColor(color, diff = 60) {
-  const rgb = AhexToRgb(color);
+  const rgb = colorHexToRgb(color);
   return Math.abs(rgb.r - rgb.g) + Math.abs(rgb.r - rgb.b) + Math.abs(rgb.g - rgb.b) < 3 * diff;
 }
 function isSameDate(date1, date2) {
@@ -690,7 +690,7 @@ async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isA
     };
   });
 }
-async function nationsCivsToLandscape() {
+async function natCivsToLandscape() {
   async function imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
     if (isdef(mBy('img1'))) mBy('img1').remove();
     let img = mDom(imgParent, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', id: 'img1' });
@@ -736,6 +736,56 @@ async function nationsCivsToLandscape() {
 		let downloadAtClient = false;
 		await imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
 	}
+}
+async function natLoadCardInfo(){
+	async function natCollectTypes(type){
+		let text = await mGetText(`../assets/games/nations/${type}.csv`);
+		let list = csv2list(text, hasHeadings = true);
+		console.log('list',list.length);
+		//let card = rChoose(list);
+		//console.log('card',card);
+		let diStage = {I:1,II:2,III:3,IV:4,'II II':4};
+		let di={},newlist=[];
+		for(const card of list){
+			if (type == 'event' && (isdef(card['Name of Event 1']) || isdef(card['Name of Event 2']))) {
+				let name1= card['Name of Event 1'];
+				let name2 = card['Name of Event 2'];
+				card.Name = isdef(name1)?name1:isdef(name2)?name2:null;
+			}
+			if (nundef(card.Name)) {console.log('no',card.Name);continue;}
+			let key = normalizeString(card.Name.toLowerCase());
+			let age = valf(diStage[card.Stage],0);
+			let fname= isdef(card.Stage)? `age${age}_`:'';
+			fname+=key; //normalizeString(card.Name.toLowerCase());
+			fname+='.jpg';
+			//console.log('n',fname);
+			card.Path = fname;
+			card.Type = type;
+			card.key = key;
+			if (isdef(age)) card.age = age; else console.log('no age',key)
+			if (isdef(di[key])) console.log('duplicate',key)
+			di[key]=card;
+			newlist.push(card)
+		}
+		return newlist;
+		//downloadAsYaml(list,'cards');
+	
+	}
+
+	let listOfTypes = ['advisor','battle','building','colony','military','natural','war','wonder','event'];
+	let list=[];
+	for(const type of listOfTypes){
+		list = list.concat(await natCollectTypes(type));
+	}
+	let realList = []
+	for(const c of list){
+		if (isEmpty(c.Name)) console.log('no name',c); else realList.push(c);
+
+	}
+	console.log('final',realList.map(x=>x.Name));
+	let final = list2dict(realList,'key');
+	downloadAsYaml(final,'nationsCards')
+	//advisors:battles:32
 }
 async function onclickAdd() {
   showTitle('Add to Collections');
