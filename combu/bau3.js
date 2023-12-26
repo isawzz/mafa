@@ -1,3 +1,29 @@
+async function imgAsync(dParent, styles, opts) {
+	let path = opts.src;
+	delete opts.src;
+	addKeys({tag:'img'},opts); //if forget
+
+	return new Promise((resolve, reject) => {
+		const img = mDom(dParent, styles, opts);
+		// const img = new Image();
+		img.onload = () => {
+			resolve(img);
+		};
+		img.onerror = (error) => {
+			reject(error);
+		};
+		img.src = path;
+	});
+}
+function imgAsCanvas(img,dParent){
+	dParent = toElem(dParent);
+	mClear(dParent);
+	let canvas = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+	return canvas;
+}
+
+
+
 async function imgToPortrait(src, width, dParent, sendToServer=false,path=null,downloadAtClient=false){ //}, path, viewParent, imgParent, sendToServer, downloadAtClient) {
 	if (isdef(mBy('img1'))) mBy('img1').remove();
 	let img = mDom(document.body, { position: 'absolute', top: '70vh', h: width }, { tag: 'img', id: 'img1' });

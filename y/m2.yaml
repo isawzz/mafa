@@ -28,3 +28,13 @@ waterball:
   coll: all
   name: waterball
   ext: png
+undefined:
+  cat: undefined
+  coll: undefined
+  name: undefined
+  ext: undefined
+undefined:
+  cat: undefined
+  coll: undefined
+  name: undefined
+  ext: undefined

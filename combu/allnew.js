@@ -95,6 +95,23 @@ async function deleteEvent(id) {
   delete Items[id];
   mBy(id).remove();
 }
+async function encryptData(data) {
+  const encoder = new TextEncoder();
+  const dataBuffer = encoder.encode(data);
+  const publicKey = await crypto.subtle.importKey(
+    'jwk',
+    { kty: 'RSA', e: 'AQAB', n: 'your_public_key_here' },
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    false,
+    ['encrypt']
+  );
+  const encryptedBuffer = await crypto.subtle.encrypt(
+    { name: 'RSA-OAEP' },
+    publicKey,
+    dataBuffer
+  );
+  return new Uint8Array(encryptedBuffer).toString();
+}
 function extractTime(input) {
   // Regular expression to match a number between 0 and 23 followed by 'h' or ':' and the word up to the next whitespace
   const regex = /\b([0-9]|1[0-9]|2[0-3])[h:]\S*\b/g;
@@ -961,23 +978,6 @@ function openPopup(name = 'dPopup') {
   mButtonX(popup, 25, 4);
   document.body.appendChild(popup);
   return popup;
-}
-async function encryptData(data) {
-  const encoder = new TextEncoder();
-  const dataBuffer = encoder.encode(data);
-  const publicKey = await crypto.subtle.importKey(
-    'jwk',
-    { kty: 'RSA', e: 'AQAB', n: 'your_public_key_here' },
-    { name: 'RSA-OAEP', hash: 'SHA-256' },
-    false,
-    ['encrypt']
-  );
-  const encryptedBuffer = await crypto.subtle.encrypt(
-    { name: 'RSA-OAEP' },
-    publicKey,
-    dataBuffer
-  );
-  return new Uint8Array(encryptedBuffer).toString();
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
   let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });

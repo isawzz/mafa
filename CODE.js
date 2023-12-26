@@ -635,6 +635,12 @@ function muell(){
 //#endregion
 
 //#region civs
+async function ___imgAsync(src,dParent,styles={},opts={}){
+	if (isdef(mBy('img1'))) mBy('img1').remove();
+	let img = mDom(document.body, { position: 'absolute', top: '70vh', h: width }, { tag: 'img', id: 'img1' });
+	await loadImageAsync(src,img); //hier ist img loaded!!!
+}
+
 async function natCivsToLandscape() {
   async function imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
     if (isdef(mBy('img1'))) mBy('img1').remove();

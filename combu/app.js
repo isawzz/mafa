@@ -223,29 +223,17 @@ app.post('/postConfig', (req, res) => {
 app.post('/postImage', (req, res) => {
 	console.log('<== post image')
 	const data = req.body;
-
-	if (isdef(data.coll)){
-		let p = data.path;
-		// res.json({msg:'hallo'}); return;
-			let fname = path.join(uploadDirectory,'img', p);
-		console.log('save to',p,__dirname)
-		console.log('fname',fname)
-		let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
-		fs.writeFileSync(fname, base64Data, 'base64'); 
-		if (!p.includes('/')) fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
-		}else{
-			let p = data.path;
-			// res.json({msg:'hallo'}); return;
-					let fname = p.includes('/')?path.join(__dirname,'..', p):path.join(uploadDirectory,'img', p);
-			console.log('fname',fname)
-			let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
-			fs.writeFileSync(fname, base64Data, 'base64'); 
-			if (!p.includes('/')) fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
-		
+	let p = data.path;
+	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+	let fname;
+	if (isdef(data.coll)) {
+		fname = path.join(uploadDirectory, 'img', p);
+		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
+	} else {
+		fname = path.join(__dirname, '..', p);
 	}
-
-	// console.log('data',data.name,data.unique,data.path,data.coll)
-	//const data = body.data; //some json object or base64 image data (or undef)
+	console.log('fname', fname); //console.log('save to', p, __dirname)
+	fs.writeFileSync(fname, base64Data, 'base64');
 	res.json({
 		message: 'File uploaded successfully',
 		fileName: fname,
