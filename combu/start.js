@@ -4,67 +4,19 @@ async function start() { test52_cards(); } //test42_toolbar(); }
 
 //#region nations tests
 async function test52_cards() {
-	let list1 = ['aeneid', 'archimedes'];//,'babylonia','battle_of_cannae','battle_of_issus','battle_of_kadesh','battle_of_thermophylae'];
-	let list2 = ['gold', 'orange', 'green'];
-	let listrot = [-90, 90, 90, -90, -90, -90]
+	let list1 = ['adobe','aeneid','antikythera_mechanism','aqueduct','archer', 'archimedes','armenia','augustus'];//,'babylonia','battle_of_cannae','battle_of_issus','battle_of_kadesh','battle_of_thermophylae'];
+	let list2 = ['skyblue','gold','gold','skyblue','red', 'orange', 'green','orange'];
+	let listrot = [0,-90, 90, 90, 90, 90, 90, 90];
+	let listyBound =[true,false,true,true,true,true,true];
+	let listxBound =[true,true,false,true,true,true,true];
+	let listyExtra =[false,false,true,false,true,false,true];
+	let listxend =[true,true,true,true,true,true,false];
 
-	for (let i = 1; i < list1.length; i++) {
-		await present(`age1_${list1[i]}`, list2[i], i, listrot[i]);
+	for (let i = 1; i < list1.length-1; i++) {
+
+		await present(`age1_${list1[i]}`, list2[i], i, listrot[i],listyBound[i],listxBound[i],listyExtra[i],listxend[i]);
+		//break;
 	}
-}
-async function present(name, color, idx, rot) {
-	//do this for each card:
-	//if (isdef(mBy('img1'))) mBy('img1').remove();
-	//let name = `age1_aeneid`;
-	let path = `../assets/games/nations/cards/${name}.jpg`;
-
-	let hImg = 200, wImg = 310;
-	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	console.log('img', img)
-
-	let dir = 'portrait';
-	let rotate = img.width > img.height;
-	let dView = 'dMain';
-
-	let dParent = toElem(dView);
-	mClear(dParent);
-	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
-	// let canvas = mDom(dParent, { border: '10px solid yellow', box:true }, { tag: 'canvas', id: 'canvas',width: w, height: h });
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - 4, height: h - 6 });
-
-	let ctx = canvas.getContext('2d');
-	console.log('rot', rot)
-	if (rot == -90) {
-		ctx.translate(0, img.width);
-		ctx.rotate(-90 * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
-		ctx.translate(-4, 14)
-		ctx.drawImage(img, 0, 0, img.width, img.height)
-		ctx.beginPath();
-		ctx.lineWidth = "10";
-		ctx.strokeStyle = color;
-		ctx.rect(15, -4, 290, 180);
-		ctx.stroke();
-	} else if (rot == 90) {
-		ctx.translate(canvas.width, 0); //-canvas.height/2) //img.width);
-		ctx.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
-		ctx.translate(-8, 10) //erstes:- verschiebt nacht oben, zweites: + verschiebt nach links
-		ctx.drawImage(img, 0, 0, img.width, img.height)
-		ctx.beginPath();
-		ctx.lineWidth = "10";
-		ctx.strokeStyle = color;
-		ctx.rect(0, 0, img.width, img.height) //15, -4, 290, 180);
-		// ctx.rect(15, -4, 290, 180);
-		ctx.stroke();
-	} else {
-		ctx.drawImage(img, 0, 0, img.width, img.height)
-	}
-
-	//await imgToServer(canvas,`combu/${name}.png`);
-	//await mSleep(1000);
-	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
-
-
-	//let cv = imgAsCanvas(img,'dMain');
 }
 
 async function test51_cards(name) {
