@@ -1,8 +1,22 @@
 onload = start;
 
-async function start() { test52_cards(); } //test42_toolbar(); }
+async function start() { test53_cards(); } //test42_toolbar(); }
 
 //#region nations tests
+async function test53_cards() {
+	let diColors = {advisor:'orange',battle:'grey',building:'blue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	console.log('Nations Cards',natCards);
+	let i=0;
+	for(const k in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		console.log('___________',k)
+		let c=natCards[k];
+		let path = c.Path;
+		let color= diColors[c.Type];//if (nundef(color)) console.log('no color for',k,c)
+		await present(path,color,i++);
+	}
+}
+
 async function test52_cards() {
 	let list1 = ['adobe','aeneid','antikythera_mechanism','aqueduct','archer', 'archimedes','armenia','augustus'];//,'babylonia','battle_of_cannae','battle_of_issus','battle_of_kadesh','battle_of_thermophylae'];
 	let list2 = ['skyblue','gold','gold','skyblue','red', 'orange', 'green','orange'];
@@ -12,13 +26,12 @@ async function test52_cards() {
 	let listyExtra =[false,false,true,false,true,false,true];
 	let listxend =[true,true,true,true,true,true,false];
 
-	for (let i = 1; i < list1.length-1; i++) {
+	for (let i = 0; i < list1.length-1; i++) {
 
 		await present(`age1_${list1[i]}`, list2[i], i, listrot[i],listyBound[i],listxBound[i],listyExtra[i],listxend[i]);
 		//break;
 	}
 }
-
 async function test51_cards(name) {
 	//do this for each card:
 	if (isdef(mBy('img1'))) mBy('img1').remove();
