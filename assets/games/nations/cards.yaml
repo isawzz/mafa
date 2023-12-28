@@ -624,7 +624,7 @@ pocahontas:
   Type: advisor
   key: pocahontas
   age: 3
-suleiman_i:
+suleiman:
   Category: B
   Stage: III
   Name: Suleiman I
@@ -636,9 +636,9 @@ suleiman_i:
   Book: ''
   Stability: ''
   '': ''
-  Path: age3_suleiman_i.jpg
+  Path: age3_suleiman.jpg
   Type: advisor
-  key: suleiman_i
+  key: suleiman
   age: 3
 carolus_linneaus:
   Category: B
@@ -1076,7 +1076,7 @@ surrender_at_yorktown:
   Book: ''
   VP: ''
   Note: ''
-  Path: age4_surrender_at_yorktown.jpg
+  Path: surrender_at_yorktown.jpg
   Type: battle
   key: surrender_at_yorktown
   age: 4
@@ -5052,7 +5052,7 @@ rigveda:
   Famine (Food): '-2'
   '': ''
   Name: Rigveda
-  Path: age1_rigveda.jpg
+  Path: rigveda.jpg
   Type: event
   key: rigveda
   age: 1
@@ -5065,7 +5065,7 @@ pax_romana:
   Famine (Food): '-2'
   '': ''
   Name: Pax Romana
-  Path: age1_pax_romana.jpg
+  Path: pax_romana.jpg
   Type: event
   key: pax_romana
   age: 1
@@ -5078,7 +5078,7 @@ hellenism:
   Famine (Food): '-1'
   '': ''
   Name: Hellenism
-  Path: age1_hellenism.jpg
+  Path: hellenism.jpg
   Type: event
   key: hellenism
   age: 1
@@ -5091,7 +5091,7 @@ shang_oracle_bones:
   Famine (Food): '-1'
   '': ''
   Name: Shang Oracle Bones
-  Path: age1_shang_oracle_bones.jpg
+  Path: shang_oracle_bones.jpg
   Type: event
   key: shang_oracle_bones
   age: 1
@@ -5104,7 +5104,7 @@ assyrian_deportations:
   Famine (Food): '0'
   '': ''
   Name: Assyrian deportations
-  Path: age1_assyrian_deportations.jpg
+  Path: assyrian_deportations.jpg
   Type: event
   key: assyrian_deportations
   age: 1
@@ -5117,7 +5117,7 @@ sea_peoples:
   Famine (Food): '-2'
   '': ''
   Name: Sea Peoples
-  Path: age1_sea_peoples.jpg
+  Path: sea_peoples.jpg
   Type: event
   key: sea_peoples
   age: 1
@@ -5130,7 +5130,7 @@ yello_turban_rebellion:
   Famine (Food): '-2'
   '': ''
   Name: Yello Turban Rebellion
-  Path: age1_yello_turban_rebellion.jpg
+  Path: yello_turban_rebellion.jpg
   Type: event
   key: yello_turban_rebellion
   age: 1
@@ -5143,7 +5143,7 @@ qin_unification:
   Famine (Food): '-1'
   '': ''
   Name: Qin Unification
-  Path: age1_qin_unification.jpg
+  Path: qin_unification.jpg
   Type: event
   key: qin_unification
   age: 1
@@ -5156,7 +5156,7 @@ taoism:
   Famine (Food): '-1'
   '': ''
   Name: Taoism
-  Path: age1_taoism.jpg
+  Path: taoism.jpg
   Type: event
   key: taoism
   age: 1
@@ -5169,7 +5169,7 @@ attila:
   Famine (Food): '-3'
   '': ''
   Name: Attila
-  Path: age1_attila.jpg
+  Path: attila.jpg
   Type: event
   key: attila
   age: 1
@@ -5182,7 +5182,7 @@ aryan_migration:
   Famine (Food): '-1'
   '': ''
   Name: Aryan Migration
-  Path: age1_aryan_migration.jpg
+  Path: aryan_migration.jpg
   Type: event
   key: aryan_migration
   age: 1
@@ -5195,7 +5195,7 @@ bread_and_games:
   Famine (Food): '0'
   '': ''
   Name: Bread and GAmes
-  Path: age1_bread_and_games.jpg
+  Path: bread_and_games.jpg
   Type: event
   key: bread_and_games
   age: 1
@@ -5208,7 +5208,7 @@ imperial_examination:
   Famine (Food): '0'
   '': ''
   Name: Imperial Examination
-  Path: age2_imperial_examination.jpg
+  Path: imperial_examination.jpg
   Type: event
   key: imperial_examination
   age: 2
@@ -5221,7 +5221,7 @@ martyrdom_of_ali:
   Famine (Food): '-1'
   '': ''
   Name: Martyrdom of Ali
-  Path: age2_martyrdom_of_ali.jpg
+  Path: martyrdom_of_ali.jpg
   Type: event
   key: martyrdom_of_ali
   age: 2
@@ -5234,7 +5234,7 @@ black_death:
   Famine (Food): '-3'
   '': ''
   Name: Black Death
-  Path: age2_black_death.jpg
+  Path: black_death.jpg
   Type: event
   key: black_death
   age: 2
@@ -5247,7 +5247,7 @@ sack_of_baghdad:
   Famine (Food): '-2'
   '': ''
   Name: Sack of Baghdad
-  Path: age2_sack_of_baghdad.jpg
+  Path: sack_of_baghdad.jpg
   Type: event
   key: sack_of_baghdad
   age: 2
@@ -5260,7 +5260,7 @@ chanson_de_roland:
   Famine (Food): '-3'
   '': ''
   Name: Chanson de Roland
-  Path: age2_chanson_de_roland.jpg
+  Path: chanson_de_roland.jpg
   Type: event
   key: chanson_de_roland
   age: 2
@@ -5273,7 +5273,7 @@ feudal_dues:
   Famine (Food): '-2'
   '': ''
   Name: Feudal dues
-  Path: age2_feudal_dues.jpg
+  Path: feudal_dues.jpg
   Type: event
   key: feudal_dues
   age: 2
@@ -5286,7 +5286,7 @@ benedictine_rule:
   Famine (Food): '-1'
   '': ''
   Name: Benedictine Rule
-  Path: age2_benedictine_rule.jpg
+  Path: benedictine_rule.jpg
   Type: event
   key: benedictine_rule
   age: 2
@@ -5299,7 +5299,7 @@ ecological_collapse:
   Famine (Food): '-4'
   '': ''
   Name: Ecological Collapse
-  Path: age2_ecological_collapse.jpg
+  Path: ecological_collapse.jpg
   Type: event
   key: ecological_collapse
   age: 2
@@ -5312,7 +5312,7 @@ peace_of_god:
   Famine (Food): '-2'
   '': ''
   Name: Peace of God
-  Path: age2_peace_of_god.jpg
+  Path: peace_of_god.jpg
   Type: event
   key: peace_of_god
   age: 2
@@ -5327,7 +5327,7 @@ fourth_crusade:
   Famine (Food): '-2'
   '': ''
   Name: Fourth Crusade
-  Path: age2_fourth_crusade.jpg
+  Path: fourth_crusade.jpg
   Type: event
   key: fourth_crusade
   age: 2
@@ -5340,7 +5340,7 @@ stupor_mundi:
   Famine (Food): '-1'
   '': ''
   Name: Stupor Mundi
-  Path: age2_stupor_mundi.jpg
+  Path: stupor_mundi.jpg
   Type: event
   key: stupor_mundi
   age: 2
@@ -5353,7 +5353,7 @@ raid_on_lindisfarne:
   Famine (Food): ' -2 Food"'
   '': ''
   Name: Raid on Lindisfarne
-  Path: age2_raid_on_lindisfarne.jpg
+  Path: raid_on_lindisfarne.jpg
   Type: event
   key: raid_on_lindisfarne
   age: 2
@@ -5366,7 +5366,7 @@ magellan_s_expedition:
   Famine (Food): '-3'
   '': ''
   Name: Magellan's expedition
-  Path: age3_magellan_s_expedition.jpg
+  Path: magellan_s_expedition.jpg
   Type: event
   key: magellan_s_expedition
   age: 3
@@ -5379,7 +5379,7 @@ janissaries:
   Famine (Food): '-2'
   '': ''
   Name: Janissaries
-  Path: age3_janissaries.jpg
+  Path: janissaries.jpg
   Type: event
   key: janissaries
   age: 3
@@ -5392,7 +5392,7 @@ spice_trade:
   Famine (Food): '-2'
   '': ''
   Name: Spice Trade
-  Path: age3_spice_trade.jpg
+  Path: spice_trade.jpg
   Type: event
   key: spice_trade
   age: 3
@@ -5405,7 +5405,7 @@ pilgrims:
   Famine (Food): '-3'
   '': ''
   Name: Pilgrims
-  Path: age3_pilgrims.jpg
+  Path: pilgrims.jpg
   Type: event
   key: pilgrims
   age: 3
@@ -5418,7 +5418,7 @@ tulip_mania:
   Famine (Food): '-1'
   '': ''
   Name: Tulip Mania
-  Path: age3_tulip_mania.jpg
+  Path: tulip_mania.jpg
   Type: event
   key: tulip_mania
   age: 3
@@ -5431,7 +5431,7 @@ little_ice_age:
   Famine (Food): '-3'
   '': ''
   Name: Little Ice Age
-  Path: age3_little_ice_age.jpg
+  Path: little_ice_age.jpg
   Type: event
   key: little_ice_age
   age: 3
@@ -5444,7 +5444,7 @@ african_slave_trade:
   Famine (Food): '-4'
   '': ''
   Name: African Slave Trade
-  Path: age3_african_slave_trade.jpg
+  Path: african_slave_trade.jpg
   Type: event
   key: african_slave_trade
   age: 3
@@ -5457,7 +5457,7 @@ absolute_monarchy:
   Famine (Food): '-5'
   '': ''
   Name: Absolute Monarchy
-  Path: age3_absolute_monarchy.jpg
+  Path: absolute_monarchy.jpg
   Type: event
   key: absolute_monarchy
   age: 3
@@ -5470,7 +5470,7 @@ columbian_exchange:
   Famine (Food): '-1'
   '': ''
   Name: Columbian Exchange
-  Path: age3_columbian_exchange.jpg
+  Path: columbian_exchange.jpg
   Type: event
   key: columbian_exchange
   age: 3
@@ -5483,7 +5483,7 @@ crop_rotation:
   Famine (Food): '-4'
   '': ''
   Name: Crop Rotation
-  Path: age3_crop_rotation.jpg
+  Path: crop_rotation.jpg
   Type: event
   key: crop_rotation
   age: 3
@@ -5496,7 +5496,7 @@ sinking_of_the_vasa:
   Famine (Food): '0'
   '': ''
   Name: Sinking of the Vasa
-  Path: age3_sinking_of_the_vasa.jpg
+  Path: sinking_of_the_vasa.jpg
   Type: event
   key: sinking_of_the_vasa
   age: 3
@@ -5509,7 +5509,7 @@ blackbeard:
   Famine (Food): '-2'
   '': ''
   Name: Blackbeard
-  Path: age3_blackbeard.jpg
+  Path: blackbeard.jpg
   Type: event
   key: blackbeard
   age: 3
@@ -5522,7 +5522,7 @@ anarchism:
   Famine (Food): '-4'
   '': ''
   Name: Anarchism
-  Path: age4_anarchism.jpg
+  Path: anarchism.jpg
   Type: event
   key: anarchism
   age: 4
@@ -5535,7 +5535,7 @@ californian_gold_rush:
   Famine (Food): '-3'
   '': ''
   Name: Californian Gold Rush
-  Path: age4_californian_gold_rush.jpg
+  Path: californian_gold_rush.jpg
   Type: event
   key: californian_gold_rush
   age: 4
@@ -5548,7 +5548,7 @@ march_to_moscow:
   Famine (Food): '"Least Stability: Go last and -10 Book"'
   '': ''
   Name: March to Moscow
-  Path: age4_march_to_moscow.jpg
+  Path: march_to_moscow.jpg
   Type: event
   key: march_to_moscow
   age: 4
@@ -5561,7 +5561,7 @@ eruption_of_krakatoa:
   Famine (Food): '-3'
   '': ''
   Name: Eruption of Krakatoa
-  Path: age4_eruption_of_krakatoa.jpg
+  Path: eruption_of_krakatoa.jpg
   Type: event
   key: eruption_of_krakatoa
   age: 4
@@ -5574,7 +5574,7 @@ tonghak_movement:
   Famine (Food): '"Least Stability: Go last and -5 Gold"'
   '': ''
   Name: Tonghak movement
-  Path: age4_tonghak_movement.jpg
+  Path: tonghak_movement.jpg
   Type: event
   key: tonghak_movement
   age: 4
@@ -5587,7 +5587,7 @@ entente_cordiale:
   Famine (Food): '-4'
   '': ''
   Name: Entente Cordiale
-  Path: age4_entente_cordiale.jpg
+  Path: entente_cordiale.jpg
   Type: event
   key: entente_cordiale
   age: 4
@@ -5600,7 +5600,7 @@ scramble_for_africa:
   Famine (Food): '-4'
   '': ''
   Name: Scramble for Africa
-  Path: age4_scramble_for_africa.jpg
+  Path: scramble_for_africa.jpg
   Type: event
   key: scramble_for_africa
   age: 4
@@ -5613,7 +5613,7 @@ sokoto_caliphate:
   Famine (Food): '-3'
   '': ''
   Name: Sokoto Caliphate
-  Path: age4_sokoto_caliphate.jpg
+  Path: sokoto_caliphate.jpg
   Type: event
   key: sokoto_caliphate
   age: 4
@@ -5626,7 +5626,7 @@ weltpolitik:
   Famine (Food): 'Least Stability: Remove 1 Meeple'
   '': ''
   Name: Weltpolitik
-  Path: age4_weltpolitik.jpg
+  Path: weltpolitik.jpg
   Type: event
   key: weltpolitik
   age: 4
@@ -5639,7 +5639,7 @@ american_revolution:
   Famine (Food): '"Least Stability: Remove Advisor'
   '': '-2'
   Name: American revolution
-  Path: age4_american_revolution.jpg
+  Path: american_revolution.jpg
   Type: event
   key: american_revolution
   age: 4
@@ -5652,7 +5652,7 @@ sick_man_of_europe:
   Famine (Food): '-1'
   '': ''
   Name: Sick Man of Europe
-  Path: age4_sick_man_of_europe.jpg
+  Path: sick_man_of_europe.jpg
   Type: event
   key: sick_man_of_europe
   age: 4
@@ -5665,7 +5665,7 @@ romanticism:
   Famine (Food): '-6'
   '': ''
   Name: Romanticism
-  Path: age4_romanticism.jpg
+  Path: romanticism.jpg
   Type: event
   key: romanticism
   age: 4
