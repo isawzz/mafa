@@ -192,6 +192,14 @@ function imgToDataUrl(img){
 	const dataUrl = canvas.toDataURL('image/png');
 	return dataUrl;
 }
+async function imgToServer(canvas, path) {
+	let dataUrl = canvas.toDataURL('image/png');
+	let o = { image: dataUrl, path: path };
+  console.log('...postImage o',o)
+	let resp = await mPostRoute('postImage', o);
+	return resp; //console.log('resp', resp);
+
+}
 function initCollection(name) {
   let list = [];
   if (name == 'all' || isEmpty(name)) {
@@ -770,7 +778,11 @@ async function natLoadCardInfo(){
 				card.Name = isdef(name1)?name1:isdef(name2)?name2:null;
 			}
 			if (nundef(card.Name)) {console.log('no',card.Name);continue;}
+      let name = card.Name;
+      if (name.endsWith(' I')) {name = name.substring(0,name.length-2); card.Name = name;console.log('name',name);}
+
 			let key = normalizeString(card.Name.toLowerCase());
+      
 			let age = valf(diStage[card.Stage],0);
 			let fname= isdef(card.Stage)? `age${age}_`:'';
 			fname+=key; //normalizeString(card.Name.toLowerCase());
@@ -784,8 +796,8 @@ async function natLoadCardInfo(){
 			di[key]=card;
 			newlist.push(card)
 		}
+		//if (download) downloadAsYaml(list,'cards');
 		return newlist;
-		//downloadAsYaml(list,'cards');
 	
 	}
 

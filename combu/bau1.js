@@ -1,4 +1,4 @@
-async function present(name, color, idx) { //}, rot, ybound, xbound, yextra, xendbd) {
+async function natModCard(name, color, idx) { //}, rot, ybound, xbound, yextra, xendbd) {
 	let path = `../assets/games/nations/cards/${name}`; //.jpg`;
 	let dParent = toElem('dExtra');
 	// let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
@@ -32,7 +32,7 @@ async function present(name, color, idx) { //}, rot, ybound, xbound, yextra, xen
 	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
 	// let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
 	// let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let cv2 = mDom('dMain', {  }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+	let cv2 = mDom('dMain', {  }, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
 	let ct2 = cv2.getContext('2d');
 	ct2.drawImage(img, -xstart, -ystart, w, h);
 	//drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
@@ -40,6 +40,8 @@ async function present(name, color, idx) { //}, rot, ybound, xbound, yextra, xen
 	ct2.lineWidth = 20;
 	ct2.rect(0,0,wsmall,hsmall);
 	ct2.stroke();
+
+	return cv2;
 
 	//next: draw rotated!
 

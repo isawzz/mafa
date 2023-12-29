@@ -1,20 +1,79 @@
 onload = start;
 
-async function start() { test53_cards(); } //test42_toolbar(); }
+async function start() { test55_buildings(); } //test42_toolbar(); }
 
 //#region nations tests
-async function test53_cards() {
+async function test55_buildings(){
+	let type = 'building';
 	let diColors = {advisor:'orange',battle:'grey',building:'blue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
 	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	console.log('Nations Cards',natCards);
 	let i=0;
-	for(const k in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
+	console.log('list',list);
+	let result=[];
+	//return;
+	list = ['aqueduct'];
+	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
 		console.log('___________',k)
 		let c=natCards[k];
+		if (c.age == 0) {console.log('age 0',c.key); continue; }
 		let path = c.Path;
 		let color= diColors[c.Type];//if (nundef(color)) console.log('no color for',k,c)
-		await present(path,color,i++);
+		let canvas = await natModCard(path,color,i++);
+		result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
+		console.log('path',path);
+		//await imgToServer(canvas,'combu/img/advisor/'+path);
+
+		//break;
 	}
+	//console.log('cvs',cvs);
+	//let adv=arrLast(result);console.log(adv);
+	return;
+	for(const adv of result){
+		await imgToServer(adv.cv,adv.path);
+	}
+	//console.log(arrLast(cvs));
+
+}
+async function test54_redo_cards() {
+
+	let di = await natLoadCardInfo();
+	console.log('list',di);
+	//let di = list2dict(list,'key');
+	//downloadAsYaml(di,'cards.yaml');
+	return;
+}
+async function test53_advisors(){
+	let diColors = {advisor:'orange',battle:'grey',building:'blue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	console.log('Nations Cards',natCards);
+	let i=0;
+	let list = Object.keys(natCards).filter(x=>natCards[x].Type == 'advisor');
+	console.log('list',list);
+	let result=[];
+	//return;
+	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		console.log('___________',k)
+		let c=natCards[k];
+		//if (c.Type != 'advisor') continue;
+		//if (c.age == 0) {console.log('age 0',c.key); continue; }
+		let path = c.Path;
+		let color= diColors[c.Type];//if (nundef(color)) console.log('no color for',k,c)
+		let canvas = await natModCard(path,color,i++);
+		result.push({cv:canvas,card:c,path:`y/advisor/${k}.png`});
+		console.log('path',path)
+		//await imgToServer(canvas,'combu/img/advisor/'+path);
+
+		//break;
+	}
+	//console.log('cvs',cvs);
+	//let adv=arrLast(result);console.log(adv);
+	for(const adv of result){
+		await imgToServer(adv.cv,adv.path);
+	}
+	//console.log(arrLast(cvs));
+
 }
 
 async function test52_cards() {
@@ -79,13 +138,6 @@ async function test51_cards(name) {
 
 
 	//let cv = imgAsCanvas(img,'dMain');
-}
-async function imgToServer(canvas, path) {
-	let dataUrl = canvas.toDataURL('image/png');
-	let o = { image: dataUrl, path: path };
-	let resp = await mPostRoute('postImage', o);
-	return resp; //console.log('resp', resp);
-
 }
 async function test50_imgToLandscape() {
 	let path = `../assets/games/nations/cards/age1_aeneid.jpg`;
