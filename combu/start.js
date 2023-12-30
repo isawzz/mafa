@@ -13,14 +13,15 @@ async function test55_buildings(){
 	console.log('list',list);
 	let result=[];
 	//return;
-	list = ['aqueduct'];
+	list = ['aqueduct','shantytown','coal_mine'];
+	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}};
 	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
 		console.log('___________',k)
 		let c=natCards[k];
 		if (c.age == 0) {console.log('age 0',c.key); continue; }
 		let path = c.Path;
 		let color= diColors[c.Type];//if (nundef(color)) console.log('no color for',k,c)
-		let canvas = await natModCard(path,color,i++);
+		let canvas = await natModCard(path,color,i++,dims[type]); //diX[type]);
 		result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
 		console.log('path',path);
 		//await imgToServer(canvas,'combu/img/advisor/'+path);

@@ -1,10 +1,10 @@
-async function natModCard(name, color, idx) { //}, rot, ybound, xbound, yextra, xendbd) {
+async function natModCard(name, color, idx, dims) { //}, rot, ybound, xbound, yextra, xendbd) {
 	let path = `../assets/games/nations/cards/${name}`; //.jpg`;
 	let dParent = toElem('dExtra');
 	// let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
 	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
 	let [w, h] = [img.width, img.height];
-	console.log(w, h);
+	//console.log(w, h);
 
 	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
 	let ctx = canvas.getContext('2d');
@@ -12,18 +12,18 @@ async function natModCard(name, color, idx) { //}, rot, ybound, xbound, yextra, 
 
 	let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
 	let y1, y2, x1, x2, prevy, prevx;
-	let resy=[ystart,y1,y2,yend,isRotated,prevy]=calcBoundsY(ctx, 150, h, 261);
-	console.log('resy', resy)
+	let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
+	console.log('resY', resy)
 
-	let resx = [xstart,x1,x2,xend,prevx,rot] = allDarkPoints(ctx, w); //return;
-	console.log('resx', resx)
+	let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
+	console.log('resX', resx)
 	//let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
 
 	//console.log('bounds X',resx)
 
 	// console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let [wsmall, hsmall] = [xend - xstart, yend - ystart+1];
-	console.log('wsmall',wsmall,'hsmall', hsmall)
+	let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
+	console.log('wsmall', wsmall, 'hsmall', hsmall)
 	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
 	let ct1 = cv1.getContext('2d');
 	ct1.drawImage(img, -xstart, -ystart, w, h);
@@ -32,13 +32,13 @@ async function natModCard(name, color, idx) { //}, rot, ybound, xbound, yextra, 
 	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
 	// let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
 	// let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let cv2 = mDom('dMain', {  }, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
+	let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
 	let ct2 = cv2.getContext('2d');
 	ct2.drawImage(img, -xstart, -ystart, w, h);
 	//drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
 	ct2.strokeStyle = color;
 	ct2.lineWidth = 20;
-	ct2.rect(0,0,wsmall,hsmall);
+	ct2.rect(0, 0, wsmall, hsmall);
 	ct2.stroke();
 
 	return cv2;
@@ -97,9 +97,17 @@ function calcBoundsY(ctx, x, h, n = 261) {
 	}
 	return [ystart, y1, y2, h, isRotated, prevy];
 }
-function allDarkPoints(ctx, w) {
-	let y = 75, xlist = [];
-
+function isLightAfter(ctx, x, y) {
+	for (let p = x + 1; p < x + 4; p++) if (isPixLight(ctx, p, y)) return true;
+	return false;
+}
+function isLightBefore(ctx, x, y) {
+	for (let p = x -4; p < x -1; p++) if (isPixLight(ctx, p, y)) return true;
+	return false;
+}
+function allDarkPoints(ctx, w, dims) {
+	let [y,xmin,top,bot]=[dims.y,dims.xmin,dims.top,dims.bot];
+	let xlist = [];
 	for (let x = 0; x < w; x++) {
 		if (isPixDark(ctx, x, y)) {
 			//drawPix(ctx, x, y, 'red');
@@ -107,42 +115,47 @@ function allDarkPoints(ctx, w) {
 		}
 	}
 	let n = 243;
-	//console.log('list', xlist);
+	console.log('list', xlist);
+	//xlist.map(x => { drawPix(ctx, x, y, 'red', 2) });
+	let diffs=[];
+	//xlist.map(x => { console.log('===>', x); drawPix(ctx, x, y, 'red') });
 	for (let i = 0; i < xlist.length - 1; i++) {
-		if (xlist[i] < 80) continue;
+		if (xlist[i] < xmin) continue;
+		if (isLightBefore(ctx,xlist[i],y)) {console.log('YES!',xlist[i])} else {console.log('NO',xlist[i]);continue;}
 		for (let j = i + 1; j < xlist.length; j++) {
-
-		  let pix=xlist[j];
-			assertion(isPixDark(ctx,pix,y));
+			let pix = xlist[j];
+			assertion(isPixDark(ctx, pix, y));
 			//test ob nach diesem pix mindestens 1 aus 3 light ist! sonst nehm ich den NICHT!
-			let light=false;
-			for(let p=pix;p<pix+3;p++) if (isPixLight(ctx,p,y)) light=true;
-			if (!light) continue;
+			//let light = false; for (let p = pix; p < pix + 3; p++) if (isPixLight(ctx, p, y)) light = true; if (!light) continue;
+			if (isLightAfter(ctx,pix,y)) {console.log('YES!',pix)} else {console.log('NO',pix);continue;}
 
 			let d = xlist[j] - xlist[i];
-			//console.log('d', xlist[i], xlist[j], d)
+			diffs.push({i:i,j:j,d:d})
+			console.log('d', xlist[i], xlist[j], d)
 			if (d >= n - 2 && d <= n + 2) { //} 243){
-				console.log('BINGO!!!!!!!!!!!!!!!!!!!')
-				let doben=xlist[i]-xlist[i-1]; console.log('doben='+doben)
-				let dunten=arrLast(xlist)-xlist[j]; console.log('dunten='+dunten)
+				console.log('BINGO!!!!!!!!!!!!!!!!!!!', xlist[i], xlist[y], y)
+				let doben = xlist[i] - xlist[i - 1]; console.log('doben=' + doben)
+				let dunten = arrLast(xlist) - xlist[j]; console.log('dunten=' + dunten)
 
-				let test90=pixTest90(ctx,y,xlist[i]-91,xlist[j]+151);
-				rot= test90?90:-90;
-				xstart=test90?xlist[i]-91:xlist[i]-151;
-				xend=test90?xlist[j]+151:xlist[j]+91;
+				let test90 = pixTest90(ctx, y, xlist[i] - top, xlist[j] + bot);
+				rot = test90 ? 90 : -90;
+				xstart = test90 ? xlist[i] - top : xlist[i] - bot;
+				xend = test90 ? xlist[j] + bot : xlist[j] + top;
 
 				drawPix(ctx, xlist[i], y, 'green')
 				drawPix(ctx, xlist[j], y, 'green')
-				return [xstart,xlist[i], xlist[j],xend, xlist,rot]
+				return [xstart, xlist[i], xlist[j], xend, xlist, rot]
 			}
 		}
 	}
-	return [0, 0, w, w,  xlist, 0];
+	console.log('diffs',diffs)
+	return [0, 0, w, w, xlist, 0];
 }
-function pixTest90(ctx,y,x1,x2){
-	let x1ja=false,x2ja=false;
-	for(let x=x1-2;x<=x1+2;x++) if (isPixDark(ctx,x,y)) x1ja=true;
-	for(let x=x2-2;x<=x2+2;x++) if (isPixDark(ctx,x,y)) x2ja=true;
+function pixTest90(ctx, y, x1, x2) {
+	let x1ja = false, x2ja = false;
+	// for (let x = x1 - 2; x <= x1 + 2; x++) if (isPixDark(ctx, x, y) && isLightAfter(ctx,x,y)) x1ja = true;
+	for (let x = x1 - 2; x <= x1 + 2; x++) if (x==0 || isPixDark(ctx, x, y)) x1ja = true;
+	for (let x = x2 - 2; x <= x2 + 2; x++) if (isPixDark(ctx, x, y)) x2ja = true;
 	return x1ja && x2ja; // isPixDark(ctx,x1,y) && isPixDark(ctx,x2,y)
 }
 function calcBoundsX(ctx, y, w, n = 243) {
@@ -230,9 +243,9 @@ function pixShow(ctx, x, y) {
 	}
 	return false;
 }
-function drawPix(ctx, x, y, color = 'red') {
+function drawPix(ctx, x, y, color = 'red', sz=5) {
 	ctx.fillStyle = color;
-	ctx.fillRect(x, y, 5, 5)
+	ctx.fillRect(x-sz/2, y-sz/2, sz, sz)
 }
 function isDarkLine(ctx, x, y, h, before = true, after = true) {
 	let almost1 = false, almost2 = false;
@@ -586,17 +599,17 @@ function drawRoundedRect(ctx, x, y, width, height, radius) {
 	ctx.stroke();
 }
 
-function drawRoundedRect(ctx, x, y, width, height, radius,stroke, fill, thickness) {
+function drawRoundedRect(ctx, x, y, width, height, radius, stroke, fill, thickness) {
 	if (stroke) ctx.strokeStyle = stroke;
 	if (fill) ctx.fillStyle = fill;
 	if (thickness) ctx.lineWidth = thickness;
 	ctx.beginPath();
 	ctx.moveTo(x + radius, y);
-	ctx.lineTo(x+width-radius,y);
-	ctx.moveTo(x + width-radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.moveTo(x + width - radius, y);
 	ctx.arcTo(x + width, y, x + width, y + radius, radius);
-	ctx.moveTo(x + width, y+radius);
-	ctx.lineTo(x+width,y+height-radius);
+	ctx.moveTo(x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
 	// ctx.arcTo(x + width, y + height, x, y + height, radius);
 	// ctx.arcTo(x, y + height, x, y, radius);
 	// ctx.arcTo(x, y, x + width, y, radius);
