@@ -1,41 +1,115 @@
 onload = start;
 
-async function start() { test55_buildings(); } //test42_toolbar(); }
+async function start() { test57_military(); } //test42_toolbar(); }
 
 //#region nations tests
-async function test55_buildings(){
-	let type = 'building';
-	let diColors = {advisor:'orange',battle:'grey',building:'blue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+async function test57_military(){
+	let type = 'military';
+	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
 	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	console.log('Nations Cards',natCards);
 	let i=0;
 	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
 	console.log('list',list);
 	let result=[];
-	//return;
-	list = ['aqueduct','shantytown','coal_mine'];
-	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}};
+	//list =['brewery']; // 'urban_center'];//'university']; //, 'urban_center'];
+	//list = ['department_store','coffee_house','hippodrome']; //,]; //['aqueduct','shantytown','coal_mine'];//['coal_mine']; // 
+	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}
+	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67}};
 	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		if (k == 'brewery') continue;
 		console.log('___________',k)
 		let c=natCards[k];
 		if (c.age == 0) {console.log('age 0',c.key); continue; }
 		let path = c.Path;
-		let color= diColors[c.Type];//if (nundef(color)) console.log('no color for',k,c)
-		let canvas = await natModCard(path,color,i++,dims[type]); //diX[type]);
-		result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
+		let color= diColors[c.Type];
+		let dim = valf(dims[k],dims[type]); 
+		let canvas = await natModCard(path,color,i++,dim);
+		//result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
 		console.log('path',path);
-		//await imgToServer(canvas,'combu/img/advisor/'+path);
+		continue;
 
+		let realPath = `y/nat/${type}/${k}.png`;
+		if (canvas) {}//await imgToServer(canvas,realPath);
+		else{
+			let img = await imgAsync('dExtra', {}, { src: path, tag: 'img', id: `im${k}` });
+			let cv = imgRotate90(img);
+			// await imgToServer(cv,realPath);
+		}
 		//break;
 	}
-	//console.log('cvs',cvs);
-	//let adv=arrLast(result);console.log(adv);
-	return;
-	for(const adv of result){
-		await imgToServer(adv.cv,adv.path);
+}
+async function saveYamlDictInAlphaOrder(path){
+	if (nundef(path)) path = '../assets/games/nations/cards.yaml';
+	let di = await mGetYaml(path);
+	console.log('di',di)
+	let dinew = {};
+	let keys = Object.keys(di);
+	keys.sort();
+	for(const k of keys){dinew[k]=di[k]}
+	downloadAsYaml(dinew,'dinew');
+}
+async function test56_portrait_buildings(){
+	//das betrifft NUR den ziggurat
+	let type = 'building';
+	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	console.log('Nations Cards',natCards);
+	let i=0;
+	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
+	console.log('list',list);
+	let result=[];
+	//list =['brewery']; // 'urban_center'];//'university']; //, 'urban_center'];	//list = ['department_store','coffee_house','hippodrome']; //,]; //['aqueduct','shantytown','coal_mine'];//['coal_mine']; // 
+	//list = ['adobe'];
+	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}
+	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67}};
+	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		if (k == 'brewery') continue;
+		console.log('___________',k)
+		let c=natCards[k];
+		if (c.age == 0) {console.log('age 0',c.key); continue; }
+		let path = c.Path;
+		let color= diColors[c.Type];
+		let img = await imgAsync('dExtra', {}, { src: `../assets/games/nations/cards/${path}`, tag: 'img', id: `im${k}` });
+		if (img.width>img.height) {img.remove(); continue; }
+		let cv = imgRotate90('dExtra',img);
+		let realPath = `y/nat/${type}/${k}.png`;
+		await imgToServer(cv,realPath);
 	}
-	//console.log(arrLast(cvs));
-
+}
+async function test55_buildings(){
+	let type = 'building';
+	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	console.log('Nations Cards',natCards);
+	let i=0;
+	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
+	console.log('list',list);
+	let result=[];
+	//list =['brewery']; // 'urban_center'];//'university']; //, 'urban_center'];
+	//list = ['department_store','coffee_house','hippodrome']; //,]; //['aqueduct','shantytown','coal_mine'];//['coal_mine']; // 
+	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}
+	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67}};
+	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		if (k == 'brewery') continue;
+		console.log('___________',k)
+		let c=natCards[k];
+		if (c.age == 0) {console.log('age 0',c.key); continue; }
+		let path = c.Path;
+		let color= diColors[c.Type];
+		let dim = valf(dims[k],dims[type]); 
+		let canvas = await natModCard(path,color,i++,dim);
+		//result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
+		console.log('path',path);
+		let realPath = `y/nat/${type}/${k}.png`;
+		if (canvas) {}//await imgToServer(canvas,realPath);
+		else{
+			let img = await imgAsync('dExtra', {}, { src: path, tag: 'img', id: `im${k}` });
+			let cv = imgRotate90(img);
+			// await imgToServer(cv,realPath);
+		}
+		//break;
+	}
 }
 async function test54_redo_cards() {
 
