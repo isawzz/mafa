@@ -1,5 +1,215 @@
 
+
+
+
 //#region img detection
+async function __edgeDetect(k,src,border,idx){
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w',w,'h',h);
+
+	//only consider images in landscape form
+	assertion(w>h,`NOT in landscape! ${k} ${src}`);
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d',{ willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
+	let [cgoal,x1,x2,y1,y2]=['#a18b81',0,w,0,h];//w/2,w,Math.round(h/2),Math.round(h*2/3)]; //w*.1,w*.9,h*.1,h*.9];
+	let vlines={},p;
+	for(let x=x1;x<x2;x++){
+		for(let y=y1;y<y2;y++){
+			if (p=isPixSim2(ctx,x,y,cgoal)){
+				assertion(nundef(vlines[x]),`duplicate ${x}`)
+				vlines[x]={x1:x,y1:y,color:p};
+				// console.log('BINGO!',x,y)
+				break;
+			}
+		}		
+	}
+
+	// console.log(vlines)
+	let max=0;
+	for(const x in vlines){
+		let o=vlines[x];
+		o.linedown=getPixLineAtX(ctx,x,o.y1,h);
+		o.avg=getPixAvg(o.linedown);
+		// //geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
+		// let y=o.y1+1;
+		// while(isPixSim2(ctx,x,y,cgoal)||isPixSim2(ctx,x+1,y,cgoal)) y++;
+		// o.y2=y;
+		// o.other = getPixHex(ctx,x,y);
+		// if (y-o.y1>max) max=o;
+	}
+	// console.log(vlines,colorRGB(cgoal,true));
+	// Object.values(vlines).map(o=>console.log(`${o.x1}: ${o.avg.r} ${o.avg.g} ${o.avg.b}`));
+
+	//sort vlines by closeness to goal number
+	let goal=colorRGB(cgoal,true);
+	let arr=Object.values(vlines);
+
+	console.log(colorRGB(cgoal,true));
+	console.log('_______orig',arr.map(x=>x.x1))
+	//arr.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	let arrSorted=sortByFunc(arr,el=>Math.abs(el.avg.r-goal.r));//+Math.abs(el.avg.g-goal.g)+Math.abs(el.avg.b-goal.b));
+	console.log('_______sorted',arrSorted.map(x=>x.x1))
+	// arrSorted.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	//markiere die lines
+	drawPix(ctx, arrSorted[0].x1, arrSorted[0].y1, 'red',5)
+	drawPix(ctx, arrSorted[1].x1, arrSorted[1].y1, 'red',5)
+
+
+	mStyle(img,{display:'none'})
+}
+async function edgeDetect(k,src,border,idx){
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w',w,'h',h);
+
+	//only consider images in landscape form
+	assertion(w>h,`NOT in lanscape! ${k} ${src}`);
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d',{ willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
+	let [c,x1,x2,y1,y2]=['#a18b81',w/2,w,0,h/3]; //w*.1,w*.9,h*.1,h*.9];
+	let vlines={};
+	let cond=p=>p[1]=='a' && p[3]==8 && p[5]==8;
+	for(let x=x1;x<x2;x++){
+		for(let y=y1;y<y2;y++){
+			let p=getPixelColor(ctx,x,y); //console.log('color',p);
+			if (cond(p)){
+				assertion(nundef(vlines[x]),`duplicate ${x}`)
+				vlines[x]={x1:x,y1:y,color:p};
+				console.log('BINGO!',x,y)
+				break;
+			}
+		}		
+	}
+
+	console.log(vlines)
+	for(const x in vlines){
+		let o=vlines[x];
+		//geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
+		for(let y=o.y1;y<h;y++){
+			//if ()
+		}
+	}
+
+}
+async function __present(name, color, idx, rot) {
+	//do this for each card:
+	//if (isdef(mBy('img1'))) mBy('img1').remove();
+	//let name = `age1_aeneid`;
+	let path = `../assets/games/nations/cards/${name}.jpg`;
+
+	let hImg = 200, wImg = 310;
+	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	console.log('img', img)
+
+	let dir = 'portrait';
+	let rotate = img.width > img.height;
+	let dView = 'dMain';
+
+	let dParent = toElem(dView);
+	//mClear(dParent);
+	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
+	// let canvas = mDom(dParent, { border: '10px solid yellow', box:true }, { tag: 'canvas', id: 'canvas',width: w, height: h });
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - 4, height: h - 6 });
+
+	let ctx = canvas.getContext('2d');
+	console.log('rot', rot)
+	if (rot == -90) {
+		ctx.translate(0, img.width);
+		ctx.rotate(-90 * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+		ctx.translate(-4, 15)
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+		ctx.beginPath();
+		ctx.lineWidth = "10";
+		ctx.strokeStyle = color;
+		ctx.rect(15, -4, 290, 180);
+		ctx.stroke();
+	} else if (rot == 90) {
+		ctx.translate(canvas.width, 0); //-canvas.height/2) //img.width);
+		ctx.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+		ctx.translate(-8, 6) //erstes:- verschiebt nacht oben, zweites: + verschiebt nach links
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+		ctx.beginPath();
+		ctx.lineWidth = "10";
+		ctx.strokeStyle = color;
+		ctx.rect(12, 5, img.width - 15, img.height - 20) //15, -4, 290, 180);
+		// ctx.rect(15, -4, 290, 180);
+		ctx.stroke();
+	} else {
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+	}
+
+	//await imgToServer(canvas,`combu/${name}.png`);
+	//await mSleep(1000);
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+
+
+	//let cv = imgAsCanvas(img,'dMain');
+}
+
+function mist() {
+
+	//return;
+	let dir = 'portrait';
+	let rotate = img.width > img.height;
+	//let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
+	//jetzt kommt der echte canvas!
+	[iw, ih, cw, ch] = [xend - xstart, yend - ystart, yend - ystart, xend - xstart];
+	let cv1 = mDom(dParent, { maleft: 20, border: 'green' }, { tag: 'canvas', id: 'cv1', width: cw, height: ch });
+	let ct1 = cv1.getContext('2d');
+	if (rotate) {
+		if (rot == 90) { ct1.translate(cv1.width, 0); } else { ct1.translate(0, ch); }
+		ct1.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+	}
+	//ctx.translate()
+	ct1.drawImage(img, xstart, ystart, cv1.height, cv1.width, 0, 0, yend - ystart - 20, cv1.width);
+
+
+
+
+
+}
+async function ___present(name, color, idx, rot) {
+	let path = `../assets/games/nations/cards/${name}.jpg`;
+	let [hImg, wImg, border, diff] = [200, 300, 10, 10];
+	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	let dir = 'portrait';
+	let rotate = img.width > img.height;
+	let dView = 'dMain';
+
+	let dParent = toElem(dView);
+	//mClear(dParent);
+	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - diff, height: h - diff });
+	let ctx = canvas.getContext('2d');
+	ctx.lineWidth = border;
+	ctx.strokeStyle = color;
+	console.log('rot', rot)
+	if (rot == 90) cvRot90(img, canvas, ctx, w, h, border, diff);
+	else if (rot == -90) cvRot270(img, canvas, ctx, w, h, border, diff);
+	//await imgToServer(canvas,`combu/${name}.png`);
+	//await mSleep(1000);
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+}
+
 async function test55_buildings(){
 	let type = 'building';
 	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};

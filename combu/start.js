@@ -1,8 +1,30 @@
 onload = start;
 
-async function start() { test57_military(); } //test42_toolbar(); }
+async function start() { test58_edgedetect(); } //test42_toolbar(); }
 
 //#region nations tests
+async function test58_edgedetect(){
+	let type = 'military';
+	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+	let natCards = M.nationsCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	let i=0;
+	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
+	list = ['hansa']; //rChoose(Object.keys(natCards),3); //['archer']; 
+	let result=[];
+	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		if (k == 'brewery') continue;
+		console.log('___________',k)
+		let c=natCards[k];
+		if (c.age == 0) {console.log('age 0',c.key); continue; }
+		let src = c.Path;
+		let color= diColors[c.Type];
+		let res = await edgeDetect(k,src,color,i++);
+		let o={key:k,src:src,color:color,path:`y/nat/${type}/${k}.png`}; addKeys(res,o);result.push(o);
+		// await imgToServer(o.cv,o.path);
+	}
+	//console.log('result',result[0]);
+}
+
 async function test57_military(){
 	let type = 'military';
 	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
@@ -15,7 +37,8 @@ async function test57_military(){
 	//list =['brewery']; // 'urban_center'];//'university']; //, 'urban_center'];
 	//list = ['department_store','coffee_house','hippodrome']; //,]; //['aqueduct','shantytown','coal_mine'];//['coal_mine']; // 
 	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}
-	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67}};
+	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67},
+	military:{dx:250,y:240,xmin:180,top:176,bot:67}};
 	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
 		if (k == 'brewery') continue;
 		console.log('___________',k)

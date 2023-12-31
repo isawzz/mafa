@@ -27,6 +27,38 @@ function calendarOpenDay(date, d, ev) {
   });
   return d1;
 }
+function cvRot90(img, canvas, ctx, w, h, border, diff) {
+	let rot = 90
+	ctx.translate(canvas.width, 0); //-canvas.height/2) //img.width);
+	ctx.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+	// ctx.translate(-8, 6) //erstes:- verschiebt nacht oben, zweites: + verschiebt nach links
+	ctx.drawImage(img, 0, 0, img.width, img.height)
+	ctx.beginPath();
+	//ctx.rect(12, 5, canvas.height, canvas.width) //15, -4, 290, 180);
+	// ctx.rect(15, -4, 290, 180);
+	ctx.stroke();
+}
+function cvRot270(img, canvas, ctx, w, h, border, diff) {
+	let rot = -90
+	if (rot == -90) {
+		ctx.translate(0, img.width);
+		ctx.rotate(-90 * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+		ctx.translate(-4, 15)
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+		ctx.beginPath();
+		ctx.lineWidth = "10";
+		ctx.strokeStyle = color;
+		ctx.rect(15, -4, 290, 180);
+		ctx.stroke();
+	} else if (rot == 90) {
+	} else {
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+	}
+
+
+
+	//let cv = imgAsCanvas(img,'dMain');
+}
 function downloadCanvas(canvas) {
 	//var canvas = document.getElementById('myCanvas');
 	var dataURL = canvas.toDataURL('image/png');
@@ -58,6 +90,39 @@ function drawFaga(o) {
 	let el = mDom(d, { fz: fz, hline: fz, family: family, bg: 'transparent', fg: rColor() }, { html: String.fromCharCode('0x' + code) });
 	let t = mDom(d, { fz: 11 }, { html: o.key });
 
+}
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+	ctx.beginPath();
+	ctx.moveTo(x + radius, y);
+	ctx.arcTo(x + width, y, x + width, y + height, radius);
+	ctx.arcTo(x + width, y + height, x, y + height, radius);
+	ctx.arcTo(x, y + height, x, y, radius);
+	ctx.arcTo(x, y, x + width, y, radius);
+	ctx.closePath();
+
+	// Fill and stroke the rounded rectangle
+	ctx.fill();
+	ctx.stroke();
+}
+function drawRoundedRect(ctx, x, y, width, height, radius, stroke, fill, thickness) {
+	if (stroke) ctx.strokeStyle = stroke;
+	if (fill) ctx.fillStyle = fill;
+	if (thickness) ctx.lineWidth = thickness;
+	ctx.beginPath();
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.moveTo(x + width - radius, y);
+	ctx.arcTo(x + width, y, x + width, y + radius, radius);
+	ctx.moveTo(x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
+	// ctx.arcTo(x + width, y + height, x, y + height, radius);
+	// ctx.arcTo(x, y + height, x, y, radius);
+	// ctx.arcTo(x, y, x + width, y, radius);
+	ctx.closePath();
+
+	// Fill and stroke the rounded rectangle
+	if (fill) ctx.fill();
+	if (stroke) ctx.stroke();
 }
 function filenameToObject(fname, path, cats) {
 	let parts = fname.split('.');
@@ -623,6 +688,14 @@ function mTooltip(elem, content) {
 
 	elem.onmouseover = () => d.style.display = 'block';
 	elem.onmouseout = () => d.style.display = 'none';
+
+}
+async function onclickNATIONS() {
+	//show civ japan
+	showTitle('NATIONS!!!');
+	await loadImageAsync('../assets/games/nations/civs/civ_japan.png', mDom('dMain', {}, { tag: 'img' }));
+
+
 
 }
 async function postUserChange(data) {
