@@ -9,7 +9,11 @@ async function test58_edgedetect(){
 	let natCards = M.nationsCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	let i=0;
 	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
-	list = ['hansa']; //rChoose(Object.keys(natCards),3); //['archer']; 
+	list = ['hansa']; //
+	
+	list = rChoose(Object.keys(natCards),3); //['archer']; 
+	list = Object.keys(natCards).filter(x=>natCards[x].Type != 'event');
+	list = rChoose(list,3); //['archer']; 
 	let result=[];
 	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
 		if (k == 'brewery') continue;

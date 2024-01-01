@@ -92,6 +92,10 @@ function drawPix(ctx, x, y, color = 'red', sz = 5) {
 	ctx.fillStyle = color;
 	ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz)
 }
+function drawPixFrame(ctx, x, y, color = 'red', sz = 5) {
+	ctx.strokeStyle = color;
+	ctx.strokeRect(x - sz / 2, y - sz / 2, sz, sz)
+}
 function getPixAvg(arr){
 	let rsum=0,gsum=0,bsum=0,n=arr.length;
 	for(const el of arr){

@@ -4761,7 +4761,7 @@ sokoto_caliphate:
   Type: event
   key: sokoto_caliphate
   age: 4
-solomon_s_temple:
+solomons_temple:
   Category: B
   Stage: I
   Name: Solomon's Temple
@@ -4774,9 +4774,9 @@ solomon_s_temple:
   Stability: ''
   Deploy Cost (No. of Stone): '"-1'
   VP: ' -1"'
-  Path: age1_solomon_s_temple.jpg
+  Path: age1_solomons_temple.jpg
   Type: wonder
-  key: solomon_s_temple
+  key: solomons_temple
   age: 1
 south_africa:
   Category: B
