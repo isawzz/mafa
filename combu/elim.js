@@ -1,3 +1,41 @@
+
+async function natEdgeDetectTitle(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`; 
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
+	// let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, { r: 215, g: 189, b: 174 }, 10, 10);
+	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80,'#a18b81', 6, 14);
+	if (!corner2) {console.log('no start!!!!');img.style.display = 'none';return null;}
+
+	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 7);
+	let [x, y1, cgoal] = [corner2.x, corner2.y, { r: 167, g: 158, b: 151 }]; //colorRGB('#a18b81', true)];
+	let result;
+	for (let y = y1; y < y1 + 10; y++) {
+		result = findSimPixXSequence(ctx, x, w, y,
+			[{ r: 167, g: 158, b: 151 }, { r: 220, g: 216, b: 213 }, { r: 167, g: 158, b: 151 }],
+			[0, 8, 50], 15)
+		//console.log('result', result);
+
+		if (result) { result.map(o => drawPixFrame(ctx, o.x, o.y, 'red', 7)); break; }
+	}
+	img.style.display = 'none';
+	return result;
+}
+
+
 function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);
 	return arr;

@@ -1,8 +1,283 @@
+function rest(){
+	resy = sortBy(resy, 'y');
+	//let ys=resy.map(o=>o.y); console.log('ys',ys);
+	resy.map(o => o.nei = findPointAtDistance(o, 0, 261, resy));
+	resy = resy.filter(x => x.nei);
+	resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
 
 
+	// Example usage:
+	const points = resy;
+
+	const result = findMostFrequentY(points);
+	console.log(result);
+
+
+
+
+	resx = sortBy(resx, 'x');
+	//let xs=resx.map(o=>o.x); console.log('xs',xs);
+	resx.map(o => o.nei = findPointAtDistance(o, 243, 0, resx));
+	resx = resx.filter(x => x.nei);
+	resx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
+
+
+
+	return [resx, resy];
+
+
+}
+function findMostFrequentY(points) {
+	if (!Array.isArray(points) || points.length === 0) {
+		return null; // Return null for invalid input
+	}
+
+	let frequencyMap = new Map();
+
+	// Count frequencies of y values
+	for (let i = 0; i < points.length; i++) {
+		const y = points[i].y;
+		frequencyMap.set(y, (frequencyMap.get(y) || 0) + 1);
+	}
+
+	// Find the y value with the maximum frequency
+	let mostFrequentY;
+	let maxFrequency = 0;
+
+	for (let [y, frequency] of frequencyMap) {
+		if (frequency > maxFrequency) {
+			mostFrequentY = y;
+			maxFrequency = frequency;
+		}
+	}
+
+	// Return the most frequent y value
+	return mostFrequentY;
+}
+
+function __findMostFrequentY(points) {
+	if (!Array.isArray(points) || points.length === 0) {
+		return null; // Return null for invalid input
+	}
+
+	// Sort points by x-coordinate
+	points.sort((a, b) => a.x - b.x);
+
+	let currentX = points[0].x;
+	let consecutiveXValues = [currentX];
+	let frequencyMap = new Map();
+
+	// Count frequencies of y values for consecutive x values
+	for (let i = 0; i < points.length; i++) {
+		if (points[i].x === currentX) {
+			consecutiveXValues.push(points[i].x);
+			const y = points[i].y;
+			frequencyMap.set(y, (frequencyMap.get(y) || 0) + 1);
+		} else {
+			// If x value changes, find the most frequent y for the previous consecutive x values
+			currentX = points[i].x;
+			consecutiveXValues = [currentX];
+			frequencyMap.clear();
+			frequencyMap.set(points[i].y, 1);
+		}
+	}
+
+	// Find the y value with the maximum frequency
+	let mostFrequentY;
+	let maxFrequency = 0;
+
+	for (let [y, frequency] of frequencyMap) {
+		if (frequency > maxFrequency) {
+			mostFrequentY = y;
+			maxFrequency = frequency;
+		}
+	}
+
+	// Return the result as an object
+	return {
+		mostFrequentY: mostFrequentY,
+		consecutiveXValues: consecutiveXValues
+	};
+}
 
 
 //#region img detection
+async function natEdgeDetectTitle(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+	ctx.drawImage(img, 0, 0, w, h);
+	img.remove();
+
+	let [resx, resy] = findPoints(ctx, w * .25, w * .9, 0, h, '#544744');
+
+	resy = sortBy(resy, 'y');
+	//let ys=resy.map(o=>o.y); console.log('ys',ys);
+	resy.map(o => o.nei = findPointAtDistance(o, 0, 261, resy));
+	resy = resy.filter(x => x.nei);
+	resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
+
+
+	// Example usage:
+	const points = resy;
+
+	const result = findMostFrequentY(points);
+	console.log(result);
+
+
+
+
+	resx = sortBy(resx, 'x');
+	//let xs=resx.map(o=>o.x); console.log('xs',xs);
+	resx.map(o => o.nei = findPointAtDistance(o, 243, 0, resx));
+	resx = resx.filter(x => x.nei);
+	resx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
+
+
+
+	return [resx, resy];
+
+
+}
+
+function __findSimPixXSequence(ctx, x1, x2, y, clist) {
+	let [x, i] = [x1, 0];
+	let ok = true;
+	let results = [];
+	while (x <= x2 && i < clist.length) {
+		let p = isPixSim(ctx, x, y, clist[i]);
+		if (p) { results.push({ x: x, y: y, color: p, csim: clist[i] }); i++; }
+		x++;
+	}
+	if (results.length == clist.length) return results; else return null;
+}
+async function edgeDetect(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
+	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, { r: 215, g: 189, b: 174 }, 10, 10);
+	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 7);
+	let [x, y1, cgoal] = [corner2.x, corner2.y, { r: 167, g: 158, b: 151 }]; //colorRGB('#a18b81', true)];
+
+	let result;
+	//for (const delta of [12, 15, 18, 21]) {
+	for (let y = y1; y < y1 + 10; y++) {
+		result = findSimPixXSequence(ctx, x, w, y,
+			[{ r: 167, g: 158, b: 151 }, { r: 220, g: 216, b: 213 }, { r: 167, g: 158, b: 151 }],
+			[0, 8, 50], 15)
+		console.log('result', result);
+
+		if (result) { result.map(o => drawPixFrame(ctx, o.x, o.y, 'red', 7)); break; }
+	}
+	//}
+
+	//let corner = findSimPixXY(ctx, 5, 50, 5, 40, { r: 215, g: 189, b: 174 }, 10);
+	//let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 60, { r: 215, g: 189, b: 174 },10, 10);
+	// console.log('corner', corner, corner2);
+	// drawPixFrame(ctx, corner.x, corner.y, 'yellow', 15);
+	// drawPixFrame(ctx, corner2.x, corner2.y, 'green', 15);
+	// //img.style.display = 'none'; return;
+	// let [x, y, cgoal] = [corner2.x, corner2.y, {r:167,g:158,b:151}]; //colorRGB('#a18b81', true)];
+	// drawPix(ctx, x, y, 'red', 5);
+	// let sim = findSimPixX(ctx, x, w, y, cgoal, 15);
+	// if (sim.x) {
+	// 	drawPix(ctx, sim.x, y, 'green', 5);
+	// 	let sim2 = findSimPixX(ctx, sim.x + 5, w, y, cgoal,15);
+	// 	if (sim2.x) drawPix(ctx, sim2.x, y, 'green', 5);
+	// } else console.log('NOT FOUND!!!')
+
+
+	img.style.display = 'none';
+	return result;
+}
+function _findSimPixLineHor(ctx, x1, x2, y1, y2, cgoal, minlen = 10) {
+	let p;
+	for (let y = y1; y < y2; y++) {
+		for (let xStart = x1; xStart < x2; xStart++) {
+			let found = true;
+			for (let x = xStart; x < xStart + minlen; x++) {
+				p = isPixSim(ctx, x, y, cgoal); if (!p) { found = false; break; }
+			}
+			if (found) return { x: xStart, y: y, color: p };
+		}
+	}
+	return { x: null, color: null }
+}
+async function rest() {
+	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
+	let [cgoal, x1, x2, y1, y2] = ['#a18b81', 0, w, 0, h];//w/2,w,Math.round(h/2),Math.round(h*2/3)]; //w*.1,w*.9,h*.1,h*.9];
+	let vlines = {}, p;
+	for (let x = x1; x < x2; x++) {
+		for (let y = y1; y < y2; y++) {
+			if (p = isPixSim(ctx, x, y, cgoal)) {
+				assertion(nundef(vlines[x]), `duplicate ${x}`)
+				vlines[x] = { x1: x, y1: y, color: p };
+				// console.log('BINGO!',x,y)
+				break;
+			}
+		}
+	}
+
+	// console.log(vlines)
+	let max = 0;
+	for (const x in vlines) {
+		let o = vlines[x];
+		o.linedown = getPixLineAtX(ctx, x, o.y1, h);
+		o.avg = getPixAvg(o.linedown);
+		// //geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
+		// let y=o.y1+1;
+		// while(isPixSim2(ctx,x,y,cgoal)||isPixSim2(ctx,x+1,y,cgoal)) y++;
+		// o.y2=y;
+		// o.other = getPixHex(ctx,x,y);
+		// if (y-o.y1>max) max=o;
+	}
+	// console.log(vlines,colorRGB(cgoal,true));
+	// Object.values(vlines).map(o=>console.log(`${o.x1}: ${o.avg.r} ${o.avg.g} ${o.avg.b}`));
+
+	//sort vlines by closeness to goal number
+	let goal = colorRGB(cgoal, true);
+	let arr = Object.values(vlines);
+
+	console.log(colorRGB(cgoal, true));
+	console.log('_______orig', arr.map(x => x.x1))
+	//arr.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	let arrSorted = sortByFunc(arr, el => Math.abs(el.avg.r - goal.r));//+Math.abs(el.avg.g-goal.g)+Math.abs(el.avg.b-goal.b));
+	console.log('_______sorted', arrSorted.map(x => x.x1))
+	// arrSorted.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	//markiere die lines
+	drawPix(ctx, arrSorted[0].x1, arrSorted[0].y1, 'red', 5)
+	drawPix(ctx, arrSorted[1].x1, arrSorted[1].y1, 'red', 5)
+
+
+	mStyle(img, { display: 'none' })
+}
+
+
+
 async function edgeDetect(k, src, border, idx) {
 
 	let path = `../assets/games/nations/cards/${src}`; //.jpg`;

@@ -9,11 +9,12 @@ async function test58_edgedetect(){
 	let natCards = M.nationsCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	let i=0;
 	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
-	list = ['hansa']; //
+	list = ['immortal']; //
 	
-	list = rChoose(Object.keys(natCards),3); //['archer']; 
-	list = Object.keys(natCards).filter(x=>natCards[x].Type != 'event');
-	list = rChoose(list,3); //['archer']; 
+	// list = rChoose(Object.keys(natCards),6); //['archer']; 
+	//list = Object.keys(natCards).filter(x=>natCards[x].Type != 'event');
+	//list = rChoose(list,4); //['archer']; 
+	// list.push('trireme');
 	let result=[];
 	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
 		if (k == 'brewery') continue;
@@ -22,7 +23,8 @@ async function test58_edgedetect(){
 		if (c.age == 0) {console.log('age 0',c.key); continue; }
 		let src = c.Path;
 		let color= diColors[c.Type];
-		let res = await edgeDetect(k,src,color,i++);
+		let res = await natEdgeDetectTitle(k,src,color,i++);
+		if (!res) console.log('NOT FOUND',k); else console.log(res)
 		let o={key:k,src:src,color:color,path:`y/nat/${type}/${k}.png`}; addKeys(res,o);result.push(o);
 		// await imgToServer(o.cv,o.path);
 	}

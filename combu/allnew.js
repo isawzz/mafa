@@ -1167,7 +1167,7 @@ function showImageInBatch(key, dParent, styles = {}) {
   d1.setAttribute('key', key)
 }
 function showNavbar(){
-	let titles =['collections', 'NATIONS', 'plan', 'colors'];
+	let titles =['add','collections', 'NATIONS', 'plan', 'colors'];
 	let funcNames = titles.map(x => `onclick${capitalize(x)}`);
 	
 	let nav = UI.nav = mNavbar('dNav');
