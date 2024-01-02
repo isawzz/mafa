@@ -9,7 +9,9 @@ async function test58_edgedetect(){
 	let natCards = M.nationsCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	let i=0;
 	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
-	list = ['immortal']; //
+	//bottom edge missing: handging_gardens, bottom&right: bread_and_games
+	//left: antikythera_mechanism, 
+	list = ['antikythera_mechanism','hanging_gardens']; //'solomons_temple']; // 'immortal']; //
 	
 	// list = rChoose(Object.keys(natCards),6); //['archer']; 
 	//list = Object.keys(natCards).filter(x=>natCards[x].Type != 'event');

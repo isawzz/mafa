@@ -60,6 +60,23 @@ adobe:
   Type: building
   key: adobe
   age: 0
+aeneid:
+  Category: B
+  Stage: I
+  Name: Aeneid
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_aeneid.jpg
+  Type: golden_age
+  key: aeneid
+  age: 1
 african_slave_trade:
   Stage: III
   No. of Architect: '1'
@@ -243,6 +260,23 @@ antiquity:
   Path: age1_antiquity.jpg
   Type: wonder
   key: antiquity
+  age: 1
+antikythera_mechanism:
+  Category: B
+  Stage: I
+  Name: Antikythera Mechanism
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: 'draw next age card until first golden age, wonder, or building, play it.'
+  Path: age1_antikythera_mechanism.jpg
+  Type: golden_age
+  key: antikythera_mechanism
   age: 1
 aqueduct:
   Category: B
