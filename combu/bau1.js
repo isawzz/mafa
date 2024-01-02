@@ -1,4 +1,4 @@
-async function natEdgeDetectTitle(k, src, border, idx) {
+async function natDetectBoundingBox(k, src, border, idx, type) {
 
 	let path = `../assets/games/nations/cards/${src}`;
 	let dParent = toElem('dExtra');
@@ -12,52 +12,20 @@ async function natEdgeDetectTitle(k, src, border, idx) {
 	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
 	let ctx = canvas.getContext('2d', { willReadFrequently: true });
 	ctx.drawImage(img, 0, 0, w, h);
-	//img.remove();
 
-	let cgoal = '#544744';
-	let [ex, ey] = findPoints(ctx, w * .15, w * .9, h * .05, h * .9, '#544744');
+	//event: 6C4F64
+	// let edgecolor=type=='event'?'#382428':'#59544E'; //'#544744';
+	let edgecolor=type=='event'?'#6C4F64':'#59544E'; //'#544744';
+	let lightcolor=type=='event'?'#E7BB97':'#DBCEBE';
+	let rect=calcBoundingBox(ctx,w,h,edgecolor,lightcolor);
 
-	let resy = findEdgesApart(ey, 0, 261, 'y');
-	let resx = findEdgesApart(ex, 243, 0, 'x');
-	//ok now I did detect an edge finally!!!!
+	// let cv1 = mDom(dParent, {}, { tag: 'canvas', width: rect.w, height: rect.h });
+	// let ct1 = cv1.getContext('2d', { willReadFrequently: true });
+	// ct1.drawImage(img,-rect.left,-rect.top);
 
-	// let [restx,resty]=[ex.filter(o=>!resx.includes(o)),ey.filter(o=>!resy.includes(o))];
-	// restx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
-	// resty.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// img.remove();canvas.remove();
 
-	resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
-	resx.map(p => drawPix(ctx, p.x, p.y, 'green'));
-
-	//mach corrections!
-	let toplight = findRectSample(ctx, 20, w, 0, 0, '#DBCEBE', 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-	console.log('top edge missing', toplight);
-	let bottomlight = findRectSample(ctx, 20, w, h - 5, h - 5, '#DBCEBE', 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-	console.log('bottom edge missing', bottomlight);
-
-	let top, bottom;
-	if (toplight) {
-		console.log('top:', 0)
-		//if top edge is missing then bottom edge will be higher up!
-		bottom = findBottomEdge(ctx, w, h - 10, '#59544E'); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-		console.log('bottom', bottom.length)
-	} else if (bottomlight) {
-		console.log('bottom', 0);
-		top = findTopEdge(ctx, w, h, '#59544E', 5); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-		console.log('top', top.length)
-	} else {
-		top = findTopEdge(ctx, w, h, '#59544E'); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-		bottom = findBottomEdge(ctx, w, h, '#59544E'); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-		console.log('top', top.length)
-		console.log('bottom', bottom.length)
-	}
-
-	let left = findLeftEdge(ctx, w, h, '#59544E'); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-	let right = findRightEdge(ctx, w, h, '#59544E'); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
-
-	console.log('left', left.length)
-	console.log('right', right.length)
-
-	return [resx, resy];
+	return rect;
 
 }
 function findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false) {
@@ -69,8 +37,8 @@ function findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false)
 			for (let x = xStart; x < xStart + sz; x++) {
 				for (let y = yStart; y < yStart + sz; y++) {
 					//console.log(x,y,cgoal)
-					p = isPix(ctx, x, y, cgoal, 20); // || isPixLight(ctx,x,y);
-					if (lightCounts && isPixLight(ctx, x, y)) p = true;
+					p = isPix(ctx, x, y, cgoal, 25); // || isPixLight(ctx,x,y);
+					if (lightCounts && isPix(ctx, x, y, 'white', 50)) p = true;
 					//console.log(p)
 					if (!p) { found = false; break; }
 				}
@@ -82,10 +50,22 @@ function findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false)
 	return false; //null;// { x: null, color: null }
 
 }
-function findLeftEdge(ctx, w, h, cgoal, xStart = 0) {
-	let [list, _] = findPoints(ctx, xStart, w * .1, 0, h, cgoal, 10); //console.log(pts)
-	list = list.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
-	let vfreq = findMostFrequentVal(list, 'x'); console.log('x', vfreq)
+function findEdgeHor(ctx,x1,x2,h,cgoal,lighting=true){
+	let [list, _] = findPoints(ctx, x1, x2, 0, h, cgoal, 20); //console.log(pts)
+	if (lighting) list = list.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'x'); //console.log('x', vfreq)
+	return list.filter(o => o.x == vfreq);
+}
+function findEdgeVert(ctx,y1,y2,w,cgoal,lighting=true){
+	let [_, list] = findPoints(ctx, 0, w, y1, y2, cgoal, 20); //console.log(pts)
+	if (lighting) list = list.filter(o => isLightAfterV(ctx, o.x, o.y) && isLightBeforeV(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'y'); //console.log('x', vfreq)
+	return list.filter(o => o.y == vfreq);
+}
+function findLeftEdge(ctx, w, h, cgoal, xStart = 0, lighting=true) {
+	let [list, _] = findPoints(ctx, xStart, w * .1, 0, h, cgoal, 20); //console.log(pts)
+	if (lighting) list = list.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'x'); //console.log('x', vfreq)
 	return list.filter(o => o.x == vfreq);
 }
 function findRightEdge(ctx, w, h, cgoal) {
@@ -93,20 +73,20 @@ function findRightEdge(ctx, w, h, cgoal) {
 	// //return ptsy;
 	// let vfreq = findMostFrequentVal(ptsy,'x'); console.log('x',vfreq)
 	let list = ptsy.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
-	let vfreq = findMostFrequentVal(list, 'x'); console.log('x', vfreq)
+	let vfreq = findMostFrequentVal(list, 'x'); //console.log('x', vfreq)
 	return list.filter(o => o.x == vfreq);
 }
 function findTopEdge(ctx, w, h, cgoal, yStart = 0) {
 	let [_, list] = findPoints(ctx, 0, w, yStart, yStart + h / 5, cgoal, 10); //console.log(pts)
 	list = list.filter(o => isLightAfterV(ctx, o.x, o.y) && isLightBeforeV(ctx, o.x, o.y));
-	let vfreq = findMostFrequentVal(list, 'y'); console.log('y', vfreq)
+	let vfreq = findMostFrequentVal(list, 'y'); //console.log('y', vfreq)
 	return list.filter(o => o.y == vfreq);
 }
 function findBottomEdge(ctx, w, h, cgoal) {
 	let [ptsy, pts] = findPoints(ctx, 0, w, h * .9, h, cgoal, 10); //console.log(pts)
 	//return ptsy;
 	let list = pts.filter(o => isLightAfterV(ctx, o.x, o.y) && isLightBeforeV(ctx, o.x, o.y));
-	let vfreq = findMostFrequentVal(list, 'y'); console.log('y', vfreq)
+	let vfreq = findMostFrequentVal(list, 'y'); //console.log('y', vfreq)
 	return list.filter(o => o.y == vfreq);
 }
 function findEdgesApart(list, dx, dy, prop) {

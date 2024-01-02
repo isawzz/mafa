@@ -1,29 +1,85 @@
-function findMostFrequentVal(arr,prop,delta=0) {
-	if (!Array.isArray(arr) || arr.length === 0) {
-		return null; // Return null for invalid input
+
+function calcBoundingBox(ctx,w,h,type){
+	let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];
+
+	let toplight = findRectSample(ctx, 20, w, 0, 0, clight, 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('top edge missing', toplight);
+	let bottomlight = findRectSample(ctx, 20, w, h - 5, h - 5, clight, 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('bottom edge missing', bottomlight);
+	let leftlight = findRectSample(ctx, 0, 0, 10, h, clight, 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('left edge missing', leftlight);
+	let rightlight = findRectSample(ctx, w-5, w-5, 20, h-5, clight, 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('right edge missing', rightlight);
+
+	let rect={};
+
+	let [yoff1,yoff2,dyblank]=[0,20,lighting?15:0];
+	let [xoff1,xoff2,dxblank]=[0,30,lighting?20:0];
+	let top, bottom;
+	if (toplight) {
+		rect.top=0;
+		console.log('top:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		bottom = findEdgeVert(ctx, h-yoff2-dyblank, h - yoff1-dyblank, w, cgoal, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.bottom=bottom[0].y; 
+		console.log('bottom', bottom[0].y, bottom.length)
+	} else if (bottomlight) {
+		rect.bottom=h;
+		top = findEdgeVert(ctx, yoff1+dyblank, yoff2+dyblank, w, cgoal, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('top', top[0].y, top.length)
+		rect.top=top[0].y;
+		console.log('bottom', h);
+	} else {
+		top = findEdgeVert(ctx, yoff1, yoff2, w, cgoal, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		bottom = findEdgeVert(ctx, h-yoff2, h - yoff1, w, cgoal, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		// top = findTopEdge(ctx, w, h, cgoal, 0, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		// bottom = findBottomEdge(ctx, w, h, cgoal, h, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.top=top[0].y;
+		rect.bottom=bottom[0].y; 
+		console.log('top', top[0].y, top.length)
+		console.log('bottom', bottom[0].y, bottom.length)
 	}
 
-	let frequencyMap = new Map();
-
-	// Count frequencies of y values
-	for (let i = 0; i < arr.length; i++) {
-		const val = arr[i][prop];
-		for(let v=val-delta;v<=val+delta;v++)	frequencyMap.set(v, (frequencyMap.get(v) || 0) + 1);
+	let left,right;
+	if (leftlight) {
+		rect.left=0;
+		console.log('left:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		// right = findRightEdge(ctx, w-10, h, cgoal, w-10, lighting); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findEdgeHor(ctx, w-xoff2-dxblank, w - xoff1-dxblank, h, cgoal, lighting); 
+		right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('right', right[0].x, right.length)
+		rect.right=right[0].x; 
+	} else if (rightlight) {
+		//left = findLeftEdge(ctx, w, h, cgoal, 10, lighting); 
+		left = findEdgeHor(ctx, xoff1+dxblank, xoff2+dxblank, h, cgoal, lighting); 
+		left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('left', left[0].x, left.length)
+		rect.left=left[0].x; 
+		console.log('right', w);
+		rect.right=w; 
+	} else {
+		// left = findLeftEdge(ctx, w, h, cgoal, 0, lighting); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		// right = findRightEdge(ctx, w, h, cgoal,w,lighting); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		left = findEdgeHor(ctx, xoff1, xoff2, h, cgoal, lighting); 
+		left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findEdgeHor(ctx, w-xoff2, w - xoff1, h, cgoal, lighting); 
+		right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('left', left[0].x, left.length)
+		console.log('right', right[0].x, right.length)
+		rect.left=left[0].x; 
+		rect.right=right[0].x; 
 	}
 
-	// Find the y value with the maximum frequency
-	let mostFrequentY;
-	let maxFrequency = 0;
+	// left = findLeftEdge(ctx, w, h, cgoal); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// right = findRightEdge(ctx, w, h, cgoal); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// console.log('left', left.length)
+	// console.log('right', right.length)
 
-	for (let [y, frequency] of frequencyMap) {
-		if (frequency > maxFrequency) {
-			mostFrequentY = y;
-			maxFrequency = frequency;
-		}
-	}
+	rect.x=rect.left;rect.y=rect.top;rect.w=rect.right-rect.left;rect.h=rect.bottom-rect.top;
 
-	// Return the most frequent y value
-	return mostFrequentY;
+	return rect; // [resx, resy];
+
 }
 
 function allDarkPoints(ctx, w, dims) {
@@ -122,6 +178,33 @@ function drawPix(ctx, x, y, color = 'red', sz = 5) {
 function drawPixFrame(ctx, x, y, color = 'red', sz = 5) {
 	ctx.strokeStyle = color;
 	ctx.strokeRect(x - sz / 2, y - sz / 2, sz, sz)
+}
+function findMostFrequentVal(arr,prop,delta=0) {
+	if (!Array.isArray(arr) || arr.length === 0) {
+		return null; // Return null for invalid input
+	}
+
+	let frequencyMap = new Map();
+
+	// Count frequencies of y values
+	for (let i = 0; i < arr.length; i++) {
+		const val = arr[i][prop];
+		for(let v=val-delta;v<=val+delta;v++)	frequencyMap.set(v, (frequencyMap.get(v) || 0) + 1);
+	}
+
+	// Find the y value with the maximum frequency
+	let mostFrequentY;
+	let maxFrequency = 0;
+
+	for (let [y, frequency] of frequencyMap) {
+		if (frequency > maxFrequency) {
+			mostFrequentY = y;
+			maxFrequency = frequency;
+		}
+	}
+
+	// Return the most frequent y value
+	return mostFrequentY;
 }
 function getPixAvg(arr) {
 	let rsum = 0, gsum = 0, bsum = 0, n = arr.length;

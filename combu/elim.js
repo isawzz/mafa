@@ -1,5 +1,5 @@
 
-async function natEdgeDetectTitle(k, src, border, idx) {
+async function natDetectBoundingBox(k, src, border, idx) {
 
 	let path = `../assets/games/nations/cards/${src}`; 
 	let dParent = toElem('dExtra');

@@ -1,3 +1,169 @@
+function calcBoundingBox(ctx,w,h,type){
+	let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];
+	// let [ex, ey] = findPoints(ctx, w * .15, w * .9, h * .05, h * .9, cgoal);
+
+	// let resy = findEdgesApart(ey, 0, 261, 'y');
+	// let resx = findEdgesApart(ex, 243, 0, 'x');
+	// //ok now I did detect an edge finally!!!!
+
+	// // let [restx,resty]=[ex.filter(o=>!resx.includes(o)),ey.filter(o=>!resy.includes(o))];
+	// // restx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
+	// // resty.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+
+	// resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
+	// resx.map(p => drawPix(ctx, p.x, p.y, 'green'));
+
+	//mach corrections!
+	let toplight = findRectSample(ctx, 20, w, 0, 0, clight, 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('top edge missing', toplight);
+	let bottomlight = findRectSample(ctx, 20, w, h - 5, h - 5, clight, 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('bottom edge missing', bottomlight);
+	let leftlight = findRectSample(ctx, 0, 0, 10, h, clight, 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('left edge missing', leftlight);
+	let rightlight = findRectSample(ctx, w-5, w-5, 20, h-5, clight, 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('right edge missing', rightlight);
+
+	let rect={};
+
+	let top, bottom;
+	if (toplight) {
+		rect.top=0;
+		console.log('top:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		bottom = findBottomEdge(ctx, w, h - 10, cgoal, h-5, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.bottom=bottom[0].y; 
+		console.log('bottom', bottom[0].y, bottom.length)
+	} else if (bottomlight) {
+		rect.bottom=h;
+		top = findTopEdge(ctx, w, h, cgoal, 5, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('top', top[0].y, top.length)
+		rect.top=top[0].y;
+		console.log('bottom', h);
+	} else {
+		top = findTopEdge(ctx, w, h, cgoal, 0, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		bottom = findBottomEdge(ctx, w, h, cgoal, h, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.top=top[0].y;
+		rect.bottom=bottom[0].y; 
+		console.log('top', top[0].y, top.length)
+		console.log('bottom', bottom[0].y, bottom.length)
+	}
+
+	let left,right;
+	if (leftlight) {
+		rect.left=0;
+		console.log('left:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		right = findRightEdge(ctx, w-10, h, cgoal, w-10, lighting); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('right', right[0].x, right.length)
+		rect.right=right[0].x; 
+	} else if (rightlight) {
+		left = findLeftEdge(ctx, w, h, cgoal, 10, lighting); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('left', left[0].x, left.length)
+		rect.left=left[0].x; 
+		console.log('right', w);
+		rect.right=w; 
+	} else {
+		left = findLeftEdge(ctx, w, h, cgoal, 0, lighting); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findRightEdge(ctx, w, h, cgoal,w,lighting); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('left', left[0].x, left.length)
+		console.log('right', right[0].x, right.length)
+		rect.left=left[0].x; 
+		rect.right=right[0].x; 
+	}
+
+	// left = findLeftEdge(ctx, w, h, cgoal); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// right = findRightEdge(ctx, w, h, cgoal); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// console.log('left', left.length)
+	// console.log('right', right.length)
+
+	rect.x=rect.left;rect.y=rect.top;rect.w=rect.right-rect.left;rect.h=rect.bottom-rect.top;
+
+	return rect; // [resx, resy];
+
+}
+async function natEdgeDetectTitle(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+	ctx.drawImage(img, 0, 0, w, h);
+	//img.remove();
+
+	let cgoal = '#544744';
+	let [ex, ey] = findPoints(ctx, w * .15, w * .9, h * .05, h * .9, '#544744');
+
+	let resy = findEdgesApart(ey, 0, 261, 'y');
+	let resx = findEdgesApart(ex, 243, 0, 'x');
+	//ok now I did detect an edge finally!!!!
+
+	// let [restx,resty]=[ex.filter(o=>!resx.includes(o)),ey.filter(o=>!resy.includes(o))];
+	// restx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
+	// resty.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+
+	resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
+	resx.map(p => drawPix(ctx, p.x, p.y, 'green'));
+
+	//mach corrections!
+	let toplight = findRectSample(ctx, 20, w, 0, 0, '#DBCEBE', 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('top edge missing', toplight);
+	let bottomlight = findRectSample(ctx, 20, w, h - 5, h - 5, '#DBCEBE', 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('bottom edge missing', bottomlight);
+	let leftlight = findRectSample(ctx, 0, 0, 10, h, '#DBCEBE', 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('left edge missing', leftlight);
+	let rightlight = findRectSample(ctx, w-5, w-5, 10, h, '#DBCEBE', 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	console.log('bottom edge missing', rightlight);
+
+	let top, bottom;
+	if (toplight) {
+		console.log('top:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		bottom = findBottomEdge(ctx, w, h - 10, '#59544E'); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('bottom', bottom[0].y, bottom.length)
+	} else if (bottomlight) {
+		top = findTopEdge(ctx, w, h, '#59544E', 5); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('top', top[0].y, top.length)
+		console.log('bottom', 0);
+	} else {
+		top = findTopEdge(ctx, w, h, '#59544E'); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		bottom = findBottomEdge(ctx, w, h, '#59544E'); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('top', top[0].y, top.length)
+		console.log('bottom', bottom[0].y, bottom.length)
+	}
+
+	let left,right;
+	if (leftlight) {
+		console.log('left:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		right = findRightEdge(ctx, w-10, h, '#59544E'); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('right', right[0].x, right.length)
+	} else if (rightlight) {
+		left = findLeftEdge(ctx, w, h, '#59544E', 5); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('left', left[0].x, left.length)
+		console.log('right', 0);
+	} else {
+		left = findLeftEdge(ctx, w, h, '#59544E'); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findRightEdge(ctx, w, h, '#59544E'); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		console.log('left', left[0].x, left.length)
+		console.log('right', right[0].x, right.length)
+	}
+
+	// left = findLeftEdge(ctx, w, h, '#59544E'); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// right = findRightEdge(ctx, w, h, '#59544E'); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// console.log('left', left.length)
+	// console.log('right', right.length)
+
+	return [resx, resy];
+
+}
+
 function rest(){
 	resy = sortBy(resy, 'y');
 	//let ys=resy.map(o=>o.y); console.log('ys',ys);
