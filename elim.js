@@ -1,4 +1,712 @@
 
+//#region nat
+function approx(n, goal, delta) { return Math.abs(n - goal) <= delta; }
+function allDarkPoints(ctx, w, dims) {
+	let [y, xmin, top, bot] = [dims.y, dims.xmin, dims.top, dims.bot];
+	let xlist = [];
+	let n = 243; xmin = 120; //y -= 5;
+	for (let x = 0; x < w; x++) { if (isPixDark(ctx, x, y)) { xlist.push(x); } }
+	//console.log('list', xlist);
+	//xlist.map(x => { drawPix(ctx, x, y, 'red', 2) });
+	let diffs = [];
+	for (let i = 0; i < xlist.length - 1; i++) {
+		if (xlist[i] < xmin) continue;
+		// if (isLightBefore(ctx, xlist[i], y)) { console.log('YES!', xlist[i]) } else { console.log('NO', xlist[i]); continue; }
+		if (!isLightBefore(ctx, xlist[i], y)) continue;
+		for (let j = i + 1; j < xlist.length; j++) {
+			let pix = xlist[j];
+			// if (isLightAfter(ctx, pix, y)) { console.log('YES!', pix) } else { console.log('NO', pix); continue; }
+			if (!isLightAfter(ctx, pix, y)) continue;
+			let d = xlist[j] - xlist[i];
+			diffs.push({ i: i, j: j, d: d })
+			//console.log('d', xlist[i], xlist[j], d)
+			if (d >= n - 2 && d <= n + 2) { //} 243){
+				//console.log('X BINGO!!!!!!!!!!!!!!!!!!!', xlist[i], xlist[y], y)
+				let doben = xlist[i] - xlist[i - 1]; console.log('doben=' + doben)
+				let dunten = arrLast(xlist) - xlist[j]; console.log('dunten=' + dunten)
+
+				let test90 = pixTest90(ctx, y, xlist[i] - top, xlist[j] + bot);
+				rot = test90 ? 90 : -90;
+				xstart = test90 ? xlist[i] - top : xlist[i] - bot;
+				xend = test90 ? xlist[j] + bot : xlist[j] + top;
+
+				drawPix(ctx, xlist[i], y, 'green')
+				drawPix(ctx, xlist[j], y, 'green')
+				return [xstart, xlist[i], xlist[j], xend, xlist, rot]
+			}
+		}
+	}
+	console.log('diffs', diffs)
+	return [0, 0, w, w, xlist, 0];
+}
+function _calcBoundingBox(ctx,w,h,type){
+	let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];
+
+	let toplight = findRectSample(ctx, 20, w, 0, 0, clight, 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	//console.log('top edge missing', toplight);
+	let bottomlight = findRectSample(ctx, 20, w, h - 5, h - 5, clight, 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	//console.log('bottom edge missing', bottomlight);
+	let leftlight = findRectSample(ctx, 0, 0, 10, h, clight, 4); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	//console.log('left edge missing', leftlight);
+	let rightlight = findRectSample(ctx, w-5, w-5, 20, h-15, clight, 4, true); //1top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	//console.log('right edge missing', rightlight);
+
+	let rect={};
+
+	let [yoff1,yoff2,dyblank]=[0,20,lighting?20:0];
+	let [xoff1,xoff2,dxblank]=[0,30,lighting?20:0];
+	let top, bottom;
+	if (toplight) {
+		rect.top=0;
+		//console.log('top:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		bottom = findEdgeVert(ctx, h-yoff2-dyblank-5, h - yoff1 -dyblank, w, cgoal, lighting); 
+		//console.log('bottom',lighting,bottom,)
+		bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.bottom=bottom[0].y; 
+		//console.log('bottom', bottom[0].y, bottom.length)
+	} else if (bottomlight) {
+		rect.bottom=h;
+		top = findEdgeVert(ctx, yoff1+dyblank, yoff2+dyblank, w, cgoal, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		//console.log('top', top[0].y, top.length)
+		rect.top=top[0].y;
+		//console.log('bottom', h);
+	} else {
+		top = findEdgeVert(ctx, yoff1, yoff2, w, cgoal, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		bottom = findEdgeVert(ctx, h-yoff2, h - yoff1, w, cgoal, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		// top = findTopEdge(ctx, w, h, cgoal, 0, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		// bottom = findBottomEdge(ctx, w, h, cgoal, h, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.top=top[0].y;
+		rect.bottom=bottom[0].y; 
+		//console.log('top', top[0].y, top.length)
+		//console.log('bottom', bottom[0].y, bottom.length)
+	}
+
+	let left,right;
+	if (leftlight) {
+		rect.left=0;
+		//console.log('left:', 0)
+		//if top edge is missing then bottom edge will be higher up!
+		// right = findRightEdge(ctx, w-10, h, cgoal, w-10, lighting); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findEdgeHor(ctx, w-xoff2-dxblank, w - xoff1-dxblank, h, cgoal, lighting); 
+		right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		//console.log('right', right[0].x, right.length)
+		rect.right=right[0].x; 
+	} else if (rightlight) {
+		//left = findLeftEdge(ctx, w, h, cgoal, 10, lighting); 
+		left = findEdgeHor(ctx, xoff1+dxblank, xoff2+dxblank, h, cgoal, lighting); 
+		left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		//console.log('left', left[0].x, left.length)
+		rect.left=left[0].x; 
+		//console.log('right', w);
+		rect.right=w; 
+	} else {
+		// left = findLeftEdge(ctx, w, h, cgoal, 0, lighting); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		// right = findRightEdge(ctx, w, h, cgoal,w,lighting); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		left = findEdgeHor(ctx, xoff1, xoff2, h, cgoal, lighting); 
+		left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findEdgeHor(ctx, w-xoff2, w - xoff1, h, cgoal, lighting); 
+		right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		//console.log('left', left[0].x, left.length)
+		//console.log('right', right[0].x, right.length)
+		rect.left=left[0].x; 
+		rect.right=right[0].x; 
+	}
+
+	// left = findLeftEdge(ctx, w, h, cgoal); left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// right = findRightEdge(ctx, w, h, cgoal); right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+	// console.log('left', left.length)
+	// console.log('right', right.length)
+
+	rect.x=rect.left;rect.y=rect.top;rect.w=rect.right-rect.left;rect.h=rect.bottom-rect.top;
+
+	return [rect,toplight,bottomlight,leftlight,rightlight]; // [resx, resy];
+
+}
+function calcBoundsY(ctx, x, h, n = 261) {
+	let ystart = -1, yend = -1, y, countlines = 0, prevy = [], ymin = 0, hbound = h - 20;
+	let isRotated = false;
+	let y1, y2;
+	let gotit = false;
+
+	for (y = ymin; y < h; y++) {
+		if (gotit) {
+			let wt = isPixWhiteOrTransparent(ctx, x, y);
+
+			if (wt) return [ystart, y1, y2, y - 1, isRotated, prevy];
+		}
+		if (isPixDark(ctx, x, y)) {
+			if (isDarkLine(ctx, x, y, h, y < h / 2, y > h / 2)) {
+
+				if (gotit) {
+					console.log('====>y', y)
+					return [ystart, y1, y2, y, isRotated];
+				}
+
+				ctx.fillStyle = 'black';
+				yother = null;
+				for (const py of prevy) {
+					let dy = y - py;
+					// console.log('dy', dy)
+					if (dy > n - 3 && dy < n + 3) {
+						gotit = true;
+						isRotated = true;
+						y1 = yother = py;
+						y2 = y;
+						console.log('BINGO!!!! zweites middle ding');
+						ctx.fillStyle = 'red';
+					}
+				}
+				prevy.push(y);
+				// console.log('______', countlines++, y);
+				ctx.fillRect(x - 2, y - 2, 5, 5);
+				if (yother) {
+					ctx.fillRect(x - 2, yother - 2, 5, 5);
+					let i1 = prevy.indexOf(y1);
+					console.log('i1', i1)
+					ystart = i1 > 0 ? prevy[i1 - 1] : 0;
+				}
+
+				// if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
+				y += 5;
+			}
+		}
+	}
+	return [ystart, y1, y2, h, isRotated, prevy];
+}
+function convertToRgb() {
+	let result = [];
+	for (const a of arguments) {
+		if (isString(a)) result.push(colorRGB(a.toLowerCase(), true)); else result.push(a);
+	}
+	if (result.length == 1) return result[0];
+	return result;
+}
+function condDarkEdgesVertical(pt, list) {
+	let [d, delta] = [261, 4];
+	for (const p1 of list) {
+		let dist = Math.abs(pt.y, p1.y);
+		let ok = isWithinDelta(dist, d, delta);
+		if (ok) {
+			let [pt1, pt2] = [p1, pt];
+			ok &&= isColorBefore(ctx, pt1.x, pt1.y, '#DDD3CA', 15)
+			ok &&= isColorAfter(ctx, pt2.x, pt2.y, '#DDD3CA', 15)
+			if (ok) return ok;
+		}
+	}
+	return false;
+}
+function _drawPix(ctx, x, y, color = 'red', sz = 5) {
+	ctx.fillStyle = color;
+	ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz)
+}
+function _drawPixFrame(ctx, x, y, color = 'red', sz = 5) {
+	ctx.strokeStyle = color;
+	ctx.strokeRect(x - sz / 2, y - sz / 2, sz, sz)
+}
+function findBottomEdge(ctx, w, h, cgoal) {
+	let [ptsy, pts] = findPoints(ctx, 0, w, h * .9, h, cgoal, 10); //console.log(pts)
+	//return ptsy;
+	let list = pts.filter(o => isLightAfterV(ctx, o.x, o.y) && isLightBeforeV(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'y'); //console.log('y', vfreq)
+	return list.filter(o => o.y == vfreq);
+}
+function _findEdgesApart(list, dx, dy, prop) {
+	list.map(o => o.nei = findPointAtDistance(o, dx, dy, list, 10))
+	//console.log(list)
+	list = list.filter(o => o.nei)
+
+	let vfreq = findMostFrequentVal(list, prop); console.log(prop, vfreq)
+	let good = list.filter(o => isWithinDelta(o[prop], vfreq, 3));
+	let rest = list.filter(o => !isWithinDelta(o[prop], vfreq, 3));
+	vfreq = findMostFrequentVal(rest, prop); console.log(prop, vfreq)
+	let good2 = list.filter(o => o[prop] == vfreq);
+	list = good.concat(good2);
+	return list;
+}
+function _findEdgeHor(ctx,x1,x2,h,cgoal,lighting=true){
+	let [list, _] = findPoints(ctx, x1, x2, 0, h, cgoal, 20); //console.log(pts)
+	if (lighting) list = list.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'x'); //console.log('x', vfreq)
+	return list.filter(o => o.x == vfreq);
+}
+function _findEdgeVert(ctx,y1,y2,w,cgoal,lighting=true){
+	let [_, list] = findPoints(ctx, 0, w, y1, y2, cgoal, 20); 
+
+	//console.log(jsCopy(list))
+
+	//if (lighting) list = list.filter(o => isLightAfterV(ctx, o.x, o.y) && isLightBeforeV(ctx, o.x, o.y));
+	//console.log(jsCopy(list))
+
+	let vfreq = findMostFrequentVal(list, 'y'); //console.log('y', vfreq)
+
+
+	return list.filter(o => o.y == vfreq);
+}
+function findHorizontal(ctx, x1, x2, y1, y2, cgoal, minlen = 10, delta = 20) {
+	let p;
+	cgoal = colorRGB(cgoal, true); console.log(cgoal)
+	for (let y = y1; y < y2; y++) {
+		for (let xStart = x1; xStart < x2; xStart++) {
+			let found = true;
+			for (let x = xStart; x < xStart + minlen; x++) {
+				p = isPix(ctx, x, y, cgoal, delta);
+				if (!p) { found = false; break; }
+			}
+			if (found) return { x: xStart, y: y, color: p };
+		}
+	}
+	return null;// { x: null, color: null }
+}
+function findLeftEdge(ctx, w, h, cgoal, xStart = 0, lighting=true) {
+	let [list, _] = findPoints(ctx, xStart, w * .1, 0, h, cgoal, 20); //console.log(pts)
+	if (lighting) list = list.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'x'); //console.log('x', vfreq)
+	return list.filter(o => o.x == vfreq);
+}
+function _findMostFrequentVal(arr,prop,delta=0) {
+	if (!Array.isArray(arr) || arr.length === 0) {
+		return null; // Return null for invalid input
+	}
+
+	let frequencyMap = new Map();
+
+	// Count frequencies of y values
+	for (let i = 0; i < arr.length; i++) {
+		const val = arr[i][prop];
+		frequencyMap.set(val, (frequencyMap.get(val) || 0) + 1);
+		// for(let v=val-delta;v<=val+delta;v++)	frequencyMap.set(v, (frequencyMap.get(v) || 0) + 1);
+	}
+
+	// Find the y value with the maximum frequency
+	let mostFrequentY;
+	let maxFrequency = 0;
+
+	for (let [val, frequency] of frequencyMap) {
+		if (frequency > maxFrequency) {
+			//console.log('val',val)
+			mostFrequentY = val;
+			maxFrequency = frequency;
+		}
+	}
+
+	// Return the most frequent y value
+	return mostFrequentY;
+}
+function findPixels(ctx, x1, x2, y1, y2, arr, maxdelta) {
+	console.log('params', x1, x2, y1, y2)
+	console.log('arr', arr)
+	let prev = [];
+	// let [x, y, c, cond, i] = [x1, y1, 0]; //, arr[0].c, arr[0].cond, 1]; // convertToRgb(arr[0].c), arr[0].cond, 1];
+	// console.log('c', c)
+	let [x, y, i] = [x1, y1, 0];
+	let results = [];
+	let MAXX = 100000, cnt = 0;
+	let [c, cond] = [arr[i].c, arr[i].cond];
+	while (x <= x2 && y <= y2) {
+		if (cnt++ > MAXX) { console.log('MAXX!!!!!!!!!!!!!!!'); return null; }
+		//console.log('testing',x,y)
+		let pi = isPixSim(ctx, x, y, c, maxdelta);
+		if (pi) {
+			let [p, acc] = [pi.p, pi.acc];
+			//console.log('found pixel color', acc, colorHex(p), arr[i].c, x, y)
+			//drawPixFrame(ctx,x,y,'red',5)
+			//return {x,y};
+			let pt = { x, y };
+			let res = cond(pt, prev);
+			if (res) {
+				console.log('cond erfuellt!!!')
+				drawPixFrame(ctx, x, y, 'red', 15)
+				prev.push(pt);
+				results.push({ x: x, y: y, color: p, csim: arr[i].c });
+				if (results.length == arr.length) return results;
+				//c = arr[i].c; //convertToRgb(arr[i].c);
+				//cond = arr[i].cond;
+				//console.log('c updated to', i, c); //maxdelta*=2;
+				i++; if (i >= arr.length) { console.log('i MAX', i); return null; }
+				[c, cond] = [arr[i].c, arr[i].cond];
+				x += 30
+			}
+		}
+		x++;
+		if (x >= x2) { results = [];[x, y, i] = [x1, y + 1, 0];[c, cond] = [arr[i].c, arr[i].cond]; } //convertToRgb(arr[0].c), arr[0].cond, 1]; }
+
+	}
+	return null;
+}
+function _findPoints(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
+	let p;
+	let resy = [], resx = [];
+	cgoal = colorRGB(cgoal, true);
+	for (let y = y1; y < y2; y++) {
+		for (let x = x1; x < x2; x++) {
+			p = isPixDark(ctx, x, y, cgoal, delta);
+			if (p) {
+				let l = isLightBeforeV(ctx, x, y);
+				let d = isLightAfterV(ctx, x, y);
+				if (l || d) resy.push({ x, y })
+				l = isLightBefore(ctx, x, y);
+				d = isLightAfter(ctx, x, y);
+				if (l || d) resx.push({ x, y })
+			}
+		}
+	}
+
+	return [resx, resy];
+}
+function _findPointAtDistance(pt, dx, dy, list, delta = 0) {
+	for (const p1 of list) {
+		if (isWithinDelta(Math.abs(pt.x - p1.x), dx, delta) && isWithinDelta(Math.abs(pt.y - p1.y), dy, delta)) return p1;
+	}
+	return null;
+}
+function findRightEdge(ctx, w, h, cgoal) {
+	let [ptsy, pts] = findPoints(ctx, w * .9, w, 0, h, cgoal, 10); //console.log(pts)
+	// //return ptsy;
+	// let vfreq = findMostFrequentVal(ptsy,'x'); console.log('x',vfreq)
+	let list = ptsy.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'x'); //console.log('x', vfreq)
+	return list.filter(o => o.x == vfreq);
+}
+function _findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false) {
+	let p;
+	cgoal = colorRGB(cgoal, true);
+	for (let yStart = y1; yStart <= y2; yStart += sz) {
+		for (let xStart = x1; xStart <= x2; xStart += sz) {
+			let found = true;
+			for (let x = xStart; x < xStart + sz; x++) {
+				for (let y = yStart; y < yStart + sz; y++) {
+					//console.log(x,y,cgoal)
+					p = isPix(ctx, x, y, cgoal, 20); // || isPixLight(ctx,x,y);
+					if (lightCounts && isPix(ctx, x, y, 'white', 10)) p = true;
+					//console.log(p)
+					if (!p) { found = false; break; }
+				}
+				if (!found) break;
+			}
+			if (found) return true; // { x: xStart, y: y, color: p };
+		}
+	}
+	return false; //null;// { x: null, color: null }
+
+}
+function findSimPixXSequence(ctx, x1, x2, y, clist, xmaxlist, maxdelta) {
+	clist = convertToRgb(clist)
+	let [x, i] = [x1, 0];
+	let results = [];
+	let prev = null;
+	while (x <= x2 && i < clist.length) {
+		let p = isPixSim(ctx, x, y, clist[i], maxdelta);
+		if (p) {
+			let abstand = !prev ? 0 : x - prev.x;
+			//console.log('abstand', abstand, xmaxlist[i])
+			if (abstand <= xmaxlist[i]) { prev = { x: x, y: y, color: p, csim: clist[i] }; results.push(prev); i++; }
+		}
+		x++;
+	}
+	if (results.length == clist.length) return results; else return null;
+}
+function findSimPixX(ctx, x1, x2, y, cgoal) {
+	cgoal = convertToRgb(cgoal)
+	for (let x = x1; x < x2; x++) {
+		let p = isPixSim(ctx, x, y, cgoal); if (p) return { x: x, color: p };
+	}
+	return { x: null, color: null }
+}
+function findSimPixXY(ctx, x1, x2, y1, y2, cgoal) {
+	cgoal = convertToRgb(cgoal)
+	for (let y = y1; y < y2; y++) {
+		for (let x = x1; x < x2; x++) {
+			let p = isPixSim(ctx, x, y, cgoal); if (p) return { x: x, y: y, color: p };
+		}
+	}
+	return { x: null, color: null }
+}
+function findSimPixLineHor(ctx, x1, x2, y1, y2, cgoal, minlen = 10, maxdelta = 20) {
+	let p;
+	cgoal = convertToRgb(cgoal)
+	for (let y = y1; y < y2; y++) {
+		for (let xStart = x1; xStart < x2; xStart++) {
+			let found = true;
+			for (let x = xStart; x < xStart + minlen; x++) {
+				p = isPixSim(ctx, x, y, cgoal); if (!p) { found = false; break; }
+			}
+			if (found) return { x: xStart, y: y, color: p };
+		}
+	}
+	return null;// { x: null, color: null }
+}
+function findTopEdge(ctx, w, h, cgoal, yStart = 0) {
+	let [_, list] = findPoints(ctx, 0, w, yStart, yStart + h / 5, cgoal, 10); //console.log(pts)
+	list = list.filter(o => isLightAfterV(ctx, o.x, o.y) && isLightBeforeV(ctx, o.x, o.y));
+	let vfreq = findMostFrequentVal(list, 'y'); //console.log('y', vfreq)
+	return list.filter(o => o.y == vfreq);
+}
+function getPixAvg(arr) {
+	let rsum = 0, gsum = 0, bsum = 0, n = arr.length;
+	for (const el of arr) {
+		rsum += el.r; gsum += el.g; bsum += el.b;
+	}
+	return { r: rsum / n, g: gsum / n, b: bsum / n };
+}
+function getPixHex(ctx, x, y) {
+	var pix = ctx.getImageData(x, y, 1, 1).data;
+	var red = pix[0]; var green = pix[1]; var blue = pix[2];
+	return colorHex(`rgb(${red},${green},${blue})`);
+
+}
+function getPixLineAtX(ctx, x, y1, y2) {
+	let res = [];
+	for (let y = y1; y <= y2; y++) res.push(getPixRgb(ctx, x, y))
+	return res;
+}
+function getPixRgb(ctx, x, y) {
+	var pix = ctx.getImageData(x, y, 1, 1).data;
+	var red = pix[0]; var green = pix[1]; var blue = pix[2];
+	return { r: red, g: green, b: blue };
+	//return colorHex(`rgb(${red},${green},${blue})`);
+
+}
+async function imgAsync(dParent, styles, opts) {
+	let path = opts.src;
+	delete opts.src;
+	addKeys({ tag: 'img' }, opts); //if forget
+
+	return new Promise((resolve, reject) => {
+		const img = mDom(dParent, styles, opts);
+		// const img = new Image();
+		img.onload = () => {
+			resolve(img);
+		};
+		img.onerror = (error) => {
+			reject(error);
+		};
+		img.src = path;
+	});
+}
+function imgAsCanvas(img, dParent) {
+	dParent = toElem(dParent);
+	mClear(dParent);
+	let canvas = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+	return canvas;
+}
+function imgRotate90(dParent, img) {
+
+	let canvas = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+	let ctx = canvas.getContext('2d');
+	// ctx.translate(img.height, 0)
+	ctx.translate(0, img.width);
+	ctx.rotate(-90 * Math.PI / 180);
+
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+	ctx.drawImage(img, 0, 0, img.width, img.height);
+	return canvas;
+
+
+}
+async function imgToPortrait(src, width, dParent, sendToServer = false, path = null, downloadAtClient = false) { //}, path, viewParent, imgParent, sendToServer, downloadAtClient) {
+	if (isdef(mBy('img1'))) mBy('img1').remove();
+	let img = mDom(document.body, { position: 'absolute', top: '70vh', h: width }, { tag: 'img', id: 'img1' });
+	await loadImageAsync(src, img); //hier ist img loaded!!!
+	//return img; 
+	dParent = toElem(dParent);
+	mClear(dParent);
+	let canvas = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+	let ctx = canvas.getContext('2d');
+	ctx.translate(0, img.width);
+	ctx.rotate(-90 * Math.PI / 180);
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+	ctx.drawImage(img, 0, 0, img.width, img.height)
+	if (downloadAtClient) downloadCanvas(canvas);
+	if (sendToServer) {
+		let dataUrl = canvas.toDataURL('image/png');
+		let o = { image: dataUrl, path: path };
+		let resp = await mPostRoute('postImage', o);
+		return resp; //console.log('resp', resp);
+	}
+	return 'image NOT sent to server!'
+}
+async function imgSaveAsLandscape(src, width, path, viewParent, imgParent, sendToServer, downloadAtClient) {
+	if (isdef(mBy('img1'))) mBy('img1').remove();
+	let img = mDom(imgParent, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', id: 'img1' });
+	await loadImageAsync(src, img); //hier ist img loaded!!!
+	mClear(viewParent);
+	let canvas = mDom(viewParent, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
+	let ctx = canvas.getContext('2d');
+	ctx.translate(img.height, 0)
+	ctx.rotate(90 * Math.PI / 180);
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+	ctx.drawImage(img, 0, 0, img.width, img.height)
+	if (downloadAtClient) downloadCanvas(canvas);
+	if (sendToServer) {
+		let dataUrl = canvas.toDataURL('image/png');
+		let o = { image: dataUrl, path: path };
+		let resp = await mPostRoute('postImage', o);
+		return resp; //console.log('resp', resp);
+	}
+	return 'image NOT sent to server!'
+}
+function isBetween(n, a, b) { return n >= a && n <= b }
+function isDarkLine(ctx, x, y, h, before = true, after = true) {
+	let almost1 = false, almost2 = false;
+	let d = 3;
+	if (before) {
+		for (let yy = Math.max(0, y - d); yy < y; yy++) { //Math.min(y+5,h);yy++)	{
+			let p = ctx.getImageData(x, yy, 1, 1).data;
+			if (p[0] + p[1] + p[2] > 520) almost1 = true;
+			// console.log(p[0],p[1],p[2]);
+		}
+	} else almost1 = true;
+	if (after) {
+		for (let yy = y + 1; yy < Math.min(y + 5, h); yy++) { //Math.min(y+5,h);yy++)	{
+			let p = ctx.getImageData(x, yy, 1, 1).data;
+			if (p[0] + p[1] + p[2] > 520) almost2 = true;
+			// console.log(p[0],p[1],p[2]);
+		}
+	} else almost2 = true;
+	return almost1 && almost2;
+}
+function isDarkBar(ctx, x, y, w, before = true, after = true) {
+	let almost1 = false, almost2 = false;
+	let d = 3;
+	if (before) {
+		for (let xx = Math.max(0, x - d); xx < x; xx++) { //Math.min(y+5,h);yy++)	{
+			let p = ctx.getImageData(xx, y, 1, 1).data;
+			if (p[0] + p[1] + p[2] > 520) almost1 = true;
+			// console.log(p[0],p[1],p[2]);
+		}
+	} else almost1 = true;
+	if (after) {
+		for (let xx = x + 1; xx < Math.min(x + 5, w); xx++) { //Math.min(y+5,h);yy++)	{
+			let p = ctx.getImageData(x, xx, 1, 1).data;
+			if (p[0] + p[1] + p[2] > 520) almost2 = true;
+			// console.log(p[0],p[1],p[2]);
+		}
+	} else almost2 = true;
+	return almost1 && almost2;
+}
+function isLightAfter(ctx, x, y) {
+	for (let p = x + 1; p < x + 4; p++) if (isPixLight(ctx, p, y)) return true;
+	return false;
+}
+function isLightBefore(ctx, x, y) {
+	for (let p = x - 4; p < x - 1; p++) if (isPixLight(ctx, p, y)) return true;
+	return false;
+}
+function isLightAfterV(ctx, x, y) {
+	for (let p = y + 1; p < y + 4; p++) if (isPixLight(ctx, x, p)) return true;
+	return false;
+}
+function isLightBeforeV(ctx, x, y) {
+	for (let p = y - 4; p < y - 1; p++) if (isPixLight(ctx, x, p)) return true;
+	return false;
+}
+function isPix(ctx, x, y, color, delta=10) {
+	let rgb = isString(color) ? colorRGB(color, true) : color;
+	//console.log('rgb',rgb)
+	let p = getPixRgb(ctx, x, y);
+	let found = isWithinDelta(p.r, rgb.r, delta) && isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta);
+	return found?p:null;
+}
+function isPixGB(ctx, x, y, color, delta=10) {
+	let rgb = isString(color) ? colorRGB(color, true) : color;
+	//console.log('rgb',rgb)
+	let p = getPixRgb(ctx, x, y);
+	let found = isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta);
+	return found?p:null;
+}
+function isPixDark(ctx, x, y) {
+	var pix = ctx.getImageData(x, y, 1, 1).data;
+	var red = pix[0]; var green = pix[1]; var blue = pix[2];
+	return green < 100 && blue < 100;
+}
+function isPixLight(ctx, x, y) {
+	var pix = ctx.getImageData(x, y, 1, 1).data;
+	var red = pix[0]; var green = pix[1]; var blue = pix[2];
+	return red + green + blue > 520;
+}
+function _isPixSim(ctx, x, y, hexcolor) {
+	let p = getPixHex(ctx, x, y);
+	return p[1] == hexcolor[1] && p[3] == hexcolor[3] && p[5] == hexcolor[5] ? p : null;
+}
+function _isPixSim2(ctx, x, y, color, delta = 10) {
+	let rgb = isString(color) ? colorRGB(color, true) : color;
+	let p = getPixRgb(ctx, x, y);
+	return isWithinDelta(p.r, rgb.r, delta) && isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta) ? p : null;
+}
+function isPixSim(ctx, x, y, color, maxdelta) {
+	let deltas = range(Math.max(0, maxdeltas / 2), maxdelta, 4);
+	for (const delta of deltas) {
+		let rgb = isString(color) ? colorRGB(color, true) : color;
+		//console.log('rgb',rgb)
+		let p = getPixRgb(ctx, x, y);
+		let found = isWithinDelta(p.r, rgb.r, delta) && isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta);
+		if (found) return { p, acc: delta };
+	}
+	return null;
+}
+function isColorAfter(ctx, x, y, c, maxdelta) {
+	for (let p = x + 1; p < x + 4; p++) if (isPixSim(ctx, p, y, c, maxdelta)) return true;
+	return false;
+}
+function isColorBefore(ctx, x, y, c, maxdelta) {
+	for (let p = x - 4; p < x - 1; p++) if (isPixSim(ctx, p, y, c, maxdelta)) return true;
+	return false;
+}
+function isPix(ctx, x, y, color, delta=10) {
+	let rgb = isString(color) ? colorRGB(color, true) : color;
+	//console.log('rgb',rgb)
+	let p = getPixRgb(ctx, x, y);
+	let found = isWithinDelta(p.r, rgb.r, delta) && isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta);
+	//if (found) found&&=p.r+p.g+p.b
+	return found?p:null;
+}
+function isPixWhiteOrTransparent(ctx, x, y) {
+	var pix = ctx.getImageData(x, y, 1, 1).data;
+	var red = pix[0]; var green = pix[1]; var blue = pix[2];
+	//console.log('pix',red,green,blue,red + green + blue > 3*250)
+	return red + green + blue > 3 * 250;
+}
+function isWithinDelta(n, goal, delta) { return isBetween(n, goal - delta, goal + delta) }
+async function natCivsToLandscape() {
+	async function civSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
+		let path = `assets/games/nations/civs/civ_${name}.png`;
+		return imgSaveAsLandscape(src, width, path, viewParent, imgParent, sendToServer, downloadAtClient);
+	}
+
+	let dbody = document.body; dbody.innerHTML = '';
+	let viewParent = mDom(dbody, { bg: 'skyblue', hmin: '100vh' }, { id: 'd1' });
+	// let dhidden = mDom(dbody);
+	let civlist = ['america', 'arabia', 'china', 'egypt', 'ethiopia', 'greece', 'india', 'japan', 'korea', 'mali', 'mongolia', 'persia', 'poland', 'portugal', 'rome', 'venice', 'vikings'];
+	for (const civ of ['vikings']) {
+		let src = `../assets/games/nations/civs_old/${civ}.jpg`;
+		let width = 800;
+		let name = civ;
+		let viewParent = viewParent;
+		let imgParent = dbody;
+		let sendToServer = true;
+		let downloadAtClient = false;
+		await civSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
+		// let img = await imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
+		// await onloadCiv(img, src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
+
+	}
+}
+async function natGetEmptyCardCanvas(dParent){
+	dParent = toElem(dParent);
+	if (nundef(DA.eimg)){
+		M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+		DA.eimg = await imgAsync(dParent, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
+		mDom(dParent,{h:10});
+		//console.log('w', DA.eimg.width, 'h', DA.eimg.height);
+	}
+	let eimg = DA.eimg;
+	let [w, h] = [eimg.width, eimg.height];
+	let canvas = mDom(dParent, {}, { tag: 'canvas', width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+	ctx.drawImage(eimg, 0, 0, w, h);
+	return [canvas,ctx,w,h];
+}
 async function natDetectBoundingBox(k, src, border, idx) {
 
 	let path = `../assets/games/nations/cards/${src}`; 
@@ -34,6 +742,125 @@ async function natDetectBoundingBox(k, src, border, idx) {
 	img.style.display = 'none';
 	return result;
 }
+async function _natDetectBB(card,dParent){
+	dParent = toElem(dParent);
+	let path = `../assets/games/nations/cards/${card.Path}`;
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img' })
+	let [w, h] = [img.width, img.height]; //console.log('w', w, 'h', h);
+	//return 
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//event: 6C4F64
+	// let edgecolor=type=='event'?'#382428':'#59544E'; //'#544744';
+	let edgecolor=card.Type=='event'?'#6C4F64':'#59544E'; //'#544744';
+	let lightcolor=card.Type=='event'?'#E7BB97':'#DBCEBE';
+	let [rect,tmiss,bmiss,lmiss,rmiss]=calcBoundingBox(ctx,w,h,edgecolor,lightcolor);
+
+	let cv1 = mDom(dParent, {}, { tag: 'canvas', width: rect.w, height: rect.h });
+	let ct1 = cv1.getContext('2d', { willReadFrequently: true });
+	ct1.drawImage(img,-rect.left,-rect.top);
+
+	//jetzt hol ich mir das empty sample
+	// img.remove();canvas.remove();
+
+	return [rect,cv1,ct1,tmiss,bmiss,lmiss,rmiss];
+}
+async function natDetectBoundingBox(k, src, border, idx, type) {
+
+	let path = `../assets/games/nations/cards/${src}`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//event: 6C4F64
+	// let edgecolor=type=='event'?'#382428':'#59544E'; //'#544744';
+	let edgecolor=type=='event'?'#6C4F64':'#59544E'; //'#544744';
+	let lightcolor=type=='event'?'#E7BB97':'#DBCEBE';
+	let rect=calcBoundingBox(ctx,w,h,edgecolor,lightcolor);
+
+	let cv1 = mDom(dParent, {}, { tag: 'canvas', width: rect.w, height: rect.h });
+	let ct1 = cv1.getContext('2d', { willReadFrequently: true });
+	ct1.drawImage(img,-rect.left,-rect.top);
+
+	//jetzt hol ich mir das empty sample
+	// img.remove();canvas.remove();
+
+	return [rect,cv1];
+
+}
+function pixShow(ctx, x, y) {
+	var pix = ctx.getImageData(x, y, 1, 1).data;
+	var red = pix[0]; var green = pix[1]; var blue = pix[2];
+	console.log('pix', x, y, red, green, blue, red + green + blue, isPixDark(ctx, x, y));
+	if (isPixDark(ctx, x, y)) {
+		drawPix(ctx, x, y);
+		return true;
+	}
+	return false;
+}
+function pixTest90(ctx, y, x1, x2) {
+	let x1ja = false, x2ja = false;
+	// for (let x = x1 - 2; x <= x1 + 2; x++) if (isPixDark(ctx, x, y) && isLightAfter(ctx,x,y)) x1ja = true;
+	for (let x = x1 - 2; x <= x1 + 2; x++) if (x == 0 || isPixDark(ctx, x, y)) x1ja = true;
+	for (let x = x2 - 2; x <= x2 + 2; x++) if (isPixDark(ctx, x, y)) x2ja = true;
+	return x1ja && x2ja; // isPixDark(ctx,x1,y) && isPixDark(ctx,x2,y)
+}
+
+
+async function rest() {
+
+	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
+	// let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, { r: 215, g: 189, b: 174 }, 10, 10);
+	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, '#a18b81', 6, 14);
+	if (!corner2) { console.log('no start!!!!'); img.style.display = 'none'; return null; }
+
+	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 7);
+	let [x, y1, cgoal] = [corner2.x, corner2.y, { r: 167, g: 158, b: 151 }]; //colorRGB('#a18b81', true)];
+	let result;
+	for (let y = y1; y < y1 + 10; y++) {
+		result = findSimPixXSequence(ctx, x, w, y,
+			[{ r: 167, g: 158, b: 151 }, { r: 220, g: 216, b: 213 }, { r: 167, g: 158, b: 151 }],
+			[0, 8, 50], 15)
+		//console.log('result', result);
+
+		if (result) { result.map(o => drawPixFrame(ctx, o.x, o.y, 'red', 7)); break; }
+	}
+	img.style.display = 'none';
+	return result;
+}
+function rest() {
+	//544744
+	result = findPixels(ctx, 10, w, 0, h, [
+		{ c: '#544744', cond: (pt, prev) => isColorBefore(ctx, pt.x, pt.y, '#DDD3CA', 15) }, // && isColorBefore(ctx, pt.x, pt.y, '#D8D0CD',15) },
+		{ c: '#544744', cond: condDarkEdgesVertical },
+	], 20);
+
+	// result = findPixels(ctx, 10, w, 10, h, [
+	// 	{ c: '#A6938D', cond: (pt, prev) => isColorAfter(ctx, pt.x, pt.y, '#FAF6FA',15) }, // && isColorBefore(ctx, pt.x, pt.y, '#D8D0CD',15) },
+	// 	{ c: '#A6938D', cond: (pt, prev) => isColorBefore(ctx, pt.x, pt.y, '#FAF6FA',15)},
+	// 	//{c:'#FAF6FA',cond:(pt,prev)=>approx(pt.x,arrLast(prev).x,8)},
+	// 	// { c: '#a59187', cond: (pt, prev) => approx(pt.x - prev[0].x, 46, 4) }],
+	// ], 20);
+	console.log('...', result)
+	img.remove();
+}
+
+
+
 
 
 function arrInsertAt(arr, x, i) {
