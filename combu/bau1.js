@@ -126,7 +126,7 @@ function isLightBefore(ctx, x, y) {
 	return false;
 }
 function isLightAfterV(ctx, x, y) {
-	for (let p = y + 1; p < y + 4; p++) if (isPixLight(ctx, x, p)) return true;
+	for (let p = y + 1; p < y + 5; p++) if (isPixLight(ctx, x, p)) return true;
 	return false;
 }
 function isLightBeforeV(ctx, x, y) {

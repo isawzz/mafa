@@ -1,10 +1,10 @@
-function findDarkBars(ctx, w, h, cgoal,diffleft, diffright) {
+function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
 	let [restlist, _] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
 	let num = 201;
 	let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
 	let res = [];
 
-	while (num > 200 && i < colors.length) {
+	while (num > 100 && i < colors.length) {
 		let color = colors[i++];
 		let o = nextBar(ctx, restlist, color);
 		restlist = o.rest;
@@ -12,20 +12,20 @@ function findDarkBars(ctx, w, h, cgoal,diffleft, diffright) {
 		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
 		res.push(o)
 	}
-	//console.log('result',res);
-	let diff = 243; 
+	console.log('result',res);
+	let diff = 243;
 	let [kleinere, groessere] = findMidlines(res, diff);
 
 	let topmost, bottommost;
 	for (const l3 of res) {
-		let distleft =Math.abs(kleinere.val - l3.val);
-		let distright =Math.abs(groessere.val - l3.val);
-		console.log(l3.val,l3.color,distleft,distright)
-		if (isWithinDelta(Math.abs(kleinere.val - l3.val), diffleft, 2)) {
+		let distleft = kleinere.val - l3.val; //Math.abs(kleinere.val - l3.val);
+		let distright = l3.val-groessere.val;
+		//console.log(l3.val, l3.color, distleft, distright)
+		if (isWithinDelta(distleft, diffleft, 2)) {
 			//console.log('found left', l3.color); 
 			topmost = l3;
 		}
-		if (isWithinDelta(Math.abs(groessere.val - l3.val), diffright, 2)) {
+		if (isWithinDelta(distright, diffright, 2)) {
 			//console.log('found right', l3.color); 
 			bottommost = l3;
 		}
@@ -34,35 +34,38 @@ function findDarkBars(ctx, w, h, cgoal,diffleft, diffright) {
 	//let lyellow = res[0];
 	//let lblue = res.find(l => l.color == 'blue');
 	//console.log('unterer abstand', Math.abs(lyellow.val - lblue.val));
-	return [ytop, kleinere.val, groessere.val, ybottom,topmost,kleinere,groessere,bottommost];
+	return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
 	//24 ist der untere abstand!
 
 }
 function findDarkLines(ctx, w, h, cgoal) {
 	let [_, restlist] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
 	let y, num = 201;
-	let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
+	let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue','crimson','seagreen','skyblue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
 	let res = [];
 
-	while (num > 200 && i < colors.length) {
+	while (i < colors.length) {
 		let color = colors[i++];
 		let o = nextLine(ctx, restlist, color);
 		restlist = o.rest;
 		num = o.line.length;
 		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
-		res.push(o)
+		if (num>100) res.push(o)
 	}
-	//console.log('result',res);
-	let diff = 261, diff2 = 24;
+	console.log('result',res);
+	let diff = 261, diff2 = 22;
+
+	//discard lines under 100
+
 	let [kleinere, groessere] = findMidlines(res, diff);
 
 	let topmost, bottommost;
 	for (const l3 of res) {
-		if (isWithinDelta(Math.abs(kleinere.val - l3.val), diff2, 2)) {
+		if (isWithinDelta(kleinere.val - l3.val, diff2, 2)) {
 			//console.log('found oberstes', l3.color); 
 			topmost = l3;
 		}
-		if (isWithinDelta(Math.abs(groessere.val - l3.val), diff2, 2)) {
+		if (isWithinDelta(l3.val-groessere.val, diff2, 2)) {
 			//console.log('found unterstes', l3.color); 
 			bottommost = l3;
 		}
@@ -71,7 +74,7 @@ function findDarkLines(ctx, w, h, cgoal) {
 	// let lyellow = res[0];
 	// let lblue = res.find(l => l.color == 'blue');
 	// console.log('unterer abstand', Math.abs(lyellow.val - lblue.val));
-	return [ytop, kleinere.val, groessere.val, ybottom];
+	return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
 	//24 ist der untere abstand!
 
 }
@@ -80,9 +83,9 @@ function findMidlines(res, diff) {
 	for (const l1 of res) {
 		for (const l2 of res) {
 			if (isWithinDelta(Math.abs(l1.val - l2.val), diff, 2)) {
-				console.log('found!', diff, l1.color, l2.color);
+				//console.log('found!', diff, l1.color, l2.color);
 				mid1 = l1; mid2 = l2;
-			} 
+			}
 		}
 		if (isdef(mid1)) break;
 	}
@@ -98,13 +101,38 @@ function getBar(ctx, list, val) {
 function getLine(ctx, list, val) {
 	let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
 	//console.log('val', vfreq); console.log('line', res.length);
-	return res;
+
+	//sort line by x value
+	let ls=sortBy(res,'x');
+
+	//console.log(ls)
+
+	//look for lingest stretch of consecutive x values -> this is the real line!
+	let segments = [],seg=[];
+	let i=-1;
+	while(++i<ls.length-1){
+		let p1=ls[i],p2=ls[i+1];
+		if (p2.x>p1.x+1) {
+			seg.push(p1);segments.push(seg);seg=[];
+		}else {
+			seg.push(p1);
+			if (p2.x==p1.x) i++;
+		}
+	}
+	segments.push(seg)
+
+	//find longest segment
+	//console.log('segments',segments);
+	let len=0,best=null;
+	for(const s of segments){if (s.length>len){len=s.length;best=s}}
+
+	return best;
 }
 function nextBar(ctx, rest, color) {
 	list = rest;
 	let val = findMostFrequentVal(list, 'x');
 	rest = list.filter(p => !isWithinDelta(p.x, val, 2));
-	let line = getBar(ctx, list, val); 
+	let line = getBar(ctx, list, val);
 	line.map(p => drawPix(ctx, p.x, p.y, color));
 	return { val, line, rest, color };
 }
@@ -112,7 +140,7 @@ function nextLine(ctx, rest, color) {
 	list = rest;
 	let val = findMostFrequentVal(list, 'y');
 	rest = list.filter(p => !isWithinDelta(p.y, val, 2));
-	let line = getLine(ctx, list, val); 
+	let line = getLine(ctx, list, val);
 	line.map(p => drawPix(ctx, p.x, p.y, color));
 	return { val, line, rest, color };
 }

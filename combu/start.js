@@ -1,49 +1,213 @@
 onload = start;
 
-async function start() { test61_lines(); } //test42_toolbar(); }
+async function start() { test61_lines('advisor'); } //test42_toolbar(); }
 
 //#region nations tests
-async function test61_lines() {
+async function saveCanvas(){
+	let o = { key: k, src: src, color: color, path: `y/nat/${type}/${k}.png` }; addKeys(res, o); result.push(o);
+	await imgToServer(o.cv,o.path);	
+}
+async function rotateAndWriteAge(){
+		//zuerst rotate canvas!
+		mDom('dExtra', { h: 4 })
+		let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
+		let ctx2 = cv2.getContext('2d');
+		ctx2.translate(h, 0)
+		ctx2.rotate(90 * Math.PI / 180);
+		ctx2.drawImage(canvas, 0, 0, w, h);
+
+		mDom('dExtra', { h: 4 })
+		let cv3 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
+		let ctx3 = cv3.getContext('2d');
+		ctx3.drawImage(cv2, 0, 0);
+
+		let x = cv3.width / 2;
+		let y = cv3.height; // - 10; // Adjust 10 as needed for padding
+		ctx3.fillStyle = 'white';
+		ctx3.font = '20px Arial';
+		ctx3.textAlign = 'center';
+		let text = card.Stage;
+		ctx3.fillText(text, x, y);
+
+
+}
+
+async function test64_finalize(type){
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
-	let list = rChoose(Object.keys(M.natCards), 6);
-	list = ['aeneid']; //,'hanging_gardens','solomons_temple','university',];//,'','','','','','','',''];
+	list=Object.keys(M.natCards).filter(ck=>M.natCards[ck].Type == type && M.natCards[ck].age > 0)
+	//list = ['anna_komnene'];// elephant anna_komnene abu_bakr aeneid hanging_gardens solomons_temple archer university hoplite great_northern_war
+	// list = ['abu_bakr', 'great_northern_war','hoplite','aeneid','university','archer','solomons_temple','hanging_gardens'];// aeneid hanging_gardens solomons_temple archer university hoplite great_northern_war
 	let dParentGood = toElem('dExtra');
 	let dParentBad = toElem('dPageTitle');
 	DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
-	mDom(dParent,{h:10});
+	mDom(dParentBad,{h:10});
 	let dims = {
-		advisor: { dx: 150, y: 75, xmin: 80, top: 91, bot: 151 }, 
+		advisor: { diffleft: 91, diffright: 148, dx: 150, y: 75, xmin: 80, top: 91, bot: 151 }, 
+		building: { diffleft: 176, diffright: 63, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }, 
 		golden_age: {diffleft: 91, diffright: 148},
-		building: { diffleft: 193, diffright: 84, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }, 
+		wonder: {diffleft: 91, diffright: 148},
+		war: {diffleft: 91, diffright: 148},
 		hippodrome: { dx: 250, y: 230, xmin: 180, top: 176, bot: 67 }, 
 		urban_center: { dx: 245, y: 230, xmin: 180, top: 176, bot: 67 },
-		military: { dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }
+		military: { diffleft: 176, diffright: 63, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }
 	};
 	for (const k of list) {
-		let [canvas, ctx, w, h] = await natGetEmptyCardCanvas(dParentBad);
+		console.log('____________',k)
+		let [canvas, ctx, w, h] = await natGetEmptyCardCanvas(dParentGood);
+		let card = M.natCards[k];
+		let path = `../assets/games/nations/cards/${card.Path}`;
+		//let type = card.Type;
+		let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
+		let [wImg, hImg] = [img.width, img.height]; //console.log('w', w, 'h', h);
+		let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];		
+		let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
+		let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
+		ctx1.drawImage(img, 0, 0, wImg, hImg);
+		mDom(dParentGood,{h:10});
+		let cv11 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
+		let ctx11 = cv11.getContext('2d', { willReadFrequently: true });
+		ctx11.drawImage(img, 0, 0, wImg, hImg);
+
+		let [diffleft,diffright]=isdef(dims[type])?[dims[type].diffleft,dims[type].diffright]:[91,148];
+		let [x1,x2,x3,x4,l,m1,m2,r]=findDarkBars(ctx1,wImg,hImg,cgoal,diffleft,diffright);
+		console.log(x1,x2,x3,x4);
+		console.log(l,m1,m2,r)
+	
+		let [y1,y2,y3,y4,a,b,c,d]=findDarkLines(ctx11,wImg,hImg,cgoal);
+		console.log(y1,y2,y3,y4);
+		console.log(a,b,c,d)
+		//continue;
+
+		let cv2 = mDom(dParentGood, {}, { tag: 'canvas', width: x4-x1, height: y4-y1 });
+		let ctx2 = cv2.getContext('2d', { willReadFrequently: true });
+		ctx2.drawImage(img,-x1,-y1);
+
+		//ah nein, zuerst muss ich ja das reduzierte bild zeichnen!
+		let loff=5,toff=5;
+		if (nundef(a)){
+			toff=2+24-y2;
+		}
+		if (nundef(l)){
+			loff = 2+diffleft-x2;
+		}
+		console.log('loff',loff,'toff',toff)
+
+		ctx.drawImage(cv2,loff,toff); 
+		let diColors = { advisor: 'orange', battle: 'grey', building: 'deepskyblue', colony: 'green', event: 'purple', golden_age: 'gold', military: 'red', war: 'black', natural: 'brown', wonder: 'sienna' };
+		ctx.strokeStyle = diColors[card.Type];
+		ctx.lineWidth = 28;
+		ctx.strokeRect(0, 0, w, h);
+
+		await imgToServer(canvas,`y/nat/${type}/${k}.png`);	
+
+	}
+}
+async function test63_segments(){
+	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	let k = 'abu_bakr'; // solomons_temple
+	let dParentGood = toElem('dExtra');
+	let dParentBad = toElem('dPageTitle');
+	let card = M.natCards[k];
+	let path = `../assets/games/nations/cards/${card.Path}`;
+	let type = card.Type;
+	let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
+	let [wImg, hImg] = [img.width, img.height];
+	let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];		
+	let cv1 = mDom(dParentGood, {}, { tag: 'canvas', width: wImg, height: hImg });
+	let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
+	ctx1.drawImage(img, 0, 0, wImg, hImg);
+	let [_, ypoints] = findPoints(ctx1, 0, wImg, 0, hImg, cgoal, 20);
+	//ypoints.map(p=>drawPix(ctx1,p.x,p.y,'red'))
+	let oline=nextLine(ctx1,ypoints,'green')
+	console.log('oline',oline)
+}
+async function test62_points(){
+	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	let k = 'abu_bakr'; // solomons_temple
+	let dParentGood = toElem('dExtra');
+	let dParentBad = toElem('dPageTitle');
+	let card = M.natCards[k];
+	let path = `../assets/games/nations/cards/${card.Path}`;
+	let type = card.Type;
+	let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
+	let [wImg, hImg] = [img.width, img.height];
+	let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];		
+	let cv1 = mDom(dParentGood, {}, { tag: 'canvas', width: wImg, height: hImg });
+	let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
+	ctx1.drawImage(img, 0, 0, wImg, hImg);
+	let [_, ypoints] = findPoints(ctx1, 0, wImg, 0, hImg, cgoal, 20);
+	ypoints.map(p=>drawPix(ctx1,p.x,p.y,'red'))
+
+}
+async function test61_lines() {
+	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	let list = rChoose(Object.keys(M.natCards).filter(ck=>M.natCards[ck].Type != 'event'), 6);
+	list=Object.keys(M.natCards).filter(ck=>M.natCards[ck].Type == 'building' && M.natCards[ck].age > 0)
+	list = ['aqueduct',];// elephant anna_komnene abu_bakr aeneid hanging_gardens solomons_temple archer university hoplite great_northern_war
+	// list = ['abu_bakr', 'great_northern_war','hoplite','aeneid','university','archer','solomons_temple','hanging_gardens'];// aeneid hanging_gardens solomons_temple archer university hoplite great_northern_war
+	let dParentGood = toElem('dExtra');
+	let dParentBad = toElem('dPageTitle');
+	DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
+	mDom(dParentBad,{h:10});
+	let dims = {
+		advisor: { diffleft: 91, diffright: 148, dx: 150, y: 75, xmin: 80, top: 91, bot: 151 }, 
+		building: { diffleft: 176, diffright: 63, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }, 
+		golden_age: {diffleft: 91, diffright: 148},
+		wonder: {diffleft: 91, diffright: 148},
+		war: {diffleft: 91, diffright: 148},
+		hippodrome: { dx: 250, y: 230, xmin: 180, top: 176, bot: 67 }, 
+		urban_center: { dx: 245, y: 230, xmin: 180, top: 176, bot: 67 },
+		military: { diffleft: 176, diffright: 63, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }
+	};
+	for (const k of list) {
+		console.log('____________',k)
+		let [canvas, ctx, w, h] = await natGetEmptyCardCanvas(dParentGood);
 		let card = M.natCards[k];
 		let path = `../assets/games/nations/cards/${card.Path}`;
 		let type = card.Type;
 		let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
 		let [wImg, hImg] = [img.width, img.height]; //console.log('w', w, 'h', h);
 		let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];		
-		let cv1 = mDom(dParentGood, {}, { tag: 'canvas', width: wImg, height: hImg });
+		let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
 		let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
 		ctx1.drawImage(img, 0, 0, wImg, hImg);
-	
-		// let [y1,y2,y3,y4]=findDarkLines(ctx1,wImg,hImg,cgoal);
-		// console.log(y1,y2,y3,y4);
-		// let d1=Math.abs(y1,y2);
-		// let toff=d1<24?24-d1:0;
+		mDom(dParentGood,{h:10});
+		let cv11 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
+		let ctx11 = cv11.getContext('2d', { willReadFrequently: true });
+		ctx11.drawImage(img, 0, 0, wImg, hImg);
 
-		//let diffleft = 193, diffright = 84;
-		let [diffleft,diffright]=isdef(dims[type])?[dims[type].diffleft,dims[type].diffright]:[120,200];
+		let [diffleft,diffright]=isdef(dims[type])?[dims[type].diffleft,dims[type].diffright]:[91,148];
 		let [x1,x2,x3,x4,l,m1,m2,r]=findDarkBars(ctx1,wImg,hImg,cgoal,diffleft,diffright);
-		//displacement:
-
 		console.log(x1,x2,x3,x4);
 		console.log(l,m1,m2,r)
-		//console.log(l.val,l.color,m1.val,m1.color,m2.val,m2.color,r.val,r.color);
+	
+		let [y1,y2,y3,y4,a,b,c,d]=findDarkLines(ctx11,wImg,hImg,cgoal);
+		console.log(y1,y2,y3,y4);
+		console.log(a,b,c,d)
+		//continue;
+
+		let cv2 = mDom(dParentGood, {}, { tag: 'canvas', width: x4-x1, height: y4-y1 });
+		let ctx2 = cv2.getContext('2d', { willReadFrequently: true });
+		ctx2.drawImage(img,-x1,-y1);
+
+		//ah nein, zuerst muss ich ja das reduzierte bild zeichnen!
+		let loff=5,toff=5;
+		if (nundef(a)){
+			toff=2+24-y2;
+		}
+		if (nundef(l)){
+			loff = 2+diffleft-x2;
+		}
+		console.log('loff',loff,'toff',toff)
+
+		ctx.drawImage(cv2,loff,toff); 
+		let diColors = { advisor: 'orange', battle: 'grey', building: 'deepskyblue', colony: 'green', event: 'purple', golden_age: 'gold', military: 'red', war: 'black', natural: 'brown', wonder: 'sienna' };
+		ctx.strokeStyle = diColors[card.Type];
+		ctx.lineWidth = 28;
+		ctx.strokeRect(0, 0, w, h);
+
+
+
 	}
 }
 async function mist(){

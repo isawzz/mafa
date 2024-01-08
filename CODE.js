@@ -1,3 +1,80 @@
+function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
+	let [restlist, _] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
+	let num = 201;
+	let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
+	let res = [];
+
+	while (num > 200 && i < colors.length) {
+		let color = colors[i++];
+		let o = nextBar(ctx, restlist, color);
+		restlist = o.rest;
+		num = o.line.length;
+		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
+		res.push(o)
+	}
+	//console.log('result',res);
+	let diff = 243;
+	let [kleinere, groessere] = findMidlines(res, diff);
+
+	let topmost, bottommost;
+	for (const l3 of res) {
+		let distleft = Math.abs(kleinere.val - l3.val);
+		let distright = Math.abs(groessere.val - l3.val);
+		console.log(l3.val, l3.color, distleft, distright)
+		if (isWithinDelta(Math.abs(kleinere.val - l3.val), diffleft, 2)) {
+			//console.log('found left', l3.color); 
+			topmost = l3;
+		}
+		if (isWithinDelta(Math.abs(groessere.val - l3.val), diffright, 2)) {
+			//console.log('found right', l3.color); 
+			bottommost = l3;
+		}
+	}
+	let [ytop, ybottom] = [nundef(topmost) ? 0 : topmost.val, nundef(bottommost) ? w : bottommost.val]
+	//let lyellow = res[0];
+	//let lblue = res.find(l => l.color == 'blue');
+	//console.log('unterer abstand', Math.abs(lyellow.val - lblue.val));
+	return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
+	//24 ist der untere abstand!
+
+}
+function findDarkLines(ctx, w, h, cgoal) {
+	let [_, restlist] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
+	let y, num = 201;
+	let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
+	let res = [];
+
+	while (num > 200 && i < colors.length) {
+		let color = colors[i++];
+		let o = nextLine(ctx, restlist, color);
+		restlist = o.rest;
+		num = o.line.length;
+		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
+		res.push(o)
+	}
+	//console.log('result',res);
+	let diff = 261, diff2 = 24;
+	let [kleinere, groessere] = findMidlines(res, diff);
+
+	let topmost, bottommost;
+	for (const l3 of res) {
+		if (isWithinDelta(Math.abs(kleinere.val - l3.val), diff2, 2)) {
+			//console.log('found oberstes', l3.color); 
+			topmost = l3;
+		}
+		if (isWithinDelta(Math.abs(groessere.val - l3.val), diff2, 2)) {
+			//console.log('found unterstes', l3.color); 
+			bottommost = l3;
+		}
+	}
+	let [ytop, ybottom] = [nundef(topmost) ? 0 : topmost.val, nundef(bottommost) ? h : bottommost.val]
+	// let lyellow = res[0];
+	// let lblue = res.find(l => l.color == 'blue');
+	// console.log('unterer abstand', Math.abs(lyellow.val - lblue.val));
+	return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
+	//24 ist der untere abstand!
+
+}
 function findDarkBars(ctx, w, h, cgoal) {
 	let [restlist, _] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
 	let num = 201;
