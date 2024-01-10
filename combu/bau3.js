@@ -14,7 +14,9 @@ function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
 	}
 	console.log('result',res);
 	let diff = 243;
-	let [kleinere, groessere] = findMidlines(res, diff);
+
+	let cand = res[0].val<40?res.slice(1):res;
+	let [kleinere, groessere] = findMidlines(cand,diff); //res.slice(1,res.length-2), diff); //erste und letzte weg!
 
 	let topmost, bottommost;
 	for (const l3 of res) {
@@ -50,7 +52,7 @@ function findDarkLines(ctx, w, h, cgoal) {
 		restlist = o.rest;
 		num = o.line.length;
 		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
-		if (num>100) res.push(o)
+		if (num>112) res.push(o)
 	}
 	console.log('result',res);
 	let diff = 261, diff2 = 22;
@@ -100,26 +102,21 @@ function getBar(ctx, list, val) {
 }
 function getLine(ctx, list, val) {
 	let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
-	//console.log('val', vfreq); console.log('line', res.length);
-
-	//sort line by x value
 	let ls=sortBy(res,'x');
-
-	//console.log(ls)
 
 	//look for lingest stretch of consecutive x values -> this is the real line!
 	let segments = [],seg=[];
-	let i=-1;
-	while(++i<ls.length-1){
-		let p1=ls[i],p2=ls[i+1];
-		if (p2.x>p1.x+1) {
-			seg.push(p1);segments.push(seg);seg=[];
-		}else {
-			seg.push(p1);
-			if (p2.x==p1.x) i++;
+	let i=-1; let lastx=-1;
+	while(++i<ls.length){
+		let el=ls[i];
+		if (lastx>=0 && el.x>lastx+1){
+			segments.push(seg);seg=[];
+		}else{
+			if (el.x != lastx)	seg.push(el);
 		}
+		lastx=el.x;
 	}
-	segments.push(seg)
+	segments.push(seg);
 
 	//find longest segment
 	//console.log('segments',segments);
@@ -141,6 +138,7 @@ function nextLine(ctx, rest, color) {
 	let val = findMostFrequentVal(list, 'y');
 	rest = list.filter(p => !isWithinDelta(p.y, val, 2));
 	let line = getLine(ctx, list, val);
+	//console.log('line',line)
 	line.map(p => drawPix(ctx, p.x, p.y, color));
 	return { val, line, rest, color };
 }

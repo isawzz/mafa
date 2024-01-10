@@ -1,3 +1,33 @@
+function getLine(ctx, list, val) {
+	let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
+	//console.log('val', vfreq); console.log('line', res.length);
+
+	//sort line by x value
+	let ls=sortBy(res,'x');
+
+	//console.log(ls)
+
+	//look for lingest stretch of consecutive x values -> this is the real line!
+	let segments = [],seg=[];
+	let i=-1;
+	while(++i<ls.length-1){
+		let p1=ls[i],p2=ls[i+1];
+		if (p2.x>p1.x+1) {
+			seg.push(p1);segments.push(seg);seg=[];
+		}else {
+			seg.push(p1);
+			if (p2.x==p1.x) i++;
+		}
+	}
+	segments.push(seg)
+
+	//find longest segment
+	//console.log('segments',segments);
+	let len=0,best=null;
+	for(const s of segments){if (s.length>len){len=s.length;best=s}}
+
+	return best;
+}
 function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
 	let [restlist, _] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
 	let num = 201;
