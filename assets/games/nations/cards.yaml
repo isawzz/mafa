@@ -5948,7 +5948,7 @@ war_of_cyprus:
   Type: war
   key: war_of_cyprus
   age: 3
-war_of_jenkins__ear:
+war_of_jenkins_ear:
   Category: B
   Stage: III
   Name: War of Jenkins' Ear
@@ -5958,9 +5958,9 @@ war_of_jenkins__ear:
   Book: ''
   VP: ''
   Note: ''
-  Path: age3_war_of_jenkins__ear.jpg
+  Path: age3_war_of_jenkins_ear.jpg
   Type: war
-  key: war_of_jenkins__ear
+  key: war_of_jenkins_ear
   age: 3
 war_of_the_roses:
   Category: A
