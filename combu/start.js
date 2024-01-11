@@ -1,7 +1,6 @@
 onload = start;
 
-async function start() { }//test70_final_processing(); } //test69_event(); } 
-
+async function start() { natCardsFinalProcessing(); } //test69_event(); } 
 
 async function test69_event() {
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); return;

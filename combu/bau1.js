@@ -375,7 +375,7 @@ async function natCardsFinalProcessing(){
 		let img = await imgAsync(dParentBad, {}, { src: path+k+'.png', tag: 'img' });
 		let cv=await rotateAndWriteAge(img,card);
 
-		await imgToServer(cv, `y/nat/cards/${k}.png`);
+		await imgToServer(cv, `assets/games/nations/cards/${k}.png`);
 		//break;
 
 
@@ -383,6 +383,9 @@ async function natCardsFinalProcessing(){
 
 	async function rotateAndWriteAge(img,card) {
 		//zuerst rotate canvas!
+	
+		let diStage={0:'I',1:'I',2:'II',3:'III',4:'II II'};
+	
 		let [w,h]=[img.width,img.height];
 		mDom('dExtra', { h: 4 })
 		let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
@@ -401,13 +404,13 @@ async function natCardsFinalProcessing(){
 		ctx3.fillStyle = 'white';
 		ctx3.font = '20px Arial';
 		ctx3.textAlign = 'center';
-		let text = card.Stage;
+		let text = diStage[card.age]; //card.Stage;
 		ctx3.fillText(text, x, y);
 	
 		return cv3;
 	
 	}
-	
+		
 }
 async function natCardsManual() {
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
@@ -765,6 +768,9 @@ function nextLine(ctx, rest, color) {
 }
 async function rotateAndWriteAge(img,card) {
 	//zuerst rotate canvas!
+
+	let diStage={0:'I',1:'I',2:'II',3:'III',4:'II II'};
+
 	let [w,h]=[img.width,img.height];
 	mDom('dExtra', { h: 4 })
 	let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
@@ -783,7 +789,7 @@ async function rotateAndWriteAge(img,card) {
 	ctx3.fillStyle = 'white';
 	ctx3.font = '20px Arial';
 	ctx3.textAlign = 'center';
-	let text = card.Stage;
+	let text = diStage(card.age); //card.Stage;
 	ctx3.fillText(text, x, y);
 
 	return cv3;
