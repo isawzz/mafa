@@ -69,6 +69,26 @@ function findPoints(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
 
 	return [resx, resy];
 }
+function findPointsBoth(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
+	let p;
+	let resy = [], resx = [];
+	cgoal = colorRGB(cgoal, true);
+	for (let y = y1; y < y2; y++) {
+		for (let x = x1; x < x2; x++) {
+			p = isPixDark(ctx, x, y, cgoal, delta);
+			if (p) {
+				let l = isLightBeforeV(ctx, x, y);
+				let d = isLightAfterV(ctx, x, y);
+				if (l && d) resy.push({ x, y })
+				l = isLightBefore(ctx, x, y);
+				d = isLightAfter(ctx, x, y);
+				if (l && d) resx.push({ x, y })
+			}
+		}
+	}
+
+	return [resx, resy];
+}
 function findPointAtDistance(pt, dx, dy, list, delta = 0) {
 	for (const p1 of list) {
 		if (isWithinDelta(Math.abs(pt.x - p1.x), dx, delta) && isWithinDelta(Math.abs(pt.y - p1.y), dy, delta)) return p1;

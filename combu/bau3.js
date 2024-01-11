@@ -15,7 +15,7 @@ function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
 	console.log('result',res);
 	let diff = 243;
 
-	let cand = res[0].val<40?res.slice(1):res;
+	let cand = res.filter(o=>o.val>=40 && o.val<=500); // res[0].val<40?res.slice(1):res;
 	let [kleinere, groessere] = findMidlines(cand,diff); //res.slice(1,res.length-2), diff); //erste und letzte weg!
 
 	let topmost, bottommost;
@@ -49,6 +49,7 @@ function findDarkLines(ctx, w, h, cgoal) {
 	while (i < colors.length) {
 		let color = colors[i++];
 		let o = nextLine(ctx, restlist, color);
+		if (!o.line) {console.log('o',o); break;}
 		restlist = o.rest;
 		num = o.line.length;
 		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
@@ -139,6 +140,6 @@ function nextLine(ctx, rest, color) {
 	rest = list.filter(p => !isWithinDelta(p.y, val, 2));
 	let line = getLine(ctx, list, val);
 	//console.log('line',line)
-	line.map(p => drawPix(ctx, p.x, p.y, color));
+	if (line) line.map(p => drawPix(ctx, p.x, p.y, color));
 	return { val, line, rest, color };
 }

@@ -244,23 +244,6 @@ anna_komnene:
   Type: advisor
   key: anna_komnene
   age: 2
-antiquity:
-  Category: B
-  Stage: I
-  Name: Antiquity
-  Impact: Military Strength +7 until end of round
-  Military Strength: ''
-  Gold: ''
-  Stone: ''
-  Food: ''
-  Book: ''
-  Stability: ''
-  Deploy Cost (No. of Stone): ''
-  VP: ''
-  Path: age1_antiquity.jpg
-  Type: wonder
-  key: antiquity
-  age: 1
 antikythera_mechanism:
   Category: B
   Stage: I
@@ -1298,6 +1281,23 @@ city_wall:
   Type: building
   key: city_wall
   age: 1
+clocks:
+  Category: B
+  Stage: I
+  Name: Clocks
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_clocks.jpg
+  Type: golden_age
+  key: clocks
+  age: 3
 coal_mine:
   Category: E
   Stage: II II
@@ -1332,6 +1332,23 @@ coffee_house:
   Type: building
   key: coffee_house
   age: 3
+coinage:
+  Category: B
+  Stage: I
+  Name: Coinage
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_coinage.jpg
+  Type: golden_age
+  key: coinage
+  age: 1
 colonial_trading:
   Category: B
   Stage: III
@@ -1379,6 +1396,23 @@ columbian_exchange:
   Type: event
   key: columbian_exchange
   age: 3
+compass:
+  Category: B
+  Stage: I
+  Name: Compass
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_compass.jpg
+  Type: golden_age
+  key: compass
+  age: 2
 confucian_academy:
   Category: E
   Stage: I
@@ -1574,7 +1608,7 @@ cyrus_the_great:
   Type: advisor
   key: cyrus_the_great
   age: 1
-darwin_s_voyage:
+darwins_voyage:
   Category: D
   Stage: II II
   Name: Darwin's Voyage
@@ -1587,9 +1621,9 @@ darwin_s_voyage:
   Stability: ''
   Deploy Cost (No. of Stone): '"-2'
   VP: '-1"'
-  Path: age4_darwin_s_voyage.jpg
+  Path: age4_darwins_voyage.jpg
   Type: wonder
-  key: darwin_s_voyage
+  key: darwins_voyage
   age: 4
 department_store:
   Category: D
@@ -1624,6 +1658,40 @@ dike:
   Path: age3_dike.jpg
   Type: building
   key: dike
+  age: 3
+divina_commedia:
+  Category: B
+  Stage: I
+  Name: Divina Commedia
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_divina_commedia.jpg
+  Type: golden_age
+  key: divina_commedia
+  age: 2
+don_quixote:
+  Category: B
+  Stage: I
+  Name: Don Quixote
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_don_quixote.jpg
+  Type: golden_age
+  key: don_quixote
   age: 3
 dreadnought:
   Category: E
@@ -2294,6 +2362,40 @@ guild_hall:
   Type: building
   key: guild_hall
   age: 2
+gunpowder:
+  Category: B
+  Stage: I
+  Name: Gunpowder
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_gunpowder.jpg
+  Type: golden_age
+  key: gunpowder
+  age: 2
+gutenberg_bible:
+  Category: B
+  Stage: I
+  Name: Gutenberg Bible
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_gutenberg_bible.jpg
+  Type: golden_age
+  key: gutenberg_bible
+  age: 3
 hagia_sophia:
   Category: B
   Stage: II
@@ -2452,6 +2554,23 @@ hellenism:
   Type: event
   key: hellenism
   age: 1
+heavy_plough:
+  Category: B
+  Stage: I
+  Name: Heavy Plough
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_heavy_plough.jpg
+  Type: golden_age
+  key: heavy_plough
+  age: 2
 himeji_castle:
   Category: A
   Stage: III
@@ -2767,6 +2886,23 @@ india:
   Type: colony
   key: india
   age: 4
+iron_working:
+  Category: B
+  Stage: I
+  Name: Iron Working
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_iron_working.jpg
+  Type: golden_age
+  key: iron_working
+  age: 1
 isabella:
   Category: B
   Stage: III
@@ -3155,7 +3291,24 @@ madrasa:
   Type: building
   key: madrasa
   age: 2
-magellan_s_expedition:
+magna_carta:
+  Category: B
+  Stage: I
+  Name: Magna Carta
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_magna_carta.jpg
+  Type: golden_age
+  key: magna_carta
+  age: 2
+magellans_expedition:
   Stage: III
   No. of Architect: '2'
   Name of Event 1: Magellan's expedition
@@ -3164,10 +3317,27 @@ magellan_s_expedition:
   Famine (Food): '-3'
   '': ''
   Name: Magellan's expedition
-  Path: age3_magellan_s_expedition.jpg
+  Path: age3_magellans_expedition.jpg
   Type: event
-  key: magellan_s_expedition
+  key: magellans_expedition
   age: 3
+mahabharata:
+  Category: B
+  Stage: I
+  Name: Mahabharata
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_mahabharata.jpg
+  Type: golden_age
+  key: mahabharata
+  age: 1
 mansa_musa:
   Category: B
   Stage: II
@@ -3184,6 +3354,23 @@ mansa_musa:
   Type: advisor
   key: mansa_musa
   age: 2
+map_making:
+  Category: B
+  Stage: I
+  Name: Map Making
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_map_making.jpg
+  Type: golden_age
+  key: map_making
+  age: 1
 march_to_moscow:
   Stage: II II
   No. of Architect: '1'
@@ -3291,23 +3478,6 @@ martyrdom_of_ali:
   Type: event
   key: martyrdom_of_ali
   age: 2
-mechanical_turk:
-  Category: E
-  Stage: III
-  Name: Mechanical Turk
-  Impact: ''
-  Military Strength: ''
-  Gold: ''
-  Stone: ''
-  Food: ''
-  Book: ''
-  Stability: ''
-  Deploy Cost (No. of Stone): ''
-  VP: ''
-  Path: age3_mechanical_turk.jpg
-  Type: wonder
-  key: mechanical_turk
-  age: 3
 mercenary:
   Category: E
   Stage: III
@@ -3325,6 +3495,23 @@ mercenary:
   Path: age3_mercenary.jpg
   Type: military
   key: mercenary
+  age: 3
+microscope:
+  Category: B
+  Stage: I
+  Name: microscope
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_microscope.jpg
+  Type: golden_age
+  key: microscope
   age: 3
 milvian_bridge:
   Category: A
@@ -3684,6 +3871,23 @@ oresund_dues:
   Type: wonder
   key: oresund_dues
   age: 3
+origin_of_species:
+  Category: B
+  Stage: I
+  Name: Origin of Species
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age4_origin_of_species.jpg
+  Type: golden_age
+  key: origin_of_species
+  age: 4
 ostafrika:
   Category: B
   Stage: II II
@@ -3993,6 +4197,23 @@ praetorian_guard:
   Type: military
   key: praetorian_guard
   age: 1
+principia:
+  Category: B
+  Stage: I
+  Name: Principia
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_principia.jpg
+  Type: golden_age
+  key: principia
+  age: 3
 printing_press:
   Category: E
   Stage: III
@@ -4299,6 +4520,23 @@ romanticism:
   Type: event
   key: romanticism
   age: 4
+romeo_and_juliet:
+  Category: B
+  Stage: I
+  Name: Romeo and Juliet
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_romeo_and_juliet.jpg
+  Type: golden_age
+  key: romeo_and_juliet
+  age: 3
 royal_society:
   Category: B
   Stage: III
@@ -4708,6 +4946,23 @@ siege_of_vienna:
   Type: battle
   key: siege_of_vienna
   age: 3
+silk:
+  Category: B
+  Stage: I
+  Name: Silk
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_silk.jpg
+  Type: golden_age
+  key: silk
+  age: 1
 silk_road:
   Category: D
   Stage: I
@@ -4847,6 +5102,23 @@ south_pole_expedition:
   Type: wonder
   key: south_pole_expedition
   age: 4
+spectacles:
+  Category: B
+  Stage: I
+  Name: Spectacles
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_spectacles.jpg
+  Type: golden_age
+  key: spectacles
+  age: 2
 sphinx:
   Category: B
   Stage: I
@@ -4888,6 +5160,23 @@ spice_trade:
   Type: event
   key: spice_trade
   age: 3
+spinning_jenny:
+  Category: B
+  Stage: I
+  Name: Spinning Jenny
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age4_spinning_jenny.jpg
+  Type: golden_age
+  key: spinning_jenny
+  age: 4
 statue_of_liberty:
   Category: ''
   Stage: II II
@@ -5080,6 +5369,23 @@ taoism:
   Type: event
   key: taoism
   age: 1
+telescope:
+  Category: B
+  Stage: I
+  Name: Telescope
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_telescope.jpg
+  Type: golden_age
+  key: telescope
+  age: 3
 temple:
   Category: B
   Stage: Start
@@ -5131,6 +5437,23 @@ terracotta_army:
   Type: wonder
   key: terracotta_army
   age: 1
+the_bible:
+  Category: B
+  Stage: I
+  Name: The Bible
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_the_bible.jpg
+  Type: golden_age
+  key: the_bible
+  age: 1
 the_caribbean:
   Category: E
   Stage: III
@@ -5163,6 +5486,23 @@ the_horns_of_hattin:
   Type: battle
   key: the_horns_of_hattin
   age: 2
+the_odyssey:
+  Category: B
+  Stage: I
+  Name: The Odyssey
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age1_the_odyssey.jpg
+  Type: golden_age
+  key: the_odyssey
+  age: 1
 the_oracle:
   Category: B
   Stage: I
@@ -5191,6 +5531,23 @@ the_pillar_of_hercules:
   Type: natural
   key: the_pillar_of_hercules
   age: 1
+the_quoran:
+  Category: B
+  Stage: I
+  Name: The Quoran
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age2_the_quoran.jpg
+  Type: golden_age
+  key: the_quoran
+  age: 2
 theatre:
   Category: B
   Stage: III
@@ -5208,6 +5565,23 @@ theatre:
   Type: building
   key: theatre
   age: 3
+thermometer:
+  Category: B
+  Stage: I
+  Name: Thermometer
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age3_thermometer.jpg
+  Type: golden_age
+  key: thermometer
+  age: 3
 thirty_years_war:
   Category: E
   Stage: III
@@ -5223,19 +5597,22 @@ thirty_years_war:
   key: thirty_years_war
   age: 3
 three_kingdoms:
-  Category: A
+  Category: B
   Stage: I
   Name: Three Kingdoms
-  Gold: '-5'
+  Gold: ''
   Stone: ''
   Food: ''
-  Book: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
   VP: ''
+  Deploy Cost (Stone): ''
   Note: ''
-  Path: age1_three_kingdoms.jpg
-  Type: war
+  Path: age2_three_kingdoms.jpg
+  Type: golden_age
   key: three_kingdoms
-  age: 1
+  age: 2
 tibet:
   Category: B
   Stage: II
@@ -5353,6 +5730,23 @@ uluru:
   Type: natural
   key: uluru
   age: 4
+uncle_toms_cabin:
+  Category: B
+  Stage: I
+  Name: Uncle Tom's Cabin
+  Gold: ''
+  Stone: ''
+  Food: ''
+  Book: '2'
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age4_uncle_toms_cabin.jpg
+  Type: golden_age
+  key: uncle_toms_cabin
+  age: 4
 university:
   Category: B
   Stage: II
@@ -5435,6 +5829,23 @@ vatican:
   Type: building
   key: vatican
   age: 1
+vaccine:
+  Category: B
+  Stage: I
+  Name: Vaccine
+  Gold: ''
+  Stone: '2'
+  Food: ''
+  Book: ''
+  Military: ''
+  Stability: ''
+  VP: ''
+  Deploy Cost (Stone): ''
+  Note: ''
+  Path: age4_vaccine.jpg
+  Type: golden_age
+  key: vaccine
+  age: 4
 versailles:
   Category: B
   Stage: III
