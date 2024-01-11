@@ -1,8 +1,53 @@
 onload = start;
 
-async function start() { test69_event(); } 
+async function start() { }//test70_final_processing(); } //test69_event(); } 
 
 //#region nations tests
+async function test70_final_processing(){
+	let path='y/nat/cards1/';
+	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); 
+	let dParentGood = toElem('dExtra');
+	let dParentBad = toElem('dPageTitle');
+	for(const k in M.natCards){
+		let card = M.natCards[k];
+		let [age,type]=[card.age,card.Type];
+		if (type == 'event' || age == 0) continue;
+		let img = await imgAsync(dParentBad, {}, { src: path+k+'.png', tag: 'img' });
+		let cv=await rotateAndWriteAge(img,card);
+
+		await imgToServer(cv, `y/nat/cards/${k}.png`);
+		//break;
+
+
+	}
+
+}
+async function rotateAndWriteAge(img,card) {
+	//zuerst rotate canvas!
+	let [w,h]=[img.width,img.height];
+	mDom('dExtra', { h: 4 })
+	let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
+	let ctx2 = cv2.getContext('2d');
+	ctx2.translate(h, 0)
+	ctx2.rotate(90 * Math.PI / 180);
+	ctx2.drawImage(img, 0, 0, w, h);
+
+	mDom('dExtra', { h: 4 })
+	let cv3 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
+	let ctx3 = cv3.getContext('2d');
+	ctx3.drawImage(cv2, 0, 0);
+
+	let x = cv3.width / 2;
+	let y = cv3.height; // - 10; // Adjust 10 as needed for padding
+	ctx3.fillStyle = 'white';
+	ctx3.font = '20px Arial';
+	ctx3.textAlign = 'center';
+	let text = card.Stage;
+	ctx3.fillText(text, x, y);
+
+	return cv3;
+
+}
 async function natCardsManual() {
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	let dParentGood = toElem('dExtra');
@@ -458,30 +503,6 @@ async function test65_brewery() {
 async function saveCanvas() {
 	let o = { key: k, src: src, color: color, path: `y/nat/${type}/${k}.png` }; addKeys(res, o); result.push(o);
 	await imgToServer(o.cv, o.path);
-}
-async function rotateAndWriteAge() {
-	//zuerst rotate canvas!
-	mDom('dExtra', { h: 4 })
-	let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
-	let ctx2 = cv2.getContext('2d');
-	ctx2.translate(h, 0)
-	ctx2.rotate(90 * Math.PI / 180);
-	ctx2.drawImage(canvas, 0, 0, w, h);
-
-	mDom('dExtra', { h: 4 })
-	let cv3 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
-	let ctx3 = cv3.getContext('2d');
-	ctx3.drawImage(cv2, 0, 0);
-
-	let x = cv3.width / 2;
-	let y = cv3.height; // - 10; // Adjust 10 as needed for padding
-	ctx3.fillStyle = 'white';
-	ctx3.font = '20px Arial';
-	ctx3.textAlign = 'center';
-	let text = card.Stage;
-	ctx3.fillText(text, x, y);
-
-
 }
 
 async function test64_finalize(type) {
