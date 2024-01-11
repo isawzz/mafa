@@ -1,6 +1,6 @@
 onload = start;
 
-async function start() { test61_lines(); } //test64_finalize('golden_age'); } 
+async function start() { test61_lines(); } 
 
 //#region nations tests
 async function natCardsManual() {
@@ -522,7 +522,7 @@ async function test62_points() {
 async function test61_lines() {
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
 	let list = rChoose(Object.keys(M.natCards).filter(ck => M.natCards[ck].Type != 'event'), 6);
-	list = Object.keys(M.natCards).filter(ck => M.natCards[ck].Type == 'colony' && M.natCards[ck].age > 0)
+	list = Object.keys(M.natCards).filter(ck => M.natCards[ck].Type == 'war' && M.natCards[ck].age > 0)
 	//list = ['great_barrier_reef']; // brewery aqueduct
 	// elephant anna_komnene abu_bakr aeneid hanging_gardens solomons_temple archer university hoplite great_northern_war
 	// list = ['abu_bakr', 'great_northern_war','hoplite','aeneid','university','archer','solomons_temple','hanging_gardens'];// aeneid hanging_gardens solomons_temple archer university hoplite great_northern_war

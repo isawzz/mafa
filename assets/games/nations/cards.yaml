@@ -4064,10 +4064,10 @@ phalanx:
   Type: military
   key: phalanx
   age: 1
-phillipines:
+philippines:
   Category: A
   Stage: III
-  Name: Phillipines
+  Name: Philippines
   Gold: ''
   Stone: '4'
   Food: ''
@@ -4078,9 +4078,9 @@ phillipines:
   Deploy Cost (Military): '18'
   '': ''
   Note: ''
-  Path: age3_phillipines.jpg
+  Path: age3_philippines.jpg
   Type: colony
-  key: phillipines
+  key: philippines
   age: 3
 piazza_san_marco:
   Category: B
