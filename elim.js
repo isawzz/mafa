@@ -123,6 +123,64 @@ function _calcBoundingBox(ctx,w,h,type){
 	return [rect,toplight,bottomlight,leftlight,rightlight]; // [resx, resy];
 
 }
+function calcBoundingBox(ctx,w,h,type){
+	let [cgoal,clight,lighting]=type=='event'?['#6C4F64','#E7BB97',false]:['#59544E','#DBCEBE',true];
+
+	findDarkLines(ctx,w,h,cgoal);
+
+}
+function _calcBoundingBox(ctx,w,h,type){
+
+	let toplight = findRectSample(ctx, 20, w, 1, 1, clight, 4); 
+	let bottomlight = findRectSample(ctx, 20, w, h - 5, h - 5, clight, 4, true); 
+	let leftlight = findRectSample(ctx, 0, 0, 10, h, clight, 4); 
+	let rightlight = findRectSample(ctx, w-5, w-5, 20, h-15, clight, 4, true); 
+
+	let rect={};
+
+	let [yoff1,yoff2,dyblank]=[0,20,lighting?20:0];
+	let [xoff1,xoff2,dxblank]=[0,30,lighting?20:0];
+	let top, bottom;
+	if (toplight) {
+		rect.top=0;
+		bottom = findEdgeVert(ctx, h-yoff2-dyblank-5, h - yoff1 -dyblank, w, cgoal, lighting); 
+		bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.bottom=bottom[0].y; 
+	} else if (bottomlight) {
+		rect.bottom=h;
+		top = findEdgeVert(ctx, yoff1+dyblank, yoff2+dyblank, w, cgoal, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.top=top[0].y;
+	} else {
+		top = findEdgeVert(ctx, yoff1, yoff2, w, cgoal, lighting); top.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		bottom = findEdgeVert(ctx, h-yoff2, h - yoff1, w, cgoal, lighting); bottom.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.top=top[0].y;
+		rect.bottom=bottom[0].y; 
+	}
+
+	let left,right;
+	if (leftlight) {
+		rect.left=0;
+		right = findEdgeHor(ctx, w-xoff2-dxblank, w - xoff1-dxblank, h, cgoal, lighting); 
+		right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.right=right[0].x; 
+	} else if (rightlight) {
+		left = findEdgeHor(ctx, xoff1+dxblank, xoff2+dxblank, h, cgoal, lighting); 
+		left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.left=left[0].x; 
+		rect.right=w; 
+	} else {
+		left = findEdgeHor(ctx, xoff1, xoff2, h, cgoal, lighting); 
+		left.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		right = findEdgeHor(ctx, w-xoff2, w - xoff1, h, cgoal, lighting); 
+		right.map(p => drawPix(ctx, p.x, p.y, 'yellow'));
+		rect.left=left[0].x; 
+		rect.right=right[0].x; 
+	}
+	rect.x=rect.left;rect.y=rect.top;rect.w=rect.right-rect.left;rect.h=rect.bottom-rect.top;
+
+	return [rect,toplight,bottomlight,leftlight,rightlight]; // [resx, resy];
+
+}
 function calcBoundsY(ctx, x, h, n = 261) {
 	let ystart = -1, yend = -1, y, countlines = 0, prevy = [], ymin = 0, hbound = h - 20;
 	let isRotated = false;
@@ -203,6 +261,47 @@ function _drawPix(ctx, x, y, color = 'red', sz = 5) {
 function _drawPixFrame(ctx, x, y, color = 'red', sz = 5) {
 	ctx.strokeStyle = color;
 	ctx.strokeRect(x - sz / 2, y - sz / 2, sz, sz)
+}
+async function doit(k) {
+	//let k = 'solomons_temple'; //'hanging_gardens';
+	let [canvas, ctx, w, h] = await natGetEmptyCardCanvas('dExtra');
+	let card = M.natCards[k];
+	let [rect, cv1, ctx1, tmiss, bmiss, lmiss, rmiss] = await natDetectBB(card, 'dExtra');
+
+	let toff = tmiss ? h - cv1.height : 5;
+	let loff = lmiss ? w - cv1.width : 7;
+	console.log('_______', k);
+	console.log('top edge missing', tmiss);
+	console.log('left edge missing', lmiss);
+
+	ctx.drawImage(cv1, loff, toff);
+	let diColors = { advisor: 'orange', battle: 'grey', building: 'deepskyblue', colony: 'green', event: 'purple', golden_age: 'gold', military: 'red', war: 'black', natural: 'brown', wonder: 'sienna' };
+	ctx.strokeStyle = diColors[card.Type];
+	ctx.lineWidth = 28;
+	ctx.strokeRect(0, 0, w, h);
+
+	//zuerst rotate canvas!
+	mDom('dExtra', { h: 4 })
+	let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
+	let ctx2 = cv2.getContext('2d');
+	ctx2.translate(h, 0)
+	ctx2.rotate(90 * Math.PI / 180);
+	ctx2.drawImage(canvas, 0, 0, w, h);
+
+	mDom('dExtra', { h: 4 })
+	let cv3 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
+	let ctx3 = cv3.getContext('2d');
+	ctx3.drawImage(cv2, 0, 0);
+
+	let x = cv3.width / 2;
+	let y = cv3.height; // - 10; // Adjust 10 as needed for padding
+	ctx3.fillStyle = 'white';
+	ctx3.font = '20px Arial';
+	ctx3.textAlign = 'center';
+	let text = card.Stage;
+	ctx3.fillText(text, x, y);
+
+	//ctx3 ist super!
 }
 function findBottomEdge(ctx, w, h, cgoal) {
 	let [ptsy, pts] = findPoints(ctx, 0, w, h * .9, h, cgoal, 10); //console.log(pts)
@@ -1683,6 +1782,10 @@ async function saveCiv(name, sz = 800) {
 		console.log('resp', resp)
 	};
 
+}
+async function saveCanvas() {
+	let o = { key: k, src: src, color: color, path: `y/nat/${type}/${k}.png` }; addKeys(res, o); result.push(o);
+	await imgToServer(o.cv, o.path);
 }
 async function serverUpdate(route, o) { Serverdata = await uploadJson(route, o); }
 function showWheel(list, bg) {
