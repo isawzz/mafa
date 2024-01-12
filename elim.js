@@ -1654,14 +1654,6 @@ function mTooltip(elem, content) {
 	elem.onmouseout = () => d.style.display = 'none';
 
 }
-async function onclickNATIONS() {
-	//show civ japan
-	showTitle('NATIONS!!!');
-	await loadImageAsync('../assets/games/nations/civs/civ_japan.png', mDom('dMain', {}, { tag: 'img' }));
-
-
-
-}
 async function postUserChange(data) {
 	data = valf(data, U)
 	return Serverdata.users[data.name] = await mPostRoute('postUser', data);

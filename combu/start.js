@@ -1,6 +1,24 @@
 onload = start;
 
-async function start() { natCardsFinalProcessing(); } //test69_event(); } 
+async function start() { test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+
+async function test70_game(){
+ await prelims();
+ onclickNATIONS();
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 async function test69_event() {
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); return;
@@ -71,7 +89,6 @@ async function test69_event() {
 		return o.val;
 	}
 }
-
 async function prelims() {
 	if (nundef(M.superdi)) {
 		Serverdata = await mGetRoute('session'); //hier wird gesamte session geladen!!!
