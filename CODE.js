@@ -1,3 +1,159 @@
+async function onclickNATIONS() {
+
+	if (nundef(M.natCards)) M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+
+	//showTitle('NATIONS!!!');
+	M.civs = ['america', 'arabia', 'china', 'egypt', 'ethiopia', 'greece', 'india', 'japan', 'korea', 'mali', 'mongolia', 'persia', 'poland', 'portugal', 'rome', 'venice', 'vikings'];
+
+	let player = M.player = { civ: rChoose(M.civs) };
+
+	//brauche events in ages,progress in ages
+	M.ages = { 1: { events: [], progress: [] }, 2: { events: [], progress: [] }, 3: { events: [], progress: [] }, 4: { events: [], progress: [] } };
+	for (const k in M.natCards) {
+		let c = M.natCards[k];
+		if (c.age == 0) continue;
+		let age = c.age == 0 ? 1 : c.age;
+		if (c.Type == 'event') M.ages[age].events.push(k); else M.ages[age].progress.push(k);
+	}
+	//set age=1
+	M.age = 1;
+	M.events = M.ages[M.age].events;
+	M.progress = M.ages[M.age].progress;
+	arrShuffle(M.progress);
+	arrShuffle(M.events);
+
+	//cardgrid
+	let d1 = mDiv('dMain'); mFlex(d1);
+	M.rows = 3; M.cols = 7;
+	let bg = mGetStyle('dNav', 'bg');
+	let h = 180;
+
+	let dcost = M.costGrid = mGrid(M.rows, 1, d1, { 'align-self': 'start' });
+	for (let cost = 3; cost >= 1; cost--) {
+		let d2 = mDom(dcost, { display: 'flex', 'justify-content': 'center', 'flex-flow': 'column', box: true, margin: 2, h: h, overflow: 'hidden' }, {});
+
+		for (let i = 0; i < cost; i++) mDom(d2, { h: 40 }, { tag: 'img', src: `../assets/games/nations/templates/gold.png` });
+	}
+	// mDom(dcost, { bg: 'pink', fg:'contrast', box: true, margin: 2, h: h,w:20, overflow: 'hidden' },{html:2});
+	// mDom(dcost, { bg: 'pink', fg:'contrast', box: true, margin: 2, h: h,w:20, overflow: 'hidden' },{html:1});
+
+	M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
+	M.cells = [];
+	for (let i = 0; i < M.rows * M.cols; i++) {
+		let d = mDom(M.grid, { box: true, margin: 2, h: h, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		M.cells.push(d);
+	}
+	let n = M.rows * M.cols;
+	M.market = [];
+	for (let i = 0; i < n; i++) {
+		let k = M.progress.shift();
+		M.market.push(k);
+		let card = M.natCards[k];
+		let img = mDom(M.cells[i], { h: h, w: 115 }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
+		img.setAttribute('key', k)
+		img.onclick = buyProgressCard;
+	}
+
+	mDom('dMain', { h: 20 })
+
+	let dciv = mDom('dMain', { w: 800, h: 420, maleft: 52, bg: 'red', position: 'relative' });
+	let iciv = await loadImageAsync(`../assets/games/nations/civs/civ_${player.civ}.png`, mDom(dciv, { position: 'absolute' }, { tag: 'img' }));
+
+	//add spots to civ
+	M.civCells = [];
+	for (let i = 0; i < 2; i++) {
+		for (let j = 0; j < 7; j++) {
+			let r = getCivSpot(player.civ, i, j);
+			let [dx,dy,dw,dh]=[10,10,15,20]
+			let d = mDom(dciv, { box: true, w: r.w+dw, h: r.h+dh, left: r.x-dx, top: r.y-dy, position: 'absolute', overflow: 'hidden' });
+			mCenterCenterFlex(d);
+			M.civCells.push(d);
+			d.onclick = () => selectCivSpot(d);
+		}
+	}
+
+	return;
+	//console.log('iciv',iciv)
+	let invgrid = mDom(dciv, { position: 'absolute', w: 800, h: 420 });
+	let g1 = mGrid(2, 7, invgrid, { 'align-self': 'start' });
+	M.civCells = [];
+	for (let i = 0; i < 14; i++) {
+		let d = mDom(g1, { box: true, h: 170, w: 800 / 7, bg: rColor(.5), overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		M.civCells.push(d);
+		d.onclick = () => selectCivSpot(d);
+	}
+
+
+}
+function buyProgressCard(ev) {
+	let o = evToAttr(ev, 'key');
+	//console.log('player buys',o.val);
+	o.elem.remove();
+	let spot = M.selectedCivSpot
+	if (isdef(spot)) {
+		spot.innerHTML = '';
+		let [w,h]=[mGetStyle(spot,'w'),mGetStyle(spot,'h')];
+		mAppend(spot, o.elem);
+		mStyle(o.elem, { h: h,w:w });
+		//o.elem.setAttribute('pointer-events', 'none');
+		o.elem.onclick = () => selectCivSpot(spot)
+		mClassRemove(M.selectedCivSpot,'shadow');
+		M.selectedCivSpot = null;
+	}
+}
+function selectCivSpot(d) {
+	if (isdef(M.selectedCivSpot)) mClassRemove(M.selectedCivSpot,'shadow');
+	M.selectedCivSpot = d;
+	mClass(d,'shadow')
+	//console.log('civ spot is',M.selectedCivSpot)
+}function mist(){
+
+	let [restlist, _] = findPoints(ctx, 0, w, 0, h, cgoal, 5);
+
+	console.log('restlist',restlist);return;
+
+	let num = 201;
+	let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
+	let res = [];
+
+	while (num > 100 && i < colors.length) {
+		let color = colors[i++];
+		let o = nextBar(ctx, restlist, color);
+		restlist = o.rest;
+		num = o.line.length;
+		//console.log('y',o.val,'num',num,'restlist',o.rest.length);
+		res.push(o)
+	}
+	console.log('result',res);
+	let diff = 243;
+
+	let cand = res.filter(o=>o.val>=40 && o.val<=500); // res[0].val<40?res.slice(1):res;
+	let [kleinere, groessere] = findMidlines(cand,diff); //res.slice(1,res.length-2), diff); //erste und letzte weg!
+
+	let topmost, bottommost;
+	for (const l3 of res) {
+		let distleft = kleinere.val - l3.val; //Math.abs(kleinere.val - l3.val);
+		let distright = l3.val-groessere.val;
+		//console.log(l3.val, l3.color, distleft, distright)
+		if (isWithinDelta(distleft, diffleft, 2)) {
+			//console.log('found left', l3.color); 
+			topmost = l3;
+		}
+		if (isWithinDelta(distright, diffright, 2)) {
+			//console.log('found right', l3.color); 
+			bottommost = l3;
+		}
+	}
+	let [ytop, ybottom] = [nundef(topmost) ? 0 : topmost.val, nundef(bottommost) ? w : bottommost.val]
+	//let lyellow = res[0];
+	//let lblue = res.find(l => l.color == 'blue');
+	//console.log('unterer abstand', Math.abs(lyellow.val - lblue.val));
+	return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
+	//24 ist der untere abstand!
+
+}
 function getLine(ctx, list, val) {
 	let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
 	//console.log('val', vfreq); console.log('line', res.length);

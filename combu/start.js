@@ -1,7 +1,91 @@
 onload = start;
 
-async function start() { test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+async function start() { test72_civSpots(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
 
+async function test72_civSpots(){
+	await prelims();
+	onclickNATIONS();
+}
+async function test71_civDetect(){
+
+	let orange=`#F17D2D`;
+	let blue=`#0F9AD7`;
+	let green=`#429F47`; // `#6CAA3F`
+	let red=`#BA1B35`;
+	let brown=`#996142`; // `#BC6A33`
+
+	M.civs=['america','arabia','china','egypt','ethiopia','greece','india','japan','korea','mali','mongolia','persia','poland','portugal','rome','venice','vikings'];
+	let player=M.player = {civ:'persia'}; //rChoose(M.civs)};
+	let dciv=mDom('dMain');
+	let img=await loadImageAsync(`../assets/games/nations/civs/civ_${player.civ}.png`, mDom(dciv, {position:'absolute'}, { tag: 'img' }));
+	let [wImg, hImg] = [img.width, img.height]; //console.log('w', w, 'h', h);
+
+	//find a bar on the board that is orange
+	let dParentBad = toElem('dPageTitle');
+	let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
+	let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
+	ctx1.drawImage(img, 0, 0, wImg, hImg);
+
+	// let r=cardRect(ctx1,0,0,orange)
+	// console.log('advisor',r); 
+	let rAdvisor={x:11,y:27,w:87,h:136}; //von persia
+	// rAdvisor={x:10,y:29,w:87,h:137}; //von mongolia
+	// rAdvisor={x:12,y:25,w:87,h:136}; //von vikings
+
+	let yUnten=rAdvisor.y+rAdvisor.h+5;
+	// let rColony1=cardRect(ctx1,0,yUnten,green)
+	// console.log('rColony1',rColony1);
+	let rColony1={x:10,y:193,w:87,h:137}; //von japan
+
+	// let xColony2=rColony1.x+rColony1.w+10;
+	// let rColony2=cardRect(ctx1,xColony2,yUnten,green)
+	// console.log('rColony2',rColony2);
+	let rColony2={x:122,y:192,w:87,h:136}; //von india
+
+	// let rBuilding1=cardRect(ctx1,rColony2.x,0,blue)
+	// console.log('rBuilding1',rBuilding1);
+	// rBuilding1={x:131,y:26,w:88,h:137}; //von america
+	let rBuilding1={x:132,y:26,w:87,h:136}; //von portugal
+
+	//let rColonyUpPersia=cardRect(ctx1,rAdvisor.x+rAdvisor.w,0,green)
+	let rColonyUpPersia={x:122,y:26,w:87,h:136}; //von portugal
+	console.log('rColonyUpPersia',rColonyUpPersia);
+	// let rBuilding1Persia=cardRect(ctx1,rAdvisor.x+rAdvisor.w+100,0,blue)
+	let rBuilding1Persia={x:243,y:26,w:87,h:136}; //von persia
+	console.log('rBuilding1Persia',rBuilding1Persia);
+
+	let xBuilding2=rBuilding1.x+rBuilding1.w+5;
+	// let rBuilding2=cardRect(ctx1,xBuilding2,0,blue)
+	// console.log('rBuilding2',rBuilding2);
+	let rBuilding2={x:243,y:28,w:87,h:136};
+	let dxBuildings=rBuilding2.x-(rBuilding1.x+rBuilding1.w);
+	console.log('dx buildings',dxBuildings)
+
+	// let rWic=cardRect(ctx1,650,0,brown);
+	// console.log('rWic',rWic)
+	let rWic={x:700,y:26,w:87,h:136}; //calculated
+
+	let rLastWonder={x:700,y:193,w:87,h:136};
+
+	// let rWonder=cardRect(ctx1,600,180,brown);
+	// console.log('rWonder',rWonder)
+	let rWonder={x:674,y:193,w:87,h:136};
+
+	let dxWonders=26;
+
+	// let res=findNextBar(ctx1,0,20,60,80,colorRGB(orange,true),10);
+	// console.log('res',res)
+
+	// res=findNextBar(ctx1,res.x+20,res.x+150,60,80,colorRGB(orange,true),15);
+	// console.log('res',res)
+	// //zuerst will ich einen punkt auf x=10,y=200 in rot zeichnen
+	// drawPix(ctx1,10,60,'red')
+	// drawPix(ctx1,10,220,'red')
+
+	// let res2=findNextBar(ctx1,0,20,220,240,colorRGB(green,true),10);
+	// console.log('res',res2)
+
+}
 async function test70_game(){
  await prelims();
  onclickNATIONS();
