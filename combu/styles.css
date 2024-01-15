@@ -99,6 +99,12 @@ body{
   transform-origin: bottom right;
   transform: scale(1.05);
 }
+.img_person {
+  border: solid medium white;
+  border-radius: 50%;
+  margin: 10px;
+  object-fit: cover;
+}
 .input {
 	padding: 10px;
 	font-size: 16px;

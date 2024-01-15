@@ -1,6 +1,156 @@
 onload = start;
 
-async function start() { test72_civSpots(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+async function start() { test73_game(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+
+async function test73_game(){
+
+	await prelims();
+	await natLoadAssets(); //load nations info: cards.yaml => M.natCards, M.civs
+
+	let fen = natCreate(U.name,['felix','lili','amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
+	let s=JSON.stringify(fen);
+	console.log('fen',s.length,fen);
+
+	await natPresent(fen);
+
+}
+async function natPresent(fen){
+	let dParent = mDiv('dMain')
+	let [owner,players,age,round,phase]=[fen.owner,fen.players,fen.age,fen.round,fen.phase]
+	let pl = players[owner];
+	let [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(dParent);
+
+	natPresentMarket(dOpenTable,fen.market);
+	mDom(dOpenTable, { h: 20,w:'100%' })
+	await natPresentCiv(dOpenTable,pl);
+
+	natStats(fen,pl,dRechts)
+
+}
+function natStats(fen,pl, dParent,outerStyles = { dir: 'column' }, innerStyles = {}) {
+	//let player_stat_items = UI.player_stat_items = ui_player_info(dParent); 
+  if (nundef(outerStyles.display)) outerStyles.display = 'flex';
+  mStyle(dParent, outerStyles);
+  let items = {};
+  let styles = jsCopy(innerStyles); addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
+  
+  let show_first = pl.name;
+  let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
+	//console.log('order',order)
+
+  for (const name of order) {
+    let pl = fen.players[name];
+    let imgPath = `../assets/img/users/${name}.jpg`;
+    styles['border-color'] = pl.color;
+		let d = mDom(dParent, styles, {id:name2id(name)})
+    let picstyle = { w: 50, h: 50, box: true };
+    let ucolor = pl.color;
+    if (pl.playmode == 'bot') {
+      copyKeys({ rounding: 0, border: `double 6px ${ucolor}` }, picstyle);
+    } else {
+      copyKeys({ rounding: '50%', border: `solid 2px white` }, picstyle);
+    }
+    let img = mImage(imgPath, d, picstyle, 'img_person');
+    items[name] = {div:d,name:name};
+  }
+  return items;
+}
+async function natPresentCiv(dParent,pl){
+	//erstmal das board
+	let dciv = mDom(dParent, { w: 800, h: 420, maleft: 52, bg: 'red', position: 'relative' });
+	let iciv = await loadImageAsync(`../assets/games/nations/civs/civ_${pl.civ}.png`, mDom(dciv, { position: 'absolute' }, { tag: 'img' }));
+
+	//hierr kommen jetzt all die cards dazu, extraWorkers adjusten,...
+}
+function natPresentMarket(dParent,market){
+	let d1 = mDiv(dParent); mFlex(d1);
+	let [rows,cols]=[3,market.length/3]; 
+	let h = 180;
+
+	let dcost = mGrid(rows, 1, d1, { 'align-self': 'start' });
+	for (let cost = 3; cost >= 1; cost--) {
+		let d2 = mDom(dcost, { display: 'flex', 'justify-content': 'center', 'flex-flow': 'column', box: true, margin: 2, h: h, overflow: 'hidden' }, {});
+		for (let i = 0; i < cost; i++) mDom(d2, { h: 40 }, { tag: 'img', src: `../assets/games/nations/templates/gold.png` });
+	}
+
+	let grid = mGrid(rows, cols, d1, { 'align-self': 'start' });
+	let cells = [];
+	for (let i = 0; i < rows * cols; i++) {
+		let d = mDom(grid, { box: true, margin: 2, h: h, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		cells.push(d);
+	}
+	let n = rows * cols;
+	for (let i = 0; i < n; i++) {
+		let k=market[i];
+		if (k=='_') continue;
+		let img = mDom(cells[i], { h: h, w: 115 }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
+		img.setAttribute('key', k)
+		img.onclick = buyProgressCard;
+	}
+
+}
+
+async function natLoadAssets(){
+	if (isdef(M.natCards)) return;
+	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	M.civs = await mGetYaml('../assets/games/nations/civs.yaml');
+	M.civNames = Object.keys(M.civs); // ['america', 'arabia', 'china', 'egypt', 'ethiopia', 'greece', 'india', 'japan', 'korea', 'mali', 'mongolia', 'persia', 'poland', 'portugal', 'rome', 'venice', 'vikings'];
+	M.levels = ['chieftain', 'prince', 'king', 'emperor'];
+
+}
+function natCreate(owner,players){
+	if (isList(players)) {
+		let list=players;
+		players={};
+		list.map(x=>players[x]={});
+	}
+	let fen={id:rUniqueId(20),owner:owner,players:players}
+	let playerNames = fen.playerNames = Object.keys(players);
+	let numPlayers = fen.numPlayers = playerNames.length;
+
+	fen.age = 1;
+	fen.events = [];
+	fen.progress = [];
+	for (const k in M.natCards) {
+		let c = M.natCards[k];
+		if (c.age != fen.age) continue;
+		//console.log('k',k)
+		if (c.Type == 'event') fen.events.push(k); else fen.progress.push(k);
+	}
+	arrShuffle(fen.progress);
+	fen.progress = arrTake(fen.progress,42);//brauch nicht mehr als 2x full market
+	arrShuffle(fen.events);
+	fen.market = [];
+	for(let i=0;i<21;i++) {
+		let k=fen.progress.shift(); //console.log(k)
+		fen.market.push(k); //coin()?'_':k);
+	}
+	//console.log('fen.market',fen.market); return;
+	console.log('prog',arrTake(fen.progress,10))
+	let civs = rChoose(M.civNames,numPlayers);
+	let i=0;
+	for(const name in fen.players){
+		let pl=fen.players[name];
+		pl.name = name;
+		assertion(isdef(Serverdata.users[name]),`unknown user ${name}`);
+		pl.color = lookup(Serverdata.users,[name,'color']);
+		if (nundef(pl.civ)) pl.civ=civs[i++];
+		if (nundef(pl.level)) pl.level=rChoose(M.levels);
+		let civ=M.civs[pl.civ];
+		addKeys(civ.res,pl);
+		pl.book=0;
+		pl.cards=jsCopy(civ.cards);
+		pl.extraWorkers=jsCopy(civ.workers);
+	}
+	let plorder=fen.plorder = jsCopy(playerNames); arrShuffle(plorder);
+
+	fen.round = 1;
+	fen.phase = 'market'; // growth newEvent action production turnOrder war events  
+	fen.turn = jsCopy(fen.playerNames);
+
+	return fen;
+}
 
 async function test72_civSpots(){
 	await prelims();
