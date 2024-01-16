@@ -1,21 +1,32 @@
 felix:
   name: felix
   color: '#1f8fff'
+  icon: felix
 amanda:
   name: amanda
   color: '#2e8a56'
+  icon: amanda
 max:
   name: max
   color: '#999999'
+  icon: unknown_user
 lauren:
   name: lauren
   color: '#ffc400'
+  icon: lauren
 lili:
   name: lili
   color: '#6762f3'
+  icon: lili
 mitra:
   name: mitra
   color: '#ff00aa'
+  icon: mitra
 gul:
   name: gul
   color: '#89cffa'
+  icon: gul
+louis:
+  name: louis
+  color: '#ec4169'
+  icon: unknown_user

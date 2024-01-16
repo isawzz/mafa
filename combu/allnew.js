@@ -1,3 +1,27 @@
+async function addDirToCollections(dir,coll,cat){
+  let filenames = await mGetFiles(dir);
+  //console.log(filenames)
+  addIf(M.collections, coll);
+  addIf(M.categories, cat);
+  for(const name of filenames){
+    let img=name;
+    let path=`../assets/${dir}/${name}`;
+    let k=stringBefore(name,'.');
+		let friendly=k;
+    // if (['leo','viola','wolf'].includes(k)) continue;
+		if (isdef(M.superdi[k])) {
+			k=`${coll}_${k}`;
+			//console.log('duplicate:',k)
+		}
+    //assertion(nundef(M.superdi[k]),`username is already in superdi!!!!!! ${k}`);
+    M.superdi[k] = { key: k, friendly: friendly, cats: [cat], ext: stringAfter(name,'.'), img: `${name}`, path: path };
+    addIf(M.names, friendly);
+    lookupAddIfToList(M.byCat, [cat], k);
+    lookupAddIfToList(M.byFriendly, [friendly], k);
+    lookupAddIfToList(M.byCollection, [coll], k);
+  }
+
+}
 function addEditable(dParent, styles = {}, opts = {}) {
   addKeys({ tag: 'input', classes: 'plain' }, opts)
   addKeys({ wmax: '90%', box: true }, styles);
@@ -597,6 +621,21 @@ function measureHeight(dParent, styles = {}) {
   let s = measureElement(d);
   d.remove();
   return firstNumber(s.h);
+}
+async function mGetFiles(dir) {
+  let server = getServerurl();
+	let data = await mGetJsonCors(`${server}/filenames?directory=${dir}`);
+	return data.files;
+}
+async function mGetJsonCors(url) {
+	let res = await fetch(url, {
+		method: 'GET',
+		headers: { 'Content-Type': 'application/json' },
+		mode: 'cors' // Set CORS mode to enable cross-origin requests
+	});
+	let json = await res.json();
+	//console.log('json', json)
+	return json;
 }
 async function mGetRoute(route, o = {}) {
   let server = getServerurl();
@@ -1252,7 +1291,12 @@ function showImageInBatch(key, dParent, styles = {}) {
   mCenterCenterFlex(d1)
   let el = null;
   if (isdef(o.img)) {
-    el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+    if (o.cats.includes('card')){
+      el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+      mDom(d1,{h:1,w:'100%'})
+    }else{
+      el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+    }
   }
   else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
   else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
@@ -1535,10 +1579,33 @@ async function updateCollections() {
     lookupAddIfToList(M.byFriendly, [o.name], k);
     lookupAddIfToList(M.byCollection, [o.coll], k);
   }
+  //ich moecht eigentlich dass die users und die nations cards in collections drin sind!
+  await addDirToCollections('img/users','users','user');
+  await addDirToCollections('games/nations/cards','nations','card');
+  await addDirToCollections('games/nations/templates','nations','symbol');
+
+  // let usernames = await mGetFiles('img/users');
+  // console.log(usernames)
+  // addIf(M.collections, 'users');
+  // addIf(M.categories, 'user');
+  // for(const name of usernames){
+  //   let img=name;
+  //   let path=`../assets/img/users/${name}`;
+  //   let k=stringBefore(name,'.');
+  //   if (['leo','viola','wolf'].includes(k)) continue;
+  //   assertion(nundef(M.superdi[k]),`username is already in superdi!!!!!! ${k}`);
+  //   M.superdi[k] = { key: k, friendly: k, cats: ['user'], ext: stringAfter(name,'.'), img: `${name}`, path: path };
+  //   addIf(M.names, k);
+  //   lookupAddIfToList(M.byCat, ['user'], k);
+  //   lookupAddIfToList(M.byFriendly, [k], k);
+  //   lookupAddIfToList(M.byCollection, ['users'], k);
+  // }
+
   M.categories.sort();
   M.names.sort();
   M.collections.sort();
 }
+
 async function uploadImg(img, unique, coll, name) {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');

@@ -8,6 +8,7 @@ const path = require("path");
 const yaml = require('js-yaml');
 //console.log('**************\n__dirname', __dirname);
 const PORT = process.env.PORT || 3000;
+const assetsDirectory = path.join(__dirname, '..', 'assets');
 const uploadDirectory = path.join(__dirname, '..', 'y');
 const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
 const configFile = path.join(uploadDirectory, 'config.yaml');
@@ -167,8 +168,9 @@ function valf() {
 
 app.get('/user', (req, res) => {
 	let params = req.query;
+	let name = params.uname;
 	console.log('==> get user:\n params', params)
-	let data = lookup(Session, ['users', params.uname]);
+	let data = lookup(Session, ['users', name]);
 	//console.log(data)
 	res.json(data);
 });
@@ -184,6 +186,19 @@ app.get('/event', (req, res) => {
 	res.json(data);
 });
 app.get('/events', (req, res) => { return res.json(lookup(Session, ['events'])); });
+app.get('/filenames', async (req, res) => {
+	const { directory: dir } = req.query;
+	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
+	try {
+		const directoryPath = dir.startsWith('C:') ? dir : path.join(assetsDirectory, dir);
+		console.log('dirpath', directoryPath)
+		const files = await fsp.readdir(directoryPath);
+		console.log('files',files)
+		res.json({ files });
+	} catch (err) {
+		res.status(500).json({ error: 'Error reading directory', details: err.message });
+	}
+});
 app.get('/session', (req, res) => {
 	console.log('==> get session')
 	res.json(Session);
@@ -203,6 +218,7 @@ app.post('/postEvent', (req, res) => {
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let data = req.body;
+	if (nundef(data.icon)) data.icon = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
 	console.log('<== post user')
 	//console.log('data', data)
 	let fname = path.join(dbDirectory, 'users.yaml');
@@ -272,21 +288,7 @@ async function init() {
 	Session.users = valf(yaml.load(yamlFile), {});
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
 	Session.events = valf(yaml.load(yamlFile), {});
-
-	//console.log('Session', Session)
-
-	// let userfiles = await getFiles('../y/users');
-	// Session.users = {};
-	// for (const fname of userfiles) {
-	// 	let uname = fname.substring(0, fname.length - 5);
-	// 	// console.log('uname',uname);
-	// 	let p = path.join(uploadDirectory, 'users', fname);
-	// 	//console.log('path',p)
-	// 	let f = fs.readFileSync(p, 'utf8');
-	// 	Session.users[uname] = yaml.load(f);
-	// }
 	server.listen(PORT, () => console.log('listening on port ' + PORT));
-	//app.listen(PORT, () => console.log(`Server on port ${PORT}`));
 }
 init();
 

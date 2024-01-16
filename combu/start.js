@@ -27,12 +27,80 @@ async function natPresent(fen){
 	natStats(fen,pl,dRechts)
 
 }
-function natStats(fen,pl, dParent,outerStyles = { dir: 'column' }, innerStyles = {}) {
+function natStats(fen,pl,dParent){
+	let player_stat_items = uiTypePlayerStats(fen,pl,dParent,{},{wmin:260,bg:'beige',fg:'contrast'})
+	for (const plname in fen.players) {
+		let pl1 = fen.players[plname];
+		let item = player_stat_items[plname];
+		let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
+		//d.style.backgroundImage = `../assets/games/nations/civs/civ_${pl1.civ}.png`;
+		d.style.backgroundImage = `url('../assets/games/nations/civs/civ_${pl1.civ}.png')`;
+		d.style.backgroundSize = 'cover'
+
+		console.log('pl',pl1)
+		playerStatCount('strength', pl1.military, d);
+		playerStatCount('stability', pl1.stability, d);
+		playerStatCount('gold', pl1.gold, d);
+		playerStatCount('food', pl1.food, d);
+		playerStatCount('stone', pl1.stone, d);
+		playerStatCount('green_book', pl1.book, d);
+		playerStatCount('VP', pl1.vp, d);
+		playerStatCount('worker', pl1.workers, d);
+		//playerStatCount('coin', pl1.gold, d, {fg:'white'});
+		// item.dCoin = dCoin.firstChild;
+		// item.dAmount = dCoin.children[1];
+	}
+}
+function playerStatCount(key, n, dParent, styles = {}) {
+  let sz = valf(styles.sz, 16);
+  addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'start', fz: sz, align: 'center' }, styles);
+  let d = mDiv(dParent, styles);
+
+	let o=M.superdi[key];
+  if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%' }); //mSym(key, d, { h: sz, 'line-height': sz, w: '100%' });
+  else mText(key, d, { h: sz, fz: sz, w: '100%' });
+  d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
+  return d;
+}
+
+function mistStats(){
+		if (plname == herald) {
+			//console.log('d', d, d.children[0]); let img = d.children[0];
+			mSym('tied-scroll', d, { fg: 'gold', fz: 24, padding: 4 }, 'TR');
+		}
+		if (exp_church(Z.options)) {
+			if (isdef(pl.tithes)) {
+				player_stat_count('cross', pl.tithes.val, d);
+
+			}
+		}
+		let dCoin = player_stat_count('coin', pl.coins, d);
+		item.dCoin = dCoin.firstChild;
+		item.dAmount = dCoin.children[1];
+
+		let list = pl.hand.concat(pl.stall);
+		let list_luxury = list.filter(x => x[2] == 'l');
+		player_stat_count('pinching hand', list.length, d);
+		let d1 = player_stat_count('hand-holding-usd', list_luxury.length, d);
+		mStyle(d1.firstChild, { fg: 'gold', fz: 20 })
+
+		if (!isEmpty(fen.players[plname].stall) && fen.stage >= 5 && fen.stage <= 6) {
+			player_stat_count('shinto shrine', !fen.actionsCompleted.includes(plname) || fen.stage < 6 ? calc_stall_value(fen, plname) : '_', d);
+		}
+		player_stat_count('star', plname == U.name || isdef(fen.winners) ? ari_calc_real_vps(fen, plname) : ari_calc_fictive_vps(fen, plname), d);
+
+		if (fen.turn.includes(plname)) {
+			show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
+		}
+}
+function uiTypePlayerStats(fen,pl, dParent,outerStyles={}, innerStyles = {}) {
 	//let player_stat_items = UI.player_stat_items = ui_player_info(dParent); 
-  if (nundef(outerStyles.display)) outerStyles.display = 'flex';
+	addKeys({dir:'column',display:'flex'},outerStyles);
+  // if (nundef(outerStyles.display)) outerStyles.display = 'flex';
   mStyle(dParent, outerStyles);
   let items = {};
-  let styles = jsCopy(innerStyles); addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
+  let styles = jsCopy(innerStyles); 
+	addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
   
   let show_first = pl.name;
   let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
@@ -40,7 +108,7 @@ function natStats(fen,pl, dParent,outerStyles = { dir: 'column' }, innerStyles =
 
   for (const name of order) {
     let pl = fen.players[name];
-    let imgPath = `../assets/img/users/${name}.jpg`;
+    let imgPath = `../assets/img/users/${pl.icon}.jpg`;
     styles['border-color'] = pl.color;
 		let d = mDom(dParent, styles, {id:name2id(name)})
     let picstyle = { w: 50, h: 50, box: true };
@@ -134,7 +202,7 @@ function natCreate(owner,players){
 		let pl=fen.players[name];
 		pl.name = name;
 		assertion(isdef(Serverdata.users[name]),`unknown user ${name}`);
-		pl.color = lookup(Serverdata.users,[name,'color']);
+		addKeys(Serverdata.users[name],pl); //pl.color = lookup(Serverdata.users,[name,'color']);
 		if (nundef(pl.civ)) pl.civ=civs[i++];
 		if (nundef(pl.level)) pl.level=rChoose(M.levels);
 		let civ=M.civs[pl.civ];
