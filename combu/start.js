@@ -1,224 +1,136 @@
 onload = start;
 
-async function start() { test73_game(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+async function start() { test76_simplestuff(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
 
+async function test76_simplestuff(){
+	await prelims();
+	await switchToUser('mac');
+	await switchToMenu('plan');
+}
+async function test75_login(){
+	await prelims();
+	console.log('user is',U.name)
+	await switchToUser(U.name == 'felix'?'amanda':'felix');
+	console.log('user now:',U.name)
+}
+async function test74_svgImage(){
+	let d=mBy('dMain');
+	let img = mDom(d,{h:200},{tag:'img',src:'../assets/games/nations/templates/book.svg'});
+
+}
 async function test73_game(){
 
-	await prelims();
+	//console.log("You are using: " + getBrowser()); console.log('UI',isdef(UI),UI);return;
+
+	await prelims(); if (!U) {console.log('no user!');await switchToUser('felix')}
 	await natLoadAssets(); //load nations info: cards.yaml => M.natCards, M.civs
 
-	let fen = natCreate(U.name,['felix','lili','amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
+	mButton('START',natCreateGame,'dMain');
+}
+async function natCreateGame(){
+	//felix is starting a nations game:
+	let fen = natCreate(U.name,['felix','amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
 	let s=JSON.stringify(fen);
-	console.log('fen',s.length,fen);
+	let res=await mPostRoute('postNewTable',{id:fen.id,fen:fen, game:'nations',friendly:generate_table_name(fen.numPlayers)});
+	console.log('res',res)
+	//console.log('fen',s.length,fen);
+}
+function getActivePlayer(fen){
+	if (fen.playerNames.includes(U.name)) return U.name; else return fen.turn[0];
+}
+async function natGameView(fen,plname){
 
-	await natPresent(fen);
+	natTitle();
+	await natPresent(fen,plname);
+
+	//der rest nur wenn der player turn hat!
+	if (!fen.turn.includes(plname)) {
+
+		return;
+	}
+	selPrep(fen);
+	natPreAction()
+	//mStyle('dNav',{display:'none'})
 
 }
-async function natPresent(fen){
-	let dParent = mDiv('dMain')
-	let [owner,players,age,round,phase]=[fen.owner,fen.players,fen.age,fen.round,fen.phase]
-	let pl = players[owner];
-	let [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(dParent);
-
-	natPresentMarket(dOpenTable,fen.market);
-	mDom(dOpenTable, { h: 20,w:'100%' })
-	await natPresentCiv(dOpenTable,pl);
-
-	natStats(fen,pl,dRechts)
-
+function natTitle(){
+	//aus gamesfull/index.html
+	// <div id="dTitle" style="display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; height: 42px; width: 100%">
+	// <div id="dTitleLeft" style="display: flex; justify-content: space-evenly; align-items: center; padding-left: 10px"></div>
+	// <div id="dTitleMiddle"></div>
+	// <div id="dTitleRight" style="min-width: 200px; display: flex; justify-content: end; align-items: center; box-sizing: border-box"></div>
+	// </div>
+	mClear(dTitle);
+	mStyle(dTitle,{display:'flex','justify-content':'space-between','align-items':'center',box:true,h:42,w:'100%'})
+	mDom(dTitle,{display:'flex','justify-content':'space-evenly','align-items':'center',paleft:10},{id:'dTitleLeft'})
+	mDom(dTitle,{},{id:'dTitleMiddle'})
+	mDom(dTitle,{display:'flex','justify-content':'end','align-items':'center',box:true, wmin:200},{id:'dTitleRight'})
 }
-function natStats(fen,pl,dParent){
-	let player_stat_items = uiTypePlayerStats(fen,pl,dParent,{},{wmin:260,bg:'beige',fg:'contrast'})
-	for (const plname in fen.players) {
-		let pl1 = fen.players[plname];
-		let item = player_stat_items[plname];
-		let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
-		//d.style.backgroundImage = `../assets/games/nations/civs/civ_${pl1.civ}.png`;
-		d.style.backgroundImage = `url('../assets/games/nations/civs/civ_${pl1.civ}.png')`;
-		d.style.backgroundSize = 'cover'
+function natPreAction(){
+	let [fen,phase]=[Clientdata.fen,Clientdata.fen.phase];
 
-		console.log('pl',pl1)
-		playerStatCount('strength', pl1.military, d);
-		playerStatCount('stability', pl1.stability, d);
-		playerStatCount('gold', pl1.gold, d);
-		playerStatCount('food', pl1.food, d);
-		playerStatCount('stone', pl1.stone, d);
-		playerStatCount('green_book', pl1.book, d);
-		playerStatCount('VP', pl1.vp, d);
-		playerStatCount('worker', pl1.workers, d);
-		//playerStatCount('coin', pl1.gold, d, {fg:'white'});
-		// item.dCoin = dCoin.firstChild;
-		// item.dAmount = dCoin.children[1];
+	//let dInstruction = mBy('dSelections0'); mDom(dInstruction,{h:30},{tag:'img',src:`../assets/games/nations/templates/book.svg`}); return;
+	//mDom('dTitleLeft',{bg:mGetStyle(dTitle,'bg'),fg:'contrast'},{html:`age:${fen.age} round:${fen.round} phase: <b style='color:orange'>${phase}</b> player:${U.name}`})
+	mDom('dTitleLeft',{bg:mGetStyle(dTitle,'bg'),fg:'contrast'},{html:`Age ${fen.age}.${fen.round}: <b style='color:orange'>${phase}</b> (${U.name})`})
+
+	switch(phase){
+		case 'growth': selectAddItems(natSelItemsGrowth(fen), natSelectedGrowth,'g'); break;// 'must select your growth'); break; 
 	}
 }
-function playerStatCount(key, n, dParent, styles = {}) {
-  let sz = valf(styles.sz, 16);
-  addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'start', fz: sz, align: 'center' }, styles);
-  let d = mDiv(dParent, styles);
-
-	let o=M.superdi[key];
-  if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%' }); //mSym(key, d, { h: sz, 'line-height': sz, w: '100%' });
-  else mText(key, d, { h: sz, fz: sz, w: '100%' });
-  d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
-  return d;
+function sendMyMove(key){
+	let name = U.name;
+	let table = Clientdata.fen.id;
+	sockPostMove(table,name,key);
 }
+function natSelectedGrowth(ev){
+	let [A, fen] = [Clientdata.A, Clientdata.fen];
+	let id=evToId(ev)
+	//console.log(id)
+	A.selected=A.di[id];
+	console.log('selects',A.selected);
 
-function mistStats(){
-		if (plname == herald) {
-			//console.log('d', d, d.children[0]); let img = d.children[0];
-			mSym('tied-scroll', d, { fg: 'gold', fz: 24, padding: 4 }, 'TR');
-		}
-		if (exp_church(Z.options)) {
-			if (isdef(pl.tithes)) {
-				player_stat_count('cross', pl.tithes.val, d);
+	//hier koennt ich jetzt in die commit frage gehen und das selected item einfach nur highlighten, oder direct committen
+	//simplest: immediate commit
+	//soll fen schon veraendert werden?
+	//nein weil sonst koennen collisions passieren!
+	//jeder player sendet seinen choice zu server
+	//server muss integrieren bis jeder aus turn daten hat
+	//dann muss server die neue fen broadcasten
+	sendMyMove(A.selected.key)
 
-			}
-		}
-		let dCoin = player_stat_count('coin', pl.coins, d);
-		item.dCoin = dCoin.firstChild;
-		item.dAmount = dCoin.children[1];
-
-		let list = pl.hand.concat(pl.stall);
-		let list_luxury = list.filter(x => x[2] == 'l');
-		player_stat_count('pinching hand', list.length, d);
-		let d1 = player_stat_count('hand-holding-usd', list_luxury.length, d);
-		mStyle(d1.firstChild, { fg: 'gold', fz: 20 })
-
-		if (!isEmpty(fen.players[plname].stall) && fen.stage >= 5 && fen.stage <= 6) {
-			player_stat_count('shinto shrine', !fen.actionsCompleted.includes(plname) || fen.stage < 6 ? calc_stall_value(fen, plname) : '_', d);
-		}
-		player_stat_count('star', plname == U.name || isdef(fen.winners) ? ari_calc_real_vps(fen, plname) : ari_calc_fictive_vps(fen, plname), d);
-
-		if (fen.turn.includes(plname)) {
-			show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
-		}
 }
-function uiTypePlayerStats(fen,pl, dParent,outerStyles={}, innerStyles = {}) {
-	//let player_stat_items = UI.player_stat_items = ui_player_info(dParent); 
-	addKeys({dir:'column',display:'flex'},outerStyles);
-  // if (nundef(outerStyles.display)) outerStyles.display = 'flex';
-  mStyle(dParent, outerStyles);
-  let items = {};
-  let styles = jsCopy(innerStyles); 
-	addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
-  
-  let show_first = pl.name;
-  let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
-	//console.log('order',order)
+function natSelItemsGrowth(){
+	let fen=Clientdata.fen;	let pl=fen.players[U.name];	assertion(pl,`PLAYER DOES NOT EXIST ${U.name}`);
 
-  for (const name of order) {
-    let pl = fen.players[name];
-    let imgPath = `../assets/img/users/${pl.icon}.jpg`;
-    styles['border-color'] = pl.color;
-		let d = mDom(dParent, styles, {id:name2id(name)})
-    let picstyle = { w: 50, h: 50, box: true };
-    let ucolor = pl.color;
-    if (pl.playmode == 'bot') {
-      copyKeys({ rounding: 0, border: `double 6px ${ucolor}` }, picstyle);
-    } else {
-      copyKeys({ rounding: '50%', border: `solid 2px white` }, picstyle);
-    }
-    let img = mImage(imgPath, d, picstyle, 'img_person');
-    items[name] = {div:d,name:name};
+	let items = [], i = 0;
+  for (const cmd of ['gold','food','stone','book']) {
+    let item = { o: M.superdi[cmd], a: cmd, key: cmd, friendly: cmd, path:null, index:i }; // src: `../assets/games/nations/templates/${cmd}.${cmd=='book'?'svg':'png'}`, index: i };
+    i++;
+    items.push(item);
   }
+	//gibt es fuer diesen player noch extraworkers?
+	let w=pl.extraWorkers;
+	//console.log('extra workers',w)
+	if (!isEmpty(w)) {
+		let wWoDuplicates=arrRemoveDuplicates(w);
+		//console.log(w.length,wWoDuplicates);
+		for(const w1 of wWoDuplicates){
+			let item=uiTypeExtraWorker(w1); items.push(item);item.index=i++;
+		}
+	}
   return items;
 }
-async function natPresentCiv(dParent,pl){
-	//erstmal das board
-	let dciv = mDom(dParent, { w: 800, h: 420, maleft: 52, bg: 'red', position: 'relative' });
-	let iciv = await loadImageAsync(`../assets/games/nations/civs/civ_${pl.civ}.png`, mDom(dciv, { position: 'absolute' }, { tag: 'img' }));
-
-	//hierr kommen jetzt all die cards dazu, extraWorkers adjusten,...
-}
-function natPresentMarket(dParent,market){
-	let d1 = mDiv(dParent); mFlex(d1);
-	let [rows,cols]=[3,market.length/3]; 
-	let h = 180;
-
-	let dcost = mGrid(rows, 1, d1, { 'align-self': 'start' });
-	for (let cost = 3; cost >= 1; cost--) {
-		let d2 = mDom(dcost, { display: 'flex', 'justify-content': 'center', 'flex-flow': 'column', box: true, margin: 2, h: h, overflow: 'hidden' }, {});
-		for (let i = 0; i < cost; i++) mDom(d2, { h: 40 }, { tag: 'img', src: `../assets/games/nations/templates/gold.png` });
-	}
-
-	let grid = mGrid(rows, cols, d1, { 'align-self': 'start' });
-	let cells = [];
-	for (let i = 0; i < rows * cols; i++) {
-		let d = mDom(grid, { box: true, margin: 2, h: h, overflow: 'hidden' });
-		mCenterCenterFlex(d);
-		cells.push(d);
-	}
-	let n = rows * cols;
-	for (let i = 0; i < n; i++) {
-		let k=market[i];
-		if (k=='_') continue;
-		let img = mDom(cells[i], { h: h, w: 115 }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
-		img.setAttribute('key', k)
-		img.onclick = buyProgressCard;
-	}
+function selPrep(fen,autosubmit=false){
+	Clientdata.A = { level: 0, di: {}, ll: [], items: [], selected: [], tree: null, breadcrumbs: [], sib: [], command: null, autosubmit: autosubmit };
+	Clientdata.fen=fen;
 
 }
 
-async function natLoadAssets(){
-	if (isdef(M.natCards)) return;
-	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
-	M.civs = await mGetYaml('../assets/games/nations/civs.yaml');
-	M.civNames = Object.keys(M.civs); // ['america', 'arabia', 'china', 'egypt', 'ethiopia', 'greece', 'india', 'japan', 'korea', 'mali', 'mongolia', 'persia', 'poland', 'portugal', 'rome', 'venice', 'vikings'];
-	M.levels = ['chieftain', 'prince', 'king', 'emperor'];
 
-}
-function natCreate(owner,players){
-	if (isList(players)) {
-		let list=players;
-		players={};
-		list.map(x=>players[x]={});
-	}
-	let fen={id:rUniqueId(20),owner:owner,players:players}
-	let playerNames = fen.playerNames = Object.keys(players);
-	let numPlayers = fen.numPlayers = playerNames.length;
 
-	fen.age = 1;
-	fen.events = [];
-	fen.progress = [];
-	for (const k in M.natCards) {
-		let c = M.natCards[k];
-		if (c.age != fen.age) continue;
-		//console.log('k',k)
-		if (c.Type == 'event') fen.events.push(k); else fen.progress.push(k);
-	}
-	arrShuffle(fen.progress);
-	fen.progress = arrTake(fen.progress,42);//brauch nicht mehr als 2x full market
-	arrShuffle(fen.events);
-	fen.market = [];
-	for(let i=0;i<21;i++) {
-		let k=fen.progress.shift(); //console.log(k)
-		fen.market.push(k); //coin()?'_':k);
-	}
-	//console.log('fen.market',fen.market); return;
-	console.log('prog',arrTake(fen.progress,10))
-	let civs = rChoose(M.civNames,numPlayers);
-	let i=0;
-	for(const name in fen.players){
-		let pl=fen.players[name];
-		pl.name = name;
-		assertion(isdef(Serverdata.users[name]),`unknown user ${name}`);
-		addKeys(Serverdata.users[name],pl); //pl.color = lookup(Serverdata.users,[name,'color']);
-		if (nundef(pl.civ)) pl.civ=civs[i++];
-		if (nundef(pl.level)) pl.level=rChoose(M.levels);
-		let civ=M.civs[pl.civ];
-		addKeys(civ.res,pl);
-		pl.book=0;
-		pl.cards=jsCopy(civ.cards);
-		pl.extraWorkers=jsCopy(civ.workers);
-	}
-	let plorder=fen.plorder = jsCopy(playerNames); arrShuffle(plorder);
 
-	fen.round = 1;
-	fen.phase = 'market'; // growth newEvent action production turnOrder war events  
-	fen.turn = jsCopy(fen.playerNames);
 
-	return fen;
-}
+
 
 async function test72_civSpots(){
 	await prelims();
@@ -309,19 +221,6 @@ async function test70_game(){
  onclickNATIONS();
  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 async function test69_event() {
 	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); return;
 	let dParentGood = toElem('dExtra');
@@ -393,25 +292,20 @@ async function test69_event() {
 }
 async function prelims() {
 	if (nundef(M.superdi)) {
-		Serverdata = await mGetRoute('session'); //hier wird gesamte session geladen!!!
+		Serverdata = await mGetRoute('session'); //session ist: users,config,
+		Info = await mGetYaml('../assets/info.yaml');
 		await loadCollections();
 		loadPlayerColors();
 
 		showNavbar();
 
+		sockInit();
+
 		dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
 
-		let uname = localStorage.getItem('username');
-		if (isdef(uname)) U = await getUser(uname);
-		await showUser(uname);
+		await switchToUser(localStorage.getItem('username'));  //danach ist U IMMER gesetzt!!!!
 
-		let server = getServerurl();
-		Socket = io(server);
-		Socket.on('message', showChatMessage);
-		Socket.on('disconnect', x => console.log('>>disconnect:', x));
-		Socket.on('update', x => console.log('>>update:', x));
-
-		showChatWindow();
+		//showChatWindow();
 
 	}
 }

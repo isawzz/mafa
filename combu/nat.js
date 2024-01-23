@@ -238,6 +238,51 @@ function getBar(ctx, list, val) {
 	//console.log('val', vfreq); console.log('line', res.length);
 	return res;
 }
+function getCivSpot(civ,row,col,fact=1){
+	let rAdvisor={x:11,y:27,w:87,h:136}; //von persia
+	let rColony1={x:10,y:193,w:87,h:137}; //von japan
+	let rColony2={x:122,y:192,w:87,h:136}; //von india
+	let rColonyUpPersia={x:122,y:26,w:87,h:136}; //von portugal
+	let rBuilding1={x:132,y:26,w:87,h:136}; //von portugal
+	let rBuilding1Persia={x:243,y:26,w:87,h:136}; //von persia
+	let rBuilding2={x:243,y:28,w:87,h:136};
+	let dxBuildings=rBuilding2.x-(rBuilding1.x+rBuilding1.w);
+	let rWic={x:700,y:26,w:87,h:136}; //calculated
+	let rLastWonder={x:700,y:193,w:87,h:136};
+	let rWonder={x:674,y:193,w:87,h:136};
+	let dxWonders=25;
+
+	for(const r of [rAdvisor,rColony1,rColony2,rColonyUpPersia,rBuilding1,rBuilding1Persia,rBuilding2,rWic,rLastWonder,rWonder]){
+		r.x*=fact;r.y*=fact;r.w*=fact;r.h*=fact;
+	}
+	dxBuildings*=fact;
+	dxWonders*=fact;
+
+	if (row==0 && col==0) return rAdvisor;
+	if (row==0 && col == 1 && civ=='persia') return rColonyUpPersia;
+	if (row==0 && col == 1) return rBuilding1;
+	if (row==0 && col == 2 && civ=='persia') return rBuilding1Persia;
+	if (row==0 && col == 2) return rBuilding2;
+
+	if (row == 0 && col == 6) return rWic;
+
+	let r,dist;
+	if (row == 0){
+		// return a building
+		r=rBuilding2;
+		dist=dxBuildings+r.w
+		return {x:r.x+dist*(col-2),y:r.y,w:r.w,h:r.h};
+	}
+
+	if (row==1 && col == 0) return rColony1;
+	if (row==1 && col == 1 && civ!='china' && civ!='poland') return rColony2;
+	if (row==1 && col == 6) return rLastWonder;
+
+	r=rLastWonder;
+	dist=dxWonders+r.w;
+	return {x:r.x-dist*(6-col),y:r.y,w:r.w,h:r.h};
+
+}
 function getLine(ctx, list, val) {
 	let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
 	let ls=sortBy(res,'x');
@@ -749,6 +794,142 @@ async function natCardsWrongFormatAberIntact() {
 	// console.log('result',res);
 	// //24,474,
 }
+function natCreate(owner,players){
+	if (isList(players)) {
+		let list=players;
+		players={};
+		list.map(x=>players[x]={});
+	}
+	if (nundef(players[owner])) players[owner]={};
+	let fen={id:rUniqueId(20),owner:owner,players:players}
+	let playerNames = fen.playerNames = Object.keys(players);
+	let numPlayers = fen.numPlayers = playerNames.length;
+
+	fen.age = 1;
+	fen.events = [];
+	fen.progressCards = [];
+	for (const k in M.natCards) {
+		let c = M.natCards[k];
+		if (c.age != fen.age) continue;
+		//console.log('k',k)
+		if (c.Type == 'event') fen.events.push(k); else fen.progressCards.push(k);
+	}
+	arrShuffle(fen.progressCards);
+	fen.progressCards = arrTake(fen.progressCards,42);//brauch nicht mehr als 2x full market
+	arrShuffle(fen.events);
+	fen.market = [];
+	for(let i=0;i<21;i++) {
+		let k=fen.progressCards.shift(); //console.log(k)
+		fen.market.push(k); //coin()?'_':k);
+	}
+	//console.log('fen.market',fen.market); return;
+	//console.log('prog',arrTake(fen.progressCards,10))
+	let civs = rChoose(M.civNames,numPlayers);
+	let i=0;
+	for(const name in fen.players){
+		let pl=fen.players[name];
+		pl.name = name;
+		assertion(isdef(Serverdata.users[name]),`unknown user ${name}`);
+		addKeys(Serverdata.users[name],pl); //pl.color = lookup(Serverdata.users,[name,'color']);
+		if (nundef(pl.civ)) pl.civ=civs[i++];
+		if (nundef(pl.level)) pl.level=rChoose(M.levels);
+		let civ=M.civs[pl.civ];
+		addKeys(civ.res,pl);
+		pl.book=0;
+		pl.cards=jsCopy(civ.cards);
+		pl.extraWorkers=jsCopy(civ.workers);
+	}
+	let plorder=fen.plorder = jsCopy(playerNames); arrShuffle(plorder);
+
+	fen.round = 1;
+	fen.phase = 'growth'; // growth newEvent action production turnOrder war events  
+	fen.turn = jsCopy(fen.playerNames);
+
+	return fen;
+}
+async function natLoadAssets(){
+	if (isdef(M.natCards)) return;
+	M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	M.civs = await mGetYaml('../assets/games/nations/civs.yaml');
+	M.civNames = Object.keys(M.civs); // ['america', 'arabia', 'china', 'egypt', 'ethiopia', 'greece', 'india', 'japan', 'korea', 'mali', 'mongolia', 'persia', 'poland', 'portugal', 'rome', 'venice', 'vikings'];
+	M.levels = ['chieftain', 'prince', 'king', 'emperor'];
+
+}
+async function natPresentCiv(dParent,pl,fact){
+	//erstmal das board
+	//let fact=.92;
+	let [w,h]=[800*fact,420*fact];
+	let dciv = mDom(dParent, { w: w, h: h, maleft: 56, bg: 'red', position: 'relative' });
+	let iciv = await loadImageAsync(`../assets/games/nations/civs/civ_${pl.civ}.png`, mDom(dciv, { w:w,h:h,position: 'absolute' }, { tag: 'img' }));
+
+	//hierr kommen jetzt all die cards dazu, extraWorkers adjusten,...
+	M.civCells = [];
+	for (let i = 0; i < 2; i++) {
+		for (let j = 0; j < 7; j++) {
+			let r = getCivSpot(pl.civ, i, j, fact);
+			//console.log(r)
+			let [dx,dy,dw,dh]=[10,10,15,20].map(x=>x*fact)
+			let d = mDom(dciv, { box: true, w: r.w+dw, h: r.h+dh, left: r.x-dx, top: r.y-dy, position: 'absolute', overflow: 'hidden' });
+			mCenterCenterFlex(d);
+			M.civCells.push(d);
+			//d.onclick = () => selectCivSpot(d);
+		}
+	}
+}
+function natPresentMarket(dParent,market,h){
+	let d1 = mDiv(dParent); mFlex(d1);
+	let [rows,cols]=[3,market.length/3]; 
+	let fact=1.565; let w=h/fact; 
+
+	let dcost = mGrid(rows, 1, d1, { 'align-self': 'start' });
+	for (let cost = 3; cost >= 1; cost--) {
+		let d2 = mDom(dcost, { display: 'flex', 'justify-content': 'center', 'flex-flow': 'column', box: true, margin: 2, h: h, overflow: 'hidden' }, {});
+		for (let i = 0; i < cost; i++) mDom(d2, { h: 40 }, { tag: 'img', src: `../assets/games/nations/templates/gold.png` });
+	}
+
+	let grid = mGrid(rows, cols, d1, { 'align-self': 'start' });
+	let cells = [];
+	for (let i = 0; i < rows * cols; i++) {
+		let d = mDom(grid, { box: true, vmargin: 2, hmargin:5, h: h, w:w, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		cells.push(d);
+	}
+	let n = rows * cols;
+	for (let i = 0; i < n; i++) {
+		let k=market[i];
+		if (k=='_') continue;
+		let img = mDom(cells[i], { h: h, w: w }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
+		img.setAttribute('key', k)
+		//img.onclick = buyProgressCard;
+	}
+
+}
+function natStats(fen,pl,dParent){
+	let player_stat_items = uiTypePlayerStats(fen,pl,dParent,{},{wmin:260,bg:'beige',fg:'contrast'})
+	for (const plname in fen.players) {
+		let pl1 = fen.players[plname];
+		let item = player_stat_items[plname];
+		let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
+
+		//console.log('pl',pl1)
+		playerStatCount('military', pl1.military, d);
+		playerStatCount('stability', pl1.stability, d);
+		playerStatCount('gold', pl1.gold, d);
+		playerStatCount('food', pl1.food, d);
+		playerStatCount('stone', pl1.stone, d);
+		playerStatCount('book', pl1.book, d);
+		playerStatCount('VP', pl1.vp, d);
+		playerStatCount('worker', pl1.workers, d);
+
+		mDom(d,{h:6,w:'100%'});
+		mDom(d,{family:'algerian'},{html:`${pl1.civ}`})
+		if (fen.turn.includes(plname)) {
+			show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
+		}
+		mDom(d,{position:'absolute',top:0},{html:pl1.level})
+
+	}
+}
 function nextBar(ctx, rest, color) {
 	list = rest;
 	let val = findMostFrequentVal(list, 'x');
@@ -765,6 +946,17 @@ function nextLine(ctx, rest, color) {
 	//console.log('line',line)
 	if (line) line.map(p => drawPix(ctx, p.x, p.y, color));
 	return { val, line, rest, color };
+}
+function playerStatCount(key, n, dParent, styles = {}) {
+  let sz = valf(styles.sz, 16);
+  addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'center', fz: sz, align: 'center' }, styles);
+  let d = mDiv(dParent, styles);
+
+	let o=M.superdi[key];
+  if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg:'grey' }); //mSym(key, d, { h: sz, 'line-height': sz, w: '100%' });
+  else mText(key, d, { h: sz, fz: sz, w: '100%' });
+  d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
+  return d;
 }
 async function rotateAndWriteAge(img,card) {
 	//zuerst rotate canvas!

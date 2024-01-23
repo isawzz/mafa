@@ -12,6 +12,83 @@
 	--fgTitle: yellow;
 	--fgSubtitle: yellow;
 }
+
+
+/* region nations*/
+.instruction {
+	border-radius: 10px;
+	border: 2px silver solid;
+	background: #f0f0f080;
+	margin: 4px;
+	padding: 4px;
+	/* flex-wrap: wrap; */
+	/* display: flex;
+	
+	justify-content: center;  */
+	/* width: calc( 100% - 20px ); */
+	box-sizing: border-box;
+	align-items: center;
+	/* gap: 10px; */
+}
+/* #endregion */
+/* #region classes for cards */
+.card {
+	filter: drop-shadow(4px 5px 2px #111);
+}
+.hoverScale,
+.selectable {
+	cursor: pointer;
+}
+.hoverScale:hover,
+.selectable:hover,
+.mag {
+	transform-origin: bottom right;
+	transform: scale(1.05);
+	display: inline-block;
+}
+.card_selected {
+	transform-origin: bottom right;
+	transform: scale(1.05);
+	/* border: solid 2px red;
+	border-radius: 8px; */
+	/* outline: solid 3px red;
+	outline-offset: -3px; */
+}
+.string_selected {
+	background: yellow;
+	color: black;
+}
+.selectable_parent {
+	box-shadow: inset 0px 0px 18px 16px #efff04, 0px 0px 12px 4px #efff04;
+}
+.selected_parent {
+	border: 2px solid red;
+	/* box-shadow: inset 0px 0px 18px 16px red, 0px 0px 12px 4px red; */
+}
+.selectable_button {
+	color: white;
+	background: red;
+	margin-left: 20px !important;
+	/* margin: 0px 10px; */
+	/* box-shadow: 0px 0px 7px 4px gold; */
+}
+.selectable_button:hover{
+	background: orangered;
+	/* color: yellow; */
+	/* opacity: 0.8; */
+}
+.selectable_card {
+	border-radius: 4px;
+	box-shadow: 0px 0px 3px 3px #efff04;
+}
+.wood {
+	/* background-color: #BA8C63; */
+	background-repeat: repeat;
+	background-image: url('../base/assets/images/textures/Melamine-wood-001.png');
+}
+/* #endregion */
+
+
 body{
 	font-family: opensans, sans-serif; 
 	/* padding: 2px 12px; */
@@ -19,7 +96,7 @@ body{
 	margin:0;
 	background: var(--bgBody) !important;
 }
-.active { 
+.activeLink { 
 	color: var(--fgButtonActive) !important;
 	background: var(--bgButtonActive) !important;
 } 
@@ -126,8 +203,8 @@ body{
 	display: block; 
 	padding: .5rem 1rem;
 	text-decoration: none;
-	background: var(--bgButton) !important;
-	color: var(--fgButton) !important;
+	background: var(--bgButton);
+	color: var(--fgButton);
 	border-radius: 50%;
 }
 .nav-link:hover { 

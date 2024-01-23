@@ -9,7 +9,16 @@ async function getEvents(cachedOk = false) {
 	if (!cachedOk) Serverdata.events = await mGetRoute('events'); 
 	return res;
 }
+async function __getUser(uname, cachedOk = false) { 
+	let res = lookup(Serverdata, ['users',uname]); 
+	//console.log(uname,res)
+	if (!res || !cachedOk) res = await mGetRoute('user',{uname}); 
+	if (!res) { res = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
+	Serverdata.users[uname] = res;
+	return res;
+}
 async function getUser(uname, cachedOk = false) { 
+	
 	let res = lookup(Serverdata, ['users',uname]); 
 	//console.log(uname,res)
 	if (!res || !cachedOk) res = await mGetRoute('user',{uname}); 
@@ -26,8 +35,10 @@ async function postEventChange(data) {
   return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
 }
 
-//wenn ich ein get vom server mache, soll ich dann ALLES gleich updaten?ne nur das was geholt habe!
-
+async function updateClientData(){
+	//was ist das menu? 
+	// wo muss das eingestellt werden? in mNav
+}
 
 
 

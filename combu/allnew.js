@@ -1,20 +1,20 @@
-async function addDirToCollections(dir,coll,cat){
+async function addDirToCollections(dir, coll, cat) {
   let filenames = await mGetFiles(dir);
   //console.log(filenames)
   addIf(M.collections, coll);
   addIf(M.categories, cat);
-  for(const name of filenames){
-    let img=name;
-    let path=`../assets/${dir}/${name}`;
-    let k=stringBefore(name,'.');
-		let friendly=k;
+  for (const name of filenames) {
+    let img = name;
+    let path = `../assets/${dir}/${name}`;
+    let k = stringBefore(name, '.');
+    let friendly = k;
     // if (['leo','viola','wolf'].includes(k)) continue;
-		if (isdef(M.superdi[k])) {
-			k=`${coll}_${k}`;
-			//console.log('duplicate:',k)
-		}
+    if (isdef(M.superdi[k])) {
+      k = `${coll}_${k}`;
+      //console.log('duplicate:',k)
+    }
     //assertion(nundef(M.superdi[k]),`username is already in superdi!!!!!! ${k}`);
-    M.superdi[k] = { key: k, friendly: friendly, cats: [cat], ext: stringAfter(name,'.'), img: `${name}`, path: path };
+    M.superdi[k] = { key: k, friendly: friendly, cats: [cat], ext: stringAfter(name, '.'), img: `${name}`, path: path };
     addIf(M.names, friendly);
     lookupAddIfToList(M.byCat, [cat], k);
     lookupAddIfToList(M.byFriendly, [friendly], k);
@@ -184,6 +184,34 @@ function generateArrayColors(startColor, endColor, numSteps) {
   return colors;
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
+function getBrowser() {
+  var userAgent = navigator.userAgent;
+
+  // Detect Chrome
+  if (userAgent.match(/chrome|chromium|crios/i)) {
+    return "Chrome";
+  }
+  // Detect Firefox
+  else if (userAgent.match(/firefox|fxios/i)) {
+    return "Firefox";
+  }
+  // Detect Safari
+  else if (userAgent.match(/safari/i)) {
+    return "Safari";
+  }
+  // Detect Internet Explorer
+  else if (userAgent.match(/msie|trident/i)) {
+    return "Internet Explorer";
+  }
+  // Detect Edge
+  else if (userAgent.match(/edg/i)) {
+    return "Edge";
+  }
+  // Other browser
+  else {
+    return "Other";
+  }
+}
 function getButtonId(key) { return 'b' + capitalize(key); }
 function getDivId(key) { return 'd' + capitalize(key); }
 function getIdKey(elem) { let id = mBy(elem).id; return id.substring(1).toLowerCase(); }
@@ -207,21 +235,26 @@ function getServerurl() {
   return server;
 }
 function getUname() { return U ? U.name : 'guest' }
-function imgToDataUrl(img){
-	const canvas = document.createElement('canvas');
-	canvas.width = img.width;
-	canvas.height = img.height;
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-	const dataUrl = canvas.toDataURL('image/png');
-	return dataUrl;
+function imgBackground(d, src) {
+  //d.style.backgroundImage = `../assets/games/nations/civs/civ_${pl1.civ}.png`;
+  d.style.backgroundImage = `url('${src}')`; //../assets/games/nations/civs/civ_${pl1.civ}.png')`;
+  d.style.backgroundSize = 'cover';
+}
+function imgToDataUrl(img) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  const dataUrl = canvas.toDataURL('image/png');
+  return dataUrl;
 }
 async function imgToServer(canvas, path) {
-	let dataUrl = canvas.toDataURL('image/png');
-	let o = { image: dataUrl, path: path };
-  console.log('...postImage o',o)
-	let resp = await mPostRoute('postImage', o);
-	return resp; //console.log('resp', resp);
+  let dataUrl = canvas.toDataURL('image/png');
+  let o = { image: dataUrl, path: path };
+  console.log('...postImage o', o)
+  let resp = await mPostRoute('postImage', o);
+  return resp; //console.log('resp', resp);
 
 }
 function initCollection(name) {
@@ -284,11 +317,11 @@ async function loadCollections() {
   M.names.sort();
   await updateCollections();
 }
-async function loadImageAsync(src,img) {
+async function loadImageAsync(src, img) {
   return new Promise((resolve, reject) => {
     //const img = new Image();
     img.onload = async () => {
-			//if (isdef(callback)) await callback(img,...params);
+      //if (isdef(callback)) await callback(img,...params);
       resolve(img);
     };
     img.onerror = (error) => {
@@ -624,18 +657,18 @@ function measureHeight(dParent, styles = {}) {
 }
 async function mGetFiles(dir) {
   let server = getServerurl();
-	let data = await mGetJsonCors(`${server}/filenames?directory=${dir}`);
-	return data.files;
+  let data = await mGetJsonCors(`${server}/filenames?directory=${dir}`);
+  return data.files;
 }
 async function mGetJsonCors(url) {
-	let res = await fetch(url, {
-		method: 'GET',
-		headers: { 'Content-Type': 'application/json' },
-		mode: 'cors' // Set CORS mode to enable cross-origin requests
-	});
-	let json = await res.json();
-	//console.log('json', json)
-	return json;
+  let res = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    mode: 'cors' // Set CORS mode to enable cross-origin requests
+  });
+  let json = await res.json();
+  //console.log('json', json)
+  return json;
 }
 async function mGetRoute(route, o = {}) {
   let server = getServerurl();
@@ -677,36 +710,40 @@ function mixColors(color1, color2, weight) {
   return hex;
 }
 function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
-	let ui = mDom(dParent, { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
-	mClass(dParent, 'nav');
-	let stflex={gap:10, display:'flex','align-items': 'center'};
-	let [dl,dr]=[mDom(ui,stflex),mDom(ui,stflex)]; 
+  let ui = mDom(dParent, { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+  mClass(dParent, 'nav');
+  let stflex = { gap: 10, display: 'flex', 'align-items': 'center' };
+  let [dl, dr] = [mDom(ui, stflex), mDom(ui, stflex)];
 
   function activate(ev) {
-    closeApps();
+    close();
     let links = document.getElementsByClassName('nav-link');
     let inner = isString(ev) ? ev : ev.target.innerHTML;
-    for (const el of links) {
-      if (el.innerHTML == inner) mClass(el, 'active');
-      else mClassRemove(el, 'active');
-    }
+    let el = Array.from(links).find(x => x.innerHTML == inner);
+    console.log('activate', ev, el)
+    if (el) mClass(el, 'activeLink');
+  }
+  function close() {
+    closeApps();
+    let links = document.getElementsByClassName('nav-link');
+    for (const el of links) { mClassRemove(el, 'activeLink'); }
   }
   function disable() {
     let links = Array.from(document.getElementsByClassName('nav-link'));
     for (const w of arguments) {
-      let el = links.find(x => x.innerHTML == w);
+      let el = Array.from(links).find(x => x.innerHTML == w);
       if (isdef(el)) mClass(el, 'disabled');
     }
   }
   function enable() {
     let links = document.getElementsByClassName('nav-link');
     for (const w of arguments) {
-      let el = links.find(x => x.innerHTML == w);
+      let el = Array.from(links).find(x => x.innerHTML == w);
       if (isdef(el)) mClassRemove(el, 'disabled');
     }
   }
   function isThemeLight() { return !U || U.theme == 'light' ? true : false; }
-  return { activate: activate, disable: disable, enable: enable, isThemeLight: isThemeLight, ui: ui, dleft:dl,dright:dr };
+  return { activate, close, disable, enable, isThemeLight, ui, dleft: dl, dright: dr };
 }
 function mOnEnter(elem, setter) {
   elem.addEventListener('keydown', ev => {
@@ -745,7 +782,7 @@ async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isA
         if (cond(val)) {
           resolve(val.toLowerCase().trim());
         } else {
-          console.log('invalid input!');
+          console.log('not a valid input => null');
           resolve(null);
         }
       } else if (ev.key == 'Escape') {
@@ -758,19 +795,19 @@ async function natCivsToLandscape() {
   async function imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
     if (isdef(mBy('img1'))) mBy('img1').remove();
     let img = mDom(imgParent, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', id: 'img1' });
-    await loadImageAsync(src,img); //hier ist img loaded!!!
-    await onloadCiv(img,...arguments);
+    await loadImageAsync(src, img); //hier ist img loaded!!!
+    await onloadCiv(img, ...arguments);
   }
-  async function onloadCiv(img,src, width, name, viewParent, imgParent, sendToServer, downloadAtClient){
+  async function onloadCiv(img, src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
     let d = viewParent;
-    console.log('d',d)
-    console.log('img',img)
+    console.log('d', d)
+    console.log('img', img)
     mClear(d);
     let canvas = mDom(d, { border: 'red' }, { tag: 'canvas', id: 'canvas', width: img.height, height: img.width });
     let ctx = canvas.getContext('2d');
     ctx.translate(img.height, 0)
     ctx.rotate(90 * Math.PI / 180);
-  
+
     // ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
     ctx.drawImage(img, 0, 0, img.width, img.height)
     if (downloadAtClient) downloadCanvas(canvas);
@@ -786,171 +823,171 @@ async function natCivsToLandscape() {
     }
   }
   let dbody = document.body; dbody.innerHTML = '';
-	let d = mDom(dbody, { bg: 'skyblue', hmin: '100vh' }, { id: 'd1' });
-	// let dhidden = mDom(dbody);
+  let d = mDom(dbody, { bg: 'skyblue', hmin: '100vh' }, { id: 'd1' });
+  // let dhidden = mDom(dbody);
 
-	let civlist=['america','arabia','china','egypt','ethiopia','greece','india','japan','korea','mali','mongolia','persia','poland','portugal','rome','venice','vikings'];
-	for (const civ of ['vikings']) {
-		let src = `../assets/games/nations/civs_old/${civ}.jpg`;
-		let width = 800;
-		let name = civ;
-		let viewParent = d;
-		let imgParent = dbody;
-		let sendToServer = true;
-		let downloadAtClient = false;
-		await imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
-	}
+  let civlist = ['america', 'arabia', 'china', 'egypt', 'ethiopia', 'greece', 'india', 'japan', 'korea', 'mali', 'mongolia', 'persia', 'poland', 'portugal', 'rome', 'venice', 'vikings'];
+  for (const civ of ['vikings']) {
+    let src = `../assets/games/nations/civs_old/${civ}.jpg`;
+    let width = 800;
+    let name = civ;
+    let viewParent = d;
+    let imgParent = dbody;
+    let sendToServer = true;
+    let downloadAtClient = false;
+    await imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
+  }
 }
-async function natLoadCardInfo(){
-	async function natCollectTypes(type){
-		let text = await mGetText(`../assets/games/nations/${type}.csv`);
-		let list = csv2list(text, hasHeadings = true);
-		console.log('list',list.length);
-		//let card = rChoose(list);
-		//console.log('card',card);
-		let diStage = {I:1,II:2,III:3,IV:4,'II II':4};
-		let di={},newlist=[];
-		for(const card of list){
-			if (type == 'event' && (isdef(card['Name of Event 1']) || isdef(card['Name of Event 2']))) {
-				let name1= card['Name of Event 1'];
-				let name2 = card['Name of Event 2'];
-				card.Name = isdef(name1)?name1:isdef(name2)?name2:null;
-			}
-			if (nundef(card.Name)) {console.log('no',card.Name);continue;}
+async function natLoadCardInfo() {
+  async function natCollectTypes(type) {
+    let text = await mGetText(`../assets/games/nations/${type}.csv`);
+    let list = csv2list(text, hasHeadings = true);
+    console.log('list', list.length);
+    //let card = rChoose(list);
+    //console.log('card',card);
+    let diStage = { I: 1, II: 2, III: 3, IV: 4, 'II II': 4 };
+    let di = {}, newlist = [];
+    for (const card of list) {
+      if (type == 'event' && (isdef(card['Name of Event 1']) || isdef(card['Name of Event 2']))) {
+        let name1 = card['Name of Event 1'];
+        let name2 = card['Name of Event 2'];
+        card.Name = isdef(name1) ? name1 : isdef(name2) ? name2 : null;
+      }
+      if (nundef(card.Name)) { console.log('no', card.Name); continue; }
       let name = card.Name;
-      if (name.endsWith(' I')) {name = name.substring(0,name.length-2); card.Name = name;console.log('name',name);}
+      if (name.endsWith(' I')) { name = name.substring(0, name.length - 2); card.Name = name; console.log('name', name); }
 
-			let key = normalizeString(card.Name.toLowerCase());
-      
-			let age = valf(diStage[card.Stage],0);
-			let fname= isdef(card.Stage)? `age${age}_`:'';
-			fname+=key; //normalizeString(card.Name.toLowerCase());
-			fname+='.jpg';
-			//console.log('n',fname);
-			card.Path = fname;
-			card.Type = type;
-			card.key = key;
-			if (isdef(age)) card.age = age; else console.log('no age',key)
-			if (isdef(di[key])) console.log('duplicate',key)
-			di[key]=card;
-			newlist.push(card)
-		}
-		//if (download) downloadAsYaml(list,'cards');
-		return newlist;
-	
-	}
+      let key = normalizeString(card.Name.toLowerCase());
 
-	let listOfTypes = ['advisor','battle','building','colony','military','natural','war','wonder','event'];
-	let list=[];
-	for(const type of listOfTypes){
-		list = list.concat(await natCollectTypes(type));
-	}
-	let realList = []
-	for(const c of list){
-		if (isEmpty(c.Name)) console.log('no name',c); else realList.push(c);
+      let age = valf(diStage[card.Stage], 0);
+      let fname = isdef(card.Stage) ? `age${age}_` : '';
+      fname += key; //normalizeString(card.Name.toLowerCase());
+      fname += '.jpg';
+      //console.log('n',fname);
+      card.Path = fname;
+      card.Type = type;
+      card.key = key;
+      if (isdef(age)) card.age = age; else console.log('no age', key)
+      if (isdef(di[key])) console.log('duplicate', key)
+      di[key] = card;
+      newlist.push(card)
+    }
+    //if (download) downloadAsYaml(list,'cards');
+    return newlist;
 
-	}
-	console.log('final',realList.map(x=>x.Name));
-	let final = list2dict(realList,'key');
-	downloadAsYaml(final,'nationsCards')
-	//advisors:battles:32
+  }
+
+  let listOfTypes = ['advisor', 'battle', 'building', 'colony', 'military', 'natural', 'war', 'wonder', 'event'];
+  let list = [];
+  for (const type of listOfTypes) {
+    list = list.concat(await natCollectTypes(type));
+  }
+  let realList = []
+  for (const c of list) {
+    if (isEmpty(c.Name)) console.log('no name', c); else realList.push(c);
+
+  }
+  console.log('final', realList.map(x => x.Name));
+  let final = list2dict(realList, 'key');
+  downloadAsYaml(final, 'nationsCards')
+  //advisors:battles:32
 }
 async function natModCard(name, color, idx, dims) { //}, rot, ybound, xbound, yextra, xendbd) {
-	let path = `../assets/games/nations/cards/${name}`; //.jpg`;
-	let dParent = toElem('dExtra');
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height];
-	if (w>h) return natModCardLandscape(dParent,img,name,color,idx,dims,w,h); 
-	else return natModCardPortrait(dParent,img,name,color,idx,dims,w,h); 
+  let path = `../assets/games/nations/cards/${name}`; //.jpg`;
+  let dParent = toElem('dExtra');
+  let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+  let [w, h] = [img.width, img.height];
+  if (w > h) return natModCardLandscape(dParent, img, name, color, idx, dims, w, h);
+  else return natModCardPortrait(dParent, img, name, color, idx, dims, w, h);
 }
-function natModCardLandscape(dParent,img,name,color,idx,dims,w,h){
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, w, h);
+function natModCardLandscape(dParent, img, name, color, idx, dims, w, h) {
+  let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+  let ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
 
-	let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
-	let y1, y2, x1, x2, prevy, prevx;
-	let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
-	console.log('resY', resy,prevy)
+  let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
+  let y1, y2, x1, x2, prevy, prevx;
+  let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
+  console.log('resY', resy, prevy)
 
-	let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
-	console.log('resX', resx)
-	//let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
+  let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
+  console.log('resX', resx)
+  //let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
 
-	//console.log('bounds X',resx)
+  //console.log('bounds X',resx)
 
-	// console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
-	console.log('wsmall', wsmall, 'hsmall', hsmall)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart, w, h);
+  // console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+  let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
+  console.log('wsmall', wsmall, 'hsmall', hsmall)
+  let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
+  let ct1 = cv1.getContext('2d');
+  ct1.drawImage(img, -xstart, -ystart, w, h);
 
-	//let border=10;
-	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
-	// let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	// let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
-	let ct2 = cv2.getContext('2d');
-	ct2.drawImage(img, -xstart, -ystart, w, h);
-	//drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
-	ct2.strokeStyle = color;
-	ct2.lineWidth = 20;
-	ct2.rect(0, 0, wsmall, hsmall);
-	ct2.stroke();
+  //let border=10;
+  //let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
+  // let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+  // let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+  let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
+  let ct2 = cv2.getContext('2d');
+  ct2.drawImage(img, -xstart, -ystart, w, h);
+  //drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
+  ct2.strokeStyle = color;
+  ct2.lineWidth = 20;
+  ct2.rect(0, 0, wsmall, hsmall);
+  ct2.stroke();
 
-	return cv2;
+  return cv2;
 
-	//next: draw rotated!
+  //next: draw rotated!
 
 }
-function natModCardPortrait(dParent,img,name,color,idx,dims,w,h){
-	console.log('w',w,'h',h);
-	//strategie:
-	//1. nimm 1 model card und mach die ideal measures
-	//2. aus model card mach auch eine empty vorlage (das kann ich eigentlich ruhig haendisch machen!)
-	//3. eine liegende die ganz erwischt wurde
-	//1. measure the inner pic
-	//2. 
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, w, h);
-	return null;
+function natModCardPortrait(dParent, img, name, color, idx, dims, w, h) {
+  console.log('w', w, 'h', h);
+  //strategie:
+  //1. nimm 1 model card und mach die ideal measures
+  //2. aus model card mach auch eine empty vorlage (das kann ich eigentlich ruhig haendisch machen!)
+  //3. eine liegende die ganz erwischt wurde
+  //1. measure the inner pic
+  //2. 
+  let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+  let ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+  return null;
 
-	let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
-	let y1, y2, x1, x2, prevy, prevx;
-	let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
-	console.log('resY', resy)
+  let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
+  let y1, y2, x1, x2, prevy, prevx;
+  let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
+  console.log('resY', resy)
 
-	let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
-	console.log('resX', resx)
-	//let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
+  let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
+  console.log('resX', resx)
+  //let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
 
-	//console.log('bounds X',resx)
+  //console.log('bounds X',resx)
 
-	// console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
-	console.log('wsmall', wsmall, 'hsmall', hsmall)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart, w, h);
+  // console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+  let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
+  console.log('wsmall', wsmall, 'hsmall', hsmall)
+  let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
+  let ct1 = cv1.getContext('2d');
+  ct1.drawImage(img, -xstart, -ystart, w, h);
 
-	//let border=10;
-	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
-	// let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	// let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
-	let ct2 = cv2.getContext('2d');
-	ct2.drawImage(img, -xstart, -ystart, w, h);
-	//drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
-	ct2.strokeStyle = color;
-	ct2.lineWidth = 20;
-	ct2.rect(0, 0, wsmall, hsmall);
-	ct2.stroke();
+  //let border=10;
+  //let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
+  // let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+  // let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+  let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
+  let ct2 = cv2.getContext('2d');
+  ct2.drawImage(img, -xstart, -ystart, w, h);
+  //drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
+  ct2.strokeStyle = color;
+  ct2.lineWidth = 20;
+  ct2.rect(0, 0, wsmall, hsmall);
+  ct2.stroke();
 
-	return cv2;
+  return cv2;
 
-	//next: draw rotated!
+  //next: draw rotated!
 
 }
 async function onclickAdd() {
@@ -961,8 +998,8 @@ async function onclickAdd() {
   let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { ev.preventDefault(); return false; } });
   mDom(dForm, {}, { html: 'Collection:' }); let dl = mDatalist(dForm, colls);
   mDom(dForm, { h: 10 })
-  mDom(dForm, {}, { html: 'Name:' }); 
-  let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>", autocomplete:"off" });
+  mDom(dForm, {}, { html: 'Name:' });
+  let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>", autocomplete: "off" });
   mDom(dForm, { h: 10 })
   UI.dTool = mDom(dForm)
   UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
@@ -981,7 +1018,7 @@ async function onclickCollections() {
   M.cells = [];
   let bg = mGetStyle('dNav', 'bg');
   for (let i = 0; i < M.rows * M.cols; i++) {
-    let d = mDom(M.grid, { bg: bg, fg:'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
     mCenterCenterFlex(d);
     M.cells.push(d);
   }
@@ -991,10 +1028,8 @@ async function onclickColor(ev) {
   let c = ev.target.style.background;
   c = colorHex(c);
   setColors(c);
-  if (U) {
-    U.color = c;
-    await postUserChange();
-  }
+  U.color = c;
+  await postUserChange();
 }
 async function onclickColors() {
   showTitle('Set Color Theme');
@@ -1023,15 +1058,15 @@ function onclickDay(d, styles) {
 function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickItem(ev) {
   evNoBubble(ev);
-	let o=evToAttr(ev,'key');
-	if (!o) return;
-	let [key,elem]=[o.val,o.elem];
+  let o = evToAttr(ev, 'key');
+  if (!o) return;
+  let [key, elem] = [o.val, o.elem];
   //console.log('click',ev.target,o.val,o.elem);
   //let elem = ev.target;
   //let key = ev.target.getAttribute('key');
-	if (nundef(key)) {console.log('no key'); return; }
+  if (nundef(key)) { console.log('no key'); return; }
   if (nundef(Items[key])) {
-		//console.log('found Item',key)
+    //console.log('found Item',key)
     let o = M.superdi[key];
     Items[key] = { selected: false };
     addKeys(o, Items[key]);
@@ -1043,24 +1078,22 @@ async function onclickItem(ev) {
 async function onclickNext() { showImageBatch(1); }
 async function onclickPrev() { showImageBatch(-1); }
 async function onclickPlan() { showCalendarApp(); }
-async function onclickTest() { console.log('nations!!!!');}
+async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUpload() {
   let img = UI.img;
   let name = valnwhite(UI.imgName.value, rUID('img'));
   let unique = isdef(M.superdi[name]) ? rUID('img') : name;
-	unique = normalizeString(unique);
+  unique = normalizeString(unique);
   let coll = valnwhite(UI.imgColl.value, 'other');
-	let dataUrl = imgToDataUrl(img);
-	let o = { image: dataUrl, name:name, unique:unique, coll:coll, path: unique+'.png', ext:'png' };
-	let resp = await mPostRoute('postImage',o);
-	console.log('resp',resp)
-	await updateCollections();
+  let dataUrl = imgToDataUrl(img);
+  let o = { image: dataUrl, name: name, unique: unique, coll: coll, path: unique + '.png', ext: 'png' };
+  let resp = await mPostRoute('postImage', o);
+  console.log('resp', resp)
+  await updateCollections();
 }
 async function onclickUser() {
   let uname = await mPrompt();
-  //console.log('onclickUser:', uname);
-  if (isdef(uname) && (!U || U.name != uname)) { await switchToUser(uname); }
-  await showUser(uname);
+  await switchToUser(uname);
 }
 async function onclickView() {
   showTitle('Collection:');
@@ -1072,7 +1105,7 @@ async function onclickView() {
   M.cells = [];
   let bg = mGetStyle('dNav', 'bg');
   for (let i = 0; i < M.rows * M.cols; i++) {
-    let d = mDom(M.grid, { bg: bg, fg:'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
     mCenterCenterFlex(d);
     M.cells.push(d);
   }
@@ -1199,18 +1232,18 @@ function showChatMessage(o) {
   //   if (d) mDom(d, {}, { html: arg })
   // }
 }
-function showChatWindow(){
-	//mStyle('dMain',{bg:'#ffffff40'})
-	let dChat = mDom('dRight',{padding:10,fg:'white',box:true},{id:'dChat',html:'Chatbox'});
-	//UI.chatInput = mInput(dChat, {}, '<your message>', 'input');
-	UI.chatInput = mInput(dChat, { w:260 }, 'inpChat', '<your message>', 'input', 1);
-	UI.chatWindow = mDom(dChat, {  }, { id: 'dChatWindow' });
-	mOnEnter(UI.chatInput, ev => {
-		let inp = ev.target;
-		Socket.emit('message', {user:U.name,msg:ev.target.value});
-		ev.target.value = '';
+function showChatWindow() {
+  //mStyle('dMain',{bg:'#ffffff40'})
+  let dChat = mDom('dRight', { padding: 10, fg: 'white', box: true }, { id: 'dChat', html: 'Chatbox' });
+  //UI.chatInput = mInput(dChat, {}, '<your message>', 'input');
+  UI.chatInput = mInput(dChat, { w: 260 }, 'inpChat', '<your message>', 'input', 1);
+  UI.chatWindow = mDom(dChat, {}, { id: 'dChatWindow' });
+  mOnEnter(UI.chatInput, ev => {
+    let inp = ev.target;
+    Socket.emit('message', { user: U.name, msg: ev.target.value });
+    ev.target.value = '';
 
-	});
+  });
 
 
 }
@@ -1242,6 +1275,8 @@ function showEventOpen(id) {
 }
 function showImage(key, dParent, styles = {}) {
   let o = M.superdi[key];
+  //if (key == 'book') {    console.log(o,styles)  }
+  //console.log('o',o)
   if (nundef(o)) { console.log('showImage:key not found', key); return; }
   let [w, h] = [valf(styles.w, styles.sz), valf(styles.h, styles.sz)];
   if (nundef(w)) {
@@ -1252,16 +1287,16 @@ function showImage(key, dParent, styles = {}) {
     dParent = mDom(dParent, styles);
   }
   let [sz, fz, fg] = [.9 * w, .8 * h, valf(styles.fg, rColor())];
-  let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', overflow: 'hidden' });
+  let d1 = mDiv(dParent, { position: 'relative', h: fz, overflow: 'hidden' });
   mCenterCenterFlex(d1)
   let el = null;
   if (isdef(o.img)) {
     el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
   }
   else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
   else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
   else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
   assertion(el, 'PROBLEM mit' + key);
   mStyle(el, { cursor: 'pointer' })
   return d1;
@@ -1287,14 +1322,14 @@ function showImageInBatch(key, dParent, styles = {}) {
   mClear(dParent);
   [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
   let [sz, fz] = [.9 * w, .8 * h];
-  let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding:11, box:true });//overflow: 'hidden', 
+  let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding: 11, box: true });//overflow: 'hidden', 
   mCenterCenterFlex(d1)
   let el = null;
   if (isdef(o.img)) {
-    if (o.cats.includes('card')){
+    if (o.cats.includes('card')) {
       el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
-      mDom(d1,{h:1,w:'100%'})
-    }else{
+      mDom(d1, { h: 1, w: '100%' })
+    } else {
       el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
     }
   }
@@ -1303,49 +1338,41 @@ function showImageInBatch(key, dParent, styles = {}) {
   else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
   else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
   assertion(el, 'PROBLEM mit' + key);
-  let label=mDom(d1,{fz:11},{html:key,className:'ellipsis'}); //,w:'100%'
+  let label = mDom(d1, { fz: 11 }, { html: key, className: 'ellipsis' }); //,w:'100%'
   mStyle(d1, { cursor: 'pointer' });
   d1.onclick = onclickItem;
   d1.setAttribute('key', key)
 }
-function showNavbar(){
-	let titles =['add','collections', 'NATIONS', 'plan', 'colors'];
-	let funcNames = titles.map(x => `onclick${capitalize(x)}`);
-	
-	let nav = UI.nav = mNavbar('dNav');
+function showNavbar() {
+  let titles = ['add', 'collections', 'NATIONS', 'plan', 'colors'];
+  let funcNames = titles.map(x => `onclick${capitalize(x)}`);
 
-	let [dl,dr]=[nav.dleft,nav.dright];
-	//let t1=toggleAdd('left','arrow_down_long',dl,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
-	let title = mDom(dl, { fz: 20 }, { html: 'COMBU', classes: 'title' });
-	let d2 = mDom(dl);
-	for (let i = 0; i < titles.length; i++) {
-		let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
-	}
+  let nav = UI.nav = mNavbar('dNav');
 
-	dUser = mDom(dr, {}, { id: 'dUser' });
-	let t2=toggleAdd('right','arrow_down_long',dr, {hpadding:9,vpadding:5},{w:0},{w:300});
-	// nav.disable('play');
+  let [dl, dr] = [nav.dleft, nav.dright];
+  //let t1=toggleAdd('left','arrow_down_long',dl,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
+  let title = mDom(dl, { fz: 20 }, { html: 'COMBU', classes: 'title' });
+  let d2 = mDom(dl);
+  for (let i = 0; i < titles.length; i++) {
+    let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+  }
+
+  dUser = mDom(dr, {}, { id: 'dUser' });
+  let t2 = toggleAdd('right', 'arrow_down_long', dr, { hpadding: 9, vpadding: 5 }, { w: 0 }, { w: 300 });
+  // nav.disable('play');
 
 }
-function showTitle(title, buttons = []) {
+function showTitle(title) {
   mClear(dTitle);
   mDom(dTitle, {}, { tag: 'h1', html: title, classes: 'title' });
-  for (const b of buttons) {
-    mButton(b.caption, b.handler, dTitle, { w: 70, margin: 0 }, 'input');
-  }
 }
 async function showUser(uname) {
   UI.nav.activate('no')
   mClear(dUser);
   mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
   let d;
-  if (U) {
-    d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'active' });
-    setColors(U.color)
-  } else {
-    let styles = { family: 'fa6', fg: 'grey', fz: 25, cursor: 'pointer' };
-    d = mDom(dUser, styles, { html: String.fromCharCode('0x' + M.superdi.user.fa6) })
-  }
+  d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'activeLink' });
+  setColors(U.color)
   d.onclick = onclickUser;
 }
 async function simpleUpload(route, o) {
@@ -1382,16 +1409,30 @@ function squareTo(tool, sznew = 128) {
   let [x1, y1] = [x - (sz - w) / 2, y - (sz - h) / 2];
   redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
+async function switchToMenu(menu) { UI.nav.activate(menu); await window[`onclick${capitalize(menu)}`](); } //eval(`onclick${capitalize(menu)}()`);}
 async function switchToUser(uname) {
+  //assertion(!U || isEmpty(uname) || U.name != uname, `switch user to same user!!!! ${uname}`)
+  //check if uname is a valid username
+  if (!isEmpty(uname)) uname = normalizeString(uname);
+  if (isEmpty(uname)) { uname = 'guest'; UI.nav.disable('plan'); } else UI.nav.enable('plan');
+
+  sockPostUserChange(U ? U.name : '', uname)
   U = await getUser(uname);
   localStorage.setItem('username', uname);
+  //welche consequences hat es fuer tables,....?
+
+  await showUser(uname);
+  updateClientData();
+
+
+
 }
 function toggleAdd(key, sym, dParent, styles) {
-  addKeys({fz: 20,rounding:'50%', padding:5, fg: rColor()},styles);
+  addKeys({ fz: 20, rounding: '50%', padding: 5, fg: rColor() }, styles);
   let info = valfHtml(sym);
   let b;
   if (info) {
-    let stButton = copyKeys({ overflow: 'hidden', box: true, family: info.family, cursor: 'pointer' },styles);
+    let stButton = copyKeys({ overflow: 'hidden', box: true, family: info.family, cursor: 'pointer' }, styles);
     b = mDom(dParent, stButton, { id: getButtonId(key), html: info.html, className: 'hop1' });
   } else {
     b = mButton(sym, 'dToolbar')
@@ -1425,6 +1466,36 @@ function tryJSONParse(astext) {
     console.log('text', astext)
     return { message: 'ERROR', text: astext }
   }
+}
+function uiTypePlayerStats(fen, pl, dParent, outerStyles = {}, innerStyles = {}) {
+  //let player_stat_items = UI.player_stat_items = ui_player_info(dParent); 
+  addKeys({ dir: 'column', display: 'flex' }, outerStyles);
+  // if (nundef(outerStyles.display)) outerStyles.display = 'flex';
+  mStyle(dParent, outerStyles);
+  let items = {};
+  let styles = jsCopy(innerStyles);
+  addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
+
+  let show_first = pl.name;
+  let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
+  //console.log('order',order)
+
+  for (const name of order) {
+    let pl = fen.players[name];
+    let imgPath = `../assets/img/users/${pl.icon}.jpg`;
+    styles['border-color'] = pl.color;
+    let d = mDom(dParent, styles, { id: name2id(name) })
+    let picstyle = { w: 50, h: 50, box: true };
+    let ucolor = pl.color;
+    if (pl.playmode == 'bot') {
+      copyKeys({ rounding: 0, border: `double 6px ${ucolor}` }, picstyle);
+    } else {
+      copyKeys({ rounding: '50%', border: `solid 2px white` }, picstyle);
+    }
+    let img = mImage(imgPath, d, picstyle, 'img_person');
+    items[name] = { div: d, name: name };
+  }
+  return items;
 }
 function uiTypeCalendar(dParent) {
   const [wcell, hcell, gap] = [120, 100, 10];
@@ -1580,9 +1651,9 @@ async function updateCollections() {
     lookupAddIfToList(M.byCollection, [o.coll], k);
   }
   //ich moecht eigentlich dass die users und die nations cards in collections drin sind!
-  await addDirToCollections('img/users','users','user');
-  await addDirToCollections('games/nations/cards','nations','card');
-  await addDirToCollections('games/nations/templates','nations','symbol');
+  await addDirToCollections('img/users', 'users', 'user');
+  await addDirToCollections('games/nations/cards', 'nations', 'card');
+  await addDirToCollections('games/nations/templates', 'nations', 'symbol');
 
   // let usernames = await mGetFiles('img/users');
   // console.log(usernames)

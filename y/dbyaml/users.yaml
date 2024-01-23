@@ -30,3 +30,15 @@ louis:
   name: louis
   color: '#ec4169'
   icon: unknown_user
+mac:
+  name: mac
+  color: '#901eb3'
+  icon: mac
+harald:
+  name: harald
+  color: '#ff5500'
+  icon: unknown_user
+guest:
+  name: guest
+  color: '#777777'
+  icon: guest

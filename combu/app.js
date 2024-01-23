@@ -14,6 +14,7 @@ const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
 const configFile = path.join(uploadDirectory, 'config.yaml');
 const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
+const tablesDir = path.join(dbDirectory, 'tables');
 var Session = {}; // session ist nur fuer temp data: just mem
 
 const app = express();
@@ -33,6 +34,15 @@ function copyKeys(ofrom, oto, except = {}, only = null) {
 		oto[k] = ofrom[k];
 	}
 	return oto;
+}
+function deleteFile(filePath){
+	fs.unlink(filePath, (err) => {
+    if (err) {
+        console.error('Error deleting file:', err);
+        return;
+    }
+    console.log('File deleted successfully:', filePath);
+	});	
 }
 async function getFiles(dir) {
 	const directoryPath = dir.startsWith('C:') ? dir : path.join(__dirname, dir);
@@ -153,6 +163,11 @@ function lookupSetOverride(dict, keys, val) {
 	return d;
 }
 function nundef(x) { return x === null || x === undefined; }
+function removeInPlace(arr, el) {
+  let i = arr.indexOf(el);
+  if (i > -1) arr.splice(i, 1);
+  return i;
+}
 function saveConfig() {
 	let y = yaml.dump(Session.config); fs.writeFileSync(configFile, y, 'utf8');
 }
@@ -191,18 +206,37 @@ app.get('/filenames', async (req, res) => {
 	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
 	try {
 		const directoryPath = dir.startsWith('C:') ? dir : path.join(assetsDirectory, dir);
-		console.log('dirpath', directoryPath)
+		//console.log('dirpath', directoryPath)
 		const files = await fsp.readdir(directoryPath);
-		console.log('files',files)
+		//console.log('files',files)
 		res.json({ files });
 	} catch (err) {
 		res.status(500).json({ error: 'Error reading directory', details: err.message });
 	}
 });
+function getTablesInfo(){
+	let info=[];
+	for(const id in Session.tables){
+		//ich solltehaben: game, players, friendlyname, turn als minimum
+		let t = Session.tables[id];
+		let o={game:t.game,players:t.fen.playerNames,turn:t.fen.turn,friendly:t.friendly,id:id}
+		info.push(o);
+	}
+	return info;
+}
 app.get('/session', (req, res) => {
 	console.log('==> get session')
-	res.json(Session);
+	let s={}; addKeys()
+	res.json({users:Session.users,config:Session.config,tables:getTablesInfo()});
 });
+app.get('/table', (req, res) => {
+	let params = req.query;
+	console.log('==> get table:\n params', Object.keys(params))
+	let data = lookup(Session, ['tables', params.id]);
+	//console.log(data)
+	res.json(data);
+});
+app.get('/tables', (req, res) => { return res.json(getTablesInfo()); });
 app.post('/postEvent', (req, res) => {
 	let id = req.body.id;
 	let data = req.body;
@@ -255,31 +289,128 @@ app.post('/postImage', (req, res) => {
 		fileName: fname,
 	});
 });
+app.post('/postMove', (req, res) => {
+	console.log('<== post move')
+	let data = req.body;
+	let idTable = data.idTable;
+	let player = data.name;
+	let move = data.move;
+	let fen = Tables[idTable].fen;
+	let turn = fen.turn;
+
+	let oldConfig = Session.config;
+	Session.config = deepMerge(oldConfig, newConfig);
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	res.json(Session.config);
+});
 
 //#region socket io
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server, { cors: { origins: '*', } });//live-server: brauch ich cors!
-const UserByClientId = {};
+const UsernameByClientId = {};
+const ClientIdByUsername = {};
+const clients = {};
 io.on('connection', (client) => {
+	clients[client.id]=client;
 	//handle_connect(client.id);
 	//client.emit('message','hello')
 	client.on('login', x => handle_login(x, client.id));
+	client.on('userChange', x => handle_userChange(x, client.id));
 	client.on('message', handle_message);
+	client.on('move', handle_move);
 	client.on('update', handle_update);
 	client.on('disconnect', handle_disconnect); // ()=>handle_disconnect(socket.id));
 });
-function handle_connect(id) { console.log('connected', id); io.emit('message', 'someone logged in!'); }
-function handle_disconnect(x) { console.log('io.disconnected', x); io.emit('message', x); }
+function handle_connect(id) { console.log('::connected', id); io.emit('message', 'someone logged in!'); }
+function handle_disconnect(x) { console.log('::io.disconnected', x); io.emit('message', x); }
 function handle_login(x, id) {
-	console.log('login:', x, id);
-	UserByClientId[x] = id;
+	console.log('::login:', x, id);
+	UsernameByClientId[id] = x;
+	ClientIdByUsername[x] = id;
 	io.emit('message', `${x} logged in!`);
 }
-function handle_message(x) { console.log('got message', arguments); io.emit('message', x); }
+function handle_message(x) { console.log('::message', arguments); io.emit('message', x); }
+function handle_move(x){ 
+	console.log('::move', arguments);  
+	//console.log('Session tables',Session.tables)
+	let table = lookup(Session,['tables',x.id]);
+	//console.log('table',table);
+	//wie kann ich temp move zu table saven?
+	let fen = table.fen;
+	let turn = fen.turn;
+	console.log('turn',turn)
+	let name = x.name;
+	let move = x.move;
+
+	//simplest:
+	if (!turn.includes(name)) {console.log('!!!move mismatch',name,move);return;}
+	lookupSetOverride(fen,['moves',name],move);
+	removeInPlace(fen.turn,name)
+	//save new fen when all players moved? or after each and every move?
+
+	//broadcast fen
+	io.emit('turnUpdate',fen.turn);
+
+
+	// if (turn.includes(name)) {
+	// 	lookupSet(table,['moves',name],x.move);
+	// 	console.log('moves so far',table.moves);
+	// }
+	// //sobald alle slots gefuellt sind, setze fen.moves und broadcast
+	// //jetzt kann jeder integrieren und updaten
+	// let donelist = Object.keys(table.moves);
+	// if (donelist.length == turn.length){
+	// 	donelist.map(x=>fen.players[x].lastmove=)
+	// }
+
+}
 function handle_update(x) { console.log('got update', x); io.emit('update', x); }
+function handle_userChange(x, id) {
+	console.log(':::SOCK user change:', x, id);
+	UsernameByClientId[id] = x.newname;
+	ClientIdByUsername[x.newname] = id;
+	let old = ClientIdByUsername[x.oldname];
+	if (old == id) delete ClientIdByUsername[x.oldname];
+	io.emit('userChange', `${id} is now ${x.newname}`);
+}
 //#endregion
+
+
+function emitToPlayers(namelist,msgtype,o){
+	for(const name of namelist){
+		let id = ClientIdByUsername[name]; //console.log('name',name,'\nid',id)
+		let client = clients[id]; //console.log('client',client)
+		if (client) client.emit(msgtype,o);
+	}
+}
+function deleteTable(id){		delete Session.tables[id]; 	deleteFile(getTablePath(id));}
+function getTablePath(id){return path.join(tablesDir,`${id}.yaml`);}
+function saveTable(id,o){
+	lookupSetOverride(Session, ['tables', id], o);
+	let y = yaml.dump(Session.tables[id]);
+	fs.writeFileSync(getTablePath(id), y, 'utf8');
+}
+app.post('/deleteTable', (req, res) => {
+	let id = req.body.id;
+	console.log('<== delete table',id);
+	let t=lookup(Session,['tables',id]);
+	if (t){
+		deleteTable(id);
+		emitToPlayers(t.fen.playerNames,'deleteTable',getTablesInfo());
+	}
+	res.json('table deleted');
+});
+app.post('/postNewTable', (req, res) => {
+	let id = req.body.id;
+	let fen = req.body.fen;
+	console.log('<== post newTable',id)
+	saveTable(id,req.body);
+	emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),fen:fen});
+	res.json('table posted successfully!');
+});
 
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');
@@ -288,6 +419,17 @@ async function init() {
 	Session.users = valf(yaml.load(yamlFile), {});
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
 	Session.events = valf(yaml.load(yamlFile), {});
+	Session.tables = {};
+	console.log('tablesDir',tablesDir)
+	let tablefiles = await fsp.readdir(tablesDir);
+	console.log('tablefiles',tablefiles);
+	for(const f of tablefiles){
+		let p = path.join(tablesDir,f)
+		console.log('path',p)
+		yamlFile = fs.readFileSync(p, 'utf8');
+		let o=yaml.load(yamlFile);
+		Session.tables[o.id] = o;
+	}
 	server.listen(PORT, () => console.log('listening on port ' + PORT));
 }
 init();

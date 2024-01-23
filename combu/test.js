@@ -873,8 +873,7 @@ async function test38_newprelims() {
 
 		dUser = mDom(nav.ui, {}, { id: 'dUser' });
 
-		U = getUser(localStorage.getItem('username'));
-		await showUser(U ? U.name : null);
+		await switchToUser(localStorage.getItem('username'));
 	}
 }
 async function YES_test37_allesNeu() {

@@ -7845,7 +7845,7 @@ function ari_present(dParent) {
     let hidden = compute_hidden(plname);
     ari_present_player(plname, d, hidden);
   }
-  ari_show_handsorting_buttons_for(Z.mode == 'hotseat' ? Z.uplayer : Z.uname); delete ClientData.handsorting;
+  ari_show_handsorting_buttons_for(Z.mode == 'hotseat' ? Z.uplayer : Z.uname); delete Clientdata.handsorting;
   show_view_buildings_button(uplayer);
   let desc = ARI.stage[Z.stage];
   Z.isWaiting = false;
@@ -15832,7 +15832,7 @@ function correct_code_text(code) {
 }
 function correct_handsorting(hand, plname) {
   let pl = Z.fen.players[plname];
-  let [cs, pls, locs] = [ClientData.handsorting, pl.handsorting, localStorage.getItem('handsorting')];
+  let [cs, pls, locs] = [Clientdata.handsorting, pl.handsorting, localStorage.getItem('handsorting')];
   let s = cs ?? pls ?? locs ?? Config.games[Z.game].defaulthandsorting;
   hand = sort_cards(hand, s == 'suit', 'CDSH', true, Z.func.rankstr);
   return hand;
@@ -20492,9 +20492,9 @@ function ensure_buttons_visible_for(plname) {
   let bBySuit = mButton('by suit', onclick_by_suit_ferro, dbPlayer, styles, 'enabled');
 }
 function ensure_clientstate() {
-  if (nundef(ClientData.state)) {
-    ClientData.state = {};
-    for (const k in DA.bars) ClientData.state[k] = 0;
+  if (nundef(Clientdata.state)) {
+    Clientdata.state = {};
+    for (const k in DA.bars) Clientdata.state[k] = 0;
   }
 }
 function ensure_market(fen, n) { fen.stallSelected = []; deck_add(fen.deck, n - fen.market.length, fen.market); }
@@ -23948,7 +23948,7 @@ function gameStep(data) {
 function gamestep() {
   show_admin_ui();
   DA.running = true; clear_screen(); dTable = mBy('dTable'); mClass('dTexture', 'wood');
-  if (Z.game == 'aristo') { if (Z.role != ClientData.role || Z.mode == 'multi' && Z.role != 'active') mFall(dTable); ClientData.role = Z.role; }
+  if (Z.game == 'aristo') { if (Z.role != Clientdata.role || Z.mode == 'multi' && Z.role != 'active') mFall(dTable); Clientdata.role = Z.role; }
   else mFall(dTable);
   shield_off();
   show_title();
@@ -25973,7 +25973,7 @@ function get_user_pic_html(uname, sz = 50, border = 'solid medium white') {
 }
 function get_user_tables() { to_server(Session.cur_user, "get_user_tables"); }
 function get_values(o) { return Object.values(o); }
-function get_waiting_html(sz = 30) { return `<img src="../base/assets/icons/active_player.gif" height="${sz}" style="margin:0px ${sz / 3}px" />`; }
+function get_waiting_html(sz = 30) { return `<img src="../assets/icons/active_player.gif" height="${sz}" style="margin:0px ${sz / 3}px" />`; }
 function get_weekday(date) {
   let d = new Date(date);
   return d.getDay();
@@ -30252,13 +30252,13 @@ function gTest13() {
 function guest_update() {
   assertion(isdef(Z.fen), 'no fen');
   show_status();
-  let mydata = firstCond(Z.playerdata, x => x.name == ClientData.uid);
+  let mydata = firstCond(Z.playerdata, x => x.name == Clientdata.uid);
   if (isdef(mydata) && isdef(mydata.state) && isNumber(mydata.state.green)) {
     console.log('mydata.state', mydata.state);
     assertion(isdef(mydata.state), 'no state');
     for (const k of ['green', 'red']) {
       assertion(isNumber(mydata.state[k]), 'NAN state[' + k + ']');
-      ClientData.state[k] = Math.ceil((mydata.state[k] + ClientData.state[k]) / 2);
+      Clientdata.state[k] = Math.ceil((mydata.state[k] + Clientdata.state[k]) / 2);
     }
   }
   for (const k in Z.fen) {
@@ -30493,7 +30493,7 @@ function handle_result(result, cmd) {
   if (result.trim() == "") return;
   let obj;
   try { obj = JSON.parse(result); } catch { console.log('ERROR:', result); }
-  if (ClientData.AUTORESET) { ClientData.AUTORESET = false; if (result.auto == true) { console.log('message bounced'); return; } }
+  if (Clientdata.AUTORESET) { Clientdata.AUTORESET = false; if (result.auto == true) { console.log('message bounced'); return; } }
   DA.result = jsCopy(obj);
   processServerdata(obj, cmd);
   switch (cmd) {
@@ -31503,7 +31503,7 @@ function howto_open(item) {
 function HPLayout() {
   if (isdef(UI.DRR)) UI.DRR.remove();
   mInsert(UI.dRechts, UI.dHistory);
-  ClientData.historyLayout = 'hp';
+  Clientdata.historyLayout = 'hp';
 }
 function hRoute(content, route, arg1, arg2, arg3) {
   let html = `<a href="/${route}"`;
@@ -31519,7 +31519,7 @@ function HRPLayout() {
   let drr = UI.DRR = mDiv(dTable);
   mAppend(drr, UI.dHistory);
   mAppend(dTable, dr);
-  ClientData.historyLayout = 'hrp';
+  Clientdata.historyLayout = 'hrp';
 }
 function hsl2hsv(hue, sat, light) {
   sat *= light < 0.5 ? light : 1 - light;
@@ -45892,8 +45892,8 @@ function onclick_by_rank() {
   let items = ui_get_hand_items(uplayer).map(x => x.o);
   let h = UI.players[uplayer].hand;
   pl.handsorting = 'rank';
-  ClientData.handsorting = pl.handsorting;
-  localStorage.setItem('handsorting', ClientData.handsorting);
+  Clientdata.handsorting = pl.handsorting;
+  localStorage.setItem('handsorting', Clientdata.handsorting);
   let cardcont = h.cardcontainer;
   let ch = arrChildren(cardcont);
   ch.map(x => x.remove());
@@ -45921,8 +45921,8 @@ function onclick_by_suit() {
   let [plorder, stage, A, fen, uplayer, pl] = [Z.plorder, Z.stage, Z.A, Z.fen, Z.uplayer, Z.fen.players[Z.uplayer]];
   let items = ui_get_hand_items(uplayer).map(x => x.o);
   let h = UI.players[uplayer].hand;
-  ClientData.handsorting = pl.handsorting = 'suit';
-  localStorage.setItem('handsorting', ClientData.handsorting);
+  Clientdata.handsorting = pl.handsorting = 'suit';
+  localStorage.setItem('handsorting', Clientdata.handsorting);
   let cardcont = h.cardcontainer;
   let ch = arrChildren(cardcont);
   ch.map(x => x.remove());
@@ -46179,9 +46179,9 @@ function onclick_player_in_gametable(uname, tablename, rid) {
 function onclick_plus(id, inc) {
   console.log('id', id);
   ensure_clientstate();
-  ClientData.state[id]++;
-  console.log('sending ClientData.state', ClientData.state);
-  let o = { friendly: 'feedback', uname: ClientData.uid, state: jsCopy(ClientData.state) };
+  Clientdata.state[id]++;
+  console.log('sending Clientdata.state', Clientdata.state);
+  let o = { friendly: 'feedback', uname: Clientdata.uid, state: jsCopy(Clientdata.state) };
   phpPost(o, 'update_player');
 }
 function onclick_plus_minus(color) { socket.emit('plus', color); }
@@ -49187,7 +49187,7 @@ function PerftTest(depth) {
 function PHLayout() {
   if (isdef(UI.DRR)) UI.DRR.remove();
   mAppend(UI.dRechts, UI.dHistory);
-  ClientData.historyLayout = 'ph';
+  Clientdata.historyLayout = 'ph';
 }
 function phpPost(data, cmd) {
   if (DA.TEST1 === true && cmd == 'table') { cmd = 'table1'; }
@@ -49536,7 +49536,7 @@ function polling_shield_on(msg) {
   d.innerHTML = msg;
 }
 function pollStart() { }
-function pollStop() { clearTimeout(TO.poll); ClientData.AUTORESET = true; }
+function pollStop() { clearTimeout(TO.poll); Clientdata.AUTORESET = true; }
 function polygonStyleFunction(feature, resolution) {
   return new Style({
     stroke: new Stroke({
@@ -51458,7 +51458,7 @@ function prex(x) {
 function PRHLayout() {
   let drr = UI.DRR = mDiv(dTable);
   mAppend(drr, UI.dHistory);
-  ClientData.historyLayout = 'prh';
+  Clientdata.historyLayout = 'prh';
 }
 function print_board(gameArr) {
   console.log()
@@ -57297,7 +57297,7 @@ function set_player(name, fen) {
   Z.uplayer = name;
 }
 function set_player_strategy(val) {
-  Z.strategy = ClientData.strategy = Z.pl.strategy = val;
+  Z.strategy = Clientdata.strategy = Z.pl.strategy = val;
   mRemove('dOptions')
 }
 function set_player_tides(o) {
@@ -58885,8 +58885,8 @@ function show_history(fen, dParent) {
     let dHistory = mDiv(dParent, { paleft: 12, bg: colorLight('#EDC690', .5), box: true, matop: 4, rounding: 10, patop: 10, pabottom: 10, w: '100%', hmax: `calc( 100vh - 250px )`, 'overflow-y': 'auto', w: 260 }, null, html);
     UI.dHistoryParent = dParent;
     UI.dHistory = dHistory;
-    if (isdef(ClientData.historyLayout)) {
-      show_history_layout(ClientData.historyLayout);
+    if (isdef(Clientdata.historyLayout)) {
+      show_history_layout(Clientdata.historyLayout);
     }
   }
 }
@@ -58901,7 +58901,7 @@ function show_history_layout(layout) {
 function show_history_popup() {
   if (isEmpty(Z.fen.history)) return;
   assertion(isdef(UI.dHistoryParent) && isdef(UI.dHistory), 'UI.dHistoryParent && UI.dHistory do NOT exist!!!');
-  let l = valf(ClientData.historyLayout, 'ph');
+  let l = valf(Clientdata.historyLayout, 'ph');
   let cycle = ['ph', 'hp', 'prh', 'hrp'];
   let i = (cycle.indexOf(l) + 1) % cycle.length;
   show_history_layout(cycle[i]);
@@ -59041,7 +59041,7 @@ function show_motto() {
 function show_my_role(role) {
   let dRoles = mBy('dRoles');
   dRoles.innerHTML = `<h1>${role}</h1>`;
-  ClientData.role = role;
+  Clientdata.role = role;
   mAppear(dRoles, 1000, null, 'linear');
   let d = show_bars();
   mAppear(d, 1000, null, 'linear');
@@ -59049,8 +59049,8 @@ function show_my_role(role) {
     mButton('reset', onclick_reset_progressbars, d, { h: 30, w: 100 });
     disable_bar_ui();
   } else if (role == 'guest') {
-    if (nundef(ClientData.uid)) ClientData.uid = rUniqueId(30);
-    ClientData.new_clicks = 0;
+    if (nundef(Clientdata.uid)) Clientdata.uid = rUniqueId(30);
+    Clientdata.new_clicks = 0;
   }
   autopoll();
 }
@@ -62990,7 +62990,7 @@ function stopgame() {
   mClear('dAdminMiddle')
   for (const id of ['bSpotitStart', 'bClearAck', 'bRandomMove', 'bSkipPlayer']) hide(id);
   pollStop();
-  Z = null; delete Serverdata.table; delete Serverdata.playerdata; ClientData = {};
+  Z = null; delete Serverdata.table; delete Serverdata.playerdata; Clientdata = {};
   staticTitle();
 }
 function stopGame() {
@@ -70882,7 +70882,7 @@ function update_current_table() {
   for (const wichtig of ['notes', 'uplayer', 'friendly', 'step', 'round', 'phase', 'stage', 'timestamp', 'modified', 'stime', 'mode', 'scoring']) {
     if (isdef(Z[wichtig])) Z.prev[wichtig] = jsCopy(Z[wichtig]);
   }
-  Z.prev.turn = ClientData.last_turn;
+  Z.prev.turn = Clientdata.last_turn;
   copyKeys(o, Z, { uname: true });
   let [mode, turn, uname, plorder, fen, host] = [Z.mode, Z.turn, Z.uname, Z.plorder, Z.fen, Z.host];
   assertion(!isEmpty(turn), 'turn empty!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', turn, fen, plorder);
@@ -71048,11 +71048,11 @@ function update_table() {
   for (const wichtig of ['playerdata', 'notes', 'uplayer', 'uname', 'friendly', 'step', 'round', 'phase', 'stage', 'timestamp', 'modified', 'stime', 'mode', 'scoring']) {
     if (isdef(Z[wichtig])) Z.prev[wichtig] = jsCopy(Z[wichtig]);
   }
-  Z.prev.turn = ClientData.last_turn = ClientData.this_turn;
+  Z.prev.turn = Clientdata.last_turn = Clientdata.this_turn;
   copyKeys(Serverdata, Z);
   if (isdef(Serverdata.table)) { copyKeys(Serverdata.table, Z); Z.playerlist = Z.players; copyKeys(Serverdata.table.fen, Z); }
   assertion(isdef(Z.fen), 'no fen in Z bei cmd=table or startgame!!!', Serverdata);
-  ClientData.this_turn = Z.turn;
+  Clientdata.this_turn = Z.turn;
   set_user(U.name);
   assertion(!isEmpty(Z.turn), 'turn empty!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', Z.turn);
   let fen = Z.fen;
@@ -71064,7 +71064,7 @@ function update_table() {
   set_player(upl, fen);
   let pl = Z.pl;
   Z.playmode = pl.playmode;
-  Z.strategy = uname == pl.name ? valf(ClientData.strategy, pl.strategy) : pl.strategy;
+  Z.strategy = uname == pl.name ? valf(Clientdata.strategy, pl.strategy) : pl.strategy;
   let [uplayer, friendly, modified] = [Z.uplayer, Z.friendly, Z.modified];
   Z.uplayer_data = firstCond(Z.playerdata, x => x.name == Z.uplayer);
   let sametable = !FORCE_REDRAW && friendly == Z.prev.friendly && modified <= Z.prev.modified && uplayer == Z.prev.uplayer;

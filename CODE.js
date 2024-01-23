@@ -1,3 +1,158 @@
+function selectAddItems(items, callback = null, instruction = null, min = 0, max = 100, prevent_autoselect = false) {
+  let [A,fen] = [Z.A,Z.fen];
+  select_clear_previous_level();
+  A.level++; A.items = items; A.callback = callback; A.selected = []; A.minselected = min; A.maxselected = max;
+  //console.log('A.level', A.level)
+  //show_stage();
+  let dInstruction = mBy('dSelections0');
+  mClass(dInstruction, 'instruction');
+  mCenterCenterFlex(dInstruction);
+  mStyle(dInstruction,{'align-content':'center','justify-content':'center'})
+  dInstruction.innerHTML = (isMyTurn(fen) ? `${get_waiting_html()}<span style="color:red;font-weight:bold;max-height:25px">You</span>` : `${Z.uplayer}`) + "&nbsp;" + instruction;
+  if (too_many_string_items(A)) { mLinebreak(dInstruction, 4); }
+  let has_submit_items = false;
+  let buttonstyle = { maleft: 25, vmargin: 2, rounding: 6, padding: '4px 12px 5px 12px', border: '0px solid transparent', outline: 'none' }
+  for (const item of A.items) {
+    let type = item.itemtype = is_card(item) ? 'card' : isdef(M.superdi[item.key])? 'sym': isdef(item.o) ? 'container' : isdef(item.src)? 'img':'string';
+    if (isdef(item.submit_on_click)) { has_submit_items = true; }
+    let id = item.id = lookup(item, ['o', 'id']) ? item.o.id : getUID(); A.di[id] = item;
+    if (type == 'string') {
+      let handler = ev => select_last(item, isdef(item.submit_on_click) ? callback : select_toggle, ev);
+      item.div = mButton(item.a, handler, dInstruction, buttonstyle, null, id);
+    } else if (type == 'sym'){
+      //let d=mDom(dInstruction,{h:'100%'});mCenterCenterFlex(d)
+      //item.div = showImage(item.key,dInstruction,{sz:30,fg:'grey'});
+      let el = null;
+      let o=item.o,d1=dInstruction;
+      //mDom(dInstruction,{hmargin:8}),
+      let fz=30,fg='grey';
+      if (isdef(o.img)) {
+        el = mDom(d1, { h: fz, hmargin:8,'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+      }
+      else if (isdef(o.text)) el = mDom(d1, { hmargin:8,fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+      else if (isdef(o.fa6)) el = mDom(d1, { hmargin:8,fz: fz-2, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+      else if (isdef(o.fa)) el = mDom(d1, { hmargin:8,fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+      else if (isdef(o.ga)) el = mDom(d1, { hmargin:8,fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+      mStyle(el,{cursor:'pointer'})
+      el.onclick = ev => select_last(item, select_toggle, ev);
+      el.id = id;
+          //console.log('src',item.src)
+      //item.div = mDom(dInstruction,{h:30},{tag:'img',src:item.src,id:id}); //item.a, handler, dInstruction, buttonstyle, null, id);
+    } else if (type == 'img'){
+      console.log('src',item.src)
+      item.div = mDom(dInstruction,{h:30},{tag:'img',src:item.src,id:id}); //item.a, handler, dInstruction, buttonstyle, null, id);
+    } else {
+      let ui = item.div = iDiv(item.o);
+      ui.onclick = ev => select_last(item, select_toggle, ev);
+      ui.id = id;
+    }
+  }
+  let show_submit_button = !has_submit_items && (A.minselected != A.maxselected || !A.autosubmit);
+  if (show_submit_button) { mButton('submit', callback, dInstruction, buttonstyle, 'selectable_button', 'bSubmit'); }
+  let show_restart_button = A.level > 1;
+  if (show_restart_button) { mButton('restart', onclick_reload, dInstruction, buttonstyle, 'selectable_button', 'bReload'); }
+  let dParent = window[`dActions${A.level}`];
+  for (const item of A.items) { ari_make_selectable(item, dParent, dInstruction); }
+  assertion(A.items.length >= min, 'less options than min selection!!!!', A.items.length, 'min is', min);
+  if (A.items.length == min && !is_ai_player() && !prevent_autoselect) {
+    for (const item of A.items) { A.selected.push(item.index); ari_make_selected(item); }
+    if (A.autosubmit) {
+      loader_on();
+      setTimeout(() => { if (callback) callback(); loader_off(); }, 800);
+    }
+  } else if (is_ai_player()) {
+    ai_move();
+  } else if (TESTING && isdef(DA.test)) {
+    if (DA.test.iter >= DA.auto_moves.length) {
+      if (isdef(DA.test.end)) DA.test.end();
+      activate_ui();
+      return;
+    }
+    let selection = DA.auto_moves[DA.test.iter++];
+    if (selection) {
+      deactivate_ui();
+      let numbers = [];
+      for (const el of selection) {
+        if (el == 'last') {
+          numbers.push(A.items.length - 1);
+        } else if (el == 'random') {
+          numbers.push(rNumber(0, A.items.length - 1));
+        } else if (isString(el)) {
+          let commands = A.items.map(x => x.key);
+          let idx = commands.indexOf(el);
+          numbers.push(idx);
+        } else numbers.push(el);
+      }
+      selection = numbers;
+      A.selected = selection;
+      if (selection.length == 1) A.command = A.items[A.selected[0]].key;
+      A.last_selected = A.items[A.selected[0]];
+      select_highlight();
+      setTimeout(() => {
+        if (A.callback) A.callback();
+      }, 1000);
+    } else { activate_ui(); }
+  } else { activate_ui(); }
+}
+function select_clear_previous_level() {
+  let A = Z.A;
+  if (!isEmpty(A.items)) {
+    console.assert(A.level >= 1, 'have items but level is ' + A.level);
+    A.ll.push({ items: A.items, selected: A.selected });
+    let dsel = mBy(`dSelections1`);
+    mStyle(dsel, { display: 'flex', 'align-items': 'center', padding: 10, box: true, gap: 10 });
+    for (const item of A.items) {
+      ari_make_unselectable(item);
+      if (A.keep_selection) continue;
+      ari_make_unselected(item);
+      if (!A.selected.includes(item.index)) continue;
+      if (item.itemtype == 'card') {
+        let d = iDiv(item);
+        let card = item.o;
+        let mini = mDiv(dsel, { bg: 'yellow', fg: 'black', hpadding: 2, border: '1px solid black' }, null, card.friendly);
+      } else if (item.itemtype == 'container') {
+        let list = item.o.list;
+        let cards = list.map(x => ari_get_card(x, 30, 30 * .7));
+        let cont2 = ui_make_hand_container(cards, dsel, { bg: 'transparent' });
+        ui_add_cards_to_hand_container(cont2, cards, list);
+      } else if (item.itemtype == 'string') {
+        let db = mDiv(dsel, { bg: 'yellow', fg: 'black', border: 'black', hpadding: 4 }, item.id, item.a);
+      }
+    }
+  }
+}
+
+
+function mistStats(){
+	if (plname == herald) {
+		//console.log('d', d, d.children[0]); let img = d.children[0];
+		mSym('tied-scroll', d, { fg: 'gold', fz: 24, padding: 4 }, 'TR');
+	}
+	if (exp_church(Z.options)) {
+		if (isdef(pl.tithes)) {
+			player_stat_count('cross', pl.tithes.val, d);
+
+		}
+	}
+	let dCoin = player_stat_count('coin', pl.coins, d);
+	item.dCoin = dCoin.firstChild;
+	item.dAmount = dCoin.children[1];
+
+	let list = pl.hand.concat(pl.stall);
+	let list_luxury = list.filter(x => x[2] == 'l');
+	player_stat_count('pinching hand', list.length, d);
+	let d1 = player_stat_count('hand-holding-usd', list_luxury.length, d);
+	mStyle(d1.firstChild, { fg: 'gold', fz: 20 })
+
+	if (!isEmpty(fen.players[plname].stall) && fen.stage >= 5 && fen.stage <= 6) {
+		player_stat_count('shinto shrine', !fen.actionsCompleted.includes(plname) || fen.stage < 6 ? calc_stall_value(fen, plname) : '_', d);
+	}
+	player_stat_count('star', plname == U.name || isdef(fen.winners) ? ari_calc_real_vps(fen, plname) : ari_calc_fictive_vps(fen, plname), d);
+
+	if (fen.turn.includes(plname)) {
+		show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
+	}
+}
 async function onclickNATIONS() {
 
 	if (nundef(M.natCards)) M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
@@ -1802,7 +1957,7 @@ function onclickDay(ev) {
 	let tsDay = evToId(ev); //ev.target.getAttribute('date'); //evToTargetAttribute(ev,'date'); //ts for this day
 	let tsCreated = Date.now()
 	let id = generateEventId(tsDay, tsCreated);
-	let o = { id: id, created: tsCreated, day: tsDay, from: null, to: null, title: '', text: '', user: ClientData.userid, subscribers: [] };
+	let o = { id: id, created: tsCreated, day: tsDay, from: null, to: null, title: '', text: '', user: Clientdata.userid, subscribers: [] };
 
 	Serverdata.config.events[id] = o;
 	// console.log(id,o);
@@ -2260,7 +2415,7 @@ function muell(){
 	let tsCreated = Date.now();
 	console.log('created',tsCreated,new Date(tsCreated));
 	let id = idDay;
-	let o = {inpId:idDay,day:tsEventDay,from:null,to:null,created:tsCreated,title:'',text:'',user:ClientData.userid,subscribers:[]};
+	let o = {inpId:idDay,day:tsEventDay,from:null,to:null,created:tsCreated,title:'',text:'',user:Clientdata.userid,subscribers:[]};
 	//Config.Events
 	console.log('created event',o)
 	//start input field in this day element

@@ -1,6 +1,6 @@
 var dNav;
 var Session = {};
-var ClientData = {};
+var Clientdata = {};
 var ClientId;
 var DIR_BASE = '../base/';
 const ALLOW_CALIBRATION = false;
@@ -4258,9 +4258,9 @@ var SpeakerOutput = false;
 var SPEC = null;
 var SPEC_PATH = '/DATA/' + TEST_DIR + '/_spec';
 var Speech;
-var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
-var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+var SpeechGrammarList = SpeechGrammarList;// || webkitSpeechGrammarList
+var SpeechRecognition = SpeechRecognition;// || webkitSpeechRecognition
+var SpeechRecognitionEvent = SpeechRecognitionEvent;// || webkitSpeechRecognitionEvent
 var speechRecognitionList;
 var START_IN_MENU = false;
 var startAtLevel = IS_TESTING ? { gSayPicAuto: 10, gTouchPic: 3, gTouchColors: 6, gWritePic: 10, gMissingLetter: 10, gSayPic: 0 } : { gMissingLetter: 3, gTouchPic: 7, gTouchColors: 8, gWritePic: 10, gSayPic: 0 };
