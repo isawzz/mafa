@@ -1409,20 +1409,37 @@ function squareTo(tool, sznew = 128) {
   let [x1, y1] = [x - (sz - w) / 2, y - (sz - h) / 2];
   redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
-async function switchToMenu(menu) { UI.nav.activate(menu); await window[`onclick${capitalize(menu)}`](); } //eval(`onclick${capitalize(menu)}()`);}
+async function switchToMenu(menu) { 
+  Clientdata.lastMenu = menu; 
+  UI.nav.activate(menu); 
+  if (isdef(menu)) await window[`onclick${capitalize(menu)}`](); //eval(`onclick${capitalize(menu)}()`);}
+} 
 async function switchToUser(uname) {
   //assertion(!U || isEmpty(uname) || U.name != uname, `switch user to same user!!!! ${uname}`)
   //check if uname is a valid username
   if (!isEmpty(uname)) uname = normalizeString(uname);
-  if (isEmpty(uname)) { uname = 'guest'; UI.nav.disable('plan'); } else UI.nav.enable('plan');
+  if (isEmpty(uname)) { 
+    uname = 'guest'; 
+    UI.nav.disable('plan'); 
 
-  sockPostUserChange(U ? U.name : '', uname)
+    //bei guest steige einfach aus allen menus aus
+    switchToMenu(null);
+
+  } else {
+    UI.nav.enable('plan');
+
+    let lastMenu = Clientdata.lastMenu;
+    console.log('Clientdata',Clientdata)
+    //if (lastMenu == 'NATIONS' && ) 
+
+  }
+
+  Clientdata.lastUser = uname;
+  sockPostUserChange(U ? U.name : '', uname); //das ist nur fuer die client id!
   U = await getUser(uname);
   localStorage.setItem('username', uname);
-  //welche consequences hat es fuer tables,....?
 
   await showUser(uname);
-  updateClientData();
 
 
 
