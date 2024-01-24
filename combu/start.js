@@ -6,6 +6,7 @@ async function test76_simplestuff(){
 	await prelims();
 	await switchToUser('mac');
 	await switchToMenu('plan');
+	await switchToUser('mitra');
 }
 async function test75_login(){
 	await prelims();

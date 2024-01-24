@@ -1,3 +1,9 @@
+
+____
+
+
+
+
 ____ubuntu 22 04
 	ssh -p 7822  root@server.vidulusludorum.com
 	ps aux | grep apache2
