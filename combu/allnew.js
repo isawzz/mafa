@@ -718,9 +718,9 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
   function activate(ev) {
     close();
     let links = document.getElementsByClassName('nav-link');
-    let inner = isString(ev) ? ev : ev.target.innerHTML;
+    let inner = isDict(ev) ? ev.target.innerHTML:ev;
     let el = Array.from(links).find(x => x.innerHTML == inner);
-    console.log('activate', ev, el)
+    //console.log('activate', ev, el)
     if (el) mClass(el, 'activeLink');
   }
   function close() {
@@ -742,8 +742,7 @@ function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
       if (isdef(el)) mClassRemove(el, 'disabled');
     }
   }
-  function isThemeLight() { return !U || U.theme == 'light' ? true : false; }
-  return { activate, close, disable, enable, isThemeLight, ui, dleft: dl, dright: dr };
+  return { activate, close, disable, enable, ui, dleft: dl, dright: dr };
 }
 function mOnEnter(elem, setter) {
   elem.addEventListener('keydown', ev => {
@@ -1078,6 +1077,7 @@ async function onclickItem(ev) {
 async function onclickNext() { showImageBatch(1); }
 async function onclickPrev() { showImageBatch(-1); }
 async function onclickPlan() { showCalendarApp(); }
+async function onclickPlay() { showTables(); }
 async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUpload() {
   let img = UI.img;
@@ -1344,14 +1344,14 @@ function showImageInBatch(key, dParent, styles = {}) {
   d1.setAttribute('key', key)
 }
 function showNavbar() {
-  let titles = ['add', 'collections', 'NATIONS', 'plan', 'colors'];
+  let titles = ['add', 'collections', 'NATIONS', 'plan', 'play', 'colors'];
   let funcNames = titles.map(x => `onclick${capitalize(x)}`);
 
   let nav = UI.nav = mNavbar('dNav');
 
   let [dl, dr] = [nav.dleft, nav.dright];
   //let t1=toggleAdd('left','arrow_down_long',dl,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
-  let title = mDom(dl, { fz: 20 }, { html: 'COMBU', classes: 'title' });
+  let title = mDom(dl, { fz: 20, cursor:'pointer' }, { onclick:onclickHome, html: 'COMBU', classes: 'title' });
   let d2 = mDom(dl);
   for (let i = 0; i < titles.length; i++) {
     let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
@@ -1361,13 +1361,14 @@ function showNavbar() {
   let t2 = toggleAdd('right', 'arrow_down_long', dr, { hpadding: 9, vpadding: 5 }, { w: 0 }, { w: 300 });
   // nav.disable('play');
 
+
 }
 function showTitle(title) {
   mClear(dTitle);
   mDom(dTitle, {}, { tag: 'h1', html: title, classes: 'title' });
 }
 async function showUser(uname) {
-  UI.nav.activate('no')
+  //UI.nav.activate('user')
   mClear(dUser);
   mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
   let d;
@@ -1410,10 +1411,18 @@ function squareTo(tool, sznew = 128) {
   redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function switchToMenu(menu) { 
+  //console.log('switchToMenu',menu)
   Clientdata.lastMenu = menu; 
   UI.nav.activate(menu); 
   if (isdef(menu)) await window[`onclick${capitalize(menu)}`](); //eval(`onclick${capitalize(menu)}()`);}
 } 
+async function switchToTable(id){
+	//console.log('id',id)
+	let res =Clientdata.table = await mGetRoute('table',{id});
+	//console.log('res',res)
+	await showTable(res.fen,U.name)
+
+}
 async function switchToUser(uname) {
   //assertion(!U || isEmpty(uname) || U.name != uname, `switch user to same user!!!! ${uname}`)
   //check if uname is a valid username
@@ -1429,8 +1438,11 @@ async function switchToUser(uname) {
     UI.nav.enable('plan');
 
     let lastMenu = Clientdata.lastMenu;
-    console.log('Clientdata',Clientdata)
-    //if (lastMenu == 'NATIONS' && ) 
+    console.log('Clientdata vorher:',Clientdata)
+
+    console.log('should first leave current menu, then reactivate')
+    //if 
+    //if (lastMenu == 'NATIONS') 
 
   }
 
@@ -1574,6 +1586,7 @@ function uiTypeCalendar(dParent) {
     mClear(dGrid);
     dDays.length = 0;
     let c = colorHex(mGetStyle('dNav', 'bg')); //info.seedColor; //info.wheel[m-1];
+    console.log('!!!!!!!!!!!!!!!!',c)
     let dayColors = mimali(c, 43).map(x => colorHex(x))
     for (const i of range(42)) {
       let cell = mDiv(dGrid, outerStyles);

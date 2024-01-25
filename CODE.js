@@ -1,3 +1,5 @@
+
+//#region nations
 function selectAddItems(items, callback = null, instruction = null, min = 0, max = 100, prevent_autoselect = false) {
   let [A,fen] = [Z.A,Z.fen];
   select_clear_previous_level();
@@ -121,8 +123,6 @@ function select_clear_previous_level() {
     }
   }
 }
-
-
 function mistStats(){
 	if (plname == herald) {
 		//console.log('d', d, d.children[0]); let img = d.children[0];
@@ -852,943 +852,6 @@ function __findMostFrequentY(points) {
 		mostFrequentY: mostFrequentY,
 		consecutiveXValues: consecutiveXValues
 	};
-}
-
-
-//#region img detection
-async function natEdgeDetectTitle(k, src, border, idx) {
-
-	let path = `../assets/games/nations/cards/${src}`;
-	let dParent = toElem('dExtra');
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
-
-	//only consider images in landscape form
-	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
-
-	//als erstes brauch ich einen canvas!
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d', { willReadFrequently: true });
-	ctx.drawImage(img, 0, 0, w, h);
-	img.remove();
-
-	let [resx, resy] = findPoints(ctx, w * .25, w * .9, 0, h, '#544744');
-
-	resy = sortBy(resy, 'y');
-	//let ys=resy.map(o=>o.y); console.log('ys',ys);
-	resy.map(o => o.nei = findPointAtDistance(o, 0, 261, resy));
-	resy = resy.filter(x => x.nei);
-	resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
-
-
-	// Example usage:
-	const points = resy;
-
-	const result = findMostFrequentY(points);
-	console.log(result);
-
-
-
-
-	resx = sortBy(resx, 'x');
-	//let xs=resx.map(o=>o.x); console.log('xs',xs);
-	resx.map(o => o.nei = findPointAtDistance(o, 243, 0, resx));
-	resx = resx.filter(x => x.nei);
-	resx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
-
-
-
-	return [resx, resy];
-
-
-}
-
-function __findSimPixXSequence(ctx, x1, x2, y, clist) {
-	let [x, i] = [x1, 0];
-	let ok = true;
-	let results = [];
-	while (x <= x2 && i < clist.length) {
-		let p = isPixSim(ctx, x, y, clist[i]);
-		if (p) { results.push({ x: x, y: y, color: p, csim: clist[i] }); i++; }
-		x++;
-	}
-	if (results.length == clist.length) return results; else return null;
-}
-async function edgeDetect(k, src, border, idx) {
-
-	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
-	let dParent = toElem('dExtra');
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
-
-	//only consider images in landscape form
-	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
-
-	//als erstes brauch ich einen canvas!
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-	ctx.drawImage(img, 0, 0, w, h);
-
-	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
-	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, { r: 215, g: 189, b: 174 }, 10, 10);
-	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 7);
-	let [x, y1, cgoal] = [corner2.x, corner2.y, { r: 167, g: 158, b: 151 }]; //colorRGB('#a18b81', true)];
-
-	let result;
-	//for (const delta of [12, 15, 18, 21]) {
-	for (let y = y1; y < y1 + 10; y++) {
-		result = findSimPixXSequence(ctx, x, w, y,
-			[{ r: 167, g: 158, b: 151 }, { r: 220, g: 216, b: 213 }, { r: 167, g: 158, b: 151 }],
-			[0, 8, 50], 15)
-		console.log('result', result);
-
-		if (result) { result.map(o => drawPixFrame(ctx, o.x, o.y, 'red', 7)); break; }
-	}
-	//}
-
-	//let corner = findSimPixXY(ctx, 5, 50, 5, 40, { r: 215, g: 189, b: 174 }, 10);
-	//let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 60, { r: 215, g: 189, b: 174 },10, 10);
-	// console.log('corner', corner, corner2);
-	// drawPixFrame(ctx, corner.x, corner.y, 'yellow', 15);
-	// drawPixFrame(ctx, corner2.x, corner2.y, 'green', 15);
-	// //img.style.display = 'none'; return;
-	// let [x, y, cgoal] = [corner2.x, corner2.y, {r:167,g:158,b:151}]; //colorRGB('#a18b81', true)];
-	// drawPix(ctx, x, y, 'red', 5);
-	// let sim = findSimPixX(ctx, x, w, y, cgoal, 15);
-	// if (sim.x) {
-	// 	drawPix(ctx, sim.x, y, 'green', 5);
-	// 	let sim2 = findSimPixX(ctx, sim.x + 5, w, y, cgoal,15);
-	// 	if (sim2.x) drawPix(ctx, sim2.x, y, 'green', 5);
-	// } else console.log('NOT FOUND!!!')
-
-
-	img.style.display = 'none';
-	return result;
-}
-function _findSimPixLineHor(ctx, x1, x2, y1, y2, cgoal, minlen = 10) {
-	let p;
-	for (let y = y1; y < y2; y++) {
-		for (let xStart = x1; xStart < x2; xStart++) {
-			let found = true;
-			for (let x = xStart; x < xStart + minlen; x++) {
-				p = isPixSim(ctx, x, y, cgoal); if (!p) { found = false; break; }
-			}
-			if (found) return { x: xStart, y: y, color: p };
-		}
-	}
-	return { x: null, color: null }
-}
-async function rest() {
-	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
-	let [cgoal, x1, x2, y1, y2] = ['#a18b81', 0, w, 0, h];//w/2,w,Math.round(h/2),Math.round(h*2/3)]; //w*.1,w*.9,h*.1,h*.9];
-	let vlines = {}, p;
-	for (let x = x1; x < x2; x++) {
-		for (let y = y1; y < y2; y++) {
-			if (p = isPixSim(ctx, x, y, cgoal)) {
-				assertion(nundef(vlines[x]), `duplicate ${x}`)
-				vlines[x] = { x1: x, y1: y, color: p };
-				// console.log('BINGO!',x,y)
-				break;
-			}
-		}
-	}
-
-	// console.log(vlines)
-	let max = 0;
-	for (const x in vlines) {
-		let o = vlines[x];
-		o.linedown = getPixLineAtX(ctx, x, o.y1, h);
-		o.avg = getPixAvg(o.linedown);
-		// //geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
-		// let y=o.y1+1;
-		// while(isPixSim2(ctx,x,y,cgoal)||isPixSim2(ctx,x+1,y,cgoal)) y++;
-		// o.y2=y;
-		// o.other = getPixHex(ctx,x,y);
-		// if (y-o.y1>max) max=o;
-	}
-	// console.log(vlines,colorRGB(cgoal,true));
-	// Object.values(vlines).map(o=>console.log(`${o.x1}: ${o.avg.r} ${o.avg.g} ${o.avg.b}`));
-
-	//sort vlines by closeness to goal number
-	let goal = colorRGB(cgoal, true);
-	let arr = Object.values(vlines);
-
-	console.log(colorRGB(cgoal, true));
-	console.log('_______orig', arr.map(x => x.x1))
-	//arr.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
-
-	let arrSorted = sortByFunc(arr, el => Math.abs(el.avg.r - goal.r));//+Math.abs(el.avg.g-goal.g)+Math.abs(el.avg.b-goal.b));
-	console.log('_______sorted', arrSorted.map(x => x.x1))
-	// arrSorted.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
-
-	//markiere die lines
-	drawPix(ctx, arrSorted[0].x1, arrSorted[0].y1, 'red', 5)
-	drawPix(ctx, arrSorted[1].x1, arrSorted[1].y1, 'red', 5)
-
-
-	mStyle(img, { display: 'none' })
-}
-
-
-
-async function edgeDetect(k, src, border, idx) {
-
-	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
-	let dParent = toElem('dExtra');
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
-
-	//only consider images in landscape form
-	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
-
-	//als erstes brauch ich einen canvas!
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d', { willReadFrequently: true });
-
-	ctx.drawImage(img, 0, 0, w, h);
-
-	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
-
-	let corner = findSimPixXY(ctx, 5, 50, 5, 40, { r: 215, g: 189, b: 174 }, 10);
-	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 60, { r: 215, g: 189, b: 174 },10, 10);
-	console.log('corner', corner, corner2);
-	drawPixFrame(ctx, corner.x, corner.y, 'yellow', 15);
-	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 15);
-	//img.style.display = 'none'; return;
-
-
-	let [x, y, cgoal] = [corner2.x, corner2.y, {r:167,g:158,b:151}]; //colorRGB('#a18b81', true)];
-	drawPix(ctx, x, y, 'red', 5);
-
-	let sim = findSimPixX(ctx, x, w, y, cgoal, 15);
-	if (sim.x) {
-		drawPix(ctx, sim.x, y, 'green', 5);
-		let sim2 = findSimPixX(ctx, sim.x + 5, w, y, cgoal,15);
-		if (sim2.x) drawPix(ctx, sim2.x, y, 'green', 5);
-
-
-	} else console.log('NOT FOUND!!!')
-	img.style.display = 'none';
-
-}
-async function __edgeDetect(k,src,border,idx){
-
-	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
-	let dParent = toElem('dExtra');
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height]; console.log('w',w,'h',h);
-
-	//only consider images in landscape form
-	assertion(w>h,`NOT in landscape! ${k} ${src}`);
-
-	//als erstes brauch ich einen canvas!
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d',{ willReadFrequently: true });
-
-	ctx.drawImage(img, 0, 0, w, h);
-
-	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
-	let [cgoal,x1,x2,y1,y2]=['#a18b81',0,w,0,h];//w/2,w,Math.round(h/2),Math.round(h*2/3)]; //w*.1,w*.9,h*.1,h*.9];
-	let vlines={},p;
-	for(let x=x1;x<x2;x++){
-		for(let y=y1;y<y2;y++){
-			if (p=isPixSim2(ctx,x,y,cgoal)){
-				assertion(nundef(vlines[x]),`duplicate ${x}`)
-				vlines[x]={x1:x,y1:y,color:p};
-				// console.log('BINGO!',x,y)
-				break;
-			}
-		}		
-	}
-
-	// console.log(vlines)
-	let max=0;
-	for(const x in vlines){
-		let o=vlines[x];
-		o.linedown=getPixLineAtX(ctx,x,o.y1,h);
-		o.avg=getPixAvg(o.linedown);
-		// //geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
-		// let y=o.y1+1;
-		// while(isPixSim2(ctx,x,y,cgoal)||isPixSim2(ctx,x+1,y,cgoal)) y++;
-		// o.y2=y;
-		// o.other = getPixHex(ctx,x,y);
-		// if (y-o.y1>max) max=o;
-	}
-	// console.log(vlines,colorRGB(cgoal,true));
-	// Object.values(vlines).map(o=>console.log(`${o.x1}: ${o.avg.r} ${o.avg.g} ${o.avg.b}`));
-
-	//sort vlines by closeness to goal number
-	let goal=colorRGB(cgoal,true);
-	let arr=Object.values(vlines);
-
-	console.log(colorRGB(cgoal,true));
-	console.log('_______orig',arr.map(x=>x.x1))
-	//arr.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
-
-	let arrSorted=sortByFunc(arr,el=>Math.abs(el.avg.r-goal.r));//+Math.abs(el.avg.g-goal.g)+Math.abs(el.avg.b-goal.b));
-	console.log('_______sorted',arrSorted.map(x=>x.x1))
-	// arrSorted.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
-
-	//markiere die lines
-	drawPix(ctx, arrSorted[0].x1, arrSorted[0].y1, 'red',5)
-	drawPix(ctx, arrSorted[1].x1, arrSorted[1].y1, 'red',5)
-
-
-	mStyle(img,{display:'none'})
-}
-async function edgeDetect(k,src,border,idx){
-
-	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
-	let dParent = toElem('dExtra');
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height]; console.log('w',w,'h',h);
-
-	//only consider images in landscape form
-	assertion(w>h,`NOT in lanscape! ${k} ${src}`);
-
-	//als erstes brauch ich einen canvas!
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d',{ willReadFrequently: true });
-
-	ctx.drawImage(img, 0, 0, w, h);
-
-	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
-	let [c,x1,x2,y1,y2]=['#a18b81',w/2,w,0,h/3]; //w*.1,w*.9,h*.1,h*.9];
-	let vlines={};
-	let cond=p=>p[1]=='a' && p[3]==8 && p[5]==8;
-	for(let x=x1;x<x2;x++){
-		for(let y=y1;y<y2;y++){
-			let p=getPixelColor(ctx,x,y); //console.log('color',p);
-			if (cond(p)){
-				assertion(nundef(vlines[x]),`duplicate ${x}`)
-				vlines[x]={x1:x,y1:y,color:p};
-				console.log('BINGO!',x,y)
-				break;
-			}
-		}		
-	}
-
-	console.log(vlines)
-	for(const x in vlines){
-		let o=vlines[x];
-		//geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
-		for(let y=o.y1;y<h;y++){
-			//if ()
-		}
-	}
-
-}
-async function __present(name, color, idx, rot) {
-	//do this for each card:
-	//if (isdef(mBy('img1'))) mBy('img1').remove();
-	//let name = `age1_aeneid`;
-	let path = `../assets/games/nations/cards/${name}.jpg`;
-
-	let hImg = 200, wImg = 310;
-	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	console.log('img', img)
-
-	let dir = 'portrait';
-	let rotate = img.width > img.height;
-	let dView = 'dMain';
-
-	let dParent = toElem(dView);
-	//mClear(dParent);
-	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
-	// let canvas = mDom(dParent, { border: '10px solid yellow', box:true }, { tag: 'canvas', id: 'canvas',width: w, height: h });
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - 4, height: h - 6 });
-
-	let ctx = canvas.getContext('2d');
-	console.log('rot', rot)
-	if (rot == -90) {
-		ctx.translate(0, img.width);
-		ctx.rotate(-90 * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
-		ctx.translate(-4, 15)
-		ctx.drawImage(img, 0, 0, img.width, img.height)
-		ctx.beginPath();
-		ctx.lineWidth = "10";
-		ctx.strokeStyle = color;
-		ctx.rect(15, -4, 290, 180);
-		ctx.stroke();
-	} else if (rot == 90) {
-		ctx.translate(canvas.width, 0); //-canvas.height/2) //img.width);
-		ctx.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
-		ctx.translate(-8, 6) //erstes:- verschiebt nacht oben, zweites: + verschiebt nach links
-		ctx.drawImage(img, 0, 0, img.width, img.height)
-		ctx.beginPath();
-		ctx.lineWidth = "10";
-		ctx.strokeStyle = color;
-		ctx.rect(12, 5, img.width - 15, img.height - 20) //15, -4, 290, 180);
-		// ctx.rect(15, -4, 290, 180);
-		ctx.stroke();
-	} else {
-		ctx.drawImage(img, 0, 0, img.width, img.height)
-	}
-
-	//await imgToServer(canvas,`combu/${name}.png`);
-	//await mSleep(1000);
-	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
-
-
-	//let cv = imgAsCanvas(img,'dMain');
-}
-
-function mist() {
-
-	//return;
-	let dir = 'portrait';
-	let rotate = img.width > img.height;
-	//let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
-	//jetzt kommt der echte canvas!
-	[iw, ih, cw, ch] = [xend - xstart, yend - ystart, yend - ystart, xend - xstart];
-	let cv1 = mDom(dParent, { maleft: 20, border: 'green' }, { tag: 'canvas', id: 'cv1', width: cw, height: ch });
-	let ct1 = cv1.getContext('2d');
-	if (rotate) {
-		if (rot == 90) { ct1.translate(cv1.width, 0); } else { ct1.translate(0, ch); }
-		ct1.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
-	}
-	//ctx.translate()
-	ct1.drawImage(img, xstart, ystart, cv1.height, cv1.width, 0, 0, yend - ystart - 20, cv1.width);
-
-
-
-
-
-}
-async function ___present(name, color, idx, rot) {
-	let path = `../assets/games/nations/cards/${name}.jpg`;
-	let [hImg, wImg, border, diff] = [200, 300, 10, 10];
-	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	let dir = 'portrait';
-	let rotate = img.width > img.height;
-	let dView = 'dMain';
-
-	let dParent = toElem(dView);
-	//mClear(dParent);
-	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - diff, height: h - diff });
-	let ctx = canvas.getContext('2d');
-	ctx.lineWidth = border;
-	ctx.strokeStyle = color;
-	console.log('rot', rot)
-	if (rot == 90) cvRot90(img, canvas, ctx, w, h, border, diff);
-	else if (rot == -90) cvRot270(img, canvas, ctx, w, h, border, diff);
-	//await imgToServer(canvas,`combu/${name}.png`);
-	//await mSleep(1000);
-	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
-}
-
-async function test55_buildings(){
-	let type = 'building';
-	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
-	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
-	console.log('Nations Cards',natCards);
-	let i=0;
-	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
-	console.log('list',list);
-	let result=[];
-	//list =['brewery']; // 'urban_center'];//'university']; //, 'urban_center'];
-	//list = ['department_store','coffee_house','hippodrome']; //,]; //['aqueduct','shantytown','coal_mine'];//['coal_mine']; // 
-	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}
-	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67}};
-	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
-		if (k == 'brewery') continue;
-		console.log('___________',k)
-		let c=natCards[k];
-		if (c.age == 0) {console.log('age 0',c.key); continue; }
-		let path = c.Path;
-		let color= diColors[c.Type];
-		let dim = valf(dims[k],dims[type]); 
-		let canvas = await natModCard(path,color,i++,dim);
-		//result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
-		console.log('path',path);
-		let realPath = `y/nat/${type}/${k}.png`;
-		if (canvas) await imgToServer(canvas,realPath);
-		else{
-			let img = await imgAsync('dExtra', {}, { src: path, tag: 'img', id: `im${k}` });
-			let cv = imgRotate90(img);
-			await imgToServer(cv,realPath);
-		}
-		//break;
-	}
-	//console.log('cvs',cvs);
-	//let adv=arrLast(result);console.log(adv);
-	return;
-	for(const adv of result){
-		await imgToServer(adv.cv,adv.path);
-	}
-	//console.log(arrLast(cvs));
-
-}
-function calcRealBoundaries(ctx, w, h, ybound = true, xbound = true, yextra = false, xendbd = true) {
-	var x = 150; // replace with the desired x-coordinate
-	let ystart = -1, yend = -1, y;
-	let hbound = ybound ? h - 20 : h - 35;
-	let wbound = xbound ? w - 20 : w - 35;
-	let ymin = yextra ? 10 : 0;
-	if (yextra) hbound += 10;
-	let countlines = 0;
-	let prevy = [];
-
-	console.log('ymin', ymin)
-	for (y = ymin; y < h; y++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-
-		if (green < 100 && blue < 100) {
-
-			let almost1 = false, almost2 = false;
-
-			//almost1 wird gebraucht wenn
-			for (let yy = Math.max(0, y - 3); yy < y; yy++) { //Math.min(y+5,h);yy++)	{
-				let p = ctx.getImageData(x, yy, 1, 1).data;
-				if (p[0] + p[1] + p[2] > 520) almost1 = true;
-				// console.log(p[0],p[1],p[2]);
-			}
-			for (let yy = y + 1; yy < Math.min(y + 5, h); yy++) { //Math.min(y+5,h);yy++)	{
-				let p = ctx.getImageData(x, yy, 1, 1).data;
-				if (p[0] + p[1] + p[2] > 520) almost2 = true;
-				// console.log(p[0],p[1],p[2]);
-			}
-
-			if (almost1 && almost2) {
-				ctx.fillStyle = 'black'
-				for (const py of prevy) {
-					let dy = y - py;
-					console.log('dy', dy)
-					if (dy > 152 && dy < 158) { console.log('BINGO!!!! zweites middle ding'); ctx.fillStyle = 'red'; }
-				}
-				prevy.push(y);
-				console.log('______', countlines++, y);
-				ctx.fillRect(x - 2, y - 2, 5, 5);
-				if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
-				y += 10;
-			}
-		}
-	}
-	if (!ybound) ystart = 0;
-	if (yextra) yend = h;
-
-	y = 100; // replace with the desired x-coordinate
-	let xstart = -1, xend = -1;
-	for (x = 0; x < w; x++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > wbound) { xend = x; break; }
-	}
-	if (!xbound) xstart = 0;
-	if (!xendbd) xend = w;
-	// console.log('fromto:',xstart,xend);
-	return [xstart + 2, ystart + 2, xend - 1, yend - 2];
-}
-function weiterImagePresent(name, color, idx, rot) {
-
-	// Get the pixel color at coordinates (x, y)
-	var x = 100; // replace with the desired x-coordinate
-	let ystart = -1, yend = -1, y;
-	for (y = 0; y < h; y++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-
-		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-
-		if (green < 100 && blue < 100) if (ystart < 0) ystart = y; else if (y > 170) { yend = y; break; }
-
-
-		// Display the color in the console
-		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
-	}
-	console.log('fromto:', ystart, yend)
-
-	y = 100; // replace with the desired x-coordinate
-	let xstart = -1, xend = -1;
-	for (x = 0; x < w; x++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-
-		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-
-		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > 280) { xend = x; break; }
-
-
-		// Display the color in the console
-		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
-	}
-	console.log('fromto:', xstart, xend);
-
-	//ohne rotation!
-	// [w,h]=[xend-xstart,yend-ystart];
-	// console.log('xstart='+xstart,'xend='+xend,'ystart='+ystart,'yend='+yend,'w='+w,'h='+h)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart); //, w,h); //, 0,0,w,h); //,w,h);
-
-}
-function toCanvasDraw(img, xstart, xend, ystart, yend) {
-	//ohne rotation!
-	[w, h] = [xend - xstart, yend - ystart];
-	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, xstart, ystart, w, h, 0, 0, w, h); //,w,h);
-
-}
-function calcBoundsX(ctx, y, w, n = 243) {
-	let xstart = -1, xend = -1, x, countlines = 0, prevx = [], xmin = 0, wbound = w - 20;
-	let isRotated = false;
-	let x1, x2;
-	let gotit = false;
-
-
-	for (x = xmin; x < w; x++) {
-		if (gotit) {
-			let wt = isPixWhiteOrTransparent(ctx, x, y);
-
-			if (wt) return [xstart, x1, x2, x - 1, isRotated, prevx];
-		}
-		if (isPixDark(ctx, x, y)) {
-			if (isDarkBar(ctx, x, y, w, x < w / 2, x > w / 2)) {
-
-				if (gotit) {
-					console.log('====>y', x)
-					return [xstart, x1, x2, x, isRotated];
-				}
-
-				ctx.fillStyle = 'black';
-				let xother = null;
-				for (const px of prevx) {
-					let dx = x - px;
-					// console.log('dy', dy)
-					if (dx > n - 3 && dx < n + 3) {
-						gotit = true;
-						isRotated = true;
-						x1 = xother = px;
-						x2 = x;
-						console.log('BINGO!!!! zweites middle ding');
-						ctx.fillStyle = 'red';
-					}
-				}
-				prevx.push(x);
-				// console.log('______', countlines++, y);
-				ctx.fillRect(x - 2, y - 2, 5, 5);
-				if (xother) {
-					ctx.fillRect(xother - 2, y - 2, 5, 5);
-					let i1 = prevx.indexOf(x1);
-					xstart = i1 == 0 ? 0 : prevx[i1 - 1];
-				}
-
-				// if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
-				x++;
-			}
-		}
-		if (prevx.length >= 7) {
-			//if (pixShow(ctx,x,y)){console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');prevx.push(x);}
-			if (isPixDark(ctx, x, y)) {
-				console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-				prevx.push(x);
-				pixShow(ctx, x, y)
-			}
-		}
-	}
-	return [xstart, x1, x2, w, isRotated, prevx];
-}
-async function natModCard(name, color, idx, dims) { //}, rot, ybound, xbound, yextra, xendbd) {
-	let path = `../assets/games/nations/cards/${name}`; //.jpg`;
-	let dParent = toElem('dExtra');
-	// let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
-	let [w, h] = [img.width, img.height];
-	//console.log(w, h);
-
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, w, h);
-
-	let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
-	let y1, y2, x1, x2, prevy, prevx;
-	let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
-	console.log('resY', resy)
-
-	let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
-	console.log('resX', resx)
-	//let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
-
-	//console.log('bounds X',resx)
-
-	// console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
-	console.log('wsmall', wsmall, 'hsmall', hsmall)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart, w, h);
-
-	//let border=10;
-	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
-	// let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	// let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
-	let ct2 = cv2.getContext('2d');
-	ct2.drawImage(img, -xstart, -ystart, w, h);
-	//drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
-	ct2.strokeStyle = color;
-	ct2.lineWidth = 20;
-	ct2.rect(0, 0, wsmall, hsmall);
-	ct2.stroke();
-
-	return cv2;
-
-	//next: draw rotated!
-
-}
-function allDarkPoints(ctx, w, dims) {
-	let [y,xmin,top,bot]=[dims.y,dims.xmin,dims.top,dims.bot];
-	let xlist = [];
-	for (let x = 0; x < w; x++) {
-		if (isPixDark(ctx, x, y)) {
-			//drawPix(ctx, x, y, 'red');
-			xlist.push(x);
-		}
-	}
-	let n = 243;xmin=120;
-	console.log('list', xlist);
-	//xlist.map(x => { drawPix(ctx, x, y, 'red', 2) });
-	let diffs=[];
-	//xlist.map(x => { console.log('===>', x); drawPix(ctx, x, y, 'red') });
-	for (let i = 0; i < xlist.length - 1; i++) {
-		if (xlist[i] < xmin) continue;
-		if (isLightBefore(ctx,xlist[i],y)) {console.log('YES!',xlist[i])} else {console.log('NO',xlist[i]);continue;}
-		for (let j = i + 1; j < xlist.length; j++) {
-			let pix = xlist[j];
-			assertion(isPixDark(ctx, pix, y));
-			//test ob nach diesem pix mindestens 1 aus 3 light ist! sonst nehm ich den NICHT!
-			//let light = false; for (let p = pix; p < pix + 3; p++) if (isPixLight(ctx, p, y)) light = true; if (!light) continue;
-			if (isLightAfter(ctx,pix,y)) {console.log('YES!',pix)} else {console.log('NO',pix);continue;}
-
-			let d = xlist[j] - xlist[i];
-			diffs.push({i:i,j:j,d:d})
-			console.log('d', xlist[i], xlist[j], d)
-			if (d >= n - 2 && d <= n + 2) { //} 243){
-				console.log('BINGO!!!!!!!!!!!!!!!!!!!', xlist[i], xlist[y], y)
-				let doben = xlist[i] - xlist[i - 1]; console.log('doben=' + doben)
-				let dunten = arrLast(xlist) - xlist[j]; console.log('dunten=' + dunten)
-
-				let test90 = pixTest90(ctx, y, xlist[i] - top, xlist[j] + bot);
-				rot = test90 ? 90 : -90;
-				xstart = test90 ? xlist[i] - top : xlist[i] - bot;
-				xend = test90 ? xlist[j] + bot : xlist[j] + top;
-
-				drawPix(ctx, xlist[i], y, 'green')
-				drawPix(ctx, xlist[j], y, 'green')
-				return [xstart, xlist[i], xlist[j], xend, xlist, rot]
-			}
-		}
-	}
-	console.log('diffs',diffs)
-	return [0, 0, w, w, xlist, 0];
-}
-
-function calcBoundsH(ctx, x, h, n=261) {
-	let ystart = -1, yend = -1, y, countlines = 0, prevy = [], ymin = 0, hbound=h-20;
-	let isRotated = false;
-
-	for (y = ymin; y < h; y++) {
-		if (isPixDark(ctx, x, y)) {
-			if (isDarkLine(ctx,x,y,h, y<h/2,y>h/2)){
-				ctx.fillStyle = 'black';
-				yother=null;
-				for (const py of prevy) {
-					let dy = y - py;
-					// console.log('dy', dy)
-					if (dy > n-3 && dy < n+3) { isRotated=true; yother=py; console.log('BINGO!!!! zweites middle ding'); ctx.fillStyle = 'red'; }
-				}
-				prevy.push(y);
-				// console.log('______', countlines++, y);
-				ctx.fillRect(x - 2, y - 2, 5, 5);
-				if (yother) ctx.fillRect(x - 2, yother - 2, 5, 5);
-
-				if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
-				y += 10;
-			}
-		}
-	}
-	return [ystart,yend,isRotated];
-}
-async function present(name, color, idx, rot, ybound, xbound, yextra, xendbd) {
-	let path = `../assets/games/nations/cards/${name}.jpg`;
-	let [hImg, wImg, border, diff] = [rot ? 200 : 300, rot ? 300 : 200, 10, 10];
-	// let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	let dParent = toElem('dExtra');
-
-	let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	//mClear(dParent);
-	let [w, h] = [img.width, img.height];
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, w, h);//ctx.drawImage(img, -13,-2,w,h);
-
-	// let [xstart, ystart, xend, yend] = calcRealBoundaries(ctx, w, h, ybound, xbound, yextra, xendbd);
-	let [xstart, ystart, xend, yend, isRotated] = [0,0,w,h,false]; //calcRealBoundaries(ctx, w, h, ybound, xbound, yextra, xendbd);
-	[ystart,yend,isRotated]=calcBoundsH(ctx,150,h);
-	console.log('isRotated',isRotated)
-
-	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	return;
-	let [wsmall, hsmall] = [xend - xstart + 1, yend - ystart + 1];
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart, w, h);
-
-	//let border=10;
-	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
-	let cv2 = mDom('dMain', { border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let ct2 = cv2.getContext('2d');
-	ct2.drawImage(img, -xstart, -ystart, w, h);
-
-
-
-}
-async function present(name, color, idx, rot, ybound, xbound,yextra,xendbd) {
-	let path = `../assets/games/nations/cards/${name}.jpg`;
-	let [hImg, wImg, border, diff] = [rot?200:300, rot?300:200, 10, 10];
-	// let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	let dParent = toElem('dExtra');
-
-	let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
-	//mClear(dParent);
-	let [w, h] = [img.width, img.height];
-	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
-	let ctx = canvas.getContext('2d');
-	ctx.drawImage(img, 0, 0, w, h);//ctx.drawImage(img, -13,-2,w,h);
-
-	let [xstart, ystart, xend, yend] = calcRealBoundaries(ctx, w, h, ybound,xbound,yextra,xendbd);
-	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let [wsmall, hsmall] = [xend - xstart + 1, yend - ystart +1];
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart, w, h);
-
-	//let border=10;
-	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
-	let cv2 = mDom('dMain', { border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
-	let ct2 = cv2.getContext('2d');
-	ct2.drawImage(img, -xstart, -ystart, w, h);
-
-
-
-}
-function calcRealBoundaries(ctx, w, h, ybound = true, xbound = true,yextra=false,xendbd=true) {
-	var x = 150; // replace with the desired x-coordinate
-	let ystart = -1, yend = -1, y;
-	let hbound = ybound?h-20:h-35;
-	let wbound = xbound?w-20:w-35;
-	let ymin=yextra?10:0;
-	if (yextra) hbound+=10;
-	let countlines=0;
-	let prevy=[];
-
-	console.log('ymin',ymin)
-	for (y = ymin; y < h; y++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-
-		if (green < 100 && blue < 100) { 
-
-			let almost1=false,almost2=false;
-
-			//almost1 wird gebraucht wenn
-			for(let yy=Math.max(0,y-3);yy<y;yy++){ //Math.min(y+5,h);yy++)	{
-				let p=ctx.getImageData(x, yy, 1, 1).data;
-				if (p[0]+p[1]+p[2] > 520) almost1=true;
-				// console.log(p[0],p[1],p[2]);
-			}
-			for(let yy=y+1;yy<Math.min(y+5,h);yy++){ //Math.min(y+5,h);yy++)	{
-				let p=ctx.getImageData(x, yy, 1, 1).data;
-				if (p[0]+p[1]+p[2] > 520) almost2=true;
-				// console.log(p[0],p[1],p[2]);
-			}
-
-			if (almost1 && almost2) {
-				ctx.fillStyle = 'black'
-				for(const py of prevy){
-					let dy=y-py;
-					console.log('dy',dy)
-					if (dy>152 && dy<158) {console.log('BINGO!!!! zweites middle ding'); ctx.fillStyle='red';} 
-				}
-				prevy.push(y); 
-				console.log('______',countlines++,y);
-				ctx.fillRect(x-2,y-2,5,5);
-				if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; } 
-				y+=10;
-			}
-		}
-	}
-	if (!ybound) ystart = 0;
-	if (yextra) yend = h;
-
-	y = 100; // replace with the desired x-coordinate
-	let xstart = -1, xend = -1;
-	for (x = 0; x < w; x++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > wbound) { xend = x; break; }
-	}
-	if (!xbound) xstart = 0;
-	if (!xendbd) xend = w;
-	// console.log('fromto:',xstart,xend);
-	return [xstart + 2, ystart + 2, xend - 1, yend - 2];
-}
-function weiterImagePresent(name, color, idx, rot) {
-
-	// Get the pixel color at coordinates (x, y)
-	var x = 100; // replace with the desired x-coordinate
-	let ystart = -1, yend = -1, y;
-	for (y = 0; y < h; y++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-
-		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-
-		if (green < 100 && blue < 100) if (ystart < 0) ystart = y; else if (y > 170) { yend = y; break; }
-
-
-		// Display the color in the console
-		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
-	}
-	console.log('fromto:', ystart, yend)
-
-	y = 100; // replace with the desired x-coordinate
-	let xstart = -1, xend = -1;
-	for (x = 0; x < w; x++) {
-		var pix = ctx.getImageData(x, y, 1, 1).data;
-
-		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
-		var red = pix[0]; var green = pix[1]; var blue = pix[2];
-
-		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > 280) { xend = x; break; }
-
-
-		// Display the color in the console
-		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
-	}
-	console.log('fromto:', xstart, xend);
-
-	//ohne rotation!
-	// [w,h]=[xend-xstart,yend-ystart];
-	// console.log('xstart='+xstart,'xend='+xend,'ystart='+ystart,'yend='+yend,'w='+w,'h='+h)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, -xstart, -ystart); //, w,h); //, 0,0,w,h); //,w,h);
-
-}
-function toCanvasDraw(img, xstart, xend, ystart, yend) {
-	//ohne rotation!
-	[w, h] = [xend - xstart, yend - ystart];
-	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
-	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
-	let ct1 = cv1.getContext('2d');
-	ct1.drawImage(img, xstart, ystart, w, h, 0, 0, w, h); //,w,h);
-
 }
 //#endregion
 
@@ -5747,6 +4810,943 @@ function filterImages(ev){
 }
 //#endregion
 
+//#region img detection
+async function natEdgeDetectTitle(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+	ctx.drawImage(img, 0, 0, w, h);
+	img.remove();
+
+	let [resx, resy] = findPoints(ctx, w * .25, w * .9, 0, h, '#544744');
+
+	resy = sortBy(resy, 'y');
+	//let ys=resy.map(o=>o.y); console.log('ys',ys);
+	resy.map(o => o.nei = findPointAtDistance(o, 0, 261, resy));
+	resy = resy.filter(x => x.nei);
+	resy.map(p => drawPix(ctx, p.x, p.y, 'red'));
+
+
+	// Example usage:
+	const points = resy;
+
+	const result = findMostFrequentY(points);
+	console.log(result);
+
+
+
+
+	resx = sortBy(resx, 'x');
+	//let xs=resx.map(o=>o.x); console.log('xs',xs);
+	resx.map(o => o.nei = findPointAtDistance(o, 243, 0, resx));
+	resx = resx.filter(x => x.nei);
+	resx.map(p => drawPix(ctx, p.x, p.y, 'blue'));
+
+
+
+	return [resx, resy];
+
+
+}
+
+function __findSimPixXSequence(ctx, x1, x2, y, clist) {
+	let [x, i] = [x1, 0];
+	let ok = true;
+	let results = [];
+	while (x <= x2 && i < clist.length) {
+		let p = isPixSim(ctx, x, y, clist[i]);
+		if (p) { results.push({ x: x, y: y, color: p, csim: clist[i] }); i++; }
+		x++;
+	}
+	if (results.length == clist.length) return results; else return null;
+}
+async function edgeDetect(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
+	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, { r: 215, g: 189, b: 174 }, 10, 10);
+	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 7);
+	let [x, y1, cgoal] = [corner2.x, corner2.y, { r: 167, g: 158, b: 151 }]; //colorRGB('#a18b81', true)];
+
+	let result;
+	//for (const delta of [12, 15, 18, 21]) {
+	for (let y = y1; y < y1 + 10; y++) {
+		result = findSimPixXSequence(ctx, x, w, y,
+			[{ r: 167, g: 158, b: 151 }, { r: 220, g: 216, b: 213 }, { r: 167, g: 158, b: 151 }],
+			[0, 8, 50], 15)
+		console.log('result', result);
+
+		if (result) { result.map(o => drawPixFrame(ctx, o.x, o.y, 'red', 7)); break; }
+	}
+	//}
+
+	//let corner = findSimPixXY(ctx, 5, 50, 5, 40, { r: 215, g: 189, b: 174 }, 10);
+	//let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 60, { r: 215, g: 189, b: 174 },10, 10);
+	// console.log('corner', corner, corner2);
+	// drawPixFrame(ctx, corner.x, corner.y, 'yellow', 15);
+	// drawPixFrame(ctx, corner2.x, corner2.y, 'green', 15);
+	// //img.style.display = 'none'; return;
+	// let [x, y, cgoal] = [corner2.x, corner2.y, {r:167,g:158,b:151}]; //colorRGB('#a18b81', true)];
+	// drawPix(ctx, x, y, 'red', 5);
+	// let sim = findSimPixX(ctx, x, w, y, cgoal, 15);
+	// if (sim.x) {
+	// 	drawPix(ctx, sim.x, y, 'green', 5);
+	// 	let sim2 = findSimPixX(ctx, sim.x + 5, w, y, cgoal,15);
+	// 	if (sim2.x) drawPix(ctx, sim2.x, y, 'green', 5);
+	// } else console.log('NOT FOUND!!!')
+
+
+	img.style.display = 'none';
+	return result;
+}
+function _findSimPixLineHor(ctx, x1, x2, y1, y2, cgoal, minlen = 10) {
+	let p;
+	for (let y = y1; y < y2; y++) {
+		for (let xStart = x1; xStart < x2; xStart++) {
+			let found = true;
+			for (let x = xStart; x < xStart + minlen; x++) {
+				p = isPixSim(ctx, x, y, cgoal); if (!p) { found = false; break; }
+			}
+			if (found) return { x: xStart, y: y, color: p };
+		}
+	}
+	return { x: null, color: null }
+}
+async function rest() {
+	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
+	let [cgoal, x1, x2, y1, y2] = ['#a18b81', 0, w, 0, h];//w/2,w,Math.round(h/2),Math.round(h*2/3)]; //w*.1,w*.9,h*.1,h*.9];
+	let vlines = {}, p;
+	for (let x = x1; x < x2; x++) {
+		for (let y = y1; y < y2; y++) {
+			if (p = isPixSim(ctx, x, y, cgoal)) {
+				assertion(nundef(vlines[x]), `duplicate ${x}`)
+				vlines[x] = { x1: x, y1: y, color: p };
+				// console.log('BINGO!',x,y)
+				break;
+			}
+		}
+	}
+
+	// console.log(vlines)
+	let max = 0;
+	for (const x in vlines) {
+		let o = vlines[x];
+		o.linedown = getPixLineAtX(ctx, x, o.y1, h);
+		o.avg = getPixAvg(o.linedown);
+		// //geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
+		// let y=o.y1+1;
+		// while(isPixSim2(ctx,x,y,cgoal)||isPixSim2(ctx,x+1,y,cgoal)) y++;
+		// o.y2=y;
+		// o.other = getPixHex(ctx,x,y);
+		// if (y-o.y1>max) max=o;
+	}
+	// console.log(vlines,colorRGB(cgoal,true));
+	// Object.values(vlines).map(o=>console.log(`${o.x1}: ${o.avg.r} ${o.avg.g} ${o.avg.b}`));
+
+	//sort vlines by closeness to goal number
+	let goal = colorRGB(cgoal, true);
+	let arr = Object.values(vlines);
+
+	console.log(colorRGB(cgoal, true));
+	console.log('_______orig', arr.map(x => x.x1))
+	//arr.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	let arrSorted = sortByFunc(arr, el => Math.abs(el.avg.r - goal.r));//+Math.abs(el.avg.g-goal.g)+Math.abs(el.avg.b-goal.b));
+	console.log('_______sorted', arrSorted.map(x => x.x1))
+	// arrSorted.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	//markiere die lines
+	drawPix(ctx, arrSorted[0].x1, arrSorted[0].y1, 'red', 5)
+	drawPix(ctx, arrSorted[1].x1, arrSorted[1].y1, 'red', 5)
+
+
+	mStyle(img, { display: 'none' })
+}
+
+
+
+async function edgeDetect(k, src, border, idx) {
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w', w, 'h', h);
+
+	//only consider images in landscape form
+	if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
+
+	let corner = findSimPixXY(ctx, 5, 50, 5, 40, { r: 215, g: 189, b: 174 }, 10);
+	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 60, { r: 215, g: 189, b: 174 },10, 10);
+	console.log('corner', corner, corner2);
+	drawPixFrame(ctx, corner.x, corner.y, 'yellow', 15);
+	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 15);
+	//img.style.display = 'none'; return;
+
+
+	let [x, y, cgoal] = [corner2.x, corner2.y, {r:167,g:158,b:151}]; //colorRGB('#a18b81', true)];
+	drawPix(ctx, x, y, 'red', 5);
+
+	let sim = findSimPixX(ctx, x, w, y, cgoal, 15);
+	if (sim.x) {
+		drawPix(ctx, sim.x, y, 'green', 5);
+		let sim2 = findSimPixX(ctx, sim.x + 5, w, y, cgoal,15);
+		if (sim2.x) drawPix(ctx, sim2.x, y, 'green', 5);
+
+
+	} else console.log('NOT FOUND!!!')
+	img.style.display = 'none';
+
+}
+async function __edgeDetect(k,src,border,idx){
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w',w,'h',h);
+
+	//only consider images in landscape form
+	assertion(w>h,`NOT in landscape! ${k} ${src}`);
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d',{ willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
+	let [cgoal,x1,x2,y1,y2]=['#a18b81',0,w,0,h];//w/2,w,Math.round(h/2),Math.round(h*2/3)]; //w*.1,w*.9,h*.1,h*.9];
+	let vlines={},p;
+	for(let x=x1;x<x2;x++){
+		for(let y=y1;y<y2;y++){
+			if (p=isPixSim2(ctx,x,y,cgoal)){
+				assertion(nundef(vlines[x]),`duplicate ${x}`)
+				vlines[x]={x1:x,y1:y,color:p};
+				// console.log('BINGO!',x,y)
+				break;
+			}
+		}		
+	}
+
+	// console.log(vlines)
+	let max=0;
+	for(const x in vlines){
+		let o=vlines[x];
+		o.linedown=getPixLineAtX(ctx,x,o.y1,h);
+		o.avg=getPixAvg(o.linedown);
+		// //geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
+		// let y=o.y1+1;
+		// while(isPixSim2(ctx,x,y,cgoal)||isPixSim2(ctx,x+1,y,cgoal)) y++;
+		// o.y2=y;
+		// o.other = getPixHex(ctx,x,y);
+		// if (y-o.y1>max) max=o;
+	}
+	// console.log(vlines,colorRGB(cgoal,true));
+	// Object.values(vlines).map(o=>console.log(`${o.x1}: ${o.avg.r} ${o.avg.g} ${o.avg.b}`));
+
+	//sort vlines by closeness to goal number
+	let goal=colorRGB(cgoal,true);
+	let arr=Object.values(vlines);
+
+	console.log(colorRGB(cgoal,true));
+	console.log('_______orig',arr.map(x=>x.x1))
+	//arr.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	let arrSorted=sortByFunc(arr,el=>Math.abs(el.avg.r-goal.r));//+Math.abs(el.avg.g-goal.g)+Math.abs(el.avg.b-goal.b));
+	console.log('_______sorted',arrSorted.map(x=>x.x1))
+	// arrSorted.map(el=>console.log(el.x1,el.avg.r,el.avg.g,el.avg.b))
+
+	//markiere die lines
+	drawPix(ctx, arrSorted[0].x1, arrSorted[0].y1, 'red',5)
+	drawPix(ctx, arrSorted[1].x1, arrSorted[1].y1, 'red',5)
+
+
+	mStyle(img,{display:'none'})
+}
+async function edgeDetect(k,src,border,idx){
+
+	let path = `../assets/games/nations/cards/${src}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height]; console.log('w',w,'h',h);
+
+	//only consider images in landscape form
+	assertion(w>h,`NOT in lanscape! ${k} ${src}`);
+
+	//als erstes brauch ich einen canvas!
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d',{ willReadFrequently: true });
+
+	ctx.drawImage(img, 0, 0, w, h);
+
+	//first detect #A18B81 along top to bottom starting at 10% ending at 10%
+	let [c,x1,x2,y1,y2]=['#a18b81',w/2,w,0,h/3]; //w*.1,w*.9,h*.1,h*.9];
+	let vlines={};
+	let cond=p=>p[1]=='a' && p[3]==8 && p[5]==8;
+	for(let x=x1;x<x2;x++){
+		for(let y=y1;y<y2;y++){
+			let p=getPixelColor(ctx,x,y); //console.log('color',p);
+			if (cond(p)){
+				assertion(nundef(vlines[x]),`duplicate ${x}`)
+				vlines[x]={x1:x,y1:y,color:p};
+				console.log('BINGO!',x,y)
+				break;
+			}
+		}		
+	}
+
+	console.log(vlines)
+	for(const x in vlines){
+		let o=vlines[x];
+		//geh alle y's ab y1 hinunter und schau ob bedingung erfuellt ist fuer x,x+1
+		for(let y=o.y1;y<h;y++){
+			//if ()
+		}
+	}
+
+}
+async function __present(name, color, idx, rot) {
+	//do this for each card:
+	//if (isdef(mBy('img1'))) mBy('img1').remove();
+	//let name = `age1_aeneid`;
+	let path = `../assets/games/nations/cards/${name}.jpg`;
+
+	let hImg = 200, wImg = 310;
+	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	console.log('img', img)
+
+	let dir = 'portrait';
+	let rotate = img.width > img.height;
+	let dView = 'dMain';
+
+	let dParent = toElem(dView);
+	//mClear(dParent);
+	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
+	// let canvas = mDom(dParent, { border: '10px solid yellow', box:true }, { tag: 'canvas', id: 'canvas',width: w, height: h });
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - 4, height: h - 6 });
+
+	let ctx = canvas.getContext('2d');
+	console.log('rot', rot)
+	if (rot == -90) {
+		ctx.translate(0, img.width);
+		ctx.rotate(-90 * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+		ctx.translate(-4, 15)
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+		ctx.beginPath();
+		ctx.lineWidth = "10";
+		ctx.strokeStyle = color;
+		ctx.rect(15, -4, 290, 180);
+		ctx.stroke();
+	} else if (rot == 90) {
+		ctx.translate(canvas.width, 0); //-canvas.height/2) //img.width);
+		ctx.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+		ctx.translate(-8, 6) //erstes:- verschiebt nacht oben, zweites: + verschiebt nach links
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+		ctx.beginPath();
+		ctx.lineWidth = "10";
+		ctx.strokeStyle = color;
+		ctx.rect(12, 5, img.width - 15, img.height - 20) //15, -4, 290, 180);
+		// ctx.rect(15, -4, 290, 180);
+		ctx.stroke();
+	} else {
+		ctx.drawImage(img, 0, 0, img.width, img.height)
+	}
+
+	//await imgToServer(canvas,`combu/${name}.png`);
+	//await mSleep(1000);
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+
+
+	//let cv = imgAsCanvas(img,'dMain');
+}
+
+function mist() {
+
+	//return;
+	let dir = 'portrait';
+	let rotate = img.width > img.height;
+	//let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
+	//jetzt kommt der echte canvas!
+	[iw, ih, cw, ch] = [xend - xstart, yend - ystart, yend - ystart, xend - xstart];
+	let cv1 = mDom(dParent, { maleft: 20, border: 'green' }, { tag: 'canvas', id: 'cv1', width: cw, height: ch });
+	let ct1 = cv1.getContext('2d');
+	if (rotate) {
+		if (rot == 90) { ct1.translate(cv1.width, 0); } else { ct1.translate(0, ch); }
+		ct1.rotate(rot * Math.PI / 180); //ctx.rotate(-90 * Math.PI / 180);
+	}
+	//ctx.translate()
+	ct1.drawImage(img, xstart, ystart, cv1.height, cv1.width, 0, 0, yend - ystart - 20, cv1.width);
+
+
+
+
+
+}
+async function ___present(name, color, idx, rot) {
+	let path = `../assets/games/nations/cards/${name}.jpg`;
+	let [hImg, wImg, border, diff] = [200, 300, 10, 10];
+	let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	let dir = 'portrait';
+	let rotate = img.width > img.height;
+	let dView = 'dMain';
+
+	let dParent = toElem(dView);
+	//mClear(dParent);
+	let [w, h] = rotate ? [img.height, img.width] : [img.width, img.height];
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w - diff, height: h - diff });
+	let ctx = canvas.getContext('2d');
+	ctx.lineWidth = border;
+	ctx.strokeStyle = color;
+	console.log('rot', rot)
+	if (rot == 90) cvRot90(img, canvas, ctx, w, h, border, diff);
+	else if (rot == -90) cvRot270(img, canvas, ctx, w, h, border, diff);
+	//await imgToServer(canvas,`combu/${name}.png`);
+	//await mSleep(1000);
+	// ctx.fillStyle='yellow';ctx.fillRect(1,1,w,h);
+}
+
+async function test55_buildings(){
+	let type = 'building';
+	let diColors = {advisor:'orange',battle:'grey',building:'deepskyblue',colony:'green',event:'purple',golden_age:'gold',military:'red',war:'black',natural:'brown',wonder:'brown'};
+	let natCards = await mGetYaml('../assets/games/nations/cards.yaml');
+	console.log('Nations Cards',natCards);
+	let i=0;
+	let list = Object.keys(natCards).filter(x=>natCards[x].Type == type);
+	console.log('list',list);
+	let result=[];
+	//list =['brewery']; // 'urban_center'];//'university']; //, 'urban_center'];
+	//list = ['department_store','coffee_house','hippodrome']; //,]; //['aqueduct','shantytown','coal_mine'];//['coal_mine']; // 
+	let dims={advisor:{dx:150,y:75,xmin:80,top:91,bot:151},building:{dx:250,y:240,xmin:180,top:176,bot:67}
+	,hippodrome:{dx:250,y:230,xmin:180,top:176,bot:67},urban_center:{dx:245,y:230,xmin:180,top:176,bot:67}};
+	for(const k of list){ //in natCards){ //of arrTake(Object.keys(natCards),20)){ //in natCards){
+		if (k == 'brewery') continue;
+		console.log('___________',k)
+		let c=natCards[k];
+		if (c.age == 0) {console.log('age 0',c.key); continue; }
+		let path = c.Path;
+		let color= diColors[c.Type];
+		let dim = valf(dims[k],dims[type]); 
+		let canvas = await natModCard(path,color,i++,dim);
+		//result.push({cv:canvas,card:c,path:`y/nat/${type}/${k}.png`});
+		console.log('path',path);
+		let realPath = `y/nat/${type}/${k}.png`;
+		if (canvas) await imgToServer(canvas,realPath);
+		else{
+			let img = await imgAsync('dExtra', {}, { src: path, tag: 'img', id: `im${k}` });
+			let cv = imgRotate90(img);
+			await imgToServer(cv,realPath);
+		}
+		//break;
+	}
+	//console.log('cvs',cvs);
+	//let adv=arrLast(result);console.log(adv);
+	return;
+	for(const adv of result){
+		await imgToServer(adv.cv,adv.path);
+	}
+	//console.log(arrLast(cvs));
+
+}
+function calcRealBoundaries(ctx, w, h, ybound = true, xbound = true, yextra = false, xendbd = true) {
+	var x = 150; // replace with the desired x-coordinate
+	let ystart = -1, yend = -1, y;
+	let hbound = ybound ? h - 20 : h - 35;
+	let wbound = xbound ? w - 20 : w - 35;
+	let ymin = yextra ? 10 : 0;
+	if (yextra) hbound += 10;
+	let countlines = 0;
+	let prevy = [];
+
+	console.log('ymin', ymin)
+	for (y = ymin; y < h; y++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+
+		if (green < 100 && blue < 100) {
+
+			let almost1 = false, almost2 = false;
+
+			//almost1 wird gebraucht wenn
+			for (let yy = Math.max(0, y - 3); yy < y; yy++) { //Math.min(y+5,h);yy++)	{
+				let p = ctx.getImageData(x, yy, 1, 1).data;
+				if (p[0] + p[1] + p[2] > 520) almost1 = true;
+				// console.log(p[0],p[1],p[2]);
+			}
+			for (let yy = y + 1; yy < Math.min(y + 5, h); yy++) { //Math.min(y+5,h);yy++)	{
+				let p = ctx.getImageData(x, yy, 1, 1).data;
+				if (p[0] + p[1] + p[2] > 520) almost2 = true;
+				// console.log(p[0],p[1],p[2]);
+			}
+
+			if (almost1 && almost2) {
+				ctx.fillStyle = 'black'
+				for (const py of prevy) {
+					let dy = y - py;
+					console.log('dy', dy)
+					if (dy > 152 && dy < 158) { console.log('BINGO!!!! zweites middle ding'); ctx.fillStyle = 'red'; }
+				}
+				prevy.push(y);
+				console.log('______', countlines++, y);
+				ctx.fillRect(x - 2, y - 2, 5, 5);
+				if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
+				y += 10;
+			}
+		}
+	}
+	if (!ybound) ystart = 0;
+	if (yextra) yend = h;
+
+	y = 100; // replace with the desired x-coordinate
+	let xstart = -1, xend = -1;
+	for (x = 0; x < w; x++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > wbound) { xend = x; break; }
+	}
+	if (!xbound) xstart = 0;
+	if (!xendbd) xend = w;
+	// console.log('fromto:',xstart,xend);
+	return [xstart + 2, ystart + 2, xend - 1, yend - 2];
+}
+function weiterImagePresent(name, color, idx, rot) {
+
+	// Get the pixel color at coordinates (x, y)
+	var x = 100; // replace with the desired x-coordinate
+	let ystart = -1, yend = -1, y;
+	for (y = 0; y < h; y++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+
+		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+
+		if (green < 100 && blue < 100) if (ystart < 0) ystart = y; else if (y > 170) { yend = y; break; }
+
+
+		// Display the color in the console
+		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
+	}
+	console.log('fromto:', ystart, yend)
+
+	y = 100; // replace with the desired x-coordinate
+	let xstart = -1, xend = -1;
+	for (x = 0; x < w; x++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+
+		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+
+		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > 280) { xend = x; break; }
+
+
+		// Display the color in the console
+		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
+	}
+	console.log('fromto:', xstart, xend);
+
+	//ohne rotation!
+	// [w,h]=[xend-xstart,yend-ystart];
+	// console.log('xstart='+xstart,'xend='+xend,'ystart='+ystart,'yend='+yend,'w='+w,'h='+h)
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, -xstart, -ystart); //, w,h); //, 0,0,w,h); //,w,h);
+
+}
+function toCanvasDraw(img, xstart, xend, ystart, yend) {
+	//ohne rotation!
+	[w, h] = [xend - xstart, yend - ystart];
+	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, xstart, ystart, w, h, 0, 0, w, h); //,w,h);
+
+}
+function calcBoundsX(ctx, y, w, n = 243) {
+	let xstart = -1, xend = -1, x, countlines = 0, prevx = [], xmin = 0, wbound = w - 20;
+	let isRotated = false;
+	let x1, x2;
+	let gotit = false;
+
+
+	for (x = xmin; x < w; x++) {
+		if (gotit) {
+			let wt = isPixWhiteOrTransparent(ctx, x, y);
+
+			if (wt) return [xstart, x1, x2, x - 1, isRotated, prevx];
+		}
+		if (isPixDark(ctx, x, y)) {
+			if (isDarkBar(ctx, x, y, w, x < w / 2, x > w / 2)) {
+
+				if (gotit) {
+					console.log('====>y', x)
+					return [xstart, x1, x2, x, isRotated];
+				}
+
+				ctx.fillStyle = 'black';
+				let xother = null;
+				for (const px of prevx) {
+					let dx = x - px;
+					// console.log('dy', dy)
+					if (dx > n - 3 && dx < n + 3) {
+						gotit = true;
+						isRotated = true;
+						x1 = xother = px;
+						x2 = x;
+						console.log('BINGO!!!! zweites middle ding');
+						ctx.fillStyle = 'red';
+					}
+				}
+				prevx.push(x);
+				// console.log('______', countlines++, y);
+				ctx.fillRect(x - 2, y - 2, 5, 5);
+				if (xother) {
+					ctx.fillRect(xother - 2, y - 2, 5, 5);
+					let i1 = prevx.indexOf(x1);
+					xstart = i1 == 0 ? 0 : prevx[i1 - 1];
+				}
+
+				// if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
+				x++;
+			}
+		}
+		if (prevx.length >= 7) {
+			//if (pixShow(ctx,x,y)){console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');prevx.push(x);}
+			if (isPixDark(ctx, x, y)) {
+				console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+				prevx.push(x);
+				pixShow(ctx, x, y)
+			}
+		}
+	}
+	return [xstart, x1, x2, w, isRotated, prevx];
+}
+async function natModCard(name, color, idx, dims) { //}, rot, ybound, xbound, yextra, xendbd) {
+	let path = `../assets/games/nations/cards/${name}`; //.jpg`;
+	let dParent = toElem('dExtra');
+	// let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
+	let [w, h] = [img.width, img.height];
+	//console.log(w, h);
+
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, w, h);
+
+	let [xstart, ystart, xend, yend, isRotated] = [0, 0, w, h, false];
+	let y1, y2, x1, x2, prevy, prevx;
+	let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
+	console.log('resY', resy)
+
+	let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); //return;
+	console.log('resX', resx)
+	//let resx=[xstart,x1,x2,xend,isRotated,prevx]=calcBoundsX(ctx, 80, w, 243);
+
+	//console.log('bounds X',resx)
+
+	// console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+	let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
+	console.log('wsmall', wsmall, 'hsmall', hsmall)
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, -xstart, -ystart, w, h);
+
+	//let border=10;
+	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
+	// let cv2 = mDom('dMain', { 'box-shadow':`inset 0 0 10px 20px red`,border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+	// let cv2 = mDom('dMain', { box:true, border:'10px solid yellow', rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+	let cv2 = mDom('dMain', {}, { tag: 'canvas', id: `cv${name}`, width: wsmall, height: hsmall });
+	let ct2 = cv2.getContext('2d');
+	ct2.drawImage(img, -xstart, -ystart, w, h);
+	//drawRoundedRect(ct2,0,0,wsmall,hsmall,12,color,null,20);
+	ct2.strokeStyle = color;
+	ct2.lineWidth = 20;
+	ct2.rect(0, 0, wsmall, hsmall);
+	ct2.stroke();
+
+	return cv2;
+
+	//next: draw rotated!
+
+}
+function allDarkPoints(ctx, w, dims) {
+	let [y,xmin,top,bot]=[dims.y,dims.xmin,dims.top,dims.bot];
+	let xlist = [];
+	for (let x = 0; x < w; x++) {
+		if (isPixDark(ctx, x, y)) {
+			//drawPix(ctx, x, y, 'red');
+			xlist.push(x);
+		}
+	}
+	let n = 243;xmin=120;
+	console.log('list', xlist);
+	//xlist.map(x => { drawPix(ctx, x, y, 'red', 2) });
+	let diffs=[];
+	//xlist.map(x => { console.log('===>', x); drawPix(ctx, x, y, 'red') });
+	for (let i = 0; i < xlist.length - 1; i++) {
+		if (xlist[i] < xmin) continue;
+		if (isLightBefore(ctx,xlist[i],y)) {console.log('YES!',xlist[i])} else {console.log('NO',xlist[i]);continue;}
+		for (let j = i + 1; j < xlist.length; j++) {
+			let pix = xlist[j];
+			assertion(isPixDark(ctx, pix, y));
+			//test ob nach diesem pix mindestens 1 aus 3 light ist! sonst nehm ich den NICHT!
+			//let light = false; for (let p = pix; p < pix + 3; p++) if (isPixLight(ctx, p, y)) light = true; if (!light) continue;
+			if (isLightAfter(ctx,pix,y)) {console.log('YES!',pix)} else {console.log('NO',pix);continue;}
+
+			let d = xlist[j] - xlist[i];
+			diffs.push({i:i,j:j,d:d})
+			console.log('d', xlist[i], xlist[j], d)
+			if (d >= n - 2 && d <= n + 2) { //} 243){
+				console.log('BINGO!!!!!!!!!!!!!!!!!!!', xlist[i], xlist[y], y)
+				let doben = xlist[i] - xlist[i - 1]; console.log('doben=' + doben)
+				let dunten = arrLast(xlist) - xlist[j]; console.log('dunten=' + dunten)
+
+				let test90 = pixTest90(ctx, y, xlist[i] - top, xlist[j] + bot);
+				rot = test90 ? 90 : -90;
+				xstart = test90 ? xlist[i] - top : xlist[i] - bot;
+				xend = test90 ? xlist[j] + bot : xlist[j] + top;
+
+				drawPix(ctx, xlist[i], y, 'green')
+				drawPix(ctx, xlist[j], y, 'green')
+				return [xstart, xlist[i], xlist[j], xend, xlist, rot]
+			}
+		}
+	}
+	console.log('diffs',diffs)
+	return [0, 0, w, w, xlist, 0];
+}
+
+function calcBoundsH(ctx, x, h, n=261) {
+	let ystart = -1, yend = -1, y, countlines = 0, prevy = [], ymin = 0, hbound=h-20;
+	let isRotated = false;
+
+	for (y = ymin; y < h; y++) {
+		if (isPixDark(ctx, x, y)) {
+			if (isDarkLine(ctx,x,y,h, y<h/2,y>h/2)){
+				ctx.fillStyle = 'black';
+				yother=null;
+				for (const py of prevy) {
+					let dy = y - py;
+					// console.log('dy', dy)
+					if (dy > n-3 && dy < n+3) { isRotated=true; yother=py; console.log('BINGO!!!! zweites middle ding'); ctx.fillStyle = 'red'; }
+				}
+				prevy.push(y);
+				// console.log('______', countlines++, y);
+				ctx.fillRect(x - 2, y - 2, 5, 5);
+				if (yother) ctx.fillRect(x - 2, yother - 2, 5, 5);
+
+				if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; }
+				y += 10;
+			}
+		}
+	}
+	return [ystart,yend,isRotated];
+}
+async function present(name, color, idx, rot, ybound, xbound, yextra, xendbd) {
+	let path = `../assets/games/nations/cards/${name}.jpg`;
+	let [hImg, wImg, border, diff] = [rot ? 200 : 300, rot ? 300 : 200, 10, 10];
+	// let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	let dParent = toElem('dExtra');
+
+	let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	//mClear(dParent);
+	let [w, h] = [img.width, img.height];
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, w, h);//ctx.drawImage(img, -13,-2,w,h);
+
+	// let [xstart, ystart, xend, yend] = calcRealBoundaries(ctx, w, h, ybound, xbound, yextra, xendbd);
+	let [xstart, ystart, xend, yend, isRotated] = [0,0,w,h,false]; //calcRealBoundaries(ctx, w, h, ybound, xbound, yextra, xendbd);
+	[ystart,yend,isRotated]=calcBoundsH(ctx,150,h);
+	console.log('isRotated',isRotated)
+
+	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+	return;
+	let [wsmall, hsmall] = [xend - xstart + 1, yend - ystart + 1];
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, -xstart, -ystart, w, h);
+
+	//let border=10;
+	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
+	let cv2 = mDom('dMain', { border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+	let ct2 = cv2.getContext('2d');
+	ct2.drawImage(img, -xstart, -ystart, w, h);
+
+
+
+}
+async function present(name, color, idx, rot, ybound, xbound,yextra,xendbd) {
+	let path = `../assets/games/nations/cards/${name}.jpg`;
+	let [hImg, wImg, border, diff] = [rot?200:300, rot?300:200, 10, 10];
+	// let img = await imgAsync(document.body, { position: 'absolute', top: '70vh', h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	let dParent = toElem('dExtra');
+
+	let img = await imgAsync(dParent, { h: hImg, w: wImg }, { height: hImg, width: wImg, src: path, tag: 'img', id: 'img' + idx })
+	//mClear(dParent);
+	let [w, h] = [img.width, img.height];
+	let canvas = mDom(dParent, {}, { tag: 'canvas', id: 'canvas' + idx, width: w, height: h });
+	let ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0, 0, w, h);//ctx.drawImage(img, -13,-2,w,h);
+
+	let [xstart, ystart, xend, yend] = calcRealBoundaries(ctx, w, h, ybound,xbound,yextra,xendbd);
+	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+	let [wsmall, hsmall] = [xend - xstart + 1, yend - ystart +1];
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: wsmall, height: hsmall });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, -xstart, -ystart, w, h);
+
+	//let border=10;
+	//let [w2, h2] = [wsmall + 2 * border, hsmall + 2 * border]
+	let cv2 = mDom('dMain', { border: `${color} solid 10px`, rounding: 16 }, { tag: 'canvas', id: 'cv2', width: wsmall, height: hsmall });
+	let ct2 = cv2.getContext('2d');
+	ct2.drawImage(img, -xstart, -ystart, w, h);
+
+
+
+}
+function calcRealBoundaries(ctx, w, h, ybound = true, xbound = true,yextra=false,xendbd=true) {
+	var x = 150; // replace with the desired x-coordinate
+	let ystart = -1, yend = -1, y;
+	let hbound = ybound?h-20:h-35;
+	let wbound = xbound?w-20:w-35;
+	let ymin=yextra?10:0;
+	if (yextra) hbound+=10;
+	let countlines=0;
+	let prevy=[];
+
+	console.log('ymin',ymin)
+	for (y = ymin; y < h; y++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+
+		if (green < 100 && blue < 100) { 
+
+			let almost1=false,almost2=false;
+
+			//almost1 wird gebraucht wenn
+			for(let yy=Math.max(0,y-3);yy<y;yy++){ //Math.min(y+5,h);yy++)	{
+				let p=ctx.getImageData(x, yy, 1, 1).data;
+				if (p[0]+p[1]+p[2] > 520) almost1=true;
+				// console.log(p[0],p[1],p[2]);
+			}
+			for(let yy=y+1;yy<Math.min(y+5,h);yy++){ //Math.min(y+5,h);yy++)	{
+				let p=ctx.getImageData(x, yy, 1, 1).data;
+				if (p[0]+p[1]+p[2] > 520) almost2=true;
+				// console.log(p[0],p[1],p[2]);
+			}
+
+			if (almost1 && almost2) {
+				ctx.fillStyle = 'black'
+				for(const py of prevy){
+					let dy=y-py;
+					console.log('dy',dy)
+					if (dy>152 && dy<158) {console.log('BINGO!!!! zweites middle ding'); ctx.fillStyle='red';} 
+				}
+				prevy.push(y); 
+				console.log('______',countlines++,y);
+				ctx.fillRect(x-2,y-2,5,5);
+				if (ystart < 0) ystart = y; else if (y > hbound) { yend = y; break; } 
+				y+=10;
+			}
+		}
+	}
+	if (!ybound) ystart = 0;
+	if (yextra) yend = h;
+
+	y = 100; // replace with the desired x-coordinate
+	let xstart = -1, xend = -1;
+	for (x = 0; x < w; x++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > wbound) { xend = x; break; }
+	}
+	if (!xbound) xstart = 0;
+	if (!xendbd) xend = w;
+	// console.log('fromto:',xstart,xend);
+	return [xstart + 2, ystart + 2, xend - 1, yend - 2];
+}
+function weiterImagePresent(name, color, idx, rot) {
+
+	// Get the pixel color at coordinates (x, y)
+	var x = 100; // replace with the desired x-coordinate
+	let ystart = -1, yend = -1, y;
+	for (y = 0; y < h; y++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+
+		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+
+		if (green < 100 && blue < 100) if (ystart < 0) ystart = y; else if (y > 170) { yend = y; break; }
+
+
+		// Display the color in the console
+		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
+	}
+	console.log('fromto:', ystart, yend)
+
+	y = 100; // replace with the desired x-coordinate
+	let xstart = -1, xend = -1;
+	for (x = 0; x < w; x++) {
+		var pix = ctx.getImageData(x, y, 1, 1).data;
+
+		//console.log('pixelData',y, pix[0], pix[1], pix[2]); //Array.from(pixelData).map(x=>console.log(x));
+		var red = pix[0]; var green = pix[1]; var blue = pix[2];
+
+		if (green < 100 && blue < 100) if (xstart < 0) xstart = x; else if (x > 280) { xend = x; break; }
+
+
+		// Display the color in the console
+		//console.log('Pixel color at (' + x + ',' + y + '): RGB(' + red + ',' + green + ',' + blue + ')');
+	}
+	console.log('fromto:', xstart, xend);
+
+	//ohne rotation!
+	// [w,h]=[xend-xstart,yend-ystart];
+	// console.log('xstart='+xstart,'xend='+xend,'ystart='+ystart,'yend='+yend,'w='+w,'h='+h)
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, -xstart, -ystart); //, w,h); //, 0,0,w,h); //,w,h);
+
+}
+function toCanvasDraw(img, xstart, xend, ystart, yend) {
+	//ohne rotation!
+	[w, h] = [xend - xstart, yend - ystart];
+	console.log('xstart=' + xstart, 'xend=' + xend, 'ystart=' + ystart, 'yend=' + yend, 'w=' + w, 'h=' + h)
+	let cv1 = mDom(dParent, { border: 'red' }, { tag: 'canvas', id: 'cv1', width: w, height: h });
+	let ct1 = cv1.getContext('2d');
+	ct1.drawImage(img, xstart, ystart, w, h, 0, 0, w, h); //,w,h);
+
+}
+//#endregion
+
 //#region imgSplit
 async function splitImageH(inputImagePath, outputDirectory) {
 	const image = await loadImage(inputImagePath);
@@ -7057,7 +7057,6 @@ app.get('/login', (req, res) => {
 	//now user is registered as well as loggedIn and with correct color!
 	res.json({ session: Session, config: Config, message: `user ${uname} logged in!` });
 })
-
 app.post('/upload', (req, res) => {
 	console.log(Object.keys(req.body)); //'req.body',req.body)
 	const uploadedFile = req.files.image; // 'image' is the field name in the form
@@ -7177,6 +7176,21 @@ app.get('/load', (req, res) => {
 	} catch (error) {
 		console.error('Error reading or parsing the YAML file:', error);
 	}
+});
+app.post('/postMove', (req, res) => {
+	console.log('<== post move')
+	let data = req.body;
+	let idTable = data.idTable;
+	let player = data.name;
+	let move = data.move;
+	let fen = Tables[idTable].fen;
+	let turn = fen.turn;
+
+	let oldConfig = Session.config;
+	Session.config = deepMerge(oldConfig, newConfig);
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	res.json(Session.config);
 });
 
 //#endregion

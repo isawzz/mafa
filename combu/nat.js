@@ -233,6 +233,9 @@ function findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false)
 	}
 	return false; 
 }
+function getActivePlayer(fen){
+	if (fen.playerNames.includes(U.name)) return U.name; else return fen.turn[0];
+}
 function getBar(ctx, list, val) {
 	let res = list.filter(p => isWithinDelta(p.x, val, 2) && (isLightBefore(ctx, p.x, p.y) || isLightAfter(ctx, p.x, p.y)));
 	//console.log('val', vfreq); console.log('line', res.length);

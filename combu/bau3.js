@@ -1,3 +1,6 @@
+function getBg(d){	let style = window.getComputedStyle(toElem(d));	let bg = valf(style.backgroundColor,style.background);	return colorHex(bg);}
+function getThemeFg(){ return getCSSVariable('--fgButtonHover'); } //	let bg=getThemeBg();return colorIdealText(bg);}
+function getThemeBg(){	let style = window.getComputedStyle(document.body);	let bg = valf(style.backgroundColor,style.background);	return colorHex(bg);}
 async function natPresent(fen,plname){
 	mClear('dMain');
 	let dParent = mDiv('dMain'); 

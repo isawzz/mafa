@@ -107,6 +107,11 @@ body{
   opacity: .6;
 	pointer-events: none;
 }
+.doublesize:hover {
+	transform: scale(3);
+	/* transform-origin: 50%; */
+	transition: transform 0.2s; /* Animation */
+}
 .dropZone {
 	/* min-width: 300px; */
 	/* min-height: 300px; */
@@ -264,6 +269,25 @@ body{
 }
 .subtitle{
 	color: var(--fgSubtitle);
+}
+.table {
+	border-collapse: collapse;
+	/* width: 100%; */
+	max-width: 100%;
+	margin-bottom: 1rem;
+	background-color: transparent;
+}
+.table th,
+.table td {
+	padding: 0.25rem 0.75rem;
+	vertical-align: top;
+	text-align: left;
+	border-top: 1px solid #dee2e680;
+	max-height: 50px;
+	max-width: 400px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .title{
 	color: var(--fgTitle);

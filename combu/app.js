@@ -231,7 +231,7 @@ app.get('/session', (req, res) => {
 });
 app.get('/table', (req, res) => {
 	let params = req.query;
-	console.log('==> get table:\n params', Object.keys(params))
+	console.log('==> get table:\n params', params); //Object.keys(params))
 	let data = lookup(Session, ['tables', params.id]);
 	//console.log(data)
 	res.json(data);
@@ -288,21 +288,6 @@ app.post('/postImage', (req, res) => {
 		message: 'File uploaded successfully',
 		fileName: fname,
 	});
-});
-app.post('/postMove', (req, res) => {
-	console.log('<== post move')
-	let data = req.body;
-	let idTable = data.idTable;
-	let player = data.name;
-	let move = data.move;
-	let fen = Tables[idTable].fen;
-	let turn = fen.turn;
-
-	let oldConfig = Session.config;
-	Session.config = deepMerge(oldConfig, newConfig);
-	let y = yaml.dump(Session.config);
-	fs.writeFileSync(configFile, y, 'utf8');
-	res.json(Session.config);
 });
 
 //#region socket io
@@ -408,7 +393,7 @@ app.post('/postNewTable', (req, res) => {
 	let fen = req.body.fen;
 	console.log('<== post newTable',id)
 	saveTable(id,req.body);
-	emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),fen:fen});
+	emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
 	res.json('table posted successfully!');
 });
 

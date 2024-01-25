@@ -1,14 +1,14 @@
-id: CaAHnMf0XpBTY1J9db2m
+id: YnLH26Z0jC4eETf5R_oi
 fen:
-  id: CaAHnMf0XpBTY1J9db2m
-  owner: amanda
+  id: YnLH26Z0jC4eETf5R_oi
+  owner: mac
   players:
     felix:
       name: felix
       color: '#1f8fff'
       icon: felix
       civ: arabia
-      level: king
+      level: emperor
       military: 0
       stability: 0
       food: 2
@@ -46,7 +46,7 @@ fen:
       color: '#2e8a56'
       icon: amanda
       civ: rome
-      level: emperor
+      level: king
       military: 0
       stability: 0
       food: 2
@@ -79,75 +79,116 @@ fen:
         - stability:3
         - stability:3
         - stability:3
+    mac:
+      name: mac
+      color: '#901eb3'
+      icon: mac
+      civ: poland
+      level: king
+      military: 0
+      stability: 0
+      food: 3
+      stone: 5
+      gold: 5
+      vp: 3
+      workers: 5
+      book: 0
+      cards:
+        - a
+        - b:temple
+        - b:forge
+        - m:axeman
+        - b:quarry
+        - d:0
+        - w
+        - c
+        - w
+        - w
+        - w
+        - w
+        - w
+        - w
+      extraWorkers:
+        - food:3
+        - food:3
+        - food:3
+        - food:3
+        - stability:3
+        - stability:3
+        - stability:3
+        - stability:3
   playerNames:
     - felix
     - amanda
-  numPlayers: 2
+    - mac
+  numPlayers: 3
   age: 1
   events:
-    - qin_unification
-    - aryan_migration
-    - yello_turban_rebellion
-    - pax_romana
-    - taoism
-    - attila
-    - shang_oracle_bones
-    - assyrian_deportations
-    - bread_and_games
-    - sea_peoples
     - rigveda
+    - shang_oracle_bones
+    - qin_unification
+    - pax_romana
+    - yello_turban_rebellion
+    - sea_peoples
+    - bread_and_games
+    - taoism
+    - aryan_migration
     - hellenism
+    - assyrian_deportations
+    - attila
   progressCards:
-    - forum
-    - buddha
-    - granary
-    - hyksos_invasion
-    - lyceum
-    - confucian_academy
-    - parthian_wars
+    - map_making
+    - warring_states
+    - praetorian_guard
+    - macedonia
+    - the_oracle
+    - petra
+    - archer
+    - hindu_kush
     - qin_shi_huang
-    - siege_of_troy
-    - milvian_bridge
-    - solomons_temple
+    - nubia
+    - the_bible
+    - sun_tzu
     - hanging_gardens
-    - iron_working
-    - siwa_oasis
+    - gaul
+    - the_pillar_of_hercules
+    - armenia
+    - immortal
+    - forge
+    - saint_augustine
+    - trireme
+    - synagogue
+  market:
+    - hatshepsut
+    - babylonia
+    - punic_wars
+    - coinage
+    - siege_of_troy
     - israel
     - library
     - silk
-    - hoplite
-    - wars_of_alexander
-    - chariot
-    - forge
-  market:
-    - boudica
-    - petra
-    - battle_of_kadesh
-    - gaul
-    - armenia
-    - warring_states
-    - crossing_the_alps
-    - hypatia
-    - archer
-    - city_wall
-    - mahabharata
-    - the_oracle
-    - immortal
-    - coinage
     - lighthouse
-    - the_bible
-    - mount_kailash
-    - hunnic_invasions
-    - hannibal
-    - stonehenge
+    - crossing_the_alps
+    - siege_of_alesia
+    - elephant
+    - aqueduct
+    - mount_ararat
+    - pagoda
+    - sphinx
+    - legionary
     - pyramids
+    - hypatia
+    - great_library
+    - boudica
   plorder:
-    - amanda
+    - mac
     - felix
+    - amanda
   round: 1
   phase: growth
   turn:
     - felix
     - amanda
+    - mac
 game: nations
-friendly: duel of Banjul
+friendly: battle of Port Moresby
