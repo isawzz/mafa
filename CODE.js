@@ -1,3 +1,30 @@
+app.post('/postUserChange', (req, res) => {
+	console.log('<== post userChange')
+	let x=req.body;
+	let oldname = x.oldname;
+	let newname = x.newname;
+	if (isdef(ClientIdByUsername[newname])) {
+		//kann nicht mit selben namen in 2 verschiedenen
+	}
+	let id = ClientIdByUsername[oldname];
+
+	console.log(':::SOCK user change:', x, id);
+	UsernameByClientId[id] = x.newname;
+	ClientIdByUsername[x.newname] = id;
+	let old = ClientIdByUsername[x.oldname];
+	if (old == id) delete ClientIdByUsername[x.oldname];
+	io.emit('userChange', `${id} is now ${x.newname}`);
+	let name = req.body.name;
+	let data = req.body;
+	if (nundef(data.icon)) data.icon = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
+
+	//console.log('data', data)
+	let fname = path.join(dbDirectory, 'users.yaml');
+	lookupSetOverride(Session, ['users', name], data);
+	let y = yaml.dump(Session.users);
+	fs.writeFileSync(fname, y, 'utf8');
+	res.json(data);
+});
 
 //#region nations
 function selectAddItems(items, callback = null, instruction = null, min = 0, max = 100, prevent_autoselect = false) {

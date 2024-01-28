@@ -41444,7 +41444,10 @@ function mClassToggle(d, classes) {
   d = toElem(d);
   for (const c of wlist) if (d.classList.contains(c)) mClassRemove(d, c); else mClass(d, c);
 }
-function mClear(d) { clearElement(toElem(d)); }
+function mClear(d) { 
+  //clearElement(toElem(d)); }
+  toElem(d).innerHTML='';
+}
 function mColFlex(dParent, chflex = [1, 5, 1], bgs) {
   let styles = { opacity: 1, display: 'flex', aitems: 'stretch', 'flex-flow': 'nowrap' };
   mStyle(dParent, styles);

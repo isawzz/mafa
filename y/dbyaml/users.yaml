@@ -42,3 +42,7 @@ guest:
   name: guest
   color: '#777777'
   icon: guest
+fe_ox:
+  name: fe_ox
+  color: '#663399'
+  icon: unknown_user

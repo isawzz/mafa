@@ -24,30 +24,15 @@ function sockGetDeleteTable(x){
 	console.log('::SOCK deleted table:',id);
 	console.log('... new table:',tables.find(x=>x.id == fen.id));
 
-	//wenn dieser user im play menu ist und ein spieler in dem spiel, dann wird das spiel jetzt geladen
-	//sonst passiert garnix!
-	let name=U.name;
-	if (Clientdata.lastMenu == 'play' && fen.turn.includes(name)){
-		Clientdata.fen = fen;
-		Clientdata.lastTable = fen.id;
-		natGameView(fen,getActivePlayer(fen));
-	}
+	//TODO: if this user is in play menu and currently playing on a table that has been deleted, go back to tables list! and send message!
 }
 function sockGetNewTable(x){
 	let table = x.table;
 	let tables = x.tables;
 	Serverdata.tables = tables;
 	console.log('::SOCK new table:',table);
-	//console.log('... new table:',tables.find(x=>x.id == fen.id));
 
-	//wenn dieser user im play menu ist und ein spieler in dem spiel, dann wird das spiel jetzt geladen
-	//sonst passiert garnix!
-	let name=U.name;
-	if (Clientdata.lastMenu == 'play' && fen.playerNames.includes(name)){
-		Clientdata.fen = fen;
-		Clientdata.lastTable = table;
-		natGameView(table.fen,getActivePlayer(fen));
-	}
+	//TODO: if this user is in play menu and part of new table, show table
 }
 function sockGetTurnUpdate(turn){
 	console.log('::SOCK turn:',turn);

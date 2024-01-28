@@ -6,7 +6,16 @@ async function test78_allcommands(){
 	await prelims();
 	//let fg=getCSSVariable('--fgButtonHover');	mDom('dMain',{fg:fg},{html:'HALOOOOOOOOOOOO'});	console.log('===>',fg);	console.log('bg',getThemeBg('dMain')); return;
 	//let elem=mBy('dNav');	console.log(':::',getStyleProp(elem, 'background-color'),getStyleProp(elem, 'background'));
-	onclickHome();
+	// await switchToMenu('home')
+	// console.log('logged in as',Clientdata.lastUser,'menu',Clientdata.lastMenu)
+	// await switchToUser(U.name == 'felix'?'amanda':'felix');
+	// console.log('logged in as',Clientdata.lastUser,'menu',Clientdata.lastMenu)
+	// await switchToMenu('play');
+	// await switchToTable('Roseau');
+	// await switchToUser(U.name == 'felix'?'amanda':'felix');
+
+	//showMessage('HALLO!')
+
 }
 async function test77_showTables(){
 	await prelims();
@@ -15,45 +24,6 @@ async function test77_showTables(){
 
 	await showTables(); return;
 }
-async function showTables(){
-	Clientdata.table=null;
-  Serverdata.tables = tables = await mGetRoute('tables');
-  console.log('tables',tables);
-	tables.map(x=>x.prior=x.turn.includes(U.name)?1:x.players.includes(U.name)?2:3);
-	sortBy(tables,'prior');
-	
-  let dParent = mDom('dMain', {}, {className:'section'}); 
-	//return;
-  // let d2 = mDiv('dMain', {}, {className:'section',id:'dGames'}); //, bg: 'white' })
-	if (isEmpty(tables)) { mText('no active game tables', dParent); return []; }
-
-	tables.map(x => x.game_friendly = capitalize(x.game));
-	mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
-	let t = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'players'], 'tables', false);
-
-	mTableCommandify(t.rowitems, {
-		0: (item, val) => hFunc(val, 'onclickTable', item.o.id, item.id),
-	});
-
-	let d = iDiv(t);
-	for (const ri of t.rowitems) {
-		let r = iDiv(ri);
-		if (ri.o.prior == 1) mDom(r,{},{tag:'td',html:get_waiting_html(24)}); //'my turn!'});
-		let h = hFunc('delete', 'deleteTable', ri.o.friendly);
-		c = mAppend(r, mCreate('td'));
-		c.innerHTML = h;
-	}
-
-
-}
-async function showTable(table,name){
-	//im moment 
-	console.log('showTable',table)
-	if (table.game == 'nations'){ await natGameView(table.fen,name)}
-	else showFleetingMessage('NOT IMPLEMENTED')
-}
-async function onclickTable(id){	switchToTable(id);}
-
 async function test76_simplestuff(){
 	await prelims();
 	await switchToUser('mac');
@@ -90,6 +60,7 @@ async function natCreateGame(){
 }
 async function natGameView(fen,plname){
 
+	clear_timeouts();
 	natTitle();
 	await natPresent(fen,plname);
 
@@ -354,6 +325,7 @@ async function prelims() {
 		dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
 
 		await switchToUser(localStorage.getItem('username'));  //danach ist U IMMER gesetzt!!!!
+		await switchToMenu('home')
 
 		//showChatWindow();
 

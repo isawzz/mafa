@@ -1,4 +1,3 @@
-
 //#region nat
 function approx(n, goal, delta) { return Math.abs(n - goal) <= delta; }
 function allDarkPoints(ctx, w, dims) {
@@ -918,49 +917,7 @@ function pixTest90(ctx, y, x1, x2) {
 	for (let x = x2 - 2; x <= x2 + 2; x++) if (isPixDark(ctx, x, y)) x2ja = true;
 	return x1ja && x2ja; // isPixDark(ctx,x1,y) && isPixDark(ctx,x2,y)
 }
-
-
-async function rest() {
-
-	//fuer start suche: #D8BEAF rgb(215,189,174), D5BFB2 rgb(214,192,179), D3BDAF = rgb(208,189,174)
-	// let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, { r: 215, g: 189, b: 174 }, 10, 10);
-	let corner2 = findSimPixLineHor(ctx, 5, 90, 5, 80, '#a18b81', 6, 14);
-	if (!corner2) { console.log('no start!!!!'); img.style.display = 'none'; return null; }
-
-	drawPixFrame(ctx, corner2.x, corner2.y, 'green', 7);
-	let [x, y1, cgoal] = [corner2.x, corner2.y, { r: 167, g: 158, b: 151 }]; //colorRGB('#a18b81', true)];
-	let result;
-	for (let y = y1; y < y1 + 10; y++) {
-		result = findSimPixXSequence(ctx, x, w, y,
-			[{ r: 167, g: 158, b: 151 }, { r: 220, g: 216, b: 213 }, { r: 167, g: 158, b: 151 }],
-			[0, 8, 50], 15)
-		//console.log('result', result);
-
-		if (result) { result.map(o => drawPixFrame(ctx, o.x, o.y, 'red', 7)); break; }
-	}
-	img.style.display = 'none';
-	return result;
-}
-function rest() {
-	//544744
-	result = findPixels(ctx, 10, w, 0, h, [
-		{ c: '#544744', cond: (pt, prev) => isColorBefore(ctx, pt.x, pt.y, '#DDD3CA', 15) }, // && isColorBefore(ctx, pt.x, pt.y, '#D8D0CD',15) },
-		{ c: '#544744', cond: condDarkEdgesVertical },
-	], 20);
-
-	// result = findPixels(ctx, 10, w, 10, h, [
-	// 	{ c: '#A6938D', cond: (pt, prev) => isColorAfter(ctx, pt.x, pt.y, '#FAF6FA',15) }, // && isColorBefore(ctx, pt.x, pt.y, '#D8D0CD',15) },
-	// 	{ c: '#A6938D', cond: (pt, prev) => isColorBefore(ctx, pt.x, pt.y, '#FAF6FA',15)},
-	// 	//{c:'#FAF6FA',cond:(pt,prev)=>approx(pt.x,arrLast(prev).x,8)},
-	// 	// { c: '#a59187', cond: (pt, prev) => approx(pt.x - prev[0].x, 46, 4) }],
-	// ], 20);
-	console.log('...', result)
-	img.remove();
-}
-
-
-
-
+//#endregion
 
 function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);
@@ -1176,6 +1133,14 @@ async function loadUserdata(uname) {
   if (!data) { data = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
   else Serverdata.users[uname] = data;
   return data;
+}
+function mAppearH(d,h,ms,callback,delay=0){
+  //mStyle(d,{fg:getThemeFg(),h:mGetStyle(d,'height')}); console.log('fading!',d,d.style.height);
+
+  mAnimateList(d, { height: 0, opacity: 0 }, () => { mClear(d); if (callback) callback(); }, ms, 'ease-out', delay);
+
+  // return mAnimateTo(d, 'height', 0, () => { mClear(d); if (callback) callback(); }, ms, 'ease-out');//, delay = ms/2);
+
 }
 function mCropper(dParent, img, dButtons) {
 	let [worig, horig] = [img.offsetWidth, img.offsetHeight];
@@ -1523,6 +1488,14 @@ function mCropResizer(dParent, img, dButtons) {
 		setSize: setSize,
 		tool: tool,
 	}
+}
+function mFadeHClear(d,ms,callback,delay=0){
+  mStyle(d,{fg:getThemeFg(),h:mGetStyle(d,'height')}); console.log('fading!',d,d.style.height);
+
+  mAnimateList(d, { height: 0, opacity: 0 }, () => { mClear(d); if (callback) callback(); }, ms, 'ease-out', delay);
+
+  // return mAnimateTo(d, 'height', 0, () => { mClear(d); if (callback) callback(); }, ms, 'ease-out');//, delay = ms/2);
+
 }
 function mFlexLine(d, bg = 'white', fg = 'contrast') {
 	mStyle(d, { bg: bg, fg: fg, display: 'flex', valign: 'center', hmin: measureHeight(d) });
