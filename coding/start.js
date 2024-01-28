@@ -18,7 +18,7 @@ async function start() {
 	let text,css,project;
 	let glitches = ['startsWith', 'endsWith'];
 	text = '<please call closureFromProject>', css='';
-	[text, css, project] = await closureFromProject('combufull', glitches, ['downloadAsText','onclickColors','onclickSchedule','onclickView','onclickAdd']); 
+	[text, css, project] = await closureFromProject('combu', glitches, ['downloadAsText','onclickColors','onclickSchedule','onclickView','onclickAdd']); 
 	// [text, css, project] = await closureFromProject('coding', glitches, ['downloadAsText']); 
 	// [text, css, project] = await closureFromProject('spiel', glitches); 
 	// [text, css, project] = await closureFromProject('testa', glitches); 

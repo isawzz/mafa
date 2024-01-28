@@ -1,7 +1,17 @@
 onload = start;
 
-async function start() { test78_allcommands(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+async function start() { test100_odf(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
 
+async function test100_odf(){
+	Serverdata = await mGetRoute('session'); //session ist: users,config,
+	Info = await mGetYaml('../assets/info.yaml');
+	await loadCollections();
+	loadPlayerColors();
+	sockInit();
+
+	console.log('M',M,'\nServerdata',Serverdata,'\nClientdata',Clientdata,'\nDA',DA,Session,TO,window.TO)
+
+}
 async function test78_allcommands(){
 	await prelims();
 	//let fg=getCSSVariable('--fgButtonHover');	mDom('dMain',{fg:fg},{html:'HALOOOOOOOOOOOO'});	console.log('===>',fg);	console.log('bg',getThemeBg('dMain')); return;
