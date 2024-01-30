@@ -1,6 +1,6 @@
 onload = start;
 
-async function start() { test100_odf(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
+async function start() { test73_game(); } //test70_game(); } //natCardsFinalProcessing(); } //test69_event(); } 
 
 async function test100_odf(){
 	Serverdata = await mGetRoute('session'); //session ist: users,config,

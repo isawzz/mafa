@@ -18,7 +18,20 @@ async function start() {
 	let text,css,project;
 	let glitches = ['startsWith', 'endsWith'];
 	text = '<please call closureFromProject>', css='';
-	[text, css, project] = await closureFromProject('combu', glitches, ['downloadAsText','onclickColors','onclickSchedule','onclickView','onclickAdd']); 
+	text = await combineFromProject('../combu');
+
+	let globlist = await codeParseFile('../basejs/allghuge.js');
+	console.log('globlist',globlist);
+	let globsused=[];
+	for(const o of globlist){
+		let k=o.key;
+		if (text.includes(k)) globsused.push(o)
+	}
+	console.log('globsused',globsused);
+	let globtext = globsused.map(x=>x.code).join('\r\n');
+	downloadAsText(globtext,'globs','js');
+	
+	//[text, css, project] = await closureFromProject('combu', glitches, ['downloadAsText','onclickColors','onclickPlan','onclickCollection','onclickPlay','onclickNATIONS','onclickHome']); 
 	// [text, css, project] = await closureFromProject('coding', glitches, ['downloadAsText']); 
 	// [text, css, project] = await closureFromProject('spiel', glitches); 
 	// [text, css, project] = await closureFromProject('testa', glitches); 
@@ -29,10 +42,22 @@ async function start() {
 	// cssFromFiles(files, dir = '', types = ['root', 'tag', 'class', 'id', 'keyframes'])
 	//downloadAsText(css,'final','css');
 
-	//AU.ta.value = text; 
-	AU.ta.value = project; //if want only functions not in allfhuge.js!
+	AU.ta.value = text; 
+	//AU.ta.value = project; //if want only functions not in allfhuge.js!
 	AU.css.value = css; 
 
+}
+async function combineFromProject(project){
+	let files = await mGetFiles(`${project}`);
+	files = files.filter(x=>x.endsWith('js'));
+	//eliminiere test.js und app.js
+	files = files.filter(x=>!x.startsWith('test') && !x.startsWith('app.'));
+	files = files.map(x=>`../${project}/${x}`);
+	//console.log('files',files); return;
+	//let files = projectList.map(x=>`../${x}/closure.js`);
+	let [globtext, functext, functextold] = await codebaseFromFiles2(files);
+	//downloadAsText(globtext,'globs','js');
+	return functext;
 }
 
 async function combineClosures(projectList){

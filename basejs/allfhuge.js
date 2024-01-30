@@ -51991,7 +51991,7 @@ function processData(data) {
   G.phase = G.serverData.phase;
   processTable(data);
   processPlayers(data);
-  if (!S_useSimpleCode) updateCollections();
+  if (!S_useSimpleCode) collectAddUploadedImages();
   processLog(data);
   if (processEnd(data)) return;
   if (!processActions(data)) { processWaitingFor(); }
@@ -71113,7 +71113,7 @@ function updateBubbleColors(e) {
   const b = x <= y ? y - x : 0;
   container.style.setProperty('--colorEnd', `rgb(${r},${g},${b})`);
 }
-function updateCollections() {
+function collectAddUploadedImages() {
   S.settings.collectionTypes = { playerProps: ['hand', 'devcards'], objectProps: ['neutral'] };
   _updateCollections(G.playersUpdated, G.playersAugmented, S.settings.collectionTypes.playerProps);
   _updateCollections(G.tableUpdated, G.table, S.settings.collectionTypes.objectProps);

@@ -9,6 +9,7 @@
   ],
   "exclude": [
     "coding",
+    "combu",
     "node_modules",
     "_unused",
     "flask",
