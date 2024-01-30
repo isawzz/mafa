@@ -6,8 +6,13 @@ async function test0(){
 	//keep it simple!
 	await prelimsFast();
 
-	//ich hab schon die nations cards. was macht das load nations?
-
+	//jetzt kommt die UI dran!
+	//modular waer besser: menuAdd,menuRemove, menuEnable,menuDisable,menuActivate,menuClose
+	//eine menubar hat 3 bereiche: r,m,l
+	let nav = UI.nav = mDom('dNav', { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+	
+ 
+	//showNavbar();
 }
 
 async function prelimsFast(){
@@ -25,7 +30,7 @@ async function prelimsFast(){
 
 	let t3 = performance.now();
 
-	M = await mGetYaml('../odf/mnew.yaml');
+	M = await mGetYaml('../odf/mnew.yaml'); //mnew includes natLoadAssets and c52!
 
 	let t4 = performance.now();
 	sockInit();
