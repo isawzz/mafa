@@ -71,7 +71,7 @@
 	"phpfmt.cakephp": true,
 	"liveServer.settings.CustomBrowser": "chrome",
 	"liveServer.settings.fullReload": true,
-	"liveServer.settings.port": 5501,
+	"liveServer.settings.port": 5500,
 	"liveServer.settings.useWebExt": true,
 	// "liveServer.settings.proxy": {
 	// 	"enable": true,

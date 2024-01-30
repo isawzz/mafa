@@ -6,10 +6,23 @@ async function test0(){
 	//keep it simple!
 	await prelimsFast();
 
+	//showNavbar(); return;
+
 	//jetzt kommt die UI dran!
 	//modular waer besser: menuAdd,menuRemove, menuEnable,menuDisable,menuActivate,menuClose
 	//eine menubar hat 3 bereiche: r,m,l
-	let nav = UI.nav = mDom('dNav', { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+	// nav:  dNav, 'dNav', 
+	//nav koennte sein {div:mBy('dNav'), }
+	//let titles = ['add', 'collections', 'NATIONS', 'plan', 'play', 'colors'];
+
+	let nav = mDom('dNav', { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+  let stflex = { gap: 10, display: 'flex', 'align-items': 'center' };
+  let [l,m,r] = [mDom(nav, stflex), mDom(nav, stflex), mDom(nav, stflex)];
+
+	menuAdd(l,'home')
+
+	UI.nav={div:nav,dLeft:l,dMiddle:m,dRight:r};
+
 	
  
 	//showNavbar();
