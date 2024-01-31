@@ -1,34 +1,30 @@
 onload = start;
 
-async function start() { test0(); } 
+async function start() { test0(); }
 
-async function test0(){
-	//keep it simple!
+async function test0() {
 	await prelimsFast();
 
-	//showNavbar(); return;
+	//brauch einen user damit menus funktionieren!
 
-	//jetzt kommt die UI dran!
-	//modular waer besser: menuAdd,menuRemove, menuEnable,menuDisable,menuActivate,menuClose
-	//eine menubar hat 3 bereiche: r,m,l
-	// nav:  dNav, 'dNav', 
-	//nav koennte sein {div:mBy('dNav'), }
-	//let titles = ['add', 'collections', 'NATIONS', 'plan', 'play', 'colors'];
+	let commands = {};
+	let [l,m,r] = mMenuLMR('dNav');
+	commands.home = mCommand(l, 'home', 'HOME', showDashboard, clearMain);
+	commands.colors = mCommand(l, 'colors', null, onclickColors, clearMain);
+	commands.collections = mCommand(l, 'collections', null, onclickCollections, clearMain);
+	commands.play = mCommand(l, 'play', null, showTables, clearMain);
+	commands.user = mCommand(r, 'user', null, onclickUser);
+	console.log(commands)	
 
-	let nav = mDom('dNav', { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
-  let stflex = { gap: 10, display: 'flex', 'align-items': 'center' };
-  let [l,m,r] = [mDom(nav, stflex), mDom(nav, stflex), mDom(nav, stflex)];
+	//each command needs open,close
 
-	menuAdd(l,'home')
 
-	UI.nav={div:nav,dLeft:l,dMiddle:m,dRight:r};
 
-	
- 
 	//showNavbar();
 }
 
-async function prelimsFast(){
+
+async function prelimsFast() {
 	let t1 = performance.now();
 	Serverdata = await mGetRoute('session'); //session ist: users,config,
 
@@ -50,9 +46,9 @@ async function prelimsFast(){
 	let t5 = performance.now();
 
 	//downloadAsYaml(M,'mnew');
-	for(s of 'Clientdata DA Items M Serverdata Session Socket TO U UI Z'.split(' ')) conslog(s)
+	// for (s of 'Clientdata DA Items M Serverdata Session Socket TO U UI Z'.split(' ')) conslog(s)
 
-	console.log(`session:${Math.round(t2-t1)} \nload:${Math.round(t3-t2)} \nfast load:${Math.round(t4-t3)} \nsock:${Math.round(t5-t4)}`)
-	console.log(`total prelims time:${Math.round(t5-t1)}`);
+	// console.log(`session:${Math.round(t2 - t1)} \nload:${Math.round(t3 - t2)} \nfast load:${Math.round(t4 - t3)} \nsock:${Math.round(t5 - t4)}`)
+	// console.log(`total prelims time:${Math.round(t5 - t1)}`);
 
 }

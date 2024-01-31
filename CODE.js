@@ -1,3 +1,48 @@
+//#region odf
+async function test0() {
+	//keep it simple!
+	await prelimsFast();
+
+	//showNavbar(); return;
+
+	//jetzt kommt die UI dran!
+	//modular waer besser: menuAdd,menuRemove, menuEnable,menuDisable,menuActivate,menuClose
+	//eine menubar hat 3 bereiche: r,m,l
+	// nav:  dNav, 'dNav', 
+	//nav koennte sein {div:mBy('dNav'), }
+	//let titles = ['add', 'collections', 'NATIONS', 'plan', 'play', 'colors'];
+	// ['home','calendar','colors','play','coll','collNew','collDelete','collMove','collCopy','collRemoveCat','collAddCat','collView']
+	// UI.commands = {
+	// 	home: {},
+	// 	colors: {},
+	// 	collections: {},
+	// 	play: {},
+	// };
+	// UI.menus = {
+	// 	nav: { div: 'dNav',  },
+	// 	collections: {}
+	// }
+	let commandlist = ['home', 'colors', 'collections', 'play', 'user'];
+	let commands = {};
+	let [l,m,r] = mMenuLMR('dNav');
+
+	commands.home = mCommand(l, 'home', 'HOME', showDashboard, clearMain);
+	commands.colors = mCommand(m, 'colors', null, onclickColors, clearMain);
+	commands.home = mCommand(m, 'collections', null, onclickCollections, clearMain);
+	commands.home = mCommand(m, 'play', null, showTables, clearMain);
+	commands.home = mCommand(r, 'user', null, onclickUser);
+	
+
+	//each command needs open,close
+
+
+
+	//showNavbar();
+}
+
+
+//#region app postUserChange
+
 app.post('/postUserChange', (req, res) => {
 	console.log('<== post userChange')
 	let x=req.body;
@@ -25,6 +70,7 @@ app.post('/postUserChange', (req, res) => {
 	fs.writeFileSync(fname, y, 'utf8');
 	res.json(data);
 });
+//#endregion
 
 //#region nations
 function selectAddItems(items, callback = null, instruction = null, min = 0, max = 100, prevent_autoselect = false) {

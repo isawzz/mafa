@@ -1193,7 +1193,7 @@ async function natCardsFinalProcessing(){
   let path='y/nat/cards1/';
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); 
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   for(const k in M.natCards){
     let card = M.natCards[k];
     let [age,type]=[card.age,card.Type];
@@ -1228,7 +1228,7 @@ async function natCardsFinalProcessing(){
 async function natCardsKleinereCard() {
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
   let dims = {
     advisor: { diffleft: 91, diffright: 148, dx: 150, y: 75, xmin: 80, top: 91, bot: 151 },
@@ -1268,7 +1268,7 @@ async function natCardsKleinereCard() {
 async function natCardsManual() {
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
   let di = {second_boer_war:'right',opium_war:'right',balkan_wars:'right', antikythera_mechanism:'left',uluru:null,mount_kailash:null,terracotta_army: 'top', uraniborg: 'left', great_barrier_reef: 'right', hawaii:'left' };
   let list=Object.keys(di);
@@ -1331,7 +1331,7 @@ async function natCardsSaveType(type) {
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
   list = Object.keys(M.natCards).filter(ck => M.natCards[ck].Type == type && M.natCards[ck].age > 0)
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
   mDom(dParentBad, { h: 10 });
   let dims = {
@@ -1391,7 +1391,7 @@ async function natCardsTester() {
   let list = rChoose(Object.keys(M.natCards).filter(ck => M.natCards[ck].Type != 'event'), 6);
   list = Object.keys(M.natCards).filter(ck => M.natCards[ck].Type == 'battle' && M.natCards[ck].age > 0)
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
   mDom(dParentBad, { h: 10 });
   let dims = {
@@ -1449,7 +1449,7 @@ async function natCardsTester() {
 async function natCardsWrongFormatAberIntact() {
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
   let dims = {
     advisor: { diffleft: 91, diffright: 148, dx: 150, y: 75, xmin: 80, top: 91, bot: 151 },
@@ -2105,7 +2105,7 @@ async function prelims() {
     loadPlayerColors();
     showNavbar();
     sockInit();
-    dTitle = mDom('dPageTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+    dTitle = mDom('dTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
     await switchToUser(localStorage.getItem('username'));  //danach ist U IMMER gesetzt!!!!
     await switchToMenu('home')
   }
@@ -2259,7 +2259,7 @@ function showChatWindow() {
   });
 }
 async function showDashboard(){
-  mClear('dMain');mClear('dPageTitle');
+  mClear('dMain');mClear('dTitle');
   mDom('dMain',{fg:getThemeFg()},{html:`hi, ${U.name}! this is your dashboard`})
 }
 function showEventOpen(id) {
@@ -2390,8 +2390,8 @@ async function showTables(){
   }
 }
 function showTitle(title) {
-  mClear(dTitle);
-  mDom(dTitle, {}, { tag: 'h1', html: title, classes: 'title' });
+  mClear('dTitle');
+  mDom('dTitle', {}, { tag: 'h1', html: title, classes: 'title' });
 }
 function showUser() {
   mClear(dUser);
@@ -2512,7 +2512,7 @@ async function test100_odf(){
 async function test69_event() {
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); return;
   let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
   let di = {second_boer_war:'right',opium_war:'right',balkan_wars:'right', antikythera_mechanism:'left',uluru:null,mount_kailash:null,terracotta_army: 'top', uraniborg: 'left', great_barrier_reef: 'right', hawaii:'left' };
   let list=Object.keys(di);
@@ -2586,7 +2586,7 @@ async function test71_civDetect(){
   let dciv=mDom('dMain');
   let img=await loadImageAsync(`../assets/games/nations/civs/civ_${player.civ}.png`, mDom(dciv, {position:'absolute'}, { tag: 'img' }));
   let [wImg, hImg] = [img.width, img.height]; 
-  let dParentBad = toElem('dPageTitle');
+  let dParentBad = toElem('dTitle');
   let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
   let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
   ctx1.drawImage(img, 0, 0, wImg, hImg);
