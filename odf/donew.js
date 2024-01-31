@@ -4,7 +4,7 @@ function mCommand(dParent, key, html, open,close) {
 	if (nundef(open)) open = window[`onclick${html}`];
 	if (nundef(close)) close=()=>{console.log('close',key)}
 	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
-	let a = mDom(d, {}, { tag: 'a', href: '#', html: html, className: 'nav-link', onclick: open })
+	let a = mDom(d, {}, { key: key, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: open })
 
 	return {dParent,div:d,key,open,close};
 }
