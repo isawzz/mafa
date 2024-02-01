@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>dialog Modal</title>
+	<style>
+		.dialog1 {
+			position: fixed;
+			padding: 12px;
+			margin: 0;
+			box-sizing: border-box;
+			/* top:50%;
+			left:50%; 
+			transform: translate(-50%, -50%); */
+			/* translate: -50%, -50%; scheint in chrome nicht zu gehen!!! */
+
+			/* top:30px;
+			right:0; */
+			width: 100%;
+			top: 40px;
+			left: 0px;
+			background: transparent;
+			border-radius: 12;
+			border: none;
+			z-index: 10;
+
+		}
+
+		dialog {
+			padding: 0;
+			margin: 0;
+			border: none;
+			box-shadow: none;
+			background-color: transparent;
+			overflow: visible;
+			color: inherit;
+			font: inherit;
+			font-size: 1em;
+			font-family: inherit;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- <button data-open-modal>Open</button>
+	<div data-overlay class='overlay'></div>
+	<dialog data-modal class='modal'>
+		<div style="background:silver;display:inline-block;padding:12px;box-sizing:border-box">
+			<div>enter color:</div>
+			<input type="text"><br>
+			<button data-close-modal>Close</button>
+		</div>
+	</dialog> -->
+
+	<script src="../basejs/allghuge.js"></script>
+	<script src="../basejs/allfhuge.js"></script>
+	<script src="../modal/start.js"></script>
+</body>
+
+</html>

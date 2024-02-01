@@ -1,15 +1,23 @@
 onload = start;
 
-async function start() { test0(); }
+async function start() { test1_modal(); }
 
+async function test1_modal(){
+
+	let d=document.body;
+	mClear(d);
+	let d1=mDom(d,{position:'absolute',top:0,left:0,bg:'silver',w:300,h:200});
+	openDialog(d1)
+
+	//let res = await mModal('Enter username');
+}
 async function test0() {
 	await prelimsFast();
 
 	showNavbar();
 
 	//jetzt brauch ich einen user!!!!
-	await switchToUser('felix')
-
+	//await switchToUser('felix')
 
 
 

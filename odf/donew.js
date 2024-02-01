@@ -51,8 +51,8 @@ function mMenu(dParent,key) {	let [d,l,m,r]=mLMR(dParent);	return {dParent,elem:
 function onclickCommand(ev){
 	let key = evToAttr(ev,'key');
 	console.log('click command',key)
+	assertion(isdef(UI[key]),`command ${key} not in UI!!!`)
 	let cmd = UI[key];
-	console.log(key,cmd)
 	cmd.open();
 }
 function onclickMenu(ev){

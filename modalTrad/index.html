@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Traditional Modal</title>
+	<style>
+		.overlay{
+			display:none;
+			position:fixed;
+			inset:0;
+			background:rgba(0,0,0,.5);
+			z-index:9;
+		}
+		.modal.open,
+		.overlay.open{
+			display:block;
+		}
+		.modal{
+			display:none;
+			position:fixed;
+			padding:12px;
+			/* top:50%;
+			left:50%; 
+			transform: translate(-50%, -50%); */
+			/* translate: -50%, -50%; scheint in chrome nicht zu gehen!!! */
+			
+			/* top:30px;
+			right:0; */
+
+			top:40px;
+			left:12px;
+			background: silver;
+			border-radius: 12;
+			z-index:10;
+
+		}
+	</style>
+</head>
+<body>
+	<button data-open-modal>Open</button>
+	<div data-overlay class='overlay'></div>
+	<div data-modal class='modal'>
+		<div>enter username:</div>
+		<input type="text"><br>
+		<button data-close-modal>Close</button>
+	</div>
+	
+	<script src="../basejs/allghuge.js"></script>
+	<script src="../basejs/allfhuge.js"></script>
+	<script src="../modalTrad/start.js"></script>
+</body>
+</html>

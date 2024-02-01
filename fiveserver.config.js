@@ -1,5 +1,5 @@
 module.exports = {
-  watch: ['test0','basejs','combu','odf','was','coding'],
+  watch: ['test0','basejs','combu','odf','was','coding','modal','modalTrad'],
   ignore: 'y'
 
   // can also be an array:

@@ -1168,27 +1168,6 @@ async function mPostRoute(route, o = {}) {
     return 'ERROR 1';
   }
 }
-async function mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isAlphanumeric) {
-  return new Promise((resolve, reject) => {
-    mClear(dParent)
-    let d = mInput(dParent, { w: 100 }, 'inpPrompt', placeholder, 'input', 1);
-    d.focus();
-    d.onkeyup = ev => {
-      if (ev.key == 'Enter') {
-        let val = ev.target.value;
-        ev.target.remove();
-        if (cond(val)) {
-          resolve(val.toLowerCase().trim());
-        } else {
-          console.log('not a valid input => null');
-          resolve(null);
-        }
-      } else if (ev.key == 'Escape') {
-        resolve(null);
-      }
-    };
-  });
-}
 async function natCardsFinalProcessing(){
   let path='y/nat/cards1/';
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); 
