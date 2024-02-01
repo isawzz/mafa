@@ -21053,6 +21053,16 @@ function evToAttr(ev, attr) {
   let val=null;
   while(nundef(val) && isdef(elem)){
     val = elem.getAttribute(attr);
+    if (isdef(val)) return val;
+    elem = elem.parentNode;
+  }
+  return null;
+}
+function evToAttrElem(ev, attr) {
+  let elem = ev.target;
+  let val=null;
+  while(nundef(val) && isdef(elem)){
+    val = elem.getAttribute(attr);
     if (isdef(val)) return {val,elem};
     elem = elem.parentNode;
   }
@@ -41824,8 +41834,15 @@ function mDom(dParent, styles = {}, opts = {}) {
     classes: 'className',
     inner: 'innerHTML',
     html: 'innerHTML',
+    w: 'width',
+    h:'height',
   };
-  for (const opt in opts) { d[valf(aliases[opt], opt)] = opts[opt] };
+  for (const opt in opts) { 
+    let name=valf(aliases[opt], opt), val=opts[opt];
+    //id src width height seem to work with setAttribute
+    if (['style','tag','innerHTML','className'].includes(name) || name.startsWith('on')) d[name]=val;
+    else d.setAttribute(name,val); 
+  }
   mStyle(d, styles);
   return d;
 }

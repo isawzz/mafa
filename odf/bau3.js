@@ -21,4 +21,4 @@ function menuDisable(key){}
 function menuActivate(key){
 
 }
-function menuClose(key){}
+function menuCloseCurrent(key){}

@@ -7,10 +7,10 @@
 	--bgDarker: dimgray;
 	--fgButton: white;
 	--fgButtonDisabled: gray;
-	--fgButtonHover: red;
+	--fgButtonHover: yellow;
 	--fgButtonActive: green;
-	--fgTitle: yellow;
-	--fgSubtitle: yellow;
+	--fgTitle: dimgray;
+	--fgSubtitle: silver;
 }
 
 

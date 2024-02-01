@@ -61,7 +61,7 @@ function addToolX(cropper, d) {
 }
 function arrRemoveDuplicates(arr) { return Array.from(new Set(arr)); }
 function buyProgressCard(ev) {
-  let o = evToAttr(ev, 'key');
+  let o = evToAttrElem(ev, 'key');
   console.log('player buys',o.val);
   o.elem.remove();
   let spot = M.selectedCivSpot
@@ -1924,7 +1924,7 @@ function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 async function onclickItem(ev) {
   evNoBubble(ev);
-  let o = evToAttr(ev, 'key');
+  let o = evToAttrElem(ev, 'key');
   if (!o) return;
   let [key, elem] = [o.val, o.elem];
   if (nundef(key)) { console.log('no key'); return; }
@@ -2014,10 +2014,6 @@ async function onclickUpload() {
   M.collections.sort();
   M.categories.sort();
   M.names.sort();
-}
-async function onclickUser() {
-  let uname = await mPrompt();
-  await switchToUser(uname);
 }
 async function onclickView() {
   showTitle('Collection:');
@@ -2481,23 +2477,6 @@ async function switchToMenu(menu) {
 async function switchToTable(id){
   let res = Clientdata.table = await mGetRoute('table',{id});
   await showTable(res,getUname())
-}
-async function switchToUser(uname) {
-  if (!isEmpty(uname)) uname = normalizeString(uname);
-  if (isEmpty(uname)) uname = 'guest';
-  sockPostUserChange(U ? U.name : '', uname); //das ist nur fuer die client id!
-  U = await getUser(uname);
-  Clientdata.lastUser = uname;
-  localStorage.setItem('username', uname);
-  showUser(uname);
-  let menu = Clientdata.lastMenu;
-  if (uname == 'guest'){await switchToMenu();UI.nav.disable('plan'); }
-  else {
-    UI.nav.enable('plan');
-    let t=Clientdata.table;
-    if (menu == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t,uname);
-    else await switchToMenu(menu);
-  }
 }
 function tabtitleUpdate(){
 }

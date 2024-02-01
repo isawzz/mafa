@@ -5,22 +5,14 @@ async function start() { test0(); }
 async function test0() {
 	await prelimsFast();
 
-	//brauch einen user damit menus funktionieren!
+	showNavbar();
 
-	let commands = {};
-	let [l,m,r] = mMenuLMR('dNav');
-	commands.home = mCommand(l, 'home', 'HOME', showDashboard, clearMain);
-	commands.colors = mCommand(l, 'colors', null, onclickColors, clearMain);
-	commands.collections = mCommand(l, 'collections', null, onclickCollections, clearMain);
-	commands.play = mCommand(l, 'play', null, showTables, clearMain);
-	commands.user = mCommand(r, 'user', null, onclickUser);
-	console.log(commands)	
-
-	//each command needs open,close
+	//jetzt brauch ich einen user!!!!
+	await switchToUser('felix')
 
 
 
-	//showNavbar();
+
 }
 
 
