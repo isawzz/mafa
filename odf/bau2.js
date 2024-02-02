@@ -1,4 +1,4 @@
-function showNavbar() {
+function __showNavbar() {
   let titles = ['add', 'collections', 'NATIONS', 'plan', 'play', 'colors'];
   let funcNames = titles.map(x => `onclick${capitalize(x)}`);
   let nav = UI.nav = mNavbar('dNav');
