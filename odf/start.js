@@ -5,7 +5,7 @@ async function start() { test4(); }
 async function test4() {
 	await prelimsFast();
 
-	await switchToMenu(UI.nav,'plan');
+	await switchToMenu(UI.nav,'collections');
 	//await switchToUser();
 
 }

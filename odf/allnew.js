@@ -156,7 +156,7 @@ function collectionAddEmpty(ev) {
   addIf(M.collections, val);
   M.collections.sort()
   M.byCollection[val] = [];
-  initCollection(val);
+  collInit(val);
 }
 function colorHexToRgb(hex) {
   hex = hex.replace(/^#/, '');
@@ -647,36 +647,6 @@ async function imgToServer(canvas, path) {
   console.log('...postImage o', o)
   let resp = await mPostRoute('postImage', o);
   return resp; 
-}
-function initCollection(name) {
-  let list = [];
-  if (name == 'all' || isEmpty(name)) {
-    list = Object.keys(M.superdi);
-  } else if (isdef(M.byCollection[name])) {
-    list = M.byCollection[name];
-  } else return;
-  localStorage.setItem('collection', name)
-  mClear(dMenu);
-  let dParent = dMenu;
-  let colls = M.collections;
-  mDom(dParent, {}, { html: '' });
-  let dlColl = mDatalist(dParent, colls, { onupdate: collectionAddEmpty });
-  dlColl.inpElem.oninput = ev => initCollection(ev.target.value);
-  dlColl.inpElem.value = name;
-  initFilter(list);
-  mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
-  mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
-  M.keys = list;
-  M.index = 0;
-  showImageBatch();
-}
-function initFilter(list) {
-  M.masterKeys = list;
-  let cats = collectCats(list);
-  cats.sort();
-  mDom(dMenu, {}, { html: 'Filter:' });
-  let dlCat = mDatalist(dMenu, cats, { edit: false });
-  dlCat.inpElem.oninput = filterImages;
 }
 function instructionUpdate(){
 }
@@ -1853,21 +1823,6 @@ async function onclickAdd() {
   UI.imgColl = dl.inpElem;
   UI.imgName = inpName;
 }
-async function onclickCollections() {
-  showTitle('Collection:');
-  dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
-  let d1 = mDiv('dMain'); mFlex(d1);
-  M.rows = 5; M.cols = 7;
-  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
-  M.cells = [];
-  let bg = mGetStyle('dNav', 'bg');
-  for (let i = 0; i < M.rows * M.cols; i++) {
-    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
-    mCenterCenterFlex(d);
-    M.cells.push(d);
-  }
-  initCollection(valf(localStorage.getItem('collection'), 'animals'));
-}
 async function onclickColor(ev) {
   let c = ev.target.style.background;
   c = colorHex(c);
@@ -1993,7 +1948,7 @@ async function onclickView() {
     mCenterCenterFlex(d);
     M.cells.push(d);
   }
-  initCollection(valf(localStorage.getItem('collection'), 'animals'));
+  collInit(valf(localStorage.getItem('collection'), 'animals'));
 }
 async function ondropPreviewImage(url, key) {
   if (isdef(key)) {
@@ -2348,7 +2303,7 @@ async function showTables(){
 }
 function showTitle(title) {
   mClear('dTitle');
-  mDom('dTitle', {maleft:20}, { tag: 'h1', html: title, classes: 'title' });
+  return mDom('dTitle', {maleft:20}, { tag: 'h1', html: title, classes: 'title' });
 }
 function showUser() {
   mClear(dUser);
