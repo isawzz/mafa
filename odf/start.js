@@ -2,6 +2,20 @@ onload = start;
 
 async function start() { test3_modal(); }
 
+async function test4() {
+	await prelimsFast();
+
+	UI.nav = showNavbar();
+	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser);
+
+	//jetzt brauch ich einen user!!!!
+	//await switchToUser('felix')
+
+
+
+
+}
+
 async function test3_modal(){
 	await prelimsFast();
 

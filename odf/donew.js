@@ -81,6 +81,18 @@ function showNavbar() {
 	// console.log(commands)
 	UI.user = mCommand(nav.r, 'user', null, onclickUser);
 }
+function showNavbar() {
+	let nav = mMenu('dNav');
+	let commands = {};
+	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
+	commands.colors = menuCommand(nav.l, 'nav', 'colors', null, onclickColors, clearMain);
+	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, clearMain);
+	commands.play = menuCommand(nav.l, 'nav', 'play', null, showTables, clearMain);
+	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
+	nav.commands = commands;
+	// console.log(commands)
+	return nav;
+}
 async function switchToMenu(menu,key) { 
 	menuCloseCurrent(menu);
 	menuOpen(menu,key);
