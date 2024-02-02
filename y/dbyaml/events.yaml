@@ -16,3 +16,12 @@ f_1703145600000_1703168519450:
   user: felix
   shared: false
   subscribers: []
+y_1706774400000_1706850719880:
+  id: y_1706774400000_1706850719880
+  created: 1706850719880
+  day: '1706774400000'
+  time: ''
+  text: hallo
+  user: amanda
+  shared: false
+  subscribers: []

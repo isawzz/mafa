@@ -4,15 +4,15 @@ felix:
   icon: felix
 amanda:
   name: amanda
-  color: '#2e8a56'
+  color: '#f28cb2'
   icon: amanda
 max:
   name: max
-  color: '#808000'
+  color: '#2626d9'
   icon: unknown_user
 lauren:
   name: lauren
-  color: '#ffc400'
+  color: '#ada0ee'
   icon: lauren
 lili:
   name: lili

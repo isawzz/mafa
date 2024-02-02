@@ -1,4 +1,197 @@
 //#region odf
+async function onclickColors() {
+  showTitle('Set Color Theme');
+  let d = mDom('dMain', { hpadding: 20, display: 'flex', gap: '2px 4px', wrap: true });
+  let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
+  list = M.playerColors.concat(grays);
+  //let i = 0;
+  let sz=30;
+  //let w = Math.min(50, (window.innerWidth - 150) / 15);
+  for (const c of list) {
+    let dc = mDom(d, { w: sz, h: sz, bg: c, fg: idealTextColor(c) });
+    dc.onclick = onclickColor;
+    mStyle(dc, { cursor: 'pointer' });
+    //i++; if (i % 15 == 0) mDom(d, { w: '100%', h: 0 });
+  }
+}
+async function switchToUser(uname) {
+  if (!isEmpty(uname)) uname = normalizeString(uname);
+  if (isEmpty(uname)) uname = 'guest';
+  sockPostUserChange(U ? U.name : '', uname); //das ist nur fuer die client id!
+  U = await getUser(uname);
+  Clientdata.lastUser = uname;
+  localStorage.setItem('username', uname);
+
+	// showUser(uname);
+	iDiv(UI.user).innerHTML = uname;
+  setColors(U.color)
+	// let dUser = iDiv(UI.user);
+  // mClear(dUser);
+  // mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+  // let d;
+  // d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: U.name, className: 'activeLink' });
+  // setColors(U.color)
+  // d.onclick = onclickUser;
+
+	let cur = UI.nav.cur;//Clientdata.lastMenu;
+  if (uname == 'guest'){await switchToMenu(UI.nav,'home');menuDisable(UI.nav,'plan'); }
+  else {
+    menuEnable(UI.nav,'plan');
+    let t=Clientdata.table;
+    if (cur == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t,uname);
+    else await switchToMenu(UI.nav,valf(cur,'home'));
+  }
+}
+function menuCommand(dParent, menuKey, key, html, open,close) {
+	let cmd=mCommand(dParent,key,html,open,close);
+	let a=iDiv(cmd);
+	a.setAttribute('key',`${menuKey}_${key}`);
+	a.onclick = onclickMenu;
+	cmd.menuKey = menuKey;
+	// if (nundef(html)) html = capitalize(key);
+	// if (nundef(open)) open = window[`onclick${html}`];
+	// if (nundef(close)) close=()=>{console.log('close',key)}
+	// let d = mDom(dParent, { display: 'inline-block' }, { key: key });
+	// let a = mDom(d, {}, { key: `${menuKey}_${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: menuOpen })
+
+	return cmd; // {dParent,elem:d,div:a,menu:menuKey,key,open,close};
+}
+
+function commandRemove(key){}
+function commandEnable(key){}
+function commandDisable(key){}
+function commandActivate(key){
+
+}
+function commandClose(key){
+	
+}
+function commandCloseAll(){}
+
+function menuAdd(dParent, key, html, handler) {
+	if (nundef(html)) html = capitalize(key);
+	if (nundef(handler)) handler = window[`onclick${html}`];
+	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
+	let a = mDom(d, {}, { tag: 'a', href: '#', html: html, className: 'nav-link', onclick: handler })
+}
+function menuRemove(key){}
+function menuEnable(key){}
+function menuDisable(key){}
+function menuActivate(key){
+
+}
+function menuCloseCurrent(key){}
+async function _mPrompt(dParent = 'dUser', placeholder = '<username>', cond = isAlphanumeric) {
+  return new Promise((resolve, reject) => {
+    mClear(dParent)
+    let d = mInput(dParent, { w: 100 }, 'inpPrompt', placeholder, 'input', 1);
+    d.focus();
+    d.onkeyup = ev => {
+      if (ev.key == 'Enter') {
+        let val = ev.target.value;
+        ev.target.remove();
+        if (cond(val)) {
+          resolve(val.toLowerCase().trim());
+        } else {
+          console.log('not a valid input => null');
+          resolve(null);
+        }
+      } else if (ev.key == 'Escape') {
+        resolve(null);
+      }
+    };
+  });
+}
+function _mModalInput(name,styles={}){
+  let d=document.body;
+  let dialog = mDom(d, {w100:true}, { className:'reset', tag: 'dialog', id: `modal_${name}` });
+  //addKeys({ position: 'fixed', top: 40, left: 0, display: 'inline-block', padding: 12, box: true },styles)
+  addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true },styles)
+  let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+  let inp = mDom(form, { outline: 'none' }, { name: name, tag: 'input', type: 'text', placeholder: `<${name}>` });
+  mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+  async function prompt(){
+    return new Promise((resolve, reject) => {
+      console.log('form', form);
+      dialog.showModal();
+      form.onsubmit = (event) => {
+        event.preventDefault(); // Prevent the default form submission
+        resolve(inp.value);
+        dialog.remove(); //close();
+      };
+    });
+  }
+  return prompt;
+}
+function mNavbar(dParent, styles, pageTitle, titles, funcNames) {
+  let ui = mDom(dParent, { display: 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'flex-flow': 'row nowrap' });
+  mClass(dParent, 'nav');
+  let stflex = { gap: 10, display: 'flex', 'align-items': 'center' };
+  let [dl, dr] = [mDom(ui, stflex), mDom(ui, stflex)];
+  function activate(ev) {
+    close();
+    let links = document.getElementsByClassName('nav-link');
+    let inner = isDict(ev) ? ev.target.innerHTML:ev;
+    let el = Array.from(links).find(x => x.innerHTML == inner);
+    if (el) mClass(el, 'activeLink');
+  }
+  function close() {
+    closeApps();
+    let links = document.getElementsByClassName('nav-link');
+    for (const el of links) { mClassRemove(el, 'activeLink'); }
+  }
+  function disable() {
+    let links = Array.from(document.getElementsByClassName('nav-link'));
+    for (const w of arguments) {
+      let el = Array.from(links).find(x => x.innerHTML == w);
+      if (isdef(el)) mClass(el, 'disabled');
+    }
+  }
+  function enable() {
+    let links = document.getElementsByClassName('nav-link');
+    for (const w of arguments) {
+      let el = Array.from(links).find(x => x.innerHTML == w);
+      if (isdef(el)) mClassRemove(el, 'disabled');
+    }
+  }
+  return { activate, close, disable, enable, ui, dleft: dl, dright: dr };
+}
+function showNavbar() {
+	let nav = UI.nav = mMenu('dNav');
+	let commands = {};
+	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
+	commands.colors = menuCommand(nav.l, 'nav', 'colors', null, onclickColors, clearMain);
+	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, clearMain);
+	commands.play = menuCommand(nav.l, 'nav', 'play', null, showTables, clearMain);
+	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
+	nav.commands = commands;
+	// console.log(commands)
+	UI.user = mCommand(nav.r, 'user', null, onclickUser);
+}
+function __showNavbar() {
+  let titles = ['add', 'collections', 'NATIONS', 'plan', 'play', 'colors'];
+  let funcNames = titles.map(x => `onclick${capitalize(x)}`);
+  let nav = UI.nav = mNavbar('dNav');
+  let [dl, dr] = [nav.dleft, nav.dright];
+  let title = mDom(dl, { fz: 20, cursor:'pointer' }, { onclick:onclickHome, html: 'COMBU', classes: 'title' });
+  let d2 = mDom(dl);
+  for (let i = 0; i < titles.length; i++) {
+    let d3 = mDom(d2, { display: 'inline-block' }, { html: `<a class="nav-link" href="#" onclick="UI.nav.activate(event);${funcNames[i]}()">${titles[i]}</a>` })
+  }
+  dUser = mDom(dr, {}, { id: 'dUser' });
+  let t2 = toggleAdd('right', 'arrow_down_long', dr, { hpadding: 9, vpadding: 5 }, { w: 0 }, { w: 300 });
+}
+
+async function onclickUser() {
+  // let uname = await mPrompt(iDiv(UI.user));
+	// let gadget = mModalInput('username',{right:0,top:40});
+	// let uname = await gadget();
+	// console.log('username is',uname)
+	let gadget = UI.gadget; //mModalInput('username',{right:0,top:50});
+	let uname = await mPrompt(gadget);
+	console.log('username is',uname)
+  await switchToUser(uname);
+}
 
 // create a dialog element with an input inside
 function createDialog() {

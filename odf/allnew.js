@@ -1875,20 +1875,6 @@ async function onclickColor(ev) {
   U.color = c;
   await postUserChange();
 }
-async function onclickColors() {
-  showTitle('Set Color Theme');
-  let d = mDom('dMain', { hpadding: 20, display: 'flex', gap: '2px 4px', wrap: true });
-  let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
-  list = M.playerColors.concat(grays);
-  let i = 0;
-  let w = Math.min(50, (window.innerWidth - 150) / 15);
-  for (const c of list) {
-    let dc = mDom(d, { w: w, h: 50, bg: c, fg: idealTextColor(c) });
-    dc.onclick = onclickColor;
-    mStyle(dc, { cursor: 'pointer' });
-    i++; if (i % 15 == 0) mDom(d, { w: '100%', h: 0 });
-  }
-}
 function onclickDay(d, styles) {
   let tsDay = d.id; 
   let tsCreated = Date.now();
@@ -2233,10 +2219,6 @@ function showChatWindow() {
     ev.target.value = '';
   });
 }
-async function showDashboard(){
-  mClear('dMain');mClear('dTitle');
-  mDom('dMain',{fg:getThemeFg()},{html:`hi, ${U.name}! this is your dashboard`})
-}
 function showEventOpen(id) {
   let e = Items[id];
   if (!e) return;
@@ -2366,7 +2348,7 @@ async function showTables(){
 }
 function showTitle(title) {
   mClear('dTitle');
-  mDom('dTitle', {}, { tag: 'h1', html: title, classes: 'title' });
+  mDom('dTitle', {maleft:20}, { tag: 'h1', html: title, classes: 'title' });
 }
 function showUser() {
   mClear(dUser);
@@ -2695,7 +2677,7 @@ function uiTypeCalendar(dParent) {
     mClear(dGrid);
     dDays.length = 0;
     let c = colorHex(mGetStyle('dNav', 'bg')); //info.seedColor; //info.wheel[m-1];
-    console.log('!!!!!!!!!!!!!!!!',c)
+    //console.log('!!!!!!!!!!!!!!!!',c)
     let dayColors = mimali(c, 43).map(x => colorHex(x))
     for (const i of range(42)) {
       let cell = mDiv(dGrid, outerStyles);

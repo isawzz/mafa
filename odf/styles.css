@@ -207,12 +207,13 @@ body{
 	background: var(--bgNav) !important;
 }
 .nav-link { 
-	display: block; 
-	/* padding: .5rem 1rem; */
-	text-decoration: none;
 	background: var(--bgButton);
 	color: var(--fgButton);
-	border-radius: 50%;
+	padding: 0px 8px;
+	text-decoration: none; /* weil a normal underline hat! */
+	/* display: block; 
+	padding: .5rem 1rem;
+	border-radius: 50%; */
 }
 .nav-link:hover { 
 	color: var(--fgButtonHover) !important;
