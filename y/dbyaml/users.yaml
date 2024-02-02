@@ -8,7 +8,7 @@ amanda:
   icon: amanda
 max:
   name: max
-  color: '#999999'
+  color: '#808000'
   icon: unknown_user
 lauren:
   name: lauren
@@ -46,3 +46,7 @@ fe_ox:
   name: fe_ox
   color: '#663399'
   icon: unknown_user
+hallo:
+  name: hallo
+  color: '#b42222'
+  icon: hallo

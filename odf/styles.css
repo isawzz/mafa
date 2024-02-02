@@ -14,7 +14,7 @@
 }
 
 
-/* region nations*/
+/* #region nations */
 .instruction {
 	border-radius: 10px;
 	border: 2px silver solid;
@@ -31,6 +31,7 @@
 	/* gap: 10px; */
 }
 /* #endregion */
+
 /* #region classes for cards */
 .card {
 	filter: drop-shadow(4px 5px 2px #111);
@@ -96,6 +97,7 @@ body{
 	margin:0;
 	background: var(--bgBody) !important;
 }
+
 .activeLink { 
 	color: var(--fgButtonActive) !important;
 	background: var(--bgButtonActive) !important;
@@ -206,7 +208,7 @@ body{
 }
 .nav-link { 
 	display: block; 
-	padding: .5rem 1rem;
+	/* padding: .5rem 1rem; */
 	text-decoration: none;
 	background: var(--bgButton);
 	color: var(--fgButton);
@@ -247,6 +249,19 @@ body{
 	padding: 0;
 	margin: 0;
 	border: none;
+}
+.reset {
+	padding: 0;
+	margin: 0;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background-color: transparent;
+	overflow: visible;
+	color: inherit;
+	font: inherit;
+	font-size: inherit;
+	font-family: inherit;
 }
 .section {
 	border-radius: 10px;

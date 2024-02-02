@@ -63,7 +63,10 @@ function onclickMenu(ev){
 	menuOpen(menu,cmdKey);
 }
 async function onclickUser() {
-  let uname = await mPrompt(iDiv(UI.user));
+  // let uname = await mPrompt(iDiv(UI.user));
+	let gadget = mModalInput('username',{right:0,top:40});
+	let uname = await gadget();
+	console.log('username is',uname)
   await switchToUser(uname);
 }
 function showNavbar() {

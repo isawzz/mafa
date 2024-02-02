@@ -1,7 +1,18 @@
 onload = start;
 
-async function start() { test1_modal(); }
+async function start() { test3_modal(); }
 
+async function test3_modal(){
+	await prelimsFast();
+
+	onclickUser();
+}
+async function test2_modal(){
+	let gadget = mModalInput('username',{right:0,top:50});
+	let res = await gadget();
+	console.log('username is',res)
+
+}
 async function test1_modal(){
 
 	let d=document.body;
@@ -44,6 +55,8 @@ async function prelimsFast() {
 	let t4 = performance.now();
 	sockInit();
 	let t5 = performance.now();
+
+	showNavbar();
 
 	//downloadAsYaml(M,'mnew');
 	// for (s of 'Clientdata DA Items M Serverdata Session Socket TO U UI Z'.split(' ')) conslog(s)

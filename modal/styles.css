@@ -1,0 +1,24 @@
+.reset {
+	padding: 0;
+	margin: 0;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background-color: transparent;
+	overflow: visible;
+	color: inherit;
+	font: inherit;
+	font-size: inherit;
+	font-family: inherit;
+}
+
+dialog::backdrop {
+	background-color: hsl(200, 100%, 50%, .5);
+}
+
+
+
+
+
+
+
