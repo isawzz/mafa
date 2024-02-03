@@ -203,6 +203,12 @@ body{
 .lighter{
 	background: var(--bgLighter);
 }
+.magnify_on_hover:hover {
+	transform: scale(4);
+	transform-origin: 50%;
+	transition: transform 0.2s; /* Animation */
+	z-index:100;
+}
 .nav{
 	background: var(--bgNav) !important;
 }

@@ -104,7 +104,7 @@ function showNavbar() {
 	let commands = {};
 	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
 	commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, clearMain);
-	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, clearMain);
+	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
 	commands.play = menuCommand(nav.l, 'nav', 'play', null, showTables, clearMain);
 	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
 	nav.commands = commands;

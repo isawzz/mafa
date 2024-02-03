@@ -1,4 +1,251 @@
+
+
+//#region collections orig
+async function onclickCollections() {
+  showTitle('Collection:');
+  dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+  let d1 = mDiv('dMain'); mFlex(d1);
+  //showSidebar(d1);
+  M.rows = 5; M.cols = 7;
+  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
+  M.cells = [];
+  let bg = mGetStyle('dNav', 'bg');
+  for (let i = 0; i < M.rows * M.cols; i++) {
+    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    mCenterCenterFlex(d);
+    M.cells.push(d);
+  }
+  initCollection(valf(localStorage.getItem('collection'), 'animals'));
+}
+function initCollection(name) {
+  let list = [];
+  if (name == 'all' || isEmpty(name)) {
+    list = Object.keys(M.superdi);
+  } else if (isdef(M.byCollection[name])) {
+    list = M.byCollection[name];
+  } else return;
+  localStorage.setItem('collection', name)
+  mClear(dMenu);
+  let dParent = dMenu;
+  let colls = M.collections;
+  mDom(dParent, {}, { html: '' });
+  let dlColl = mDatalist(dParent, colls, { onupdate: collectionAddEmpty });
+  dlColl.inpElem.oninput = ev => initCollection(ev.target.value);
+  dlColl.inpElem.value = name;
+  initFilter(list);
+  mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
+  mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
+  M.keys = list;
+  M.index = 0;
+  showImageBatch();
+}
+function initFilter(list) {
+  M.masterKeys = list;
+  let cats = collectCats(list);
+  cats.sort();
+  mDom(dMenu, {}, { html: 'Filter:' });
+  let dlCat = mDatalist(dMenu, cats, { edit: false });
+  dlCat.inpElem.oninput = filterImages;
+}
+function mDatalist(dParent, list, opts = {}) {
+  var mylist = list;
+  var opts = opts;
+  addKeys({ alpha: true, filter: 'contains' }, opts);
+  let d = mDiv(toElem(dParent));
+  let optid = getUID('dl');
+  mDom(d, { w: 200 }, { tag: 'input', className: 'input', placeholder: "<enter value>" });
+  mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+  var elem = d;
+  var inp = elem.firstChild;
+  var datalist = elem.lastChild;
+  for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
+  inp.setAttribute('list', optid);
+  if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate);
+  inp.onmousedown = () => inp.value = ''
+  return {
+    list: mylist,
+    elem: elem,
+    inpElem: inp,
+    listElem: datalist,
+    opts: opts,
+  }
+}
+
+//#endregion
+//#region toggle WORKS
+function toggleAdd(key, sym, dParent, styles) {
+  addKeys({ fz: 20, rounding: '50%', padding: 5, fg: rColor() }, styles);
+  let info = valfHtml(sym);
+  let b;
+  if (info) {
+    let stButton = copyKeys({ overflow: 'hidden', box: true, family: info.family, cursor: 'pointer' }, styles);
+    b = mDom(dParent, stButton, { id: getButtonId(key), html: info.html, className: 'hop1' });
+  } else {
+    b = mButton(sym, 'dToolbar')
+  }
+  b.onclick = toggleClick;
+  let d = mBy(getDivId(key));
+  if (nundef(DA.toggle)) DA.toggle = {};
+  let t = DA.toggle[key] = { key: key, button: b, div: d, state: 0, states: [...arguments].slice(4) };
+  toggleShow(t);
+  return t;
+}
+function toggleClick(ev) {
+  let t = toggleGet(ev);
+  let i = t.state = (t.state + 1) % t.states.length;
+  toggleShow(t);
+}
+function toggleGet(ev) { let key = getIdKey(evToId(ev)); let toggle = DA.toggle[key]; return toggle; }
+function toggleShow(t, state) {
+  if (nundef(state)) state = t.states[t.state];
+  let d = iDiv(t); mStyle(d, state);
+  let percent = 100 * t.state / (t.states.length - 1);
+  mStyle(t.button, { bg: colorMix('lime', 'red', percent) });
+}
+//#endregion
+
 //#region odf
+
+async function collInit() {
+  dMenu = mDom('dTitle',{maleft:100},{className:'title'});
+	mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+
+	collSidebar();
+
+  let d1 = mDiv('dMain'); mFlex(d1);
+  M.rows = 5; M.cols = 6;
+  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
+  M.cells = [];
+  let bg = mGetStyle('dNav', 'bg');
+  for (let i = 0; i < M.rows * M.cols; i++) {
+    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    mCenterCenterFlex(d);
+    M.cells.push(d);
+  }
+  collInitCollection('amanda'); //valf(localStorage.getItem('collection'), 'animals'));
+}
+function collInitCollection(name) {
+  let list = [];
+  if (name == 'all' || isEmpty(name)) {
+    list = Object.keys(M.superdi);
+  } else if (isdef(M.byCollection[name])) {
+    list = M.byCollection[name];
+  } else return;
+  localStorage.setItem('collection', name)
+  mClear(dMenu);
+  mDom(dMenu, {maleft:10,maright:-20}, { html: '<h1>Collection:</h1>' });
+  let dParent = dMenu;
+  let colls = M.collections;
+  mDom(dParent, {}, { html: '' });
+  let dlColl = mDatalist(dParent, colls, {edit: false} );//, { onupdate: collectionAddEmpty });
+  dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value);
+  dlColl.inpElem.value = name;
+  collInitFilter(list);
+  mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
+  mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
+  M.keys = list;
+  M.index = 0;
+  showImageBatch();
+}
+function collInitFilter(list) {
+  M.masterKeys = list;
+  let cats = collectCats(list);
+  cats.sort();
+  // mDom(dMenu, {}, { html: 'Filter:' });
+  mDom(dMenu, {maright:-6}, { html: '<h1>Filter:</h1>' });
+  let dlCat = mDatalist(dMenu, cats, { edit: true });
+  dlCat.inpElem.oninput = filterImages;
+}
+function mDatalist(dParent, list, opts = {}) {
+  var mylist = list;
+  var opts = opts;
+  addKeys({ alpha: true, filter: 'contains' }, opts);
+  let d = mDiv(toElem(dParent));
+  let optid = getUID('dl');
+  mDom(d, { w: 200 }, { tag: 'input', className: 'input', placeholder: "<enter value>" });
+  mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+  var elem = d;
+  var inp = elem.firstChild;
+  var datalist = elem.lastChild;
+  for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
+  inp.setAttribute('list', optid);
+  if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate);
+  inp.onmousedown = () => inp.value = ''
+  return {
+    list: mylist,
+    elem: elem,
+    inpElem: inp,
+    listElem: datalist,
+    opts: opts,
+  }
+}
+function collClear(){closeLeftSidebar();clearMain();}
+function collSidebar(){
+
+  mStyle('dLeft',{wmin:100});
+  let d=mDom('dLeft',{margin:10}); //,fg:getThemeFg()});
+
+  let c1=mDom(d,{padding:4},{html:'new collection',className:'nav-link activeLink'})
+
+  //let t1=toggleAdd('left','arrow_down_long',iDiv(UI.nav).l,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
+
+  //mStyle('dLeft',{w:100})
+  // let collMenu = mDom('dLeft');
+  // let c1=mDom(collMenu,{},{html:'new collection'})
+}
+function closeLeftSidebar(){
+  mClear('dLeft');mStyle('dLeft',{w:0,wmin:0})
+}
+async function collInit() {
+  dMenu = mDom('dTitle',{maleft:100},{className:'title'});
+	mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+
+	collSidebar();
+
+  let d1 = mDiv('dMain'); mFlex(d1);
+  M.rows = 5; M.cols = 7;
+  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
+  M.cells = [];
+  let bg = mGetStyle('dNav', 'bg');
+  for (let i = 0; i < M.rows * M.cols; i++) {
+    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    mCenterCenterFlex(d);
+    M.cells.push(d);
+  }
+  collInitCollection('amanda'); //valf(localStorage.getItem('collection'), 'animals'));
+}
+function collInitCollection(name) {
+  let list = [];
+  if (name == 'all' || isEmpty(name)) {
+    list = Object.keys(M.superdi);
+  } else if (isdef(M.byCollection[name])) {
+    list = M.byCollection[name];
+  } else return;
+  localStorage.setItem('collection', name)
+  mClear(dMenu);
+  mDom(dMenu, {maleft:10,maright:-20}, { html: '<h1>Collection:</h1>' });
+  let dParent = dMenu;
+  let colls = M.collections;
+  mDom(dParent, {}, { html: '' });
+  let dlColl = mDatalist(dParent, colls, { onupdate: collectionAddEmpty });
+  dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value);
+  dlColl.inpElem.value = name;
+  collInitFilter(list);
+  mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
+  mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
+  M.keys = list;
+  M.index = 0;
+  showImageBatch();
+}
+function collInitFilter(list) {
+  M.masterKeys = list;
+  let cats = collectCats(list);
+  cats.sort();
+  // mDom(dMenu, {}, { html: 'Filter:' });
+  mDom(dMenu, {maright:-6}, { html: '<h1>Filter:</h1>' });
+  let dlCat = mDatalist(dMenu, cats, { edit: false });
+  dlCat.inpElem.oninput = filterImages;
+}
 function initFilter(list) {
   M.masterKeys = list;
   let cats = collectCats(list);

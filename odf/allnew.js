@@ -156,7 +156,7 @@ function collectionAddEmpty(ev) {
   addIf(M.collections, val);
   M.collections.sort()
   M.byCollection[val] = [];
-  collInit(val);
+  collInitCollection(val);
 }
 function colorHexToRgb(hex) {
   hex = hex.replace(/^#/, '');
@@ -215,23 +215,24 @@ function extractTime(input) {
 }
 function filterImages(ev) {
   let s = ev.target.value.toLowerCase().trim();
+  console.log('filter on',s)
   if (isEmpty(s)) return;
   let di = {};
-  for (const k of M.masterKeys) {
+  for (const k of UI.coll.masterKeys) {
     di[k] = true;
   }
   let list = isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
   if (nundef(list) || isEmpty(list)) {
     list = [];
-    for (const k of M.masterKeys) {
+    for (const k of UI.coll.masterKeys) {
       let o = M.superdi[k];
       if (k.includes(s) || o.friendly.includes(s)) list.push(k);
     }
-    if (isEmpty(list)) return;
+    //if (isEmpty(list)) return;
   }
-  M.keys = list;
-  M.index = 0;
-  showImageBatch(0);
+  UI.coll.keys = list;
+  UI.coll.index = 0;
+  showImageBatch(0,false);
 }
 function findBottomLine(ct, w, h, cgoal) {
   let [_, restlist] = findPointsBoth(ct, 0, w, h - 30, h, cgoal, 20);
@@ -599,6 +600,7 @@ function getServerurl() {
   return server;
 }
 function getThemeBg(){  let style = window.getComputedStyle(document.body);  let bg = valf(style.backgroundColor,style.background);  return colorHex(bg);}
+function getThemeDark(){ return getCSSVariable('--bgNav'); } //  let bg=getThemeBg();return colorIdealText(bg);}
 function getThemeFg(){ return getCSSVariable('--fgButtonHover'); } //  let bg=getThemeBg();return colorIdealText(bg);}
 function getTurnPlayers(fen){
   return fen.turn.join(', ');
@@ -994,29 +996,6 @@ function mCropResizePan(dParent, img, dButtons) {
     setRect: setRect,
     setSize: setSize,
     show: show_cropbox,
-  }
-}
-function mDatalist(dParent, list, opts = {}) {
-  var mylist = list;
-  var opts = opts;
-  addKeys({ alpha: true, filter: 'contains' }, opts);
-  let d = mDiv(toElem(dParent));
-  let optid = getUID('dl');
-  mDom(d, { w: 200 }, { tag: 'input', className: 'input', placeholder: "<enter value>" });
-  mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
-  var elem = d;
-  var inp = elem.firstChild;
-  var datalist = elem.lastChild;
-  for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
-  inp.setAttribute('list', optid);
-  if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate);
-  inp.onmousedown = () => inp.value = ''
-  return {
-    list: mylist,
-    elem: elem,
-    inpElem: inp,
-    listElem: datalist,
-    opts: opts,
   }
 }
 function mDropZone(dropZone, onDrop) {
@@ -1874,28 +1853,28 @@ async function onclickNATIONS() {
   arrShuffle(M.progress);
   arrShuffle(M.events);
   let d1 = mDiv('dMain'); mFlex(d1);
-  M.rows = 3; M.cols = 7;
+  UI.coll.rows = 3; UI.coll.cols = 7;
   let bg = mGetStyle('dNav', 'bg');
   let h = 180;
-  let dcost = M.costGrid = mGrid(M.rows, 1, d1, { 'align-self': 'start' });
+  let dcost = M.costGrid = mGrid(UI.coll.rows, 1, d1, { 'align-self': 'start' });
   for (let cost = 3; cost >= 1; cost--) {
     let d2 = mDom(dcost, { display: 'flex', 'justify-content': 'center', 'flex-flow': 'column', box: true, margin: 2, h: h, overflow: 'hidden' }, {});
     for (let i = 0; i < cost; i++) mDom(d2, { h: 40 }, { tag: 'img', src: `../assets/games/nations/templates/gold.png` });
   }
-  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
-  M.cells = [];
-  for (let i = 0; i < M.rows * M.cols; i++) {
-    let d = mDom(M.grid, { box: true, margin: 2, h: h, overflow: 'hidden' });
+  UI.coll.grid = mGrid(UI.coll.rows, UI.coll.cols, d1, { 'align-self': 'start' });
+  UI.coll.cells = [];
+  for (let i = 0; i < UI.coll.rows * UI.coll.cols; i++) {
+    let d = mDom(UI.coll.grid, { box: true, margin: 2, h: h, overflow: 'hidden' });
     mCenterCenterFlex(d);
-    M.cells.push(d);
+    UI.coll.cells.push(d);
   }
-  let n = M.rows * M.cols;
+  let n = UI.coll.rows * UI.coll.cols;
   M.market = [];
   for (let i = 0; i < n; i++) {
     let k = M.progress.shift();
     M.market.push(k);
     let card = M.natCards[k];
-    let img = mDom(M.cells[i], { h: h, w: 115 }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
+    let img = mDom(UI.coll.cells[i], { h: h, w: 115 }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
     img.setAttribute('key', k)
     img.onclick = buyProgressCard;
   }
@@ -1939,16 +1918,16 @@ async function onclickView() {
   showTitle('Collection:');
   dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
   let d1 = mDiv('dMain'); mFlex(d1);
-  M.rows = 5; M.cols = 7;
-  M.grid = mGrid(M.rows, M.cols, d1, { 'align-self': 'start' });
-  M.cells = [];
+  UI.coll.rows = 5; UI.coll.cols = 7;
+  UI.coll.grid = mGrid(UI.coll.rows, UI.coll.cols, d1, { 'align-self': 'start' });
+  UI.coll.cells = [];
   let bg = mGetStyle('dNav', 'bg');
-  for (let i = 0; i < M.rows * M.cols; i++) {
-    let d = mDom(M.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+  for (let i = 0; i < UI.coll.rows * UI.coll.cols; i++) {
+    let d = mDom(UI.coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
     mCenterCenterFlex(d);
-    M.cells.push(d);
+    UI.coll.cells.push(d);
   }
-  collInit(valf(localStorage.getItem('collection'), 'animals'));
+  collInitCollection(valf(localStorage.getItem('collection'), 'animals'));
 }
 async function ondropPreviewImage(url, key) {
   if (isdef(key)) {
@@ -2223,19 +2202,21 @@ function showImage(key, dParent, styles = {}) {
   mStyle(el, { cursor: 'pointer' })
   return d1;
 }
-function showImageBatch(inc = 0) {
-  let [keys, index, x] = [M.keys, M.index, M.rows * M.cols];
-  if (isEmpty(keys)) showMessage('nothing has been added to this collection yet!'); 
+function showImageBatch(inc = 0,alertEmpty=true) {
+  let [keys, index, x] = [UI.coll.keys, UI.coll.index, UI.coll.rows * UI.coll.cols];
+  if (isEmpty(keys) && alertEmpty) showMessage('nothing has been added to this collection yet!'); 
   if (keys.length <= x) inc = 0;
   index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
   let list = arrTakeFromTo(keys, index, index + x);
-  M.index = index;
+  UI.coll.index = index;
   for (let i = 0; i < list.length; i++) {
-    mStyle(M.cells[i], { opacity: 1 })
-    showImageInBatch(list[i], M.cells[i]);
+    let d=UI.coll.cells[i];
+    mStyle(d, { opacity: 1 });
+    // mClass(d,'magnify_on_hover')
+    showImageInBatch(list[i], d);
   }
   for (let i = list.length; i < x; i++) {
-    mStyle(M.cells[i], { opacity: 0 })
+    mStyle(UI.coll.cells[i], { opacity: 0 })
   }
 }
 function showImageInBatch(key, dParent, styles = {}) {
@@ -2535,35 +2516,6 @@ async function test77_showTables(){
 }
 async function test78_allcommands(){
   await prelims();
-}
-function toggleAdd(key, sym, dParent, styles) {
-  addKeys({ fz: 20, rounding: '50%', padding: 5, fg: rColor() }, styles);
-  let info = valfHtml(sym);
-  let b;
-  if (info) {
-    let stButton = copyKeys({ overflow: 'hidden', box: true, family: info.family, cursor: 'pointer' }, styles);
-    b = mDom(dParent, stButton, { id: getButtonId(key), html: info.html, className: 'hop1' });
-  } else {
-    b = mButton(sym, 'dToolbar')
-  }
-  b.onclick = toggleClick;
-  let d = mBy(getDivId(key));
-  if (nundef(DA.toggle)) DA.toggle = {};
-  let t = DA.toggle[key] = { key: key, button: b, div: d, state: 0, states: [...arguments].slice(4) };
-  toggleShow(t);
-  return t;
-}
-function toggleClick(ev) {
-  let t = toggleGet(ev);
-  let i = t.state = (t.state + 1) % t.states.length;
-  toggleShow(t);
-}
-function toggleGet(ev) { let key = getIdKey(evToId(ev)); let toggle = DA.toggle[key]; return toggle; }
-function toggleShow(t, state) {
-  if (nundef(state)) state = t.states[t.state];
-  let d = iDiv(t); mStyle(d, state);
-  let percent = 100 * t.state / (t.states.length - 1);
-  mStyle(t.button, { bg: colorMix('lime', 'red', percent) });
 }
 function tryJSONParse(astext) {
   try {
