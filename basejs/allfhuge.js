@@ -42429,6 +42429,7 @@ function mFlexLinebreak(d) { if (isString(d)) d = mBy(d); let lb = mDiv(d); mCla
 function mFlexLR(d) { mStyle(d, { display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }); }
 function mFlexSpacebetween(d) { mFlexLR(d); }
 function mFlexV(d) { mStyle(d, { display: 'flex', 'align-items': 'center' }); }
+function mFlexVWrap(d) { mStyle(d, { display: 'flex', 'align-items': 'center', 'flex-flow':'row wrap' }); }
 function mFlexWrap(d) { mFlex(d, 'w'); }
 function mFlexWrapGrow(d) { d.style.display = 'flex'; d.style.flexWrap = 'wrap'; d.style.flex = 1; }
 function mFlip(card, ms, callback) {

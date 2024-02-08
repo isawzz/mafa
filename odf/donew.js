@@ -1,12 +1,72 @@
 function clearMain() { clear_timeouts(); mClear('dMain'); mClear('dTitle'); }
+function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }) }
+function keyDownHandler(ev) {
+	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
+	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
+		//console.log('control key down!!')
+		IsControlKeyDown = true;
+		let hoveredElements = document.querySelectorAll(":hover");
+		let cand = Array.from(hoveredElements).find(x => mHasClass(x, 'magnifiable'));
+		//console.log('magnifiable',cand);
+		if (isdef(cand)) mMagnify(cand);
+	}
+}
+function keyUpHandler(ev) {
+	if (ev.key == 'Control') {
+		//console.log('control key release!')
+		IsControlKeyDown = false;
+		mMagnifyOff();
+	}
+}
+async function loadAssets() {
+	M = await mGetYaml('../assets/m.yaml');
+	//superdi hat nations coll (cards) aber nicht civs
+	let [di, byColl, byFriendly, byCat] = [M.superdi, {}, {}, {}];
+	for (const k in di) {
+		let o = di[k];
+		//console.log('k',o)
+		for (const cat of o.cats) lookupAddIfToList(byCat, [cat], k);
+		for (const coll of o.colls) lookupAddIfToList(byColl, [coll], k);
+		lookupAddIfToList(byFriendly, [o.friendly], k)
+	}
+	M.byCat = byCat;
+	M.byCollection = byColl;
+	M.byFriendly = byFriendly;
+	M.categories = Object.keys(byCat); M.categories.sort();
+	M.collections = Object.keys(byColl); M.collections.sort();
+	M.names = Object.keys(byFriendly); M.names.sort();
+}
 function mCommand(dParent, key, html, open, close) {
 	if (nundef(html)) html = capitalize(key);
-	if (nundef(open)) open = window[`onclick${html}`];
+	if (nundef(open)) open = window[`onclick${capitalize(key)}`];
 	if (nundef(close)) close = () => { console.log('close', key) }
 	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
 	let a = mDom(d, {}, { key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
 
 	return { dParent, elem: d, div: a, key, open, close };
+}
+function mDatalist(dParent, list, opts = {}) {
+	var mylist = list;
+	var opts = opts;
+	addKeys({ alpha: true, filter: 'contains' }, opts);
+	let d = mDiv(toElem(dParent));
+	let optid = getUID('dl');
+	mDom(d, { w: 180, maleft: 4 }, { tag: 'input', className: 'input', placeholder: valf(opts.placeholder, '') });
+	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+	var elem = d;
+	var inp = elem.firstChild;
+	var datalist = elem.lastChild;
+	for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
+	inp.setAttribute('list', optid);
+	if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate);
+	inp.onmousedown = () => inp.value = ''
+	return {
+		list: mylist,
+		elem: elem,
+		inpElem: inp,
+		listElem: datalist,
+		opts: opts,
+	}
 }
 function menuCommand(dParent, menuKey, key, html, open, close) {
 	let cmd = mCommand(dParent, key, html, open, close);
@@ -34,13 +94,13 @@ function menuOpen(menu, key) {
 	mClass(iDiv(cmd), 'activeLink')
 	cmd.open();
 }
-function mGadget(name, styles = {}) {
+function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
 	let dialog = mDom(d, { w100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
 	//addKeys({ position: 'fixed', top: 40, left: 0, display: 'inline-block', padding: 12, box: true },styles)
 	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
 	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
-	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: `<enter ${name}>` });
+	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return { name, dialog, form, inp }
 }
@@ -50,6 +110,36 @@ function mLMR(dParent) {
 	let stflex = { gap: 10, display: 'flex', 'align-items': 'center' };
 	let [l, m, r] = [mDom(d, stflex), mDom(d, stflex), mDom(d, stflex)];
 	return [d, l, m, r];
+}
+function mMagnify(elem, scale = 5) {
+	elem.classList.add(`topmost`);
+	MAGNIFIER_IMAGE = elem;
+
+	const rect = elem.getBoundingClientRect();
+
+	let [w, h] = [rect.width * scale, rect.height * scale];
+	let [cx, cy] = [rect.width / 2 + rect.left, rect.height / 2 + rect.top];
+	let [l, t, r, b] = [cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2];
+
+	// console.log(l,t,r,b);
+
+	let originX = 'center';
+	let originY = 'center';
+	let [tx, ty] = [0, 0];
+	if (l < 0) { tx = -l / scale; } //originX = 'left'; 
+	if (t < 0) { ty = -t / scale; } //originY = 'top'; 
+	if (r > window.innerWidth) { tx = -(r - window.innerWidth) / scale; } //originX = 'right'; 
+	if (b > window.innerHeight) { ty = -(b - window.innerHeight) / scale; } //originY = 'bottom'; 
+
+	elem.style.transform = `scale(${scale}) translate(${tx}px,${ty}px)`;
+	elem.style.transformOrigin = `${originX} ${originY}`;
+}
+function mMagnifyOff() {
+	if (!MAGNIFIER_IMAGE) return;
+	let elem = MAGNIFIER_IMAGE;
+	MAGNIFIER_IMAGE = null;
+	elem.classList.remove(`topmost`); //magnify4`); 
+	elem.style.transform = null;
 }
 function mMenu(dParent, key) { let [d, l, m, r] = mLMR(dParent); return { dParent, elem: d, l, m, r, key, cur: null }; }
 async function mPrompt(gadget) {
@@ -130,7 +220,7 @@ async function switchToUser(uname) {
 	else {
 		menuEnable(UI.nav, 'plan');
 		let t = Clientdata.table;
-		let cur = UI.nav.cur; console.log('current menu is',cur); 
+		let cur = UI.nav.cur; //console.log('current menu is', cur);
 		if (cur == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t, uname);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
 	}

@@ -948,6 +948,48 @@ function calendarOpenDay(date, d, ev) {
   });
   return d1;
 }
+function collectionAddEmpty(ev) {
+  if (ev.key != 'Enter') return;
+  console.log('onupdate', ev.target, ev.target.value);
+  let val = ev.target.value;
+  addIf(M.collections, val);
+  M.collections.sort()
+  M.byCollection[val] = [];
+  collInitCollection(val);
+}
+async function collectAddDir(dir, coll, cat) {
+  let filenames = await mGetFiles(dir);
+  addIf(M.collections, coll);
+  addIf(M.categories, cat);
+  for (const name of filenames) {
+    let img = name;
+    let path = `../assets/${dir}/${name}`;
+    let k = stringBefore(name, '.');
+    let friendly = k;
+    if (isdef(M.superdi[k])) {
+      k = `${coll}_${k}`;
+    }
+    M.superdi[k] = { key: k, friendly: friendly, cats: [cat], ext: stringAfter(name, '.'), img: `${name}`, path: path };
+    addIf(M.names, friendly);
+    lookupAddIfToList(M.byCat, [cat], k);
+    lookupAddIfToList(M.byFriendly, [friendly], k);
+    lookupAddIfToList(M.byCollection, [coll], k);
+  }
+}
+async function collectAddUploadedImages() {
+  let imgs = await mGetYaml('../y/m2.yaml');
+  for (const k in imgs) {
+    if (isdef(M.superdi[k])) continue;
+    let o = imgs[k];
+    M.superdi[k] = { key: k, friendly: o.name, cats: [o.cat], ext: o.ext, img: `${k}.${o.ext}`, path: `../y/img/${k}.${o.ext}` };
+    addIf(M.collections, o.coll);
+    addIf(M.categories, o.cat);
+    addIf(M.names, o.name);
+    lookupAddIfToList(M.byCat, [o.cat], k);
+    lookupAddIfToList(M.byFriendly, [o.name], k);
+    lookupAddIfToList(M.byCollection, [o.coll], k);
+  }
+}
 function cvRot90(img, canvas, ctx, w, h, border, diff) {
 	let rot = 90
 	ctx.translate(canvas.width, 0); //-canvas.height/2) //img.width);
@@ -1071,6 +1113,61 @@ function formatDate(date) {
 }
 function getConfig() { return lookup(Serverdata.config, Array.from(arguments)); }
 function getSession() { return lookup(Serverdata.session, Array.from(arguments)); }
+async function loadCollections() {
+  M = {};
+  M.superdi = await mGetYaml('../assets/superdi.yaml');
+  M.byCollection = {};
+  M.byCat = {};
+  M.byFriendly = {};
+  M.collections = ['all'];
+  M.categories = [];
+  M.names = [];
+  for (const k in M.superdi) {
+    let o = M.superdi[k];
+    if (isdef(o.coll)) { lookupAddIfToList(M.byCollection, [o.coll], o.key); addIf(M.collections, o.coll); }
+    o.cats.map(x => { lookupAddIfToList(M.byCat, [x], o.key); addIf(M.categories, x); });
+    if (isdef(o.friendly)) { lookupAddIfToList(M.byFriendly, [o.friendly], o.key); addIf(M.names, o.friendly); }
+  }
+  await collectAddUploadedImages();
+  await collectAddDir('img/users', 'users', 'user');
+  await collectAddDir('games/nations/cards', 'nations', 'card');
+  await collectAddDir('games/nations/templates', 'nations', 'symbol');
+  M.collections.sort();
+  M.categories.sort();
+  M.names.sort();
+}
+async function loadAssets(timing){
+	// *** in prelims, uncomment the following lines and comment the line after t3 line! ***
+	if (timing == 'slow'){
+		showMessage('DEPRECATED'); assertion(false,'prelims(slow) DEPRECATED'); return;
+		await loadCollections();
+		loadPlayerColors();
+		let info = await mGetYaml('../assets/info.yaml');
+		addKeys(info,M);
+		M.c52 = await mGetYaml('../assets/c52.yaml');
+		await natLoadAssets();
+	}else if (timing == 'fast') {
+		M = await mGetYaml('../odf/mnew.yaml'); //mnew includes natLoadAssets and c52!
+	}else if (timing == 'new'){
+		M = await mGetYaml('../odf/m.yaml'); 
+		//superdi hat NICHT sorted keys!
+		//superdi hat nations coll (cards) aber nicht civs
+		let [di,byColl,byFriendly,byCat] = [M.superdi,{},{},{}];
+		for(const k in di){
+			let o=di[k];
+			//console.log('k',o)
+			for(const cat of o.cats) lookupAddIfToList(byCat,[cat],k);
+			for(const coll of o.colls) lookupAddIfToList(byColl,[coll],k);
+			lookupAddIfToList(byFriendly,[o.friendly],k)
+		}
+		M.byCat = byCat;
+		M.byCollection = byColl;
+		M.byFriendly = byFriendly;
+		M.categories = Object.keys(byCat);M.categories.sort();
+		M.collections = Object.keys(byColl);M.collections.sort();
+		M.names = Object.keys(byFriendly);M.names.sort();
+	}
+}
 async function loadCollectionsFromDirs() {
 	if (nundef(M.emos)) {
 		let server = getServerurl();
@@ -1625,6 +1722,48 @@ function mTooltip(elem, content) {
 
 	elem.onmouseover = () => d.style.display = 'block';
 	elem.onmouseout = () => d.style.display = 'none';
+
+}
+async function onclickView() {
+  showTitle('Collection:');
+  dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+  let d1 = mDiv('dMain'); mFlex(d1);
+  UI.coll.rows = 5; UI.coll.cols = 7;
+  UI.coll.grid = mGrid(UI.coll.rows, UI.coll.cols, d1, { 'align-self': 'start' });
+  UI.coll.cells = [];
+  let bg = mGetStyle('dNav', 'bg');
+  for (let i = 0; i < UI.coll.rows * UI.coll.cols; i++) {
+    let d = mDom(UI.coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+    mCenterCenterFlex(d);
+    UI.coll.cells.push(d);
+  }
+  collInitCollection(valf(localStorage.getItem('collection'), 'animals'));
+}
+async function prelims(timing='new') {
+	let t1 = performance.now();
+
+	Serverdata = await mGetRoute('session'); //session ist: users,config,
+
+	let t2 = performance.now();
+
+	await loadAssets(timing);
+
+	let t4 = performance.now();
+
+	sockInit();
+
+	UI.nav = showNavbar();
+	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
+	UI.gadgetUsername = mGadget('username',{right:0,top:30});
+
+	await switchToUser(localStorage.getItem('username'));
+
+	let t5 = performance.now();
+
+	//downloadAsYaml(M,'mnew'); 
+	// for (s of 'Clientdata DA Items M Serverdata Session Socket TO U UI Z'.split(' ')) conslog(s)
+	// console.log(`session:${Math.round(t2 - t1)} \nload:${Math.round(t3 - t2)} \nfast load:${Math.round(t4 - t3)} \nsock+rest:${Math.round(t5 - t4)}`)
+	console.log(`total prelims time:${Math.round(t5 - t1)}`);
 
 }
 async function postUserChange(data) {

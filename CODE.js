@@ -1,5 +1,213 @@
+//#region ai version fuer magnify but still fit on page:
+document.querySelectorAll('img').forEach(img => {
+  img.addEventListener('mouseenter', function(e) {
+    // Only apply the effect if the Ctrl key is held down
+    if (!e.ctrlKey) return;
+    
+    const magnificationScale = 2; // Adjust the scale factor as needed
 
+    // Calculate the magnified dimensions
+    const magnifiedWidth = img.offsetWidth * magnificationScale;
+    const magnifiedHeight = img.offsetHeight * magnificationScale;
 
+    // Get the image's position relative to the viewport
+    const rect = img.getBoundingClientRect();
+
+    // Check if the magnified image will fit in the viewport
+    const fitsHorizontally = (window.innerWidth - (rect.left + rect.width / 2) * (magnificationScale - 1)) > magnifiedWidth / 2 && (rect.left + rect.width / 2) * (magnificationScale - 1) > magnifiedWidth / 2;
+    const fitsVertically = (window.innerHeight - (rect.top + rect.height / 2) * (magnificationScale - 1)) > magnifiedHeight / 2 && (rect.top + rect.height / 2) * (magnificationScale - 1) > magnifiedHeight / 2;
+
+    // Apply the magnification
+    if (fitsHorizontally && fitsVertically) {
+      img.style.transform = `scale(${magnificationScale})`;
+      img.style.transformOrigin = 'center';
+    } else {
+      // Adjust transform-origin to ensure the full image is visible
+      let originX = 'center';
+      let originY = 'center';
+
+      if (rect.left < 0) {
+        originX = 'left';
+      } else if (rect.right > window.innerWidth) {
+        originX = 'right';
+      }
+
+      if (rect.top < 0) {
+        originY = 'top';
+      } else if (rect.bottom > window.innerHeight) {
+        originY = 'bottom';
+      }
+
+      img.style.transform = `scale(${magnificationScale})`;
+      img.style.transformOrigin = `${originX} ${originY}`;
+    }
+  });
+
+  img.addEventListener('mouseleave', function() {
+    img.style.transform = 'scale(1)';
+    img.style.transformOrigin = 'center';
+  });
+
+  img.addEventListener('mousemove', function(e) {
+    if (!e.ctrlKey) {
+      img.style.transform = 'scale(1)';
+    }
+  });
+});
+//#endregion
+//#region magnify WORKS!!!!
+function setMagnifyOnHoverControl(hoverElem, magnifyElem, scale) {}
+function removeMagnifyOnHoverControl(hoverElem, magnifyElem, scale) {}
+function keyUpHandler(ev) {
+	if (ev.key == 'Control') {
+		console.log('control key release!')
+		IsControlKeyDown = false;
+		mMagnifyOff();
+	}
+	// if (ev.key == 'Alt' && isdef(Socket)) { Socket.emit('hide', { username: Username }); }
+	// if (ev.code == 'Escape' && isVisible('dAux')) { console.log('hiding dAux!'); hide('dAux'); }
+	// if (keyCode == 112) { show('dHelpWindow'); }
+}
+function keyDownHandler(ev) {
+	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
+	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
+		console.log('control key down!!')
+		IsControlKeyDown = true;
+		let hoveredElements = document.querySelectorAll(":hover");
+		let cand = Array.from(hoveredElements).find(x=>mHasClass(x,'magnifiable'));
+		console.log('magnifiable',cand);
+		if (isdef(cand)) mMagnify(cand);
+
+		// let hoveredImages = Array.from(hoveredElements).filter(el => el.tagName === 'IMG');
+		// if (isEmpty(hoveredImages)) return;
+		// let elem=hoveredImages[0].parentNode;
+		// console.log('elem',elem)
+		// mMagnify(elem)
+		// console.log('elements under mouse', hoveredImages);
+	}
+	// if (ev.key == 'Alt' && isdef(Socket)) { Socket.emit('show', { username: Username }); }
+}
+function mMagnify(elem) { elem.classList.add(`magnify4`); MAGNIFIER_IMAGE = elem; }
+function mMagnifyOff() { if (MAGNIFIER_IMAGE){MAGNIFIER_IMAGE.classList.remove(`magnify4`); MAGNIFIER_IMAGE = null; }}
+//#endregion
+//#region key handlers, mouse enter exit perle handlerrs
+function onEnterPerle(perle) {
+	if (IsControlKeyDown) {
+		//if (MAGNIFIER_IMAGE) iMagnifyCancel();
+		iMagnify(perle);
+	}
+}
+function onExitPerle() { if (IsControlKeyDown) iMagnifyCancel(); }
+function keyUpHandler(ev) {
+	//ev.preventDefault();
+	//var keyCode = ev.keyCode || ev.which;
+	//console.log('keyCode',keyCode,'ev.key',ev.key);
+	if (ev.key == 'Control') {
+		IsControlKeyDown = false;
+		iMagnifyCancel();
+	}
+	if (ev.key == 'Alt' && isdef(Socket)) { Socket.emit('hide', { username: Username }); }
+
+	if (ev.code == 'Escape' && isVisible('dAux')) {
+		console.log('hiding dAux!')
+		hide('dAux');
+	}
+	//else if (keyCode == 112) { show('dHelpWindow'); }
+}
+function keyDownHandler(ev) {
+
+	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
+	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
+		IsControlKeyDown = true;
+		let elements = document.querySelectorAll(":hover");
+		//console.log('elements under mouse',elements);
+		//check if perle is under mouse!
+		for (const el of elements) {
+			let id = el.id;
+			if (isdef(id) && isdef(Items[id]) && Items[id].type == 'perle') {
+				iMagnify(Items[id]); return;
+			}
+
+		}
+	}
+	if (ev.key == 'Alt' && isdef(Socket)) { Socket.emit('show', { username: Username }); }
+
+}
+
+//#endregion
+//#region MAGNIFY
+var MAGNIFIER_IMAGE;
+function iMagnifyX(ui, item, pos) {
+	let path = item.path;
+	if (isdef(MAGNIFIER_IMAGE) && MAGNIFIER_IMAGE.src == path) {
+		console.log('schon offen!!!')
+		return;
+	}else if (isdef(MAGNIFIER_IMAGE)) mCancelMagnify();
+
+	let imgSize = 514,fontSize=24;
+	let [w,h,fz]=[imgSize,imgSize+fontSize+10,fontSize];
+	let dPresent=MAGNIFIER_IMAGE = mDiv(document.body, { bg:HeaderColor, position: 'absolute',left:0,top:0,w:w,h:h });
+	let d=dPresent; //mDiv(dPresent);
+	let dText = mText(item.text,d,{color:'white',fz:fz});
+	let dImage = mDiv(d,{rounding:'50%',w:w,h:w});
+	mCenterCenterFlex(dImage);
+	let img1 = mImg(path, dImage,{});
+
+	//let dPresent = mDiv(document.body, { bg:HeaderColor, rounding:'50%', position: 'absolute',left:0,top:0,w:512,h:512 });
+	//mContainer(dPresent);
+	// let img1 = mImg(path, dPresent,{});
+	mCenterCenterFlex(dPresent);
+
+	// let img1 = MAGNIFIER_IMAGE = mImg(path, document.body, { position: 'absolute',left:0,top:0 });
+
+}
+function mMagnify(img, item) {
+	let path = item.path;
+	if (isdef(MAGNIFIER_IMAGE) && MAGNIFIER_IMAGE.src == path) {
+		console.log('schon offen!!!')
+		return;
+	}else if (isdef(MAGNIFIER_IMAGE)) mCancelMagnify();
+
+	let imgSize = 514,fontSize=24;
+	let [w,h,fz]=[imgSize,imgSize+fontSize+10,fontSize];
+	let dPresent=MAGNIFIER_IMAGE = mDiv(document.body, { bg:HeaderColor, position: 'absolute',left:0,top:0,w:w,h:h });
+	let d=dPresent; //mDiv(dPresent);
+	d.style.zIndex=100000;
+	let dText = mText(item.text,d,{color:'white',fz:fz});
+	let dImage = mDiv(d,{rounding:'50%',w:w,h:w});
+	mCenterCenterFlex(dImage);
+	let img1 = mImg(path, dImage,{});
+
+	//let dPresent = mDiv(document.body, { bg:HeaderColor, rounding:'50%', position: 'absolute',left:0,top:0,w:512,h:512 });
+	//mContainer(dPresent);
+	// let img1 = mImg(path, dPresent,{});
+	mCenterCenterFlex(dPresent);
+
+	// let img1 = MAGNIFIER_IMAGE = mImg(path, document.body, { position: 'absolute',left:0,top:0 });
+
+}
+function mCancelMagnify(img, path) {
+	if (isdef(MAGNIFIER_IMAGE)) {MAGNIFIER_IMAGE.remove(); MAGNIFIER_IMAGE=null;}
+}
+function iMagnify(perle){mMagnify(null,perle);}
+function iMagnifyCancel(){mCancelMagnify();}
+		//magnify on hover
+		//magnify richtung oben links
+		// ui.onmouseenter = ev => {
+		// 	if (ev.ctrlKey) {
+		// 		mStyleX(ui, {
+		// 			'transform': `scale(2)`,
+		// 			'transform-origin': 'bottom right',
+		// 		});
+		// 		mStyleX(ui.children[1], { fg: 'black', bg: 'white', align: 'center' });
+		// 	}
+		// };
+		// ui.onmouseleave = ev => {
+		// 	mRemoveStyle(ui, ['transform', 'transform-origin']);
+		// 	mStyleX(ui.children[1], { fg: 'white', bg: 'transparent', });
+		// };
+
+//#endregion
 //#region collections orig
 async function onclickCollections() {
   showTitle('Collection:');
@@ -105,6 +313,232 @@ function toggleShow(t, state) {
 //#endregion
 
 //#region odf
+
+async function onclickCollections() {
+
+  let dPanes = mDom('dMain'); mFlex(dPanes);
+  let dSecondary = mDom(dPanes, { wmin: 0, w: 0 }, { id: 'collSecondary', className: 'translow' }); //mFlexWrap(dPlus);
+  let dPrimary = mDom(dPanes, {}, { id: 'collPrimary' }); //mFlexWrap(d1);
+
+  collSidebar();
+
+  UI.collPrimary = { div: dPrimary, name: valf(localStorage.getItem('collection'), 'animals') }; //{name:'amanda'};
+  UI.collSecondary = { div: dSecondary, name: null };
+  collOpenPrimary(5, 6);
+}
+function collOpenPrimary(rows, cols) { collPresent(UI.collPrimary, rows, cols); UI.collSecondary.isOpen = true; }
+function collOpenSecondary(rows, cols) { 
+  let d = iDiv(UI.collSecondary); 
+  mStyle(d, { w: 'auto', wmin: 450 }); 
+  collPresent(UI.collSecondary, rows, cols); 
+  UI.collSecondary.isOpen = true; 
+  mButtonX(d,30);
+}
+function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPrimary.isOpen = false; }
+function collCloseSecondary() { 
+  let d = iDiv(UI.collSecondary); 
+  mClear(d); 
+  mStyle(d, { w: 0, wmin: 0 }); 
+  UI.collSecondary.isOpen = false; 
+}
+async function onclickNewCollection() { 
+  let name = await mPrompt()
+  collOpenPrimary(6, 4); 
+  collOpenSecondary(6, 3); 
+}
+function collSidebar() {
+
+  mStyle('dLeft', { wmin: 100 });
+  let d = mDom('dLeft', { margin: 10, matop: 100 }); //,fg:getThemeFg()});
+
+  //let c1=mDom(d,{padding:4},{html:'new collection',className:'nav-link'})
+  let c1 = UI.newCollection = mCommand(d, 'newCollection', 'New Collection');
+  //console.log(c2,window[`onclickNewCollection`])
+  return;
+
+  //let nav = mMenu(d);
+  //let [d, l, m, r] = mLMR(dParent); return { dParent, elem: d, l, m, r, key, cur: null };
+  let commands = {};
+  commands.newCollection = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
+  commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, clearMain);
+  commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
+  commands.play = menuCommand(nav.l, 'nav', 'play', null, showTables, clearMain);
+  commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
+  nav.commands = commands;
+  // console.log(commands)
+  return nav;
+
+  //let t1=toggleAdd('left','arrow_down_long',iDiv(UI.nav).l,{hpadding:9,vpadding:5},{w:0,wmin:0},{wmin:100});
+
+  //mStyle('dLeft',{w:100})
+  // let collMenu = mDom('dLeft');
+  // let c1=mDom(collMenu,{},{html:'new collection'})
+}
+
+
+function collectionAddEmpty(ev) {
+  if (ev.key != 'Enter') return;
+  console.log('onupdate', ev.target, ev.target.value);
+  let val = ev.target.value;
+  addIf(M.collections, val);
+  M.collections.sort()
+  M.byCollection[val] = [];
+  collInitCollection(val);
+}
+
+async function onclickCollections() {
+	let coll = UI.coll = {};
+	let dMenu = coll.dMenu = mDom('dTitle', { maleft: 100 }, { className: 'title' });
+	mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+
+	collSidebar();
+
+	let dPanes = mDom('dMain'); mFlex(dPanes);
+	let dPlus = mDom(dPanes,{},{className:'translow'}); mFlexWrap(dPlus);
+	let d1 = mDom(dPanes); mFlexWrap(d1);
+
+	let dInstruction = mDom(d1,{align:'center',fg:getThemeFg()},{html:'* press Control key when hovering to magnify image! *'})
+
+	//coll = uiTypeCollection(5,6,)
+	coll.rows = 5; coll.cols = 6;
+	coll.grid = mGrid(coll.rows, coll.cols, d1, { 'align-self': 'start' });
+	coll.cells = [];
+	let bg = mGetStyle('dNav', 'bg');
+	for (let i = 0; i < coll.rows * coll.cols; i++) {
+		let d = mDom(coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		coll.cells.push(d);
+	}
+	mStyle(dInstruction,{w:mGetStyle(coll.grid,'w')});
+	
+	collInitCollection('animals',coll); //valf(localStorage.getItem('collection'), 'animals'),coll);
+}
+function collInitCollection(name,coll) {
+	let list = [];
+	if (name == 'all' || isEmpty(name)) {
+		list = Object.keys(M.superdi);
+	} else if (isdef(M.byCollection[name])) {
+		list = M.byCollection[name];
+	} else return;
+	localStorage.setItem('collection', name)
+	let dMenu = coll.dMenu;
+	mClear(dMenu);
+	mDom(dMenu, { maleft: 10, maright: -20 }, { html: '<h1>Collection:</h1>' });
+	let dParent = dMenu;
+	let colls = M.collections;
+	mDom(dParent, {}, { html: '' });
+	let dlColl = mDatalist(dParent, colls, { onupdate: collectionAddEmpty, placeholder: "<select from list>" });
+	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value);
+	dlColl.inpElem.value = name;
+
+	coll.masterKeys = list;
+	let cats = collectCats(list);
+	cats.sort();
+	mDom(dMenu, { maright: -6 }, { html: '<h1>Filter:</h1>' });
+	let dlCat = mDatalist(dMenu, cats, { edit: false, placeholder: "<enter value>" });
+	dlCat.inpElem.oninput = collFilterImages;
+
+	mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
+	mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
+	coll.keys = list;
+	coll.index = 0;
+	showImageBatch();
+}
+
+
+
+
+function collInitCollection(name,coll) {
+	let list = [];
+	if (name == 'all' || isEmpty(name)) {
+		list = Object.keys(M.superdi);
+	} else if (isdef(M.byCollection[name])) {
+		list = M.byCollection[name];
+	} else return;
+	localStorage.setItem('collection', name)
+	let dMenu = coll.dMenu;
+	mClear(dMenu);
+	mDom(dMenu, { maleft: 10, maright: -20 }, { html: '<h1>Collection:</h1>' });
+	let dParent = dMenu;
+	let colls = M.collections;
+	mDom(dParent, {}, { html: '' });
+	let dlColl = mDatalist(dParent, colls, { onupdate: collectionAddEmpty, placeholder: "<select from list>" });
+	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value);
+	dlColl.inpElem.value = name;
+
+	UI.coll.masterKeys = list;
+	let cats = collectCats(list);
+	cats.sort();
+	mDom(dMenu, { maright: -6 }, { html: '<h1>Filter:</h1>' });
+	let dlCat = mDatalist(dMenu, cats, { edit: false, placeholder: "<enter value>" });
+	dlCat.inpElem.oninput = collFilterImages;
+
+	mButton('prev', onclickPrev, dMenu, { w: 70, margin: 0 }, 'input');
+	mButton('next', onclickNext, dMenu, { w: 70, margin: 0 }, 'input');
+	UI.coll.keys = list;
+	UI.coll.index = 0;
+	showImageBatch();
+}
+async function onclickCollections() {
+	dMenu = mDom('dTitle', { maleft: 100 }, { className: 'title' });
+	mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
+
+	collSidebar();
+	UI.coll = {};
+
+	let dPanes = mDiv('dMain'); mFlex(dPanes);
+	let dPlus = mDiv(dPanes); mFlexWrap(dPlus);
+	let d1 = mDiv(dPanes); mFlexWrap(d1);
+
+	let dInstruction = mDom(d1,{align:'center',fg:getThemeFg()},{html:'* press Control key when hovering to magnify image! *'})
+
+	//UI.coll = uiTypeCollection(5,6,)
+	UI.coll.rows = 5; UI.coll.cols = 6;
+	UI.coll.grid = mGrid(UI.coll.rows, UI.coll.cols, d1, { 'align-self': 'start' });
+	UI.coll.cells = [];
+	let bg = mGetStyle('dNav', 'bg');
+	for (let i = 0; i < UI.coll.rows * UI.coll.cols; i++) {
+		let d = mDom(UI.coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
+		mCenterCenterFlex(d);
+		UI.coll.cells.push(d);
+	}
+	mStyle(dInstruction,{w:mGetStyle(UI.coll.grid,'w')});
+	
+	collInitCollection(valf(localStorage.getItem('collection'), 'animals'));
+}
+
+function mDatalist(dParent, list, opts = {}) {
+  var mylist = list;
+  var opts = opts; addKeys({ alpha: true, filter: 'contains' }, opts);
+  let elem = mDiv(toElem(dParent));
+  let optid = getUID('dl');
+  var inp = mDom(elem, { w: 200 }, { tag: 'input', className: 'input',  });
+  var datalist = mDom(elem, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+  for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
+  inp.setAttribute('list', optid);
+  if (opts.edit){ //onupdate) {
+		inp.placeholder = "<enter value>";
+		inp.addEventListener('keyup', opts.onupdate); 
+	}	else {
+		inp.addEventListener('keydown', function(e) {
+			if (!['ArrowDown', 'ArrowUp', 'Backspace', 'Delete'].includes(e.code)) {
+					e.preventDefault();
+			}
+		});
+		inp.placeholder = '<select from list>'
+		inp.onmousedown = () => inp.value = ''
+
+		//inp.setAttribute('readonly',true)
+	}
+  return {
+    list: mylist,
+    elem: elem,
+    inpElem: inp,
+    listElem: datalist,
+    opts: opts,
+  }
+}
+
 
 async function collInit() {
   dMenu = mDom('dTitle',{maleft:100},{className:'title'});

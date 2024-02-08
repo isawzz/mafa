@@ -109,54 +109,12 @@ function closeApps() {
   mClear(dTitle);
 }
 function closePopup(name = 'dPopup') { if (isdef(mBy(name))) mBy(name).remove(); }
-async function collectAddDir(dir, coll, cat) {
-  let filenames = await mGetFiles(dir);
-  addIf(M.collections, coll);
-  addIf(M.categories, cat);
-  for (const name of filenames) {
-    let img = name;
-    let path = `../assets/${dir}/${name}`;
-    let k = stringBefore(name, '.');
-    let friendly = k;
-    if (isdef(M.superdi[k])) {
-      k = `${coll}_${k}`;
-    }
-    M.superdi[k] = { key: k, friendly: friendly, cats: [cat], ext: stringAfter(name, '.'), img: `${name}`, path: path };
-    addIf(M.names, friendly);
-    lookupAddIfToList(M.byCat, [cat], k);
-    lookupAddIfToList(M.byFriendly, [friendly], k);
-    lookupAddIfToList(M.byCollection, [coll], k);
-  }
-}
-async function collectAddUploadedImages() {
-  let imgs = await mGetYaml('../y/m2.yaml');
-  for (const k in imgs) {
-    if (isdef(M.superdi[k])) continue;
-    let o = imgs[k];
-    M.superdi[k] = { key: k, friendly: o.name, cats: [o.cat], ext: o.ext, img: `${k}.${o.ext}`, path: `../y/img/${k}.${o.ext}` };
-    addIf(M.collections, o.coll);
-    addIf(M.categories, o.cat);
-    addIf(M.names, o.name);
-    lookupAddIfToList(M.byCat, [o.cat], k);
-    lookupAddIfToList(M.byFriendly, [o.name], k);
-    lookupAddIfToList(M.byCollection, [o.coll], k);
-  }
-}
 function collectCats(klist) {
   let cats = [];
   for (const k of klist) {
     M.superdi[k].cats.map(x => addIf(cats, x));
   }
   return cats;
-}
-function collectionAddEmpty(ev) {
-  if (ev.key != 'Enter') return;
-  console.log('onupdate', ev.target, ev.target.value);
-  let val = ev.target.value;
-  addIf(M.collections, val);
-  M.collections.sort()
-  M.byCollection[val] = [];
-  collInitCollection(val);
 }
 function colorHexToRgb(hex) {
   hex = hex.replace(/^#/, '');
@@ -212,27 +170,6 @@ function extractTime(input) {
   } else {
     return ['', input];
   }
-}
-function filterImages(ev) {
-  let s = ev.target.value.toLowerCase().trim();
-  console.log('filter on',s)
-  if (isEmpty(s)) return;
-  let di = {};
-  for (const k of UI.coll.masterKeys) {
-    di[k] = true;
-  }
-  let list = isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
-  if (nundef(list) || isEmpty(list)) {
-    list = [];
-    for (const k of UI.coll.masterKeys) {
-      let o = M.superdi[k];
-      if (k.includes(s) || o.friendly.includes(s)) list.push(k);
-    }
-    //if (isEmpty(list)) return;
-  }
-  UI.coll.keys = list;
-  UI.coll.index = 0;
-  showImageBatch(0,false);
 }
 function findBottomLine(ct, w, h, cgoal) {
   let [_, restlist] = findPointsBoth(ct, 0, w, h - 30, h, cgoal, 20);
@@ -699,29 +636,6 @@ function isSameDate(date1, date2) {
     date1.getDate() === date2.getDate();
 }
 function isWithinDelta(n, goal, delta) { return isBetween(n, goal - delta, goal + delta) }
-async function loadCollections() {
-  M = {};
-  M.superdi = await mGetYaml('../assets/superdi.yaml');
-  M.byCollection = {};
-  M.byCat = {};
-  M.byFriendly = {};
-  M.collections = ['all'];
-  M.categories = [];
-  M.names = [];
-  for (const k in M.superdi) {
-    let o = M.superdi[k];
-    if (isdef(o.coll)) { lookupAddIfToList(M.byCollection, [o.coll], o.key); addIf(M.collections, o.coll); }
-    o.cats.map(x => { lookupAddIfToList(M.byCat, [x], o.key); addIf(M.categories, x); });
-    if (isdef(o.friendly)) { lookupAddIfToList(M.byFriendly, [o.friendly], o.key); addIf(M.names, o.friendly); }
-  }
-  await collectAddUploadedImages();
-  await collectAddDir('img/users', 'users', 'user');
-  await collectAddDir('games/nations/cards', 'nations', 'card');
-  await collectAddDir('games/nations/templates', 'nations', 'symbol');
-  M.collections.sort();
-  M.categories.sort();
-  M.names.sort();
-}
 async function loadImageAsync(src, img) {
   return new Promise((resolve, reject) => {
     img.onload = async () => {
@@ -796,14 +710,14 @@ function loadPlayerColors() {
   M.playerColors = list;
   return list;
 }
-function mButtonX(dParent, sz = 30, offset = 0, id = null) {
+function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
   mIfNotRelative(dParent);
-  let popup = isdef(id) ? mBy(id) : dParent;
-  if (nundef(id)) id = dParent.id;
+  //let popup = isdef(id) ? mBy(id) : dParent;
+  //if (nundef(id)) id = dParent.id;
   let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
-  bx.onclick = ev => { evNoBubble(ev); popup.remove() };
+  bx.onclick = ev => { evNoBubble(ev); handler(ev); } //popup.remove() };
   let o = M.superdi.xmark;
-  el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: 'dimgray', display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+  el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: color, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
 function mCropResizePan(dParent, img, dButtons) {
   let [worig, horig] = [img.offsetWidth, img.offsetHeight];
@@ -999,6 +913,7 @@ function mCropResizePan(dParent, img, dButtons) {
   }
 }
 function mDropZone(dropZone, onDrop) {
+  dropZone.setAttribute('allowDrop',true)
   dropZone.addEventListener('dragover', function (event) {
     event.preventDefault();
     dropZone.style.border = '2px dashed #007bff';
@@ -1829,7 +1744,7 @@ async function onclickItem(ev) {
   if (nundef(key)) { console.log('no key'); return; }
   if (nundef(Items[key])) {
     let o = M.superdi[key];
-    Items[key] = { selected: false };
+    Items[key] = { key:key, selected: false };
     addKeys(o, Items[key]);
   }
   Items[key].div = elem; 
@@ -1893,49 +1808,18 @@ async function onclickNATIONS() {
     }
   }
 }
-async function onclickNext() { showImageBatch(1); }
 async function onclickPlan() { showCalendarApp(); }
 async function onclickPlay() {   showTables(); }
-async function onclickPrev() { showImageBatch(-1); }
 async function onclickTable(id) { await switchToTable(id); }
 async function onclickTest() { console.log('nations!!!!'); }
-async function onclickUpload() {
-  let img = UI.img;
-  let name = valnwhite(UI.imgName.value, rUID('img'));
-  let unique = isdef(M.superdi[name]) ? rUID('img') : name;
-  unique = normalizeString(unique);
-  let coll = valnwhite(UI.imgColl.value, 'other');
-  let dataUrl = imgToDataUrl(img);
-  let o = { image: dataUrl, name: name, unique: unique, coll: coll, path: unique + '.png', ext: 'png' };
-  let resp = await mPostRoute('postImage', o);
-  console.log('resp', resp)
-  await collectAddUploadedImages(); //TODO muss eigentlich nur das eine img adden!
-  M.collections.sort();
-  M.categories.sort();
-  M.names.sort();
-}
-async function onclickView() {
-  showTitle('Collection:');
-  dMenu = mDom(dTitle, { h: '100%' }); mFlexV(dMenu); mStyle(dMenu, { gap: 14 });
-  let d1 = mDiv('dMain'); mFlex(d1);
-  UI.coll.rows = 5; UI.coll.cols = 7;
-  UI.coll.grid = mGrid(UI.coll.rows, UI.coll.cols, d1, { 'align-self': 'start' });
-  UI.coll.cells = [];
-  let bg = mGetStyle('dNav', 'bg');
-  for (let i = 0; i < UI.coll.rows * UI.coll.cols; i++) {
-    let d = mDom(UI.coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
-    mCenterCenterFlex(d);
-    UI.coll.cells.push(d);
-  }
-  collInitCollection(valf(localStorage.getItem('collection'), 'animals'));
-}
-async function ondropPreviewImage(url, key) {
+async function ondropPreviewImage(dParent, url, key) {
   if (isdef(key)) {
     let o = M.superdi[key];
     UI.imgColl.value = o.cats[0];
     UI.imgName.value = o.friendly;
   }
-  let dParent = UI.dDrop;
+  assertion(dParent == UI.dDrop,`problem bei ondropPreviewImage parent:${dParent}, dDrop:${UI.dDrop}`)
+  dParent = UI.dDrop;
   let dButtons = UI.dButtons;
   let dTool = UI.dTool;
   dParent.innerHTML = '';
@@ -1992,7 +1876,7 @@ async function postUserChange(data) {
   data = valf(data, U)
   return Serverdata.users[data.name] = await mPostRoute('postUser', data);
 }
-async function prelims() {
+async function _prelims() {
   if (nundef(M.superdi)) {
     Serverdata = await mGetRoute('session'); //session ist: users,config,
     Info = await mGetYaml('../assets/info.yaml');
@@ -2074,7 +1958,7 @@ function selectAddItems(items, callback = null, instruction = null) {
     let type = item.itemtype = isdef(item.itemtype) ? item.itemtype : is_card(item) ? 'card' : isdef(M.superdi[item.key]) ? 'sym' : isdef(item.o) ? 'container' : isdef(item.src) ? 'img' : 'string';
     let [el, o, d1, fz, fg] = [null, item.o, dInstruction, 30, 'grey'];
     if (type == 'sym') {
-      if (isdef(o.img)) { el = mDom(d1, { h: fz, hmargin: 8, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` }); }
+      if (isdef(o.img)) { el = mDom(d1, { h: fz, hmargin: 8, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` }); }
       else if (isdef(o.text)) el = mDom(d1, { hmargin: 8, fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
       else if (isdef(o.fa6)) el = mDom(d1, { hmargin: 8, fz: fz - 2, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
       else if (isdef(o.fa)) el = mDom(d1, { hmargin: 8, fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
@@ -2192,7 +2076,7 @@ function showImage(key, dParent, styles = {}) {
   mCenterCenterFlex(d1)
   let el = null;
   if (isdef(o.img)) {
-    el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
+    el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
   }
   else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
   else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
@@ -2201,50 +2085,6 @@ function showImage(key, dParent, styles = {}) {
   assertion(el, 'PROBLEM mit' + key);
   mStyle(el, { cursor: 'pointer' })
   return d1;
-}
-function showImageBatch(inc = 0,alertEmpty=true) {
-  let [keys, index, x] = [UI.coll.keys, UI.coll.index, UI.coll.rows * UI.coll.cols];
-  if (isEmpty(keys) && alertEmpty) showMessage('nothing has been added to this collection yet!'); 
-  if (keys.length <= x) inc = 0;
-  index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
-  let list = arrTakeFromTo(keys, index, index + x);
-  UI.coll.index = index;
-  for (let i = 0; i < list.length; i++) {
-    let d=UI.coll.cells[i];
-    mStyle(d, { opacity: 1 });
-    // mClass(d,'magnify_on_hover')
-    showImageInBatch(list[i], d);
-  }
-  for (let i = list.length; i < x; i++) {
-    mStyle(UI.coll.cells[i], { opacity: 0 })
-  }
-}
-function showImageInBatch(key, dParent, styles = {}) {
-  let o = M.superdi[key];
-  addKeys({ bg: rColor() }, styles);
-  mClear(dParent);
-  [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
-  let [sz, fz] = [.9 * w, .8 * h];
-  let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding: 11, box: true });//overflow: 'hidden', 
-  mCenterCenterFlex(d1)
-  let el = null;
-  if (isdef(o.img)) {
-    if (o.cats.includes('card')) {
-      el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
-      mDom(d1, { h: 1, w: '100%' })
-    } else {
-      el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.path}` });
-    }
-  }
-  else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
-  else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-  else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-  assertion(el, 'PROBLEM mit' + key);
-  let label = mDom(d1, { fz: 11 }, { html: key, className: 'ellipsis' }); //,w:'100%'
-  mStyle(d1, { cursor: 'pointer' });
-  d1.onclick = onclickItem;
-  d1.setAttribute('key', key)
 }
 function showMessage(msg,ms=3000){
   let d=mBy('dMessage');

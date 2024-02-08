@@ -11,6 +11,7 @@
 	--fgButtonActive: green;
 	--fgTitle: dimgray;
 	--fgSubtitle: silver;
+	--magnifyScale: 5;
 }
 
 
@@ -203,6 +204,16 @@ body{
 .lighter{
 	background: var(--bgLighter);
 }
+.magnify4 {
+	transform: scale(var(--magnifyScale));
+	transform-origin: 50%;
+	transition: transform 0.2s; /* Animation */
+	z-index:100;
+}
+.topmost {
+	transition: transform 0.2s; /* Animation */
+	z-index:100;
+}
 .magnify_on_hover:hover {
 	transform: scale(4);
 	transform-origin: 50%;
@@ -217,6 +228,7 @@ body{
 	color: var(--fgButton);
 	padding: 0px 8px;
 	text-decoration: none; /* weil a normal underline hat! */
+	cursor: pointer;
 	/* display: block; 
 	padding: .5rem 1rem;
 	border-radius: 50%; */

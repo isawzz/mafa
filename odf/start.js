@@ -1,34 +1,28 @@
 onload = start;
 
-async function start() { test4(); }
+async function start() { test7(); }
 
-async function test4() {
-	await prelimsFast();
+async function test7() {
+	await prelims();
+
+	window.onkeydown = keyDownHandler;
+	window.onkeyup = keyUpHandler;
 
 	await switchToMenu(UI.nav,'collections');
+	onclickNewCollection('hallo')
 	//await switchToUser();
 
 }
 
 
-
-async function prelimsFast() {
+async function prelims() {
 	let t1 = performance.now();
 
 	Serverdata = await mGetRoute('session'); //session ist: users,config,
 
 	let t2 = performance.now();
 
-	// *** in prelims, uncomment the following lines and comment the line after t3 line! ***
-	// await loadCollections();
-	// loadPlayerColors();
-	// let info = await mGetYaml('../assets/info.yaml');
-	// addKeys(info,M);
-	// M.c52 = await mGetYaml('../assets/c52.yaml');
-
-	let t3 = performance.now();
-
-	M = await mGetYaml('../odf/mnew.yaml'); //mnew includes natLoadAssets and c52!
+	await loadAssets();
 
 	let t4 = performance.now();
 
@@ -45,6 +39,6 @@ async function prelimsFast() {
 	//downloadAsYaml(M,'mnew'); 
 	// for (s of 'Clientdata DA Items M Serverdata Session Socket TO U UI Z'.split(' ')) conslog(s)
 	// console.log(`session:${Math.round(t2 - t1)} \nload:${Math.round(t3 - t2)} \nfast load:${Math.round(t4 - t3)} \nsock+rest:${Math.round(t5 - t4)}`)
-	// console.log(`total prelims time:${Math.round(t5 - t1)}`);
+	console.log(`total prelims time:${Math.round(t5 - t1)}`);
 
 }
