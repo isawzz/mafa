@@ -44,8 +44,9 @@ function imgEdit(img,onDone){
   mDom(popup,{},{html:'click on image where you want the center!<br>'});
   mButton('Set center',onDone,popup);
 }
-function imgRecenter(cell,x=100,y=20){
-  console.log('x',UI.mouseX,'y',UI.mouseY)
+function imgRecenter(cell,x,y){
+  console.log('x',UI.mouseX,'y',UI.mouseY);
+  cropOrExpandImageAndGetDataUrl
 
 }
 function extractWords(s){  let parts = splitAtAnyOf(s,' ,-'); return parts; }
@@ -101,8 +102,8 @@ async function cropOrExpandImageAndGetDataUrl(imageSrc,x,y) {
       const scaledHeight = img.height * scale;
 
       // Calculate the center position
-      const dx = isdef(x)?x*scaleWidth : (canvas.width - scaledWidth) / 2;
-      const dy = (canvas.height - scaledHeight) / 2;
+      const dx = isdef(x)?x*scale : (canvas.width - scaledWidth) / 2;
+      const dy = isdef(y)?y*scale :(canvas.height - scaledHeight) / 2;
 
       // Draw the image centered and covering
       ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
