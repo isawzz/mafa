@@ -39,12 +39,14 @@ function imgEdit(img,onDone){
   console.log('edit image!!!');
   let popup = mPopup('Image Editor<br>',document.body,{position:'fixed',top:20,left:20,wmin:400,hmin:400,padding:12});
   let imgNew = mDom(popup,{},{tag:'img',src:img.src});
+  imgNew.onclick = ev=>{UI.mouseX=ev.clientX;UI.mouseY=ev.clientY;}
   mDom(popup,{w100:true,h:1});
   mDom(popup,{},{html:'click on image where you want the center!<br>'});
   mButton('Set center',onDone,popup);
 }
 function imgRecenter(cell,x=100,y=20){
-  console.log()
+  console.log('x',UI.mouseX,'y',UI.mouseY)
+
 }
 function extractWords(s){  let parts = splitAtAnyOf(s,' ,-'); return parts; }
 async function cropOrExpandImageAndGetDataUrl(imageSrc) {
@@ -66,6 +68,40 @@ async function cropOrExpandImageAndGetDataUrl(imageSrc) {
 
       // Calculate the center position
       const dx = (canvas.width - scaledWidth) / 2;
+      const dy = (canvas.height - scaledHeight) / 2;
+
+      // Draw the image centered and covering
+      ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
+
+      // Get the data URL of the canvas
+      const dataUrl = canvas.toDataURL();
+      resolve(dataUrl);
+    };
+    img.onerror = (error) => reject(error);
+
+    // Set the source of the image
+    img.src = imageSrc;
+  });
+}
+async function cropOrExpandImageAndGetDataUrl(imageSrc,x,y) {
+  return new Promise((resolve, reject) => {
+    // Create an image object
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
+    img.onload = () => {
+      // Canvas setup
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 300;
+      canvas.height = 300;
+
+      // Determine scaling needed to "cover" 300x300
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      // Calculate the center position
+      const dx = isdef(x)?x*scaleWidth : (canvas.width - scaledWidth) / 2;
       const dy = (canvas.height - scaledHeight) / 2;
 
       // Draw the image centered and covering
