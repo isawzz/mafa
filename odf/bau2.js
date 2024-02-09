@@ -102,11 +102,11 @@ async function onclickPrev(ev) {
   showImageBatch(coll,-1); 
 }
 function showImageBatch(coll,inc = 0,alertEmpty=false) {
-  let [keys, index, x] = [coll.keys, coll.index, coll.rows * coll.cols];
+  let [keys, index, numCells] = [coll.keys, coll.index, coll.rows * coll.cols];
   if (isEmpty(keys) && alertEmpty) showMessage('nothing has been added to this collection yet!'); 
-  if (keys.length <= x) inc = 0;
-  index += x * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
-  let list = arrTakeFromTo(keys, index, index + x);
+  if (keys.length <= numCells) inc = 0;
+  index += numCells * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
+  let list = arrTakeFromTo(keys, index, index + numCells);
   coll.index = index;
   for (let i = 0; i < list.length; i++) {
     let d=coll.cells[i];
@@ -114,7 +114,7 @@ function showImageBatch(coll,inc = 0,alertEmpty=false) {
     mClass(d,'magnifiable')
     showImageInBatch(list[i], d);
   }
-  for (let i = list.length; i < x; i++) {
+  for (let i = list.length; i < numCells; i++) {
     mStyle(coll.cells[i], { opacity: 0 })
   }
 }

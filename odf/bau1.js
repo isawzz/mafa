@@ -1,4 +1,116 @@
 
+function collFindEmptyCell(coll){
+  let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+  //console.log('free cell', cell);
+  if (nundef(cell)){
+    coll.index++;
+    coll.cells.map(x=>{mClear(x);mStyle(x,{opacity:0});});
+    cell=coll.cells[0];
+  }
+  return cell;
+}
+async function collShowImageInCell(cell,src){
+  mStyle(cell, { opacity: 1 });
+  mClass(cell, 'magnifiable');
+
+  //will ich jetzt awaitable!
+  let img = mDom(cell, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img' });
+  await loadImageAsync(src,img);
+
+  return img;
+
+}
+async function mPromptGadgetFor(cell,placeholderName,onCancel){
+  let rect=getRect(cell); //,document.body);
+  console.log('rect',rect)
+  let gadget = mGadget(placeholderName,{padding:0,position:'absolute',left:rect.l,top:rect.t+rect.h});
+  console.log('gadget',gadget);
+
+  if (isdef(onCancel)){
+    let dia=gadget.dialog;
+    mButton('Cancel',onCancel,dia);
+    dia.oncancel = onCancel;
+  }
+  let res = await mPrompt(gadget);
+  return res;
+
+}
+function imgEdit(img,onDone){
+  console.log('edit image!!!');
+  let popup = mPopup('Image Editor<br>',document.body,{position:'fixed',top:20,left:20,wmin:400,hmin:400,padding:12});
+  let imgNew = mDom(popup,{},{tag:'img',src:img.src});
+  mDom(popup,{w100:true,h:1});
+  mDom(popup,{},{html:'click on image where you want the center!<br>'});
+  mButton('Set center',onDone,popup);
+}
+function imgRecenter(cell,x=100,y=20){
+  console.log()
+}
+function extractWords(s){  let parts = splitAtAnyOf(s,' ,-'); return parts; }
+async function cropOrExpandImageAndGetDataUrl(imageSrc) {
+  return new Promise((resolve, reject) => {
+    // Create an image object
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
+    img.onload = () => {
+      // Canvas setup
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 300;
+      canvas.height = 300;
+
+      // Determine scaling needed to "cover" 300x300
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      // Calculate the center position
+      const dx = (canvas.width - scaledWidth) / 2;
+      const dy = (canvas.height - scaledHeight) / 2;
+
+      // Draw the image centered and covering
+      ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
+
+      // Get the data URL of the canvas
+      const dataUrl = canvas.toDataURL();
+      resolve(dataUrl);
+    };
+    img.onerror = (error) => reject(error);
+
+    // Set the source of the image
+    img.src = imageSrc;
+  });
+}
+
+function presentImageCropper(url){
+	let d=mDom('dMain',{position:'absolute',h:500,w:500,bg:'navy'});
+	let img = mDom(d, { w: 300, h: 300, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
+}
+
+async function imgCropCenter(img, w=300,h=300) {
+  let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h, 0, 0, w, h);
+  const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
+  img.onload = () => {
+    img.onload = null;
+    img.width = w;
+    img.height = h;
+    mStyle(img, { w: w, h: h });
+    mStyle(dParent, { w: w, h: h });
+    callback();
+  }
+  img.src = imgDataUrl;
+  return imgDataUrl;
+}
+
+async function postImage(img,path){
+  let dataUrl = imgToDataUrl(img);
+  let o = { image: dataUrl, path:path };
+  let resp = await mPostRoute('postImage', o);
+  console.log('resp', resp); //sollte path enthalten!
+}
+
 async function onclickCollections() {
 
   let dPanes = mDom('dMain'); mFlex(dPanes);
@@ -9,21 +121,21 @@ async function onclickCollections() {
 
   let collName = localStorage.getItem('collection');
   if (nundef(collName) || !M.collections.includes(collName)) collName = 'animals'
-  
+
   UI.collPrimary = { div: dPrimary, name: collName }; //{name:'amanda'};
   UI.collSecondary = { div: dSecondary, name: null };
   collOpenPrimary(5, 6);
 }
 function collOpenPrimary(rows, cols) { collPresent(UI.collPrimary, rows, cols); UI.collPrimary.isOpen = true; }
-function collOpenSecondary(rows, cols) { 
+function collOpenSecondary(rows, cols) {
   let coll = UI.collSecondary;
-  let d = iDiv(coll); 
-  mStyle(d, { wmin: 450 }); 
-  collPresent(coll, rows, cols); 
-  coll.isOpen = true; 
+  let d = iDiv(coll);
+  mStyle(d, { wmin: 450 });
+  collPresent(coll, rows, cols);
+  coll.isOpen = true;
   coll.dInstruction.innerHTML = '* drag images into the shaded area *'
   let grid = coll.grid;
-  mStyle(grid,{bg:'#00000030'})
+  mStyle(grid, { bg: '#00000030' })
   mDropZoneX(grid, ondropImage);
 
 
@@ -31,7 +143,7 @@ function collOpenSecondary(rows, cols) {
   //mButtonX(d,30);
 }
 function mDropZoneX(dropZone, onDrop) {
-  dropZone.setAttribute('allowDrop',true)
+  dropZone.setAttribute('allowDrop', true)
   dropZone.addEventListener('dragover', function (event) {
     event.preventDefault();
     dropZone.style.border = '2px dashed #007bff';
@@ -47,94 +159,45 @@ function mDropZoneX(dropZone, onDrop) {
     if (files.length > 0) {
       const reader = new FileReader();
       reader.onload = evReader => {
-        onDrop(event,evReader);
+        onDrop(event, evReader);
       };
       reader.readAsDataURL(files[0]);
     }
   });
   return dropZone;
 }
-function collAddItem(coll,item){
-  console.log('adding',item,'to collection',coll)
-}
-async function ondropImage(evDrop, evReader) {
-  //console.log('evReader',evReader); return;
-  let [url,dropTarget,dDrop,item] = [evReader.target.result,evDrop.target,evToAttrElem(evDrop,'allowDrop').elem,UI.draggedItem];
-
-  console.log(dropTarget,dDrop,item); //return;
-  UI.draggedItem = null;
-
-  let coll = UI.collSecondary;
-
-  if (isdef(item)){
-    //user dragged from an item on the page
-    collAddItem(coll,item);
-  }else{
-    //resize
-    //hier muss ich ein superdi item generaten!
-    //brauch eigentlich ein prompt! mit multiple zeug drin!
-    //item name (=friendly)=>wird auch fuer key verwendet!
-    //cats: ideally aus liste auswaehlbar multiple!
-    item = {}
+async function collAddItem(coll, key, item) {
+  console.log('adding', key,item, 'to collection', coll);
+  if (nundef(M.superdi[key])){
+    //need to add to superdi and save superdi!
+    M.superdi[key] = item;
+    let res = await mPostRoute('postNewItem', {key:key,item:item});
+    console.log('<=server:',res);
   }
-  //jetzt muss ich das ding in eine cell reingeben!
-  //wie find ich eine freie cell?
-  let cell = coll.cells.find(x=>mGetStyle(x,'opacity')==0);
-  console.log('free cell',cell);
-  if (isdef(cell)) {
-    mStyle(cell, { opacity: 1 });
-    mClass(cell,'magnifiable')
-    console.log('item',item)
-    showImageInBatch(item.key, cell);
-  }
+  for (const cat of item.cats) lookupAddIfToList(M.byCat, [cat], key);
+  for (const coll of item.colls) lookupAddIfToList(M.byCollection, [coll], key);
+  lookupAddIfToList(M.byFriendly, [item.friendly], key)
+  M.categories = Object.keys(M.byCat); M.categories.sort();
+	M.collections = Object.keys(M.byCollection); M.collections.sort();
+	M.names = Object.keys(M.byFriendly); M.names.sort();
 
 
 }
-function muellrest(){
 
-  return;
-  // console.log('dropped url',url,'key',key, 'dDrop',dDrop); //url sind die data!
-  console.log('key',key, 'dDrop',ev.target); //url sind die data! dDrop ist ein fileReader!
-  let d=evToAttrElem(ev,'allowDrop')
-  console.log('d',d.elem);
-  //dDrop kann auch ein opacity 0 cell sein!
-  if (isdef(key)) {
-    let o = M.superdi[key];
-    UI.imgColl.value = o.cats[0];
-    UI.imgName.value = o.friendly;
-  }
-  let dParent = UI.dDrop;
-  let dButtons = UI.dButtons;
-  let dTool = UI.dTool;
-  dParent.innerHTML = '';
-  dButtons.innerHTML = '';
-  dTool.innerHTML = '';
-  let img = UI.img = mDom(dParent, {}, { tag: 'img', src: url });
-  img.onload = async () => {
-    img.onload = null;
-    UI.img_orig = new Image(img.offsetWidth, img.offsetHeight);
-    UI.url = url;
-    let tool = UI.cropper = mCropResizePan(dParent, img);
-    addToolX(tool, dTool)
-    mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
-    mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
-  }
-}
-
-function clearParent(ev){mClear(ev.target.parentNode);}
+function clearParent(ev) { mClear(ev.target.parentNode); }
 function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPrimary.isOpen = false; }
-function collCloseSecondary() { 
-  let d = iDiv(UI.collSecondary); 
-  mClear(d); 
-  mStyle(d, { w: 0, wmin: 0 }); 
-  UI.collSecondary.isOpen = false; 
+function collCloseSecondary() {
+  let d = iDiv(UI.collSecondary);
+  mClear(d);
+  mStyle(d, { w: 0, wmin: 0 });
+  UI.collSecondary.isOpen = false;
 
 }
-async function onclickNewCollection(name) { 
+async function onclickNewCollection(name) {
   if (nundef(name)) name = await mPrompt(UI.gadgetNewCollection);
   UI.collSecondary.name = name;
-  collOpenPrimary(6, 4); 
-  collOpenSecondary(6, 3); 
+  collOpenPrimary(6, 4);
+  collOpenSecondary(1, 2);
 }
 function collSidebar() {
 
@@ -144,6 +207,6 @@ function collSidebar() {
   //let c1=mDom(d,{padding:4},{html:'new collection',className:'nav-link'})
   let c1 = UI.newCollection = mCommand(d, 'newCollection', 'New Collection');
 
-  UI.gadgetNewCollection = mGadget('newCollection',{left:16,top:160},{placeholder:`<enter name>`});
+  UI.gadgetNewCollection = mGadget('newCollection', { left: 16, top: 160 }, { placeholder: `<enter name>` });
 }
 

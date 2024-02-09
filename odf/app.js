@@ -14,8 +14,10 @@ const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
 const configFile = path.join(uploadDirectory, 'config.yaml');
 const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
+const superdiFile = path.join(assetsDirectory, 'm.yaml');
 const tablesDir = path.join(dbDirectory, 'tables');
 var Session = {}; // session ist nur fuer temp data: just mem
+var Superdi = {};
 
 const app = express();
 app.use(bodyParser.json({ limit: '200mb' })); //works!!!
@@ -345,6 +347,15 @@ app.post('/deleteTable', (req, res) => {
 	}
 	res.json('table deleted');
 });
+app.post('/postConfig', (req, res) => {
+	console.log('<== post config')
+	let newConfig = req.body;
+	let oldConfig = Session.config;
+	Session.config = deepMerge(oldConfig, newConfig);
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	res.json(Session.config);
+});
 app.post('/postEvent', (req, res) => {
 	let id = req.body.id;
 	let data = req.body;
@@ -356,6 +367,30 @@ app.post('/postEvent', (req, res) => {
 	let y = yaml.dump(Session.events);
 	fs.writeFileSync(fname, y, 'utf8');
 	res.json(data);
+});
+app.post('/postImage', (req, res) => {
+	console.log('<== post image')
+	const data = req.body;
+	let p = data.path;
+	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+	let fname;
+	if (isdef(data.coll)) {
+		//fname = path.join(uploadDirectory, 'img', p);
+		let dir = path.join(assetsDirectory, 'img', data.coll);
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+		fname = path.join(dir, p);
+		//hier mach ich bisschen was anderes:
+		//wenn diese coll noch kein dir hat (in assets/img)mach ein neues dir in assets/img und tue die pic da hinein!
+		//fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
+	} else {
+		fname = path.join(__dirname, p);
+	}
+	console.log('fname', fname); //console.log('save to', p, __dirname)
+	fs.writeFileSync(fname, base64Data, 'base64');
+	res.json({
+		message: 'File uploaded successfully',
+		fileName: fname,
+	});
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
@@ -369,33 +404,19 @@ app.post('/postUser', (req, res) => {
 	fs.writeFileSync(fname, y, 'utf8');
 	res.json(data);
 });
-app.post('/postConfig', (req, res) => {
-	console.log('<== post config')
-	let newConfig = req.body;
-	let oldConfig = Session.config;
-	Session.config = deepMerge(oldConfig, newConfig);
-	let y = yaml.dump(Session.config);
-	fs.writeFileSync(configFile, y, 'utf8');
-	res.json(Session.config);
-});
-app.post('/postImage', (req, res) => {
-	console.log('<== post image')
-	const data = req.body;
-	let p = data.path;
-	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
-	let fname;
-	if (isdef(data.coll)) {
-		fname = path.join(uploadDirectory, 'img', p);
-		fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
-	} else {
-		fname = path.join(__dirname, '..', p);
+app.post('/postNewItem', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key]))	{
+		M.superdi[key] = item;
+		let y = yaml.dump(M);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key=key;
+		io.emit('superdi',item);
+		res.json(`item ${key} posted successfully!`);
+	}else{
+		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
 	}
-	console.log('fname', fname); //console.log('save to', p, __dirname)
-	fs.writeFileSync(fname, base64Data, 'base64');
-	res.json({
-		message: 'File uploaded successfully',
-		fileName: fname,
-	});
 });
 app.post('/postNewTable', (req, res) => {
 	let id = req.body.id;
@@ -416,6 +437,8 @@ async function init() {
 	Session.users = valf(yaml.load(yamlFile), {});
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
 	Session.events = valf(yaml.load(yamlFile), {});
+	yamlFile = fs.readFileSync(superdiFile, 'utf8');
+	M = valf(yaml.load(yamlFile), {});
 	Session.tables = {};
 	console.log('tablesDir',tablesDir)
 	let tablefiles = await fsp.readdir(tablesDir);

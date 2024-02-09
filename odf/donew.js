@@ -96,7 +96,7 @@ function menuOpen(menu, key) {
 }
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
-	let dialog = mDom(d, { w100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
+	let dialog = mDom(d, { w100: true,h100:true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
 	//addKeys({ position: 'fixed', top: 40, left: 0, display: 'inline-block', padding: 12, box: true },styles)
 	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
 	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });

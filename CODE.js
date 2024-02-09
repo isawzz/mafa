@@ -1,3 +1,106 @@
+//#region ai cropImageTo300Center
+
+
+//WORKS!!!!
+async function _2cropOrExpandImageAndGetDataUrl(imageSrc) {
+  return new Promise((resolve, reject) => {
+    // Create an image object
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
+    img.onload = () => {
+      // Canvas setup
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 300;
+      canvas.height = 300;
+
+      // Determine scaling needed to "cover" 300x300
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      // Calculate the center position
+      const dx = (canvas.width - scaledWidth) / 2;
+      const dy = (canvas.height - scaledHeight) / 2;
+
+      // Draw the image centered and covering
+      ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
+
+      // Get the data URL of the canvas
+      const dataUrl = canvas.toDataURL();
+      resolve(dataUrl);
+    };
+    img.onerror = (error) => reject(error);
+
+    // Set the source of the image
+    img.src = imageSrc;
+  });
+}
+
+// Example usage
+async function _2processImage() {
+  try {
+    const dataUrl = await cropOrExpandImageAndGetDataUrl('path/to/your/image.jpg');
+    console.log(dataUrl);
+    // Use the data URL, e.g., set it as the src for an image element
+    document.querySelector('img#result').src = dataUrl;
+  } catch (error) {
+    console.error('Failed to process the image:', error);
+  }
+}
+
+//___________________________________________________
+
+
+async function _1cropImageAndGetDataUrl(imageSrc) {
+  return new Promise((resolve, reject) => {
+    // Create an image object
+    const img = new Image();
+    // CORS permission when loading an image from a different origin
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      // Create a canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size to the target size
+      canvas.width = 300;
+      canvas.height = 300;
+      
+      // Calculate source coordinates
+      const startX = Math.max(0, (img.width - 300) / 2);
+      const startY = Math.max(0, (img.height - 300) / 2);
+      
+      // Draw the image cropped and centered
+      ctx.drawImage(img, startX, startY, 300, 300, 0, 0, 300, 300);
+      
+      // Get the data URL of the canvas
+      const dataUrl = canvas.toDataURL();
+      resolve(dataUrl);
+    };
+    img.onerror = (error) => reject(error);
+    
+    // Set the source of the image to the provided imageSrc
+    img.src = imageSrc;
+  });
+}
+
+// Example usage
+async function _1processImage() {
+  try {
+    const dataUrl = await cropImageAndGetDataUrl('path/to/your/image.jpg');
+    console.log(dataUrl);
+    // You can now use the data URL, e.g., set it as the src for an image element
+    document.querySelector('img#result').src = dataUrl;
+  } catch (error) {
+    console.error('Failed to process the image:', error);
+  }
+}
+
+// Call the function
+//processImage();
+
+//#endregion
 //#region ai version fuer magnify but still fit on page:
 document.querySelectorAll('img').forEach(img => {
   img.addEventListener('mouseenter', function(e) {
@@ -313,7 +416,157 @@ function toggleShow(t, state) {
 //#endregion
 
 //#region odf
+async function ondropImage(evDrop, evReader) {
+  //console.log('evReader',evReader); return;
+  let [url, dropTarget, dDrop, item] = [evReader.target.result, evDrop.target, evToAttrElem(evDrop, 'allowDrop').elem, UI.draggedItem];
 
+  console.log(dropTarget, dDrop, item); //return;
+  UI.draggedItem = null;
+
+  let coll = UI.collSecondary;
+
+  if (isdef(item)) {
+    //user dragged from an item on the page
+    assertion(isdef(item.key),'NO KEY!!!!!');
+    await collAddItem(coll,item.key, item);
+    //show in cell
+    let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+    console.log('free cell', cell);
+    if (isdef(cell)) {
+      mStyle(cell, { opacity: 1 });
+      mClass(cell, 'magnifiable')
+      console.log('item', item)
+      showImageInBatch(item.key, cell);
+    }
+  } else {
+    let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+
+    let img = await collShowImageInCell(cell,url);// console.log('cell img loaded!!!!')
+
+    let friendly = await mPromptGadgetFor(cell,'name'); console.log('the name is',friendly)
+
+    let cats = await mPromptGadgetFor(cell,'categories'); cats = extractWords(cats); console.log('the categories are',cats);
+
+    let filename = (isdef(M.superdi[friendly])?'i'+get_timestamp() : friendly) + '.png'; console.log('filename',filename);
+
+		let dataUrl = await cropOrExpandImageAndGetDataUrl(url);
+		let o = { image: dataUrl, coll:coll.name, path:filename };
+		let resp = await mPostRoute('postImage', o);	console.log('resp', resp); //sollte path enthalten!
+
+    //jetzt hab ich das complete item und kann es zu coll adden!
+    let key = stringBefore(filename,'.');
+    let imgPath = `../assets/img/${coll.name}/${filename}`;
+    let item = {friendly:friendly,img:imgPath,cats:cats,colls:[coll.name]};
+    resp = await collAddItem(coll,key,item);
+
+    // let res = await postImage(imgHidden,'../odf/test.png'); console.log('res',res);
+
+    // let imgHidden = mDom(document.body, { w: 300, h: 300, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url, width:300, height:300 });
+    // imgHidden.onload = async () => {
+		// 	let res = await postImage(imgHidden,'../odf/test.png'); console.log('res',res)
+
+		// 	return;
+
+
+
+    //   let dataUrl = imgToDataUrl(imgHidden);
+    //   let o = { image: dataUrl, coll:coll.name, path:filename };
+    //   let resp = await mPostRoute('postImage', o);
+    //   console.log('resp', resp); //sollte path enthalten!
+
+		// 	//jetzt hab ich das complete item und kann es zu coll adden!
+		// 	let key = stringBefore(filename,'.');
+		// 	let imgPath = `../assets/img/${coll.name}/${filename}`;
+		// 	let item = {friendly:friendly,img:imgPath,cats:cats,colls:[coll.name]};
+		// 	resp = await collAddItem(coll,key,item);
+
+
+    //   //   //==>jetzt muss ich nach cats, friendly,... fragen!
+    //   //   //open a Gadget to ask for friendly and a list of cats to pick cats from or enter new cats
+    //   //   console.log('opening dialog!!!');
+    //   //   let path = `../assets/img/${coll.name}/${unique}.png`;
+    //   //   let cats=[];
+    //   //   console.log('new item:',unique,coll.name,path,friendly,cats);
+    //   //   item = {key:unique,friendly:friendly,cats:[],colls:[coll.name],img:path}
+    //   //   await collAddItem(coll,unique,item)
+    //   //   //add the name (showImageInBatch!)
+
+
+    // }
+  }
+}
+
+async function ondropImage(evDrop, evReader) {
+  //console.log('evReader',evReader); return;
+  let [url, dropTarget, dDrop, item] = [evReader.target.result, evDrop.target, evToAttrElem(evDrop, 'allowDrop').elem, UI.draggedItem];
+
+  console.log(dropTarget, dDrop, item); //return;
+  UI.draggedItem = null;
+
+  let coll = UI.collSecondary;
+
+  if (isdef(item)) {
+    //user dragged from an item on the page
+    collAddItem(coll, item);
+    //show in cell
+    let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+    console.log('free cell', cell);
+    if (isdef(cell)) {
+      mStyle(cell, { opacity: 1 });
+      mClass(cell, 'magnifiable')
+      console.log('item', item)
+      showImageInBatch(item.key, cell);
+    }
+  } else {
+    // presentImageCropper(url); return;
+    let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+    console.log('free cell', cell);
+    if (isdef(cell)) {
+      mStyle(cell, { opacity: 1 });
+      mClass(cell, 'magnifiable')
+      let img = mDom(document.body, { w: 300, h: 300, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
+      // let img = mDom(cell, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
+      //let img = UI.img = mDom(dParent, {}, { tag: 'img', src: url, });
+      img.onload = async () => {
+        console.log('image loaded');
+        let dataUrl = imgToDataUrl(img);
+        let unique = getUID('test');
+        let o = { image: dataUrl, unique: unique, coll: coll.name, path: unique + '.png' };
+        let resp = await mPostRoute('postImage', o);
+        console.log('resp', resp); //sollte path enthalten!
+        let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+        console.log('free cell', cell);
+        if (isdef(cell)) {
+          mStyle(cell, { opacity: 1 });
+          mClass(cell, 'magnifiable')
+          let imgSmall = mDom(cell, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
+        }
+            // img.onload = null;
+        // UI.img_orig = new Image(img.offsetWidth, img.offsetHeight);
+        // UI.url = url;
+        // let tool = UI.cropper = mCropResizePan(dParent, img);
+        // addToolX(tool, dTool)
+        // mDom(dButtons, { w: 120 }, { tag: 'button', html: 'Upload', onclick: onclickUpload, className: 'input' })
+        // mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
+      }
+    }
+    return;
+
+    return;
+
+
+
+    //resize
+    //hier muss ich ein superdi item generaten!
+    //brauch eigentlich ein prompt! mit multiple zeug drin!
+    //item name (=friendly)=>wird auch fuer key verwendet!
+    //cats: ideally aus liste auswaehlbar multiple!
+    //hier muss ich ein image uploaden! aber wohin??? halt in y/img oder in assets/img/<collname>???
+    item = {}
+  }
+
+
+}
 async function onclickCollections() {
 
   let dPanes = mDom('dMain'); mFlex(dPanes);
