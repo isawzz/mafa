@@ -20,6 +20,35 @@ async function collShowImageInCell(cell,src){
   return img;
 
 }
+function getMouseCoordinatesRelativeToElement(ev, elem) {
+  // Get the bounding rectangle of the element
+  if (nundef(elem)) elem = ev.target;
+  const rect = elem.getBoundingClientRect();
+
+  // Calculate the click's coordinates relative to the element
+  const x = ev.clientX - rect.left;
+  const y = ev.clientY - rect.top;
+
+  return { x, y };
+}
+function openDivCenteredOnElement(divId, targetId) {
+  const div = document.getElementById(divId);
+  const target = document.getElementById(targetId);
+  mIfNotRelative(target);
+
+  // Get target element's position and size
+  const rect = target.getBoundingClientRect();
+
+  // Calculate center position
+  const centerX = rect.left + (rect.width / 2) - (div.offsetWidth / 2);
+  const centerY = rect.top + (rect.height / 2) - (div.offsetHeight / 2);
+
+  // Apply calculated position to the div
+  div.style.left = `${centerX}px`;
+  div.style.top = `${centerY}px`;
+  div.style.position = 'absolute';
+  div.style.display = 'block'; // Make the div visible
+}
 async function mPromptGadgetFor(cell,placeholderName,onCancel){
   let rect=getRect(cell); //,document.body);
   console.log('rect',rect)
@@ -37,15 +66,15 @@ async function mPromptGadgetFor(cell,placeholderName,onCancel){
 }
 function imgEdit(img,onDone){
   console.log('edit image!!!');
-  let popup = mPopup('Image Editor<br>',document.body,{position:'fixed',top:20,left:20,wmin:400,hmin:400,padding:12});
+  let popup = mPopup('Image Editor<br>',document.body,{bg:'grey',position:'absolute',top:20,left:20,wmin:400,hmin:400,padding:12});
   let imgNew = mDom(popup,{},{tag:'img',src:img.src});
-  imgNew.onclick = ev=>{UI.mouseX=ev.clientX;UI.mouseY=ev.clientY;}
+  imgNew.onclick = ev=>{UI.coords = getMouseCoordinatesRelativeToElement(ev,imgNew); UI.mouseX=ev.clientX;UI.mouseY=ev.clientY;}
   mDom(popup,{w100:true,h:1});
   mDom(popup,{},{html:'click on image where you want the center!<br>'});
   mButton('Set center',onDone,popup);
 }
 function imgRecenter(cell,x,y){
-  console.log('x',UI.mouseX,'y',UI.mouseY);
+  console.log('x',UI.mouseX,'y',UI.mouseY, UI.coords);
   cropOrExpandImageAndGetDataUrl
 
 }
@@ -189,14 +218,38 @@ function mDropZoneX(dropZone, onDrop) {
     event.preventDefault();
     dropZone.style.border = '2px dashed #ccc';
   });
-  dropZone.addEventListener('drop', function (event) {
-    event.preventDefault();
+  dropZone.addEventListener('drop', function (evDrop) {
+    evDrop.preventDefault();
     dropZone.style.border = '2px dashed #ccc';
-    const files = event.dataTransfer.files;
+    const files = evDrop.dataTransfer.files;
     if (files.length > 0) {
       const reader = new FileReader();
       reader.onload = evReader => {
-        onDrop(event, evReader);
+        onDrop(evDrop, evReader);
+      };
+      reader.readAsDataURL(files[0]);
+    }
+  });
+  return dropZone;
+}
+function mDropZoneX1(dropZone, onDrop) {
+  dropZone.setAttribute('allowDrop', true)
+  dropZone.addEventListener('dragover', function (event) {
+    event.preventDefault();
+    dropZone.style.border = '2px dashed #007bff';
+  });
+  dropZone.addEventListener('dragleave', function (event) {
+    event.preventDefault();
+    dropZone.style.border = '2px dashed #ccc';
+  });
+  dropZone.addEventListener('drop', function (evDrop) {
+    evDrop.preventDefault();
+    dropZone.style.border = '2px dashed #ccc';
+    const files = evDrop.dataTransfer.files;
+    if (files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = evReader => {
+        onDrop(evDrop, evReader.target.result);
       };
       reader.readAsDataURL(files[0]);
     }

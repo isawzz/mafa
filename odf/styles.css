@@ -103,6 +103,17 @@ body{
 	color: var(--fgButtonActive) !important;
 	background: var(--bgButtonActive) !important;
 } 
+.blink {
+  animation: blinking 0.5s ease-in-out infinite alternate;
+}
+@keyframes blinking {
+  from {
+    opacity: 0.1;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .darker{
 	background: var(--bgDarker);
 }
@@ -114,6 +125,9 @@ body{
 	transform: scale(3);
 	/* transform-origin: 50%; */
 	transition: transform 0.2s; /* Animation */
+}
+.dragover {
+	
 }
 .dropZone {
 	/* min-width: 300px; */

@@ -1,3 +1,14 @@
+async function test7() {
+	await prelims();
+
+	window.onkeydown = keyDownHandler;
+	window.onkeyup = keyUpHandler;
+
+	await switchToMenu(UI.nav,'collections');
+	onclickNewCollection('owls')
+	//await switchToUser();
+
+}
 async function test6(){
 	//prelimsfast kann man auch so machen: load m.yaml, mach die schleiffe
 

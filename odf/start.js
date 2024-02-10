@@ -1,16 +1,36 @@
 onload = start;
 
-async function start() { test7(); }
+async function start() { test11_showUrl(); }
 
-async function test7() {
-	await prelims();
+async function test11_showUrl(){
+	Serverdata = await mGetRoute('session'); //console.log(Serverdata); 
+	let url = Serverdata.config.url; //console.log('url',url)
+	let d=clearBodyDiv({bg:'pink',padding:12,margin:12,wmin:128,hmin:128,display:'inline-block'});
+	ondropShowImage(url,d);
 
-	window.onkeydown = keyDownHandler;
-	window.onkeyup = keyUpHandler;
+}
+async function test10_enableDrop(){
+	let d=clearBodyDiv({bg:'pink',padding:12,margin:12,wmin:128,hmin:128,display:'inline-block'});
+	enableImageDrop(d,ondropShowImage); //x=>console.log('result',x));
 
-	await switchToMenu(UI.nav,'collections');
-	onclickNewCollection('owls')
-	//await switchToUser();
+}
+async function test9_imgEdit(){
+	Serverdata = await mGetRoute('session'); console.log(Serverdata); //session ist: users,config,
+	
+	let url = Serverdata.config.url; console.log('url',url)
+
+	//drop url onto d
+	let d=clearBodyDiv({w:400,h:300,bg:'pink',margin:12});
+	mDropZone1(d,ondropShowImage);
+	//await ondropShowImage(url,d); //works!
+}
+async function test8_imgEdit(){
+
+	let d=clearBodyDiv({w:400,h:300,bg:'pink',margin:12});
+
+	//dragdrop img from source
+	mDropZone1(d,ondropSaveUrl);
+
 
 }
 

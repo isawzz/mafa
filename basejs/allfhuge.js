@@ -9883,7 +9883,7 @@ function being_blackmailed() {
   else if (cmd == 'reject') { post_reject_blackmail(); }
   else { post_defend_blackmail(); }
 }
-function bestContrastingColor(color, colorlist) {
+function bestContrastingColor(color, colorlist=['white','black']) {
   let contrast = 0;
   let result = null;
   let rgb = colorRGB(color, true);
