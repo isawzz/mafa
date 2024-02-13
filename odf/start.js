@@ -10,6 +10,8 @@ async function test13() {
 	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
 	let sz = 300;
 	let img = await imgAsync(d, { h: sz }, { tag: 'img', src: url });
+	//mStyle(img,{w:img.width,h:img.height}); nuetzt nix!
+	
 	mIfNotRelative(d);
 
 	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
@@ -99,8 +101,19 @@ function adjustComplex(panData) {
 }
 async function imgCrop(img,dc){
 	// crop image to cropper
-	const canvas = document.createElement('canvas');
-	//let dims = mGetStyles(dc,{})
+	//const canvas = document.createElement('canvas');
+	let dims = mGetStyles(dc,['left','top','w','h']); console.log('dims',dims);
+	let d1=mDom(document.body);
+	let canvas=mDom(d1,{},{tag:'canvas',width:dims.w,height:dims.h});
+	const ctx = canvas.getContext('2d');
+	//ctx.fillStyle='red';
+	ctx.fillStyle='yellow';
+	ctx.fillRect(0,0,dims.w,dims.h);
+	//ctx.drawImage(img,dims.left,dims.top,img.width,img.height,0,0,dims.width,dims.height)
+	ctx.drawImage(img, 50, 50, 300, 300, 0, 0, 300, 300);
+	//ctx.clearRect(0,0,dims.w,dims.h);
+}
+function hahaha(){
 	let w = canvas.width = mGetStyle(dc,'w');
 	let h = canvas.height = mGetStyle(dc,'h');
 	const ctx = canvas.getContext('2d');
