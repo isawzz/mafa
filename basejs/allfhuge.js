@@ -21069,7 +21069,7 @@ function evToAttrElem(ev, attr) {
   return null;
 }
 function evToClass(ev, className) {
-  let elem = findParentWithClass(className);
+  let elem = findParentWithClass(ev.target,className);
   return elem;
 }
 function evToClosestId(ev) {
@@ -28508,7 +28508,7 @@ function getRect(elem, relto) {
     };
   }
   let r = { x: res.left, y: res.top, w: res.width, h: res.height };
-  addKeys({ l: r.x, t: r.y, r: r.x + r.w, b: r.t + r.h }, r);
+  addKeys({ l: r.x, t: r.y, r: r.x + r.w, b: r.y + r.h }, r);
   return r;
 }
 function getRectInt(elem, relto) {
@@ -42501,6 +42501,11 @@ function mGetStyle(elem, prop) {
   if (nundef(val)) val = getStyleProp(elem, prop);
   if (val.endsWith('px')) return firstNumber(val); else return val;
 }
+function mGetStyles(elem,proplist){
+  let res={};
+  for(const p of proplist){res[p]=mGetStyle(elem,p)}
+  return res;
+}
 function mGetStyleX(elem, prop) {
   let val;
   if (isdef(STYLE_PARAMS[prop])) { val = elem.style[STYLE_PARAMS[prop]]; }
@@ -42608,7 +42613,11 @@ function mHand(n, R, uidParent) {
 }
 function mHasClass(el, className) {
   if (el.classList) return el.classList.contains(className);
-  else return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+  else {
+    let x=!!el.className; //weired stuff!!! dont know why I did that!
+    // console.log('x',x)
+    return isString(x) && !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+  }
 }
 function mHeading(msg, dParent, level, id) {
   let p = mCreate('h' + level);

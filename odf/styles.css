@@ -126,9 +126,6 @@ body{
 	/* transform-origin: 50%; */
 	transition: transform 0.2s; /* Animation */
 }
-.dragover {
-	
-}
 .dropZone {
 	/* min-width: 300px; */
 	/* min-height: 300px; */
@@ -203,6 +200,15 @@ body{
   border-radius: 50%;
   margin: 10px;
   object-fit: cover;
+}
+.imgWrapper {
+  line-height: 0;
+  /* Or font-size: 0; */
+}
+
+.imgWrapper img {
+  display: block;
+  /* Or vertical-align: top; */
 }
 .input {
 	padding: 10px;

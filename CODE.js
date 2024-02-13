@@ -1,3 +1,121 @@
+function adjustCropper(img,dc,sz){
+	let [w,h]=[img.width,img.height];	console.log('sz',w,h,)
+	let [cx,cy,radx,rady,rad]=[w/2,h/2,sz/2,sz/2,sz/2];
+	mStyle(dc,{left:cx-radx,top:cy-rady,w:sz,h:sz});
+
+}
+function adjustCropperBy(dc,x,y,dx,dy){ //},wImg,hImg,wIdeal,hIdeal){
+	// let [w,h]=[img.width,img.height];	console.log('sz',w,h,)
+	// let [cx,cy,radx,rady,rad]=[w/2,h/2,sz/2,sz/2,sz/2];
+	console.log('dx',dx,'dy',dy)
+	//let [x,y]=[mGetStyle(dc,'left'),mGetStyle(dc,'top')]
+
+
+	mStyle(dc,{left:x+dx,top:y+dy}); //,w:sz,h:sz});
+
+}
+function imgExpand(img,dc,sz){	img.width += 20; 	adjustCropper(img,dc,sz);}
+function imgSquish(img,dc,sz){	img.width -= 20; 	adjustCropper(img,dc,sz);}
+function startPanning(ev){
+	console.log('_________startPanning!')
+	const panData={};
+	function panStart(ev){
+		evNoBubble(ev);
+		assertion(nundef(panData.panning),panData)
+		let dc=panData.dCrop=ev.target;
+		panData.cropStartSize = {w:mGetStyle(dc,'w'),h:mGetStyle(dc,'h')}
+		panData.elParent=panData.dCrop.parentNode;
+		panData.img=panData.elParent.querySelector('img, canvas');//console.log('img',panData.img);
+		panData.panning = true;
+		panData.counter = 0;
+		panData.mouseStart=getMouseCoordinatesRelativeToElement(ev,panData.elParent);
+		panData.posStart={x:mGetStyle(dc,'left'),y:mGetStyle(dc,'top')};
+		addEventListener('mouseup',panEnd);
+		panData.elParent.addEventListener('mousemove',panMove);
+		console.log('panStart!',panData.mouseStart); 
+	}
+	function panMove(ev){
+		evNoBubble(ev);
+		if (!panData.panning || ++panData.counter%3) return;
+		panData.mouse=getMouseCoordinatesRelativeToElement(ev,panData.elParent);
+		let [x,y]=[panData.posStart.x,panData.posStart.y];
+		let [dx,dy]=[panData.mouse.x-panData.mouseStart.x,panData.mouse.y-panData.mouseStart.y];
+		[dx,dy]=[Math.round(dx/10)*10,Math.round(dy/10)*10];
+		//calc min distance to any img border!
+
+		adjustCropperBy(panData.dCrop,x,y,dx,dy,panData.img.width,panData.img.height,panData.cropStartSize.w,panData.cropStartSize.h);
+		console.log(panData.mouse);
+	}
+	function panEnd(ev){
+		//evNoBubble(ev);
+		assertion(panData.panning == true);
+		let d=evToClass(ev,'imgWrapper');
+		if (d == panData.elParent){
+			evNoBubble(ev);
+			panData.mouse=getMouseCoordinatesRelativeToElement(ev,panData.elParent);
+			console.log('SUCCESS!',panData.mouse)
+		}
+		removeEventListener('mouseup',panEnd);
+		panData.elParent.removeEventListener('mousemove',panMove);
+		panData.panning = false;
+		console.log('* THE END *',panData)
+	}
+	panStart(ev);
+}
+
+function startPanning(ev){
+	console.log('_________startPanning!')
+	const panData={};
+	function panStart(ev){
+		evNoBubble(ev);
+		console.log('panStart!'); 
+		if (nundef(panData.panning)){
+			panData.panning = true;
+			
+			let dCrop=ev.target;
+			let elParent=dCrop.parentNode;
+			mClass(dCrop,'no_events')
+			let c=getMouseCoordinatesRelativeToElement(ev,elParent);
+			console.log('start panning',c)
+			panData.panning=true;
+			panData.elParent=elParent;
+			panData.dCrop=dCrop;
+			panData.mouseStart=c;
+			elParent.addEventListener('mousemove',panMove);
+			elParent.addEventListener('mouseup',panEnd);
+			window.addEventListener('mouseup',panRestore);
+		}
+	}
+	function panRestore(ev){
+		panData.panning=false;
+		panData.elParent.removeEventListener('mousemove',panMove);
+		panData.elParent.removeEventListener('mouseup',panEnd);
+		window.removeEventListener('mouseup',panRestore);
+	}
+	function panMove(ev){
+		ev.preventDefault();console.log('.');return;
+		if (panData.panning){
+			let elParent=evToClass(ev,'imgWrapper'); 
+			let c = getMouseCoordinatesRelativeToElement(ev,elParent);
+			console.log('...panning',c)
+		}
+	}
+	function panEnd(){
+		ev.preventDefault();console.log('!UP!'); panRestore(ev);return;
+		if (panData.panning){
+			let elParent=evToClass(ev,'imgWrapper'); console.log('d',elParent)
+			let dCrop=elParent.lastChild;
+			mClassRemove(dCrop,'no_events')
+			let c=UI.mouseEnd = getMouseCoordinatesRelativeToElement(ev,elParent);
+			console.log('end panning',c)
+			panData.panning=false;
+		}
+
+	}
+	panStart(ev);
+}
+
+
 //#region ai cropImageTo300Center
 
 

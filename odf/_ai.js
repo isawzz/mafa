@@ -1,3 +1,183 @@
+function createInteractiveCanvas(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = 300 / Math.min(img.width, img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+
+      let isDragging = false;
+      let rect = {x: 100, y: 100, width: 50, height: 50}; // Initial rectangle properties
+      let dragOffsetX, dragOffsetY;
+
+      // Function to check if the mouse position is inside the rectangle
+      function isMouseInRect(x, y) {
+        return x > rect.x && x < rect.x + rect.width && y > rect.y && y < rect.y + rect.height;
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+        ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight); // Redraw image
+        ctx.fillStyle = 'red';
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height); // Draw the rectangle
+      }
+
+      canvas.addEventListener('mousedown', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        if (isMouseInRect(x, y)) {
+          isDragging = true;
+          dragOffsetX = x - rect.x;
+          dragOffsetY = y - rect.y;
+        }
+      });
+
+      canvas.addEventListener('mousemove', (event) => {
+        if (isDragging) {
+          const rect = canvas.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          rect.x = x - dragOffsetX;
+          rect.y = y - dragOffsetY;
+          draw(); // Redraw the canvas with the rectangle in the new position
+        }
+      });
+
+      canvas.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      draw(); // Initial draw
+
+      resolve(canvas);
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+// Example usage
+async function loadAndMakeInteractive(imageUrl) {
+  try {
+    const canvas = await createInteractiveCanvas(imageUrl);
+    document.body.appendChild(canvas);
+  } catch (error) {
+    console.error("Error loading image:", error);
+  }
+}
+
+// Example call
+loadAndMakeInteractive('https://example.com/path/to/your/image.jpg');
+
+
+
+function createScaledCanvasFromImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = 300 / Math.min(img.width, img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+
+      // Add click event listener to draw on canvas
+      canvas.addEventListener('click', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        // Draw a red circle of radius 5 at the click position
+        ctx.fillStyle = 'red';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Calculate the distance to the nearest border
+        const distanceToBorder = Math.min(x, y, canvas.width - x, canvas.height - y);
+        const sideLength = Math.min(300, distanceToBorder);
+
+        // Draw a square centered on the click position
+        // Adjust the starting point to keep the square centered
+        ctx.beginPath();
+        ctx.rect(x - sideLength / 2, y - sideLength / 2, sideLength, sideLength);
+        ctx.stroke();
+      });
+
+      resolve(canvas);
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+// Usage example:
+async function loadAndScaleImage(imageUrl) {
+  try {
+    const canvas = await createScaledCanvasFromImage(imageUrl);
+    document.body.appendChild(canvas);
+  } catch (error) {
+    console.error("Error loading image:", error);
+  }
+}
+
+// Example call
+loadAndScaleImage('https://example.com/path/to/your/image.jpg');
+
+
+
+function createScaledCanvasFromImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      // Calculate the scale to ensure the smaller side is 300px
+      const scale = 300 / Math.min(img.width, img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      // Create a canvas and set its width and height
+      const canvas = document.createElement('canvas');
+      canvas.width = scaledWidth;
+      canvas.height = scaledHeight;
+
+      // Draw the image onto the canvas with the new size
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
+
+      // Resolve the promise with the canvas
+      resolve(canvas);
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+// Usage example:
+async function loadAndScaleImage(imageUrl) {
+  try {
+    const canvas = await createScaledCanvasFromImage(imageUrl);
+    // Do something with the canvas, e.g., add it to the document
+    document.body.appendChild(canvas);
+  } catch (error) {
+    console.error("Error loading image:", error);
+  }
+}
+
+// Example call with an image URL
+loadAndScaleImage('https://example.com/path/to/your/image.jpg');
+
 function enableImageDrop(element, onDropCallback) {
   // Store the original border style to restore it later
   const originalBorderStyle = element.style.border;
