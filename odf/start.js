@@ -1,7 +1,32 @@
 onload = start;
 
-async function start() { test13(); }
+async function start() { test14(); }
 
+async function test14() {
+	Serverdata = await mGetRoute('session'); //console.log(Serverdata); 
+	let url = Serverdata.config.url; //`../assets/img/animals/bird/bird13.png`; // Serverdata.config.url; //console.log('url',url)
+	let dParent = clearBodyDiv();
+	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	let sz = 300;
+	let img = await imgAsync(d, { h: sz }, { tag: 'img', src: url });
+	//mStyle(img,{w:img.width,h:img.height}); nuetzt nix!
+	
+	mIfNotRelative(d);
+
+	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
+	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
+	let dc = mDom(d, { position: 'absolute', left: cx - radx, top: cy - rady, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' }); //,{className:'no_events'}); 
+
+	dc.onmousedown = startPanning;
+
+	mDom(dParent, { w: 1, h: 1 })
+
+	mButton('restart', () => imgReset(img, dc, sz, w,h), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('squish', () => imgSquish(img, dc, sz), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('expand', () => imgExpand(img, dc, sz), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('ok', () => imgCrop(img, dc), dParent, { fz: 30, padding: 10, maleft: 10 });
+
+}
 
 async function test13() {
 	Serverdata = await mGetRoute('session'); //console.log(Serverdata); 
