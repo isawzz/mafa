@@ -9,7 +9,7 @@ async function test16() {
 	window.onkeyup = keyUpHandler;
 
 	await switchToMenu(UI.nav,'collections');
-	onclickNewCollection('owls')
+	onclickNewCollection('favs')
 	//await switchToUser();
 
 }

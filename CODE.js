@@ -1,22 +1,113 @@
-function mist() {
-  //outline rectangle!
-  //kleinere seite
-  let [small, big] = [cv.width > cv.height ? cv.height : cv.width, cv.width < cv.height ? cv.height : cv.width];
-  //let _scale = small<300?
-  let [w, h] = [Math.min(300, cv.width), Math.min(300, cv.h)];
+async function rest(url,dDrop){
 
 
-  let rect = mDom(d, { border: 'red', position: 'absolute', top: c.x - 100, hL }, {});
+	let dParent = mPopup('Editor',document.body);//,{bg:'blue'},'dCollEditPopup');
+	return;
+	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 300];
+	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	mIfNotRelative(d);
+	mStyle(img, { h: sz });
+	mAppend(d, img);
+	let [w0, h0] = [img.width, img.height];
 
-  //modifyInstruction on d
-  let d2 = d.children[1];
-  d2.innerHTML = ''; //drag centerpoint around until you like the outline of your image';
-  mButton('Done', ev => {
+	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+
+	mDom(dParent, { w: 1, h: 1 })
+	mButton('restart', () => imgReset(img, dc, sz, w0, h0), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('squish', () => imgSquish(img, dc, sz), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('expand', () => imgExpand(img, dc, sz), dParent, { fz: 30, padding: 10, maleft: 10 });
+
+	//hier koennt ich inputs fuer name of image und cats machen!
+	mDom(dParent,{h:1});
+	let dinp=mDom(dParent,{padding:10,align:'right',display:'inline-block'})
+
+	mDom(dinp,{display:'inline-block'},{html:'Name: '});
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 130 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+
+	mDom(dinp,{h:1});
+
+	mDom(dinp,{display:'inline-block'},{html:'Categories: '})
+	let inpCats = mDom(dinp, { outline: 'none', w: 130 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
 
 
+	mButton('ok', () => collFinishEditing(img, dc, wOrig, hOrig, cell, inpFriendly,inpCats,coll), dParent, { fz: 30, padding: 10, maleft: 10 });
+	//mButton('cancel', collCancelEditing, dParent, { fz: 30, padding: 10, maleft: 10 });
 
-  });
 
+}
+async function restOnDropShowImage(evDrop, evReader) {
+	//console.log('evReader',evReader); return;
+	let [url, dropTarget, dDrop, item] = [evReader.target.result, evDrop.target, evToAttrElem(evDrop, 'allowDrop').elem, UI.draggedItem];
+
+	console.log(dropTarget, dDrop, item); //return;
+	UI.draggedItem = null;
+
+	let coll = UI.collSecondary;
+
+	if (isdef(item)) {
+		//user dragged from an item on the page
+		assertion(isdef(item.key), 'NO KEY!!!!!');
+		await collAddItem(coll, item.key, item);
+
+		let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+		let img = await collShowImageInCell(cell, url);// console.log('cell img loaded!!!!') //show in cell
+
+
+		// let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+		// console.log('free cell', cell);
+		// if (isdef(cell)) {
+		// 	mStyle(cell, { opacity: 1 });
+		// 	mClass(cell, 'magnifiable')
+		// 	console.log('item', item)
+		// 	showImageInBatch(item.key, cell);
+		// }
+	} else {
+		let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+
+		let img = await collShowImageInCell(cell, url);// console.log('cell img loaded!!!!')
+		//add an edit button to image
+		mButton('edit', async => { imgEditor1(url); }, cell, { position: 'absolute' });
+		return;
+
+		let friendly = await mPromptGadgetFor(cell, 'name', () => clearCell(cell)); console.log('the name is', friendly);
+		if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
+
+		let cats = await mPromptGadgetFor(cell, 'categories', () => clearCell(cell)); cats = extractWords(cats); assertion(isList(cats), `cats not a list!!!!!!! ${cats}`); console.log('the categories are', cats);
+		if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
+
+		let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; console.log('filename', filename);
+
+		let dataUrl = await cropOrExpandImageAndGetDataUrl(url);
+		let o = { image: dataUrl, coll: coll.name, path: filename };
+		// let resp = await mPostRoute('postImage', o);	console.log('resp', resp); //sollte path enthalten!
+
+		//jetzt hab ich das complete item und kann es zu coll adden!
+		let key = stringBefore(filename, '.');
+		let imgPath = `../assets/img/${coll.name}/${filename}`;
+		let item = { friendly: friendly, img: imgPath, cats: cats, colls: [coll.name] };
+		// resp = await collAddItem(coll,key,item);
+
+		console.log('!!!would save image to', filename, 'and add item', item, 'to m.yaml');
+	}
+}
+async function droppedItemOnColl(item, coll) {
+	//user dragged from an item on the page
+	assertion(isdef(item.key), 'NO KEY!!!!!');
+	await collAddItem(coll, item.key, item);
+	//reloadCollection with the new item in it!
+	collOpenSecondary(4,3);
+	showImageBatch(coll,-1); //await onclickPrev();
+	//show in cell
+	// let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+	// let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+	// console.log('free cell', cell);
+	// if (isdef(cell)) {
+	// 	mStyle(cell, { opacity: 1 });
+	// 	mClass(cell, 'magnifiable')
+	// 	console.log('item', item)
+	// 	showImageInBatch(item.key, cell);
+	// }
 
 }
 

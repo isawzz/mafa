@@ -1,3 +1,4 @@
+
 function createInteractiveCanvas(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -53,6 +54,25 @@ async function imgCropCenter(img, w=300,h=300) {
   }
   img.src = imgDataUrl;
   return imgDataUrl;
+}
+async function imgEditor(cell,src){
+	let m = await imgMeasure(src); //console.log('sz',m);  
+	let [img, wOrig, hOrig, sz, dParent] = [m.img, m.w, m.h, 300, mPopup('',cell)];
+	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	mIfNotRelative(d);
+	mStyle(img, { h: sz });
+	mAppend(d, img);
+	let [w0, h0] = [img.width, img.height];
+
+	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+
+	mDom(dParent, { w: 1, h: 1 })
+	mButton('restart', () => imgReset(img, dc, sz, w0, h0), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('squish', () => imgSquish(img, dc, sz), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('expand', () => imgExpand(img, dc, sz), dParent, { fz: 30, padding: 10, maleft: 10 });
+	mButton('ok', () => imgCrop(img, dc, wOrig, hOrig), dParent, { fz: 30, padding: 10, maleft: 10 });
+
 }
 function imgEditor1(){
   console.log('EDITOR COMING SOON!!!')
@@ -276,6 +296,28 @@ function openDivCenteredOnElement(divId, targetId) {
   div.style.top = `${centerY}px`;
   div.style.position = 'absolute';
   div.style.display = 'block'; // Make the div visible
+}
+async function promptForNameAndCats() {
+	let friendly = await mPromptGadgetFor(cell, 'name', () => clearCell(cell)); console.log('the name is', friendly);
+	if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
+
+	let cats = await mPromptGadgetFor(cell, 'categories', () => clearCell(cell)); cats = extractWords(cats); assertion(isList(cats), `cats not a list!!!!!!! ${cats}`); console.log('the categories are', cats);
+	if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
+
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; console.log('filename', filename);
+
+	let dataUrl = await cropOrExpandImageAndGetDataUrl(url);
+	let o = { image: dataUrl, coll: coll.name, path: filename };
+	// let resp = await mPostRoute('postImage', o);	console.log('resp', resp); //sollte path enthalten!
+
+	//jetzt hab ich das complete item und kann es zu coll adden!
+	let key = stringBefore(filename, '.');
+	let imgPath = `../assets/img/${coll.name}/${filename}`;
+	let item = { friendly: friendly, img: imgPath, cats: cats, colls: [coll.name] };
+	// resp = await collAddItem(coll,key,item);
+
+	console.log('!!!would save image to', filename, 'and add item', item, 'to m.yaml');
+
 }
 async function showUrlInCanvas(dParent,src){
   return new Promise((resolve, reject) => {

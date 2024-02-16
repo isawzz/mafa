@@ -92,9 +92,10 @@ async function collAddItem(coll, key, item) {
 	M.collections = Object.keys(M.byCollection); M.collections.sort();
 	M.names = Object.keys(M.byFriendly); M.names.sort();
 
-	
+
 
 }
+function collCancelEditing(d) { d.remove(); }
 function collClear() { closeLeftSidebar(); clearMain(); }
 function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPrimary.isOpen = false; }
 function collCloseSecondary() {
@@ -135,6 +136,53 @@ function collFindEmptyCell(coll){
   }
   return cell;
 }
+async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats,coll) {
+	// crop image to cropper
+	//const canvas = document.createElement('canvas');
+	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); console.log('dims', dims);
+
+	let wScale = img.width / wOrig;
+	let hScale = img.height / hOrig;
+	console.log('scale', wScale, hScale, wOrig, hOrig, img.width, img.height)
+
+	let d1 = mDom(document.body, { margin: 10 });
+	let canvas = mDom(d1, {}, { tag: 'canvas', width: dims.w, height: dims.h });
+	const ctx = canvas.getContext('2d');
+
+	//ctx.fillStyle='yellow';	ctx.fillRect(0,0,dims.w,dims.h);
+
+	// ctx.drawImage(img,dims.left,dims.top,img.width*scale,img.height*scale,0,0,dims.w,dims.h)
+	//ctx.drawImage(img, 50, 50, 300, 300, 0, 0, 300, 300);
+	//ctx.clearRect(0,0,dims.w,dims.h);
+
+	ctx.drawImage(img, dims.left / wScale, dims.top / hScale, (dims.w) / wScale, img.height / hScale, 0, 0, dims.w, dims.h)
+
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+
+	if (isEmpty(inpFriendly.value)) inpFriendly.value='pic'
+	//if (isEmpty(inpCats.value)) inpCats.value='animal'
+
+	let friendly = inpFriendly.value;
+	let cats = extractWords(valf(inpCats.value,''));
+	console.log('cats',cats)
+	//paste dataUrl into cell
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; console.log('filename', filename);
+	let o = { image: dataUrl, coll: coll.name, path: filename };
+	let resp = await mPostRoute('postImage', o);	console.log('resp', resp); //sollte path enthalten!
+
+	//jetzt hab ich das complete item und kann es zu coll adden!
+	let key = stringBefore(filename, '.');
+	let imgPath = `../assets/img/${coll.name}/${filename}`;
+	let item = { key:key, friendly: friendly, img: imgPath, cats: cats, colls: [coll.name] };
+
+
+	dPopup.remove();
+	await collOnDroppedItem(item,coll);
+	//resp = await collAddItem(coll,key,item);
+
+	//console.log('!!!would save image to', filename, 'and add item', item, 'to m.yaml');
+
+}
 function collInitCollection(name, coll) {
 	let list = [];
 	if (name == 'all' || isEmpty(name)) {
@@ -169,24 +217,90 @@ function collInitCollection(name, coll) {
 	//let wButtons=coll.w<650?'100%':'auto'; // mDom(dMenu,{h:1,w100:true})
 	d=mDom(dMenu,{gap:10,align:'right'});
 	if (coll.cols<6) mStyle(d,{w100:true}); //?true:false
-	mButton('prev', onclickPrev, d, { w: 70, margin: 0 }, 'input');
+	if (coll == UI.collSecondary) mButton('done', collCloseSecondary, d, { w: 70, margin: 0, maleft:10 }, 'input');
+	mButton('prev', onclickPrev, d, { w: 70, margin: 0, maleft:10 }, 'input');
 	mButton('next', onclickNext, d, { w: 70, margin: 0, maleft:10 }, 'input');
 	coll.keys = list;
 	coll.index = 0;	coll.pageIndex = 0;
 	showImageBatch(coll);
 	//showDiv(dMenu); return;
 }
+async function collOnDropImage(url, dDrop) {
+	let item = UI.draggedItem;
+	//console.log(dDrop, item); //return;
+	UI.draggedItem = null;
+	let coll = UI.collSecondary;
+
+	if (isdef(item)) return await collOnDroppedItem(item, coll);
+
+	//now this is the case when item is NOT defined!
+	let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+	// let img = await collShowImageInCell(cell, url); // ist zwar gut aber ich will gleich den editor!
+	// NO! mButton('edit', async => { imgEditor1(url); }, cell, { position: 'absolute' }); //add an edit button to image
+
+	//await imgEditor(cell,url);
+	let m = await imgMeasure(url); console.log('sz', m);
+
+	let dPopup = mDom(document.body, { position: 'fixed', top: 0, left: 0, wmin: 400, hmin: 400, bg: 'pink' });
+
+	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 300];
+	let d = mDom(dPopup, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	mIfNotRelative(d);
+	mStyle(img, { h: sz });
+	mAppend(d, img);
+	let [w0, h0] = [img.width, img.height];
+
+	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+
+
+	let db1 = mDom(dPopup, { bg: 'red', padding: 10, display: 'flex', gap: 10, 'justify-content': 'center' });
+	mButton('restart', () => imgReset(img, dc, sz, w0, h0), db1, { w: 70 }, 'input');
+	mButton('squish', () => imgSquish(img, dc, sz), db1, { w: 70 }, 'input');
+	mButton('expand', () => imgExpand(img, dc, sz), db1, { w: 70 }, 'input');
+
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = coll.masterKeys.find(x => x == `${coll.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = coll.masterKeys.find(x => x == `${coll.name}${iDefault}`); }
+	defaultName = `${coll.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+
+	mDom(dinp, { h: 1 });
+
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+
+
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('cancel', () => collCancelEditing(dPopup), db2, { w: 70 }, 'input');
+	mButton('OK', () => collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, coll), db2, { w: 70 }, 'input');
+
+}
+async function collOnDroppedItem(item, coll) {
+	//user dragged from an item on the page
+	assertion(isdef(item.key), 'NO KEY!!!!!');
+	await collAddItem(coll, item.key, item);
+	collOpenSecondary(4, 3);
+	showImageBatch(coll, -1);
+}
 function collOpenPrimary(rows, cols) { collPresent(UI.collPrimary, rows, cols); UI.collPrimary.isOpen = true; }
 function collOpenSecondary(rows, cols) {
   let coll = UI.collSecondary;
   let d = iDiv(coll);
-  mStyle(d, { wmin: 450 });
+  mStyle(d, { wmin: 450,border:'white' });
   collPresent(coll, rows, cols);
   coll.isOpen = true;
   coll.dInstruction.innerHTML = '* drag images into the shaded area *'
   let grid = coll.grid;
-  mStyle(grid, { bg: '#00000030' })
-  enableImageDrop(grid, ondropImage);
+  //mStyle(grid, { bg: '#00000030' })
+  enableImageDrop(grid, collOnDropImage);
+
+
 	//mDropZone1(grid, ondropImage);
   //mButtonX(d, collCloseSecondary); 
 }
@@ -201,7 +315,8 @@ function collPresent(coll, rows,cols) {
 	mStyle(dMenu, { gap: 10 });
 
 	// mDom(d1,{w100:true,h:1});
-	let dInstruction = coll.dInstruction = mDom(d1, { align: 'center', fg: getThemeFg() }, { html: '* press Control key when hovering to magnify image! *' })
+	let fg = getThemeFg();
+	let dInstruction = coll.dInstruction = mDom(d1, { align: 'center', fg: fg }, { html: '* press Control key when hovering to magnify image! *' })
 	// mDom(d1,{w100:true,h:1});
 
 	//coll = uiTypeCollection(5,6,)
@@ -215,6 +330,8 @@ function collPresent(coll, rows,cols) {
 		coll.cells.push(d);
 	}
 	mStyle(dInstruction, { w: mGetStyle(coll.grid, 'w') });
+
+	coll.dPageIndex = mDom(d1,{fg:fg,padding:10,align:'right'});//,{html:`${coll.pageIndex+1}`})
 
 	collInitCollection(coll.name, coll);
 }
@@ -421,7 +538,7 @@ async function imgCrop(img,dc,wOrig,hOrig){
 }
 function imgExpand(img, dc, sz) { img.width += 20; adjustCropper(img, dc, sz);return [img.width,img.height];  }
 function imgReset(img,dc,sz,w,h){img.width=w;img.height=h;adjustCropper(img,dc,sz);return[w,h];}
-function imgSquish(img, dc, sz) { img.width -= 20; adjustCropper(img, dc, sz);return [img.width,img.height]; }
+function imgSquish(img, dc, sz) { let w=mGetStyle(dc,'w'); if (img.width == w) return; else {img.width = Math.max(img.width-20,w); adjustCropper(img, dc, sz);return [img.width,img.height];} }
 async function imgMeasure(src) {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
@@ -569,6 +686,7 @@ function showImageBatch(coll,inc = 0,alertEmpty=false) {
   for (let i = list.length; i < numCells; i++) {
     mStyle(coll.cells[i], { opacity: 0 })
   }
+	coll.dPageIndex.innerHTML=`page ${coll.pageIndex+1}/${maxPage+1}`;
 }
 function showImageInBatch(key, dParent, styles = {}) {
   let o = M.superdi[key]; o.key=key; //console.log('o',o)

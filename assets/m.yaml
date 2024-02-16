@@ -1146,6 +1146,8 @@ superdi:
       - fish
     colls:
       - emo
+      - owls
+    key: blowfish
   blue_book:
     friendly: blue_book
     img: ../assets/img/emo/blue-book.png
@@ -58997,6 +58999,20 @@ superdi:
       - animal
     colls:
       - owls
+  favs1:
+    key: favs1
+    friendly: favs1
+    img: ../assets/img/favs/favs1.png
+    cats: []
+    colls:
+      - favs
+  favs2:
+    key: favs2
+    friendly: favs2
+    img: ../assets/img/favs/favs2.png
+    cats: []
+    colls:
+      - favs
 playerColors:
   - '#800000'
   - '#8a0000'
