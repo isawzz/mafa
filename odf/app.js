@@ -426,6 +426,20 @@ app.post('/postNewTable', (req, res) => {
 	emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
 	res.json('table posted successfully!');
 });
+app.post('/postUpdateItem', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key]))	{
+		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
+	}else{
+		M.superdi[key] = item;
+		let y = yaml.dump(M);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key=key;
+		io.emit('superdi',item);
+		res.json(`item ${key} updated successfully!`);
+	}
+});
 
 
 

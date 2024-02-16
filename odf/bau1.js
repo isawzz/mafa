@@ -1,120 +1,89 @@
-async function createScaledCanvasFromImage(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      // const scale = 200 / Math.min(img.width, img.height);
-      // const scaledWidth = img.width * scale;
-      // const scaledHeight = img.height * scale;
+async function ondropImage(url, dDrop) {
+	let item = UI.draggedItem;
+	console.log(dDrop, item); //return;
+	UI.draggedItem = null;
+	let coll = UI.collSecondary;
 
-      const canvas = document.createElement('canvas');
-      let w = canvas.width = img.width; //scaledWidth;
-      let h = canvas.height = img.height; //scaledHeight;
+	if (isdef(item)) return await droppedItemOnColl(item,coll);
 
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w,h); //scaledWidth, scaledHeight);
-
-
-      // mAppend(d,canvas)
-      resolve(canvas);
-    };
-    img.onerror = reject;
-    img.src = src;
-  });
-}
-async function showUrlInCanvasInDiv(dParent,src){
-  return new Promise((resolve, reject) => {
-    let d=mDom(dParent);
-    const img = new Image();
-    img.onload = () => {
-      const canvas = mDom(d,{},{tag:'canvas'});
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img,0,0); //, 0, 0, scaledWidth, scaledHeight);
-      resolve(canvas);
-    };
-    img.onerror = reject;
-    img.src = src;
-  });
-}
-async function showUrlResizedToMin(dParent, src, szmin) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => {
-      // Calculate the scale to ensure the smaller side is 300px
-      const scale = szmin / Math.min(img.width, img.height);
-      const scaledWidth = img.width * scale;
-      const scaledHeight = img.height * scale;
-
-      // Create a canvas and set its width and height
-      const canvas = document.createElement('canvas');
-      canvas.width = scaledWidth;
-      canvas.height = scaledHeight;
-
-      // Draw the image onto the canvas with the new size
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
-
-      // Resolve the promise with the canvas
-      mAppend(dParent, canvas);
-      resolve(canvas);
-    };
-    img.onerror = reject;
-    img.src = src;
-  });
-}
-function onclickCanvasSetNewCenterOverlay(ev) {
-  let cv = ev.target;
-  let d = cv.parentNode;
-  let c = getMouseCoordinatesRelativeToElement(ev,cv);
-  setNewCenterOverlay(d, c.x, c.y);
-}
-function setNewCenterOverlay(d, x, y) {
-  console.log('d',d)
-  UI.mouseCoords = { x, y };
-  mIfNotRelative(d);
-  let sz = 10;
-  if (isdef(UI.mouseMarker)) { UI.mouseMarker.remove(); }
-  let d1 = UI.mouseMarker = mDom(d, { rounding: '50%', position: 'absolute', left: x-sz/10, top: y-sz/2, w: sz, h: sz, bg: 'white' }, {})
-  let rect = getRect(d,d); 
-
-  //rechne aus wie weit ist x von 0 entfernt?
-  let leftSide = x;
-  let rightSide = rect.w-x;
-  let radx=Math.floor(Math.min(leftSide,rightSide));
-  let topSide = y;
-  let bottomSide = rect.h-y;
-  let rady=Math.floor(Math.min(topSide,bottomSide));
-  let rad=Math.min(radx,rady);
-
-  console.log('rect',rect,'center',x,y,'rad',rad);
-  //draw a rectangle of radius rad around center point!
-  let ov=mDom(d,{position:'absolute',w:rad*2,h:rad*2,box:true,bg:'#ffffff80',left:x-rad,top:y-rad},{className:'no_events'});
-
-
+	//now this is the case when item is NOT defined!
 
 }
 
-function mist() {
-  //outline rectangle!
-  //kleinere seite
-  let [small, big] = [cv.width > cv.height ? cv.height : cv.width, cv.width < cv.height ? cv.height : cv.width];
-  //let _scale = small<300?
-  let [w, h] = [Math.min(300, cv.width), Math.min(300, cv.h)];
+async function droppedItemOnColl(item, coll) {
+	//user dragged from an item on the page
+	assertion(isdef(item.key), 'NO KEY!!!!!');
+	await collAddItem(coll, item.key, item);
+	//reloadCollection with the new item in it!
+	collOpenSecondary(4,3);
+	showImageBatch(coll,-1); //await onclickPrev();
+	//show in cell
+	// let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+	// let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+	// console.log('free cell', cell);
+	// if (isdef(cell)) {
+	// 	mStyle(cell, { opacity: 1 });
+	// 	mClass(cell, 'magnifiable')
+	// 	console.log('item', item)
+	// 	showImageInBatch(item.key, cell);
+	// }
+
+}
+
+async function restOnDropShowImage(evDrop, evReader) {
+	//console.log('evReader',evReader); return;
+	let [url, dropTarget, dDrop, item] = [evReader.target.result, evDrop.target, evToAttrElem(evDrop, 'allowDrop').elem, UI.draggedItem];
+
+	console.log(dropTarget, dDrop, item); //return;
+	UI.draggedItem = null;
+
+	let coll = UI.collSecondary;
+
+	if (isdef(item)) {
+		//user dragged from an item on the page
+		assertion(isdef(item.key), 'NO KEY!!!!!');
+		await collAddItem(coll, item.key, item);
+
+		let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+		let img = await collShowImageInCell(cell, url);// console.log('cell img loaded!!!!') //show in cell
 
 
-  let rect = mDom(d, { border: 'red', position: 'absolute', top: c.x - 100, hL }, {});
+		// let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
+		// console.log('free cell', cell);
+		// if (isdef(cell)) {
+		// 	mStyle(cell, { opacity: 1 });
+		// 	mClass(cell, 'magnifiable')
+		// 	console.log('item', item)
+		// 	showImageInBatch(item.key, cell);
+		// }
+	} else {
+		let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
 
-  //modifyInstruction on d
-  let d2 = d.children[1];
-  d2.innerHTML = ''; //drag centerpoint around until you like the outline of your image';
-  mButton('Done', ev => {
+		let img = await collShowImageInCell(cell, url);// console.log('cell img loaded!!!!')
+		//add an edit button to image
+		mButton('edit', async => { imgEditor1(url); }, cell, { position: 'absolute' });
+		return;
 
+		let friendly = await mPromptGadgetFor(cell, 'name', () => clearCell(cell)); console.log('the name is', friendly);
+		if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
 
+		let cats = await mPromptGadgetFor(cell, 'categories', () => clearCell(cell)); cats = extractWords(cats); assertion(isList(cats), `cats not a list!!!!!!! ${cats}`); console.log('the categories are', cats);
+		if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
 
-  });
+		let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; console.log('filename', filename);
 
+		let dataUrl = await cropOrExpandImageAndGetDataUrl(url);
+		let o = { image: dataUrl, coll: coll.name, path: filename };
+		// let resp = await mPostRoute('postImage', o);	console.log('resp', resp); //sollte path enthalten!
 
+		//jetzt hab ich das complete item und kann es zu coll adden!
+		let key = stringBefore(filename, '.');
+		let imgPath = `../assets/img/${coll.name}/${filename}`;
+		let item = { friendly: friendly, img: imgPath, cats: cats, colls: [coll.name] };
+		// resp = await collAddItem(coll,key,item);
+
+		console.log('!!!would save image to', filename, 'and add item', item, 'to m.yaml');
+	}
 }
 
 

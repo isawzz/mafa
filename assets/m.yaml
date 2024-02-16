@@ -53235,6 +53235,8 @@ superdi:
     friendly: armadillo
     colls:
       - animals
+      - owls
+    key: armadillo1
   barnowl1:
     cats:
       - animals
@@ -53243,6 +53245,8 @@ superdi:
     friendly: barnowl
     colls:
       - animals
+      - owls
+    key: barnowl1
   bear1:
     cats:
       - animals
@@ -53275,6 +53279,8 @@ superdi:
     friendly: bear
     colls:
       - animals
+      - owls
+    key: bear4
   bear5:
     cats:
       - animals
@@ -53283,6 +53289,8 @@ superdi:
     friendly: bear
     colls:
       - animals
+      - owls
+    key: bear5
   bear6:
     cats:
       - animals
@@ -53307,6 +53315,8 @@ superdi:
     friendly: bear
     colls:
       - animals
+      - owls
+    key: bear8
   bear9:
     cats:
       - animals
@@ -53339,6 +53349,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird1
   bird10:
     cats:
       - animals
@@ -53411,6 +53423,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird18
   bird19:
     cats:
       - animals
@@ -53467,6 +53481,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird24
   bird25:
     cats:
       - animals
@@ -53547,6 +53563,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird33
   bird34:
     cats:
       - animals
@@ -53563,6 +53581,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird35
   bird36:
     cats:
       - animals
@@ -53723,6 +53743,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird53
   bird54:
     cats:
       - animals
@@ -53731,6 +53753,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird54
   bird55:
     cats:
       - animals
@@ -53739,6 +53763,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird55
   bird56:
     cats:
       - animals
@@ -53771,6 +53797,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird59
   bird6:
     cats:
       - animals
@@ -53803,6 +53831,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird62
   bird63:
     cats:
       - animals
@@ -53939,6 +53969,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird78
   bird79:
     cats:
       - animals
@@ -54011,6 +54043,8 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
+    key: bird86
   bird87:
     cats:
       - animals

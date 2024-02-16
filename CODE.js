@@ -1,3 +1,105 @@
+function mist() {
+  //outline rectangle!
+  //kleinere seite
+  let [small, big] = [cv.width > cv.height ? cv.height : cv.width, cv.width < cv.height ? cv.height : cv.width];
+  //let _scale = small<300?
+  let [w, h] = [Math.min(300, cv.width), Math.min(300, cv.h)];
+
+
+  let rect = mDom(d, { border: 'red', position: 'absolute', top: c.x - 100, hL }, {});
+
+  //modifyInstruction on d
+  let d2 = d.children[1];
+  d2.innerHTML = ''; //drag centerpoint around until you like the outline of your image';
+  mButton('Done', ev => {
+
+
+
+  });
+
+
+}
+
+async function _2cropOrExpandImageAndGetDataUrl(imageSrc) {
+  return new Promise((resolve, reject) => {
+    // Create an image object
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
+    img.onload = () => {
+      // Canvas setup
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 300;
+      canvas.height = 300;
+
+      // Determine scaling needed to "cover" 300x300
+      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      const scaledWidth = img.width * scale;
+      const scaledHeight = img.height * scale;
+
+      // Calculate the center position
+      const dx = (canvas.width - scaledWidth) / 2;
+      const dy = (canvas.height - scaledHeight) / 2;
+
+      // Draw the image centered and covering
+      ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
+
+      // Get the data URL of the canvas
+      const dataUrl = canvas.toDataURL();
+      resolve(dataUrl);
+    };
+    img.onerror = (error) => reject(error);
+
+    // Set the source of the image
+    img.src = imageSrc;
+  });
+}
+function hahaha(){
+	let w = canvas.width = mGetStyle(dc,'w');
+	let h = canvas.height = mGetStyle(dc,'h');
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, 0,0,w,h); //mGetStyle(dc,'left'), mGetStyle(dc,'top'), w,h);
+	
+	// store dataUrl
+	const dataUrl = canvas.toDataURL();
+	
+	// resize to cell size, dialogs, then send
+	//now remove image and reload from dataUrl with 128x128
+	let d=dc.parentNode;
+	mClear(d);
+	mAppend(d,canvas);
+	//img = await imgAsync(d,{w:128,h:128},{src:dataUrl});
+
+}
+async function imgAbstractAsync(src) {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.onload = () => {
+			resolve(img);
+		};
+		img.onerror = (error) => {
+			reject(error);
+		};
+		img.src = src;
+	});
+}
+
+async function muell_imgBlob(binaryData) {
+	return new Promise((resolve, reject) => {
+		var blob = new Blob([binaryData], { type: 'image/jpeg' }); // Create a blob object
+		var url = URL.createObjectURL(blob); // Create a temporary URL for the blob
+		var img = new Image(); // Create an image element
+		img.onload = () => {
+			URL.revokeObjectURL(url); // Revoke the URL after the image is loaded
+			resolve([img,img.width,img.height]);
+		};
+		img.onerror = (error) => {
+			reject(error);
+		};
+		img.src = url;
+	});
+}
+
 function adjustCropper(img,dc,sz){
 	let [w,h]=[img.width,img.height];	console.log('sz',w,h,)
 	let [cx,cy,radx,rady,rad]=[w/2,h/2,sz/2,sz/2,sz/2];

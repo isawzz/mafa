@@ -1,3 +1,74 @@
+function adjustCropper(img, dc, sz) {
+	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
+	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
+	mStyle(dc, { left: cx - radx, top: cy - rady, w: sz, h: sz });
+
+}
+function adjustCropperBySimple(dc, x, y, dx, dy) { mStyle(dc, { left: x + dx, top: y + dy }); }
+
+function adjustCropperBy(dc, x, y, dx, dy, wImg, hImg, szIdeal) {
+	// let [w,h]=[img.width,img.height];	console.log('sz',w,h,)
+	// let [cx,cy,radx,rady,rad]=[w/2,h/2,sz/2,sz/2,sz/2];
+	console.log('_________\ndx', dx, 'dy', dy)
+	//let [x,y]=[mGetStyle(dc,'left'),mGetStyle(dc,'top')]
+
+	if (nundef(wImg)) {
+		//no change in cropper size!
+		mStyle(dc, { left: x + dx, top: y + dy }); //,w:sz,h:sz});
+		return;
+	}
+
+	console.log('image sz', wImg, hImg)
+	let [l, t, w, h] = [mGetStyle(dc, 'left'), mGetStyle(dc, 'top'), mGetStyle(dc, 'w'), mGetStyle(dc, 'h')]; console.log('dims', l, t, w, h);
+	let [cx, cy] = [l + w / 2, t + h / 2];
+	//let curDist=Math.min(l,t,wImg-(l+w),hImg-(t+h));	console.log('curDist',curDist)
+	let [cxNew, cyNew] = [cx + dx, cy + dy]; console.log('new center', cxNew, cyNew)
+	//min distance of cropper center to any image boundary
+	let newDist = Math.min(cxNew, cyNew, wImg - cxNew, hImg - cyNew); console.log('newDist', newDist)
+	//size of cropper should be:
+	let wNew = Math.min(szIdeal, newDist * 2);
+	let hNew = Math.min(szIdeal, newDist * 2);
+	let xNew = cxNew - wNew / 2;
+	let yNew = cyNew - hNew / 2;
+	//dist is the min distance the cropper is currently 
+
+	mStyle(dc, { left: xNew, top: yNew, w: wNew, h: hNew }); //,w:sz,h:sz});
+
+
+}
+function adjustComplex(panData) {
+	//initial pos of cropper:
+	let [x0, y0] = [panData.posStart.x, panData.posStart.y];
+
+	//how much moved the mouse:
+	let [dx, dy] = [panData.mouse.x - panData.mouseStart.x, panData.mouse.y - panData.mouseStart.y];
+
+	//image size: (constant)
+	let [wImg, hImg] = [panData.img.width, panData.img.height];
+
+	//ideal size: (since cropping square initial width of cropper suffices):
+	let ideal = panData.cropStartSize.w;
+
+	//cropper initial center:
+	let [cx0, cy0] = [panData.cropStartPos.l + ideal / 2, panData.cropStartPos.t + ideal / 2];
+
+	//theoretically, cropper initial center should be moved by dx,dy
+	let [cx, cy] = [cx0 + dx, cy0 + dy];
+	//cx = clamp(cx, 0, wImg); cy = clamp(cy, 0, hImg); console.log('center', cx, cy)
+	cx = clamp(cx, ideal/2, wImg-ideal/2); cy = clamp(cy, ideal/2, hImg-ideal/2); //console.log('center', cx, cy)
+
+	//where should the new left of the cropper be? at least 0, at most wImg, ideally:cx-ideal/2
+	let lNew = clamp(cx - ideal / 2, 0, wImg); //console.log('lNew is', lNew);
+	let tNew = clamp(cy - ideal / 2, 0, hImg); //console.log('tNew is', tNew);
+	let rNew = clamp(cx + ideal / 2, 0, wImg); //console.log('rNew is', rNew);
+	let bNew = clamp(cy + ideal / 2, 0, hImg); //console.log('bNew is', bNew);
+
+	//what will the new size be once I have lNew and tNew?
+	let wNew = Math.min(Math.abs(cx - lNew) * 2, Math.abs(rNew - cx) * 2);
+	let hNew = Math.min(Math.abs(cy - tNew) * 2, Math.abs(bNew - cy) * 2); //console.log('wNew,hNew', wNew, hNew)
+
+	mStyle(panData.dCrop, { left: cx - wNew / 2, top: cy - hNew / 2, w: wNew, h: hNew });
+}
 function clearBodyDiv(styles = {},opts={}) { document.body.innerHTML = ''; return mDom(document.body, styles, opts) }
 function clearCell(cell){mClear(cell);mStyle(cell,{opacity:0});}
 function clearParent(ev) { mClear(ev.target.parentNode); }
@@ -8,7 +79,12 @@ async function collAddItem(coll, key, item) {
     M.superdi[key] = item;
     let res = await mPostRoute('postNewItem', {key:key,item:item});
     console.log('<=server:',res);
-  }
+  }else{
+		addIf(item.colls,coll.name);
+		console.log('item collections are',item.colls);
+    let res = await mPostRoute('postUpdateItem', {key:key,item:item});
+    console.log('<=server:',res);
+	}
   for (const cat of item.cats) lookupAddIfToList(M.byCat, [cat], key);
   for (const coll of item.colls) lookupAddIfToList(M.byCollection, [coll], key);
   lookupAddIfToList(M.byFriendly, [item.friendly], key)
@@ -16,6 +92,7 @@ async function collAddItem(coll, key, item) {
 	M.collections = Object.keys(M.byCollection); M.collections.sort();
 	M.names = Object.keys(M.byFriendly); M.names.sort();
 
+	
 
 }
 function collClear() { closeLeftSidebar(); clearMain(); }
@@ -45,14 +122,14 @@ function collFilterImages(ev) {
 		//if (isEmpty(list)) return;
 	}
 	coll.keys = list;
-	coll.index = 0;
+	coll.index = 0; coll.pageIndex = 0;
 	showImageBatch(coll, 0, false);
 }
 function collFindEmptyCell(coll){
   let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
   //console.log('free cell', cell);
   if (nundef(cell)){
-    coll.index++;
+    coll.index++; 
     coll.cells.map(x=>{mClear(x);mStyle(x,{opacity:0});});
     cell=coll.cells[0];
   }
@@ -95,7 +172,7 @@ function collInitCollection(name, coll) {
 	mButton('prev', onclickPrev, d, { w: 70, margin: 0 }, 'input');
 	mButton('next', onclickNext, d, { w: 70, margin: 0, maleft:10 }, 'input');
 	coll.keys = list;
-	coll.index = 0;
+	coll.index = 0;	coll.pageIndex = 0;
 	showImageBatch(coll);
 	//showDiv(dMenu); return;
 }
@@ -109,11 +186,9 @@ function collOpenSecondary(rows, cols) {
   coll.dInstruction.innerHTML = '* drag images into the shaded area *'
   let grid = coll.grid;
   mStyle(grid, { bg: '#00000030' })
-  mDropZoneX(grid, ondropImage);
-
-
-  mButtonX(d, collCloseSecondary); //, 'tr', 25, color = 'white')
-  //mButtonX(d,30);
+  enableImageDrop(grid, ondropImage);
+	//mDropZone1(grid, ondropImage);
+  //mButtonX(d, collCloseSecondary); 
 }
 function collPresent(coll, rows,cols) {
 	let d1=iDiv(coll);
@@ -315,38 +390,61 @@ function getMouseCoordinatesRelativeToElement(ev, elem) {
 
   return { x, y };
 }
-async function imgCropCenter(img, w=300,h=300) {
-  let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(img, 0, 0, w, h, 0, 0, w, h);
-  const imgDataUrl = canvas.toDataURL('image/png'); // Change format as needed
-  img.onload = () => {
-    img.onload = null;
-    img.width = w;
-    img.height = h;
-    mStyle(img, { w: w, h: h });
-    mStyle(dParent, { w: w, h: h });
-    callback();
-  }
-  img.src = imgDataUrl;
-  return imgDataUrl;
+async function imgAsIsInDiv(url, dParent) {
+	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	let sz = 300;
+	let img = await imgAsync(d, {}, { tag: 'img', src: url });
+	let [w, h] = [img.width, img.height]; console.log('sz', w, h);
+	let scale = sz / img.height;
+	return [img, scale];
 }
-function imgEditor1(){
-  console.log('EDITOR COMING SOON!!!')
-}
-function imgEdit(img,onDone){
-  console.log('edit image!!!');
-  let popup = mPopup('Image Editor<br>',document.body,{bg:'grey',position:'absolute',top:20,left:20,wmin:400,hmin:400,padding:12});
-  let imgNew = mDom(popup,{},{tag:'img',src:img.src});
-  imgNew.onclick = ev=>{UI.coords = getMouseCoordinatesRelativeToElement(ev,imgNew); UI.mouseX=ev.clientX;UI.mouseY=ev.clientY;}
-  mDom(popup,{w100:true,h:1});
-  mDom(popup,{},{html:'click on image where you want the center!<br>'});
-  mButton('Set center',onDone,popup);
-}
-function imgRecenter(cell,x,y){
-  console.log('x',UI.mouseX,'y',UI.mouseY, UI.coords);
-  cropOrExpandImageAndGetDataUrl
+async function imgCrop(img,dc,wOrig,hOrig){
+	// crop image to cropper
+	//const canvas = document.createElement('canvas');
+	let dims = mGetStyles(dc,['left','top','w','h']); console.log('dims',dims);
 
+	let wScale =img.width/wOrig;
+	let hScale=img.height/hOrig;
+	console.log('scale',wScale,hScale,wOrig,hOrig,img.width,img.height)
+
+	let d1=mDom(document.body,{margin:10});
+	let canvas=mDom(d1,{},{tag:'canvas',width:dims.w,height:dims.h});
+	const ctx = canvas.getContext('2d');
+	
+	//ctx.fillStyle='yellow';	ctx.fillRect(0,0,dims.w,dims.h);
+	
+	// ctx.drawImage(img,dims.left,dims.top,img.width*scale,img.height*scale,0,0,dims.w,dims.h)
+	//ctx.drawImage(img, 50, 50, 300, 300, 0, 0, 300, 300);
+	//ctx.clearRect(0,0,dims.w,dims.h);
+
+	ctx.drawImage(img,dims.left/wScale,dims.top/hScale,(dims.w)/wScale,img.height/hScale,0,0,dims.w,dims.h)
+}
+function imgExpand(img, dc, sz) { img.width += 20; adjustCropper(img, dc, sz);return [img.width,img.height];  }
+function imgReset(img,dc,sz,w,h){img.width=w;img.height=h;adjustCropper(img,dc,sz);return[w,h];}
+function imgSquish(img, dc, sz) { img.width -= 20; adjustCropper(img, dc, sz);return [img.width,img.height]; }
+async function imgMeasure(src) {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
+		img.onload = () => {
+			resolve({ img:img, w: img.width, h: img.height });
+		};
+		img.onerror = (error) => {
+			reject(error);
+		};
+		img.src = src;
+	});
+}
+async function imgScaledToHeightInDiv(url, dParent, sz = 300) {
+	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+
+	let img = await imgAsync(d, {}, { tag: 'img', src: url });
+	let [w, h] = [img.width, img.height]; console.log('orig', w, h);
+	let scale = sz / img.height;
+	img.width *= scale;
+	img.height *= scale;
+	mStyle(img, { w: img.width, h: img.height })
+	return [img, scale];
 }
 function mDropZone1(dropZone, onDrop) {
 	dropZone.addEventListener('dragover', function (event) {
@@ -365,114 +463,6 @@ function mDropZone1(dropZone, onDrop) {
 			const reader = new FileReader();
 			reader.onload = evReader => {
 				onDrop(evReader.target.result, dropZone);
-			};
-			reader.readAsDataURL(files[0]);
-		}
-	});
-	return dropZone;
-}
-function mDropZone1aW(dropZone, onDrop) {
-	dropZone.setAttribute('allowDrop', true)
-	dropZone.addEventListener('dragover', function (event) {
-		event.preventDefault();
-		dropZone.style.border = '2px dashed #007bff';
-	});
-	dropZone.addEventListener('dragleave', function (event) {
-		event.preventDefault();
-		dropZone.style.border = '2px dashed #ccc';
-	});
-	dropZone.addEventListener('drop', function (evDrop) {
-		evDrop.preventDefault();
-		dropZone.style.border = '2px dashed #ccc';
-		const files = evDrop.dataTransfer.files;
-		if (files.length > 0) {
-			const reader = new FileReader();
-			reader.onload = evReader => {
-				onDrop(evReader.target.result, dropZone);
-			};
-			reader.readAsDataURL(files[0]);
-		}
-	});
-	return dropZone;
-}
-function mDropZoneX(dropZone, onDrop) {
-  dropZone.setAttribute('allowDrop', true)
-  dropZone.addEventListener('dragover', function (event) {
-    event.preventDefault();
-    dropZone.style.border = '2px dashed #007bff';
-  });
-  dropZone.addEventListener('dragleave', function (event) {
-    event.preventDefault();
-    dropZone.style.border = '2px dashed #ccc';
-  });
-  dropZone.addEventListener('drop', function (evDrop) {
-    evDrop.preventDefault();
-    dropZone.style.border = '2px dashed #ccc';
-    const files = evDrop.dataTransfer.files;
-    if (files.length > 0) {
-      const reader = new FileReader();
-      reader.onload = evReader => {
-        onDrop(evDrop, evReader);
-      };
-      reader.readAsDataURL(files[0]);
-    }
-  });
-  return dropZone;
-}
-function mDropZoneX1(dropZone, onDrop) {
-  dropZone.setAttribute('allowDrop', true)
-  dropZone.addEventListener('dragover', function (event) {
-    event.preventDefault();
-    dropZone.style.border = '2px dashed #007bff';
-  });
-  dropZone.addEventListener('dragleave', function (event) {
-    event.preventDefault();
-    dropZone.style.border = '2px dashed #ccc';
-  });
-  dropZone.addEventListener('drop', function (evDrop) {
-    evDrop.preventDefault();
-    dropZone.style.border = '2px dashed #ccc';
-    const files = evDrop.dataTransfer.files;
-    if (files.length > 0) {
-      const reader = new FileReader();
-      reader.onload = evReader => {
-        onDrop(evDrop, evReader.target.result);
-      };
-      reader.readAsDataURL(files[0]);
-    }
-  });
-  return dropZone;
-}
-function mDropZoneX2(dropZone, onDrop) {
-	//onDrop signature: onDrop(url, dDrop, draggedItem*, dropTarget); *must be set UI.draggedItem
-	dropZone.setAttribute('allowDrop', true)
-	dropZone.addEventListener('dragenter', function (event) {
-		event.preventDefault();
-		dropZone.setAttribute('origBorder', dropZone.style.border)
-		dropZone.style.border = '2px dashed #007bff';
-	});
-	// dropZone.addEventListener('dragover', function (event) {
-	//   event.preventDefault();
-	// 	dropZone.setAttribute('origBorder',dropZone.style.border)
-	//   dropZone.style.border = '2px dashed #007bff';
-	// });
-	dropZone.addEventListener('dragleave', function (event) {
-		event.preventDefault();
-		dropZone.style.border = dropZone.getAttribute('origBorder'); //'2px dashed #ccc';
-		// dropZone.style.border = '2px dashed #ccc';
-	});
-	dropZone.addEventListener('drop', function (evDrop) {
-		console.log('bin da evDrop!!!!!')
-		evDrop.preventDefault();
-		dropZone.style.border = dropZone.getAttribute('origBorder'); //'2px dashed #ccc';
-		const files = evDrop.dataTransfer.files;
-		if (files.length > 0) {
-			console.log('bin da!!!!!')
-			const reader = new FileReader();
-			reader.onload = evReader => {
-				let [url, dDrop, item, dropTarget] = [evReader.target.result, evToAttrElem(evDrop, 'allowDrop').elem, UI.draggedItem, evDrop.target];
-				UI.draggedItem = null;
-				onDrop(url, dropZone, item, dropTarget);
 			};
 			reader.readAsDataURL(files[0]);
 		}
@@ -507,13 +497,13 @@ async function onclickCollections() {
 
   UI.collPrimary = { div: dPrimary, name: collName }; //{name:'amanda'};
   UI.collSecondary = { div: dSecondary, name: null };
-  collOpenPrimary(5, 6);
+  collOpenPrimary(4, 4);
 }
 async function onclickNewCollection(name) {
   if (nundef(name)) name = await mPrompt(UI.gadgetNewCollection);
   UI.collSecondary.name = name;
-  collOpenPrimary(6, 4);
-  collOpenSecondary(1, 2);
+  collOpenPrimary(4, 4);
+  collOpenSecondary(4, 3);
 }
 async function onclickNext(ev) { 
   let id = evToId(ev); console.log('id',id)
@@ -541,98 +531,6 @@ async function ondropShowImage(url,dDrop){
 
 	img.onclick = storeMouseCoords;
 }
-async function ondropImage_UNKNOWN(evDrop, evReader) {
-  //console.log('evReader',evReader); return;
-  let [url, dropTarget, dDrop, item] = [evReader.target.result, evDrop.target, evToAttrElem(evDrop, 'allowDrop').elem, UI.draggedItem];
-
-  console.log(dropTarget, dDrop, item); //return;
-  UI.draggedItem = null;
-
-  let coll = UI.collSecondary;
-
-  if (isdef(item)) {
-    //user dragged from an item on the page
-    assertion(isdef(item.key),'NO KEY!!!!!');
-    await collAddItem(coll,item.key, item);
-    //show in cell
-    let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
-    console.log('free cell', cell);
-    if (isdef(cell)) {
-      mStyle(cell, { opacity: 1 });
-      mClass(cell, 'magnifiable')
-      console.log('item', item)
-      showImageInBatch(item.key, cell);
-    }
-  } else {
-    let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
-
-    let img = await collShowImageInCell(cell,url);// console.log('cell img loaded!!!!')
-    //add an edit button to image
-    mButton('edit',async =>{imgEditor1(url);},cell,{position:'absolute'});
-    return;
-
-    let friendly = await mPromptGadgetFor(cell,'name',()=>clearCell(cell)); console.log('the name is',friendly);
-    if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
-
-    let cats = await mPromptGadgetFor(cell,'categories',()=>clearCell(cell)); cats = extractWords(cats); assertion(isList(cats),`cats not a list!!!!!!! ${cats}`); console.log('the categories are',cats);
-    if (isEmpty(friendly)) return; // {mClear(cell);mStyle(cell,{opacity:0}); return;}
-
-    let filename = (isdef(M.superdi[friendly])?'i'+get_timestamp() : friendly) + '.png'; console.log('filename',filename);
-
-		let dataUrl = await cropOrExpandImageAndGetDataUrl(url);
-		let o = { image: dataUrl, coll:coll.name, path:filename };
-		// let resp = await mPostRoute('postImage', o);	console.log('resp', resp); //sollte path enthalten!
-
-    //jetzt hab ich das complete item und kann es zu coll adden!
-    let key = stringBefore(filename,'.');
-    let imgPath = `../assets/img/${coll.name}/${filename}`;
-    let item = {friendly:friendly,img:imgPath,cats:cats,colls:[coll.name]};
-    // resp = await collAddItem(coll,key,item);
-
-    console.log('!!!would save image to',filename,'and add item',item,'to m.yaml');
-  }
-}
-async function ondropShowImage_1_W(url,dDrop){
-	//this time, I want 
-	mClear(dDrop);
-	let img = await imgAsync(dDrop,{hmax:300},{src:url});
-	
-	console.log('img dims',img.width,img.height); //works!!!
-	//mDom(dDrop,)
-	
-	mStyle(dDrop,{w:img.width,h:img.height+30,align:'center'});
-	mDom(dDrop,{fg:colorContrast(dDrop,['blue','lime','yellow'])},{className:'blink',html:'DONE! now click on where you think the image should be centered!'})
-	console.log('DONE! now click on where you think the image should be centered!')
-
-	img.onclick = storeMouseCoords;
-
-
-}
-function openDivCenteredOnElement(divId, targetId) {
-  const div = document.getElementById(divId);
-  const target = document.getElementById(targetId);
-  mIfNotRelative(target);
-
-  // Get target element's position and size
-  const rect = target.getBoundingClientRect();
-
-  // Calculate center position
-  const centerX = rect.left + (rect.width / 2) - (div.offsetWidth / 2);
-  const centerY = rect.top + (rect.height / 2) - (div.offsetHeight / 2);
-
-  // Apply calculated position to the div
-  div.style.left = `${centerX}px`;
-  div.style.top = `${centerY}px`;
-  div.style.position = 'absolute';
-  div.style.display = 'block'; // Make the div visible
-}
-async function ondropShowImage_1_W(url,dDrop){
-  console.log('show dropped url', url, dDrop); //return;
-
-	let img = await imgAsync(dDrop,{},{src:url});
-	console.log('DONE!')
-
-}
 async function postImage(img,path){
   let dataUrl = imgToDataUrl(img);
   let o = { image: dataUrl, path:path };
@@ -645,12 +543,23 @@ function presentImageCropper(url){
 }
 function showDiv(d){mStyle(d,{bg:rColor()}); console.log(d,mGetStyle(d,'w')); }
 function showImageBatch(coll,inc = 0,alertEmpty=false) {
-  let [keys, index, numCells] = [coll.keys, coll.index, coll.rows * coll.cols];
+  let [keys, index,pageIndex, numCells] = [coll.keys, coll.index,coll.pageIndex, coll.rows * coll.cols];
   if (isEmpty(keys) && alertEmpty) showMessage('nothing has been added to this collection yet!'); 
   if (keys.length <= numCells) inc = 0;
-  index += numCells * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
-  let list = arrTakeFromTo(keys, index, index + numCells);
-  coll.index = index;
+
+	let newPageIndex = coll.pageIndex+inc;
+	let numItems = keys.length;
+	let maxPage = Math.floor(numItems / numCells); console.log('maxPage',maxPage,numItems,numCells)
+	if (newPageIndex > maxPage) newPageIndex = 0;
+	if (newPageIndex < 0) newPageIndex = maxPage;
+	//bei pageIndex0 show 0-numCells
+	//bei pageIndex1 show numCells-2*numCells
+  //index += numCells * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
+	index = numCells*newPageIndex;
+  
+	
+	let list = arrTakeFromTo(keys, index, index + numCells);
+  coll.index = index;coll.pageIndex = newPageIndex;
   for (let i = 0; i < list.length; i++) {
     let d=coll.cells[i];
     mStyle(d, { opacity: 1 });
@@ -689,44 +598,54 @@ function showImageInBatch(key, dParent, styles = {}) {
   d1.onclick = onclickItem;
   d1.setAttribute('key', key)
 }
-function storeMouseCoords(ev){
-	let img=ev.target;
-	let d=img.parentNode;
-
-	let c=UI.mouseCoords = getMouseCoordinatesRelativeToElement(ev,d);
-	mIfNotRelative(d)
-	let sz=10;
-	if (isdef(UI.mouseMarker)){
-		UI.mouseMarker.remove();
+function startPanning(ev) {
+	console.log('_________startPanning!')
+	const panData = {};
+	function panStart(ev) {
+		evNoBubble(ev);
+		assertion(nundef(panData.panning), panData)
+		let dc = panData.dCrop = ev.target;
+		panData.cropStartSize = { w: mGetStyle(dc, 'w'), h: mGetStyle(dc, 'h') }
+		panData.cropStartPos = { l: mGetStyle(dc, 'left'), t: mGetStyle(dc, 'top') }
+		panData.elParent = panData.dCrop.parentNode;
+		panData.img = panData.elParent.querySelector('img, canvas');//console.log('img',panData.img);
+		panData.panning = true;
+		panData.counter = -1;
+		panData.mouseStart = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+		panData.posStart = { x: mGetStyle(dc, 'left'), y: mGetStyle(dc, 'top') };
+		addEventListener('mouseup', panEnd);
+		panData.elParent.addEventListener('mousemove', panMove);
+		console.log('panStart!', panData.mouseStart);
 	}
-	let d1 = UI.mouseMarker = mDom(d,{rounding:'50%',position:'absolute',left:c.x,top:c.y,w:sz,h:sz,bg:'white'},{})
+	function panMove(ev) {
+		evNoBubble(ev);
+		if (!panData.panning || ++panData.counter % 3) return;
+		panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+		let [x, y] = [panData.posStart.x, panData.posStart.y];
+		let [dx, dy] = [panData.mouse.x - panData.mouseStart.x, panData.mouse.y - panData.mouseStart.y];
+		[dx, dy] = [Math.round(dx / 10) * 10, Math.round(dy / 10) * 10];
 
-	//img soll als 300x300 around center gespeichert werden
-	
-	
-	//outline rectangle!
-	//kleinere seite
-	let [small,big]=[img.width>img.height?img.height:img.width,img.width<img.height?img.height:img.width];
-	//let _scale = small<300?
-	let [w,h]=[Math.min(300,img.width),Math.min(300,img.h)];
+		// adjustCropperBySimple(panData.dCrop, x, y, dx, dy, panData.img.width, panData.img.height, panData.cropStartSize.w, panData.cropStartSize.h);
+		adjustComplex(panData)
 
-
-	let rect=mDom(d,{border:'red',position:'absolute',top:c.x-100,hL},{});
-
-	//modifyInstruction on d
-	let d2=d.children[1];
-	d2.innerHTML = ''; //drag centerpoint around until you like the outline of your image';
-	mButton('Done',ev=>{
-
-
-
-	});
-
-
+		// console.log(panData.mouse);
+	}
+	function panEnd(ev) {
+		//evNoBubble(ev);
+		assertion(panData.panning == true);
+		let d = evToClass(ev, 'imgWrapper');
+		if (d == panData.elParent) {
+			evNoBubble(ev);
+			panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+			console.log('SUCCESS!', panData.mouse)
+		}
+		removeEventListener('mouseup', panEnd);
+		panData.elParent.removeEventListener('mousemove', panMove);
+		panData.panning = false;
+		console.log('* THE END *', panData)
+	}
+	panStart(ev);
 }
-
-
-
 
 
 
