@@ -58982,7 +58982,7 @@ superdi:
       - nations
   buddies:
     friendly: buddies
-    img: ../assets/img/owls/buddies.png
+    img: ../assets/img/owl/buddies.png
     cats:
       - owl
       - bird
@@ -58992,7 +58992,7 @@ superdi:
     key: buddies
   sweetie:
     friendly: sweetie
-    img: ../assets/img/owls/sweetie.png
+    img: ../assets/img/owl/sweetie.png
     cats:
       - owl
       - bird

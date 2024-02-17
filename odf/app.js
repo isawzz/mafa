@@ -458,6 +458,12 @@ app.post('/postUpdateItem', (req, res) => {
 		res.json(`item ${key} updated successfully!`);
 	}
 });
+app.post('/renameImgDir', (req, res) => {
+	let oldname = req.body.oldname;
+	let newname = req.body.newname;
+	fs.renameSync(path.join(assetsDirectory,`img/${oldname}`),path.join(assetsDirectory,`img/${newname}`));
+	res.json(`dir ${oldname} renamed successfully!`);
+});
 
 
 

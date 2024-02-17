@@ -5,16 +5,12 @@ async function start() { test16(); }
 async function test16() {
 	await prelims();
 
-	window.onkeydown = keyDownHandler;
-	window.onkeyup = keyUpHandler;
-
 	await switchToMenu(UI.nav,'collections');
-	//await onclickNewCollection('favs')
+	await onclickNewCollection('owl')
 
-	//await collDelete('favs');
-	await collRename('owls','owl');
-	//await onclickDeleteCollection('favs');
-	//await switchToUser();
+	//await collDelete('favs'); //ok, besser als: //await onclickDeleteCollection('favs');
+	//await collRename('owls','owl'); //ok
+	//await switchToUser(); //ok
 
 }
 async function test15() {
@@ -64,5 +60,10 @@ async function prelims() {
 	// for (s of 'Clientdata DA Items M Serverdata Session Socket TO U UI Z'.split(' ')) conslog(s)
 	// console.log(`session:${Math.round(t2 - t1)} \nload:${Math.round(t3 - t2)} \nfast load:${Math.round(t4 - t3)} \nsock+rest:${Math.round(t5 - t4)}`)
 	console.log(`total prelims time:${Math.round(t5 - t1)}`);
+
+	window.onkeydown = keyDownHandler;
+	window.onkeyup = keyUpHandler;
+
+
 
 }
