@@ -27,18 +27,44 @@ function deleteKeyFromLocalSuperdi(k){
 		removeInPlace(lst,k); if (isEmpty(lst)) {delete M.byCat[cat];removeInPlace(M.categories,cat);}
 	}
 }
-async function collDelete(collname) {
-
+async function collRename(oldname,newname){
+	if (collLockedOrDoesNotExist(oldname)) return;
+	console.log('rename collection', oldname,'to',newname)
+	collPreReload(oldname);
+	for(const k of M.byCollection[oldname]){
+		let item = M.superdi[k];
+		removeInPlace(item.colls,oldname)
+		item.colls.push(newname);
+		let res = await mPostRoute('postUpdateItem',{key:k,item:item});
+		console.log(res)
+	}
+	await loadAssets();
+	if (UI.collPrimary.name==oldname)UI.collPrimary.name=newname;
+	if (UI.collSecondary.name==oldname)UI.collSecondary.name=newname;
+	collPostReload(); 
+}
+function collLockedOrDoesNotExist(collname){
 	if ('all amanda animals big emo fa6 icon nations users'.includes(collname)) {
 		console.log(`!!!!!CANNOT delete this collection ${collname}`);
-		return;
+		return true;
 	}
 	let keys = M.byCollection[collname];
 	if (nundef(keys)) {
 		console.log(`!!!!!collection does not exists ${collname}`);
-		return;
+		return true;
 	}
+	return false;
+}
+function collPreReload(name){if (name == UI.collSecondary.name) { collCloseSecondary(); UI.collSecondary.name = null; }}
+function collPostReload(){
+	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
+	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
+
+}
+async function collDelete(collname) {
+	if (collLockedOrDoesNotExist(name)) return;
 	console.log('delete collection', keys)
+	collPreReload(name);
 	for (const k of keys) {
 		let item = M.superdi[k];
 		console.log('item', item)
@@ -53,7 +79,7 @@ async function collDelete(collname) {
 		//jetzt muss 
 		
 	}
-	delete M.byCollection[collname];
+	collPostReload(); //	delete M.byCollection[collname];
 
 
 }

@@ -1146,7 +1146,7 @@ superdi:
       - fish
     colls:
       - emo
-      - owls
+      - owl
     key: blowfish
   blue_book:
     friendly: blue_book
@@ -53237,7 +53237,7 @@ superdi:
     friendly: armadillo
     colls:
       - animals
-      - owls
+      - owl
     key: armadillo1
   barnowl1:
     cats:
@@ -53247,7 +53247,7 @@ superdi:
     friendly: barnowl
     colls:
       - animals
-      - owls
+      - owl
     key: barnowl1
   bear1:
     cats:
@@ -53281,7 +53281,7 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owls
+      - owl
     key: bear4
   bear5:
     cats:
@@ -53291,7 +53291,7 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owls
+      - owl
     key: bear5
   bear6:
     cats:
@@ -53317,7 +53317,7 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owls
+      - owl
     key: bear8
   bear9:
     cats:
@@ -53351,7 +53351,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird1
   bird10:
     cats:
@@ -53425,7 +53425,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird18
   bird19:
     cats:
@@ -53483,7 +53483,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird24
   bird25:
     cats:
@@ -53565,7 +53565,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird33
   bird34:
     cats:
@@ -53583,7 +53583,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird35
   bird36:
     cats:
@@ -53745,7 +53745,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird53
   bird54:
     cats:
@@ -53755,7 +53755,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird54
   bird55:
     cats:
@@ -53765,7 +53765,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird55
   bird56:
     cats:
@@ -53799,7 +53799,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird59
   bird6:
     cats:
@@ -53833,7 +53833,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird62
   bird63:
     cats:
@@ -53971,7 +53971,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird78
   bird79:
     cats:
@@ -54045,7 +54045,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
+      - owl
     key: bird86
   bird87:
     cats:
@@ -58988,7 +58988,7 @@ superdi:
       - bird
       - animal
     colls:
-      - owls
+      - owl
     key: buddies
   sweetie:
     friendly: sweetie
@@ -58998,7 +58998,7 @@ superdi:
       - bird
       - animal
     colls:
-      - owls
+      - owl
     key: sweetie
 playerColors:
   - '#800000'

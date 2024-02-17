@@ -11,7 +11,8 @@ async function test16() {
 	await switchToMenu(UI.nav,'collections');
 	//await onclickNewCollection('favs')
 
-	await onclickDeleteCollection('favs');
+	//await collDelete('favs');
+	await collRename('owls','owl');
 	//await onclickDeleteCollection('favs');
 	//await switchToUser();
 

@@ -623,18 +623,7 @@ async function onclickCollections() {
 }
 async function onclickDeleteCollection(name) {
 	if (nundef(name)) name = await mPrompt(UI.gadgetDeleteCollection);
-	//ich sollte auch collSecondary schliessen und falls coll.name == name von collPrimary
-	//dann mach 'all'
-
-	if (name == UI.collSecondary.name) {
-		collCloseSecondary();
-		UI.collSecondary.name = null;
-	}
-
 	await collDelete(name);
-
-	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
-	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
 }
 async function onclickNewCollection(name) {
 	if (nundef(name)) name = await mPrompt(UI.gadgetNewCollection);
