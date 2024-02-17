@@ -337,6 +337,24 @@ function handle_userChange(x, id) {
 //#endregion
 
 //#region post routes (uses emit)
+app.post('/deleteImage', (req, res) => {
+	let path1 = path.join(__dirname,req.body.path);
+	console.log('!!!!!!!!!!!!!deleting',path1);
+	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
+	res.json(`image deleted ${req.body.path}`);
+});
+app.post('/deleteItem', (req, res) => {
+	let key = req.body.key;
+	if (nundef(M.superdi[key]))	{
+		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
+	}else{
+		delete M.superdi[key];
+		let y = yaml.dump(M);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		io.emit('superdi',key);
+		res.json(`item ${key} deleted successfully!`);
+	}
+});
 app.post('/deleteTable', (req, res) => {
 	let id = req.body.id;
 	console.log('<== delete table',id);
