@@ -368,7 +368,7 @@ function collPresent(coll, rows, cols) {
 
 	//coll = uiTypeCollection(5,6,)
 	coll.rows = rows; coll.cols = cols;
-	coll.grid = mGrid(coll.rows, coll.cols, d1, { 'align-self': 'start' });
+	coll.grid = mGrid(coll.rows, coll.cols, d1, { maleft:10, 'align-self': 'start' });
 	coll.cells = [];
 	let bg = mGetStyle('dNav', 'bg');
 	for (let i = 0; i < coll.rows * coll.cols; i++) {
@@ -388,6 +388,29 @@ function collPostReload(){
 	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
 
 }
+async function collRename(oldname,newname){
+	if (collLockedOrDoesNotExist(oldname)) return;
+	console.log('rename collection', oldname,'to',newname)
+	collPreReload(oldname);
+	let needToRenameDir=false;
+	for(const k of M.byCollection[oldname]){
+		let item = M.superdi[k];
+		let path = item.img;
+		if (isString(path) && path.includes(`img/${oldname}/`)){
+			item.img = `../assets/img/${newname}/${stringAfterLast(path,'/')}`;
+			needToRenameDir=true;
+		}
+		removeInPlace(item.colls,oldname)
+		item.colls.push(newname);
+		let res = await mPostRoute('postUpdateItem',{key:k,item:item});
+		console.log(res)
+	}
+	if (needToRenameDir) await mPostRoute('renameImgDir',{oldname,newname});
+	await loadAssets();
+	if (UI.collPrimary.name==oldname)UI.collPrimary.name=newname;
+	if (UI.collSecondary.name==oldname)UI.collSecondary.name=newname;
+	collPostReload(); 
+}
 async function collShowImageInCell(cell, src) {
 	mStyle(cell, { opacity: 1 });
 	mClass(cell, 'magnifiable');
@@ -397,21 +420,6 @@ async function collShowImageInCell(cell, src) {
 	await loadImageAsync(src, img);
 
 	return img;
-
-}
-function collSidebar() {
-
-	mStyle('dLeft', { wmin: 100 });
-	let d = mDom('dLeft', { margin: 10, matop: 100 }); //,fg:getThemeFg()});
-
-	//let c1=mDom(d,{padding:4},{html:'new collection',className:'nav-link'})
-	let c1 = UI.newCollection = mCommand(d, 'newCollection', 'New Collection');
-	UI.gadgetNewCollection = mGadget('newCollection', { left: 16, top: 160 }, { placeholder: `<enter name>` });
-
-	mDom(d, { h: 1 })
-
-	let c2 = UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');
-	UI.gadgetDeleteCollection = mGadget('deleteCollection', { left: 16, top: 190 }, { placeholder: `<enter name>` });
 
 }
 function colorContrast(dDrop, list = ['white', 'black']) {
@@ -805,6 +813,7 @@ async function mPrompt(gadget) {
 	return new Promise((resolve, reject) => {
 		//console.log('form', gadget.form);
 		gadget.dialog.showModal();
+		//gadget.inp.focus();
 		gadget.form.onsubmit = (event) => {
 			event.preventDefault(); // Prevent the default form submission
 			resolve(gadget.inp.value);
@@ -828,6 +837,16 @@ async function mPromptGadgetFor(cell, placeholderName, onCancel) {
 	return res;
 
 }
+async function mSleep(ms = 1000) {
+	return new Promise(
+		(res, rej) => {
+			if (ms <= 3000) {
+				setTimeout(res, ms);
+			} else {
+				console.log('param should be less than 3001');
+			}
+		});
+}
 async function onclickCollections() {
 
 	let dPanes = mDom('dMain'); mFlex(dPanes);
@@ -850,22 +869,12 @@ function onclickCommand(ev) {
 	let cmd = UI[key];
 	cmd.open();
 }
-async function onclickDeleteCollection(name) {
-	if (nundef(name)) name = await mPrompt(UI.gadgetDeleteCollection);
-	await collDelete(name);
-}
 function onclickMenu(ev) {
 	let keys = evToAttr(ev, 'key');
 	let [menuKey, cmdKey] = keys.split('_');
 	let menu = UI[menuKey];
 	menuCloseCurrent(menu);
 	menuOpen(menu, cmdKey);
-}
-async function onclickNewCollection(name) {
-	if (nundef(name)) name = await mPrompt(UI.gadgetNewCollection);
-	UI.collSecondary.name = name;
-	collOpenPrimary(4, 4);
-	collOpenSecondary(4, 3);
 }
 async function onclickNext(ev) {
 	let id = evToId(ev); console.log('id', id)
@@ -932,7 +941,7 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 
 	let newPageIndex = coll.pageIndex + inc;
 	let numItems = keys.length;
-	let maxPage = Math.floor(numItems / numCells); console.log('maxPage', maxPage, numItems, numCells)
+	let maxPage = Math.floor(numItems / numCells); //console.log('maxPage', maxPage, numItems, numCells)
 	if (newPageIndex > maxPage) newPageIndex = 0;
 	if (newPageIndex < 0) newPageIndex = maxPage;
 	//bei pageIndex0 show 0-numCells

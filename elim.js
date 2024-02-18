@@ -1706,16 +1706,6 @@ function mResizer(dParent, img, dButtons) {
 		//tool: tool,
 	}
 }
-async function mSleep(ms = 1000) {
-	return new Promise(
-		(res, rej) => {
-			if (ms <= 3000) {
-				setTimeout(res, ms);
-			} else {
-				console.log('param should be less than 3001');
-			}
-		});
-}
 function mTooltip(elem, content) {
 	mIfNotRelative(elem);
 	let d = mDom(elem, { display: 'none', rounding: 6, padding: 2, h: 60, wmin: 120, bg: 'dimgrey', fg: 'white', position: 'absolute', bottom: 22 }, { html: content });

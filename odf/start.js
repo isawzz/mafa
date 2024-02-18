@@ -1,6 +1,53 @@
 onload = start;
 
-async function start() { test16(); }
+async function start() { test18(); }
+
+async function test18() {
+	await prelims();
+
+	await switchToMenu(UI.nav,'collections');
+
+	await onclickNewCollection('owl');
+	await mSleep(2000)
+	await onclickDeleteCollection();
+}
+
+
+async function test17_confusing(){
+	function mConfusingField(dParent){
+		let f=mDom(dParent,{bg:'pink',padding:50},{tag:'form'});
+		let d=mDom(f);
+		
+		let d1=mDom(d,{},{className:'label-container',html:`<div popover>Extra</div>`});
+		mDom(d1,{},{for:'confusing',tag:'label',html:'Confusing Field'});
+		let b=mDom(d1,{},{tag:'button',id:'btn',type:'button',className:'information',html:'i'});
+	
+	
+		// d1.innerHTML += `<div popover id='info' anchor='btn'>Extra</div>`;	let dpop = d1.lastChild;	console.log('dpop',dpop)
+	
+	
+		b.setAttribute('popovertarget','info')
+		let dpop = d1.firstChild;
+		dpop.id='info';
+		dpop.setAttribute('anchor','btn')
+		//mStyle(dpop,{inset:'unset',bottom:'anchor(top)',left:'anchor(right)'})
+	
+		// let dpop=mDom(d1,{},{});
+		// dpop.popover = true; //setAttribute('popover','Extra')
+	
+		let inp=mDom(d,{},{tag:'input',id:'confusing',type:'text'});
+		return {d,dpop,b,inp}
+	}
+	let d=clearBodyDiv({margin:50,bg:'red'});
+	let ui=mConfusingField(d);
+	await mSleep(500);
+	console.log('clicking!')
+	ui.b.click();
+	await mSleep(2000);
+	console.log('clicking!')
+	ui.b.click();
+	console.log(ui)
+}
 
 async function test16() {
 	await prelims();

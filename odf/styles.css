@@ -14,7 +14,13 @@
 	--magnifyScale: 5;
 }
 
-
+[popover]{
+	inset:unset;
+	outline:unset;
+	border:unset;
+	top:anchor(bottom);
+	left:anchor(left);
+}
 /* #region nations */
 .instruction {
 	border-radius: 10px;

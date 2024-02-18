@@ -1,30 +1,47 @@
-async function collRename(oldname,newname){
-	if (collLockedOrDoesNotExist(oldname)) return;
-	console.log('rename collection', oldname,'to',newname)
-	collPreReload(oldname);
 
-	//if any of the keys has an img that includes img/oldname/
-	//should rename directory (only once!) and rename the path img accordingly
-
-	let needToRenameDir=false;
-	for(const k of M.byCollection[oldname]){
-		let item = M.superdi[k];
-		let path = item.img;
-		if (isString(path) && path.includes(`img/${oldname}/`)){
-			item.img = `../assets/img/${newname}/${stringAfterLast(path,'/')}`;
-			needToRenameDir=true;
-		}
-		removeInPlace(item.colls,oldname)
-		item.colls.push(newname);
-		let res = await mPostRoute('postUpdateItem',{key:k,item:item});
-		console.log(res)
-	}
-	if (needToRenameDir) await mPostRoute('renameImgDir',{oldname,newname});
-	await loadAssets();
-	if (UI.collPrimary.name==oldname)UI.collPrimary.name=newname;
-	if (UI.collSecondary.name==oldname)UI.collSecondary.name=newname;
-	collPostReload(); 
+async function mGather1(dAnchor,label){
+		//open a 1 text gadget that anchors to UI.newCollection command div
+		let d=dAnchor;
+		let rect=getRect(d);
+		let gadget = mGadget('name', { padding:0, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
+		console.log(gadget)
+		name = await mPrompt(gadget);
+		return name;
 }
+
+async function onclickNewCollection(name) {
+
+	if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
+
+	if (collLockedOrDoesNotExist(name)) {
+		showMessage(`collection ${name} cannot be edited!`);
+		return;
+	}
+	UI.collSecondary.name = name; //valf(name,'owl');
+	collOpenSecondary(4, 3);
+
+}
+async function onclickDeleteCollection(name) {
+	if (nundef(name)) name = UI.collSecondary.name;
+	if (nundef(name)) name=await mGather1(iDiv(UI.deleteCollection),'name');
+	let resp=prompt(`Delete collection ${name}?`,'no');
+	console.log('resp',resp)
+	//await collDelete(name);
+}
+async function onclickRenameCollection(name) {
+	
+	if (nundef(name)) name = await mPrompt(UI.gadgetRenameCollection);
+	await collRename(name);
+}
+
+
+
+
+
+
+
+
+
 
 
 

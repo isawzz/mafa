@@ -1,3 +1,41 @@
+async function onclickNewCollection(name) {
+
+	//
+
+	if (nundef(name)) name = await mPrompt(UI.gadgetNewCollection);
+	UI.collSecondary.name = name;
+	collOpenPrimary(4, 4);
+	collOpenSecondary(4, 3);
+}
+async function onclickDeleteCollection(name) {
+	
+	if (nundef(name)) name = await mPrompt(UI.gadgetDeleteCollection);
+	await collDelete(name);
+}
+async function onclickRenameCollection(name) {
+	
+	if (nundef(name)) name = await mPrompt(UI.gadgetRenameCollection);
+	await collRename(name);
+}
+function collSidebar() {
+
+	mStyle('dLeft', { wmin: 100 });
+	let d = mDom('dLeft', { margin: 10, matop: 100 }); //,fg:getThemeFg()});
+
+	//let c1=mDom(d,{padding:4},{html:'new collection',className:'nav-link'})
+	let c1 = UI.newCollection = mCommand(d, 'newCollection', 'New / Edit');
+	UI.gadgetNewCollection = mGadget('newCollection', { left: 16, top: 160 }, { placeholder: `<enter name>` });
+
+	mDom(d, { h: 1 })
+
+	let c2 = UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');
+	UI.gadgetDeleteCollection = mGadget('deleteCollection', { left: 16, top: 190 }, { placeholder: `<enter name>` });
+
+	mDom(d, { h: 1 })
+
+	let c3 = UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');
+	UI.gadgetDeleteCollection = mGadget('deleteCollection', { left: 16, top: 190 }, { placeholder: `<enter name>` });
+}
 async function rest(url,dDrop){
 
 
