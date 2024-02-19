@@ -25,10 +25,13 @@ async function onclickDeleteCollection(name) {
 	// console.log('...',(proceed==true?'will':'will NOT'),`delete collection ${name}`);
 	//if (proceed) await collDelete(name);
 }
-async function onclickRenameCollection(name) {
+async function onclickRenameCollection(name,newname) {
+	if (nundef(name)) name = UI.collSecondary.name;
 	
-	if (nundef(name)) name = await mPrompt(UI.gadgetRenameCollection);
-	await collRename(name);
+	if (nundef(name)) name=await mGather(iDiv(UI.renameCollection));
+	if (nundef(newname)) newname=await mGather(iDiv(UI.renameCollection),{matop:20},{content:'new name'});
+	// if (nundef(name)) name = await mPrompt(UI.gadgetRenameCollection);
+	await collRename(name,newname);
 }
 
 
