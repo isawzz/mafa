@@ -1,4 +1,3 @@
-function mNewline(d,gap=1){	mDom(d,{h:gap});}
 function collSidebar() {
 
 	mStyle('dLeft', { wmin: 100 });
@@ -8,6 +7,7 @@ function collSidebar() {
 	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d);
 	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	
 }
+
 
 
 

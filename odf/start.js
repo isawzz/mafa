@@ -5,11 +5,11 @@ async function start() { test18(); }
 async function test18() {
 	await prelims();
 
-	await switchToMenu(UI.nav,'collections');
+	//await switchToMenu(UI.nav,'collections');
 
-	await onclickNewCollection('owl');
-	await mSleep(2000)
-	await onclickDeleteCollection();
+	//await onclickNewCollection('owl');
+	//await mSleep(2000)
+	//await onclickDeleteCollection();
 }
 
 
@@ -97,7 +97,7 @@ async function prelims() {
 
 	UI.nav = showNavbar();
 	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
-	UI.gadgetUsername = mGadget('username', { right: 0, top: 30 });
+	//UI.gadgetUsername = mGadget('username', { right: 0, top: 30 });
 
 	await switchToUser(localStorage.getItem('username'));
 

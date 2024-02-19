@@ -1,3 +1,42 @@
+// Create a modal with a question, Yes button, and No button
+function createConfirmationModal(dParent,question) {
+  // Get the modal element
+  const modal = document.createElement("div");
+  modal.classList.add("modal");
+
+  // Create modal content
+  const modalContent = document.createElement("div");
+  modalContent.classList.add("modal-content");
+
+  // Add the question to the modal
+  const questionText = document.createElement("p");
+  questionText.textContent = question;
+  modalContent.appendChild(questionText);
+
+  // Create Yes button
+  const yesButton = document.createElement("button");
+  yesButton.textContent = "Yes";
+  yesButton.addEventListener("click", () => {
+    // Handle Yes button click (you can add your logic here)
+    modal.style.display = "none"; // Close the modal
+  });
+  modalContent.appendChild(yesButton);
+
+  // Create No button
+  const noButton = document.createElement("button");
+  noButton.textContent = "No";
+  noButton.addEventListener("click", () => {
+    // Handle No button click (you can add your logic here)
+    modal.style.display = "none"; // Close the modal
+  });
+  modalContent.appendChild(noButton);
+
+  // Append modal content to the modal
+  modal.appendChild(modalContent);
+
+  // Append the modal to the document body
+  dParent.appendChild(modal);
+}
 function createInteractiveCanvas(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();

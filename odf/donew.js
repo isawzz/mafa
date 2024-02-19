@@ -809,34 +809,9 @@ function mMagnifyOff() {
 	elem.style.transform = null;
 }
 function mMenu(dParent, key) { let [d, l, m, r] = mLMR(dParent); return { dParent, elem: d, l, m, r, key, cur: null }; }
-async function mPrompt(gadget) {
-	return new Promise((resolve, reject) => {
-		//console.log('form', gadget.form);
-		gadget.dialog.showModal();
-		//gadget.inp.focus();
-		gadget.form.onsubmit = (event) => {
-			event.preventDefault(); // Prevent the default form submission
-			resolve(gadget.inp.value);
-			gadget.inp.value = '';
-			gadget.dialog.close();
-		};
-	});
-}
-async function mPromptGadgetFor(cell, placeholderName, onCancel) {
-	let rect = getRect(cell); //,document.body);
-	console.log('rect', rect)
-	let gadget = mGadget(placeholderName, { padding: 0, position: 'absolute', left: rect.l, top: rect.t + rect.h });
-	console.log('gadget', gadget);
 
-	if (isdef(onCancel)) {
-		let dia = gadget.dialog;
-		mButton('Cancel', onCancel, dia);
-		dia.oncancel = onCancel;
-	}
-	let res = await mPrompt(gadget);
-	return res;
+function mNewline(d,gap=1){	mDom(d,{h:gap});}
 
-}
 async function mSleep(ms = 1000) {
 	return new Promise(
 		(res, rej) => {
@@ -887,9 +862,12 @@ async function onclickPrev(ev) {
 	showImageBatch(coll, -1);
 }
 async function onclickUser() {
-	let gadget = UI.gadgetUsername;
-	let uname = await mPrompt(gadget);
+	//let gadget = UI.gadgetUsername;
+	//let uname = await mPrompt(gadget);
 	//console.log('username is',uname)
+	console.log('onclickUser')
+	let uname = await mGather(iDiv(UI.user),{},{content:'username'});
+
 	await switchToUser(uname);
 }
 async function ondropSaveUrl(url) {

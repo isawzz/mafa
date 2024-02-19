@@ -1,13 +1,5 @@
 
-async function mGather1(dAnchor,label){
-		//open a 1 text gadget that anchors to UI.newCollection command div
-		let d=dAnchor;
-		let rect=getRect(d);
-		let gadget = mGadget('name', { padding:0, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
-		console.log(gadget)
-		name = await mPrompt(gadget);
-		return name;
-}
+
 
 async function onclickNewCollection(name) {
 
@@ -24,9 +16,12 @@ async function onclickNewCollection(name) {
 async function onclickDeleteCollection(name) {
 	if (nundef(name)) name = UI.collSecondary.name;
 	if (nundef(name)) name=await mGather1(iDiv(UI.deleteCollection),'name');
-	let resp=prompt(`Delete collection ${name}?`,'no');
-	console.log('resp',resp)
-	//await collDelete(name);
+
+	let proceed=await mGatherYesNo(iDiv(UI.deleteCollection),`delete collection ${name}?`);
+	console.log('proceed',proceed)
+	console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
+	// console.log('...',(proceed==true?'will':'will NOT'),`delete collection ${name}`);
+	//if (proceed) await collDelete(name);
 }
 async function onclickRenameCollection(name) {
 	

@@ -1,3 +1,132 @@
+
+
+//#region gadgets mprompt WORKS!
+function mGadget(name, styles = {}, opts = {}) {
+	let d = document.body;
+	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
+	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
+	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return { name, dialog, form, inp }
+}
+function mGadgetList(namelist, styles = {}, opts = {}) {
+	let d = document.body;
+	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
+	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
+	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+
+	let inputs = {};
+	for (const name of namelist) {
+		let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
+		inputs[name] = inp;
+	}
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return { namelist, dialog, form, inputs }
+}
+function mGadget1(name, styles = {}, opts = {}) {
+	let d = document.body;
+	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
+	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
+	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return { name, dialog, form, inp }
+}
+function mGadgetYesNo(question, styles = {}, opts = {}) {
+	let d = document.body;
+	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${question}` });
+	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
+	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+	//let form = mDom(dialog);
+	let dq=mDom(form,{},{html:question});
+	let bYes = mDom(form,{},{html:'Yes',tag:'button',onclick:()=>form.setAttribute('proceed','yes')})
+	let bNo = mDom(form,{maleft:10},{html:'No',tag:'button',onclick:()=>form.setAttribute('proceed','no')})
+	// let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: question, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${question}>`) });
+	// mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return { name: question, dialog, form, bYes, bNo }
+}
+
+async function mGather1(dAnchor,label='name'){
+	//open a 1 text gadget that anchors to UI.newCollection command div
+	let d=dAnchor;
+	let rect=getRect(d);
+	let gadget = mGadget(label, { padding:0, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
+	//console.log(gadget)
+	let result = await mPrompt(gadget);
+	return result;
+}
+async function mGatherYesNo(dAnchor,label){
+	//open a 1 text gadget that anchors to UI.newCollection command div
+	let d=dAnchor;
+	let rect=getRect(d);
+	let gadget = mGadgetYesNo(label, { bg:'white',padding:10, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
+	//console.log(gadget)
+	let result = await mPPP(gadget);
+	return result;
+}
+async function mPromptGadgetFor(cell, placeholderName, onCancel) {
+	let rect = getRect(cell); //,document.body);
+	console.log('rect', rect)
+	let gadget = mGadget(placeholderName, { padding: 0, position: 'absolute', left: rect.l, top: rect.t + rect.h });
+	console.log('gadget', gadget);
+
+	if (isdef(onCancel)) {
+		let dia = gadget.dialog;
+		mButton('Cancel', onCancel, dia);
+		dia.oncancel = onCancel;
+	}
+	let res = await mPrompt(gadget);
+	return res;
+
+}
+
+async function mPrompt(gadget) {
+	return new Promise((resolve, reject) => {
+		//console.log('form', gadget.form);
+		gadget.dialog.showModal();
+		//gadget.inp.focus();
+		gadget.form.onsubmit = (event) => {
+			event.preventDefault(); // Prevent the default form submission
+			resolve(gadget.inp.value);
+			gadget.inp.value = '';
+			gadget.dialog.close();
+		};
+	});
+}
+async function mPPP(gadget) {
+	return new Promise((resolve, reject) => {
+		//console.log('form', gadget.form);
+		gadget.dialog.showModal();
+		gadget.bNo.focus();
+		//gadget.inp.focus();
+		gadget.form.onsubmit = (event) => {
+			event.preventDefault(); // Prevent the default form submission
+			let data=gadget.form.getAttribute('proceed'); //new FormData(gadget.form);
+			//console.log('data',data)
+			resolve(data=='yes');
+			//if (data) resolve(); else reject()
+			//gadget.inp.value = '';
+			gadget.dialog.close();
+		};
+	});
+}
+
+
+//#endregion
+
+//#region collection zeug!
+function confirmYesNo(question) {
+  const result = prompt(question + "\n\n(Yes/No)");
+
+  if (result !== null) {
+    const trimmedResult = result.trim().toLowerCase();
+    return trimmedResult === "yes";
+  } else {
+    return null; // If the user cancels the prompt
+  }
+}
+
 async function onclickNewCollection(name) {
 
 	//
@@ -346,7 +475,7 @@ function startPanning(ev){
 	panStart(ev);
 }
 
-
+//#endregion
 //#region ai cropImageTo300Center
 
 
@@ -1615,7 +1744,7 @@ async function test0() {
 
 	//showNavbar();
 }
-
+//#endregion odf start
 
 //#region app postUserChange
 
