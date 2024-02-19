@@ -1,3 +1,12 @@
+async function mGather(dAnchor, styles = {}, opts = { label: 'name' }) {
+	//open a 1 text gadget that anchors to UI.newCollection command div
+	let d = dAnchor;
+	let rect = getRect(d);
+	let gadget = mGadget(opts.label, { padding: 0, maleft: 8, right: 0, top: rect.b });//, { placeholder: `<enter name>` });
+	//console.log(gadget)
+	let result = await mPrompt(gadget);
+	return result;
+}
 async function onclickUser() {
 	//let gadget = UI.gadgetUsername;
 	//let uname = await mPrompt(gadget);

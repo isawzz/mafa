@@ -1,6 +1,6 @@
 
 async function mGather(dAnchor, styles = {}, opts = {}) {
-	let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align,'bl')];
+	let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
 
 	let d = document.body;
 	let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
@@ -16,17 +16,36 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 	addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
 	let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
 
+	let evalFunc = type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
+		type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
+			uiGadgetTypeText(form, content, styles, opts);
+
+	return new Promise((resolve, _) => {
+		dialog.showModal();
+		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
+	});
+}
+
+function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
+
+	let dq = mDom(form, styles, { html: content });
+	let bYes = mDom(form, {}, { html: 'Yes', tag: 'button', onclick: () => form.setAttribute('proceed', 'yes') })
+	let bNo = mDom(form, { maleft: 10 }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
+
+	return () => form.getAttribute('proceed') == 'yes';
+}
+function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
 	//type text: hier kommen jetzt verschiedene options acc to type!
+
 	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
 	//let inputStyles = {w:100,margin:0}; 
 	// let inp = mDom(form, inputStyles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
 	//let inputStyles = { bg: 'white', align: 'center', vpadding: 3, hpadding: 6, matop: 2 }; // outline: 'none', w: 130, margin:0 }
 	// let inp = mDom(form, inputStyles, { className: 'reset', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	let getResult111 = () => inp.value;
-
-	return new Promise((resolve, _) => { dialog.showModal(); form.onsubmit = (ev) => { ev.preventDefault(); resolve(getResult111()); dialog.remove(); }; });
+	return () => inp.value;
 }
+
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
 	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
@@ -46,14 +65,5 @@ async function mPrompt(gadget) {
 			gadget.dialog.close();
 		};
 	});
-}
-async function _mGather(dAnchor, styles = {}, opts = { label: 'name' }) {
-	//open a 1 text gadget that anchors to UI.newCollection command div
-	let d = dAnchor;
-	let rect = getRect(d);
-	let gadget = mGadget(opts.label, { padding: 0, maleft: 8, right: 0, top: rect.b });//, { placeholder: `<enter name>` });
-	//console.log(gadget)
-	let result = await mPrompt(gadget);
-	return result;
 }
 

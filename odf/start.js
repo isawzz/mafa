@@ -5,12 +5,12 @@ async function start() { test18(); }
 async function test18() {
 	await prelims();
 
-	//await switchToMenu(UI.nav,'collections');
+	await switchToMenu(UI.nav,'collections');
 
-	//await onclickNewCollection('owl');
+	await onclickNewCollection();
 	//await mSleep(2000)
 	//await onclickDeleteCollection();
-	await onclickUser();
+	//await onclickUser();
 //	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br'});
 
 }

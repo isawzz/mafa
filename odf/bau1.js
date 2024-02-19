@@ -3,7 +3,9 @@
 
 async function onclickNewCollection(name) {
 
-	if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
+	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
+	if (nundef(name)) name=await mGather(iDiv(UI.newCollection));
+	//console.log('would open new Collection',name); return;
 
 	if (collLockedOrDoesNotExist(name)) {
 		showMessage(`collection ${name} cannot be edited!`);
@@ -15,9 +17,9 @@ async function onclickNewCollection(name) {
 }
 async function onclickDeleteCollection(name) {
 	if (nundef(name)) name = UI.collSecondary.name;
-	if (nundef(name)) name=await mGather1(iDiv(UI.deleteCollection),'name');
+	if (nundef(name)) name=await mGather(iDiv(UI.deleteCollection),'name');
 
-	let proceed=await mGatherYesNo(iDiv(UI.deleteCollection),`delete collection ${name}?`);
+	let proceed=await mGather(iDiv(UI.deleteCollection),{},{type:'yesno',content:`delete collection ${name}?`});
 	console.log('proceed',proceed)
 	console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
 	// console.log('...',(proceed==true?'will':'will NOT'),`delete collection ${name}`);

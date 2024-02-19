@@ -259,7 +259,7 @@ async function mGatherYesNo(dAnchor,label){
 	let rect=getRect(d);
 	let gadget = mGadgetYesNo(label, { bg:'white',padding:10, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
 	//console.log(gadget)
-	let result = await mPPP(gadget);
+	let result = await mPromptYesNo(gadget);
 	return result;
 }
 async function mPromptGadgetFor(cell, placeholderName, onCancel) {
@@ -290,7 +290,7 @@ async function mPrompt(gadget) {
 		};
 	});
 }
-async function mPPP(gadget) {
+async function mPromptYesNo(gadget) {
 	return new Promise((resolve, reject) => {
 		//console.log('form', gadget.form);
 		gadget.dialog.showModal();
