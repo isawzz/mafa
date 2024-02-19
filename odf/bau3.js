@@ -1,7 +1,7 @@
 
-async function mGather(dAnchor,styles={},opts={}){ //content='name',type='text'){
+async function mGather1(dAnchor,styles={},opts={}){ //content='name',type='text'){
 	let rect=getRect(dAnchor);
-	addKeys({right:rect.r,top:rect.b},styles);
+	addKeys({right:0,top:rect.b},styles);
 	let [content,type]=[valf(opts.content,'name'),valf(opts.type,'text')];
 
 	// let gadget = mGadget(content, { padding:0, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
@@ -14,17 +14,20 @@ async function mGather(dAnchor,styles={},opts={}){ //content='name',type='text')
 	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 
-	let getResult111 = ()=>inp.value;
-	let cleanup111= ()=>inp.value='';
+	//let getResult111 = ()=>return inp.value;
+	//let cleanup111= ()=>inp.value='';
 
 
 	return new Promise((resolve, reject) => {
 		dialog.showModal();
 		form.onsubmit = (ev) => {
 			ev.preventDefault(); // Prevent the default form submission
-			resolve(getResult111()); //inp.value);
-			cleanup111(); //inp.value = '';
-			dialog.close();
+			// resolve(getResult111()); //inp.value);
+			// cleanup111(); //inp.value = '';
+			resolve(inp.value);
+			//inp.value = '';
+			//dialog.close();
+			dialog.remove();
 		};
 	});
 
@@ -55,7 +58,7 @@ async function mGather(dAnchor,styles={},opts={label:'name'}){
 	//open a 1 text gadget that anchors to UI.newCollection command div
 	let d=dAnchor;
 	let rect=getRect(d);
-	let gadget = mGadget(opts.label, { padding:0, maleft:8, right: rect.r, top: rect.b });//, { placeholder: `<enter name>` });
+	let gadget = mGadget(opts.label, { padding:0, maleft:8, right: 0, top: rect.b });//, { placeholder: `<enter name>` });
 	//console.log(gadget)
 	let result = await mPrompt(gadget);
 	return result;

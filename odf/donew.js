@@ -866,8 +866,9 @@ async function onclickUser() {
 	//let uname = await mPrompt(gadget);
 	//console.log('username is',uname)
 	console.log('onclickUser')
-	let uname = await mGather(iDiv(UI.user),{},{content:'username'});
+	let uname = await mGather1(iDiv(UI.user),{},{content:'username'});
 
+	console.log('username is',uname)
 	await switchToUser(uname);
 }
 async function ondropSaveUrl(url) {
