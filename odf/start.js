@@ -10,6 +10,9 @@ async function test18() {
 	//await onclickNewCollection('owl');
 	//await mSleep(2000)
 	//await onclickDeleteCollection();
+	await onclickUser();
+//	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br'});
+
 }
 
 

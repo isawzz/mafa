@@ -862,13 +862,7 @@ async function onclickPrev(ev) {
 	showImageBatch(coll, -1);
 }
 async function onclickUser() {
-	//let gadget = UI.gadgetUsername;
-	//let uname = await mPrompt(gadget);
-	//console.log('username is',uname)
-	console.log('onclickUser')
-	let uname = await mGather1(iDiv(UI.user),{},{content:'username'});
-
-	console.log('username is',uname)
+	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
 	await switchToUser(uname);
 }
 async function ondropSaveUrl(url) {

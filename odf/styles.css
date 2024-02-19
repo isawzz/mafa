@@ -14,12 +14,54 @@
 	--magnifyScale: 5;
 }
 
+.reset {
+	padding: 0;
+	margin: 0;
+	max-width: 100vw;
+	max-height: 100vh;
+	width:auto;
+	box-sizing:border-box;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background-color: transparent;
+	overflow: visible;
+	color: inherit;
+	font: inherit;
+	font-size: inherit;
+	font-family: inherit;
+}
 [popover]{
 	inset:unset;
 	outline:unset;
 	border:unset;
 	top:anchor(bottom);
 	left:anchor(left);
+}
+dialog:-internal-dialog-in-top-layer {
+	position: fixed;
+	inset-block-start: 0px;
+	inset-block-end: 0px;
+	max-width: 100vw !important;
+	max-height: 100vh !important;
+	/* max-width: 3000px !important;
+	max-height: 3000px !important; */
+	/* max-width: calc(100% - 2em - 6px);
+	max-height: calc(100% - 2em - 6px); */
+	user-select: text;
+	visibility: visible;
+	overflow: auto;
+	padding: 0;
+	margin: 0;
+	border: none;
+	outline: none;
+	box-shadow: none;
+	background-color: transparent;
+	overflow: visible;
+	color: inherit;
+	font: inherit;
+	font-size: inherit;
+	font-family: inherit;
 }
 /* #region nations */
 .instruction {
@@ -253,6 +295,7 @@ body{
 	background: var(--bgButton);
 	color: var(--fgButton);
 	padding: 0px 8px;
+	box-sizing:border-box;
 	text-decoration: none; /* weil a normal underline hat! */
 	cursor: pointer;
 	/* display: block; 
@@ -294,19 +337,6 @@ body{
 	padding: 0;
 	margin: 0;
 	border: none;
-}
-.reset {
-	padding: 0;
-	margin: 0;
-	border: none;
-	outline: none;
-	box-shadow: none;
-	background-color: transparent;
-	overflow: visible;
-	color: inherit;
-	font: inherit;
-	font-size: inherit;
-	font-family: inherit;
 }
 .section {
 	border-radius: 10px;

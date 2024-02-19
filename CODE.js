@@ -1,4 +1,135 @@
+async function onclickUser() {
+	//let gadget = UI.gadgetUsername;
+	//let uname = await mPrompt(gadget);
+	//console.log('username is',uname)
+	//console.log('onclickUser')
+	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br',placeholder:' <username> '});
 
+	//console.log('username is',uname)
+	await switchToUser(uname);
+}
+async function mist() {
+	return;
+	let [wd, hd] = [mGetStyle(dialog, 'w'), mGetStyle(dialog, 'h')]
+
+	let rect = dAnchor.getBoundingClientRect();//getRect(dAnchor);
+	console.log('dAnchor', dAnchor, rect);
+	let rReal = window.innerWidth - rect.right; //(rect.left+rect.width);
+	console.log('right', rReal)
+
+	// return;
+	// console.log('dia',wd,window.innerWidth,rect.r,window.innerWidth-rect.r)
+
+	//zeichne ein div direct unter dAnchor
+
+	addKeys({ position: 'fixed', display: 'inline-block', padding: 0, margin: 0, box: true }, styles)
+	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+	let d1 = mDom(form, { position: 'fixed', top: rect.b, left: rect.l, w: rect.w, h: rect.h, bg: 'red' }); //,padding:mGetStyle(dAnchor,'padding')}); 
+	return new Promise((resolve, reject) => {
+		dialog.showModal();
+		form.onsubmit = (ev) => {
+			ev.preventDefault(); // Prevent the default form submission
+			// resolve(getResult111()); //inp.value);
+			// cleanup111(); //inp.value = '';
+			resolve(getResult111()); //inp.value);
+			//inp.value = '';
+			//dialog.close();
+			dialog.remove();
+		};
+	});
+
+}
+async function rest() {
+
+	console.log('rect', rect)
+
+	//console.log('s',window.innerWidth-rect.r)
+	//use opts.align fuer [tcb] [lcr]
+	addKeys({ align: 'bl' }, opts);
+
+	switch (opts.align[0]) {
+		case 't': addKeys({ bottom: rect.t }, styles); break;
+		case 'b': addKeys({ top: rect.b }, styles); break;
+		default: addKeys({ top: rect.t }, styles); break;
+	}
+	switch (opts.align[1]) {
+		case 'l': addKeys({ left: rect.l }, styles); break;
+		case 'r': addKeys({ right: window.innerWidth - rect.r }, styles); break;
+		default: addKeys({ left: rect.l }, styles); break;
+	}
+
+	console.log('styles', styles)
+	//addKeys({ right: 0, top: rect.b }, styles);
+	let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')];
+
+	// let gadget = mGadget(content, { padding:0, maleft:8, left: rect.l, top: rect.b });//, { placeholder: `<enter name>` });
+	//let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog' });
+	addKeys({ position: 'fixed', display: 'inline-block', padding: 0, margin: 0, box: true }, styles)
+	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+
+	//type text: hier kommen jetzt verschiedene options acc to type!
+	let inp = mDom(form, { outline: 'none', w: 130, margin: 0 }, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+
+	let getResult111 = () => inp.value;
+	//let cleanup111= ()=>inp.value='';
+
+
+	return new Promise((resolve, reject) => {
+		dialog.showModal();
+		form.onsubmit = (ev) => {
+			ev.preventDefault(); // Prevent the default form submission
+			// resolve(getResult111()); //inp.value);
+			// cleanup111(); //inp.value = '';
+			resolve(getResult111()); //inp.value);
+			//inp.value = '';
+			//dialog.close();
+			dialog.remove();
+		};
+	});
+
+
+}
+
+async function mGather(dAnchor, styles = {}, opts = {}) { 
+	let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; 
+
+	let d = document.body;
+	let dialog = mDom(d,{bg:'#ff000040',box:true,w:'100vw',h:'100vh'},{tag:'dialog'});
+
+	let rect = dAnchor.getBoundingClientRect();//getRect(dAnchor);
+
+	let [v,h]=[opts.align[0],opts.align[1]];
+	let vPos=v=='b'?{top:rect.bottom}:v=='c'?{top:rect.top}:{bottom:rect.top};
+	let hPos=h=='l'?{left:rect.left}:v=='c'?{left:rect.left}:{right:window.innerWidth-rect.right};
+
+	let formStyles = {position:'absolute'};
+	addKeys(vPos,formStyles);
+	addKeys(hPos,formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
+	let form = mDom(dialog,formStyles,{ autocomplete: 'off', tag: 'form', method: 'dialog' });
+
+	//type text: hier kommen jetzt verschiedene options acc to type!
+	let inputStyles = {bg:'white',align:'center',vpadding:3,hpadding:6,matop:2}; // outline: 'none', w: 130, margin:0 }
+	let inp = mDom(form, inputStyles, { className:'reset', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	let getResult111 = () => inp.value;
+
+	return new Promise((resolve, reject) => {
+		dialog.showModal();
+		form.onsubmit = (ev) => {
+			ev.preventDefault(); // Prevent the default form submission
+			// resolve(getResult111()); //inp.value);
+			// cleanup111(); //inp.value = '';
+			resolve(getResult111()); //inp.value);
+			//inp.value = '';
+			//dialog.close();
+			dialog.remove();
+		};
+	});
+
+	// dialog.showModal();
+	// inp.focus();
+}
 
 //#region gadgets mprompt WORKS!
 function mGadget(name, styles = {}, opts = {}) {
