@@ -20,10 +20,11 @@ async function collDelete(collname) {
 
 			let olddir = collname;
 			let newdir=item.colls[0];
+			let filename = stringBeforeLast(item.img,'/');
 			//item.img=`../assets/img/${newdir}/`
 			item.img = item.img.replace(olddir,newdir);
 
-			await mPostRoute('moveImage',{olddir,newdir});
+			await mPostRoute('moveImage',{olddir,newdir,filename});
 			// needToRenameImgDir={oldname:collname,newname:newpath};
 
 			//bei einem key den ich nicht delete! muss ich colls aendern!

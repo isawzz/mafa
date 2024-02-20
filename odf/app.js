@@ -344,12 +344,18 @@ app.post('/deleteImage', (req, res) => {
 	res.json(`image deleted ${req.body.path}`);
 });
 app.post('/moveImage', (req, res) => {
-	let [olddir,newdir,img]=[req.body.olddir,req.body.newdir,req.body.img];
+	let [olddir,newdir,img]=[req.body.olddir,req.body.newdir,req.body.filename];
 	
-	let oldpath = path.join(assetsDirectory,'img',olddir);
-	console.log('!!!!!!!!!!!!!deleting',path1);
-	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
-	res.json(`image deleted ${req.body.path}`);
+	let oldpath = path.join(assetsDirectory,'img',olddir,img);
+	let newpath = path.join(assetsDirectory,'img',newdir,img);
+
+	let dir=path.join(assetsDirectory,'img',newdir);
+	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+	else console.log('dir',dir,'already exists');
+
+	// console.log('move',oldpath,newpath);
+	// if (fs.existsSync(oldpath)) fs.renameSync(oldpath,newpath); else console.log('NO',oldpath)
+	res.json(`image renamed to ${newpath}`);
 });
 app.post('/deleteItem', (req, res) => {
 	let key = req.body.key;

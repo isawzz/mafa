@@ -1,6 +1,20 @@
 onload = start;
 
-async function start() { test18(); }
+async function start() { test19(); }
+
+async function test19(){
+	await prelims();
+	//await switchToMenu(UI.nav,'collections');
+	//await onclickNewCollection('owl');
+
+	let olddir = 'owls';
+	let newdir='owww';
+	let filename = 'buddies.png';
+
+	await mPostRoute('moveImage',{olddir,newdir,filename});
+
+
+}
 
 async function test18() {
 	await prelims();
