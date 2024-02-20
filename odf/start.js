@@ -7,9 +7,9 @@ async function test18() {
 
 	await switchToMenu(UI.nav,'collections');
 
-	await onclickNewCollection();
+	//await onclickNewCollection('owl');
 	//await mSleep(2000)
-	//await onclickDeleteCollection();
+	//await onclickRenameCollection();
 	//await onclickUser();
 //	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br'});
 

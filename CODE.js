@@ -1,3 +1,34 @@
+async function mGather_1_W(dAnchor, styles = {}, opts = {}) {
+	let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
+
+	let d = document.body;
+	let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
+
+	let rect = dAnchor.getBoundingClientRect();//getRect(dAnchor);
+
+	let [v, h] = [align[0], align[1]];
+	let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
+	let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+
+	let formStyles = { position: 'absolute' };
+	addKeys(vPos, formStyles);
+	addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
+	let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+
+	let evalFunc = type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
+		type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
+			uiGadgetTypeText(form, content, styles, opts);
+
+	// if (isdef(opts.cancel)) {
+	// 	//add a cancel button to the dialog!
+	// 	mDom(form,{w:70},{className:'input',onclick:})
+	// }
+
+	return new Promise((resolve, _) => {
+		dialog.showModal();
+		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
+	});
+}
 async function mGather(dAnchor, styles = {}, opts = { label: 'name' }) {
 	//open a 1 text gadget that anchors to UI.newCollection command div
 	let d = dAnchor;

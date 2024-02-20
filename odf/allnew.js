@@ -589,7 +589,7 @@ async function imgToServer(canvas, path) {
 }
 function instructionUpdate(){
 }
-function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; return true; } }
+function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; } return isLetter(s[0]); } 
 function isBetween(n, a, b) { return n >= a && n <= b }
 function isGrayColor(color, diff = 60) {
   const rgb = colorHexToRgb(color);

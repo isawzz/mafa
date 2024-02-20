@@ -107,28 +107,6 @@ function collCloseSecondary() {
 	UI.collSecondary.isOpen = false;
 
 }
-async function collDelete(collname) {
-	if (collLockedOrDoesNotExist(name)) return;
-	console.log('delete collection', keys)
-	collPreReload(name);
-	for (const k of keys) {
-		let item = M.superdi[k];
-		console.log('item', item)
-		let colls = item.colls;
-		console.log('colls',colls)
-		if (colls.includes(collname) && colls.length == 1) {
-			await collDeleteKey(k);			
-		}else{
-			//this pic cannot be deleted! also: the key cannot be deleted!!!
-			console.log('not deleting',path,'!!!!!!!!!!!!')
-		}
-		//jetzt muss 
-		
-	}
-	collPostReload(); //	delete M.byCollection[collname];
-
-
-}
 async function collDeleteKey(key){
 	let item = M.superdi[key];
 	assertion(isdef(item.img) && isdef(item.key),`superdi[${key}] cannot be deleted!!!!`);
@@ -144,6 +122,8 @@ async function collDeleteKey(key){
 	//collections muessen neu initiated werden!
 
 }
+function collExists(collname){return isdef(M.byCollection[collname]); }
+
 function collFilterImages(ev) {
 	let id = evToId(ev); console.log('id', id)
 	let coll = UI[id];
@@ -264,14 +244,9 @@ function collInitCollection(name, coll) {
 	showImageBatch(coll);
 	//showDiv(dMenu); return;
 }
-function collLockedOrDoesNotExist(collname){
-	if ('all amanda animals big emo fa6 icon nations users'.includes(collname)) {
-		console.log(`!!!!!CANNOT delete this collection ${collname}`);
-		return true;
-	}
-	let keys = M.byCollection[collname];
-	if (nundef(keys)) {
-		console.log(`!!!!!collection does not exists ${collname}`);
+function collLocked(collname){
+	if (['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
+		console.log(`LOCKED collection ${collname}`);
 		return true;
 	}
 	return false;
@@ -387,29 +362,6 @@ function collPostReload(){
 	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
 	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
 
-}
-async function collRename(oldname,newname){
-	if (collLockedOrDoesNotExist(oldname)) return;
-	console.log('rename collection', oldname,'to',newname)
-	collPreReload(oldname);
-	let needToRenameDir=false;
-	for(const k of M.byCollection[oldname]){
-		let item = M.superdi[k];
-		let path = item.img;
-		if (isString(path) && path.includes(`img/${oldname}/`)){
-			item.img = `../assets/img/${newname}/${stringAfterLast(path,'/')}`;
-			needToRenameDir=true;
-		}
-		removeInPlace(item.colls,oldname)
-		item.colls.push(newname);
-		let res = await mPostRoute('postUpdateItem',{key:k,item:item});
-		console.log(res)
-	}
-	if (needToRenameDir) await mPostRoute('renameImgDir',{oldname,newname});
-	await loadAssets();
-	if (UI.collPrimary.name==oldname)UI.collPrimary.name=newname;
-	if (UI.collSecondary.name==oldname)UI.collSecondary.name=newname;
-	collPostReload(); 
 }
 async function collShowImageInCell(cell, src) {
 	mStyle(cell, { opacity: 1 });
@@ -836,6 +788,67 @@ async function onclickCollections() {
 	UI.collPrimary = { div: dPrimary, name: collName }; //{name:'amanda'};
 	UI.collSecondary = { div: dSecondary, name: null };
 	collOpenPrimary(4, 4);
+}
+async function onclickDeleteCollection(name) {
+	if (nundef(name)) name = UI.collSecondary.name;
+	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
+
+	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });
+
+	// console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
+	if (proceed) await collDelete(name);
+}
+async function onclickNewCollection(name) {
+
+	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
+	if (nundef(name)) name = await mGather(iDiv(UI.newCollection));
+	//console.log('would open new Collection',name); return;
+
+	if (isEmpty(name)){
+		showMessage(`ERROR! you need to enter a valid name!!!!`);
+		return;
+	}
+	if (collLocked(name)) {
+		showMessage(`collection ${name} is Read-Only!`);
+		return;
+	}
+	UI.collSecondary.name = name; 
+	collOpenSecondary(4, 3);
+
+}
+async function onclickRenameCollection(oldname, newname) {
+	if (nundef(oldname)) oldname = UI.collSecondary.name;
+	if (nundef(newname)) {
+		console.log('HALLO!!!!')
+		let di = await mGather(iDiv(UI.renameCollection), {},{content:{ oldname: valf(oldname, ''), newname: '' },type:'multi'});
+		console.log('di', di);
+		[oldname,newname]=[di.oldname,di.newname];
+	}
+
+	newname = newname.toLowerCase();
+	if (isEmpty(newname)){
+		showMessage(`ERROR! you need to enter a valid new name!!!!`);
+		return;
+	}
+	if (!isAlphanumeric(newname)) {
+		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
+		return;
+	}
+	if (collLocked(oldname)) {
+		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);
+		return;
+	}
+	if (!collExists(oldname)) {
+		showMessage(`ERROR: Collection ${oldname} not found!`);
+		return;
+	}
+	if (isdef(M.byCollection[newname])){
+		showMessage(`ERROR! Collection ${newname} already exists!!!!`);
+		return;
+	}
+
+	//console.log(`would rename collection ${oldname} to ${newname}`);return;
+	await collRename(oldname, newname);
 }
 function onclickCommand(ev) {
 	let key = evToAttr(ev, 'key');

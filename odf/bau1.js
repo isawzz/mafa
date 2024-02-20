@@ -1,50 +1,88 @@
 
+async function collDelete(collname) {
+	if (collLocked(collname) || !collExists(collname)) return;
+	let keys = M.byCollection[collname];
+	console.log('delete collection', keys)
+	collPreReload(collname);
+	let di={},deletedKeys=[]; //,needToRenameImgDir=false,newdir=null;
+	for (const k of keys) {
+		let item = M.superdi[k];
+		console.log('item', item)
+		let colls = item.colls;
+		console.log('colls',colls)
+		assertion(colls.includes(collname),`item ${k} from coll ${collname} does not have ${collname} in colls!!!!!!`)
+		if (colls.length == 1) {
+			console.log('deleting',k,'!!!!!!!!!!!!');
+			deletedKeys.push(k);
+		}else if (isdef(item.img) && item.img.includes(`/${collname}/`)){
+			removeInPlace(item.colls,collname);
+			//move this img to other collname, create it if it does not exist!!!
+
+			let olddir = collname;
+			let newdir=item.colls[0];
+			//item.img=`../assets/img/${newdir}/`
+			item.img = item.img.replace(olddir,newdir);
+
+			await mPostRoute('moveImage',{olddir,newdir});
+			// needToRenameImgDir={oldname:collname,newname:newpath};
+
+			//bei einem key den ich nicht delete! muss ich colls aendern!
+			console.log('item',item);
+			// removeInPlace(item.colls,collname);
+			di[k]=item;
+		}else{
+			//this pic cannot be deleted! also: the key cannot be deleted!!!
+			//bei einem key den ich nicht delete! muss ich colls aendern!
+			console.log('item',item);
+			removeInPlace(item.colls,collname);
+			di[k]=item;
+			//res = await mPostRoute('postUpdateItem', { key: k, item:item });
+		}
+	}
+
+	let res = await mPostRoute('postUpdateSuperdi',{di,deletedKeys,collname});
+	console.log('response from server',res)
+	await loadAssets();
+
+	collPostReload(); //	delete M.byCollection[collname];
 
 
-async function onclickNewCollection(name) {
+}
 
-	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
-	if (nundef(name)) name=await mGather(iDiv(UI.newCollection));
-	//console.log('would open new Collection',name); return;
 
-	if (collLockedOrDoesNotExist(name)) {
-		showMessage(`collection ${name} cannot be edited!`);
+async function collRename(oldname, newname) {
+	if (collLocked(oldname) || !collExists(oldname) || !isAlphanumeric(newname)) {
+		showMessage(`Cannot rename collection ${oldname} to ${newname}`);
 		return;
 	}
-	UI.collSecondary.name = name; //valf(name,'owl');
-	collOpenSecondary(4, 3);
+	console.log('rename collection', oldname, 'to', newname)
+	collPreReload(oldname);
+	let needToRenameDir = false;
+	let di = {};
+	for (const k of M.byCollection[oldname]) {
+		let item = M.superdi[k];
+		let path = item.img;
+		if (isString(path) && path.includes(`img/${oldname}/`)) {
+			item.img = `../assets/img/${newname}/${stringAfterLast(path, '/')}`;
+			needToRenameDir = true;
+		}
+		removeInPlace(item.colls, oldname)
+		item.colls.push(newname);
+		di[k] = item;
+		//let res = await mPostRoute('postUpdateItem',{key:k,item:item}); console.log(res)
+	}
 
+
+	if (needToRenameDir) {
+		let resp = await mPostRoute('renameImgDir', { oldname, newname });
+		console.log('response from server', resp)
+	}
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys:[] }); console.log('response from server', res)
+	await loadAssets();
+	if (UI.collPrimary.name == oldname) UI.collPrimary.name = newname;
+	if (UI.collSecondary.name == oldname) UI.collSecondary.name = newname;
+	collPostReload();
 }
-async function onclickDeleteCollection(name) {
-	if (nundef(name)) name = UI.collSecondary.name;
-	if (nundef(name)) name=await mGather(iDiv(UI.deleteCollection),'name');
-
-	let proceed=await mGather(iDiv(UI.deleteCollection),{},{type:'yesno',content:`delete collection ${name}?`});
-	console.log('proceed',proceed)
-	console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
-	// console.log('...',(proceed==true?'will':'will NOT'),`delete collection ${name}`);
-	//if (proceed) await collDelete(name);
-}
-async function onclickRenameCollection(name,newname) {
-	if (nundef(name)) name = UI.collSecondary.name;
-	
-	if (nundef(name)) name=await mGather(iDiv(UI.renameCollection));
-	if (nundef(newname)) newname=await mGather(iDiv(UI.renameCollection),{matop:20},{content:'new name'});
-	// if (nundef(name)) name = await mPrompt(UI.gadgetRenameCollection);
-	await collRename(name,newname);
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

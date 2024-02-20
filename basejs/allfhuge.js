@@ -44317,7 +44317,7 @@ function mStyle(elem, styles, unit = 'px') {
       if (isdef(fs)) s = fs + ' ' + s;
       elem.style.setProperty(k, s);
       continue;
-    } else if (k == 'classname') {
+    } else if (k.includes('class')) {
       mClass(elem, styles[k]);
     } else if (k == 'border') {
       if (isNumber(val)) val = `solid ${val}px ${isdef(styles.fg) ? styles.fg : '#ffffff80'}`;

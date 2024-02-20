@@ -343,6 +343,14 @@ app.post('/deleteImage', (req, res) => {
 	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
 	res.json(`image deleted ${req.body.path}`);
 });
+app.post('/moveImage', (req, res) => {
+	let [olddir,newdir,img]=[req.body.olddir,req.body.newdir,req.body.img];
+	
+	let oldpath = path.join(assetsDirectory,'img',olddir);
+	console.log('!!!!!!!!!!!!!deleting',path1);
+	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
+	res.json(`image deleted ${req.body.path}`);
+});
 app.post('/deleteItem', (req, res) => {
 	let key = req.body.key;
 	if (nundef(M.superdi[key]))	{
@@ -444,6 +452,38 @@ app.post('/postNewTable', (req, res) => {
 	emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
 	res.json('table posted successfully!');
 });
+//#region batch update of multiple items:
+app.post('/postUpdateSuperdi', (req, res) => {
+	let partialdi = req.body.di;
+	let toBeDeleted = req.body.deletedKeys;
+	let collname = req.body.collname; //when deleting a collection entirely!
+	console.log('to be deleted',toBeDeleted);
+	console.log('to be updated:',Object.keys(partialdi));
+	for(const k of toBeDeleted){
+		//image needs to be deleted as well!!!!
+		let item = M.superdi[k];
+		if (nundef(item.img) || item.colls.length>1) {
+			console.log('!!!no image!!!',k)
+			continue;
+		}
+		let path1 = path.join(__dirname,item.img);
+		console.log('!!!!!!!!!!!!!deleting',path1);
+		if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
+		delete M.superdi[k];
+	}
+	for(const k in partialdi){
+		M.superdi[k]=partialdi[k];
+	}
+	if (isdef(collname)){
+		let p=path.join(assetsDirectory,'img',collname);
+		if (fs.existsSync(p)) fs.rmdirSync(p);
+	}
+	let y = yaml.dump(M);
+	fs.writeFileSync(superdiFile, y, 'utf8');
+	io.emit('superdi',partialdi);
+	res.json(`Superdi updated successfully!`);
+});
+//#endregion
 app.post('/postUpdateItem', (req, res) => {
 	let key = req.body.key;
 	let item = req.body.item;

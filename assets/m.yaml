@@ -9,6 +9,7 @@ superdi:
       - symbol
     colls:
       - emo
+    key: 1st_place_medal
   2nd_place_medal:
     friendly: 2nd_place_medal
     img: ../assets/img/emo/2nd-place-medal.png
@@ -19,6 +20,7 @@ superdi:
       - symbol
     colls:
       - emo
+    key: 2nd_place_medal
   3rd_place_medal:
     friendly: 3rd_place_medal
     img: ../assets/img/emo/3rd-place-medal.png
@@ -47,6 +49,7 @@ superdi:
       - medical
     colls:
       - emo
+    key: ab_button_blood_type
   abacus:
     friendly: abacus
     img: ../assets/img/emo/abacus.png
@@ -1146,7 +1149,7 @@ superdi:
       - fish
     colls:
       - emo
-      - owl
+      - owls
     key: blowfish
   blue_book:
     friendly: blue_book
@@ -53237,7 +53240,7 @@ superdi:
     friendly: armadillo
     colls:
       - animals
-      - owl
+      - owls
     key: armadillo1
   barnowl1:
     cats:
@@ -53247,6 +53250,7 @@ superdi:
     friendly: barnowl
     colls:
       - animals
+      - owls
       - owl
     key: barnowl1
   bear1:
@@ -53281,7 +53285,7 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owl
+      - owls
     key: bear4
   bear5:
     cats:
@@ -53291,7 +53295,7 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owl
+      - owls
     key: bear5
   bear6:
     cats:
@@ -53317,7 +53321,7 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owl
+      - owls
     key: bear8
   bear9:
     cats:
@@ -53351,7 +53355,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owl
+      - owls
     key: bird1
   bird10:
     cats:
@@ -53425,6 +53429,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird18
   bird19:
@@ -53483,6 +53488,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird24
   bird25:
@@ -53565,6 +53571,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird33
   bird34:
@@ -53583,6 +53590,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird35
   bird36:
@@ -53745,6 +53753,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird53
   bird54:
@@ -53755,7 +53764,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owl
+      - owls
     key: bird54
   bird55:
     cats:
@@ -53765,7 +53774,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owl
+      - owls
     key: bird55
   bird56:
     cats:
@@ -53799,6 +53808,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird59
   bird6:
@@ -53833,7 +53843,7 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owl
+      - owls
     key: bird62
   bird63:
     cats:
@@ -53971,6 +53981,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird78
   bird79:
@@ -54045,6 +54056,7 @@ superdi:
     friendly: bird
     colls:
       - animals
+      - owls
       - owl
     key: bird86
   bird87:
@@ -58982,22 +58994,24 @@ superdi:
       - nations
   buddies:
     friendly: buddies
-    img: ../assets/img/owl/buddies.png
+    img: ../assets/img/owls/buddies.png
     cats:
       - owl
       - bird
       - animal
     colls:
+      - owls
       - owl
     key: buddies
   sweetie:
     friendly: sweetie
-    img: ../assets/img/owl/sweetie.png
+    img: ../assets/img/owls/sweetie.png
     cats:
       - owl
       - bird
       - animal
     colls:
+      - owls
       - owl
     key: sweetie
 playerColors:
