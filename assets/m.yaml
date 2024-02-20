@@ -53251,7 +53251,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: barnowl1
   bear1:
     cats:
@@ -53430,7 +53429,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird18
   bird19:
     cats:
@@ -53489,7 +53487,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird24
   bird25:
     cats:
@@ -53572,7 +53569,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird33
   bird34:
     cats:
@@ -53591,7 +53587,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird35
   bird36:
     cats:
@@ -53754,7 +53749,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird53
   bird54:
     cats:
@@ -53809,7 +53803,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird59
   bird6:
     cats:
@@ -53982,7 +53975,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird78
   bird79:
     cats:
@@ -54057,7 +54049,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird86
   bird87:
     cats:
@@ -59001,7 +58992,6 @@ superdi:
       - animal
     colls:
       - owls
-      - owl
     key: buddies
   sweetie:
     friendly: sweetie
@@ -59012,7 +59002,6 @@ superdi:
       - animal
     colls:
       - owls
-      - owl
     key: sweetie
 playerColors:
   - '#800000'

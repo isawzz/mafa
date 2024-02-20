@@ -70,9 +70,14 @@
 	"phpfmt.indent_with_space": 2,
 	"phpfmt.cakephp": true,
 	"liveServer.settings.CustomBrowser": "chrome",
-	"liveServer.settings.fullReload": true,
+	// "liveServer.settings.fullReload": true,
 	"liveServer.settings.port": 5500,
 	"liveServer.settings.useWebExt": true,
+	"liveServer.settings.ignoreFiles": [
+		".vscode/**",
+		"y/**",
+		"assets/**"
+	],
 	// "liveServer.settings.proxy": {
 	// 	"enable": true,
 	// 	"baseUri": "/",

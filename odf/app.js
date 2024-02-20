@@ -353,8 +353,9 @@ app.post('/moveImage', (req, res) => {
 	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 	else console.log('dir',dir,'already exists');
 
-	// console.log('move',oldpath,newpath);
-	// if (fs.existsSync(oldpath)) fs.renameSync(oldpath,newpath); else console.log('NO',oldpath)
+	console.log('move',oldpath,newpath);
+	if (fs.existsSync(oldpath)) fs.renameSync(oldpath,newpath); 
+	else console.log('NO',oldpath)
 	res.json(`image renamed to ${newpath}`);
 });
 app.post('/deleteItem', (req, res) => {
