@@ -813,6 +813,7 @@ async function onclickNewCollection(name) {
 		return;
 	}
 	UI.collSecondary.name = name; 
+	
 	collOpenSecondary(4, 3);
 
 }

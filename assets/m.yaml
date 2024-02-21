@@ -59003,6 +59003,13 @@ superdi:
     colls:
       - owls
     key: sweetie
+  hallo1:
+    key: hallo1
+    friendly: hallo1
+    img: ../assets/img/hallo/hallo1.png
+    cats: []
+    colls:
+      - hallo
 playerColors:
   - '#800000'
   - '#8a0000'
