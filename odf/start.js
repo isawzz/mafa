@@ -7,12 +7,11 @@ async function test19(){
 	//await switchToMenu(UI.nav,'collections');
 	//await onclickNewCollection('owl');
 
-	let olddir = 'owls';
-	let newdir='owww';
-	let filename = 'buddies.png';
-
-	await mPostRoute('moveImage',{olddir,newdir,filename});
-
+	// let olddir = 'owls';
+	// let newdir='owww';
+	// let filename = 'sweetie.png';
+	// await mPostRoute('moveImage',{olddir,newdir,filename});
+	
 
 }
 

@@ -2,7 +2,7 @@
 async function collDelete(collname) {
 	if (collLocked(collname) || !collExists(collname)) return;
 	let keys = M.byCollection[collname];
-	console.log('delete collection', keys)
+	console.log('_________delete collection', keys)
 	collPreReload(collname);
 	let di={},deletedKeys=[]; //,needToRenameImgDir=false,newdir=null;
 	for (const k of keys) {
@@ -24,17 +24,18 @@ async function collDelete(collname) {
 			//item.img=`../assets/img/${newdir}/`
 			item.img = item.img.replace(olddir,newdir);
 
-			await mPostRoute('moveImage',{olddir,newdir,filename});
+			let resp = await mPostRoute('moveImage',{olddir,newdir,filename});
+			console.log('moveImage:',resp)
 			// needToRenameImgDir={oldname:collname,newname:newpath};
 
 			//bei einem key den ich nicht delete! muss ich colls aendern!
-			console.log('item',item);
+			//console.log('item',item);
 			// removeInPlace(item.colls,collname);
 			di[k]=item;
 		}else{
 			//this pic cannot be deleted! also: the key cannot be deleted!!!
 			//bei einem key den ich nicht delete! muss ich colls aendern!
-			console.log('item',item);
+			//console.log('item',item);
 			removeInPlace(item.colls,collname);
 			di[k]=item;
 			//res = await mPostRoute('postUpdateItem', { key: k, item:item });
@@ -42,7 +43,7 @@ async function collDelete(collname) {
 	}
 
 	let res = await mPostRoute('postUpdateSuperdi',{di,deletedKeys,collname});
-	console.log('response from server',res)
+	console.log('postUpdateSuperdi',res)
 	await loadAssets();
 
 	collPostReload(); //	delete M.byCollection[collname];
