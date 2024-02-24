@@ -49,6 +49,21 @@ async function collDelete(collname) {
 
 
 }
+async function collDeleteKey(key) {
+	let item = M.superdi[key];
+	assertion(isdef(item.img) && isdef(item.key), `superdi[${key}] cannot be deleted!!!!`);
+	let path = item.img;
+	let res = await mPostRoute('deleteImage', { path: item.img });
+	console.log('res', res);
+
+	//das mach ich jetzt anders
+	res = await mPostRoute('deleteItem', { key: key });
+	//wie wird M geladen? prelims?
+	await loadAssets();
+
+	//collections muessen neu initiated werden!
+
+}
 async function collRename(oldname, newname) {
 	if (collLocked(oldname) || !collExists(oldname) || !isAlphanumeric(newname)) {
 		showMessage(`Cannot rename collection ${oldname} to ${newname}`);
@@ -82,16 +97,6 @@ async function collRename(oldname, newname) {
 	if (UI.collSecondary.name == oldname) UI.collSecondary.name = newname;
 	collPostReload();
 }
-function collSidebar() {
-
-	mStyle('dLeft', { wmin: 100 });
-	let d = mDom('dLeft', { margin: 10, matop: 100 }); //,fg:getThemeFg()});
-
-	UI.newCollection = mCommand(d, 'newCollection', 'New / Edit'); mNewline(d);
-	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d);
-	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	
-}
-
 
 
 

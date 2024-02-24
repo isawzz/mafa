@@ -43,7 +43,7 @@ function deleteFile(filePath){
         console.error('Error deleting file:', err);
         return;
     }
-    console.log('File deleted successfully:', filePath);
+    console.log('File deleted:', filePath);
 	});	
 }
 function deleteTable(id){		delete Session.tables[id]; 	deleteFile(getTablePath(id));}
@@ -201,7 +201,7 @@ function valf() {
 app.get('/user', (req, res) => {
 	let params = req.query;
 	let name = params.uname;
-	console.log('==> get user:\n params', params)
+	//console.log('==> get user:', params)
 	let data = lookup(Session, ['users', name]);
 	//console.log(data)
 	res.json(data);
@@ -325,9 +325,9 @@ function handle_move(x){
 	// }
 
 }
-function handle_update(x) { console.log('got update', x); io.emit('update', x); }
+function handle_update(x) { console.log('::update', x); io.emit('update', x); }
 function handle_userChange(x, id) {
-	console.log(':::SOCK user change:', x, id);
+	console.log('::user change',x.newname); //, x, id);
 	byClient[id] = x.newname;
 	lookupAddToList(byUsername,[x.newname],id);
 	let old = byUsername[x.oldname];
@@ -339,7 +339,7 @@ function handle_userChange(x, id) {
 //#region post routes (uses emit)
 app.post('/deleteImage', (req, res) => {
 	let path1 = path.join(__dirname,req.body.path);
-	console.log('!!!!!!!!!!!!!deleting',path1);
+	console.log('!!!deleting',path1);
 	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
 	res.json(`image deleted ${req.body.path}`);
 });
@@ -412,17 +412,13 @@ app.post('/postImage', (req, res) => {
 	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
 	let fname;
 	if (isdef(data.coll)) {
-		//fname = path.join(uploadDirectory, 'img', p);
 		let dir = path.join(assetsDirectory, 'img', data.coll);
 		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 		fname = path.join(dir, p);
-		//hier mach ich bisschen was anderes:
-		//wenn diese coll noch kein dir hat (in assets/img)mach ein neues dir in assets/img und tue die pic da hinein!
-		//fs.appendFile(path.join(uploadDirectory, 'm2.yaml'), `\n${data.unique}:\n  cat: ${data.coll}\n  coll: ${data.coll}\n  name: ${data.name}\n  ext: ${data.ext}`, err => { if (err) console.log('error:', err); });
 	} else {
 		fname = path.join(__dirname, p);
 	}
-	console.log('fname', fname); //console.log('save to', p, __dirname)
+	console.log('fname', fname); 
 	fs.writeFileSync(fname, base64Data, 'base64');
 	res.json({
 		message: 'File uploaded successfully',
@@ -434,7 +430,6 @@ app.post('/postUser', (req, res) => {
 	let data = req.body;
 	if (nundef(data.icon)) data.icon = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
 	console.log('<== post user')
-	//console.log('data', data)
 	let fname = path.join(dbDirectory, 'users.yaml');
 	lookupSetOverride(Session, ['users', name], data);
 	let y = yaml.dump(Session.users);
@@ -468,6 +463,7 @@ app.post('/postUpdateSuperdi', (req, res) => {
 	let partialdi = req.body.di;
 	let toBeDeleted = req.body.deletedKeys;
 	let collname = req.body.collname; //when deleting a collection entirely!
+	console.log('<== postUpdateSuperdi')
 	console.log('to be deleted',toBeDeleted);
 	console.log('to be updated:',Object.keys(partialdi));
 	for(const k of toBeDeleted){
@@ -478,6 +474,7 @@ app.post('/postUpdateSuperdi', (req, res) => {
 			continue;
 		}
 		let path1 = path.join(__dirname,item.img);
+		console.assert(path1.includes(collname),'!!!!!!!!!!!!!!!!!!');
 		console.log('!!!!!!!!!!!!!deleting',path1);
 		if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
 		delete M.superdi[k];
@@ -529,12 +526,12 @@ async function init() {
 	yamlFile = fs.readFileSync(superdiFile, 'utf8');
 	M = valf(yaml.load(yamlFile), {});
 	Session.tables = {};
-	console.log('tablesDir',tablesDir)
+	//console.log('tablesDir',tablesDir)
 	let tablefiles = await fsp.readdir(tablesDir);
-	console.log('tablefiles',tablefiles);
+	//console.log('tablefiles',tablefiles);
 	for(const f of tablefiles){
 		let p = path.join(tablesDir,f)
-		console.log('path',p)
+		//console.log('path',p)
 		yamlFile = fs.readFileSync(p, 'utf8');
 		let o=yaml.load(yamlFile);
 		Session.tables[o.id] = o;

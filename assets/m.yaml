@@ -49,6 +49,7 @@ superdi:
       - medical
     colls:
       - emo
+      - owl
     key: ab_button_blood_type
   abacus:
     friendly: abacus

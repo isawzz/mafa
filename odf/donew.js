@@ -74,6 +74,8 @@ function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
 function clearMain() { clear_timeouts(); mClear('dMain'); mClear('dTitle'); }
 function clearParent(ev) { mClear(ev.target.parentNode); }
 function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }) }
+function cmdDisable(cmd) { mClass(iDiv(cmd), 'disabled') }
+function cmdEnable(cmd) { mClassRemove(iDiv(cmd), 'disabled') }
 async function collAddItem(coll, key, item) {
 	console.log('adding', key, item, 'to collection', coll);
 	if (nundef(M.superdi[key])) {
@@ -106,21 +108,6 @@ function collCloseSecondary() {
 	mStyle(d, { w: 0, wmin: 0, border: 'transparent' });
 	console.log('d', d)
 	UI.collSecondary.isOpen = false;
-
-}
-async function collDeleteKey(key) {
-	let item = M.superdi[key];
-	assertion(isdef(item.img) && isdef(item.key), `superdi[${key}] cannot be deleted!!!!`);
-	let path = item.img;
-	let res = await mPostRoute('deleteImage', { path: item.img });
-	console.log('res', res);
-
-	//das mach ich jetzt anders
-	res = await mPostRoute('deleteItem', { key: key });
-	//wie wird M geladen? prelims?
-	await loadAssets();
-
-	//collections muessen neu initiated werden!
 
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
@@ -649,7 +636,6 @@ function mCommand(dParent, key, html, open, close) {
 	return { dParent, elem: d, div: a, key, open, close };
 }
 function mDatalist(dParent, list, opts = {}) {
-
 	var mylist = list;
 	var opts = opts;
 	addKeys({ alpha: true, filter: 'contains' }, opts);
@@ -665,17 +651,8 @@ function mDatalist(dParent, list, opts = {}) {
 	if (opts.onupdate) {
 		inp.addEventListener('keyup', opts.onupdate);
 	} else if (isdef(opts.edit)) {
-		console.log('sssssssssssssssssssssssss')
-		//nothing
+		//console.log('sssssssssssssssssssssssss')
 		inp.onmousedown = () => inp.value = '';
-		//NOOO!! datalist.onlostfocus = ()=>console.log('LOST FOCUS!@!!') NEIN GEHT SO NICHT!!!
-		// inp.onblur = () => {
-		// 	const isValueSelected = !isEmpty(inp.value); //list.includes(inp.value);
-		// 	if (!isValueSelected) {
-		// 		inp.value = inp.getAttribute('prev_value'); // Restore the previous value if no selection is made
-		// 	}
-		// }
-		// inp.onmousedown = () => { if (!isEmpty(inp.value)) inp.setAttribute('prev_value', inp.value); inp.value = ''; }
 	} else {
 		inp.onblur = () => {
 			const isValueSelected = list.includes(inp.value);
@@ -684,9 +661,7 @@ function mDatalist(dParent, list, opts = {}) {
 			}
 		}
 		inp.onmousedown = () => { inp.setAttribute('prev_value', inp.value); inp.value = ''; }
-		//NOOO!! datalist.onlostfocus = ()=>console.log('LOST FOCUS!@!!') NEIN GEHT SO NICHT!!!
 	}
-
 	return {
 		list: mylist,
 		elem: elem,
@@ -944,7 +919,7 @@ function showImageInBatch(key, dParent, styles = {}) {
 	el.ondragstart = () => UI.draggedItem = o;
 	let label = mDom(d1, { fz: 11 }, { html: key, className: 'ellipsis' }); //,w:'100%'
 	mStyle(d1, { cursor: 'pointer' });
-	d1.onclick = onclickItem;
+	d1.onclick = onclickCollItem;
 	d1.setAttribute('key', key)
 }
 function showNavbar() {
