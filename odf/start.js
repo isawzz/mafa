@@ -4,8 +4,8 @@ async function start() { test19(); }
 
 async function test19(){
 	await prelims();
-	//await switchToMenu(UI.nav,'collections');
-	//await onclickNewCollection('owl');
+	await switchToMenu(UI.nav,'collections');
+	await onclickNewCollection('owl');
 
 	// let olddir = 'owls';
 	// let newdir='owww';
@@ -24,11 +24,9 @@ async function test18() {
 	//await mSleep(2000)
 	//await onclickRenameCollection();
 	//await onclickUser();
-//	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br'});
+	//	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br'});
 
 }
-
-
 async function test17_confusing(){
 	function mConfusingField(dParent){
 		let f=mDom(dParent,{bg:'pink',padding:50},{tag:'form'});
@@ -64,7 +62,6 @@ async function test17_confusing(){
 	ui.b.click();
 	console.log(ui)
 }
-
 async function test16() {
 	await prelims();
 
@@ -96,8 +93,6 @@ async function test15() {
 	mButton('ok', () => imgCrop(img, dc, wOrig, hOrig), dParent, { fz: 30, padding: 10, maleft: 10 });
 
 }
-
-
 async function prelims() {
 	let t1 = performance.now();
 

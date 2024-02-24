@@ -1,3 +1,50 @@
+function mDatalist(dParent, list, opts = {}) {
+
+	var mylist = list;
+	var opts = opts;
+	addKeys({ alpha: true, filter: 'contains' }, opts);
+	let d = mDiv(toElem(dParent));
+	let optid = getUID('dl');
+	mDom(d, { w: 180, maleft: 4 }, { tag: 'input', className: 'input', placeholder: valf(opts.placeholder, '') });
+	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+	var elem = d;
+	var inp = elem.firstChild;
+	var datalist = elem.lastChild;
+	for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
+	inp.setAttribute('list', optid);
+	if (opts.onupdate) {
+		inp.addEventListener('keyup', opts.onupdate);
+	} else if (isdef(opts.edit)) {
+		console.log('sssssssssssssssssssssssss')
+		//nothing
+		inp.onmousedown = () => inp.value = '';
+		//NOOO!! datalist.onlostfocus = ()=>console.log('LOST FOCUS!@!!') NEIN GEHT SO NICHT!!!
+		// inp.onblur = () => {
+		// 	const isValueSelected = !isEmpty(inp.value); //list.includes(inp.value);
+		// 	if (!isValueSelected) {
+		// 		inp.value = inp.getAttribute('prev_value'); // Restore the previous value if no selection is made
+		// 	}
+		// }
+		// inp.onmousedown = () => { if (!isEmpty(inp.value)) inp.setAttribute('prev_value', inp.value); inp.value = ''; }
+	} else {
+		inp.onblur = () => {
+			const isValueSelected = list.includes(inp.value);
+			if (!isValueSelected) {
+				inp.value = inp.getAttribute('prev_value'); // Restore the previous value if no selection is made
+			}
+		}
+		inp.onmousedown = () => { inp.setAttribute('prev_value', inp.value); inp.value = ''; }
+		//NOOO!! datalist.onlostfocus = ()=>console.log('LOST FOCUS!@!!') NEIN GEHT SO NICHT!!!
+	}
+
+	return {
+		list: mylist,
+		elem: elem,
+		inpElem: inp,
+		listElem: datalist,
+		opts: opts,
+	}
+}
 async function mGather_1_W(dAnchor, styles = {}, opts = {}) {
 	let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
 

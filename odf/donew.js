@@ -103,13 +103,14 @@ function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPr
 function collCloseSecondary() {
 	let d = iDiv(UI.collSecondary);
 	mClear(d);
-	mStyle(d, { w: 0, wmin: 0 });
+	mStyle(d, { w: 0, wmin: 0, border: 'transparent' });
+	console.log('d', d)
 	UI.collSecondary.isOpen = false;
 
 }
-async function collDeleteKey(key){
+async function collDeleteKey(key) {
 	let item = M.superdi[key];
-	assertion(isdef(item.img) && isdef(item.key),`superdi[${key}] cannot be deleted!!!!`);
+	assertion(isdef(item.img) && isdef(item.key), `superdi[${key}] cannot be deleted!!!!`);
 	let path = item.img;
 	let res = await mPostRoute('deleteImage', { path: item.img });
 	console.log('res', res);
@@ -122,17 +123,17 @@ async function collDeleteKey(key){
 	//collections muessen neu initiated werden!
 
 }
-function collExists(collname){return isdef(M.byCollection[collname]); }
+function collExists(collname) { return isdef(M.byCollection[collname]); }
 
 function collFilterImages(ev) {
 	let id = evToId(ev); console.log('id', id)
 	let coll = UI[id];
 	let s = ev.target.value.toLowerCase().trim();
 	console.log('filter on', s)
-	if (isEmpty(s)) return;
+	//if (isEmpty(s)) list = coll.masterKeys; //return;
 	let di = {};
 	for (const k of coll.masterKeys) { di[k] = true; }
-	let list = isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
+	let list = isEmpty(s)?Object.keys(di): isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
 	if (nundef(list) || isEmpty(list)) {
 		list = [];
 		for (const k of coll.masterKeys) {
@@ -220,6 +221,7 @@ function collInitCollection(name, coll) {
 
 	let dlColl = mDatalist(d, colls, { placeholder: "<select from list>" });
 	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value, coll);
+	//dlColl.inpElem.onlostfocus = ev => ev.target.value=coll.name;
 	dlColl.inpElem.value = name;
 
 
@@ -228,7 +230,7 @@ function collInitCollection(name, coll) {
 	cats.sort();
 	d = mDom(dMenu); mFlexV(d);
 	let wLabel = coll.cols < 6 ? 117 : 'auto';
-	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { html: 'Filter:' });
+	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit:true, html: 'Filter:' });
 	// mDom(d, {  }, { html: '<h2>Filter:</h2>' });
 	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>" });
 	dlCat.inpElem.oninput = collFilterImages;
@@ -236,15 +238,15 @@ function collInitCollection(name, coll) {
 	//let wButtons=coll.w<650?'100%':'auto'; // mDom(dMenu,{h:1,w100:true})
 	d = mDom(dMenu, { gap: 10, align: 'right' });
 	if (coll.cols < 6) mStyle(d, { w100: true }); //?true:false
-	if (coll == UI.collSecondary) mButton('done', collCloseSecondary, d, { w: 70, margin: 0, maleft: 10 }, 'input');
-	mButton('prev', onclickPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input');
-	mButton('next', onclickNext, d, { w: 70, margin: 0, maleft: 10 }, 'input');
+	if (coll == UI.collSecondary) mButton('done', onclickCollDone, d, { w: 70, margin: 0, maleft: 10 }, 'input');
+	mButton('prev', onclickCollPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input');
+	mButton('next', onclickCollNext, d, { w: 70, margin: 0, maleft: 10 }, 'input');
 	coll.keys = list;
 	coll.index = 0; coll.pageIndex = 0;
 	showImageBatch(coll);
 	//showDiv(dMenu); return;
 }
-function collLocked(collname){
+function collLocked(collname) {
 	if (['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
 		console.log(`LOCKED collection ${collname}`);
 		return true;
@@ -258,6 +260,9 @@ async function collOnDropImage(url, dDrop) {
 	let coll = UI.collSecondary;
 
 	if (isdef(item)) return await collOnDroppedItem(item, coll);
+	else return await collOnDroppedUrl(url, coll);
+}
+async function collOnDroppedUrl(url, coll) {
 
 	//now this is the case when item is NOT defined!
 	let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
@@ -311,6 +316,7 @@ async function collOnDroppedItem(item, coll) {
 	//user dragged from an item on the page
 	assertion(isdef(item.key), 'NO KEY!!!!!');
 	await collAddItem(coll, item.key, item);
+
 	collOpenSecondary(4, 3);
 	showImageBatch(coll, -1);
 }
@@ -328,6 +334,8 @@ function collOpenSecondary(rows, cols) {
 }
 function collPresent(coll, rows, cols) {
 	let d1 = iDiv(coll);
+	if (nundef(rows)) rows = coll.rows;
+	if (nundef(cols)) cols = coll.cols;
 
 	mClear(d1);
 	let w = coll.w = 140 * cols;
@@ -343,7 +351,7 @@ function collPresent(coll, rows, cols) {
 
 	//coll = uiTypeCollection(5,6,)
 	coll.rows = rows; coll.cols = cols;
-	coll.grid = mGrid(coll.rows, coll.cols, d1, { maleft:10, 'align-self': 'start' });
+	coll.grid = mGrid(coll.rows, coll.cols, d1, { maleft: 10, 'align-self': 'start' });
 	coll.cells = [];
 	let bg = mGetStyle('dNav', 'bg');
 	for (let i = 0; i < coll.rows * coll.cols; i++) {
@@ -357,8 +365,8 @@ function collPresent(coll, rows, cols) {
 
 	collInitCollection(coll.name, coll);
 }
-function collPreReload(name){if (name == UI.collSecondary.name) { collCloseSecondary(); UI.collSecondary.name = null; }}
-function collPostReload(){
+function collPreReload(name) { if (name == UI.collSecondary.name) { collCloseSecondary(); UI.collSecondary.name = null; } }
+function collPostReload() {
 	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
 	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
 
@@ -470,18 +478,18 @@ function createScaledCanvasFromImage(src) {
 		img.src = src;
 	});
 }
-function deleteKeyFromLocalSuperdi(k){
+function deleteKeyFromLocalSuperdi(k) {
 	delete M.superdi[k];
 
-	let fri=item.friendly;
+	let fri = item.friendly;
 	//remove the key from M.byFriendly, if M.byFriendly[item.friendly] empty also delete it from names and byFriendly
-	let lst=M.byFriendly[fri];
-	removeInPlace(lst,k); if (isEmpty(lst)) {delete M.byFriendly[fri];removeInPlace(M.names,fri);}
+	let lst = M.byFriendly[fri];
+	removeInPlace(lst, k); if (isEmpty(lst)) { delete M.byFriendly[fri]; removeInPlace(M.names, fri); }
 
 	//for each cat: remove the key from M.byCat, if M.byFriendly[item.friendly] empty also delete it from names and byFriendly
-	for(const cat of item.cats){
-		let lst=M.byCat[cat];
-		removeInPlace(lst,k); if (isEmpty(lst)) {delete M.byCat[cat];removeInPlace(M.categories,cat);}
+	for (const cat of item.cats) {
+		let lst = M.byCat[cat];
+		removeInPlace(lst, k); if (isEmpty(lst)) { delete M.byCat[cat]; removeInPlace(M.categories, cat); }
 	}
 }
 function enableImageDrop(elem, onDropCallback) {
@@ -641,6 +649,7 @@ function mCommand(dParent, key, html, open, close) {
 	return { dParent, elem: d, div: a, key, open, close };
 }
 function mDatalist(dParent, list, opts = {}) {
+
 	var mylist = list;
 	var opts = opts;
 	addKeys({ alpha: true, filter: 'contains' }, opts);
@@ -653,8 +662,31 @@ function mDatalist(dParent, list, opts = {}) {
 	var datalist = elem.lastChild;
 	for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
 	inp.setAttribute('list', optid);
-	if (opts.onupdate) inp.addEventListener('keyup', opts.onupdate);
-	inp.onmousedown = () => inp.value = ''
+	if (opts.onupdate) {
+		inp.addEventListener('keyup', opts.onupdate);
+	} else if (isdef(opts.edit)) {
+		console.log('sssssssssssssssssssssssss')
+		//nothing
+		inp.onmousedown = () => inp.value = '';
+		//NOOO!! datalist.onlostfocus = ()=>console.log('LOST FOCUS!@!!') NEIN GEHT SO NICHT!!!
+		// inp.onblur = () => {
+		// 	const isValueSelected = !isEmpty(inp.value); //list.includes(inp.value);
+		// 	if (!isValueSelected) {
+		// 		inp.value = inp.getAttribute('prev_value'); // Restore the previous value if no selection is made
+		// 	}
+		// }
+		// inp.onmousedown = () => { if (!isEmpty(inp.value)) inp.setAttribute('prev_value', inp.value); inp.value = ''; }
+	} else {
+		inp.onblur = () => {
+			const isValueSelected = list.includes(inp.value);
+			if (!isValueSelected) {
+				inp.value = inp.getAttribute('prev_value'); // Restore the previous value if no selection is made
+			}
+		}
+		inp.onmousedown = () => { inp.setAttribute('prev_value', inp.value); inp.value = ''; }
+		//NOOO!! datalist.onlostfocus = ()=>console.log('LOST FOCUS!@!!') NEIN GEHT SO NICHT!!!
+	}
+
 	return {
 		list: mylist,
 		elem: elem,
@@ -715,13 +747,44 @@ function menuOpen(menu, key) {
 }
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
-	let dialog = mDom(d, { w100: true,h100:true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
-	//addKeys({ position: 'fixed', top: 40, left: 0, display: 'inline-block', padding: 12, box: true },styles)
+	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
 	addKeys({ position: 'fixed', display: 'inline-block', padding: 12, box: true }, styles)
 	let form = mDom(dialog, styles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
 	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return { name, dialog, form, inp }
+}
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
+
+		let d = document.body;
+		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
+
+		let rect = dAnchor.getBoundingClientRect();//getRect(dAnchor);
+
+		let [v, h] = [align[0], align[1]];
+		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
+		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+
+		let formStyles = { position: 'absolute' };
+		addKeys(vPos, formStyles);
+		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
+		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+
+		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
+			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
+				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
+					uiGadgetTypeText(form, content, styles, opts);
+
+		// if (isdef(opts.cancel)) {
+		// 	//add a cancel button to the dialog!
+		// 	mDom(form,{w:70},{className:'input',onclick:})
+		// }
+
+		dialog.showModal();
+		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
+	});
 }
 function mLMR(dParent) {
 	dParent = toElem(dParent);
@@ -762,8 +825,19 @@ function mMagnifyOff() {
 }
 function mMenu(dParent, key) { let [d, l, m, r] = mLMR(dParent); return { dParent, elem: d, l, m, r, key, cur: null }; }
 
-function mNewline(d,gap=1){	mDom(d,{h:gap});}
+function mNewline(d, gap = 1) { mDom(d, { h: gap }); }
 
+async function mPrompt(gadget) {
+	return new Promise((resolve, reject) => {
+		gadget.dialog.showModal();
+		gadget.form.onsubmit = (ev) => {
+			ev.preventDefault();
+			resolve(gadget.inp.value);
+			gadget.inp.value = '';
+			gadget.dialog.close();
+		};
+	});
+}
 async function mSleep(ms = 1000) {
 	return new Promise(
 		(res, rej) => {
@@ -773,111 +847,6 @@ async function mSleep(ms = 1000) {
 				console.log('param should be less than 3001');
 			}
 		});
-}
-async function onclickCollections() {
-
-	let dPanes = mDom('dMain'); mFlex(dPanes);
-	let dSecondary = mDom(dPanes, { wmin: 0, w: 0 }, { id: 'collSecondary', className: 'translow' }); //mFlexWrap(dPlus);
-	let dPrimary = mDom(dPanes, {}, { id: 'collPrimary' }); //mFlexWrap(d1);
-
-	collSidebar();
-
-	let collName = localStorage.getItem('collection');
-	if (nundef(collName) || !M.collections.includes(collName)) collName = 'animals'
-
-	UI.collPrimary = { div: dPrimary, name: collName }; //{name:'amanda'};
-	UI.collSecondary = { div: dSecondary, name: null };
-	collOpenPrimary(4, 4);
-}
-async function onclickDeleteCollection(name) {
-	if (nundef(name)) name = UI.collSecondary.name;
-	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
-
-	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });
-
-	// console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
-	if (proceed) await collDelete(name);
-}
-async function onclickNewCollection(name) {
-
-	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
-	if (nundef(name)) name = await mGather(iDiv(UI.newCollection));
-	//console.log('would open new Collection',name); return;
-
-	if (isEmpty(name)){
-		showMessage(`ERROR! you need to enter a valid name!!!!`);
-		return;
-	}
-	if (collLocked(name)) {
-		showMessage(`collection ${name} is Read-Only!`);
-		return;
-	}
-	UI.collSecondary.name = name; 
-	
-	collOpenSecondary(4, 3);
-
-}
-async function onclickRenameCollection(oldname, newname) {
-	if (nundef(oldname)) oldname = UI.collSecondary.name;
-	if (nundef(newname)) {
-		console.log('HALLO!!!!')
-		let di = await mGather(iDiv(UI.renameCollection), {},{content:{ oldname: valf(oldname, ''), newname: '' },type:'multi'});
-		console.log('di', di);
-		[oldname,newname]=[di.oldname,di.newname];
-	}
-
-	newname = newname.toLowerCase();
-	if (isEmpty(newname)){
-		showMessage(`ERROR! you need to enter a valid new name!!!!`);
-		return;
-	}
-	if (!isAlphanumeric(newname)) {
-		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
-		return;
-	}
-	if (collLocked(oldname)) {
-		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);
-		return;
-	}
-	if (!collExists(oldname)) {
-		showMessage(`ERROR: Collection ${oldname} not found!`);
-		return;
-	}
-	if (isdef(M.byCollection[newname])){
-		showMessage(`ERROR! Collection ${newname} already exists!!!!`);
-		return;
-	}
-
-	//console.log(`would rename collection ${oldname} to ${newname}`);return;
-	await collRename(oldname, newname);
-}
-function onclickCommand(ev) {
-	let key = evToAttr(ev, 'key');
-	//console.log('click command',key)
-	assertion(isdef(UI[key]), `command ${key} not in UI!!!`)
-	let cmd = UI[key];
-	cmd.open();
-}
-function onclickMenu(ev) {
-	let keys = evToAttr(ev, 'key');
-	let [menuKey, cmdKey] = keys.split('_');
-	let menu = UI[menuKey];
-	menuCloseCurrent(menu);
-	menuOpen(menu, cmdKey);
-}
-async function onclickNext(ev) {
-	let id = evToId(ev); console.log('id', id)
-	let coll = UI[id];
-	showImageBatch(coll, 1);
-}
-async function onclickPrev(ev) {
-	let id = evToId(ev); console.log('id', id)
-	let coll = UI[id];
-	showImageBatch(coll, -1);
-}
-async function onclickUser() {
-	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
-	await switchToUser(uname);
 }
 async function ondropSaveUrl(url) {
 	console.log('save dropped url to config:', url);
@@ -1061,4 +1030,40 @@ async function switchToUser(uname) {
 		if (cur == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t, uname);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
 	}
+}
+function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
+	let inputs = [];
+	for (const k in dict) {
+		let [content, val] = [k, dict[k]];
+		let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
+		inputs.push({ name: content, inp: inp });
+		mNewline(form)
+	}
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return () => {
+		let di = {};
+		inputs.map(x => di[x.name] = x.inp.value);
+		return di;
+	};
+}
+function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dq = mDom(dOuter, { mabottom: 7 }, { html: capitalize(content) });
+	let db = mDom(dOuter, { w100: true, box: true, display: 'flex', 'justify-content': 'space-between', gap: 10 })
+	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => form.setAttribute('proceed', 'yes') })
+	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
+
+	return () => form.getAttribute('proceed') == 'yes';
+}
+function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
+	//type text: hier kommen jetzt verschiedene options acc to type!
+
+	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	//let inputStyles = {w:100,margin:0}; 
+	// let inp = mDom(form, inputStyles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	//let inputStyles = { bg: 'white', align: 'center', vpadding: 3, hpadding: 6, matop: 2 }; // outline: 'none', w: 130, margin:0 }
+	// let inp = mDom(form, inputStyles, { className: 'reset', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return () => inp.value;
 }

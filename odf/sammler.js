@@ -431,6 +431,24 @@ function mStyle(elem, styles, unit = 'px') {
     }
   }
 }
+async function onclickAdd() {
+  showTitle('Add to Collections');
+  let colls = M.collections;
+  let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);
+  let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
+  let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { ev.preventDefault(); return false; } });
+  mDom(dForm, {}, { html: 'Collection:' }); let dl = mDatalist(dForm, colls);
+  mDom(dForm, { h: 10 })
+  mDom(dForm, {}, { html: 'Name:' });
+  let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>", autocomplete: "off" });
+  mDom(dForm, { h: 10 })
+  UI.dTool = mDom(dForm)
+  UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
+  UI.dForm = dForm;
+  UI.dButtons = mDom(dTitle, { display: 'inline-block' });
+  UI.imgColl = dl.inpElem;
+  UI.imgName = inpName;
+}
 function onclickCanvasSetNewCenterOverlay(ev) {
   let cv = ev.target;
   let d = cv.parentNode;

@@ -53569,6 +53569,7 @@ superdi:
     colls:
       - animals
       - owls
+      - owl
     key: bird33
   bird34:
     cats:
@@ -59003,13 +59004,13 @@ superdi:
     colls:
       - owls
     key: sweetie
-  hallo1:
-    key: hallo1
-    friendly: hallo1
-    img: ../assets/img/hallo/hallo1.png
+  owl1:
+    key: owl1
+    friendly: owl1
+    img: ../assets/img/owl/owl1.png
     cats: []
     colls:
-      - hallo
+      - owl
 playerColors:
   - '#800000'
   - '#8a0000'

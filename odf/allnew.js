@@ -1699,24 +1699,6 @@ function nextLine(ctx, rest, color) {
   if (line) line.map(p => drawPix(ctx, p.x, p.y, color));
   return { val, line, rest, color };
 }
-async function onclickAdd() {
-  showTitle('Add to Collections');
-  let colls = M.collections;
-  let d = mDom('dMain', { margin: 10 }); mFlexWrap(d);
-  let dDrop = mDom(d, {}, { id: 'dDrop', classes: 'dropZone' }); mDropZone(dDrop, ondropPreviewImage);
-  let dForm = mDom(d, { padding: 12 }, { tag: 'form', onsubmit: ev => { ev.preventDefault(); return false; } });
-  mDom(dForm, {}, { html: 'Collection:' }); let dl = mDatalist(dForm, colls);
-  mDom(dForm, { h: 10 })
-  mDom(dForm, {}, { html: 'Name:' });
-  let inpName = mDom(dForm, {}, { tag: 'input', name: 'imgname', type: 'text', value: '', className: 'input', placeholder: "<enter value>", autocomplete: "off" });
-  mDom(dForm, { h: 10 })
-  UI.dTool = mDom(dForm)
-  UI.dDrop = dDrop; mClass(dDrop, 'previewContainer');
-  UI.dForm = dForm;
-  UI.dButtons = mDom(dTitle, { display: 'inline-block' });
-  UI.imgColl = dl.inpElem;
-  UI.imgName = inpName;
-}
 async function onclickColor(ev) {
   let c = ev.target.style.background;
   c = colorHex(c);
