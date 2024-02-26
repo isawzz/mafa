@@ -1,5 +1,9 @@
 
-____
+____ 26.2.24
+- maxpage wird falsch berechnet!
+if numpics==0 
+
+
 =>problem: dir in assets as well as all images in that dir must be renamed as well!!!!!!!
 rename collection:
 for each item in collection: updateItem
