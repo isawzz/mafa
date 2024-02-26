@@ -346,7 +346,6 @@ app.post('/deleteImage', (req, res) => {
 app.post('/moveImage', (req, res) => {
 	let [olddir,newdir,filename]=[req.body.olddir,req.body.newdir,req.body.filename];
 	console.log('...move',olddir,newdir,filename);
-
 	let oldpath = path.join(assetsDirectory,'img',olddir,filename);
 	let newpath = path.join(assetsDirectory,'img',newdir,filename);
 	if (fs.existsSync(newpath)) {
@@ -354,11 +353,9 @@ app.post('/moveImage', (req, res) => {
 		filename = `i${Date.now()}_${filename}`;
 		newpath = path.join(assetsDirectory,'img',newdir,filename);
 	}
-
 	let dir=path.join(assetsDirectory,'img',newdir);
 	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 	else console.log('dir',dir,'already exists');
-
 	console.log('move',oldpath,newpath);
 	if (fs.existsSync(oldpath)) {
 		fs.renameSync(oldpath,newpath); 

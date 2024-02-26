@@ -892,7 +892,7 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	for (let i = list.length; i < numCells; i++) {
 		mStyle(coll.cells[i], { opacity: 0 })
 	}
-	coll.dPageIndex.innerHTML = `page ${coll.pageIndex + 1}/${maxPage + 1}`;
+	coll.dPageIndex.innerHTML = `page ${coll.pageIndex + 1}/${maxPage}`;
 }
 function showImageInBatch(key, dParent, styles = {}) {
 	let o = M.superdi[key]; o.key = key; //console.log('o',o)

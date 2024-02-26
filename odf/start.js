@@ -5,7 +5,7 @@ async function start() { test19(); }
 async function test19(){
 	await prelims();
 	await switchToMenu(UI.nav,'collections');
-	await onclickNewCollection('owl');
+	//await onclickNewCollection('owl');
 
 	// let olddir = 'owls';
 	// let newdir='owww';
