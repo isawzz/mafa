@@ -3,30 +3,30 @@ async function onclickDeleteSelected(){
 
 	//only items that do not belong to locked collection can be deleted
 	//first check if this item can be deleted
-	let di={},deletedKeys=[];
+	//collPreReload(collname);
+	let di={},deletedKeys={};
 
 	for(const item of UI.selectedImages){
 		console.log('item',item);
 		let coll = collSelectedFindCollection(item);
 		assertion(coll,'deleteSelected called outside of Collections!!!!!');
-
-		if (collLocked(coll.name)) continue; //item cannot be removed or deleted because collection locked
-
-		let m=M.superdi[item.key];
-
-		//await collRemoveFromCollection(coll,item); 
 		
-
-		//now find the real item behind that image
-		let colls = m.colls;
-		if (colls.some(x=>collLocked(x))) continue; //item cannot be deleted but can be removed from this collection!
-
-		//item can be deleted!
-
-		await collDeleteKey(item.key)
-
-
+		if (collLocked(coll.name)) continue; //item cannot be removed or deleted because collection locked
+		if (nundef(deletedKeys[coll.name])) deletedKeys[coll.name]=[];
+		await collDeleteOrRemove(item.key,coll.name,di,deletedKeys[coll.name]);
 	}
+
+	//die deletedKeys da muss ich mir merken von welcher coll!!!!
+	console.log('deletedKeys dict: ',deletedKeys);
+
+	for(const k in deletedKeys){
+		let res = await mPostRoute('postUpdateSuperdi',{di,deletedKeys:deletedKeys[k],collname:k});
+		console.log('postUpdateSuperdi',k,res)
+	}
+
+	await loadAssets();
+	collPostReload(); //	delete M.byCollection[collname];
+	UI.selectedImages = [];
 
 }
 //async function collRemoveFromCollection(coll,item){}

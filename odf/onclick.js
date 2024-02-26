@@ -48,7 +48,7 @@ function onclickDay(d, styles) {
   x.inp.focus();
 }
 async function onclickDeleteCollection(name) {
-	if (nundef(name)) name = UI.collSecondary.name;
+	if (nundef(name) && UI.collSecondary.isOpen) name = UI.collSecondary.name;
 	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
 
 	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });

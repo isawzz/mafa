@@ -344,10 +344,16 @@ app.post('/deleteImage', (req, res) => {
 	res.json(`image deleted ${req.body.path}`);
 });
 app.post('/moveImage', (req, res) => {
-	let [olddir,newdir,img]=[req.body.olddir,req.body.newdir,req.body.filename];
-	
-	let oldpath = path.join(assetsDirectory,'img',olddir,img);
-	let newpath = path.join(assetsDirectory,'img',newdir,img);
+	let [olddir,newdir,filename]=[req.body.olddir,req.body.newdir,req.body.filename];
+	console.log('...move',olddir,newdir,filename);
+
+	let oldpath = path.join(assetsDirectory,'img',olddir,filename);
+	let newpath = path.join(assetsDirectory,'img',newdir,filename);
+	if (fs.existsSync(newpath)) {
+		console.log('@@@@@@@ NOT UNIQUE:',filename)
+		filename = `i${Date.now()}_${filename}`;
+		newpath = path.join(assetsDirectory,'img',newdir,filename);
+	}
 
 	let dir=path.join(assetsDirectory,'img',newdir);
 	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
@@ -356,7 +362,7 @@ app.post('/moveImage', (req, res) => {
 	console.log('move',oldpath,newpath);
 	if (fs.existsSync(oldpath)) {
 		fs.renameSync(oldpath,newpath); 
-		res.json(`image renamed from ${oldpath} to ${newpath}`);
+		res.json({newpath:`../assets/img/${newdir}/${filename}`,msg:`image renamed to ${filename} in ${newdir}`});
 	}	else {
 		console.log('!!!NO',oldpath);
 		res.json(`did NOT find ${oldpath}`);
@@ -462,7 +468,8 @@ app.post('/postNewTable', (req, res) => {
 app.post('/postUpdateSuperdi', (req, res) => {
 	let partialdi = req.body.di;
 	let toBeDeleted = req.body.deletedKeys;
-	let collname = req.body.collname; //when deleting a collection entirely!
+	let collname = req.body.collname; 
+	let deleteCollection = req.body.deleteCollection; //true when deleting a collection entirely!
 	console.log('<== postUpdateSuperdi')
 	console.log('to be deleted',toBeDeleted);
 	console.log('to be updated:',Object.keys(partialdi));
@@ -482,7 +489,7 @@ app.post('/postUpdateSuperdi', (req, res) => {
 	for(const k in partialdi){
 		M.superdi[k]=partialdi[k];
 	}
-	if (isdef(collname)){
+	if (deleteCollection == true){
 		let p=path.join(assetsDirectory,'img',collname);
 		if (fs.existsSync(p)) fs.rmdirSync(p);
 	}

@@ -49,7 +49,6 @@ superdi:
       - medical
     colls:
       - emo
-      - owl
     key: ab_button_blood_type
   abacus:
     friendly: abacus
@@ -1150,7 +1149,6 @@ superdi:
       - fish
     colls:
       - emo
-      - owls
     key: blowfish
   blue_book:
     friendly: blue_book
@@ -53241,7 +53239,6 @@ superdi:
     friendly: armadillo
     colls:
       - animals
-      - owls
     key: armadillo1
   barnowl1:
     cats:
@@ -53285,7 +53282,6 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owls
     key: bear4
   bear5:
     cats:
@@ -53295,7 +53291,6 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owls
     key: bear5
   bear6:
     cats:
@@ -53321,7 +53316,6 @@ superdi:
     friendly: bear
     colls:
       - animals
-      - owls
     key: bear8
   bear9:
     cats:
@@ -53355,7 +53349,6 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
     key: bird1
   bird10:
     cats:
@@ -53570,7 +53563,6 @@ superdi:
     colls:
       - animals
       - owls
-      - owl
     key: bird33
   bird34:
     cats:
@@ -53770,7 +53762,6 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
     key: bird55
   bird56:
     cats:
@@ -53838,7 +53829,6 @@ superdi:
     friendly: bird
     colls:
       - animals
-      - owls
     key: bird62
   bird63:
     cats:
@@ -59008,10 +58998,31 @@ superdi:
   owl1:
     key: owl1
     friendly: owl1
-    img: ../assets/img/owl/owl1.png
+    img: ../assets/img/owls/owl1.png
     cats: []
     colls:
-      - owl
+      - owls
+  owl100:
+    key: owl100
+    friendly: owl100
+    img: ../assets/img/owls/owl100.png
+    cats: []
+    colls:
+      - owls
+  owl111:
+    key: owl111
+    friendly: owl111
+    img: ../assets/img/owls/owl111.png
+    cats: []
+    colls:
+      - owls
+  i1708959740483:
+    key: i1708959740483
+    friendly: owl1
+    img: ../assets/img/owls/i1708959740483.png
+    cats: []
+    colls:
+      - owls
 playerColors:
   - '#800000'
   - '#8a0000'
