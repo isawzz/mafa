@@ -1,4 +1,100 @@
 
+async function collDeleteKey(key) {
+	let item = M.superdi[key];
+	assertion(isdef(item.img) && isdef(item.key), `superdi[${key}] cannot be deleted!!!!`);
+	let path = item.img;
+	let res = await mPostRoute('deleteImage', { path: item.img });
+	console.log('res', res);
+
+	//das mach ich jetzt anders
+	res = await mPostRoute('deleteItem', { key: key });
+	//wie wird M geladen? prelims?
+	await loadAssets();
+
+	//collections muessen neu initiated werden!
+
+}
+async function collDeleteOrRemove(k,collname,di,deletedKeys){
+	let item = M.superdi[k];
+	console.log('item', item)
+	let colls = item.colls;
+	console.log('colls',colls)
+	assertion(colls.includes(collname),`item ${k} from coll ${collname} does not have ${collname} in colls!!!!!!`)
+	if (colls.length == 1) {
+		console.log('deleting',k,'!!!!!!!!!!!!');
+		deletedKeys.push(k);
+	}else if (isdef(item.img) && item.img.includes(`/${collname}/`)){
+		removeInPlace(item.colls,collname);
+		//move this img to other collname, create it if it does not exist!!!
+
+		let olddir = collname;
+		let newdir=item.colls[0];
+		let filename = stringAfterLast(item.img,'/');
+		//item.img=`../assets/img/${newdir}/`
+		item.img = item.img.replace(olddir,newdir);
+
+		let resp = await mPostRoute('moveImage',{olddir,newdir,filename});
+		if (isdef(resp.newpath)) item.img = resp.newpath;
+		console.log('moveImage:',resp)
+		// needToRenameImgDir={oldname:collname,newname:newpath};
+
+		//bei einem key den ich nicht delete! muss ich colls aendern!
+		//console.log('item',item);
+		// removeInPlace(item.colls,collname);
+		di[k]=item;
+	}else{
+		//this pic cannot be deleted! also: the key cannot be deleted!!!
+		//bei einem key den ich nicht delete! muss ich colls aendern!
+		//console.log('item',item);
+		removeInPlace(item.colls,collname);
+		di[k]=item;
+		//res = await mPostRoute('postUpdateItem', { key: k, item:item });
+	}
+
+}
+async function onclickDeleteSelected() {
+	let selist = UI.selectedImages;
+	console.log('delete', selist); 
+
+	//only items that do not belong to locked collection can be deleted
+	//first check if this item can be deleted
+	//collPreReload(collname);
+	let di = {}, deletedKeys = {};
+
+	for (const k of selist) {
+		
+		let o=collKeyCollnameFromSelkey(k);
+		let key=o.key;
+		let collname = o.collname;
+		// console.log('item', item);
+		// let coll = collFromElement(iDiv(item));
+		// item.coll = coll;
+		// assertion(coll, 'deleteSelected called outside of Collections!!!!!');
+		// console.log('item', item.key, coll.name)
+		// if (collLocked(coll.name)) continue; //item cannot be removed or deleted because collection locked
+		// if (nundef(deletedKeys[coll.name])) deletedKeys[coll.name] = [];
+		// await collDeleteOrRemove(item.key, coll.name, di, deletedKeys[coll.name]);
+		
+		if (collLocked(collname)) continue; // *** SAFETY CHECK!!!!! ***
+
+		if (nundef(deletedKeys[collname])) deletedKeys[collname] = [];
+		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
+
+	}
+
+	//die deletedKeys da muss ich mir merken von welcher coll!!!!
+	console.log('deletedKeys dict: ', deletedKeys);
+
+	for (const k in deletedKeys) {
+		let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: deletedKeys[k], collname: k });
+		console.log('postUpdateSuperdi', k, res)
+	}
+
+	await loadAssets();
+	collPostReload(); //	delete M.byCollection[collname];
+	UI.selectedImages = [];
+
+}
 function createInteractiveCanvas(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();

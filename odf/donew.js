@@ -77,17 +77,17 @@ function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }
 function cmdDisable(cmd) { mClass(iDiv(cmd), 'disabled') }
 function cmdEnable(cmd) { mClassRemove(iDiv(cmd), 'disabled') }
 async function collAddItem(coll, key, item) {
-	console.log('adding', key, item, 'to collection', coll);
+	//console.log('adding', key, item, 'to collection', coll);
 	if (nundef(M.superdi[key])) {
 		//need to add to superdi and save superdi!
 		M.superdi[key] = item;
 		let res = await mPostRoute('postNewItem', { key: key, item: item });
-		console.log('<=server:', res);
+		//console.log('<=server:', res);
 	} else {
 		addIf(item.colls, coll.name);
-		console.log('item collections are', item.colls);
+		//console.log('item collections are', item.colls);
 		let res = await mPostRoute('postUpdateItem', { key: key, item: item });
-		console.log('<=server:', res);
+		//console.log('<=server:', res);
 	}
 	for (const cat of item.cats) lookupAddIfToList(M.byCat, [cat], key);
 	for (const coll of item.colls) lookupAddIfToList(M.byCollection, [coll], key);
@@ -95,9 +95,6 @@ async function collAddItem(coll, key, item) {
 	M.categories = Object.keys(M.byCat); M.categories.sort();
 	M.collections = Object.keys(M.byCollection); M.collections.sort();
 	M.names = Object.keys(M.byFriendly); M.names.sort();
-
-
-
 }
 function collCancelEditing(d) { d.remove(); }
 function collClear() { closeLeftSidebar(); clearMain(); }
@@ -106,17 +103,60 @@ function collCloseSecondary() {
 	let d = iDiv(UI.collSecondary);
 	mClear(d);
 	mStyle(d, { w: 0, wmin: 0, border: 'transparent' });
-	console.log('d', d)
+	//console.log('d', d)
 	UI.collSecondary.isOpen = false;
 
+}
+async function collDelete(collname) {
+	if (collLocked(collname) || !collExists(collname)) return;
+	let keys = M.byCollection[collname];
+	console.log('_________delete collection', keys)
+	collPreReload(collname);
+	let di={},deletedKeys=[]; //,needToRenameImgDir=false,newdir=null;
+	for (const k of keys) {
+		await collDeleteOrRemove(k,collname,di,deletedKeys);
+	}
+
+	let res = await mPostRoute('postUpdateSuperdi',{di,deletedKeys,collname,deletedCollection:true});
+	console.log('postUpdateSuperdi',res)
+	await loadAssets();
+
+	collPostReload(); //	delete M.byCollection[collname];
+
+
+}
+async function collDeleteOrRemove(k,collname,di,deletedKeys){
+	let item = M.superdi[k];
+	console.log('item', item)
+	let colls = item.colls;
+	console.log('colls',colls)
+	assertion(colls.includes(collname),`item ${k} from coll ${collname} does not have ${collname} in colls!!!!!!`)
+	if (colls.length == 1) {
+		console.log('deleting',k,'!!!!!!!!!!!!');
+		deletedKeys.push(k);
+	}else if (isdef(item.img) && item.img.includes(`/${collname}/`)){
+		removeInPlace(item.colls,collname);
+		//move this img to other collname, create it if it does not exist!!!
+		let olddir = collname;
+		let newdir=item.colls[0];
+		let filename = stringAfterLast(item.img,'/');
+		item.img = item.img.replace(olddir,newdir);
+		let resp = await mPostRoute('moveImage',{olddir,newdir,filename});
+		if (isdef(resp.newpath)) item.img = resp.newpath;
+		console.log('moveImage:',resp)
+		di[k]=item;
+	}else{
+		removeInPlace(item.colls,collname);
+		di[k]=item;
+	}
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
 
 function collFilterImages(ev) {
-	let id = evToId(ev); console.log('id', id)
+	let id = evToId(ev); //console.log('id', id)
 	let coll = UI[id];
 	let s = ev.target.value.toLowerCase().trim();
-	console.log('filter on', s)
+	//console.log('filter on', s)
 	//if (isEmpty(s)) list = coll.masterKeys; //return;
 	let di = {};
 	for (const k of coll.masterKeys) { di[k] = true; }
@@ -125,12 +165,12 @@ function collFilterImages(ev) {
 		list = [];
 		for (const k of coll.masterKeys) {
 			let o = M.superdi[k];
-			if (k.includes(s) || o.friendly.includes(s)) list.push(k);
+			if (k.includes(s) || o.friendly.toLowerCase().includes(s)) list.push(k);
 		}
 		//if (isEmpty(list)) return;
 	}
 	coll.keys = list;
-	coll.index = 0; coll.pageIndex = 0;
+	coll.index = 0; coll.pageIndex = 1; UI.selectedImages = [];
 	showImageBatch(coll, 0, false);
 }
 function collFindEmptyCell(coll) {
@@ -146,11 +186,11 @@ function collFindEmptyCell(coll) {
 async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, coll) {
 	// crop image to cropper
 	//const canvas = document.createElement('canvas');
-	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); console.log('dims', dims);
+	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); //console.log('dims', dims);
 
 	let wScale = img.width / wOrig;
 	let hScale = img.height / hOrig;
-	console.log('scale', wScale, hScale, wOrig, hOrig, img.width, img.height)
+	//console.log('scale', wScale, hScale, wOrig, hOrig, img.width, img.height)
 
 	let d1 = mDom(document.body, { margin: 10 });
 	let canvas = mDom(d1, {}, { tag: 'canvas', width: dims.w, height: dims.h });
@@ -171,70 +211,25 @@ async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inp
 
 	let friendly = inpFriendly.value;
 	let cats = extractWords(valf(inpCats.value, ''));
-	console.log('cats', cats)
+	//console.log('cats', cats)
 	//paste dataUrl into cell
-	let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; console.log('filename', filename);
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; //console.log('filename', filename);
 	let o = { image: dataUrl, coll: coll.name, path: filename };
-	let resp = await mPostRoute('postImage', o); console.log('resp', resp); //sollte path enthalten!
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
 
 	//jetzt hab ich das complete item und kann es zu coll adden!
 	let key = stringBefore(filename, '.');
 	let imgPath = `../assets/img/${coll.name}/${filename}`;
 	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [coll.name] };
 
-
 	dPopup.remove();
 	await collOnDroppedItem(item, coll);
-	//resp = await collAddItem(coll,key,item);
-
-	//console.log('!!!would save image to', filename, 'and add item', item, 'to m.yaml');
-
 }
-function collInitCollection(name, coll) {
-	let list = [];
-	if (name == 'all' || isEmpty(name)) {
-		list = Object.keys(M.superdi);
-	} else if (isdef(M.byCollection[name])) {
-		list = M.byCollection[name];
-	} else list = []; //return;
-	if (coll == UI.collPrimary) localStorage.setItem('collection', name)
-	let dMenu = coll.dMenu;
-	mClear(dMenu);
-	let d = mDom(dMenu); mFlexV(d);
-	mDom(d, { fz: 24, weight: 'bold' }, { html: 'Collection:' });
-	let colls = M.collections;
-	// mDom(dMenu, {}, { html: '' });
-
-
-	let dlColl = mDatalist(d, colls, { placeholder: "<select from list>" });
-	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value, coll);
-	//dlColl.inpElem.onlostfocus = ev => ev.target.value=coll.name;
-	dlColl.inpElem.value = name;
-
-
-	coll.masterKeys = list;
-	let cats = collectCats(list);
-	cats.sort();
-	d = mDom(dMenu); mFlexV(d);
-	let wLabel = coll.cols < 6 ? 117 : 'auto';
-	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit:true, html: 'Filter:' });
-	// mDom(d, {  }, { html: '<h2>Filter:</h2>' });
-	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>" });
-	dlCat.inpElem.oninput = collFilterImages;
-
-	//let wButtons=coll.w<650?'100%':'auto'; // mDom(dMenu,{h:1,w100:true})
-	d = mDom(dMenu, { gap: 10, align: 'right' });
-	if (coll.cols < 6) mStyle(d, { w100: true }); //?true:false
-	if (coll == UI.collSecondary) mButton('done', onclickCollDone, d, { w: 70, margin: 0, maleft: 10 }, 'input');
-	mButton('prev', onclickCollPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input');
-	mButton('next', onclickCollNext, d, { w: 70, margin: 0, maleft: 10 }, 'input');
-	coll.keys = list;
-	coll.index = 0; coll.pageIndex = 0;
-	showImageBatch(coll);
-	//showDiv(dMenu); return;
-}
+function collGenSelkey(key, collname) { return `${key}@${collname}`; }
+function collKeyCollnameFromElem(elem) { return { key: elem.getAttribute('key'), collname: elem.getAttribute('collname') }; }
+function collKeyCollnameFromSelkey(selkey) { return { key: stringBefore(selkey, '@'), collname: stringAfter(selkey, '@') }; }
 function collLocked(collname) {
-	if (['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
+	if (U.name!='____unsafe' && ['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
 		console.log(`LOCKED collection ${collname}`);
 		return true;
 	}
@@ -252,7 +247,7 @@ async function collOnDropImage(url, dDrop) {
 async function collOnDroppedUrl(url, coll) {
 
 	//now this is the case when item is NOT defined!
-	let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
+	//let cell = collFindEmptyCell(coll);//find an empty cell to put the picture in!
 	// let img = await collShowImageInCell(cell, url); // ist zwar gut aber ich will gleich den editor!
 	// NO! mButton('edit', async => { imgEditor1(url); }, cell, { position: 'absolute' }); //add an edit button to image
 
@@ -348,7 +343,7 @@ function collPresent(coll, rows, cols) {
 	}
 	mStyle(dInstruction, { w: mGetStyle(coll.grid, 'w') });
 
-	coll.dPageIndex = mDom(d1, { fg: fg, padding: 10, align: 'right' });//,{html:`${coll.pageIndex+1}`})
+	coll.dPageIndex = mDom(d1, { fg: fg, padding: 10, align: 'right' });
 
 	collInitCollection(coll.name, coll);
 }
@@ -358,6 +353,41 @@ function collPostReload() {
 	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
 
 }
+async function collRename(oldname, newname) {
+	if (collLocked(oldname) || !collExists(oldname) || !isAlphanumeric(newname)) {
+		showMessage(`Cannot rename collection ${oldname} to ${newname}`);
+		return;
+	}
+	console.log('rename collection', oldname, 'to', newname)
+	collPreReload(oldname);
+	let needToRenameDir = false;
+	let di = {};
+	for (const k of M.byCollection[oldname]) {
+		let item = M.superdi[k];
+		let path = item.img;
+		if (isString(path) && path.includes(`img/${oldname}/`)) {
+			item.img = `../assets/img/${newname}/${stringAfterLast(path, '/')}`;
+			needToRenameDir = true;
+		}
+		removeInPlace(item.colls, oldname)
+		item.colls.push(newname);
+		di[k] = item;
+		//let res = await mPostRoute('postUpdateItem',{key:k,item:item}); console.log(res)
+	}
+
+
+	if (needToRenameDir) {
+		let resp = await mPostRoute('renameImgDir', { oldname, newname });
+		console.log('response from server', resp)
+	}
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys:[] }); console.log('response from server', res)
+	await loadAssets();
+	if (UI.collPrimary.name == oldname) UI.collPrimary.name = newname;
+	if (UI.collSecondary.name == oldname) UI.collSecondary.name = newname;
+	collPostReload();
+}
+function collSelect(elem) { mClass(elem, 'framedPicture'); }
+function collUnselect(elem) { mClassRemove(elem, 'framedPicture'); }
 async function collShowImageInCell(cell, src) {
 	mStyle(cell, { opacity: 1 });
 	mClass(cell, 'magnifiable');
@@ -866,33 +896,35 @@ async function showDashboard() {
 }
 function showDiv(d) { mStyle(d, { bg: rColor() }); console.log(d, mGetStyle(d, 'w')); }
 function showImageBatch(coll, inc = 0, alertEmpty = false) {
-	let [keys, index, pageIndex, numCells] = [coll.keys, coll.index, coll.pageIndex, coll.rows * coll.cols];
+	let [keys, index, numCells] = [coll.keys, coll.index, coll.rows * coll.cols];
 	if (isEmpty(keys) && alertEmpty) showMessage('nothing has been added to this collection yet!');
 	if (keys.length <= numCells) inc = 0;
-
 	let newPageIndex = coll.pageIndex + inc;
 	let numItems = keys.length;
-	let maxPage = Math.floor(numItems / numCells); //console.log('maxPage', maxPage, numItems, numCells)
-	if (newPageIndex > maxPage) newPageIndex = 0;
-	if (newPageIndex < 0) newPageIndex = maxPage;
-	//bei pageIndex0 show 0-numCells
-	//bei pageIndex1 show numCells-2*numCells
-	//index += numCells * inc; if (index >= keys.length) index = 0; else if (index < 0) index += keys.length;
-	index = numCells * newPageIndex;
-
-
+	let maxPage = Math.max(1,Math.ceil(numItems / numCells)); //console.log('maxPage', maxPage, numItems, numCells)
+	if (newPageIndex > maxPage) newPageIndex = 1;
+	if (newPageIndex < 1) newPageIndex = maxPage;
+	index = numCells * (newPageIndex-1); //here need 0 based
 	let list = arrTakeFromTo(keys, index, index + numCells);
 	coll.index = index; coll.pageIndex = newPageIndex;
 	for (let i = 0; i < list.length; i++) {
 		let d = coll.cells[i];
 		mStyle(d, { opacity: 1 });
 		mClass(d, 'magnifiable')
-		showImageInBatch(list[i], d);
+		let d1=showImageInBatch(list[i], d);
+		d1.setAttribute('collname',coll.name);
+		let selkey = collGenSelkey(list[i],coll.name);
+		if (isList(UI.selectedImages) && UI.selectedImages.includes(selkey)) collSelect(d1);
 	}
 	for (let i = list.length; i < numCells; i++) {
 		mStyle(coll.cells[i], { opacity: 0 })
 	}
-	coll.dPageIndex.innerHTML = `page ${coll.pageIndex + 1}/${maxPage}`;
+	coll.dPageIndex.innerHTML = `page ${coll.pageIndex}/${maxPage}`;
+
+	//next and prev button activate or deactivate!
+	let [dNext,dPrev]=[mBy('bNext'),mBy('bPrev')];
+	if (maxPage == 1) {mClass(dPrev,'disabled');mClass(dNext,'disabled');} 
+	else {mClassRemove(dPrev,'disabled');mClassRemove(dNext,'disabled');} 
 }
 function showImageInBatch(key, dParent, styles = {}) {
 	let o = M.superdi[key]; o.key = key; //console.log('o',o)
@@ -917,10 +949,12 @@ function showImageInBatch(key, dParent, styles = {}) {
 	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 	assertion(el, 'PROBLEM mit' + key);
 	el.ondragstart = () => UI.draggedItem = o;
-	let label = mDom(d1, { fz: 11 }, { html: key, className: 'ellipsis' }); //,w:'100%'
+	let label = mDom(d1, { fz: 11, cursor:'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' }); 
+	label.onclick = onclickCollItemLabel;
 	mStyle(d1, { cursor: 'pointer' });
 	d1.onclick = onclickCollItem;
-	d1.setAttribute('key', key)
+	d1.setAttribute('key', key);
+	return d1;
 }
 function showNavbar() {
 	let nav = mMenu('dNav');
@@ -1004,6 +1038,14 @@ async function switchToUser(uname) {
 		let cur = UI.nav.cur; //console.log('current menu is', cur);
 		if (cur == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t, uname);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
+	}
+}
+function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'framedPicture') {
+	//console.log('HALLO!',selkey)
+	if (selectedPics.includes(selkey)) {
+		removeInPlace(selectedPics, selkey); collUnselect(elem);
+	} else {
+		selectedPics.push(selkey); collSelect(elem);
 	}
 }
 function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {

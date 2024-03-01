@@ -41437,6 +41437,7 @@ function mClass(d) {
     let arg = arguments[1];
     if (isString(arg) && arg.indexOf(' ') > 0) { arg = [toWords(arg)]; }
     else if (isString(arg)) arg = [arg];
+    //console.log('d',d,arg)
     if (isList(arg)) {
       for (let i = 0; i < arg.length; i++) {
         d.classList.add(arg[i]);

@@ -45789,7 +45789,8 @@ superdi:
     img: ../assets/img/airport/airport1.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport1
   airport10:
     cats:
       - wallpaper
@@ -45797,7 +45798,8 @@ superdi:
     img: ../assets/img/airport/airport10.png
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport10
   airport2:
     cats:
       - wallpaper
@@ -45805,7 +45807,8 @@ superdi:
     img: ../assets/img/airport/airport2.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport2
   airport3:
     cats:
       - wallpaper
@@ -45813,7 +45816,8 @@ superdi:
     img: ../assets/img/airport/airport3.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport3
   airport4:
     cats:
       - wallpaper
@@ -45821,7 +45825,8 @@ superdi:
     img: ../assets/img/airport/airport4.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport4
   airport5:
     cats:
       - wallpaper
@@ -45829,7 +45834,8 @@ superdi:
     img: ../assets/img/airport/airport5.png
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport5
   airport6:
     cats:
       - wallpaper
@@ -45837,7 +45843,8 @@ superdi:
     img: ../assets/img/airport/airport6.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport6
   airport7:
     cats:
       - wallpaper
@@ -45845,7 +45852,8 @@ superdi:
     img: ../assets/img/airport/airport7.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport7
   airport8:
     cats:
       - wallpaper
@@ -45853,7 +45861,8 @@ superdi:
     img: ../assets/img/airport/airport8.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport8
   airport9:
     cats:
       - wallpaper
@@ -45861,7 +45870,8 @@ superdi:
     img: ../assets/img/airport/airport9.jpg
     friendly: airport
     colls:
-      - big
+      - airports
+    key: airport9
   amanda10_11:
     cats:
       - art
@@ -53231,21 +53241,12 @@ superdi:
     colls:
       - fa6
     fa6: e59a
-  armadillo1:
-    cats:
-      - animals
-      - earth
-    img: ../assets/img/animals/earth/armadillo1.png
-    friendly: armadillo
-    colls:
-      - animals
-    key: armadillo1
   barnowl1:
     cats:
       - animals
       - bird
     img: ../assets/img/animals/bird/barnowl1.png
-    friendly: barnowl
+    friendly: putzi
     colls:
       - animals
       - owls
@@ -53255,17 +53256,19 @@ superdi:
       - animals
       - earth
     img: ../assets/img/animals/earth/bear1.png
-    friendly: bear
+    friendly: brown bear
     colls:
       - animals
+    key: bear1
   bear2:
     cats:
       - animals
       - earth
     img: ../assets/img/animals/earth/bear2.png
-    friendly: bear
+    friendly: red panda
     colls:
       - animals
+    key: bear2
   bear3:
     cats:
       - animals
@@ -53333,6 +53336,8 @@ superdi:
     friendly: bee
     colls:
       - animals
+      - critters
+    key: bee1
   bee2:
     cats:
       - animals
@@ -54194,6 +54199,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly1
   butterfly2:
     cats:
       - animals
@@ -54943,25 +54950,28 @@ superdi:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish30.png
-    friendly: fish
+    friendly: sea horse
     colls:
       - animals
+    key: fish30
   fish31:
     cats:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish31.png
-    friendly: fish
+    friendly: turtle
     colls:
       - animals
+    key: fish31
   fish32:
     cats:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish32.png
-    friendly: fish
+    friendly: turtle
     colls:
       - animals
+    key: fish32
   fish33:
     cats:
       - animals
@@ -54983,33 +54993,37 @@ superdi:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish35.png
-    friendly: fish
+    friendly: sea lion
     colls:
       - animals
+    key: fish35
   fish36:
     cats:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish36.png
-    friendly: fish
+    friendly: sea bear
     colls:
       - animals
+    key: fish36
   fish37:
     cats:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish37.png
-    friendly: fish
+    friendly: sea bear
     colls:
       - animals
+    key: fish37
   fish38:
     cats:
       - animals
       - sea
     img: ../assets/img/animals/sea/fish38.png
-    friendly: fish
+    friendly: sea star
     colls:
       - animals
+    key: fish38
   fish4:
     cats:
       - animals
@@ -55639,41 +55653,46 @@ superdi:
       - animals
       - earth
     img: ../assets/img/animals/earth/panda1.png
-    friendly: panda
+    friendly: panda bear
     colls:
       - animals
+    key: panda1
   panda2:
     cats:
       - animals
       - earth
     img: ../assets/img/animals/earth/panda2.png
-    friendly: panda
+    friendly: panda bear
     colls:
       - animals
+    key: panda2
   panda3:
     cats:
       - animals
       - earth
     img: ../assets/img/animals/earth/panda3.png
-    friendly: panda
+    friendly: panda bear
     colls:
       - animals
+    key: panda3
   panda4:
     cats:
       - animals
       - earth
     img: ../assets/img/animals/earth/panda4.png
-    friendly: panda
+    friendly: panda bear
     colls:
       - animals
+    key: panda4
   panda5:
     cats:
       - animals
       - earth
     img: ../assets/img/animals/earth/panda5.png
-    friendly: panda
+    friendly: panda bear
     colls:
       - animals
+    key: panda5
   panda6:
     cats:
       - animals
@@ -55962,6 +55981,8 @@ superdi:
     friendly: wasp
     colls:
       - animals
+      - critters
+    key: wasp1
   wolf1:
     cats:
       - animals
@@ -59023,6 +59044,44 @@ superdi:
     cats: []
     colls:
       - owls
+  i1709040070486:
+    key: i1709040070486
+    friendly: armadillo
+    img: ../assets/img/armadillos/i1709040070486.png
+    cats:
+      - animal
+    colls:
+      - armadillos
+  i1709040781295:
+    key: i1709040781295
+    friendly: armadillo1
+    img: ../assets/img/armadillos/i1709040781295.png
+    cats:
+      - animal
+      - earth
+    colls:
+      - animals
+      - armadillos
+  rhino beetle:
+    key: rhino beetle
+    friendly: rhino beetle
+    img: ../assets/img/critters/rhino beetle.png
+    cats:
+      - bug
+      - animal
+      - insect
+    colls:
+      - critters
+  bamboo weevil:
+    key: bamboo weevil
+    friendly: bamboo weevil
+    img: ../assets/img/critters/bamboo weevil.png
+    cats:
+      - insect
+      - animal
+      - bug
+    colls:
+      - critters
 playerColors:
   - '#800000'
   - '#8a0000'

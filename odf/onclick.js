@@ -5,14 +5,31 @@ function onclickCollDone(){
 	UI.collPrimary.name = UI.collSecondary.name;
 	collOpenPrimary();
 }
+async function onclickCollItem(ev) {
+  evNoBubble(ev);
+  let o = evToAttrElem(ev, 'key');
+  if (!o) return;
+  let [key, elem] = [o.val, o.elem];
+  if (nundef(key)) { console.log('no key'); return; }
+  if (nundef(UI.selectedImages)) UI.selectedImages = [];
+	let collname = elem.getAttribute('collname');
+	let selist = UI.selectedImages;
+	let selkey=collGenSelkey(key,collname); //`${key}@${collname}`; //collFromElement(elem).name}`;
+	console.log('vor toggle:',selist); //,key,selkey);
+  toggleSelectionOfPicture(elem,selkey, UI.selectedImages);
+	console.log('nach toggle',UI.selectedImages)
+	if (isEmpty(selist)) collDisableListCommands(); else collEnableListCommands();
+}
 async function onclickCollNext(ev) {
-	let id = evToId(ev); console.log('id', id)
-	let coll = UI[id];
+	// let id = evToId(ev); console.log('id', id)
+	// let coll = UI[id];
+	let coll = collFromElement(ev.target.parentNode)
 	showImageBatch(coll, 1);
 }
 async function onclickCollPrev(ev) {
-	let id = evToId(ev); console.log('id', id)
-	let coll = UI[id];
+	// let id = evToId(ev); console.log('id', id)
+	// let coll = UI[id];
+	let coll = collFromElement(ev.target.parentNode)
 	showImageBatch(coll, -1);
 }
 async function onclickCollections() {
@@ -37,6 +54,13 @@ async function onclickColor(ev) {
   U.color = c;
   await postUserChange();
 }
+function onclickCommand(ev) {
+	let key = evToAttr(ev, 'key');
+	//console.log('click command',key)
+	assertion(isdef(UI[key]), `command ${key} not in UI!!!`)
+	let cmd = UI[key];
+	cmd.open();
+}
 function onclickDay(d, styles) {
   let tsDay = d.id; 
   let tsCreated = Date.now();
@@ -56,66 +80,32 @@ async function onclickDeleteCollection(name) {
 	// console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
 	if (proceed) await collDelete(name);
 }
+async function onclickDeleteSelected() {
+	let selist = UI.selectedImages;
+	//console.log('delete', selist);
+	let di = {}, deletedKeys = {};
+	for (const k of selist) {
+		let o = collKeyCollnameFromSelkey(k);
+		let key = o.key;
+		let collname = o.collname;
+
+		// *** SAFETY CHECK!!!!! ***
+		if (collLocked(collname)) continue;
+
+		if (nundef(deletedKeys[collname])) deletedKeys[collname] = [];
+		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
+	}
+	console.log('deletedKeys dict: ', deletedKeys);
+	for (const k in deletedKeys) {
+		let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: deletedKeys[k], collname: k });
+		console.log('postUpdateSuperdi', k, res)
+	}
+	await loadAssets();
+	collPostReload();
+	UI.selectedImages = [];
+}
 function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
-async function onclickNewCollection(name) {
-
-	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
-	if (nundef(name)) name = await mGather(iDiv(UI.newCollection));
-	//console.log('would open new Collection',name); return;
-
-	if (isEmpty(name)){
-		showMessage(`ERROR! you need to enter a valid name!!!!`);
-		return;
-	}
-	if (collLocked(name)) {
-		showMessage(`collection ${name} is Read-Only!`);
-		return;
-	}
-	UI.collSecondary.name = name; 
-	collOpenSecondary(4, 3);
-}
-async function onclickRenameCollection(oldname, newname) {
-	if (nundef(oldname)) oldname = UI.collSecondary.name;
-	if (nundef(newname)) {
-		console.log('HALLO!!!!')
-		let di = await mGather(iDiv(UI.renameCollection), {},{content:{ oldname: valf(oldname, ''), newname: '' },type:'multi'});
-		console.log('di', di);
-		[oldname,newname]=[di.oldname,di.newname];
-	}
-
-	newname = newname.toLowerCase();
-	if (isEmpty(newname)){
-		showMessage(`ERROR! you need to enter a valid new name!!!!`);
-		return;
-	}
-	if (!isAlphanumeric(newname)) {
-		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
-		return;
-	}
-	if (collLocked(oldname)) {
-		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);
-		return;
-	}
-	if (!collExists(oldname)) {
-		showMessage(`ERROR: Collection ${oldname} not found!`);
-		return;
-	}
-	if (isdef(M.byCollection[newname])){
-		showMessage(`ERROR! Collection ${newname} already exists!!!!`);
-		return;
-	}
-
-	//console.log(`would rename collection ${oldname} to ${newname}`);return;
-	await collRename(oldname, newname);
-}
-function onclickCommand(ev) {
-	let key = evToAttr(ev, 'key');
-	//console.log('click command',key)
-	assertion(isdef(UI[key]), `command ${key} not in UI!!!`)
-	let cmd = UI[key];
-	cmd.open();
-}
 function onclickMenu(ev) {
 	let keys = evToAttr(ev, 'key');
 	let [menuKey, cmdKey] = keys.split('_');
@@ -180,8 +170,59 @@ async function onclickNATIONS() {
     }
   }
 }
+async function onclickNewCollection(name) {
+
+	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
+	if (nundef(name)) name = await mGather(iDiv(UI.newCollection));
+	//console.log('would open new Collection',name); return;
+
+	if (isEmpty(name)){
+		showMessage(`ERROR! you need to enter a valid name!!!!`);
+		return;
+	}
+	if (collLocked(name)) {
+		showMessage(`collection ${name} is Read-Only!`);
+		return;
+	}
+	UI.collSecondary.name = name; 
+	collOpenSecondary(4, 3);
+}
 async function onclickPlan() { showCalendarApp(); }
 async function onclickPlay() {   showTables(); }
+async function onclickRenameCollection(oldname, newname) {
+	if (nundef(oldname)) oldname = UI.collSecondary.name;
+	if (nundef(newname)) {
+		console.log('HALLO!!!!')
+		let di = await mGather(iDiv(UI.renameCollection), {},{content:{ oldname: valf(oldname, ''), newname: '' },type:'multi'});
+		console.log('di', di);
+		[oldname,newname]=[di.oldname,di.newname];
+	}
+
+	newname = newname.toLowerCase();
+	if (isEmpty(newname)){
+		showMessage(`ERROR! you need to enter a valid new name!!!!`);
+		return;
+	}
+	if (!isAlphanumeric(newname)) {
+		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
+		return;
+	}
+	if (collLocked(oldname)) {
+		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);
+		return;
+	}
+	if (!collExists(oldname)) {
+		showMessage(`ERROR: Collection ${oldname} not found!`);
+		return;
+	}
+	if (isdef(M.byCollection[newname])){
+		showMessage(`ERROR! Collection ${newname} already exists!!!!`);
+		return;
+	}
+
+	//console.log(`would rename collection ${oldname} to ${newname}`);return;
+	await collRename(oldname, newname);
+}
 async function onclickTable(id) { await switchToTable(id); }
 async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUser() {

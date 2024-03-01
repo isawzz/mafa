@@ -50,3 +50,11 @@ hallo:
   name: hallo
   color: '#b42222'
   icon: hallo
+unsafe:
+  name: unsafe
+  color: '#c29551'
+  icon: unknown_user
+____unsafe:
+  name: ____unsafe
+  color: '#aaff00'
+  icon: unknown_user
