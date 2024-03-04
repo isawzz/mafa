@@ -7,6 +7,8 @@ async function onclickCollItemLabel(ev) {
 	let collname = elem.getAttribute('collname');
 	console.log('clicked',key,collname);
 	let newfriendly = await mGather(ev.target);
+	if (!newfriendly) return;
+
 
 	if (isEmpty(newfriendly)){ // || !isAlphanumeric(newfriendly)){
 		showMessage(`ERROR: name invalid: ${newfriendly}`);

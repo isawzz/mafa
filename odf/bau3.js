@@ -4,6 +4,7 @@ function collFromElement(elem){
 	let coll = id == 'collPrimary'?UI.collPrimary:id == 'collSecondary'?UI.collSecondary:null;
 	return coll;
 }
+function isPointOutsideOf(form, x, y) { const r = form.getBoundingClientRect(); return (x < r.left || x > r.right || y < r.top || y > r.bottom); }
 
 
 

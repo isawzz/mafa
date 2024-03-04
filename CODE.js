@@ -1,3 +1,51 @@
+function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
+	//type text: hier kommen jetzt verschiedene options acc to type!
+
+	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	//let inputStyles = {w:100,margin:0}; 
+	// let inp = mDom(form, inputStyles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	//let inputStyles = { bg: 'white', align: 'center', vpadding: 3, hpadding: 6, matop: 2 }; // outline: 'none', w: 130, margin:0 }
+	// let inp = mDom(form, inputStyles, { className: 'reset', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return () => inp.value;
+}
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
+
+		let d = document.body;
+		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
+
+		let rect = dAnchor.getBoundingClientRect();//getRect(dAnchor);
+
+		let [v, h] = [align[0], align[1]];
+		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
+		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+
+		let formStyles = { position: 'absolute' };
+		addKeys(vPos, formStyles);
+		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
+		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+		dialog.addEventListener('click', ev => {if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ resolve(null); dialog.remove(); }});
+		// 	const [r,x, y] = [form.getBoundingClientRect(),ev.clientX, ev.clientY];
+		// 	if (x < r.left || x > r.right || y < r.top || y > r.bottom) { resolve(null); dialog.remove(); }
+		// });
+		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
+
+		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
+			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
+				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
+					uiGadgetTypeText(form, content, styles, opts);
+
+		// if (isdef(opts.cancel)) {
+		// 	//add a cancel button to the dialog!
+		// 	mDom(form,{w:70},{className:'input',onclick:})
+		// }
+
+		dialog.showModal();
+		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
+	});
+}
 
 async function collDelete(collname) {
 	if (collLocked(collname) || !collExists(collname)) return;

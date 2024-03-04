@@ -1,4 +1,21 @@
 
+async function onclickAddCategory() {
+	let cat = await mGather(iDiv(UI.addCategory), {},{content:M.categories,type:'select'});	
+	console.log('selected cat',cat); return;
+	let selist = UI.selectedImages;
+	//console.log('addCategpory', selist);
+	let di = {};
+	for (const k of selist) {
+		let o = collKeyCollnameFromSelkey(k);
+		let key = o.key;
+		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
+	}
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: [] });
+	console.log('postUpdateSuperdi', k, res)
+	await loadAssets();
+	collPostReload();
+	UI.selectedImages = [];
+}
 function onclickCollDone(){
 	collCloseSecondary();
 	console.log('sec',UI.collSecondary)
@@ -15,9 +32,9 @@ async function onclickCollItem(ev) {
 	let collname = elem.getAttribute('collname');
 	let selist = UI.selectedImages;
 	let selkey=collGenSelkey(key,collname); //`${key}@${collname}`; //collFromElement(elem).name}`;
-	console.log('vor toggle:',selist); //,key,selkey);
+	//console.log('vor toggle:',selist); //,key,selkey);
   toggleSelectionOfPicture(elem,selkey, UI.selectedImages);
-	console.log('nach toggle',UI.selectedImages)
+	//console.log('nach toggle',UI.selectedImages)
 	if (isEmpty(selist)) collDisableListCommands(); else collEnableListCommands();
 }
 async function onclickCollNext(ev) {
@@ -74,6 +91,7 @@ function onclickDay(d, styles) {
 async function onclickDeleteCollection(name) {
 	if (nundef(name) && UI.collSecondary.isOpen) name = UI.collSecondary.name;
 	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
+	if (!name) return;
 
 	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });
 
@@ -174,6 +192,7 @@ async function onclickNewCollection(name) {
 
 	// if (nundef(name)) name=await mGather1(iDiv(UI.newCollection),'name');
 	if (nundef(name)) name = await mGather(iDiv(UI.newCollection));
+	if (!name) return;
 	//console.log('would open new Collection',name); return;
 
 	if (isEmpty(name)){
@@ -188,13 +207,14 @@ async function onclickNewCollection(name) {
 	collOpenSecondary(4, 3);
 }
 async function onclickPlan() { showCalendarApp(); }
-async function onclickPlay() {   showTables(); }
+async function onclickPlay() { showTables(); }
 async function onclickRenameCollection(oldname, newname) {
-	if (nundef(oldname)) oldname = UI.collSecondary.name;
+	if (nundef(oldname)) oldname = UI.collSecondary.isOpen?UI.collSecondary.name:UI.collPrimary.name;
 	if (nundef(newname)) {
-		console.log('HALLO!!!!')
+		//console.log('HALLO!!!!')
 		let di = await mGather(iDiv(UI.renameCollection), {},{content:{ oldname: valf(oldname, ''), newname: '' },type:'multi'});
-		console.log('di', di);
+		//console.log('di', di);
+		if (!di) return;
 		[oldname,newname]=[di.oldname,di.newname];
 	}
 
@@ -227,5 +247,6 @@ async function onclickTable(id) { await switchToTable(id); }
 async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
+	if (!name) return;
 	await switchToUser(uname);
 }

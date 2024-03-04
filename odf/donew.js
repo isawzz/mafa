@@ -112,42 +112,42 @@ async function collDelete(collname) {
 	let keys = M.byCollection[collname];
 	console.log('_________delete collection', keys)
 	collPreReload(collname);
-	let di={},deletedKeys=[]; //,needToRenameImgDir=false,newdir=null;
+	let di = {}, deletedKeys = []; //,needToRenameImgDir=false,newdir=null;
 	for (const k of keys) {
-		await collDeleteOrRemove(k,collname,di,deletedKeys);
+		await collDeleteOrRemove(k, collname, di, deletedKeys);
 	}
 
-	let res = await mPostRoute('postUpdateSuperdi',{di,deletedKeys,collname,deletedCollection:true});
-	console.log('postUpdateSuperdi',res)
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys, collname, deletedCollection: true });
+	console.log('postUpdateSuperdi', res)
 	await loadAssets();
 
 	collPostReload(); //	delete M.byCollection[collname];
 
 
 }
-async function collDeleteOrRemove(k,collname,di,deletedKeys){
+async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 	let item = M.superdi[k];
 	console.log('item', item)
 	let colls = item.colls;
-	console.log('colls',colls)
-	assertion(colls.includes(collname),`item ${k} from coll ${collname} does not have ${collname} in colls!!!!!!`)
+	console.log('colls', colls)
+	assertion(colls.includes(collname), `item ${k} from coll ${collname} does not have ${collname} in colls!!!!!!`)
 	if (colls.length == 1) {
-		console.log('deleting',k,'!!!!!!!!!!!!');
+		console.log('deleting', k, '!!!!!!!!!!!!');
 		deletedKeys.push(k);
-	}else if (isdef(item.img) && item.img.includes(`/${collname}/`)){
-		removeInPlace(item.colls,collname);
+	} else if (isdef(item.img) && item.img.includes(`/${collname}/`)) {
+		removeInPlace(item.colls, collname);
 		//move this img to other collname, create it if it does not exist!!!
 		let olddir = collname;
-		let newdir=item.colls[0];
-		let filename = stringAfterLast(item.img,'/');
-		item.img = item.img.replace(olddir,newdir);
-		let resp = await mPostRoute('moveImage',{olddir,newdir,filename});
+		let newdir = item.colls[0];
+		let filename = stringAfterLast(item.img, '/');
+		item.img = item.img.replace(olddir, newdir);
+		let resp = await mPostRoute('moveImage', { olddir, newdir, filename });
 		if (isdef(resp.newpath)) item.img = resp.newpath;
-		console.log('moveImage:',resp)
-		di[k]=item;
-	}else{
-		removeInPlace(item.colls,collname);
-		di[k]=item;
+		console.log('moveImage:', resp)
+		di[k] = item;
+	} else {
+		removeInPlace(item.colls, collname);
+		di[k] = item;
 	}
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
@@ -160,7 +160,7 @@ function collFilterImages(ev) {
 	//if (isEmpty(s)) list = coll.masterKeys; //return;
 	let di = {};
 	for (const k of coll.masterKeys) { di[k] = true; }
-	let list = isEmpty(s)?Object.keys(di): isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
+	let list = isEmpty(s) ? Object.keys(di) : isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
 	if (nundef(list) || isEmpty(list)) {
 		list = [];
 		for (const k of coll.masterKeys) {
@@ -229,7 +229,7 @@ function collGenSelkey(key, collname) { return `${key}@${collname}`; }
 function collKeyCollnameFromElem(elem) { return { key: elem.getAttribute('key'), collname: elem.getAttribute('collname') }; }
 function collKeyCollnameFromSelkey(selkey) { return { key: stringBefore(selkey, '@'), collname: stringAfter(selkey, '@') }; }
 function collLocked(collname) {
-	if (U.name!='____unsafe' && ['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
+	if (U.name != '____unsafe' && ['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
 		console.log(`LOCKED collection ${collname}`);
 		return true;
 	}
@@ -380,7 +380,7 @@ async function collRename(oldname, newname) {
 		let resp = await mPostRoute('renameImgDir', { oldname, newname });
 		console.log('response from server', resp)
 	}
-	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys:[] }); console.log('response from server', res)
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: [] }); console.log('response from server', res)
 	await loadAssets();
 	if (UI.collPrimary.name == oldname) UI.collPrimary.name = newname;
 	if (UI.collSecondary.name == oldname) UI.collSecondary.name = newname;
@@ -552,7 +552,7 @@ function enableImageDrop_trial1_W(elem, onDropCallback) {
 		}
 	});
 }
-function extractWords(s) { let parts = splitAtAnyOf(s, ' ,-'); return parts; }
+function extractWords(s) { let parts = splitAtAnyOf(s, ' ,-.!?;:'); return parts; }
 function getMouseCoordinatesRelativeToElement(ev, elem) {
 	// Get the bounding rectangle of the element
 	if (nundef(elem)) elem = ev.target;
@@ -766,7 +766,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		let d = document.body;
 		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
 
-		let rect = dAnchor.getBoundingClientRect();//getRect(dAnchor);
+		let rect = dAnchor.getBoundingClientRect();
 
 		let [v, h] = [align[0], align[1]];
 		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
@@ -776,17 +776,16 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		addKeys(vPos, formStyles);
 		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
 		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+		dialog.addEventListener('click', ev => {if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ resolve(null); dialog.remove(); }});
+		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
 
 		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
 			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
 				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
+				type == 'select' ? uiGadgetTypeSelect(form, content, styles, opts) :
 					uiGadgetTypeText(form, content, styles, opts);
 
-		// if (isdef(opts.cancel)) {
-		// 	//add a cancel button to the dialog!
-		// 	mDom(form,{w:70},{className:'input',onclick:})
-		// }
-
+		console.log('evalFunc',evalFunc)
 		dialog.showModal();
 		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
 	});
@@ -901,19 +900,19 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	if (keys.length <= numCells) inc = 0;
 	let newPageIndex = coll.pageIndex + inc;
 	let numItems = keys.length;
-	let maxPage = Math.max(1,Math.ceil(numItems / numCells)); //console.log('maxPage', maxPage, numItems, numCells)
+	let maxPage = Math.max(1, Math.ceil(numItems / numCells)); //console.log('maxPage', maxPage, numItems, numCells)
 	if (newPageIndex > maxPage) newPageIndex = 1;
 	if (newPageIndex < 1) newPageIndex = maxPage;
-	index = numCells * (newPageIndex-1); //here need 0 based
+	index = numCells * (newPageIndex - 1); //here need 0 based
 	let list = arrTakeFromTo(keys, index, index + numCells);
 	coll.index = index; coll.pageIndex = newPageIndex;
 	for (let i = 0; i < list.length; i++) {
 		let d = coll.cells[i];
 		mStyle(d, { opacity: 1 });
 		mClass(d, 'magnifiable')
-		let d1=showImageInBatch(list[i], d);
-		d1.setAttribute('collname',coll.name);
-		let selkey = collGenSelkey(list[i],coll.name);
+		let d1 = showImageInBatch(list[i], d);
+		d1.setAttribute('collname', coll.name);
+		let selkey = collGenSelkey(list[i], coll.name);
 		if (isList(UI.selectedImages) && UI.selectedImages.includes(selkey)) collSelect(d1);
 	}
 	for (let i = list.length; i < numCells; i++) {
@@ -922,9 +921,9 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	coll.dPageIndex.innerHTML = `page ${coll.pageIndex}/${maxPage}`;
 
 	//next and prev button activate or deactivate!
-	let [dNext,dPrev]=[mBy('bNext'),mBy('bPrev')];
-	if (maxPage == 1) {mClass(dPrev,'disabled');mClass(dNext,'disabled');} 
-	else {mClassRemove(dPrev,'disabled');mClassRemove(dNext,'disabled');} 
+	let [dNext, dPrev] = [mBy('bNext'), mBy('bPrev')];
+	if (maxPage == 1) { mClass(dPrev, 'disabled'); mClass(dNext, 'disabled'); }
+	else { mClassRemove(dPrev, 'disabled'); mClassRemove(dNext, 'disabled'); }
 }
 function showImageInBatch(key, dParent, styles = {}) {
 	let o = M.superdi[key]; o.key = key; //console.log('o',o)
@@ -949,7 +948,7 @@ function showImageInBatch(key, dParent, styles = {}) {
 	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 	assertion(el, 'PROBLEM mit' + key);
 	el.ondragstart = () => UI.draggedItem = o;
-	let label = mDom(d1, { fz: 11, cursor:'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' }); 
+	let label = mDom(d1, { fz: 11, cursor: 'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' });
 	label.onclick = onclickCollItemLabel;
 	mStyle(d1, { cursor: 'pointer' });
 	d1.onclick = onclickCollItem;
@@ -1063,6 +1062,21 @@ function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
 		return di;
 	};
 }
+function uiGadgetTypeSelect(form, dict, styles = {}, opts = {}) {
+	let select = DA.select=mDom(form,styles,{className:'input',tag:'select'});
+	//console.log('dict',dict);
+	if (isList(dict)) dict = list2dict(dict);
+	mDom(select, {}, { tag: 'option', html: '' });
+
+	//console.log('dict',dict)
+	for (const k in dict) {
+		let [content, val] = [k, dict[k]];
+		mDom(select, {}, { tag: 'option', html: content, value: val });
+	}
+	mDom(form, { display:'none' }, { tag: 'input', type: 'submit' });
+	select.addEventListener('change',()=>form.submit());
+	return () => {console.log('selected',DA.select,DA.select.value);return DA.select.value;}
+}
 function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
 	let dOuter = mDom(form, styles)
@@ -1074,13 +1088,7 @@ function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 	return () => form.getAttribute('proceed') == 'yes';
 }
 function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
-	//type text: hier kommen jetzt verschiedene options acc to type!
-
 	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
-	//let inputStyles = {w:100,margin:0}; 
-	// let inp = mDom(form, inputStyles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
-	//let inputStyles = { bg: 'white', align: 'center', vpadding: 3, hpadding: 6, matop: 2 }; // outline: 'none', w: 130, margin:0 }
-	// let inp = mDom(form, inputStyles, { className: 'reset', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return () => inp.value;
 }

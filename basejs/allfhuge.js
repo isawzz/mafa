@@ -36212,8 +36212,9 @@ function linkObjects(id, oid) {
 function list2dict(arr, keyprop = 'id', uniqueKeys = true) {
   let di = {};
   for (const a of arr) {
-    if (uniqueKeys) lookupSet(di, [a[keyprop]], a);
-    else lookupAddToList(di, [a[keyprop]], a);
+    let key= typeof (a) == 'object'?a[keyprop]:a;
+    if (uniqueKeys) lookupSet(di, [key], a);
+    else lookupAddToList(di, [key], a);
   }
   return di;
 }
