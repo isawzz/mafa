@@ -9,6 +9,9 @@ async function onclickEditCategories() {
 
 	let cats = await mGather(iDiv(UI.editCategories), {},{content:catlist,type:'checklist'});	
 	console.log('user selected',cats);
+
+	//jetzt muss ich nur noch all die selected zu diesen cats setzen
+
 }
 
 function uiGadgetTypeCheckList(form,content,styles,opts){
@@ -26,9 +29,11 @@ function uiGadgetTypeCheckList(form,content,styles,opts){
 	let ui = uiTypeCheckList(lst,dParent,styles,opts);
 	console.log('ui',ui)
 
-	mButton('done',onclickCatListDone,dParent,{classes:'input',margin:10}); //da muss noch ein button dazu
+	//onclick: () => form.setAttribute('proceed', 'yes')
 
+	mButton('done',onclickCatListDone,dOuter,{classes:'input',margin:10}); //da muss noch ein button dazu
 
+	return () => form.getAttribute('proceed') == 'yes';
 
 	//muss eine evalfunc returnen!!!
 }
@@ -38,13 +43,17 @@ function uiGadgetTypeCheckList(form,content,styles,opts){
 async function onclickAddCategories() {
 	let selist = UI.selectedImages; console.log('selist',selist)
 	let keys=selist.map(x=>stringBefore(x,'@'));
-	let catlist=M.categories.map(x=>({name:x}));
-	let arrs=keys.map(x=>M.superdi[x].cats); 
-	let inter = intersectionOfArrays(arrs);	console.log('inter',inter);
-	for(const c of catlist){c.val=inter.includes(c.name);	}
+	let catlist=M.categories.map(x=>({name:x,val:false}));
+
+
+	// let arrs=keys.map(x=>M.superdi[x].cats); 
+	// let inter = intersectionOfArrays(arrs);	console.log('inter',inter);
+	// for(const c of catlist){c.val=inter.includes(c.name);	}
 
 	let cats = await mGather(iDiv(UI.editCategories), {},{content:catlist,type:'checklist'});	
-	console.log('user selected',cats);
+	console.log('add cats:',cats);
+
+
 }
 async function onclickRemoveCategories() {
 	//hier soll in der liste NUR intersein!
