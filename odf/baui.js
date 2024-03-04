@@ -10,18 +10,22 @@ function collSidebar() {
 	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d);
 	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete'); mNewline(d);
 	cmdDisable(UI.deleteSelected);
-	UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d);
-	cmdDisable(UI.addCategory);
+	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d);
+	cmdDisable(UI.editCategories);
+	UI.addCategories = mCommand(d, 'addCategories', 'Add Categories'); mNewline(d);
+	cmdDisable(UI.addCategories);
+	UI.removeCategories = mCommand(d, 'removeCategories', 'Remove Categories'); mNewline(d);
+	cmdDisable(UI.removeCategories);
 	// UI.sortCollection = mCommand(d, 'sortBy', 'Sort By'); mNewline(d);
 }
 function collDisableListCommands(){
-	for(const cmd of [UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.addCategory]){
+	for(const cmd of [UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.editCategories,UI.addCategories,UI.removeCategories]){
 		if (nundef(cmd)) continue;
 		cmdDisable(cmd);
 	}
 }
 function collEnableListCommands(){
-	for(const cmd of [UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.addCategory]){
+	for(const cmd of [UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.editCategories,UI.addCategories,UI.removeCategories]){
 		if (nundef(cmd)) continue;
 		cmdEnable(cmd);
 	}

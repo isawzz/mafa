@@ -3,37 +3,13 @@ onload = start;
 async function start() { test2(); }
 
 async function test2(){
-	let dParent = clearBodyDiv({bg:'silver',pabottom:10,box:true});
+	let dParent = clearBodyDiv({bg:rColor(),fg:'contrast',hmax:500,wmax:200,pabottom:10,box:true});
 	let d1=mDom(dParent,{},{html:'title'})
-	let lst = arrRepeat(3, 'hallo');
+	let lst = generateRandomWords(4); //arrRepeat(30, 'hallo');
 	let ui=uiTypeCheckList(lst,dParent);
-
-	//da muss noch ein button dazu
-	mButton('done',onclickCatListDone,dParent,{classes:'input',margin:10});
+	mButton('done',onclickCatListDone,dParent,{classes:'input',margin:10}); //da muss noch ein button dazu
 }
-async function onclickCatListDone(ev){
-	let ui=ev.target.parentNode;
-	let checks=Array.from(ui.getElementsByTagName('input'));
-	console.log('checkboxes',checks);
 
-}
-function uiTypeCheckList(lst,dParent,styles={},opts={}){
-	let d = mDom(dParent,{hmax:500,wmax:200,overy:'auto'});
-	lst.forEach((text, index) => {
-		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`});
-		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
-		mNewline(d,0);
-	});
-	let r=getRect(d); //console.log('r',r);
-	let rp=getRect(dParent); //console.log('rp',rp);
-	let p=mGetStyle(dParent,'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
-	let h=rp.h-r.y; //-p;
-	mStyle(d,{h:h});//,pabottom:10,box:true});
-	return d;
-	//check all the boxes that are set for this element
-
-	//mButton('done',)
-}
 async function test1_sidebar(){
 	dTitle = mDom('dTitle',{bg:'orange'},{html:'Title'});
 	mStyle('dLeft', { wmin: 155 });

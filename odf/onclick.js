@@ -1,21 +1,4 @@
 
-async function onclickAddCategory() {
-	let cat = await mGather(iDiv(UI.addCategory), {},{content:M.categories,type:'select'});	
-	console.log('selected cat',cat); return;
-	let selist = UI.selectedImages;
-	//console.log('addCategpory', selist);
-	let di = {};
-	for (const k of selist) {
-		let o = collKeyCollnameFromSelkey(k);
-		let key = o.key;
-		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
-	}
-	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: [] });
-	console.log('postUpdateSuperdi', k, res)
-	await loadAssets();
-	collPostReload();
-	UI.selectedImages = [];
-}
 function onclickCollDone(){
 	collCloseSecondary();
 	console.log('sec',UI.collSecondary)
@@ -36,6 +19,31 @@ async function onclickCollItem(ev) {
   toggleSelectionOfPicture(elem,selkey, UI.selectedImages);
 	//console.log('nach toggle',UI.selectedImages)
 	if (isEmpty(selist)) collDisableListCommands(); else collEnableListCommands();
+}
+async function onclickCollItemLabel(ev) {
+  evNoBubble(ev);
+  let o = evToAttrElem(ev, 'key');
+  if (!o) return;
+  let [key, elem] = [o.val, o.elem];
+  if (nundef(key)) { console.log('no key'); return; }
+	let collname = elem.getAttribute('collname');
+	console.log('clicked',key,collname);
+	let newfriendly = await mGather(ev.target);
+	if (!newfriendly) return;
+
+
+	if (isEmpty(newfriendly)){ // || !isAlphanumeric(newfriendly)){
+		showMessage(`ERROR: name invalid: ${newfriendly}`);
+		return;
+	}
+
+	console.log('rename friendly to',newfriendly)
+	let item=M.superdi[key];
+	item.friendly=newfriendly;
+	let resp=await mPostRoute('postUpdateItem', { key: key, item: item });
+	console.log(resp);
+	ev.target.innerHTML=newfriendly;
+
 }
 async function onclickCollNext(ev) {
 	// let id = evToId(ev); console.log('id', id)

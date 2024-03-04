@@ -1,6 +1,32 @@
 onload = start;
 
-async function start() { test19(); }
+async function start() { test20(); }
+
+async function test21_catsausmisten(){
+	await prelims();
+	for(const k in M.superdi){
+		let o=M.superdi[k];
+		let rem=[];
+		for (const w of o.cats){
+			if (['hair','exists','allnew','fa6','other'].some(x=>w.includes(x))) rem.push(w);
+			else if (w == 'all') rem.push(w);
+		}
+		rem.map(x=>removeInPlace(o.cats,x));
+	}
+	downloadAsYaml(M,'mnew1');
+}
+
+async function test20(){
+	await prelims();
+	await switchToMenu(UI.nav,'collections');
+}
+async function openMockCatList(){
+	let dParent = clearBodyDiv({bg:rColor(),fg:'contrast',hmax:500,wmax:200,pabottom:10,box:true});
+	let d1=mDom(dParent,{},{html:'title'})
+	let lst = generateRandomWords(4); //arrRepeat(30, 'hallo');
+	let ui=uiTypeCheckList(lst,dParent);
+	mButton('done',onclickCatListDone,dParent,{classes:'input',margin:10}); //da muss noch ein button dazu
+}
 
 async function test19(){
 	await prelims();
