@@ -30,14 +30,16 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
 	});
 }
-async function onclickCatListDone(ev){
-	let ui=ev.target.parentNode;
+async function onclickCatListDone(ui){
+	//let ui=ev.target.parentNode;
 	let checks=Array.from(ui.getElementsByTagName('input'));
 	console.log('checkboxes',checks,checks[0]);
 	DA.x = checks[0];
 	let cats=[];
 	for(const ch of checks) if (ch.checked) cats.push(ch.name);
 	console.log('cats',cats);
+
+	ui.setAttribute('proceed',cats.join('@'));
 
 }
 function uiTypeCheckList(lst,dParent,styles={},opts={}){

@@ -10,8 +10,8 @@ function collSidebar() {
 	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d);
 	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete'); mNewline(d);
 	cmdDisable(UI.deleteSelected);
-	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d);
-	cmdDisable(UI.editCategories);
+	// UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d);
+	// cmdDisable(UI.editCategories);
 	UI.addCategories = mCommand(d, 'addCategories', 'Add Categories'); mNewline(d);
 	cmdDisable(UI.addCategories);
 	UI.removeCategories = mCommand(d, 'removeCategories', 'Remove Categories'); mNewline(d);

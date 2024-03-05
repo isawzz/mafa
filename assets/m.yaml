@@ -6633,8 +6633,8 @@ superdi:
     cats: []
     colls:
       - emo
-  'keycap_#':
-    friendly: 'keycap_#'
+  keycap_#:
+    friendly: keycap_#
     text: '&#35;&#65039;&#8419;'
     cats:
       - symbol
@@ -66812,7 +66812,7 @@ natCards:
     Stability: ''
     VP: ''
     Deploy Cost (Stone): ''
-    Note: 'draw next age card until first golden age, wonder, or building, play it.'
+    Note: draw next age card until first golden age, wonder, or building, play it.
     Path: age1_antikythera_mechanism.jpg
     Type: golden_age
     key: antikythera_mechanism
@@ -72701,11 +72701,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:buffalo_horde'
-      - 'b:teepee'
-      - 'm:brave'
-      - 'b:adobe'
-      - 'd:0'
+      - b:buffalo_horde
+      - b:teepee
+      - m:brave
+      - b:adobe
+      - d:0
       - w
       - c
       - c
@@ -72715,14 +72715,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   arabia:
     res:
       military: 0
@@ -72734,11 +72734,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:kaba'
-      - 'b:quarry'
-      - 'm:axeman'
-      - 'b:bazaar'
-      - 'd:0'
+      - b:kaba
+      - b:quarry
+      - m:axeman
+      - b:bazaar
+      - d:0
       - w
       - c
       - c
@@ -72748,14 +72748,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   china:
     res:
       military: 0
@@ -72767,11 +72767,11 @@ civs:
       workers: 6
     cards:
       - a
-      - 'b:farm'
-      - 'b:quarry'
-      - 'm:axeman'
-      - 'b:pagoda'
-      - 'd:0'
+      - b:farm
+      - b:quarry
+      - m:axeman
+      - b:pagoda
+      - d:0
       - w
       - c
       - w
@@ -72781,13 +72781,13 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   egypt:
     res:
       military: 0
@@ -72799,28 +72799,28 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:brewery'
-      - 'b:quarry'
-      - 'b:temple'
-      - 'b:caravan'
-      - 'd:0'
+      - b:brewery
+      - b:quarry
+      - b:temple
+      - b:caravan
+      - d:0
       - w
       - c
       - c
-      - 'w:pyramids'
+      - w:pyramids
       - w
       - w
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   ethiopia:
     res:
       military: 0
@@ -72832,11 +72832,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:stele'
-      - 'b:quarry'
-      - 'm:axeman'
-      - 'b:caravan'
-      - 'd:0'
+      - b:stele
+      - b:quarry
+      - m:axeman
+      - b:caravan
+      - d:0
       - w
       - c
       - c
@@ -72846,14 +72846,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   greece:
     res:
       military: 0
@@ -72865,11 +72865,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:farm'
-      - 'b:quarry'
-      - 'm:hoplite'
-      - 'b:lyceum'
-      - 'd:0'
+      - b:farm
+      - b:quarry
+      - m:hoplite
+      - b:lyceum
+      - d:0
       - w
       - c
       - c
@@ -72879,14 +72879,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   india:
     res:
       military: 0
@@ -72898,28 +72898,28 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:temple'
-      - 'b:quarry'
-      - 'm:chariot'
-      - 'b:farm'
-      - 'd:0'
+      - b:temple
+      - b:quarry
+      - m:chariot
+      - b:farm
+      - d:0
       - w
       - c
       - c
-      - 'w:varanasi'
+      - w:varanasi
       - w
       - w
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   japan:
     res:
       military: 0
@@ -72930,12 +72930,12 @@ civs:
       vp: 5
       workers: 5
     cards:
-      - 'a:emperor'
-      - 'b:temple'
-      - 'b:quarry'
-      - 'm:axeman'
-      - 'b:rice_fields'
-      - 'b:hokkaido'
+      - a:emperor
+      - b:temple
+      - b:quarry
+      - m:axeman
+      - b:rice_fields
+      - b:hokkaido
       - w
       - c
       - c
@@ -72945,14 +72945,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   korea:
     res:
       military: 0
@@ -72964,11 +72964,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:temple'
-      - 'b:quarry'
-      - 'm:archer'
-      - 'b:confucian_academy'
-      - 'd:0'
+      - b:temple
+      - b:quarry
+      - m:archer
+      - b:confucian_academy
+      - d:0
       - w
       - c
       - c
@@ -72978,14 +72978,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   mali:
     res:
       military: 0
@@ -72997,11 +72997,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:salt_caravan'
-      - 'b:quarry'
-      - 'b:gold_mine'
-      - 'b:farm'
-      - 'd:0'
+      - b:salt_caravan
+      - b:quarry
+      - b:gold_mine
+      - b:farm
+      - d:0
       - w
       - c
       - c
@@ -73011,14 +73011,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   mongolia:
     res:
       military: 0
@@ -73030,11 +73030,11 @@ civs:
       workers: 4
     cards:
       - a
-      - 'b:yurt'
-      - 'b:caravan'
-      - 'm:horse_archer'
-      - 'b:steppe'
-      - 'd:0'
+      - b:yurt
+      - b:caravan
+      - m:horse_archer
+      - b:steppe
+      - d:0
       - w
       - c
       - c
@@ -73044,14 +73044,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'military:3'
-      - 'military:3'
-      - 'military:3'
-      - 'military:3'
-      - 'military:3'
+      - food:3
+      - food:3
+      - food:3
+      - military:3
+      - military:3
+      - military:3
+      - military:3
+      - military:3
   persia:
     res:
       military: 0
@@ -73064,10 +73064,10 @@ civs:
     cards:
       - a
       - c
-      - 'b:quarry'
-      - 'm:axeman'
-      - 'b:ziggurat'
-      - 'b:temple'
+      - b:quarry
+      - m:axeman
+      - b:ziggurat
+      - b:temple
       - w
       - c
       - c
@@ -73077,14 +73077,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   poland:
     res:
       military: 0
@@ -73096,11 +73096,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:temple'
-      - 'b:forge'
-      - 'm:axeman'
-      - 'b:quarry'
-      - 'd:0'
+      - b:temple
+      - b:forge
+      - m:axeman
+      - b:quarry
+      - d:0
       - w
       - c
       - w
@@ -73110,14 +73110,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   portugal:
     res:
       military: 0
@@ -73129,11 +73129,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:temple'
-      - 'b:lighthouse'
-      - 'b:caracvan'
-      - 'b:farm'
-      - 'd:0'
+      - b:temple
+      - b:lighthouse
+      - b:caracvan
+      - b:farm
+      - d:0
       - w
       - c
       - c
@@ -73143,14 +73143,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   rome:
     res:
       military: 0
@@ -73162,11 +73162,11 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:farm'
-      - 'b:quarry'
-      - 'b:legionary'
-      - 'b:aqueduct'
-      - 'd:0'
+      - b:farm
+      - b:quarry
+      - b:legionary
+      - b:aqueduct
+      - d:0
       - w
       - c
       - c
@@ -73176,14 +73176,14 @@ civs:
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   venice:
     res:
       military: 0
@@ -73195,28 +73195,28 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:glass_blower'
-      - 'b:quarry'
-      - 'b:trireme'
-      - 'b:farm'
-      - 'd:0'
+      - b:glass_blower
+      - b:quarry
+      - b:trireme
+      - b:farm
+      - d:0
       - w
       - c
-      - 'c:constantinople'
+      - c:constantinople
       - w
       - w
       - w
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
   vikings:
     res:
       military: 0
@@ -73228,28 +73228,28 @@ civs:
       workers: 5
     cards:
       - a
-      - 'b:slave_church'
-      - 'b:quarry'
-      - 'b:berserkers'
-      - 'b:farm'
-      - 'd:0'
+      - b:slave_church
+      - b:quarry
+      - b:berserkers
+      - b:farm
+      - d:0
       - w
       - c
       - c
-      - 'w:old_uppsala'
+      - w:old_uppsala
       - w
       - w
       - w
       - w
     workers:
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'food:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
-      - 'stability:3'
+      - food:3
+      - food:3
+      - food:3
+      - food:3
+      - stability:3
+      - stability:3
+      - stability:3
+      - stability:3
 civNames:
   - america
   - arabia
