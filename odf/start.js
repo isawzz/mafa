@@ -2,49 +2,47 @@ onload = start;
 
 async function start() { test20(); }
 
-async function test21_catsausmisten(){
+async function test22_openMockCatList() {
+	let dParent = clearBodyDiv({ bg: rColor(), fg: 'contrast', hmax: 500, wmax: 200, pabottom: 10, box: true });
+	let d1 = mDom(dParent, {}, { html: 'title' })
+	let lst = generateRandomWords(4); //arrRepeat(30, 'hallo');
+	let ui = uiTypeCheckList(lst, dParent);
+	mButton('done', onclickCatListDone, dParent, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
+}
+async function test21_catsausmisten() {
 	await prelims();
-	for(const k in M.superdi){
-		let o=M.superdi[k];
-		let rem=[];
-		for (const w of o.cats){
-			if (['hair','exists','allnew','fa6','other'].some(x=>w.includes(x))) rem.push(w);
+	for (const k in M.superdi) {
+		let o = M.superdi[k];
+		let rem = [];
+		for (const w of o.cats) {
+			if (['hair', 'exists', 'allnew', 'fa6', 'other'].some(x => w.includes(x))) rem.push(w);
 			else if (w == 'all') rem.push(w);
 		}
-		rem.map(x=>removeInPlace(o.cats,x));
+		rem.map(x => removeInPlace(o.cats, x));
 	}
-	downloadAsYaml(M,'mnew1');
+	downloadAsYaml(M, 'mnew1');
 }
-
-async function test20(){
+async function test20() {
 	await prelims();
-	await switchToMenu(UI.nav,'collections');
+	await switchToMenu(UI.nav, 'collections');
 }
-async function openMockCatList(){
-	let dParent = clearBodyDiv({bg:rColor(),fg:'contrast',hmax:500,wmax:200,pabottom:10,box:true});
-	let d1=mDom(dParent,{},{html:'title'})
-	let lst = generateRandomWords(4); //arrRepeat(30, 'hallo');
-	let ui=uiTypeCheckList(lst,dParent);
-	mButton('done',onclickCatListDone,dParent,{classes:'input',margin:10}); //da muss noch ein button dazu
-}
-
-async function test19(){
+async function test19() {
 	await prelims();
-	await switchToMenu(UI.nav,'collections');
+	await switchToMenu(UI.nav, 'collections');
 	//await onclickNewCollection('owl');
 
 	// let olddir = 'owls';
 	// let newdir='owww';
 	// let filename = 'sweetie.png';
 	// await mPostRoute('moveImage',{olddir,newdir,filename});
-	
+
 
 }
 
 async function test18() {
 	await prelims();
 
-	await switchToMenu(UI.nav,'collections');
+	await switchToMenu(UI.nav, 'collections');
 
 	//await onclickNewCollection('owl');
 	//await mSleep(2000)
@@ -53,33 +51,33 @@ async function test18() {
 	//	let uname = await mGather(iDiv(UI.user),{},{content:'username',align:'br'});
 
 }
-async function test17_confusing(){
-	function mConfusingField(dParent){
-		let f=mDom(dParent,{bg:'pink',padding:50},{tag:'form'});
-		let d=mDom(f);
-		
-		let d1=mDom(d,{},{className:'label-container',html:`<div popover>Extra</div>`});
-		mDom(d1,{},{for:'confusing',tag:'label',html:'Confusing Field'});
-		let b=mDom(d1,{},{tag:'button',id:'btn',type:'button',className:'information',html:'i'});
-	
-	
+async function test17_confusing() {
+	function mConfusingField(dParent) {
+		let f = mDom(dParent, { bg: 'pink', padding: 50 }, { tag: 'form' });
+		let d = mDom(f);
+
+		let d1 = mDom(d, {}, { className: 'label-container', html: `<div popover>Extra</div>` });
+		mDom(d1, {}, { for: 'confusing', tag: 'label', html: 'Confusing Field' });
+		let b = mDom(d1, {}, { tag: 'button', id: 'btn', type: 'button', className: 'information', html: 'i' });
+
+
 		// d1.innerHTML += `<div popover id='info' anchor='btn'>Extra</div>`;	let dpop = d1.lastChild;	console.log('dpop',dpop)
-	
-	
-		b.setAttribute('popovertarget','info')
+
+
+		b.setAttribute('popovertarget', 'info')
 		let dpop = d1.firstChild;
-		dpop.id='info';
-		dpop.setAttribute('anchor','btn')
+		dpop.id = 'info';
+		dpop.setAttribute('anchor', 'btn')
 		//mStyle(dpop,{inset:'unset',bottom:'anchor(top)',left:'anchor(right)'})
-	
+
 		// let dpop=mDom(d1,{},{});
 		// dpop.popover = true; //setAttribute('popover','Extra')
-	
-		let inp=mDom(d,{},{tag:'input',id:'confusing',type:'text'});
-		return {d,dpop,b,inp}
+
+		let inp = mDom(d, {}, { tag: 'input', id: 'confusing', type: 'text' });
+		return { d, dpop, b, inp }
 	}
-	let d=clearBodyDiv({margin:50,bg:'red'});
-	let ui=mConfusingField(d);
+	let d = clearBodyDiv({ margin: 50, bg: 'red' });
+	let ui = mConfusingField(d);
 	await mSleep(500);
 	console.log('clicking!')
 	ui.b.click();
@@ -91,7 +89,7 @@ async function test17_confusing(){
 async function test16() {
 	await prelims();
 
-	await switchToMenu(UI.nav,'collections');
+	await switchToMenu(UI.nav, 'collections');
 	await onclickNewCollection('owl')
 
 	//await collDelete('favs'); //ok, besser als: //await onclickDeleteCollection('favs');
