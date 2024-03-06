@@ -1,3 +1,77 @@
+async function onclickAddCategories() {
+	let selist = UI.selectedImages; console.log('selist', selist)
+	let keys = selist.map(x => stringBefore(x, '@'));
+	let catlist = M.categories.map(x => ({ name: x, value: false }));
+
+	// let arrs=keys.map(x=>M.superdi[x].cats); 
+	// let inter = intersectionOfArrays(arrs);	console.log('inter',inter);
+	// for(const c of catlist){c.val=inter.includes(c.name);	}
+
+	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklist' });
+	cats = cats.split('@');
+	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
+	if (isEmpty(cats)) { console.log('nothing added'); collClearSelections(); return; }
+	console.log('add cats:', cats);
+	return;
+
+	let di = {}, changed = false;
+	for (const kc of selist) {
+		let key = stringBefore(kc, '@');
+		let o = M.superdi[key];
+		for (const cat of cats) {
+			if (o.cats.includes(cat)) continue;
+			changed = true;
+			o.cats.push(cat);
+			di[key] = o;
+		}
+	}
+
+
+	if (!changed) { console.log('nothing added'); collClearSelections(); return; }
+
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: [] });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
+	//collClearSelections();
+	UI.selectedImages = [];
+
+
+
+}
+async function onclickEditCategories() {
+	let selist = UI.selectedImages; console.log('selist', selist)
+	let keys = selist.map(x => stringBefore(x, '@'));
+	let catlist = M.categories.map(x => ({ name: x }));
+	let arrs = keys.map(x => M.superdi[x].cats);
+	let inter = intersectionOfArrays(arrs); console.log('inter', inter);
+	for (const c of catlist) { c.val = inter.includes(c.name); }
+
+	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklist' });
+	cats = cats.split('@');
+	console.log('user selected', cats, typeof cats);
+
+	//jetzt muss ich nur noch all die selected zu diesen cats setzen
+
+}
+async function hallo() {
+	return;
+	let cat = await mGather(iDiv(UI.editCategories), {}, { content: M.categories, type: 'select' });
+	console.log('selected cat', cat); return;
+	//console.log('addCategpory', selist);
+	let di = {};
+	for (const k of selist) {
+		let o = collKeyCollnameFromSelkey(k);
+		let key = o.key;
+		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
+	}
+	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: [] });
+	console.log('postUpdateSuperdi', k, res)
+	await loadAssets();
+	collPostReload();
+	UI.selectedImages = [];
+}
+
 function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
 	//type text: hier kommen jetzt verschiedene options acc to type!
 

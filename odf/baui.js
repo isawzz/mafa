@@ -14,8 +14,8 @@ function collSidebar() {
 	// cmdDisable(UI.editCategories);
 	UI.addCategories = mCommand(d, 'addCategories', 'Add Categories'); mNewline(d);
 	cmdDisable(UI.addCategories);
-	UI.removeCategories = mCommand(d, 'removeCategories', 'Remove Categories'); mNewline(d);
-	cmdDisable(UI.removeCategories);
+	// UI.removeCategories = mCommand(d, 'removeCategories', 'Remove Categories'); mNewline(d);
+	// cmdDisable(UI.removeCategories);
 	// UI.sortCollection = mCommand(d, 'sortBy', 'Sort By'); mNewline(d);
 }
 function collDisableListCommands(){

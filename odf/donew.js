@@ -98,6 +98,16 @@ async function collAddItem(coll, key, item) {
 }
 function collCancelEditing(d) { d.remove(); }
 function collClear() { closeLeftSidebar(); clearMain(); }
+function collClearSelections() {
+	//find all visible uis for selected images
+	let x = document.getElementsByClassName('framedPicture');
+	for (const el of x) {
+		console.log('el', el);
+		collUnselect(el);
+	}
+	UI.selectedImages = [];
+	collDisableListCommands();
+}
 function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPrimary.isOpen = false; }
 function collCloseSecondary() {
 	let d = iDiv(UI.collSecondary);
@@ -596,6 +606,19 @@ function enableImageDrop_trial1_W(elem, onDropCallback) {
 	});
 }
 function extractWords(s) { let parts = splitAtAnyOf(s, ' ,-.!?;:'); return parts; }
+function generateRandomWords(n) {
+	// Sample words to pick from
+	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
+	
+	// Generate the array
+	let randomWords = [];
+	for (let i = 0; i < n; i++) {
+			// Pick a random word from the sampleWords array
+			const randomWord = sampleWords[Math.floor(Math.random() * sampleWords.length)];
+			randomWords.push(randomWord);
+	}
+	return randomWords;
+}
 function getMouseCoordinatesRelativeToElement(ev, elem) {
 	// Get the bounding rectangle of the element
 	if (nundef(elem)) elem = ev.target;
@@ -662,6 +685,12 @@ async function imgScaledToHeightInDiv(url, dParent, sz = 300) {
 	img.height *= scale;
 	mStyle(img, { w: img.width, h: img.height })
 	return [img, scale];
+}
+function intersectionOfArrays() {
+	// Check if the input is an array of arrays
+	let arrs = arguments[0]; console.log('arrs', arrs);
+	if (!arrs.every(Array.isArray)) arrs = Array.from(arguments);
+	return arrs.reduce((acc, array) => acc.filter(element => array.includes(element)));
 }
 function keyDownHandler(ev) {
 	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
@@ -801,6 +830,38 @@ function mGadget(name, styles = {}, opts = {}) {
 	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return { name, dialog, form, inp }
+}
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
+
+		let d = document.body;
+		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
+
+		let rect = dAnchor.getBoundingClientRect();
+
+		let [v, h] = [align[0], align[1]];
+		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
+		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+
+		let formStyles = { position: 'absolute' };
+		addKeys(vPos, formStyles);
+		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
+		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+		dialog.addEventListener('click', ev => {if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ resolve(null); dialog.remove(); }});
+		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
+
+		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
+			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
+				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
+					type == 'select' ? uiGadgetTypeSelect(form, content, styles, opts) :
+						type == 'checklist' ? uiGadgetTypeCheckList(form, content, styles, opts) :
+							uiGadgetTypeText(form, content, styles, opts);
+
+		console.log('evalFunc',evalFunc)
+		dialog.showModal();
+		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
+	});
 }
 async function _mGather(dAnchor, styles = {}, opts = {}) {
 	return new Promise((resolve, _) => {
@@ -1090,6 +1151,50 @@ function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'frame
 		selectedPics.push(selkey); collSelect(elem);
 	}
 }
+function uiTypeCheckList(lst,dParent,styles={},opts={}){
+	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
+	lst.forEach((o, index) => {
+		let [text,value]=[o.name,o.value];
+		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`,checked:value});
+		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
+		mNewline(d,0);
+	});
+	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
+	let rp=getRect(dParent); console.log('rp',rp);
+	let hParent = rp.h;
+	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
+	console.log('hParent',hParent);
+	let p=mGetStyle(dParent,'pabottom'); console.log('pb',p,mGetStyle(dParent,'padding'))
+	let h=hParent-r.y; //-p;
+	mStyle(d,{hmax:h});//,pabottom:10,box:true});
+	return d;
+	//check all the boxes that are set for this element
+
+	//mButton('done',)
+}
+function uiGadgetTypeCheckList(form, content, styles, opts) {
+
+	//was soll der content sein? wo soll der content berechnet werden?
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	// let d=mDom(form,{bg:'white'})
+	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
+
+	// console.log('content', content)
+	// let lst = content.map(x => x.name);
+	// console.log('lst', lst)
+
+	let ui = uiTypeCheckList(content, dParent, styles, opts);
+	console.log('ui', ui)
+
+	//onclick: () => form.setAttribute('proceed', 'yes')
+
+	mButton('done', () => onclickCatListDone(form), dOuter, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
+
+	return () => form.getAttribute('proceed');
+
+	//muss eine evalfunc returnen!!!
+}
 function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
 	let inputs = [];
 	for (const k in dict) {
@@ -1120,6 +1225,11 @@ function uiGadgetTypeSelect(form, dict, styles = {}, opts = {}) {
 	select.addEventListener('change',()=>form.submit());
 	return () => {console.log('selected',DA.select,DA.select.value);return DA.select.value;}
 }
+function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
+	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return () => inp.value;
+}
 function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
 	let dOuter = mDom(form, styles)
@@ -1130,8 +1240,30 @@ function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 
 	return () => form.getAttribute('proceed') == 'yes';
 }
-function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
-	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
-	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	return () => inp.value;
+function _uiTypeCheckList(lst,dParent,styles={},opts={}){
+	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
+	lst.forEach((text, index) => {
+		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`});
+		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
+		mNewline(d,0);
+	});
+	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
+	let rp=getRect(dParent); console.log('rp',rp);
+	let hParent = rp.h;
+	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
+	console.log('hParent',hParent);
+	let p=mGetStyle(dParent,'pabottom'); console.log('pb',p,mGetStyle(dParent,'padding'))
+	let h=hParent-r.y; //-p;
+	mStyle(d,{hmax:h});//,pabottom:10,box:true});
+	return d;
+	//check all the boxes that are set for this element
+
+	//mButton('done',)
+}
+function unionOfArrays() {
+	// arguments should be lists or one list of lists
+	let arrs = arguments[0]; console.log('arrs', arrs);
+	if (!arrs.every(Array.isArray)) arrs = Array.from(arguments);
+	const flattenedArray = arrs.flat();
+	return [...new Set(flattenedArray)];
 }

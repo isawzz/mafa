@@ -1,4 +1,10 @@
 
+________ 3/5/24
+- soll ich die union nehmen? ja
+- wieso werden die nicht selected wo sie doch true sind?
+
+
+
 ____ 26.2.24
 - maxpage wird falsch berechnet!
 if numpics==0 
