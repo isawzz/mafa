@@ -235,6 +235,11 @@ async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inp
 	dPopup.remove();
 	await collOnDroppedItem(item, coll);
 }
+function collFromElement(elem){
+	let id = findAttributeInAncestors(elem,'id'); //console.log('ancestor is',id);//find Ancestor with id collPrimary or collSecondary
+	let coll = id == 'collPrimary'?UI.collPrimary:id == 'collSecondary'?UI.collSecondary:null;
+	return coll;
+}
 function collGenSelkey(key, collname) { return `${key}@${collname}`; }
 function collInitCollection(name, coll) {
 	coll.name = name;
@@ -692,6 +697,7 @@ function intersectionOfArrays() {
 	if (!arrs.every(Array.isArray)) arrs = Array.from(arguments);
 	return arrs.reduce((acc, array) => acc.filter(element => array.includes(element)));
 }
+function isPointOutsideOf(form, x, y) { const r = form.getBoundingClientRect(); return (x < r.left || x > r.right || y < r.top || y > r.bottom); }
 function keyDownHandler(ev) {
 	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
 	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
@@ -1153,9 +1159,11 @@ function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'frame
 }
 function uiTypeCheckList(lst,dParent,styles={},opts={}){
 	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
+	console.log('lst',lst)
 	lst.forEach((o, index) => {
 		let [text,value]=[o.name,o.value];
 		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`,checked:value});
+		//dcheck.checked = value;
 		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
 		mNewline(d,0);
 	});
