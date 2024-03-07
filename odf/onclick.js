@@ -32,7 +32,9 @@ async function onclickCollItem(ev) {
 	//console.log('vor toggle:',selist); //,key,selkey);
   toggleSelectionOfPicture(elem,selkey, UI.selectedImages);
 	//console.log('nach toggle',UI.selectedImages)
-	if (isEmpty(selist)) collDisableListCommands(); else collEnableListCommands();
+	if (isEmpty(selist)) {collDisableListCommands(); collDisableItemCommands();}
+	else if (selist.length == 1) {collEnableListCommands();collEnableItemCommands();}
+	else{collDisableItemCommands();collEnableListCommands();}
 }
 async function onclickCollItemLabel(ev) {
   evNoBubble(ev);
@@ -119,30 +121,6 @@ async function onclickDeleteCollection(name) {
 
 	// console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
 	if (proceed) await collDelete(name);
-}
-async function onclickDeleteSelected() {
-	let selist = UI.selectedImages;
-	//console.log('delete', selist);
-	let di = {}, deletedKeys = {};
-	for (const k of selist) {
-		let o = collKeyCollnameFromSelkey(k);
-		let key = o.key;
-		let collname = o.collname;
-
-		// *** SAFETY CHECK!!!!! ***
-		if (collLocked(collname)) continue;
-
-		if (nundef(deletedKeys[collname])) deletedKeys[collname] = [];
-		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
-	}
-	console.log('deletedKeys dict: ', deletedKeys);
-	for (const k in deletedKeys) {
-		let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: deletedKeys[k], collname: k });
-		console.log('postUpdateSuperdi', k, res)
-	}
-	await loadAssets();
-	collPostReload();
-	UI.selectedImages = [];
 }
 function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
@@ -271,4 +249,15 @@ async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
 	if (!name) return;
 	await switchToUser(uname);
+}
+async function oninputCollFilter(ev){
+	let id = evToId(ev); //console.log('id', id)
+	let coll = UI[id];
+	let s = ev.target.value.toLowerCase().trim(); 
+	let list = collFilterImages(coll,s);
+	coll.keys = list;
+	coll.filter = s;
+	coll.index = 0; coll.pageIndex = 1; collClearSelections();
+	showImageBatch(coll, 0, false);
+
 }

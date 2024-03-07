@@ -99,14 +99,12 @@ async function collAddItem(coll, key, item) {
 function collCancelEditing(d) { d.remove(); }
 function collClear() { closeLeftSidebar(); clearMain(); }
 function collClearSelections() {
-	//find all visible uis for selected images
-	let x = document.getElementsByClassName('framedPicture');
-	for (const el of x) {
-		console.log('el', el);
-		collUnselect(el);
-	}
+	let arr = Array.from(document.getElementsByClassName('framedPicture'));//find all visible uis for selected images
+	//console.log('selected elements',arr)
+	arr.forEach(collUnselect);
 	UI.selectedImages = [];
 	collDisableListCommands();
+	collDisableItemCommands();
 }
 function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPrimary.isOpen = false; }
 function collCloseSecondary() {
@@ -120,7 +118,7 @@ function collCloseSecondary() {
 async function collDelete(collname) {
 	if (collLocked(collname) || !collExists(collname)) return;
 	let keys = M.byCollection[collname];
-	console.log('_________delete collection', keys)
+	//console.log('_________delete collection', keys)
 	collPreReload(collname);
 	let di = {}, deletedKeys = []; //,needToRenameImgDir=false,newdir=null;
 	for (const k of keys) {
@@ -128,7 +126,7 @@ async function collDelete(collname) {
 	}
 
 	let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys, collname, deletedCollection: true });
-	console.log('postUpdateSuperdi', res)
+	//console.log('postUpdateSuperdi', res)
 	await loadAssets();
 
 	collPostReload(); //	delete M.byCollection[collname];
@@ -162,10 +160,7 @@ async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
 
-function collFilterImages(ev) {
-	let id = evToId(ev); //console.log('id', id)
-	let coll = UI[id];
-	let s = ev.target.value.toLowerCase().trim();
+function collFilterImages(coll,s) {
 	//console.log('filter on', s)
 	//if (isEmpty(s)) list = coll.masterKeys; //return;
 	let di = {};
@@ -179,9 +174,7 @@ function collFilterImages(ev) {
 		}
 		//if (isEmpty(list)) return;
 	}
-	coll.keys = list;
-	coll.index = 0; coll.pageIndex = 1; UI.selectedImages = [];
-	showImageBatch(coll, 0, false);
+	return list;
 }
 function collFindEmptyCell(coll) {
 	let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
@@ -241,54 +234,14 @@ function collFromElement(elem){
 	return coll;
 }
 function collGenSelkey(key, collname) { return `${key}@${collname}`; }
-function collInitCollection(name, coll) {
-	coll.name = name;
-	let list = [];
-	if (name == 'all' || isEmpty(name)) {
-		list = Object.keys(M.superdi);
-	} else if (isdef(M.byCollection[name])) {
-		list = M.byCollection[name];
-	} else list = []; //return;
-	if (coll == UI.collPrimary) localStorage.setItem('collection', name)
-	let dMenu = coll.dMenu;
-	mClear(dMenu);
-	let d = mDom(dMenu); mFlexV(d);
-	mDom(d, { fz: 24, weight: 'bold' }, { html: 'Collection:' });
-	let colls = M.collections;
-	// mDom(dMenu, {}, { html: '' });
 
-	let dlColl = mDatalist(d, colls, { placeholder: "<select from list>" });
-	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value, coll);
-	//dlColl.inpElem.onlostfocus = ev => ev.target.value=coll.name;
-	dlColl.inpElem.value = name;
-
-
-	coll.masterKeys = list; 
-	let cats = collectCats(list);
-	cats.sort();
-	d = mDom(dMenu); mFlexV(d);
-	let wLabel = coll.cols < 6 ? 117 : 'auto';
-	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit:true, html: 'Filter:' });
-	// mDom(d, {  }, { html: '<h2>Filter:</h2>' });
-	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>" });
-	dlCat.inpElem.oninput = collFilterImages;
-
-	//let wButtons=coll.w<650?'100%':'auto'; // mDom(dMenu,{h:1,w100:true})
-	d = mDom(dMenu, { gap: 10, align: 'right' });
-	if (coll.cols < 6) mStyle(d, { w100: true }); //?true:false
-	if (coll == UI.collSecondary) mButton('done', onclickCollDone, d, { w: 70, margin: 0, maleft: 10 }, 'input');
-	mButton('prev', onclickCollPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
-	mButton('next', onclickCollNext, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
-	coll.keys = list;
-	coll.index = 0; coll.pageIndex = 1; UI.selectedImages = [];
-	showImageBatch(coll);
-	//showDiv(dMenu); return;
-}
 function collKeyCollnameFromElem(elem) { return { key: elem.getAttribute('key'), collname: elem.getAttribute('collname') }; }
+
 function collKeyCollnameFromSelkey(selkey) { return { key: stringBefore(selkey, '@'), collname: stringAfter(selkey, '@') }; }
+
 function collLocked(collname) {
 	if (U.name != '____unsafe' && ['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
-		console.log(`LOCKED collection ${collname}`);
+		//console.log(`LOCKED collection ${collname}`);
 		return true;
 	}
 	return false;
@@ -409,6 +362,7 @@ function collPreReload(name) { if (name == UI.collSecondary.name) { collCloseSec
 function collPostReload() {
 	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
 	if (UI.collSecondary.isOpen) { collInitCollection(UI.collSecondary.name, UI.collSecondary); }
+	collClearSelections();
 
 }
 async function collRename(oldname, newname) {
@@ -717,7 +671,7 @@ function keyUpHandler(ev) {
 	}
 }
 async function loadAssets() {
-	M = await mGetYaml('../assets/m.yaml');
+	M = await mGetYaml('../y/m.yaml');
 	//superdi hat nations coll (cards) aber nicht civs
 	let [di, byColl, byFriendly, byCat] = [M.superdi, {}, {}, {}];
 	for (const k in di) {
@@ -749,11 +703,10 @@ function mDatalist(dParent, list, opts = {}) {
 	addKeys({ alpha: true, filter: 'contains' }, opts);
 	let d = mDiv(toElem(dParent));
 	let optid = getUID('dl');
-	mDom(d, { w: 180, maleft: 4 }, { tag: 'input', className: 'input', placeholder: valf(opts.placeholder, '') });
-	mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
+	let inp = mDom(d, { w: 180, maleft: 4 }, { tag: 'input', className: 'input', placeholder: valf(opts.placeholder, '') });
+	if (isdef(opts.value)) inp.value = opts.value;
+	let datalist = mDom(d, {}, { tag: 'datalist', id: optid, className: 'datalist' });
 	var elem = d;
-	var inp = elem.firstChild;
-	var datalist = elem.lastChild;
 	for (const w of mylist) { mDom(datalist, {}, { tag: 'option', value: w }); }
 	inp.setAttribute('list', optid);
 	if (opts.onupdate) {
@@ -864,7 +817,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 						type == 'checklist' ? uiGadgetTypeCheckList(form, content, styles, opts) :
 							uiGadgetTypeText(form, content, styles, opts);
 
-		console.log('evalFunc',evalFunc)
+		//console.log('evalFunc',evalFunc)
 		dialog.showModal();
 		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
 	});
@@ -1159,7 +1112,7 @@ function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'frame
 }
 function uiTypeCheckList(lst,dParent,styles={},opts={}){
 	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
-	console.log('lst',lst)
+	//console.log('lst',lst)
 	lst.forEach((o, index) => {
 		let [text,value]=[o.name,o.value];
 		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`,checked:value});
@@ -1168,11 +1121,11 @@ function uiTypeCheckList(lst,dParent,styles={},opts={}){
 		mNewline(d,0);
 	});
 	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
-	let rp=getRect(dParent); console.log('rp',rp);
+	let rp=getRect(dParent); //console.log('rp',rp);
 	let hParent = rp.h;
 	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
-	console.log('hParent',hParent);
-	let p=mGetStyle(dParent,'pabottom'); console.log('pb',p,mGetStyle(dParent,'padding'))
+	//console.log('hParent',hParent);
+	let p=mGetStyle(dParent,'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
 	let h=hParent-r.y; //-p;
 	mStyle(d,{hmax:h});//,pabottom:10,box:true});
 	return d;
@@ -1193,7 +1146,7 @@ function uiGadgetTypeCheckList(form, content, styles, opts) {
 	// console.log('lst', lst)
 
 	let ui = uiTypeCheckList(content, dParent, styles, opts);
-	console.log('ui', ui)
+	//console.log('ui', ui)
 
 	//onclick: () => form.setAttribute('proceed', 'yes')
 
@@ -1270,7 +1223,7 @@ function _uiTypeCheckList(lst,dParent,styles={},opts={}){
 }
 function unionOfArrays() {
 	// arguments should be lists or one list of lists
-	let arrs = arguments[0]; console.log('arrs', arrs);
+	let arrs = arguments[0]; //console.log('arrs', arrs);
 	if (!arrs.every(Array.isArray)) arrs = Array.from(arguments);
 	const flattenedArray = arrs.flat();
 	return [...new Set(flattenedArray)];

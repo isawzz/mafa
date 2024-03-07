@@ -14,7 +14,7 @@ const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
 const configFile = path.join(uploadDirectory, 'config.yaml');
 const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
-const superdiFile = path.join(assetsDirectory, 'm.yaml');
+const superdiFile = path.join(uploadDirectory, 'm.yaml');
 const tablesDir = path.join(dbDirectory, 'tables');
 var Session = {}; // session ist nur fuer temp data: just mem
 var Superdi = {};
@@ -464,7 +464,7 @@ app.post('/postNewTable', (req, res) => {
 //#region batch update of multiple items:
 app.post('/postUpdateSuperdi', (req, res) => {
 	let partialdi = req.body.di;
-	let toBeDeleted = req.body.deletedKeys;
+	let toBeDeleted = valf(req.body.deletedKeys,[]);
 	let collname = req.body.collname; 
 	let deleteCollection = req.body.deleteCollection; //true when deleting a collection entirely!
 	console.log('<== postUpdateSuperdi')

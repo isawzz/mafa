@@ -4,9 +4,10 @@ superdi:
     img: ../assets/img/emo/1st-place-medal.png
     text: '&#129351;'
     cats:
+      - event
       - object
       - symbol
-      - event
+      - sport
     colls:
       - emo
     key: 1st_place_medal
@@ -18,6 +19,7 @@ superdi:
       - object
       - symbol
       - event
+      - sport
     colls:
       - emo
     key: 2nd_place_medal
@@ -29,6 +31,7 @@ superdi:
       - object
       - symbol
       - event
+      - sport
     colls:
       - emo
     key: 3rd_place_medal
@@ -312,11 +315,11 @@ superdi:
     text: '&#128667;'
     cats:
       - place
-      - sport
       - transport
       - travel
     colls:
       - emo
+    key: articulated_lorry
   artist:
     friendly: artist
     img: ../assets/img/emo/artist.png
@@ -761,11 +764,11 @@ superdi:
     img: ../assets/img/emo/battery.png
     text: '&#128267;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: battery
   beach_with_umbrella:
     friendly: beach_with_umbrella
     img: ../assets/img/emo/beach-with-umbrella.png
@@ -988,7 +991,6 @@ superdi:
     img: ../assets/img/emo/bird.png
     text: '&#128038;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -996,6 +998,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: bird
   birthday_cake:
     friendly: birthday_cake
     img: ../assets/img/emo/birthday-cake.png
@@ -1432,15 +1435,14 @@ superdi:
     ga: ECE4
     text: '&#129382;'
     cats:
-      - action
       - object
       - best
-      - drink
       - food
       - vegetable
       - plant
     colls:
       - emo
+    key: broccoli
   broken_heart:
     friendly: broken_heart
     img: ../assets/img/emo/broken-heart.png
@@ -1460,15 +1462,14 @@ superdi:
     fa: f51a
     text: '&#129529;'
     cats:
-      - action
       - object
       - best
       - household
       - tool
-      - same
     colls:
       - emo
     fa6: f51a
+    key: broom
   brown_circle:
     friendly: brown_circle
     img: ../assets/img/emo/brown-circle.png
@@ -1631,15 +1632,14 @@ superdi:
     ga: E3A3
     text: '&#129419;'
     cats:
-      - action
       - animal
       - bug
-      - object
       - best
       - nature
       - insect
     colls:
       - emo
+    key: butterfly
   cactus:
     friendly: cactus
     img: ../assets/img/emo/cactus.png
@@ -1723,11 +1723,11 @@ superdi:
     img: ../assets/img/emo/candle.png
     text: '&#128367;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: candle
   candy:
     friendly: candy
     img: ../assets/img/emo/candy.png
@@ -1908,15 +1908,14 @@ superdi:
     fa: f6c0
     text: '&#129681;'
     cats:
-      - action
       - object
       - best
       - household
       - furniture
-      - same
     colls:
       - emo
     fa6: f6c0
+    key: chair
   chart_decreasing:
     friendly: chart_decreasing
     img: ../assets/img/emo/chart-decreasing.png
@@ -2076,7 +2075,6 @@ superdi:
     img: ../assets/img/emo/chipmunk.png
     text: '&#128063;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -2084,6 +2082,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: chipmunk
   chocolate_bar:
     friendly: chocolate_bar
     img: ../assets/img/emo/chocolate-bar.png
@@ -2320,16 +2319,13 @@ superdi:
     fa: f0c2
     text: '&#9729;'
     cats:
-      - action
       - object
       - best
-      - place
-      - travel
       - weather
-      - same
     colls:
       - emo
     fa6: f0c2
+    key: cloud
   cloud_with_lightning:
     friendly: cloud_with_lightning
     img: ../assets/img/emo/cloud-with-lightning.png
@@ -2390,11 +2386,11 @@ superdi:
     img: ../assets/img/emo/club-suit.png
     text: '&#9827;'
     cats:
-      - action
       - object
       - game
     colls:
       - emo
+    key: club_suit
   clutch_bag:
     friendly: clutch_bag
     img: ../assets/img/emo/clutch-bag.png
@@ -2409,12 +2405,12 @@ superdi:
     img: ../assets/img/emo/coat.png
     text: '&#129509;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: coat
   cockroach:
     friendly: cockroach
     img: ../assets/img/emo/cockroach.png
@@ -2521,13 +2517,12 @@ superdi:
     img: ../assets/img/emo/computer-mouse.png
     text: '&#128433;'
     cats:
-      - action
       - object
       - best
-      - same
     colls:
       - emo
     fa6: f8cc
+    key: computer_mouse
   confetti_ball:
     friendly: confetti_ball
     img: ../assets/img/emo/confetti-ball.png
@@ -6594,19 +6589,16 @@ superdi:
     colls:
       - emo
   key:
-    friendly: key
-    img: ../assets/img/emo/key.png
-    ga: EC98
-    fa: f084
-    text: '&#128273;'
+    friendly: 1st_place_medal
+    img: ../assets/img/emo/1st-place-medal.png
+    text: '&#129351;'
     cats:
-      - action
       - object
-      - best
-      - same
+      - symbol
+      - event
     colls:
       - emo
-    fa6: f084
+    key: 1st_place_medal
   keyboard:
     friendly: keyboard
     img: ../assets/img/emo/keyboard.png
@@ -45542,6 +45534,7 @@ superdi:
       - art
       - amanda
       - bug
+      - insect
     img: ../assets/img/amanda/amanda15_12.png
     friendly: amanda
     colls:
