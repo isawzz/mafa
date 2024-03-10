@@ -1,7 +1,40 @@
 onload = start;
 
-async function start() { test20(); }
+async function start() { test23_grid(); }
 
+async function test23_grid() {
+	let d = clearBodyDiv();
+
+	let dg = mDom(d, { display: 'flex', wrap: true, dir:'column', wmax:200, hmax: 400 });
+	let n = 25;
+	let list = generateRandomWords(n); list.sort();
+	// let olist = list.map(x => ({ w: x, sz: measureWord(x) }));
+	// sortByDescending(olist, 'sz');
+	// let sz = olist[0].sz; console.log(sz);
+
+	let szmax=0;
+	for (const i of range(n)) {
+		let w = list[i];
+		let di = mDom(dg); //,{w: sz.w + 60, h: sz.h});
+		let chk = mDom(di, {}, { tag: 'input', type: 'checkbox',id:`chk${i}` });
+		let label = mDom(di, { }, { tag:'label',html: w,for:chk.id });
+		//let size=getBounds(di)
+		//if (size>szmax) szmax=size;
+	}
+	let chks=arrChildren(dg);
+
+	let olist = list.map((x,i) => ({ name: x, el: chks[i], w:mGetStyle(chks[i],'w'), h:mGetStyle(chks[i],'h')})); //;measureElement(chks[i]) }));
+	sortByDescending(olist,'w')
+	console.log('olist[0]',olist[0]);
+	let sz = olist[0].w;
+	olist.map(x=>mStyle(x.el,{w:sz+20}));
+	// let d1=olist[0].el;
+	// console.log(d1)
+	// console.log('d1',measureElement(d1))
+	//chks.map(x=>mStyle(x,{w:szmax+50}));
+
+
+}
 async function test22_openMockCatList() {
 	let dParent = clearBodyDiv({ bg: rColor(), fg: 'contrast', hmax: 500, wmax: 200, pabottom: 10, box: true });
 	let d1 = mDom(dParent, {}, { html: 'title' })
@@ -22,10 +55,12 @@ async function test21_catsausmisten() {
 	}
 	downloadAsYaml(M, 'mnew1');
 }
+
 async function test20() {
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');
 }
+
 async function test19() {
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');
@@ -38,7 +73,6 @@ async function test19() {
 
 
 }
-
 async function test18() {
 	await prelims();
 

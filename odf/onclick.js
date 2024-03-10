@@ -1,18 +1,36 @@
 
-async function onclickCatListDone(ui){
-	//let ui=ev.target.parentNode;
-	let checks=Array.from(ui.getElementsByTagName('input'));
-	//console.log('checkboxes',checks,checks[0]);
-	DA.x = checks[0];
-	let cats=[];
-	for(const ch of checks) {
-		if (ch.checked) cats.push(ch.name);
+async function onclickAddCategories() {
+	let selist = UI.selectedImages; //console.log('selist', selist)
+	let keys = selist.map(x => stringBefore(x, '@'));
+	let catlist = M.categories.map(x => ({ name: x, value: false }));
+
+	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklist' });
+	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
+	cats = cats.split('@');
+	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
+	if (isEmpty(cats)) { console.log('nothing added'); collClearSelections(); return; }
+	//console.log('add cats:', cats);
+	let di = {}, changed = false;
+	for (const kc of selist) {
+		let key = stringBefore(kc, '@');
+		let o = M.superdi[key];
+		for (const cat of cats) {
+			if (o.cats.includes(cat)) continue;
+			changed = true;
+			o.cats.push(cat);
+			di[key] = o;
+		}
 	}
-	//console.log('cats',cats);
 
-	ui.setAttribute('proceed',cats.join('@'));
+	if (!changed) { console.log('nothing added'); collClearSelections(); return; }
+	console.log('items changed:',Object.keys(di));
 
+	let res = await mPostRoute('postUpdateSuperdi', { di }); 
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
 }
+async function onclickCatListDone(ui){ui.setAttribute('proceed',getCheckNames(ui).join('@')); }
 function onclickCollDone(){
 	collCloseSecondary();
 	console.log('sec',UI.collSecondary)
@@ -122,6 +140,101 @@ async function onclickDeleteCollection(name) {
 	// console.log('...',(proceed?'will':'will NOT'),`delete collection ${name}`);
 	if (proceed) await collDelete(name);
 }
+async function onclickDeleteSelected() {
+	let selist = UI.selectedImages;
+
+	//console.log('delete', selist);
+	let di = {}, deletedKeys = {};
+	for (const k of selist) {
+		let o = collKeyCollnameFromSelkey(k);
+		let key = o.key;
+		let collname = o.collname;
+
+		// *** SAFETY CHECK!!!!! ***
+		if (collLocked(collname)) continue;
+
+		if (nundef(deletedKeys[collname])) deletedKeys[collname] = [];
+		await collDeleteOrRemove(key, collname, di, deletedKeys[collname]);
+	}
+
+	//let empty=Object.keys(deletedKeys).every(x=>isEmpty(deletedKeys[x]));
+	//console.log('empty?',di); //empty,di,deletedKeys)
+	if (isEmpty(di) && Object.keys(deletedKeys).every(x=>isEmpty(deletedKeys[x]))){
+		showMessage(`ERROR: cannot delete selected items!!!`);
+		collClearSelections();
+		return;
+
+	}
+
+	console.log('deletedKeys dict: ', deletedKeys);
+	for (const k in deletedKeys) {
+		let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: deletedKeys[k], collname: k });
+		console.log('postUpdateSuperdi', k, res)
+		di={}; //keys have been updated already
+	}
+
+	await loadAssets();
+	collPostReload();
+}
+async function onclickEditCategories() {
+	let selist = UI.selectedImages; //console.log('selist', selist)
+	let keys = selist.map(x => stringBefore(x, '@'));
+	let arrs = keys.map(x => M.superdi[x].cats);
+	let lst = unionOfArrays(arrs); //console.log('inter', lst);
+	let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
+	sortByDescending(catlist,'value');
+
+	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
+	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
+	cats = cats.split('@');
+	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
+	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
+
+	console.log('cats', cats);
+	//console.log('*BREAK*');	return;
+
+	let di = {}, changed = false;
+	for (const kc of selist) {
+		let key = stringBefore(kc, '@');
+		let o = M.superdi[key];
+		if (sameList(cats,o.cats)) continue;
+		changed = true;
+		o.cats=cats;
+		di[key] = o;
+	}
+
+	if (!changed) { console.log('ERROR: categories unchanged!',cats); collClearSelections(); return; }
+	console.log('items changed:',Object.keys(di));
+
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
+}
+async function onclickEditCollItem() {
+	let selist = UI.selectedImages; //console.log('selist', selist)
+	let key = selist.map(x => stringBefore(x, '@'))[0];
+	let item = M.superdi[key];
+
+	let catlist = M.categories.map(x => ({ name: x, value: item.cats.includes(x) }));
+	sortByDescending(catlist,'value');
+
+	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklistinput' });
+	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
+	cats = cats.split('@');
+	cats = cats.filter(x => !isEmptyOrWhiteSpace(x));
+
+	if (sameList(item.cats,cats)){ console.log('no change'); collClearSelections(); return; }
+
+	console.log(`cats of item ${key} set to`,cats);
+	item.cats = cats;
+	let di={};di[key]=item;
+
+	let res = await mPostRoute('postUpdateSuperdi', { di }); 
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
+}
 function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 function onclickMenu(ev) {
@@ -208,6 +321,43 @@ async function onclickNewCollection(name) {
 }
 async function onclickPlan() { showCalendarApp(); }
 async function onclickPlay() { showTables(); }
+async function onclickRemoveCategories() {
+	let selist = UI.selectedImages; //console.log('selist', selist)
+	let keys = selist.map(x => stringBefore(x, '@'));
+	let arrs = keys.map(x => M.superdi[x].cats);
+	let lst = unionOfArrays(arrs); //console.log('inter', lst);
+	let catlist = lst.map(x => ({ name: x, value: false }));
+
+	let cats = await mGather(iDiv(UI.removeCategories), {}, { content: catlist, type: 'checklist' });
+	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
+	cats = cats.split('@');
+	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
+	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
+
+	let remolist=cats; //arrMinus(catlist.map(x=>x.name),cats)
+	console.log('remove cats', remolist);
+
+	let di = {}, changed = false;
+	for (const kc of selist) {
+		let key = stringBefore(kc, '@');
+		let o = M.superdi[key];
+		for (const cat of cats) {
+			if (!o.cats.includes(cat)) continue;
+			changed = true;
+			removeInPlace(o.cats, cat);
+			di[key] = o;
+		}
+	}
+
+	if (!changed) { console.log('ERROR: none of selected elements has cat in',remolist); collClearSelections(); return; }
+	console.log('items changed:',Object.keys(di));
+
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
+
+}
 async function onclickRenameCollection(oldname, newname) {
 	if (nundef(oldname)) oldname = UI.collSecondary.isOpen?UI.collSecondary.name:UI.collPrimary.name;
 	if (nundef(newname)) {

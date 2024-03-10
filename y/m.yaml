@@ -51151,7 +51151,7 @@ superdi:
       - animals
       - bird
     img: ../assets/img/animals/bird/barnowl1.png
-    friendly: putzi
+    friendly: eule
     colls:
       - animals
       - owls

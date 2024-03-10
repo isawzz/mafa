@@ -1,0 +1,14 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(0, 1fr)); /* Adjust based on numColumns in JS */
+  gap: 10px; /* Space between grid items */
+  padding: 10px; /* Padding around the grid */
+  overflow-y: auto; /* Make it scrollable */
+  max-height: 300px; /* Adjust based on maxHeight in JS */
+}
+
+.grid-item {
+  border: 1px solid #ddd; /* Border for each item */
+  padding: 8px; /* Padding inside each item */
+  text-align: center; /* Center the text */
+}

@@ -70,12 +70,19 @@ function adjustComplex(panData) {
 	mStyle(panData.dCrop, { left: cx - wNew / 2, top: cy - hNew / 2, w: wNew, h: hNew });
 }
 function clearBodyDiv(styles = {}, opts = {}) { document.body.innerHTML = ''; return mDom(document.body, styles, opts) }
+
 function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
+
 function clearMain() { clear_timeouts(); mClear('dMain'); mClear('dTitle'); }
+
 function clearParent(ev) { mClear(ev.target.parentNode); }
+
 function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }) }
+
 function cmdDisable(cmd) { mClass(iDiv(cmd), 'disabled') }
+
 function cmdEnable(cmd) { mClassRemove(iDiv(cmd), 'disabled') }
+
 async function collAddItem(coll, key, item) {
 	//console.log('adding', key, item, 'to collection', coll);
 	if (nundef(M.superdi[key])) {
@@ -97,7 +104,9 @@ async function collAddItem(coll, key, item) {
 	M.names = Object.keys(M.byFriendly); M.names.sort();
 }
 function collCancelEditing(d) { d.remove(); }
+
 function collClear() { closeLeftSidebar(); clearMain(); }
+
 function collClearSelections() {
 	let arr = Array.from(document.getElementsByClassName('framedPicture'));//find all visible uis for selected images
 	//console.log('selected elements',arr)
@@ -107,6 +116,7 @@ function collClearSelections() {
 	collDisableItemCommands();
 }
 function collClosePrimary() { let d = iDiv(UI.collPrimary); mClear(d); UI.collPrimary.isOpen = false; }
+
 function collCloseSecondary() {
 	let d = iDiv(UI.collSecondary);
 	mClear(d);
@@ -235,6 +245,53 @@ function collFromElement(elem){
 }
 function collGenSelkey(key, collname) { return `${key}@${collname}`; }
 
+function collInitCollection(name, coll) {
+	let isReload = isdef(coll.index) && coll.name == name;
+	console.log('_________ init',name,isReload,'\ncoll',coll.name,coll.index,coll.pageIndex,coll.filter);
+	if (!isReload) {
+		coll.index = 0; coll.pageIndex = 1; coll.name = name; coll.filter = null;
+	}
+	
+	console.log('coll',coll.name,coll.index,coll.pageIndex,coll.filter);
+
+	let list = [];
+	if (name == 'all' || isEmpty(name)) {
+		list = Object.keys(M.superdi);
+	} else if (isdef(M.byCollection[name])) {
+		list = M.byCollection[name];
+	} else list = []; //return;
+	if (coll == UI.collPrimary) localStorage.setItem('collection', name)
+	let dMenu = coll.dMenu;
+	mClear(dMenu);
+
+	let d = mDom(dMenu); mFlexV(d);
+	mDom(d, { fz: 24, weight: 'bold' }, { html: 'Collection:' });
+	let colls = M.collections;
+	let dlColl = mDatalist(d, colls, { placeholder: "<select from list>" });
+	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value, coll);
+	dlColl.inpElem.value = name;
+	coll.masterKeys = list; 
+	coll.keys = coll.filter?collFilterImages(coll,coll.filter):list;
+
+	//filter
+	let cats = collectCats(coll.keys);
+	cats.sort();
+	d = mDom(dMenu); mFlexV(d);
+	let wLabel = coll.cols < 6 ? 117 : 'auto';
+	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit:true, html: 'Filter:' });
+	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>", value:coll.filter });
+	dlCat.inpElem.oninput = oninputCollFilter;
+
+	d = mDom(dMenu, { gap: 10, align: 'right' });
+	if (coll.cols < 6) mStyle(d, { w100: true }); 
+	if (coll == UI.collSecondary) mButton('done', onclickCollDone, d, { w: 70, margin: 0, maleft: 10 }, 'input');
+	mButton('prev', onclickCollPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
+	mButton('next', onclickCollNext, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
+	
+	collClearSelections();
+	showImageBatch(coll);
+	//showDiv(dMenu); return;
+}
 function collKeyCollnameFromElem(elem) { return { key: elem.getAttribute('key'), collname: elem.getAttribute('collname') }; }
 
 function collKeyCollnameFromSelkey(selkey) { return { key: stringBefore(selkey, '@'), collname: stringAfter(selkey, '@') }; }
@@ -578,6 +635,14 @@ function generateRandomWords(n) {
 	}
 	return randomWords;
 }
+function getCheckedNames(dParent){
+	let checks=Array.from(dParent.getElementsByTagName('input'));
+	let res=[];
+	for(const ch of checks) {
+		if (ch.checked) res.push(ch.name);
+	}
+	return res;
+}
 function getMouseCoordinatesRelativeToElement(ev, elem) {
 	// Get the bounding rectangle of the element
 	if (nundef(elem)) elem = ev.target;
@@ -807,50 +872,34 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		addKeys(vPos, formStyles);
 		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
 		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
-		dialog.addEventListener('click', ev => {if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ resolve(null); dialog.remove(); }});
+		dialog.addEventListener('mouseup', ev => {
+			if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ 
+				console.log('clicked point outside!!!',ev.clientX,ev.clientY)
+				resolve(null); 
+				dialog.remove(); 
+			}
+		});
 		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
 
+		console.log('type',type)
 		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
 			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
 				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
 					type == 'select' ? uiGadgetTypeSelect(form, content, styles, opts) :
 						type == 'checklist' ? uiGadgetTypeCheckList(form, content, styles, opts) :
-							uiGadgetTypeText(form, content, styles, opts);
+							type == 'checklistinput' ? uiGadgetTypeCheckListInput(form, content, styles, opts) :
+								uiGadgetTypeText(form, content, styles, opts);
 
 		//console.log('evalFunc',evalFunc)
 		dialog.showModal();
-		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
-	});
-}
-async function _mGather(dAnchor, styles = {}, opts = {}) {
-	return new Promise((resolve, _) => {
-		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
-
-		let d = document.body;
-		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
-
-		let rect = dAnchor.getBoundingClientRect();
-
-		let [v, h] = [align[0], align[1]];
-		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
-		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
-
-		let formStyles = { position: 'absolute' };
-		addKeys(vPos, formStyles);
-		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
-		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
-		dialog.addEventListener('click', ev => {if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ resolve(null); dialog.remove(); }});
-		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
-
-		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
-			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
-				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
-				type == 'select' ? uiGadgetTypeSelect(form, content, styles, opts) :
-					uiGadgetTypeText(form, content, styles, opts);
-
-		console.log('evalFunc',evalFunc)
-		dialog.showModal();
-		form.onsubmit = (ev) => { ev.preventDefault(); resolve(evalFunc()); dialog.remove(); };
+		form.onsubmit = (ev) => { 
+			//console.log('submitting!!!!!!!!!!!!!!!')
+			ev.preventDefault(); 
+			let val=evalFunc(); 
+			//console.log('val',val)
+			dialog.remove(); 
+			resolve(val);  
+		};
 	});
 }
 function mLMR(dParent) {
