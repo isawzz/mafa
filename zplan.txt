@@ -1,6 +1,8 @@
 
 ________ 3/11/24
-- unique randomwords generieren!!!
+ok - unique randomwords generieren!!! rWords
+- ich muss width of dOuter expanden wenn ich ein langes wort eingebe!
+- ich muss eigentlich keep 
 
 ________ 3/5/24
 - soll ich die union nehmen? ja

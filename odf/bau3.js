@@ -1,3 +1,9 @@
+
+function rWords(n=1){
+	let words = getColorNames().map(x=>x.toLowerCase());
+	let arr = rChoose(words,n);
+	return arr;
+}
 function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
 
 	let inp = mDom(dParent, styles, { className: 'input', tag: 'input', type: 'text' });

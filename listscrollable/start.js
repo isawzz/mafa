@@ -6,7 +6,8 @@ async function test1() {
 
 	let dg = clearBodyDiv();
 
-	let n = 125; let list = generateRandomWords(n); list.sort(); //words
+	let n = 125; let list = rWords(n); // generateRandomWords(n); list.sort(); //words
+	//console.log(list); return;
 
 	let items = []; //make measured checkbox items
 	for (const name of list) {
