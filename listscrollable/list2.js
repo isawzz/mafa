@@ -27,7 +27,7 @@ function createItemsGrid(dParent, items, maxHeight, numColumns) {
 	grid.style.maxHeight = `${maxHeight}px`;
 	grid.style.gridTemplateColumns = `repeat(${numColumns}, 1fr)`;
 
-	items.forEach(item => mAppend(grid,item.el));
+	items.forEach(item => mAppend(grid,iDiv(item)));
 
 	// Clear previous content and add the new grid
 	dParent.innerHTML = '';

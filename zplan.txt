@@ -1,4 +1,7 @@
 
+________ 3/11/24
+- unique randomwords generieren!!!
+
 ________ 3/5/24
 - soll ich die union nehmen? ja
 - wieso werden die nicht selected wo sie doch true sind?

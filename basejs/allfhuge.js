@@ -9274,9 +9274,10 @@ function arrlast(arr) {
 function arrLast(arr) { return arr.length > 0 ? arr[arr.length - 1] : null; }
 function arrLastOfLast(arr) { if (arr.length > 0) { let l = arrLast(arr); return isList(l) ? arrLast(l) : null; } else return null; }
 function arrMax(arr, f) { return arrMinMax(arr, f).max; }
-function arrMin(arr, f) { return arr_get_min(arr, f); }
+function arrMin(arr, f) { return arrMinMax(arr, f).min; }
 function arrMinMax(arr, func) {
   if (nundef(func)) func = x => x;
+  else if (isString(func)) {let val=func;func = x=>x[val];}
   let min = func(arr[0]), max = func(arr[0]), imin = 0, imax = 0;
   for (let i = 1, len = arr.length; i < len; i++) {
     let v = func(arr[i]);
@@ -42553,7 +42554,8 @@ function mGrid(rows, cols, dParent, styles = {}) {
   d.style.padding = valf(styles.padding, styles.gap) + 'px';
   return d;
 }
-function mGridFrom(d, m, cols, rows, cellstyles = {}) {
+function mGridFromAreas(d, m, cols, rows, cellstyles = {}) {
+  //m is a matrix, eg. ['A B C','A D E']
   let gta = '';
   let words = [];
   for (const line of m) {
@@ -42565,8 +42567,8 @@ function mGridFrom(d, m, cols, rows, cellstyles = {}) {
   dParent.style.gridTemplateColumns = cols;
   dParent.style.gridTemplateRows = rows;
   for (const w of words) {
-    let st = copyKeys({ 'grid-area': w, bg: rColor(50) }, cellstyles);
-    let cell = window[w] = mDom(dParent, st, { id: w });
+    let style = copyKeys({ 'grid-area': w, bg: rColor(50) }, cellstyles);
+    let cell = window[w] = mDom(dParent, style, { id: w });
   }
   return dParent;
 }
@@ -65483,7 +65485,7 @@ function test15() {
   ];
   let cols = '1fr 200px';
   let rows = 'auto auto auto 1fr';
-  dGrid = mGridFrom(d, areas, cols, rows);
+  dGrid = mGridFromAreas(d, areas, cols, rows);
   for (const ch of arrChildren(dGrid)) {
     console.log('rect', ch.id, getRect(ch))
   }
@@ -65540,7 +65542,7 @@ function test16() {
   ];
   let cols = '1fr 200px';
   let rows = 'auto auto auto 1fr';
-  dPage = mGridFrom(d, areas, cols, rows);
+  dPage = mGridFromAreas(d, areas, cols, rows);
   mStyle(dPage, { fg: 'white', bg: 'silver' })
   mStyle(dFiddle, { h: 400, padding: 14, box: true });
   mDom(dFiddle, {}, { html: 'Fiddle' });
@@ -65610,7 +65612,7 @@ function test16a() {
   ];
   let cols = '1fr 200px';
   let rows = 'auto auto auto 1fr';
-  dPage = mGridFrom(d, areas, cols, rows, { padding: 4, box: true });
+  dPage = mGridFromAreas(d, areas, cols, rows, { padding: 4, box: true });
   mStyle(dPage, { fg: 'white', bg: 'silver' });
   let elem = mSearch('keywords:', mySearch, dSearch);
   mStyle(dFiddle, { h: 400 });

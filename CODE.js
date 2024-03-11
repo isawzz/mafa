@@ -1,3 +1,17 @@
+function arrMinMax(arr, func) {
+  if (nundef(func)) func = x => x;
+  else if (isString(func)) func = x=>x[func];
+  let min = func(arr[0]), max = func(arr[0]), imin = 0, imax = 0;
+  for (let i = 1, len = arr.length; i < len; i++) {
+    let v = func(arr[i]);
+    if (v < min) {
+      min = v; imin = i;
+    } else if (v > max) {
+      max = v; imax = i;
+    }
+  }
+  return { min: min, imin: imin, max: max, imax: imax, elmin: arr[imin], elmax: arr[imax] };
+}
 function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
 	let inp = mDom(dParent, styles, { className: 'input', tag: 'input', type: 'text' });
 	let chlist = uiTypeCheckList(lst, dParent, styles, opts);

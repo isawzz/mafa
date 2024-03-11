@@ -883,6 +883,8 @@ const STYLE_PARAMS = {
 	fg: 'color',
 	fontSize: 'font-size',
 	fz: 'font-size',
+	gridCols: 'grid-template-columns',
+	gridRows: 'grid-template-rows',
 	h: 'height',
 	hgap: 'column-gap',
 	hmin: 'min-height',

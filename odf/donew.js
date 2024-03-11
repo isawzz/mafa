@@ -622,21 +622,21 @@ function enableImageDrop_trial1_W(elem, onDropCallback) {
 	});
 }
 function extractWords(s) { let parts = splitAtAnyOf(s, ' ,-.!?;:'); return parts; }
-function generateRandomWords(n) {
+function generateRandomWords(n,unique=false) {
 	// Sample words to pick from
 	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
 	
 	// Generate the array
 	let randomWords = [];
 	for (let i = 0; i < n; i++) {
-			// Pick a random word from the sampleWords array
-			const randomWord = sampleWords[Math.floor(Math.random() * sampleWords.length)];
-			randomWords.push(randomWord);
+		// Pick a random word from the sampleWords array
+		const randomWord = sampleWords[Math.floor(Math.random() * sampleWords.length)];
+		randomWords.push(randomWord);
 	}
 	return randomWords;
 }
 function getCheckedNames(dParent){
-	let checks=Array.from(dParent.getElementsByTagName('input'));
+	let checks=Array.from(dParent.querySelectorAll('input[type="checkbox"]')); //dParent.getElementsByTagName('input'));
 	let res=[];
 	for(const ch of checks) {
 		if (ch.checked) res.push(ch.name);
