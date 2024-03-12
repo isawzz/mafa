@@ -4,10 +4,9 @@ superdi:
     img: ../assets/img/emo/1st-place-medal.png
     text: '&#129351;'
     cats:
-      - event
       - object
-      - symbol
       - sport
+      - symbol
     colls:
       - emo
     key: 1st_place_medal
@@ -17,9 +16,8 @@ superdi:
     text: '&#129352;'
     cats:
       - object
-      - symbol
-      - event
       - sport
+      - symbol
     colls:
       - emo
     key: 2nd_place_medal
@@ -29,9 +27,8 @@ superdi:
     text: '&#129353;'
     cats:
       - object
-      - symbol
-      - event
       - sport
+      - symbol
     colls:
       - emo
     key: 3rd_place_medal

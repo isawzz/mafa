@@ -31,6 +31,14 @@ async function onclickAddCategories() {
 	collPostReload();
 }
 async function onclickCatListDone(ui){ui.setAttribute('proceed',getCheckNames(ui).join('@')); }
+
+function onclickClear(inp,grid){
+
+	inp.value = '';
+	let checklist=Array.from(grid.querySelectorAll('input[type="checkbox"]'));
+	checklist.map(x=>x.checked = false);
+	sortCheckboxes(grid);	
+}
 function onclickCollDone(){
 	collCloseSecondary();
 	console.log('sec',UI.collSecondary)
@@ -43,6 +51,9 @@ async function onclickCollItem(ev) {
   if (!o) return;
   let [key, elem] = [o.val, o.elem];
   if (nundef(key)) { console.log('no key'); return; }
+	await clickOnItem(elem,key);
+}
+async function clickOnItem(elem,key){
   if (nundef(UI.selectedImages)) UI.selectedImages = [];
 	let collname = elem.getAttribute('collname');
 	let selist = UI.selectedImages;
@@ -173,41 +184,6 @@ async function onclickDeleteSelected() {
 		di={}; //keys have been updated already
 	}
 
-	await loadAssets();
-	collPostReload();
-}
-async function onclickEditCategories() {
-	let selist = UI.selectedImages; //console.log('selist', selist)
-	let keys = selist.map(x => stringBefore(x, '@'));
-	let arrs = keys.map(x => M.superdi[x].cats);
-	let lst = unionOfArrays(arrs); //console.log('inter', lst);
-	let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
-	sortByDescending(catlist,'value');
-
-	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
-	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
-	cats = cats.split('@');
-	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
-	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
-
-	console.log('cats', cats);
-	//console.log('*BREAK*');	return;
-
-	let di = {}, changed = false;
-	for (const kc of selist) {
-		let key = stringBefore(kc, '@');
-		let o = M.superdi[key];
-		if (sameList(cats,o.cats)) continue;
-		changed = true;
-		o.cats=cats;
-		di[key] = o;
-	}
-
-	if (!changed) { console.log('ERROR: categories unchanged!',cats); collClearSelections(); return; }
-	console.log('items changed:',Object.keys(di));
-
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
 	await loadAssets();
 	collPostReload();
 }
@@ -397,7 +373,7 @@ async function onclickTable(id) { await switchToTable(id); }
 async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
-	if (!name) return;
+	if (!uname) return;
 	await switchToUser(uname);
 }
 async function oninputCollFilter(ev){

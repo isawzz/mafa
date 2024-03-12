@@ -1,95 +1,46 @@
 
-function inpToChecklist(ev, grid) {
-	let key = ev.key;
-	if (key != ',' && key != 'Enter') return;
+async function onclickEditCategories() {
+	let selist = UI.selectedImages; //console.log('selist', selist)
+	let keys = selist.map(x => stringBefore(x, '@'));
+	let arrs = keys.map(x => M.superdi[x].cats);
+	let lst = unionOfArrays(arrs); //console.log('inter', lst);
+	let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
+	sortByDescending(catlist,'value');
 
-	console.log('key', key); //return;
+	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
+	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
+	//cats = cats.split('@');
+	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
+	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
 
-	let inp = ev.target;
-	let words = extractWords(inp.value).map(x => x.toLowerCase());
-	console.log('words', words);
+	//console.log('cats', cats);
+	//console.log('*BREAK*');	return;
 
-	let checklist=Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
-	let allNames = checklist.map(x => x.name);
-	let names = checklist.filter(x => x.checked).map(x => x.name);
-
-	//console.log('names',allNames,names);
-	// let needToSortChildren = false;
-	for (const w of words) {
-		if (!allNames.includes(w)) {
-			//add this word to the options
-			console.log('a new name!', w);
-			//how do I add another checkbox?
-			let div = mCheckbox(grid, w);
-			div.firstChild.checked = true;
-			needToSortChildren = true;
-
-		} else {
-			console.log('got it:', w);
-			let chk = checklist.find(x => x.name == w);
-			if (!chk.checked) chk.checked = true;
-
-		}
+	let di = {}, changed = false;
+	for (const kc of selist) {
+		let key = stringBefore(kc, '@');
+		let o = M.superdi[key];
+		if (sameList(cats,o.cats)) continue;
+		changed = true;
+		o.cats=cats;
+		di[key] = o;
 	}
 
-	// if (needToSortChildren) {
-	// 	//rearrange grid elements!
-	// 	let divs = arrChildren(grid);
-	// 	divs.map(x=>x.remove())
-	// 	// grid.innerHTML = '';
-	// 	//sort divs by name
-	// 	divs=sortByFunc(divs, x => x.firstChild.name);
-	// 	//remove all divs from grid
-	// 	for (const d of divs) { mAppend(grid, d) }
-	// }
+	if (!changed) { console.log('categories unchanged!',cats); collClearSelections(); return; }
+	console.log('items changed:',Object.keys(di));
 
-
-	sortCheckboxes(grid);
-	words.sort();
-	inp.value = words.join(', ');
-
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
 }
-function sortCheckboxes(grid){
-	let divs = arrChildren(grid);
-	divs.map(x=>x.remove());
 
-	let chyes=divs.filter(x=>x.firstChild.checked == true);
-	let chno=divs.filter(x=>!chyes.includes(x));
-
-	chyes=sortByFunc(chyes, x => x.firstChild.name);
-	chno=sortByFunc(chno, x => x.firstChild.name);
-	for (const d of chyes) { mAppend(grid, d) }
-	for (const d of chno) { mAppend(grid, d) }
-	// grid.innerHTML = '';
-	//sort divs by name
-	//divs=sortByFunc(divs, x => x.firstChild.name);
-	//remove all divs from grid
-	// for (const d of divs) { mAppend(grid, d) }
-}
-function checkToInput(ev, inp, grid) {
-	let el = ev.target;
-
-	console.log(ev);
-	console.log(ev.target['checked']);
-	console.log(ev.target.checked);
-	console.log(el.checked)
-	let val = el.checked;
-	let name = el.name;
-	console.log(val, name)
-
-	let words = extractWords(inp.value).map(x => x.toLowerCase());
-	console.log('words', words);
-
-	if (val && !words.includes(name)) {
-		words.push(name);
-		words.sort();
-		inp.value = words.join(', ');
-	} else if (!val && words.includes(name)) {
-		removeInPlace(words, name);
-		inp.value = words.join(', ');
-	}
-
-	sortCheckboxes(grid);
+function uiGadgetTypeCheckListInput(form, content, styles, opts) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dParent = mDom(dOuter, { pabottom: 10, box: true }); 
+	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
+	return () =>DA.formResult;
 }
 
 

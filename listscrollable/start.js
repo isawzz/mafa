@@ -6,7 +6,7 @@ async function test1() {
 
 	let dg = clearBodyDiv();
 
-	let n = 125; let list = rWords(n); // generateRandomWords(n); list.sort(); //words
+	let n = 125; let list = rWords(n); list.sort();// generateRandomWords(n); list.sort(); //words
 	//console.log(list); return;
 
 	let items = []; //make measured checkbox items
@@ -16,6 +16,8 @@ async function test1() {
 	}
 
 	let wmax = arrMax(items,'w'); console.log('wmax',wmax); //measure max width of items
+	let cols=3; 
+	let wgrid=wmax*cols+100; //(wmax+15) * (cols) + 10;
 	dg.remove();
 
 	dg=clearBodyDiv();
@@ -26,24 +28,24 @@ async function test1() {
 	// *** buttons ***
 	let db=mDom(dg,{w100:true,box:true,align:'right',mabottom:4});
 	mButton('cancel',null,db,{},'input');
+	mButton('clear',()=>onclickClear(inp,grid),db,{maleft:10},'input');
 	mButton('done',()=>console.log('sending',extractWords(inp.value)),db,{maleft:10},'input');
 
 	// *** grid ***
-	let cols=3; 
-	mStyle(dg, { margin:12, w: (wmax+14) * (cols) })
+	mStyle(dg, { w:wgrid,box:true,padding:10 }); //, w: wgrid })
 	
 	//let grid = mGridFromItems(dg,items,500,cols); //createItemsGrid(dg, items, 500, cols);
-	let grid = mGrid(null,cols,dg,{gap:10,padding:4,hmax:500});	
+	let grid = mGrid(null,cols,dg,{w100:true,gap:10,matop:4,hmax:500});	
 	items.map(x=>mAppend(grid,iDiv(x)));
 
 	//when checkbox val changes inp needs to change and checkboxes need to be rearranged! possibly new checkboxes created!
 	let chks=Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
-	console.log('cheks',chks)
+	//console.log('cheks',chks)
 	for(const chk of chks){
 		chk.addEventListener('click',ev=>checkToInput(ev,inp,grid))
 	}
 
-	inp.addEventListener('keydown',ev=>inpToChecklist(ev, grid))
+	inp.addEventListener('keyup',ev=>inpToChecklist(ev, grid))
 	//when inp is changed, checkboxes need to be modified
 	//only when pressing enter in input box OR when entering a comma?
 

@@ -2,20 +2,22 @@
 function collSidebar() {
 
 	// console.log('r',getRect('dLeft'))
-	mStyle('dLeft', { wmin: 155 });
-	let d = mDom('dLeft', { margin: 10, matop: 100,h:window.innerHeight-getRect('dLeft').y-102 }); //, bg:'#00000020'  }); 
+	//mClear('dLeft');
+	let wmin=170;
+	mStyle('dLeft', { wmin: wmin,  });
+	let d = mDom('dLeft', { wmin: wmin-10, margin: 10, matop: 180,h:window.innerHeight-getRect('dLeft').y-102 }); //, bg:'#00000020'  }); 
 
-	UI.newCollection = mCommand(d, 'newCollection', 'New / Edit'); mNewline(d);
-	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d);
-	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d,10);
+	UI.newCollection = mCommand(d, 'newCollection', 'New / Edit'); mNewline(d,6);
+	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d,6);
+	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d,12);
 
 	// UI.editCollItem = mCommand(d, 'editCollItem', 'Edit Item'); mNewline(d,10);
 	// cmdDisable(UI.editCollItem);
 
-	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d);
+	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d,6);
 	cmdDisable(UI.deleteSelected);
 
-	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d);
+	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d,6);
 	cmdDisable(UI.editCategories);
 
 	// UI.addCategories = mCommand(d, 'addCategories', 'Add Categories'); mNewline(d);

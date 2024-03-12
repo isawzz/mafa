@@ -69,6 +69,13 @@ function adjustComplex(panData) {
 
 	mStyle(panData.dCrop, { left: cx - wNew / 2, top: cy - hNew / 2, w: wNew, h: hNew });
 }
+function checkToInput(ev, inp, grid) {
+	let checklist=Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let names = checklist.filter(x => x.checked).map(x => x.name);
+	sortCheckboxes(grid);
+	names.sort();
+	inp.value = names.join(', ') + ', ';
+}
 function clearBodyDiv(styles = {}, opts = {}) { document.body.innerHTML = ''; return mDom(document.body, styles, opts) }
 
 function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
@@ -247,12 +254,12 @@ function collGenSelkey(key, collname) { return `${key}@${collname}`; }
 
 function collInitCollection(name, coll) {
 	let isReload = isdef(coll.index) && coll.name == name;
-	console.log('_________ init',name,isReload,'\ncoll',coll.name,coll.index,coll.pageIndex,coll.filter);
+	//console.log('_________ init',name,isReload,'\ncoll',coll.name,coll.index,coll.pageIndex,coll.filter);
 	if (!isReload) {
 		coll.index = 0; coll.pageIndex = 1; coll.name = name; coll.filter = null;
 	}
 	
-	console.log('coll',coll.name,coll.index,coll.pageIndex,coll.filter);
+	//console.log('coll',coll.name,coll.index,coll.pageIndex,coll.filter);
 
 	let list = [];
 	if (name == 'all' || isEmpty(name)) {
@@ -578,6 +585,46 @@ function deleteKeyFromLocalSuperdi(k) {
 		removeInPlace(lst, k); if (isEmpty(lst)) { delete M.byCat[cat]; removeInPlace(M.categories, cat); }
 	}
 }
+function doYourThing(inp,grid){
+	//console.log('______ ',inp.value)
+	let words = extractWords(inp.value,' ').map(x => x.toLowerCase());
+	//console.log('words', words);
+
+	let checklist=Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let allNames = checklist.map(x => x.name);
+	let names = checklist.filter(x => x.checked).map(x => x.name);
+
+	//console.log('names',allNames,names);
+	// let needToSortChildren = false;
+	for (const w of words) {
+		if (!allNames.includes(w)) {
+			//add this word to the options
+			//console.log('a new name!', w);
+			//how do I add another checkbox?
+			let div = mCheckbox(grid, w);
+			let chk=div.firstChild;
+			chk.checked = true;
+			chk.addEventListener('click',ev=>checkToInput(ev,inp,grid))
+			needToSortChildren = true;
+
+		} else {
+			//console.log('got it:', w);
+			let chk = checklist.find(x => x.name == w);
+			if (!chk.checked) chk.checked = true;
+
+		}
+	}
+
+	for(const name of names){
+		if (!words.includes(name)) {
+			let chk = checklist.find(x=>x.name == name);
+			chk.checked = false;
+		}
+	}
+	sortCheckboxes(grid);
+	words.sort();
+	inp.value = words.join(', ') + ', ';
+}
 function enableImageDrop(elem, onDropCallback) {
 	const originalBorderStyle = elem.style.border; // Store the original border style to restore it later
 
@@ -621,7 +668,12 @@ function enableImageDrop_trial1_W(elem, onDropCallback) {
 		}
 	});
 }
-function extractWords(s) { let parts = splitAtAnyOf(s, ' ,-.!?;:'); return parts; }
+function extractWords(s,allowed) { 
+	let specialChars=toLetters(' ,-.!?;:');
+	if (isdef(allowed)) specialChars=arrMinus(specialChars,toLetters(allowed));
+	let parts = splitAtAnyOf(s, specialChars.join('')).map(x=>x.trim()); 
+	return parts.filter(x=>!isEmpty(x)); 
+}
 function generateRandomWords(n,unique=false) {
 	// Sample words to pick from
 	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
@@ -710,6 +762,24 @@ async function imgScaledToHeightInDiv(url, dParent, sz = 300) {
 	mStyle(img, { w: img.width, h: img.height })
 	return [img, scale];
 }
+function inpToChecklist(ev, grid) {
+	let key = ev.key;
+	let inp = ev.target;
+
+	if (key == 'Backspace'){
+		let s=inp.value;
+		let cursorPos = inp.selectionStart;
+		let ch = cursorPos == 0? null:inp.value[cursorPos - 1];
+		if (!ch || isWhiteSpace(ch)){
+			doYourThing(inp,grid);
+		}
+		console.log('Backspace',ch); 
+		return;
+	}
+
+	if (key == 'Enter') ev.preventDefault();
+	if (isExpressionSeparator(key) || key == 'Enter') doYourThing(inp,grid);
+}
 function intersectionOfArrays() {
 	// Check if the input is an array of arrays
 	let arrs = arguments[0]; console.log('arrs', arrs);
@@ -717,6 +787,8 @@ function intersectionOfArrays() {
 	return arrs.reduce((acc, array) => acc.filter(element => array.includes(element)));
 }
 function isPointOutsideOf(form, x, y) { const r = form.getBoundingClientRect(); return (x < r.left || x > r.right || y < r.top || y > r.bottom); }
+function isExpressionSeparator(ch){ return ',-.!?;:'.includes(ch);}
+function isWordSeparator(ch){ return ' ,-.!?;:'.includes(ch);}
 function keyDownHandler(ev) {
 	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
 	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
@@ -752,6 +824,14 @@ async function loadAssets() {
 	M.categories = Object.keys(byCat); M.categories.sort();
 	M.collections = Object.keys(byColl); M.collections.sort();
 	M.names = Object.keys(byFriendly); M.names.sort();
+}
+function mCheckbox(dg,name,value){
+	let di = mDom(dg, { display: 'inline-block' });
+	let chk = mDom(di, {}, { tag: 'input', type: 'checkbox', id: getUID('c'), name:name });
+	if (isdef(value)) chk.checked = value;
+	let label = mDom(di, {}, { tag: 'label', html: name, for: chk.id });
+	return di;
+
 }
 function mCommand(dParent, key, html, open, close) {
 	if (nundef(html)) html = capitalize(key);
@@ -820,6 +900,25 @@ function mDropZone1(dropZone, onDrop) {
 	});
 	return dropZone;
 }
+function mGrid(rows, cols, dParent, styles = {}) {
+
+	//dParent.innerHTML = '';
+	addKeys({display:'inline-grid',gridCols:'repeat(' + cols + ',1fr)'},styles);
+	if (rows) styles.gridRows = 'repeat(' + rows + ',auto)';
+	else styles.overy = 'auto';
+
+  let d = mDiv(dParent, styles);
+
+  return d;
+}
+function mGridFromItems(dParent, items, maxHeight, numColumns){return mGridFromElements(dParent, items.map(x=>iDiv(x)),maxHeight,numColumns);}
+function mGridFromElements(dParent, elems, maxHeight, numColumns) {
+	dParent.innerHTML = '';
+	let cols=`repeat(${numColumns}, 1fr)`; //'repeat(auto-fill, minmax(0, 1fr))';
+	let grid=mDom(dParent,{display:'inline-grid',gridCols:cols,gap:10,padding:4,overy:'auto',hmax:maxHeight})
+	elems.forEach(x => mAppend(grid,x));
+	return grid;
+}
 function menuCommand(dParent, menuKey, key, html, open, close) {
 	let cmd = mCommand(dParent, key, html, open, close);
 	let a = iDiv(cmd);
@@ -846,6 +945,8 @@ function menuOpen(menu, key) {
 	mClass(iDiv(cmd), 'activeLink')
 	cmd.open();
 }
+function measureHeight(elem){return mGetStyle(elem, 'h')}
+function measureWidth(elem){return mGetStyle(elem, 'w')}
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
 	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
@@ -874,21 +975,21 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
 		dialog.addEventListener('mouseup', ev => {
 			if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ 
-				console.log('clicked point outside!!!',ev.clientX,ev.clientY)
+				//console.log('clicked point outside!!!',ev.clientX,ev.clientY)
 				resolve(null); 
 				dialog.remove(); 
 			}
 		});
 		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
 
-		console.log('type',type)
-		let evalFunc = type == 'multi' ? uiGadgetTypeMulti(form, content, styles, opts) :
-			type == 'text' ? uiGadgetTypeText(form, content, styles, opts) :
-				type == 'yesno' ? uiGadgetTypeYesNo(form, content, styles, opts) :
-					type == 'select' ? uiGadgetTypeSelect(form, content, styles, opts) :
-						type == 'checklist' ? uiGadgetTypeCheckList(form, content, styles, opts) :
-							type == 'checklistinput' ? uiGadgetTypeCheckListInput(form, content, styles, opts) :
-								uiGadgetTypeText(form, content, styles, opts);
+		//console.log('type',type)
+		let evalFunc;
+		if (type == 'multi') evalFunc = uiGadgetTypeMulti(form, content, styles, opts);
+		else if (type == 'text') evalFunc = uiGadgetTypeText(form, content, styles, opts);
+		else if (type == 'yesno') evalFunc = uiGadgetTypeYesNo(form, content, styles, opts);
+		else if (type == 'select') evalFunc = uiGadgetTypeSelect(form, content, styles, opts);
+		else if (type == 'checklist') evalFunc = uiGadgetTypeCheckList(form, content, styles, opts);
+		else if (type == 'checklistinput') evalFunc = uiGadgetTypeCheckListInput(form, content, styles, opts);
 
 		//console.log('evalFunc',evalFunc)
 		dialog.showModal();
@@ -990,6 +1091,11 @@ function presentImageCropper(url) {
 	let d = mDom('dMain', { position: 'absolute', h: 500, w: 500, bg: 'navy' });
 	let img = mDom(d, { w: 300, h: 300, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
 }
+function rWords(n=1){
+	let words = getColorNames().map(x=>x.toLowerCase());
+	let arr = rChoose(words,n);
+	return arr;
+}
 async function showColors() {
 	showTitle('Set Color Theme');
 	let sz = 30;
@@ -1078,6 +1184,18 @@ function showNavbar() {
 	nav.commands = commands;
 	// console.log(commands)
 	return nav;
+}
+function sortCheckboxes(grid){
+	let divs = arrChildren(grid);
+	divs.map(x=>x.remove());
+
+	let chyes=divs.filter(x=>x.firstChild.checked == true);
+	let chno=divs.filter(x=>!chyes.includes(x));
+
+	chyes=sortByFunc(chyes, x => x.firstChild.name);
+	chno=sortByFunc(chno, x => x.firstChild.name);
+	for (const d of chyes) { mAppend(grid, d) }
+	for (const d of chno) { mAppend(grid, d) }
 }
 function startPanning(ev) {
 	console.log('_________startPanning!')

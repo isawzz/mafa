@@ -1,7 +1,16 @@
 onload = start;
 
-async function start() { test23_grid(); }
+async function start() { test20(); }
 
+async function test24(){
+	await prelims();
+	await switchToMenu(UI.nav, 'collections');
+
+	let cell = UI.collPrimary.cells[0]; //console.log('cell',cell)
+	let d=cell.firstChild; //console.log('d',d)
+	await clickOnItem(d,d.getAttribute('key'));
+	await onclickEditCategories();
+}
 async function test23_grid() {
 	let d = clearBodyDiv();
 
