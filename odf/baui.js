@@ -5,26 +5,29 @@ function collSidebar() {
 	//mClear('dLeft');
 	let wmin=170;
 	mStyle('dLeft', { wmin: wmin,  });
-	let d = mDom('dLeft', { wmin: wmin-10, margin: 10, matop: 180,h:window.innerHeight-getRect('dLeft').y-102 }); //, bg:'#00000020'  }); 
+	let d = mDom('dLeft', { wmin: wmin-10, margin: 10, matop: 160,h:window.innerHeight-getRect('dLeft').y-102 }); //, bg:'#00000020'  }); 
+	let gap=5;
 
-	UI.newCollection = mCommand(d, 'newCollection', 'New / Edit'); mNewline(d,6);
-	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d,6);
-	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d,12);
+	// *** selection commands ***
+	UI.collSelectAll = mCommand(d, 'collSelectAll', 'Select All'); mNewline(d,gap);
+	UI.collSelectPage = mCommand(d, 'collSelectPage', 'Select Page'); mNewline(d,gap);
+	UI.collClearSelections = mCommand(d, 'collClearSelections', 'Clear Selection'); mNewline(d,gap);
+	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d,gap);
+	UI.removeCategory = mCommand(d, 'removeCategory', 'Remove Category'); mNewline(d,gap);
+	UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d,gap);
+	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d,3*gap);
+	collDisableListCommands();
 
-	// UI.editCollItem = mCommand(d, 'editCollItem', 'Edit Item'); mNewline(d,10);
-	// cmdDisable(UI.editCollItem);
+	// *** collectino commands ***
+	UI.newCollection = mCommand(d, 'newCollection', 'New Collection'); mNewline(d,gap);
+	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d,gap);
+	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d,3*gap);
 
-	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d,6);
-	cmdDisable(UI.deleteSelected);
 
-	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d,6);
-	cmdDisable(UI.editCategories);
+	//onclickCollClearSelections	//cmdDisable(UI.collSelectAll);
+	// UI.addCategory = mCommand(d, 'addCategory', 'Add Categories'); mNewline(d);
+	// cmdDisable(UI.addCategory);
 
-	// UI.addCategories = mCommand(d, 'addCategories', 'Add Categories'); mNewline(d);
-	// cmdDisable(UI.addCategories);
-
-	// UI.removeCategories = mCommand(d, 'removeCategories', 'Remove Categories'); mNewline(d);
-	// cmdDisable(UI.removeCategories);
 
 	// UI.sortCollection = mCommand(d, 'sortBy', 'Sort By'); mNewline(d);
 }
@@ -41,13 +44,22 @@ function collEnableItemCommands(){
 	}
 }
 function collDisableListCommands(){
-	for(const cmd of [UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.editCategories,UI.addCategories,UI.removeCategories]){
+	for(const cmd of [UI.collClearSelections,UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.editCategories,UI.addCategory,UI.removeCategory]){
 		if (nundef(cmd)) continue;
 		cmdDisable(cmd);
 	}
 }
 function collEnableListCommands(){
-	for(const cmd of [UI.deleteSelected,UI.addSelectedToCollection,UI.removeSelected,UI.editCategories,UI.addCategories,UI.removeCategories]){
+	for(const cmd of [UI.collClearSelections,UI.addSelectedToCollection,UI.editCategories,UI.addCategory,UI.removeCategory]){
+		if (nundef(cmd)) continue;
+		cmdEnable(cmd);
+	}
+	let selist=UI.selectedImages;
+	//console.log('selist',selist);
+	let colls = selist.filter(x=>!collLocked(stringAfter(x,'@')));
+	if (isEmpty(colls)) return;
+
+	for(const cmd of [UI.deleteSelected,UI.removeSelected,]){
 		if (nundef(cmd)) continue;
 		cmdEnable(cmd);
 	}

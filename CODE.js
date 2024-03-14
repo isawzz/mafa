@@ -277,7 +277,7 @@ async function onclickAddCategories() {
 	// let inter = intersectionOfArrays(arrs);	console.log('inter',inter);
 	// for(const c of catlist){c.val=inter.includes(c.name);	}
 
-	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklist' });
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
 	if (isEmpty(cats)) { console.log('nothing added'); collClearSelections(); return; }
@@ -317,7 +317,7 @@ async function onclickAddCategories() {
 	// let inter = intersectionOfArrays(arrs);	console.log('inter',inter);
 	// for(const c of catlist){c.val=inter.includes(c.name);	}
 
-	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklist' });
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
 	if (isEmpty(cats)) { console.log('nothing added'); collClearSelections(); return; }

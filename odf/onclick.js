@@ -1,10 +1,10 @@
 
-async function onclickAddCategories() {
+async function onclickAddCategory() {
 	let selist = UI.selectedImages; //console.log('selist', selist)
 	let keys = selist.map(x => stringBefore(x, '@'));
 	let catlist = M.categories.map(x => ({ name: x, value: false }));
 
-	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklist' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
@@ -30,7 +30,7 @@ async function onclickAddCategories() {
 	await loadAssets();
 	collPostReload();
 }
-async function onclickCatListDone(ui){ui.setAttribute('proceed',getCheckNames(ui).join('@')); }
+async function onclickCatListDone(ui){ui.setAttribute('proceed',getCheckedNames(ui).join('@')); }
 
 function onclickClear(inp,grid){
 
@@ -90,6 +90,18 @@ async function onclickCollItemLabel(ev) {
 	ev.target.innerHTML=newfriendly;
 
 }
+async function onclickCollClearSelections(ev) {
+	let colls = [UI.collPrimary];
+	if (UI.collSecondary.isOpen) colls.push(UI.collSecondary);
+	for(const coll of colls){
+		for (const cell of coll.cells){
+			let d=cell.firstChild;
+			collUnselect(d);
+		}
+	}
+	UI.selectedImages = [];
+	collDisableListCommands();
+}
 async function onclickCollNext(ev) {
 	// let id = evToId(ev); console.log('id', id)
 	// let coll = UI[id];
@@ -116,6 +128,36 @@ async function onclickCollections() {
 	UI.collPrimary = { div: dPrimary, name: collName }; //{name:'amanda'};
 	UI.collSecondary = { div: dSecondary, name: null };
 	collOpenPrimary(4, 4);
+}
+async function onclickCollSelectAll(ev) {
+	//if secondary is open, use that, otherwise use primary
+	let coll = UI.collSecondary.isOpen ? UI.collSecondary : UI.collPrimary;
+
+	//all visible images are selected and framed
+	for (const cell of coll.cells){
+		let d=cell.firstChild;
+		if (nundef(d)) break; //page not full!
+		collSelect(d);
+	}
+	//all keys entered into UI.selectedImages
+	for(const k of coll.keys)	{
+		addIf(UI.selectedImages,collGenSelkey(k,coll.name));
+	}
+	collEnableListCommands();
+}
+async function onclickCollSelectPage(ev) {
+	//if secondary is open, use that, otherwise use primary
+	let coll = UI.collSecondary.isOpen ? UI.collSecondary : UI.collPrimary;
+
+	//all visible images are selected and framed
+	for (const cell of coll.cells){
+		let d=cell.firstChild;
+		if (nundef(d)) break; //page not full!
+		collSelect(d);
+		let o=collKeyCollnameFromElem(d);
+		addIf(UI.selectedImages,collGenSelkey(o.key,o.collname));
+	}
+	collEnableListCommands();
 }
 async function onclickColor(ev) {
   let c = ev.target.style.background;
@@ -195,7 +237,7 @@ async function onclickEditCollItem() {
 	let catlist = M.categories.map(x => ({ name: x, value: item.cats.includes(x) }));
 	sortByDescending(catlist,'value');
 
-	let cats = await mGather(iDiv(UI.addCategories), {}, { content: catlist, type: 'checklistinput' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklistinput' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x));
@@ -297,14 +339,15 @@ async function onclickNewCollection(name) {
 }
 async function onclickPlan() { showCalendarApp(); }
 async function onclickPlay() { showTables(); }
-async function onclickRemoveCategories() {
+async function onclickRemoveCategory() {
 	let selist = UI.selectedImages; //console.log('selist', selist)
 	let keys = selist.map(x => stringBefore(x, '@'));
 	let arrs = keys.map(x => M.superdi[x].cats);
-	let lst = unionOfArrays(arrs); //console.log('inter', lst);
+	let lst = unionOfArrays(arrs); lst.sort(); //console.log('inter', lst);
 	let catlist = lst.map(x => ({ name: x, value: false }));
 
-	let cats = await mGather(iDiv(UI.removeCategories), {}, { content: catlist, type: 'checklist' });
+
+	let cats = await mGather(iDiv(UI.removeCategory), {}, { content: catlist, type: 'checklist' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))

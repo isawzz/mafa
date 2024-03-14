@@ -69,7 +69,6 @@ async function test20() {
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');
 }
-
 async function test19() {
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');

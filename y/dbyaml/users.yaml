@@ -58,3 +58,7 @@ ____unsafe:
   name: ____unsafe
   color: '#aaff00'
   icon: unknown_user
+mimi:
+  name: mimi
+  color: '#f28cb2'
+  icon: mimi

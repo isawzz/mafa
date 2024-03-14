@@ -62,6 +62,8 @@ superdi:
       - tool
     colls:
       - emo
+      - spotit
+    key: abacus
   accordion:
     friendly: accordion
     img: ../assets/img/emo/accordion.png
@@ -72,6 +74,7 @@ superdi:
       - instrument
     colls:
       - emo
+      - spotit
     key: accordion
   adhesive_bandage:
     friendly: adhesive_bandage
@@ -96,7 +99,6 @@ superdi:
     img: ../assets/img/emo/aerial-tramway.png
     text: '&#128673;'
     cats:
-      - action
       - object
       - best
       - place
@@ -105,6 +107,7 @@ superdi:
       - travel
     colls:
       - emo
+    key: aerial_tramway
   airplane:
     friendly: airplane
     img: ../assets/img/emo/airplane.png
@@ -151,6 +154,7 @@ superdi:
       - time
     colls:
       - emo
+      - spotit
     key: alarm_clock
   alembic:
     friendly: alembic
@@ -188,7 +192,6 @@ superdi:
     fa: f0f9
     text: '&#128657;'
     cats:
-      - action
       - object
       - best
       - transport
@@ -201,11 +204,11 @@ superdi:
     img: ../assets/img/emo/american-football.png
     text: '&#127944;'
     cats:
-      - action
       - object
       - sport
     colls:
       - emo
+    key: american_football
   amphora:
     friendly: amphora
     img: ../assets/img/emo/amphora.png
@@ -311,7 +314,6 @@ superdi:
     img: ../assets/img/emo/articulated-lorry.png
     text: '&#128667;'
     cats:
-      - place
       - transport
       - travel
     colls:
@@ -335,6 +337,7 @@ superdi:
       - art
     colls:
       - emo
+      - spotit
     key: artist_palette
   astonished_face:
     friendly: astonished_face
@@ -382,7 +385,6 @@ superdi:
     img: ../assets/img/emo/automobile.png
     text: '&#128663;'
     cats:
-      - action
       - object
       - best
       - place
@@ -391,13 +393,13 @@ superdi:
       - travel
     colls:
       - emo
+    key: automobile
   avocado:
     friendly: avocado
     img: ../assets/img/emo/avocado.png
     ga: EBC0
     text: '&#129361;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -406,6 +408,8 @@ superdi:
       - plant
     colls:
       - emo
+      - spotit
+    key: avocado
   award:
     friendly: award
     fa: f559
@@ -413,7 +417,6 @@ superdi:
     cats:
       - object
       - symbol
-      - same
     colls:
       - emo
     fa6: f559
@@ -444,7 +447,6 @@ superdi:
       - body
       - person
       - creature
-      - same
     colls:
       - emo
     fa6: f77c
@@ -467,6 +469,8 @@ superdi:
       - object
     colls:
       - emo
+      - spotit
+    key: baby_bottle
   baby_chick:
     friendly: baby_chick
     img: ../assets/img/emo/baby-chick.png
@@ -540,12 +544,12 @@ superdi:
     ga: EACF
     text: '&#127890;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: backpack
   bacon:
     friendly: bacon
     img: ../assets/img/emo/bacon.png
@@ -555,7 +559,6 @@ superdi:
     cats:
       - drink
       - food
-      - same
     colls:
       - emo
     fa6: f7e5
@@ -574,11 +577,12 @@ superdi:
     img: ../assets/img/emo/badminton.png
     text: '&#127992;'
     cats:
-      - action
       - object
       - sport
     colls:
       - emo
+      - spotit
+    key: badminton
   bagel:
     friendly: bagel
     img: ../assets/img/emo/bagel.png
@@ -637,11 +641,12 @@ superdi:
     img: ../assets/img/emo/balloon.png
     text: '&#127880;'
     cats:
-      - action
       - object
       - event
     colls:
       - emo
+      - spotit
+    key: balloon
   ballot_box_with_ballot:
     friendly: ballot_box_with_ballot
     img: ../assets/img/emo/ballot-box-with-ballot.png
@@ -703,36 +708,34 @@ superdi:
     img: ../assets/img/emo/baseball.png
     text: '&#9918;'
     cats:
-      - action
       - object
       - sport
-      - same
     colls:
       - emo
     fa6: f433
+    key: baseball
   basket:
     friendly: basket
     img: ../assets/img/emo/basket.png
     text: '&#129530;'
     cats:
-      - action
       - object
       - best
       - household
     colls:
       - emo
+    key: basket
   basketball:
     friendly: basketball
     img: ../assets/img/emo/basketball.png
     text: '&#127936;'
     cats:
-      - action
       - object
       - sport
-      - same
     colls:
       - emo
     fa6: f434
+    key: basketball
   bat:
     friendly: bat
     img: ../assets/img/emo/bat.png
@@ -750,12 +753,12 @@ superdi:
     img: ../assets/img/emo/bathtub.png
     text: '&#128705;'
     cats:
-      - action
       - object
       - best
       - household
     colls:
       - emo
+    key: bathtub
   battery:
     friendly: battery
     img: ../assets/img/emo/battery.png
@@ -829,7 +832,6 @@ superdi:
     cats:
       - object
       - household
-      - same
     colls:
       - emo
     fa6: f236
@@ -867,6 +869,8 @@ superdi:
       - insect
     colls:
       - emo
+      - spotit
+    key: beetle
   bell:
     friendly: bell
     img: ../assets/img/emo/bell.png
@@ -875,7 +879,6 @@ superdi:
     cats:
       - object
       - sound
-      - same
     colls:
       - emo
     fa6: f0f3
@@ -935,7 +938,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f206
@@ -965,12 +967,12 @@ superdi:
     ga: E183
     text: '&#129506;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: billed_cap
   biohazard:
     friendly: biohazard
     img: ../assets/img/emo/biohazard.png
@@ -979,7 +981,6 @@ superdi:
     text: '&#9763;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f780
@@ -1195,7 +1196,6 @@ superdi:
       - smiley
       - object
       - weapon
-      - same
     colls:
       - emo
     fa6: f1e2
@@ -1207,7 +1207,6 @@ superdi:
     cats:
       - body
       - object
-      - same
     colls:
       - emo
     fa6: f5d7
@@ -1220,7 +1219,6 @@ superdi:
     cats:
       - object
       - symbol
-      - same
     colls:
       - emo
     fa6: f02e
@@ -1326,11 +1324,11 @@ superdi:
     ga: E973
     text: '&#129354;'
     cats:
-      - action
       - object
       - sport
     colls:
       - emo
+    key: boxing_glove
   boy:
     friendly: boy
     img: ../assets/img/emo/boy.png
@@ -1347,14 +1345,13 @@ superdi:
     fa: f5dc
     text: '&#129504;'
     cats:
-      - action
       - object
       - best
       - body
-      - same
     colls:
       - emo
     fa6: f5dc
+    key: brain
   bread:
     friendly: bread
     img: ../assets/img/emo/bread.png
@@ -1405,7 +1402,6 @@ superdi:
     cats:
       - object
       - office
-      - same
     colls:
       - emo
     fa6: f0b1
@@ -1510,7 +1506,6 @@ superdi:
     cats:
       - object
       - household
-      - same
     colls:
       - emo
     fa6: e4cf
@@ -1534,17 +1529,16 @@ superdi:
       - nature
       - insect
       - creature
-      - same
     colls:
       - emo
     fa6: f188
   building_construction:
     friendly: building_construction
     img: ../assets/img/emo/building-construction.png
-    cats:
-      - action
+    cats: []
     colls:
       - emo
+    key: building_construction
   bullet_train:
     friendly: bullet_train
     img: ../assets/img/emo/bullet-train.png
@@ -1580,7 +1574,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f207
@@ -1658,7 +1651,6 @@ superdi:
       - object
       - office
       - tool
-      - same
     colls:
       - emo
     fa6: f133
@@ -1689,14 +1681,13 @@ superdi:
     fa: f030
     text: '&#128247;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f030
+    key: camera
   camera_with_flash:
     friendly: camera_with_flash
     img: ../assets/img/emo/camera-with-flash.png
@@ -1827,7 +1818,6 @@ superdi:
       - food
       - vegetable
       - plant
-      - same
     colls:
       - emo
     fa6: f787
@@ -1863,7 +1853,6 @@ superdi:
       - animal
       - mammal
       - nature
-      - same
     colls:
       - emo
     fa6: f6be
@@ -1975,6 +1964,8 @@ superdi:
       - object
     colls:
       - emo
+      - spotit
+    key: cheese_wedge
   chequered_flag:
     friendly: chequered_flag
     text: '&#127937;'
@@ -1992,6 +1983,8 @@ superdi:
       - fruit
     colls:
       - emo
+      - spotit
+    key: cherries
   cherry_blossom:
     friendly: cherry_blossom
     img: ../assets/img/emo/cherry-blossom.png
@@ -2014,10 +2007,11 @@ superdi:
       - object
       - game
       - sport
-      - same
     colls:
       - emo
+      - spotit
     fa6: f443
+    key: chess_pawn
   chestnut:
     friendly: chestnut
     img: ../assets/img/emo/chestnut.png
@@ -2048,7 +2042,6 @@ superdi:
     cats:
       - body
       - person
-      - same
     colls:
       - emo
     fa6: f1ae
@@ -2124,7 +2117,6 @@ superdi:
       - travel
       - building
       - structure
-      - same
     colls:
       - emo
     fa6: f51d
@@ -2266,7 +2258,6 @@ superdi:
       - object
       - office
       - tool
-      - same
     colls:
       - emo
     fa6: f328
@@ -2498,7 +2489,6 @@ superdi:
       - place
       - travel
       - tool
-      - same
     colls:
       - emo
     fa6: f14e
@@ -2615,7 +2605,6 @@ superdi:
     cats:
       - drink
       - food
-      - same
     colls:
       - emo
     fa6: f563
@@ -2644,7 +2633,6 @@ superdi:
     text: '&#169;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f1f9
@@ -2753,7 +2741,6 @@ superdi:
     text: '&#128179;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f09d
@@ -3047,7 +3034,6 @@ superdi:
     img: ../assets/img/emo/deciduous-tree.png
     text: '&#127795;'
     cats:
-      - action
       - animal
       - object
       - best
@@ -3055,6 +3041,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: deciduous_tree
   deer:
     friendly: deer
     img: ../assets/img/emo/deer.png
@@ -3145,11 +3132,11 @@ superdi:
     img: ../assets/img/emo/diamond-suit.png
     text: '&#9830;'
     cats:
-      - action
       - object
       - game
     colls:
       - emo
+    key: diamond_suit
   diamond_with_a_dot:
     friendly: diamond_with_a_dot
     img: ../assets/img/emo/diamond-with-a-dot.png
@@ -3285,7 +3272,6 @@ superdi:
     cats:
       - action
       - symbol
-      - same
     colls:
       - emo
     fa6: f529
@@ -3345,7 +3331,6 @@ superdi:
       - object
       - science
       - symbol
-      - same
     colls:
       - emo
     fa6: f471
@@ -3365,16 +3350,15 @@ superdi:
     fa: f6d3
     text: '&#128021;'
     cats:
-      - action
       - animal
       - mammal
       - object
       - best
       - nature
-      - same
     colls:
       - emo
     fa6: f6d3
+    key: dog
   dog_face:
     friendly: dog_face
     img: ../assets/img/emo/dog-face.png
@@ -3407,12 +3391,12 @@ superdi:
     ga: EC57
     text: '&#128682;'
     cats:
-      - action
       - object
       - best
       - household
     colls:
       - emo
+    key: door
   dotted_line_face:
     friendly: dotted_line_face
     img: ../assets/img/emo/dotted-line-face.png
@@ -3463,7 +3447,6 @@ superdi:
       - animal
       - bird
       - nature
-      - same
     colls:
       - emo
     fa6: f4ba
@@ -3515,17 +3498,16 @@ superdi:
     fa: f6d5
     text: '&#128009;'
     cats:
-      - action
       - animal
       - reptile
       - object
       - best
       - nature
       - mythical
-      - same
     colls:
       - emo
     fa6: f6d5
+    key: dragon
   dragon_face:
     friendly: dragon_face
     img: ../assets/img/emo/dragon-face.png
@@ -3576,7 +3558,6 @@ superdi:
       - place
       - travel
       - nature
-      - same
     colls:
       - emo
     fa6: f043
@@ -3590,7 +3571,6 @@ superdi:
       - object
       - music
       - instrument
-      - same
     colls:
       - emo
     fa6: f569
@@ -3600,7 +3580,6 @@ superdi:
     ga: E369
     text: '&#129414;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -3608,6 +3587,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: duck
   dumpling:
     friendly: dumpling
     img: ../assets/img/emo/dumpling.png
@@ -3675,15 +3655,14 @@ superdi:
     fa: f7fb
     text: '&#129370;'
     cats:
-      - action
       - object
       - best
       - drink
       - food
-      - same
     colls:
       - emo
     fa6: f7fb
+    key: egg
   eggplant:
     friendly: eggplant
     img: ../assets/img/emo/eggplant.png
@@ -3754,7 +3733,6 @@ superdi:
     ga: E36C
     text: '&#128024;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -3762,6 +3740,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: elephant
   elevator:
     friendly: elevator
     img: ../assets/img/emo/elevator.png
@@ -3827,7 +3806,6 @@ superdi:
     text: '&#9993;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f0e0
@@ -3909,7 +3887,6 @@ superdi:
       - object
       - best
       - body
-      - same
     colls:
       - emo
     fa6: f06e
@@ -4448,7 +4425,6 @@ superdi:
       - object
       - best
       - nature
-      - same
     colls:
       - emo
     fa6: f52d
@@ -4496,7 +4472,6 @@ superdi:
       - sport
       - transport
       - travel
-      - same
     colls:
       - emo
     fa6: e4ea
@@ -4524,12 +4499,12 @@ superdi:
     img: ../assets/img/emo/file-folder.png
     text: '&#128193;'
     cats:
-      - action
       - object
       - best
       - office
     colls:
       - emo
+    key: file_folder
   film_frames:
     friendly: film_frames
     img: ../assets/img/emo/film-frames.png
@@ -4560,7 +4535,6 @@ superdi:
       - place
       - travel
       - element
-      - same
     colls:
       - emo
     fa6: f06d
@@ -4585,7 +4559,6 @@ superdi:
     cats:
       - object
       - household
-      - same
     colls:
       - emo
     fa6: f134
@@ -4641,7 +4614,6 @@ superdi:
       - animal
       - marine
       - nature
-      - same
     colls:
       - emo
     fa6: f578
@@ -4701,7 +4673,6 @@ superdi:
     ga: E370
     text: '&#129449;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -4709,18 +4680,19 @@ superdi:
       - nature
     colls:
       - emo
+    key: flamingo
   flashlight:
     friendly: flashlight
     img: ../assets/img/emo/flashlight.png
     ga: E00C
     text: '&#128294;'
     cats:
-      - action
       - object
       - best
       - tool
     colls:
       - emo
+    key: flashlight
   flat_shoe:
     friendly: flat_shoe
     img: ../assets/img/emo/flat-shoe.png
@@ -4763,7 +4735,6 @@ superdi:
     text: '&#128190;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f0c7
@@ -4772,10 +4743,10 @@ superdi:
     img: ../assets/img/emo/flower-playing-cards.png
     text: '&#127924;'
     cats:
-      - action
       - object
     colls:
       - emo
+    key: flower_playing_cards
   flushed_face:
     friendly: flushed_face
     img: ../assets/img/emo/flushed-face.png
@@ -4868,18 +4839,17 @@ superdi:
     img: ../assets/img/emo/foot.png
     text: '&#129462;'
     cats:
-      - action
       - object
       - best
       - body
     colls:
       - emo
+    key: foot
   footprints:
     friendly: footprints
     img: ../assets/img/emo/footprints.png
     text: '&#128099;'
     cats:
-      - action
       - object
       - best
       - body
@@ -4887,6 +4857,7 @@ superdi:
       - symbol
     colls:
       - emo
+    key: footprints
   fork_and_knife:
     friendly: fork_and_knife
     img: ../assets/img/emo/fork-and-knife.png
@@ -4926,13 +4897,13 @@ superdi:
     ga: E801
     text: '&#9970;'
     cats:
-      - action
       - object
       - best
       - place
       - travel
     colls:
       - emo
+    key: fountain
   fountain_pen:
     friendly: fountain_pen
     img: ../assets/img/emo/fountain-pen.png
@@ -4987,11 +4958,11 @@ superdi:
     img: ../assets/img/emo/framed-picture.png
     text: '&#128444;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: framed_picture
   free_button:
     friendly: free_button
     img: ../assets/img/emo/free-button.png
@@ -5027,7 +4998,6 @@ superdi:
       - animal
       - amphibian
       - nature
-      - same
     colls:
       - emo
     fa6: f52e
@@ -5107,19 +5077,18 @@ superdi:
     img: ../assets/img/emo/game-die.png
     text: '&#127922;'
     cats:
-      - action
       - object
       - best
       - game
     colls:
       - emo
+    key: game_die
   garlic:
     friendly: garlic
     img: ../assets/img/emo/garlic.png
     ga: EAA2
     text: '&#129476;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -5128,19 +5097,19 @@ superdi:
       - plant
     colls:
       - emo
+    key: garlic
   gear:
     friendly: gear
     img: ../assets/img/emo/gear.png
     text: '&#9881;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f013
+    key: gear
   gem_stone:
     friendly: gem_stone
     img: ../assets/img/emo/gem-stone.png
@@ -5199,7 +5168,6 @@ superdi:
       - face
       - smiley
       - mythical
-      - same
     colls:
       - emo
     fa6: f6e2
@@ -5245,15 +5213,14 @@ superdi:
     fa: f530
     text: '&#128083;'
     cats:
-      - action
       - object
       - best
       - clothing
       - accessory
-      - same
     colls:
       - emo
     fa6: f530
+    key: glasses
   globe_showing_americas:
     friendly: globe_showing_americas
     img: ../assets/img/emo/globe-showing-americas.png
@@ -5297,12 +5264,12 @@ superdi:
     ga: E96A
     text: '&#129508;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: gloves
   glowing_star:
     friendly: glowing_star
     img: ../assets/img/emo/glowing-star.png
@@ -5380,7 +5347,6 @@ superdi:
     cats:
       - object
       - clothing
-      - same
     colls:
       - emo
     fa6: f19d
@@ -5390,7 +5356,6 @@ superdi:
     ga: E5CC
     text: '&#127815;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -5398,6 +5363,7 @@ superdi:
       - fruit
     colls:
       - emo
+    key: grapes
   green_apple:
     friendly: green_apple
     img: ../assets/img/emo/green-apple.png
@@ -5414,11 +5380,11 @@ superdi:
     img: ../assets/img/emo/green-book.png
     text: '&#128215;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: green_book
   green_circle:
     friendly: green_circle
     img: ../assets/img/emo/green-circle.png
@@ -5552,11 +5518,11 @@ superdi:
     img: ../assets/img/emo/guard.png
     text: '&#128130;'
     cats:
-      - action
       - body
       - person
     colls:
       - emo
+    key: guard
   guide_dog:
     friendly: guide_dog
     img: ../assets/img/emo/guide-dog.png
@@ -5574,7 +5540,6 @@ superdi:
       - object
       - music
       - instrument
-      - same
     colls:
       - emo
     fa6: f7a6
@@ -5611,14 +5576,13 @@ superdi:
     fa: f6e3
     text: '&#128296;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f6e3
+    key: hammer
   hammer_and_pick:
     friendly: hammer_and_pick
     img: ../assets/img/emo/hammer-and-pick.png
@@ -5692,7 +5656,6 @@ superdi:
       - body
       - hand
       - gesture
-      - same
     colls:
       - emo
     fa6: f2b5
@@ -5711,22 +5674,22 @@ superdi:
     img: ../assets/img/emo/headphone.png
     text: '&#127911;'
     cats:
-      - action
       - object
       - best
       - music
     colls:
       - emo
+    key: headphone
   headscarf:
     friendly: headscarf
     img: ../assets/img/emo/woman-with-headscarf.png
     text: '&#129493;'
     cats:
-      - action
       - body
       - person
     colls:
       - emo
+    key: headscarf
   headstone:
     friendly: headstone
     img: ../assets/img/emo/headstone.png
@@ -5788,12 +5751,12 @@ superdi:
     img: ../assets/img/emo/heart-suit.png
     text: '&#9829;'
     cats:
-      - action
       - object
       - best
       - game
     colls:
       - emo
+    key: heart_suit
   heart_with_arrow:
     friendly: heart_with_arrow
     img: ../assets/img/emo/heart-with-arrow.png
@@ -5835,7 +5798,6 @@ superdi:
     img: ../assets/img/emo/hedgehog.png
     text: '&#129428;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -5843,6 +5805,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: hedgehog
   helicopter:
     friendly: helicopter
     img: ../assets/img/emo/helicopter.png
@@ -5850,7 +5813,6 @@ superdi:
     fa: f533
     text: '&#128641;'
     cats:
-      - action
       - object
       - best
       - place
@@ -5858,10 +5820,10 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f533
+    key: helicopter
   herb:
     friendly: herb
     img: ../assets/img/emo/herb.png
@@ -6014,7 +5976,6 @@ superdi:
       - animal
       - mammal
       - nature
-      - same
     colls:
       - emo
     fa6: f6f0
@@ -6089,7 +6050,6 @@ superdi:
       - drink
       - food
       - object
-      - same
     colls:
       - emo
     fa6: f80f
@@ -6121,17 +6081,16 @@ superdi:
     ga: E7CB
     text: '&#127968;'
     cats:
-      - action
       - object
       - best
       - place
       - travel
       - building
       - structure
-      - same
     colls:
       - emo
     fa6: f015
+    key: house
   house_with_garden:
     friendly: house_with_garden
     img: ../assets/img/emo/house-with-garden.png
@@ -6216,7 +6175,6 @@ superdi:
       - drink
       - food
       - object
-      - same
     colls:
       - emo
     fa6: f810
@@ -6304,7 +6262,6 @@ superdi:
     text: '&#9854;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f534
@@ -6360,11 +6317,11 @@ superdi:
     img: ../assets/img/emo/jack-o-lantern.png
     text: '&#127875;'
     cats:
-      - action
       - object
       - event
     colls:
       - emo
+    key: jack_o_lantern
   japanese_acceptable_button:
     friendly: japanese_acceptable_button
     img: ../assets/img/emo/japanese-acceptable-button.png
@@ -6520,7 +6477,6 @@ superdi:
     img: ../assets/img/emo/jar.png
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: e516
@@ -6529,22 +6485,22 @@ superdi:
     img: ../assets/img/emo/jeans.png
     text: '&#128086;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: jeans
   joker:
     friendly: joker
     img: ../assets/img/emo/joker.png
     text: '&#127183;'
     cats:
-      - action
       - object
       - game
     colls:
       - emo
+    key: joker
   joystick:
     friendly: joystick
     img: ../assets/img/emo/joystick.png
@@ -6603,14 +6559,13 @@ superdi:
     fa: f11c
     text: '&#9000;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f11c
+    key: keyboard
   keycap:
     friendly: keycap
     img: ../assets/img/emo/keycap.png
@@ -6886,10 +6841,10 @@ superdi:
     ga: E54A
     text: '&#129698;'
     cats:
-      - action
       - object
     colls:
       - emo
+    key: knot
   lab_coat:
     friendly: lab_coat
     img: ../assets/img/emo/lab-coat.png
@@ -6940,7 +6895,6 @@ superdi:
     ga: E40A
     text: '&#128030;'
     cats:
-      - action
       - animal
       - bug
       - object
@@ -6949,6 +6903,7 @@ superdi:
       - insect
     colls:
       - emo
+    key: ladybug
   laptop:
     friendly: laptop
     fa: f109
@@ -6956,7 +6911,6 @@ superdi:
     cats:
       - object
       - tool
-      - same
     colls:
       - emo
     fa6: f109
@@ -7123,16 +7077,15 @@ superdi:
     fa: f094
     text: '&#127819;'
     cats:
-      - action
       - object
       - best
       - drink
       - food
       - fruit
-      - same
     colls:
       - emo
     fa6: f094
+    key: lemon
   leopard:
     friendly: leopard
     img: ../assets/img/emo/leopard.png
@@ -7211,7 +7164,6 @@ superdi:
       - object
       - tool
       - symbol
-      - same
     colls:
       - emo
     fa6: f0c1
@@ -7455,7 +7407,6 @@ superdi:
     cats:
       - object
       - tool
-      - same
     colls:
       - emo
     fa6: f076
@@ -7530,12 +7481,12 @@ superdi:
     img: ../assets/img/emo/mans-shoe.png
     text: '&#128094;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: mans_shoe
   mantelpiece_clock:
     friendly: mantelpiece_clock
     img: ../assets/img/emo/mantelpiece-clock.png
@@ -7649,12 +7600,11 @@ superdi:
     fa: f5a2
     text: '&#127941;'
     cats:
-      - action
       - object
-      - same
     colls:
       - emo
     fa6: f5a2
+    key: medal
   medical_symbol:
     friendly: medical_symbol
     img: ../assets/img/emo/medical-symbol.png
@@ -7738,7 +7688,6 @@ superdi:
     text: '&#128334;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f676
@@ -7809,7 +7758,6 @@ superdi:
       - best
       - music
       - tool
-      - same
     colls:
       - emo
     fa6: f130
@@ -7825,7 +7773,6 @@ superdi:
       - best
       - science
       - tool
-      - same
     colls:
       - emo
     fa6: f610
@@ -7853,11 +7800,11 @@ superdi:
     img: ../assets/img/emo/military-medal.png
     text: '&#127894;'
     cats:
-      - action
       - object
       - event
     colls:
       - emo
+    key: military_medal
   milky_way:
     friendly: milky_way
     img: ../assets/img/emo/milky-way.png
@@ -7885,7 +7832,6 @@ superdi:
     text: '&#10134;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f068
@@ -7927,11 +7873,11 @@ superdi:
     img: ../assets/img/emo/mobile-phone.png
     text: '&#128241;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: mobile_phone
   mobile_phone_off:
     friendly: mobile_phone_off
     img: ../assets/img/emo/mobile-phone-off.png
@@ -7978,7 +7924,6 @@ superdi:
     ga: E3C8
     text: '&#128018;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -7986,6 +7931,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: monkey
   monkey_face:
     friendly: monkey_face
     img: ../assets/img/emo/monkey-face.png
@@ -8035,7 +7981,6 @@ superdi:
       - travel
       - building
       - structure
-      - same
     colls:
       - emo
     fa6: f678
@@ -8044,17 +7989,16 @@ superdi:
     img: ../assets/img/emo/mosquito.png
     text: '&#129439;'
     cats:
-      - action
       - animal
       - bug
       - object
       - best
       - nature
       - insect
-      - same
     colls:
       - emo
     fa6: e52b
+    key: mosquito
   motor_boat:
     friendly: motor_boat
     img: ../assets/img/emo/motor-boat.png
@@ -8090,7 +8034,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f21c
@@ -8128,7 +8071,6 @@ superdi:
       - place
       - travel
       - landscape
-      - same
     colls:
       - emo
     fa6: f6fc
@@ -8234,7 +8176,6 @@ superdi:
     ga: EBEA
     text: '&#127812;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -8243,6 +8184,7 @@ superdi:
       - plant
     colls:
       - emo
+    key: mushroom
   musical_keyboard:
     friendly: musical_keyboard
     img: ../assets/img/emo/musical-keyboard.png
@@ -8380,11 +8322,11 @@ superdi:
     img: ../assets/img/emo/nesting-dolls.png
     text: '&#129670;'
     cats:
-      - action
       - object
       - game
     colls:
       - emo
+    key: nesting_dolls
   neutral_face:
     friendly: neutral_face
     img: ../assets/img/emo/neutral-face.png
@@ -8425,7 +8367,6 @@ superdi:
     text: '&#128240;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f1ea
@@ -8719,7 +8660,6 @@ superdi:
     text: '&#128329;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f679
@@ -8816,7 +8756,6 @@ superdi:
     img: ../assets/img/emo/onion.png
     text: '&#129477;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -8824,6 +8763,7 @@ superdi:
       - vegetable
     colls:
       - emo
+    key: onion
   open_book:
     friendly: open_book
     img: ../assets/img/emo/open-book.png
@@ -8840,12 +8780,12 @@ superdi:
     img: ../assets/img/emo/open-file-folder.png
     text: '&#128194;'
     cats:
-      - action
       - object
       - best
       - office
     colls:
       - emo
+    key: open_file_folder
   open_hands:
     friendly: open_hands
     img: ../assets/img/emo/open-hands.png
@@ -8939,7 +8879,6 @@ superdi:
       - animal
       - mammal
       - nature
-      - same
     colls:
       - emo
     fa6: f700
@@ -8957,7 +8896,6 @@ superdi:
     ga: E3CC
     text: '&#129417;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -8965,6 +8903,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: owl
   ox:
     friendly: ox
     img: ../assets/img/emo/ox.png
@@ -9025,7 +8964,6 @@ superdi:
     cats:
       - object
       - tool
-      - same
     colls:
       - emo
     fa6: f815
@@ -9036,7 +8974,6 @@ superdi:
     cats:
       - object
       - art
-      - same
     colls:
       - emo
     fa6: f1fc
@@ -9053,7 +8990,6 @@ superdi:
     ga: E722
     text: '&#127796;'
     cats:
-      - action
       - animal
       - object
       - best
@@ -9061,6 +8997,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: palm_tree
   palm_up_hand:
     friendly: palm_up_hand
     img: ../assets/img/emo/palm-up-hand.png
@@ -9101,15 +9038,14 @@ superdi:
     fa: f0c6
     text: '&#128206;'
     cats:
-      - action
       - object
       - best
       - office
       - tool
-      - same
     colls:
       - emo
     fa6: f0c6
+    key: paperclip
   parachute:
     friendly: parachute
     img: ../assets/img/emo/parachute.png
@@ -9251,7 +9187,6 @@ superdi:
     img: ../assets/img/emo/peanuts.png
     text: '&#129372;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -9259,13 +9194,13 @@ superdi:
       - vegetable
     colls:
       - emo
+    key: peanuts
   pear:
     friendly: pear
     img: ../assets/img/emo/pear.png
     ga: EBD4
     text: '&#127824;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -9273,41 +9208,39 @@ superdi:
       - fruit
     colls:
       - emo
+    key: pear
   pen:
     friendly: pen
     img: ../assets/img/emo/pen.png
     fa: f304
     text: '&#128394;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f304
+    key: pen
   pencil:
     friendly: pencil
     img: ../assets/img/emo/pencil.png
     ga: EB99
     text: '&#9999;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f303
+    key: pencil
   penguin:
     friendly: penguin
     img: ../assets/img/emo/penguin.png
     ga: E37E
     text: '&#128039;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -9315,6 +9248,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: penguin
   pensive_face:
     friendly: pensive_face
     img: ../assets/img/emo/pensive-face.png
@@ -9385,7 +9319,6 @@ superdi:
     cats:
       - body
       - person
-      - same
     colls:
       - emo
     fa6: f183
@@ -9518,7 +9451,6 @@ superdi:
     ga: ECED
     text: '&#127821;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -9526,6 +9458,7 @@ superdi:
       - fruit
     colls:
       - emo
+    key: pineapple
   ping_pong:
     friendly: ping_pong
     img: ../assets/img/emo/ping-pong.png
@@ -9579,7 +9512,6 @@ superdi:
     text: '&#128720;'
     cats:
       - building
-      - same
     colls:
       - emo
     fa6: f67f
@@ -9676,11 +9608,11 @@ superdi:
     img: ../assets/img/emo/police-officer.png
     text: '&#128110;'
     cats:
-      - action
       - body
       - person
     colls:
       - emo
+    key: police_officer
   poodle:
     friendly: poodle
     img: ../assets/img/emo/poodle.png
@@ -9862,11 +9794,11 @@ superdi:
     img: ../assets/img/emo/pregnant-woman.png
     text: '&#129328;'
     cats:
-      - action
       - body
       - person
     colls:
       - emo
+    key: pregnant_woman
   pretzel:
     friendly: pretzel
     img: ../assets/img/emo/pretzel.png
@@ -9882,21 +9814,21 @@ superdi:
     img: ../assets/img/emo/prince.png
     text: '&#129332;'
     cats:
-      - action
       - body
       - person
     colls:
       - emo
+    key: prince
   princess:
     friendly: princess
     img: ../assets/img/emo/princess.png
     text: '&#128120;'
     cats:
-      - action
       - body
       - person
     colls:
       - emo
+    key: princess
   printer:
     friendly: printer
     img: ../assets/img/emo/printer.png
@@ -9960,12 +9892,12 @@ superdi:
     img: ../assets/img/emo/pushpin.png
     text: '&#128204;'
     cats:
-      - action
       - object
       - best
       - office
     colls:
       - emo
+    key: pushpin
   puzzle_piece:
     friendly: puzzle_piece
     img: ../assets/img/emo/puzzle-piece.png
@@ -9976,7 +9908,6 @@ superdi:
       - object
       - best
       - game
-      - same
     colls:
       - emo
     fa6: f12e
@@ -9994,7 +9925,6 @@ superdi:
     ga: E381
     text: '&#128007;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -10002,6 +9932,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: rabbit
   rabbit_face:
     friendly: rabbit_face
     img: ../assets/img/emo/rabbit-face.png
@@ -10089,7 +10020,6 @@ superdi:
       - place
       - travel
       - weather
-      - same
     colls:
       - emo
     fa6: f75b
@@ -10181,7 +10111,6 @@ superdi:
     text: '&#129534;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f543
@@ -10206,7 +10135,6 @@ superdi:
     img: ../assets/img/emo/red-apple.png
     text: '&#127822;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -10214,6 +10142,7 @@ superdi:
       - fruit
     colls:
       - emo
+    key: red_apple
   red_circle:
     friendly: red_circle
     img: ../assets/img/emo/red-circle.png
@@ -10284,7 +10213,6 @@ superdi:
     text: '&#174;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f25d
@@ -10355,7 +10283,6 @@ superdi:
     cats:
       - symbol
       - object
-      - same
     colls:
       - emo
     fa6: f7bd
@@ -10382,7 +10309,6 @@ superdi:
     img: ../assets/img/emo/rhinoceros.png
     text: '&#129423;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -10390,6 +10316,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: rhinoceros
   ribbon:
     friendly: ribbon
     img: ../assets/img/emo/ribbon.png
@@ -10397,13 +10324,12 @@ superdi:
     fa: f4d6
     text: '&#127872;'
     cats:
-      - action
       - object
       - event
-      - same
     colls:
       - emo
     fa6: f4d6
+    key: ribbon
   rice_ball:
     friendly: rice_ball
     img: ../assets/img/emo/rice-ball.png
@@ -10506,7 +10432,6 @@ superdi:
       - object
       - clothing
       - jewelry
-      - same
     colls:
       - emo
     fa6: f70b
@@ -10549,7 +10474,6 @@ superdi:
       - face
       - smiley
       - object
-      - same
     colls:
       - emo
     fa6: f544
@@ -10579,7 +10503,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f135
@@ -10588,12 +10511,12 @@ superdi:
     img: ../assets/img/emo/roll-of-paper.png
     text: '&#129531;'
     cats:
-      - action
       - object
       - best
       - household
     colls:
       - emo
+    key: roll_of_paper
   rolled_up_newspaper:
     friendly: rolled_up_newspaper
     img: ../assets/img/emo/rolled-up-newspaper.png
@@ -10641,7 +10564,6 @@ superdi:
     ga: E384
     text: '&#128019;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -10649,6 +10571,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: rooster
   rose:
     friendly: rose
     img: ../assets/img/emo/rose.png
@@ -10747,12 +10670,12 @@ superdi:
     ga: EC18
     text: '&#129527;'
     cats:
-      - action
       - object
       - best
       - household
     colls:
       - emo
+    key: safety_pin
   safety_vest:
     friendly: safety_vest
     img: ../assets/img/emo/safety-vest.png
@@ -10773,7 +10696,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: e445
@@ -10789,7 +10711,6 @@ superdi:
     img: ../assets/img/emo/salt.png
     text: '&#129474;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -10797,6 +10718,7 @@ superdi:
       - seasoning
     colls:
       - emo
+    key: salt
   saluting_face:
     friendly: saluting_face
     img: ../assets/img/emo/saluting-face.png
@@ -10810,13 +10732,13 @@ superdi:
     ga: EBDB
     text: '&#129386;'
     cats:
-      - action
       - object
       - best
       - drink
       - food
     colls:
       - emo
+    key: sandwich
   santa_claus:
     friendly: santa_claus
     img: ../assets/img/emo/santa-claus.png
@@ -10846,7 +10768,6 @@ superdi:
       - transport
       - travel
       - object
-      - same
     colls:
       - emo
     fa6: f7bf
@@ -10865,7 +10786,6 @@ superdi:
     img: ../assets/img/emo/sauropod.png
     text: '&#129429;'
     cats:
-      - action
       - animal
       - reptile
       - object
@@ -10874,6 +10794,7 @@ superdi:
       - dinosaur
     colls:
       - emo
+    key: sauropod
   saxophone:
     friendly: saxophone
     img: ../assets/img/emo/saxophone.png
@@ -10904,7 +10825,6 @@ superdi:
       - travel
       - building
       - structure
-      - same
     colls:
       - emo
     fa6: f549
@@ -10921,22 +10841,20 @@ superdi:
     ga: E961
     text: '&#9986;'
     cats:
-      - action
       - object
       - best
       - office
       - tool
-      - same
     colls:
       - emo
     fa6: f0c4
+    key: scissors
   scorpion:
     friendly: scorpion
     img: ../assets/img/emo/scorpion.png
     ga: E3D8
     text: '&#129410;'
     cats:
-      - action
       - animal
       - bug
       - object
@@ -10945,6 +10863,7 @@ superdi:
       - arachnid
     colls:
       - emo
+    key: scorpion
   screwdriver:
     friendly: screwdriver
     img: ../assets/img/emo/screwdriver.png
@@ -10955,7 +10874,6 @@ superdi:
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f54a
@@ -10966,7 +10884,6 @@ superdi:
     text: '&#128220;'
     cats:
       - object
-      - same
     colls:
       - emo
     fa6: f70e
@@ -11013,7 +10930,6 @@ superdi:
       - animal
       - plant
       - nature
-      - same
     colls:
       - emo
     fa6: f4d8
@@ -11118,7 +11034,6 @@ superdi:
     img: ../assets/img/emo/sheaf-of-rice.png
     text: '&#127806;'
     cats:
-      - action
       - animal
       - object
       - best
@@ -11127,6 +11042,7 @@ superdi:
       - food
     colls:
       - emo
+    key: sheaf_of_rice
   sheep:
     friendly: sheep
     ga: E38A
@@ -11143,13 +11059,13 @@ superdi:
     ga: E067
     text: '&#128737;'
     cats:
-      - action
       - object
       - best
       - tool
     colls:
       - emo
     fa6: f132
+    key: shield
   shinto_shrine:
     friendly: shinto_shrine
     img: ../assets/img/emo/shinto-shrine.png
@@ -11172,7 +11088,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f21a
@@ -11235,7 +11150,6 @@ superdi:
     cats:
       - object
       - household
-      - same
     colls:
       - emo
     fa6: f2cc
@@ -11249,7 +11163,6 @@ superdi:
       - food
       - seafood
       - animal
-      - same
     colls:
       - emo
     fa6: e448
@@ -11364,7 +11277,6 @@ superdi:
       - smiley
       - symbol
       - object
-      - same
     colls:
       - emo
     fa6: f54c
@@ -11596,7 +11508,6 @@ superdi:
     ga: E3DC
     text: '&#128012;'
     cats:
-      - action
       - animal
       - bug
       - object
@@ -11605,13 +11516,13 @@ superdi:
       - invertebrate
     colls:
       - emo
+    key: snail
   snake:
     friendly: snake
     img: ../assets/img/emo/snake.png
     ga: E3DF
     text: '&#128013;'
     cats:
-      - action
       - animal
       - reptile
       - object
@@ -11619,6 +11530,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: snake
   sneezing_face:
     friendly: sneezing_face
     img: ../assets/img/emo/sneezing-face.png
@@ -11655,16 +11567,15 @@ superdi:
     fa: f2dc
     text: '&#10052;'
     cats:
-      - action
       - object
       - best
       - place
       - travel
       - weather
-      - same
     colls:
       - emo
     fa6: f2dc
+    key: snowflake
   snowman:
     friendly: snowman
     img: ../assets/img/emo/snowman.png
@@ -11676,7 +11587,6 @@ superdi:
       - place
       - travel
       - weather
-      - same
     colls:
       - emo
     fa6: f7d0
@@ -11698,7 +11608,6 @@ superdi:
     cats:
       - object
       - household
-      - same
     colls:
       - emo
     fa6: e06e
@@ -11720,26 +11629,25 @@ superdi:
     fa: f696
     text: '&#129510;'
     cats:
-      - action
       - object
       - best
       - clothing
-      - same
     colls:
       - emo
     fa6: f696
+    key: socks
   soft_ice_cream:
     friendly: soft_ice_cream
     img: ../assets/img/emo/soft-ice-cream.png
     text: '&#127846;'
     cats:
-      - action
       - object
       - best
       - drink
       - food
     colls:
       - emo
+    key: soft_ice_cream
   softball:
     friendly: softball
     img: ../assets/img/emo/softball.png
@@ -11771,12 +11679,12 @@ superdi:
     img: ../assets/img/emo/spade-suit.png
     text: '&#9824;'
     cats:
-      - action
       - object
       - game
       - symbol
     colls:
       - emo
+    key: spade_suit
   spaghetti:
     friendly: spaghetti
     img: ../assets/img/emo/spaghetti.png
@@ -11899,24 +11807,22 @@ superdi:
     fa: f717
     text: '&#128375;'
     cats:
-      - action
       - animal
       - bug
       - object
       - best
       - nature
       - arachnid
-      - same
     colls:
       - emo
     fa6: f717
+    key: spider
   spider_web:
     friendly: spider_web
     img: ../assets/img/emo/spider-web.png
     ga: E3E1
     text: '&#128376;'
     cats:
-      - action
       - animal
       - bug
       - object
@@ -11926,6 +11832,7 @@ superdi:
       - insect
     colls:
       - emo
+    key: spider_web
   spiral_calendar:
     friendly: spiral_calendar
     img: ../assets/img/emo/spiral-calendar.png
@@ -11972,7 +11879,6 @@ superdi:
     ga: E8D4
     text: '&#129348;'
     cats:
-      - action
       - object
       - best
       - dishware
@@ -11980,10 +11886,10 @@ superdi:
       - food
       - utensil
       - tool
-      - same
     colls:
       - emo
     fa6: f2e5
+    key: spoon
   sport_utility_vehicle:
     friendly: sport_utility_vehicle
     img: ../assets/img/emo/sport-utility-vehicle.png
@@ -12055,16 +11961,15 @@ superdi:
     fa: f005
     text: '&#11088;'
     cats:
-      - action
       - object
       - best
       - place
       - travel
       - symbol
-      - same
     colls:
       - emo
     fa6: f005
+    key: star
   star_and_crescent:
     friendly: star_and_crescent
     img: ../assets/img/emo/star-and-crescent.png
@@ -12072,7 +11977,6 @@ superdi:
     text: '&#9770;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f699
@@ -12083,7 +11987,6 @@ superdi:
     text: '&#10017;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f69a
@@ -12146,15 +12049,14 @@ superdi:
     fa: f0f1
     text: '&#129658;'
     cats:
-      - action
       - object
       - best
       - medical
       - tool
-      - same
     colls:
       - emo
     fa6: f0f1
+    key: stethoscope
   stop_button:
     friendly: stop_button
     img: ../assets/img/emo/stop-button.png
@@ -12184,36 +12086,34 @@ superdi:
     fa: f2f2
     text: '&#9201;'
     cats:
-      - action
       - object
       - best
       - place
       - time
       - travel
       - tool
-      - same
     colls:
       - emo
     fa6: f2f2
+    key: stopwatch
   straight_ruler:
     friendly: straight_ruler
     img: ../assets/img/emo/straight-ruler.png
     text: '&#128207;'
     cats:
-      - action
       - object
       - best
       - office
       - tool
     colls:
       - emo
+    key: straight_ruler
   strawberry:
     friendly: strawberry
     img: ../assets/img/emo/strawberry.png
     ga: ECF0
     text: '&#127827;'
     cats:
-      - action
       - object
       - best
       - drink
@@ -12221,6 +12121,7 @@ superdi:
       - fruit
     colls:
       - emo
+    key: strawberry
   student:
     friendly: student
     img: ../assets/img/emo/student.png
@@ -12262,7 +12163,6 @@ superdi:
     cats:
       - nature
       - symbol
-      - same
     colls:
       - emo
     fa6: f185
@@ -12402,7 +12302,6 @@ superdi:
     ga: E3E7
     text: '&#129442;'
     cats:
-      - action
       - animal
       - bird
       - object
@@ -12410,6 +12309,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: swan
   sweat_droplets:
     friendly: sweat_droplets
     img: ../assets/img/emo/sweat-droplets.png
@@ -12440,7 +12340,6 @@ superdi:
       - travel
       - building
       - structure
-      - same
     colls:
       - emo
     fa6: f69b
@@ -12454,7 +12353,6 @@ superdi:
       - object
       - medical
       - tool
-      - same
     colls:
       - emo
     fa6: f48e
@@ -12472,12 +12370,12 @@ superdi:
     ga: EC1E
     text: '&#128085;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: t_shirt
   taco:
     friendly: taco
     img: ../assets/img/emo/taco.png
@@ -12541,7 +12439,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f1ba
@@ -12588,11 +12485,11 @@ superdi:
     img: ../assets/img/emo/teddy-bear.png
     text: '&#129528;'
     cats:
-      - action
       - object
       - game
     colls:
       - emo
+    key: teddy_bear
   telephone:
     friendly: telephone
     img: ../assets/img/emo/telephone.png
@@ -12666,7 +12563,6 @@ superdi:
       - place
       - travel
       - object
-      - same
     colls:
       - emo
     fa6: e57d
@@ -12691,7 +12587,6 @@ superdi:
       - travel
       - medical
       - tool
-      - same
     colls:
       - emo
     fa6: f491
@@ -12730,11 +12625,11 @@ superdi:
     img: ../assets/img/emo/thread.png
     text: '&#129525;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: thread
   three_o'clock:
     friendly: three_o'clock
     text: '&#128338;'
@@ -12767,7 +12662,6 @@ superdi:
       - hand
       - gesture
       - symbol
-      - same
     colls:
       - emo
     fa6: f165
@@ -12781,7 +12675,6 @@ superdi:
       - hand
       - gesture
       - symbol
-      - same
     colls:
       - emo
     fa6: f164
@@ -12803,7 +12696,6 @@ superdi:
     ga: E38E
     text: '&#128005;'
     cats:
-      - action
       - animal
       - mammal
       - object
@@ -12811,6 +12703,7 @@ superdi:
       - nature
     colls:
       - emo
+    key: tiger
   tiger_face:
     friendly: tiger_face
     img: ../assets/img/emo/tiger-face.png
@@ -12852,14 +12745,13 @@ superdi:
     fa: f7d8
     text: '&#128701;'
     cats:
-      - action
       - object
       - best
       - household
-      - same
     colls:
       - emo
     fa6: f7d8
+    key: toilet
   tokyo_tower:
     friendly: tokyo_tower
     img: ../assets/img/emo/tokyo-tower.png
@@ -12895,14 +12787,13 @@ superdi:
     fa: f552
     text: '&#129520;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f552
+    key: toolbox
   tooth:
     friendly: tooth
     img: ../assets/img/emo/tooth.png
@@ -12910,14 +12801,13 @@ superdi:
     fa: f5c9
     text: '&#129463;'
     cats:
-      - action
       - object
       - best
       - body
-      - same
     colls:
       - emo
     fa6: f5c9
+    key: tooth
   toothbrush:
     friendly: toothbrush
     img: ../assets/img/emo/toothbrush.png
@@ -12942,12 +12832,12 @@ superdi:
     ga: E1C9
     text: '&#127913;'
     cats:
-      - action
       - object
       - best
       - clothing
     colls:
       - emo
+    key: top_hat
   tornado:
     friendly: tornado
     img: ../assets/img/emo/tornado.png
@@ -12980,7 +12870,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f722
@@ -13003,7 +12892,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - emo
     fa6: f238
@@ -13082,13 +12970,12 @@ superdi:
     fa: f091
     text: '&#127942;'
     cats:
-      - action
       - object
       - event
-      - same
     colls:
       - emo
     fa6: f091
+    key: trophy
   tropical_drink:
     friendly: tropical_drink
     img: ../assets/img/emo/tropical-drink.png
@@ -13226,16 +13113,15 @@ superdi:
     fa: f0e9
     text: '&#9730;'
     cats:
-      - action
       - object
       - best
       - place
       - travel
       - weather
-      - same
     colls:
       - emo
     fa6: f0e9
+    key: umbrella
   umbrella_on_ground:
     friendly: umbrella_on_ground
     img: ../assets/img/emo/umbrella-on-ground.png
@@ -13447,7 +13333,6 @@ superdi:
       - action
       - object
       - sport
-      - same
     colls:
       - emo
     fa6: f45f
@@ -13527,7 +13412,6 @@ superdi:
     ga: EC6D
     text: '&#8986;'
     cats:
-      - action
       - object
       - best
       - place
@@ -13536,6 +13420,7 @@ superdi:
       - accessory
     colls:
       - emo
+    key: watch
   water_buffalo:
     friendly: water_buffalo
     img: ../assets/img/emo/water-buffalo.png
@@ -13834,7 +13719,6 @@ superdi:
       - drink
       - food
       - dishware
-      - same
     colls:
       - emo
     fa6: f4e3
@@ -14008,7 +13892,6 @@ superdi:
       - bug
       - nature
       - invertebrate
-      - same
     colls:
       - emo
     fa6: e599
@@ -14027,11 +13910,11 @@ superdi:
     img: ../assets/img/emo/wrapped-gift.png
     text: '&#127873;'
     cats:
-      - action
       - object
       - event
     colls:
       - emo
+    key: wrapped_gift
   wrench:
     friendly: wrench
     img: ../assets/img/emo/wrench.png
@@ -14039,14 +13922,13 @@ superdi:
     fa: f0ad
     text: '&#128295;'
     cats:
-      - action
       - object
       - best
       - tool
-      - same
     colls:
       - emo
     fa6: f0ad
+    key: wrench
   wrestling:
     friendly: wrestling
     text: '&#129340;'
@@ -14073,11 +13955,11 @@ superdi:
     img: ../assets/img/emo/yarn.png
     text: '&#129526;'
     cats:
-      - action
       - object
       - best
     colls:
       - emo
+    key: yarn
   yawning_face:
     friendly: yawning_face
     img: ../assets/img/emo/yawning-face.png
@@ -14131,7 +14013,6 @@ superdi:
     text: '&#9775;'
     cats:
       - symbol
-      - same
     colls:
       - emo
     fa6: f6ad
@@ -14140,12 +14021,12 @@ superdi:
     img: ../assets/img/emo/yo-yo.png
     text: '&#129664;'
     cats:
-      - action
       - object
       - game
       - toy
     colls:
       - emo
+    key: yo_yo
   yummy:
     friendly: yummy
     text: '&#128523;'
@@ -15148,7 +15029,6 @@ superdi:
     fa: f2b9
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f2b9
@@ -15157,7 +15037,6 @@ superdi:
     fa: f2bb
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f2bb
@@ -15327,7 +15206,6 @@ superdi:
     fa: f037
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f037
@@ -15336,7 +15214,6 @@ superdi:
     fa: f039
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f039
@@ -15345,7 +15222,6 @@ superdi:
     fa: f036
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f036
@@ -15354,7 +15230,6 @@ superdi:
     fa: f038
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f038
@@ -15580,7 +15455,6 @@ superdi:
     fa: f107
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f107
@@ -15589,7 +15463,6 @@ superdi:
     fa: f104
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f104
@@ -15598,7 +15471,6 @@ superdi:
     fa: f105
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f105
@@ -15607,7 +15479,6 @@ superdi:
     fa: f106
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f106
@@ -15666,7 +15537,6 @@ superdi:
     fa: f644
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f644
@@ -15858,7 +15728,6 @@ superdi:
     fa: f557
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f557
@@ -16050,7 +15919,6 @@ superdi:
     fa: f063
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f063
@@ -16073,7 +15941,6 @@ superdi:
     fa: f060
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f060
@@ -16082,7 +15949,6 @@ superdi:
     fa: f061
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f061
@@ -16098,7 +15964,6 @@ superdi:
     fa: f062
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f062
@@ -16273,7 +16138,6 @@ superdi:
     fa: f5d2
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f5d2
@@ -16317,7 +16181,6 @@ superdi:
     fa: f29e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f29e
@@ -16403,7 +16266,6 @@ superdi:
     fa: f77d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f77d
@@ -16475,7 +16337,6 @@ superdi:
     fa: f04a
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f04a
@@ -16589,7 +16450,6 @@ superdi:
     fa: f05e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f05e
@@ -16739,7 +16599,6 @@ superdi:
     fa: f02a
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f02a
@@ -16790,7 +16649,6 @@ superdi:
     fa: f0c9
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0c9
@@ -16877,7 +16735,6 @@ superdi:
     fa: f2cd
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f2cd
@@ -16942,7 +16799,6 @@ superdi:
     fa: f244
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f244
@@ -16951,7 +16807,6 @@ superdi:
     fa: f240
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f240
@@ -16960,7 +16815,6 @@ superdi:
     fa: f242
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f242
@@ -16997,7 +16851,6 @@ superdi:
     fa: f243
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f243
@@ -17006,7 +16859,6 @@ superdi:
     fa: f241
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f241
@@ -17219,7 +17071,6 @@ superdi:
     fa: f1f6
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f1f6
@@ -17277,7 +17128,6 @@ superdi:
     fa: f55b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f55b
@@ -17336,7 +17186,6 @@ superdi:
     fa: f1e5
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1e5
@@ -17527,7 +17376,6 @@ superdi:
     fa: f517
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f517
@@ -17536,7 +17384,6 @@ superdi:
     fa: f6b6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f6b6
@@ -17566,7 +17413,6 @@ superdi:
     fa: f781
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f781
@@ -17687,7 +17533,6 @@ superdi:
     fa: f032
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f032
@@ -17703,7 +17548,6 @@ superdi:
     fa: f0e7
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0e7
@@ -17803,7 +17647,6 @@ superdi:
     fa: f55c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f55c
@@ -17819,7 +17662,6 @@ superdi:
     fa: f02d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f02d
@@ -17856,7 +17698,6 @@ superdi:
     fa: f7e6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f7e6
@@ -17865,7 +17706,6 @@ superdi:
     fa: f518
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f518
@@ -17965,7 +17805,6 @@ superdi:
     fa: f84c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f84c
@@ -17974,7 +17813,6 @@ superdi:
     fa: f850
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f850
@@ -18116,7 +17954,6 @@ superdi:
     fa: f436
     cats:
       - sport
-      - same
     colls:
       - icon
     fa6: f436
@@ -18153,7 +17990,6 @@ superdi:
     fa: f466
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f466
@@ -18169,7 +18005,6 @@ superdi:
     fa: f49e
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f49e
@@ -18220,7 +18055,6 @@ superdi:
     fa: f2a1
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f2a1
@@ -18314,7 +18148,6 @@ superdi:
     fa: f7ec
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f7ec
@@ -18351,7 +18184,6 @@ superdi:
     ga: EB32
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: e4c8
@@ -18360,7 +18192,6 @@ superdi:
     fa: f469
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f469
@@ -18488,7 +18319,6 @@ superdi:
     fa: f55d
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f55d
@@ -18568,7 +18398,6 @@ superdi:
     fa: f1ad
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f1ad
@@ -18619,7 +18448,6 @@ superdi:
     fa: f0a1
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0a1
@@ -18629,7 +18457,6 @@ superdi:
     fa: f140
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f140
@@ -18772,7 +18599,6 @@ superdi:
     fa: f64a
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f64a
@@ -18893,7 +18719,6 @@ superdi:
     fa: f1ec
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1ec
@@ -18916,7 +18741,6 @@ superdi:
     fa: f274
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f274
@@ -18925,7 +18749,6 @@ superdi:
     fa: f783
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f783
@@ -18934,7 +18757,6 @@ superdi:
     fa: f272
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f272
@@ -18943,7 +18765,6 @@ superdi:
     fa: f271
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f271
@@ -18959,7 +18780,6 @@ superdi:
     fa: f784
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f784
@@ -18996,7 +18816,6 @@ superdi:
     fa: f083
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f083
@@ -19019,7 +18838,6 @@ superdi:
     fa: f6bb
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f6bb
@@ -19099,7 +18917,6 @@ superdi:
     fa: f786
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f786
@@ -19115,7 +18932,6 @@ superdi:
     fa: f55f
     cats:
       - plant
-      - same
     colls:
       - icon
     fa6: f55f
@@ -19174,7 +18990,6 @@ superdi:
     fa: f46b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f46b
@@ -19190,7 +19005,6 @@ superdi:
     fa: f1b9
     cats:
       - transport
-      - same
     colls:
       - icon
     fa6: f1b9
@@ -19207,7 +19021,6 @@ superdi:
     fa: f5df
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5df
@@ -19244,7 +19057,6 @@ superdi:
     fa: f5e4
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5e4
@@ -19716,7 +19528,6 @@ superdi:
     fa: f0d7
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0d7
@@ -19725,7 +19536,6 @@ superdi:
     fa: f0d9
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0d9
@@ -19734,7 +19544,6 @@ superdi:
     fa: f0da
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0da
@@ -19771,7 +19580,6 @@ superdi:
     fa: f0d8
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0d8
@@ -19857,7 +19665,6 @@ superdi:
     fa: f218
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f218
@@ -19866,7 +19673,6 @@ superdi:
     fa: f217
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f217
@@ -19889,7 +19695,6 @@ superdi:
     fa: f788
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f788
@@ -20031,7 +19836,6 @@ superdi:
     fa: f0a3
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0a3
@@ -20096,7 +19900,6 @@ superdi:
     fa: f51b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f51b
@@ -20154,7 +19957,6 @@ superdi:
     fa: f5e7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5e7
@@ -20184,7 +19986,6 @@ superdi:
     fa: f1fe
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1fe
@@ -20193,7 +19994,6 @@ superdi:
     fa: f080
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f080
@@ -20202,7 +20002,6 @@ superdi:
     fa: f201
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f201
@@ -20211,7 +20010,6 @@ superdi:
     fa: f200
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f200
@@ -20227,7 +20025,6 @@ superdi:
     fa: f00c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f00c
@@ -20243,7 +20040,6 @@ superdi:
     fa: f560
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f560
@@ -20301,7 +20097,6 @@ superdi:
     fa: f7ef
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f7ef
@@ -20366,7 +20161,6 @@ superdi:
     fa: f439
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f439
@@ -20375,17 +20169,17 @@ superdi:
     ga: E175
     fa: f43a
     cats:
+      - chess piece
       - game
-      - same
     colls:
       - icon
     fa6: f43a
+    key: chess_bishop
   chess_board:
     friendly: chess_board
     fa: f43c
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f43c
@@ -20395,7 +20189,6 @@ superdi:
     fa: f43f
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f43f
@@ -20405,7 +20198,6 @@ superdi:
     fa: f441
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f441
@@ -20415,7 +20207,6 @@ superdi:
     fa: f445
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f445
@@ -20424,11 +20215,12 @@ superdi:
     ga: E17A
     fa: f447
     cats:
+      - chess piece
       - game
-      - same
     colls:
       - icon
     fa6: f447
+    key: chess_rook
   chest:
     friendly: chest
     ga: E990
@@ -20483,7 +20275,6 @@ superdi:
     fa: f078
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f078
@@ -20492,7 +20283,6 @@ superdi:
     fa: f053
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f053
@@ -20501,7 +20291,6 @@ superdi:
     fa: f054
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f054
@@ -20510,7 +20299,6 @@ superdi:
     fa: f077
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f077
@@ -20604,7 +20392,6 @@ superdi:
     fa: f111
     cats:
       - shape
-      - same
     colls:
       - icon
     fa6: f111
@@ -20627,7 +20414,6 @@ superdi:
     fa: f1ce
     cats:
       - shape
-      - same
     colls:
       - icon
     fa6: f1ce
@@ -20664,7 +20450,6 @@ superdi:
     fa: f64f
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f64f
@@ -20680,7 +20465,6 @@ superdi:
     ga: EB84
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: e131
@@ -20759,7 +20543,6 @@ superdi:
     fa: f46c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f46c
@@ -20768,7 +20551,6 @@ superdi:
     fa: f46d
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f46d
@@ -20791,7 +20573,6 @@ superdi:
     fa: f017
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f017
@@ -20814,7 +20595,6 @@ superdi:
     fa: f24d
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f24d
@@ -20830,7 +20610,6 @@ superdi:
     fa: f20a
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f20a
@@ -20881,7 +20660,6 @@ superdi:
     fa: f73b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f73b
@@ -20890,7 +20668,6 @@ superdi:
     fa: f6c3
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f6c3
@@ -20899,7 +20676,6 @@ superdi:
     fa: f73c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f73c
@@ -20908,7 +20684,6 @@ superdi:
     fa: f73d
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f73d
@@ -20924,7 +20699,6 @@ superdi:
     fa: f740
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f740
@@ -20933,7 +20707,6 @@ superdi:
     fa: f6c4
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f6c4
@@ -20942,7 +20715,6 @@ superdi:
     fa: f743
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f743
@@ -20979,7 +20751,6 @@ superdi:
     ga: E0BC
     cats:
       - plant
-      - same
     colls:
       - icon
     fa6: e139
@@ -21072,7 +20843,6 @@ superdi:
     fa: f121
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f121
@@ -21081,7 +20851,6 @@ superdi:
     fa: f126
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f126
@@ -21162,7 +20931,6 @@ superdi:
     fa: f51e
     cats:
       - currency
-      - same
     colls:
       - icon
     fa6: f51e
@@ -21248,7 +21016,6 @@ superdi:
     fa: f075
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f075
@@ -21264,7 +21031,6 @@ superdi:
     fa: f651
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f651
@@ -21273,7 +21039,6 @@ superdi:
     fa: f4ad
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4ad
@@ -21282,7 +21047,6 @@ superdi:
     fa: f7f5
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f7f5
@@ -21291,7 +21055,6 @@ superdi:
     fa: f4b3
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4b3
@@ -21300,7 +21063,6 @@ superdi:
     fa: f086
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f086
@@ -21309,7 +21071,6 @@ superdi:
     fa: f653
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f653
@@ -21319,7 +21080,6 @@ superdi:
     fa: f51f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f51f
@@ -21335,7 +21095,6 @@ superdi:
     fa: f066
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f066
@@ -21505,7 +21264,6 @@ superdi:
     fa: f564
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f564
@@ -21535,7 +21293,6 @@ superdi:
     fa: f0c5
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f0c5
@@ -21629,7 +21386,6 @@ superdi:
     fa: f4b8
     cats:
       - furniture
-      - same
     colls:
       - icon
     fa6: f4b8
@@ -21848,7 +21604,6 @@ superdi:
     fa: f125
     cats:
       - plant
-      - same
     colls:
       - icon
     fa6: f125
@@ -21864,7 +21619,6 @@ superdi:
     fa: f654
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f654
@@ -21971,7 +21725,6 @@ superdi:
     fa: f05b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f05b
@@ -21980,7 +21733,6 @@ superdi:
     fa: f520
     cats:
       - animal
-      - same
     colls:
       - icon
     fa6: f520
@@ -22074,7 +21826,6 @@ superdi:
     fa: f7f7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f7f7
@@ -22161,7 +21912,6 @@ superdi:
     fa: f1b2
     cats:
       - shape
-      - same
     colls:
       - icon
     fa6: f1b2
@@ -22178,7 +21928,6 @@ superdi:
     fa: f1b3
     cats:
       - shape
-      - same
     colls:
       - icon
     fa6: f1b3
@@ -22442,7 +22191,6 @@ superdi:
     fa: f1c0
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c0
@@ -22563,7 +22311,6 @@ superdi:
     fa: f747
     cats:
       - person
-      - same
     colls:
       - icon
     fa6: f747
@@ -22657,7 +22404,6 @@ superdi:
     fa: f655
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f655
@@ -22722,7 +22468,6 @@ superdi:
     fa: f522
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f522
@@ -22731,7 +22476,6 @@ superdi:
     fa: f6cf
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f6cf
@@ -22740,7 +22484,6 @@ superdi:
     fa: f6d1
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f6d1
@@ -22763,7 +22506,6 @@ superdi:
     fa: f523
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f523
@@ -22772,7 +22514,6 @@ superdi:
     fa: f524
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f524
@@ -22781,7 +22522,6 @@ superdi:
     fa: f525
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f525
@@ -22797,7 +22537,6 @@ superdi:
     fa: f526
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f526
@@ -22855,7 +22594,6 @@ superdi:
     fa: f527
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f527
@@ -22878,7 +22616,6 @@ superdi:
     fa: f528
     cats:
       - game
-      - same
     colls:
       - icon
     fa6: f528
@@ -23154,7 +22891,6 @@ superdi:
     fa: f472
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f472
@@ -23213,7 +22949,6 @@ superdi:
     fa: f52a
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f52a
@@ -23229,7 +22964,6 @@ superdi:
     fa: f52b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f52b
@@ -23322,7 +23056,6 @@ superdi:
     fa: f019
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f019
@@ -23415,7 +23148,6 @@ superdi:
     fa: f5ee
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f5ee
@@ -23585,7 +23317,6 @@ superdi:
     fa: f56a
     cats:
       - music
-      - same
     colls:
       - icon
     fa6: f56a
@@ -23594,7 +23325,6 @@ superdi:
     fa: f6d7
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f6d7
@@ -23638,7 +23368,6 @@ superdi:
     fa: f44b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f44b
@@ -23647,7 +23376,6 @@ superdi:
     fa: f793
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f793
@@ -23656,7 +23384,6 @@ superdi:
     fa: f794
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f794
@@ -23672,7 +23399,6 @@ superdi:
     fa: f6d9
     cats:
       - structure
-      - same
     colls:
       - icon
     fa6: f6d9
@@ -23989,7 +23715,6 @@ superdi:
     fa: f052
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f052
@@ -24264,7 +23989,6 @@ superdi:
     fa: f2b6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2b6
@@ -24273,7 +23997,6 @@ superdi:
     fa: f658
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f658
@@ -24297,7 +24020,6 @@ superdi:
     fa: f12d
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f12d
@@ -24348,7 +24070,6 @@ superdi:
     fa: f796
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f796
@@ -24357,7 +24078,6 @@ superdi:
     fa: f153
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f153
@@ -24508,7 +24228,6 @@ superdi:
     fa: f065
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f065
@@ -24608,7 +24327,6 @@ superdi:
     fa: f1fb
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f1fb
@@ -24631,7 +24349,6 @@ superdi:
     fa: f070
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f070
@@ -24836,7 +24553,6 @@ superdi:
     fa: f863
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f863
@@ -24916,7 +24632,6 @@ superdi:
     fa: f1ac
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1ac
@@ -24966,8 +24681,7 @@ superdi:
     friendly: female
     ga: E082
     fa: f182
-    cats:
-      - gender
+    cats: []
     colls:
       - icon
   female_legs:
@@ -25052,7 +24766,6 @@ superdi:
     fa: f15b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f15b
@@ -25075,7 +24788,6 @@ superdi:
     fa: f1c7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c7
@@ -25084,7 +24796,6 @@ superdi:
     fa: f1c9
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c9
@@ -25093,7 +24804,6 @@ superdi:
     fa: f56c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f56c
@@ -25102,7 +24812,6 @@ superdi:
     fa: f6dd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f6dd
@@ -25118,7 +24827,6 @@ superdi:
     fa: f1c3
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c3
@@ -25127,7 +24835,6 @@ superdi:
     fa: f56e
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f56e
@@ -25136,7 +24843,6 @@ superdi:
     fa: f1c5
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c5
@@ -25145,7 +24851,6 @@ superdi:
     fa: f56f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f56f
@@ -25154,7 +24859,6 @@ superdi:
     fa: f570
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f570
@@ -25163,7 +24867,6 @@ superdi:
     fa: f571
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f571
@@ -25172,7 +24875,6 @@ superdi:
     fa: f477
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f477
@@ -25188,7 +24890,6 @@ superdi:
     fa: f1c1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c1
@@ -25197,7 +24898,6 @@ superdi:
     fa: f1c4
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c4
@@ -25206,7 +24906,6 @@ superdi:
     fa: f572
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f572
@@ -25215,7 +24914,6 @@ superdi:
     fa: f573
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f573
@@ -25231,7 +24929,6 @@ superdi:
     fa: f1c8
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c8
@@ -25240,7 +24937,6 @@ superdi:
     fa: f1c2
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1c2
@@ -25256,7 +24952,6 @@ superdi:
     fa: f575
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f575
@@ -25265,7 +24960,6 @@ superdi:
     fa: f576
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f576
@@ -25274,7 +24968,6 @@ superdi:
     fa: f008
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f008
@@ -25297,7 +24990,6 @@ superdi:
     fa: f0b0
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f0b0
@@ -25327,7 +25019,6 @@ superdi:
     fa: f577
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f577
@@ -25679,7 +25370,6 @@ superdi:
     fa: f024
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f024
@@ -25688,7 +25378,6 @@ superdi:
     fa: f11e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f11e
@@ -25704,7 +25393,6 @@ superdi:
     fa: f74d
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f74d
@@ -25825,7 +25513,6 @@ superdi:
     fa: f0c3
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0c3
@@ -26143,7 +25830,6 @@ superdi:
     fa: f07b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f07b
@@ -26152,7 +25838,6 @@ superdi:
     fa: f65d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f65d
@@ -26161,7 +25846,6 @@ superdi:
     fa: f07c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f07c
@@ -26170,7 +25854,6 @@ superdi:
     fa: f65e
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f65e
@@ -26186,7 +25869,6 @@ superdi:
     fa: f031
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f031
@@ -26286,7 +25968,6 @@ superdi:
     fa: f04e
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f04e
@@ -26610,7 +26291,6 @@ superdi:
     fa: f1e3
     cats:
       - sport
-      - same
     colls:
       - icon
     fa6: f1e3
@@ -26655,7 +26335,6 @@ superdi:
     fa: f11b
     cats:
       - electronics
-      - same
     colls:
       - icon
     fa6: f11b
@@ -26693,7 +26372,6 @@ superdi:
     fa: f52f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f52f
@@ -26724,7 +26402,6 @@ superdi:
     fa: f0e3
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f0e3
@@ -26747,7 +26424,6 @@ superdi:
     ga: E754
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f085
@@ -26763,7 +26439,6 @@ superdi:
     fa: f3a5
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f3a5
@@ -26808,7 +26483,6 @@ superdi:
     fa: f22d
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f22d
@@ -26845,7 +26519,6 @@ superdi:
     fa: f06b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f06b
@@ -26868,7 +26541,6 @@ superdi:
     fa: f79c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f79c
@@ -26969,7 +26641,6 @@ superdi:
     fa: f0ac
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0ac
@@ -27211,7 +26882,6 @@ superdi:
     fa: f664
     cats:
       - structure
-      - same
     colls:
       - icon
     fa6: f664
@@ -27340,7 +27010,6 @@ superdi:
     fa: f532
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f532
@@ -27524,7 +27193,6 @@ superdi:
     fa: f7a4
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f7a4
@@ -27533,7 +27201,6 @@ superdi:
     fa: f7a5
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f7a5
@@ -27542,7 +27209,6 @@ superdi:
     fa: f58e
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f58e
@@ -27755,7 +27421,6 @@ superdi:
     fa: f665
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f665
@@ -27764,7 +27429,6 @@ superdi:
     ga: E979
     cats:
       - body
-      - same
     colls:
       - icon
     fa6: f256
@@ -27801,7 +27465,6 @@ superdi:
     fa: f4bd
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f4bd
@@ -27810,7 +27473,6 @@ superdi:
     fa: f4be
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4be
@@ -27826,7 +27488,6 @@ superdi:
     fa: f258
     cats:
       - creature
-      - same
     colls:
       - icon
     fa6: f258
@@ -27835,7 +27496,6 @@ superdi:
     fa: f806
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f806
@@ -27865,7 +27525,6 @@ superdi:
     fa: f25b
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f25b
@@ -27874,7 +27533,6 @@ superdi:
     fa: f0a7
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f0a7
@@ -27883,7 +27541,6 @@ superdi:
     fa: f0a5
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f0a5
@@ -27892,7 +27549,6 @@ superdi:
     fa: f0a4
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f0a4
@@ -27901,7 +27557,6 @@ superdi:
     fa: f0a6
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f0a6
@@ -27910,7 +27565,6 @@ superdi:
     fa: f25a
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f25a
@@ -27933,7 +27587,6 @@ superdi:
     fa: f257
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f257
@@ -27942,7 +27595,6 @@ superdi:
     fa: f259
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f259
@@ -27958,7 +27610,6 @@ superdi:
     ga: E024
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: e4f8
@@ -27974,7 +27625,6 @@ superdi:
     fa: f4c2
     cats:
       - people
-      - same
     colls:
       - icon
     fa6: f2a7
@@ -28025,7 +27675,6 @@ superdi:
     fa: f6e6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f6e6
@@ -28098,7 +27747,6 @@ superdi:
     fa: f8c0
     cats:
       - clothing
-      - same
     colls:
       - icon
     fa6: f8c0
@@ -28107,7 +27755,6 @@ superdi:
     fa: f8c1
     cats:
       - clothing
-      - same
     colls:
       - icon
     fa6: f8c1
@@ -28116,7 +27763,6 @@ superdi:
     fa: f6e8
     cats:
       - clothing
-      - same
     colls:
       - icon
     fa6: f6e8
@@ -28195,7 +27841,6 @@ superdi:
     fa: f1dc
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f1dc
@@ -28205,7 +27850,6 @@ superdi:
     fa: f025
     cats:
       - electronics
-      - same
     colls:
       - icon
     fa6: f025
@@ -28221,7 +27865,6 @@ superdi:
     fa: f590
     cats:
       - electronics
-      - same
     colls:
       - icon
     fa6: f590
@@ -28293,7 +27936,6 @@ superdi:
     fa: f004
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f004
@@ -28638,7 +28280,6 @@ superdi:
     fa: f591
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f591
@@ -28675,7 +28316,6 @@ superdi:
     fa: f6ed
     cats:
       - animal
-      - same
     colls:
       - icon
     fa6: f6ed
@@ -28733,7 +28373,6 @@ superdi:
     fa: f453
     cats:
       - sport
-      - same
     colls:
       - icon
     fa6: f453
@@ -28756,7 +28395,6 @@ superdi:
     fa: f7aa
     cats:
       - plant
-      - same
     colls:
       - icon
     fa6: f7aa
@@ -28920,7 +28558,6 @@ superdi:
     fa: f7ab
     cats:
       - animal
-      - same
     colls:
       - icon
     fa6: f7ab
@@ -28952,7 +28589,6 @@ superdi:
     fa: f0f8
     cats:
       - building
-      - same
     colls:
       - icon
     fa6: f0f8
@@ -29011,7 +28647,6 @@ superdi:
     fa: f594
     cats:
       - building
-      - same
     colls:
       - icon
     fa6: f594
@@ -29028,7 +28663,6 @@ superdi:
     fa: f254
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f254
@@ -29037,7 +28671,6 @@ superdi:
     fa: f253
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f253
@@ -29046,7 +28679,6 @@ superdi:
     fa: f252
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f252
@@ -29055,7 +28687,6 @@ superdi:
     fa: f251
     cats:
       - tool
-      - same
     colls:
       - icon
     fa6: f251
@@ -29282,7 +28913,6 @@ superdi:
     fa: f7ad
     cats:
       - nature
-      - same
     colls:
       - icon
     fa6: f7ad
@@ -29305,7 +28935,6 @@ superdi:
     fa: f86d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f86d
@@ -29314,7 +28943,6 @@ superdi:
     fa: f2c1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2c1
@@ -29324,7 +28952,6 @@ superdi:
     fa: f2c2
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2c2
@@ -29355,7 +28982,6 @@ superdi:
     fa: f7ae
     cats:
       - dwelling
-      - same
     colls:
       - icon
     fa6: f7ae
@@ -29364,7 +28990,6 @@ superdi:
     fa: f03e
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f03e
@@ -29373,7 +28998,6 @@ superdi:
     fa: f302
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f302
@@ -29439,7 +29063,6 @@ superdi:
     fa: f01c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f01c
@@ -29476,7 +29099,6 @@ superdi:
     fa: f03c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f03c
@@ -29492,7 +29114,6 @@ superdi:
     fa: f275
     cats:
       - concept
-      - same
     colls:
       - icon
     fa6: f275
@@ -29509,7 +29130,6 @@ superdi:
     fa: f129
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f129
@@ -29728,7 +29348,6 @@ superdi:
     fa: f033
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f033
@@ -29807,7 +29426,6 @@ superdi:
     fa: f669
     cats:
       - character
-      - same
     colls:
       - icon
     fa6: f669
@@ -29859,7 +29477,6 @@ superdi:
     ga: E5ED
     cats:
       - vehicle
-      - same
     colls:
       - icon
     fa6: f0fb
@@ -29918,7 +29535,6 @@ superdi:
     fa: f595
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f595
@@ -30012,7 +29628,6 @@ superdi:
     fa: f66b
     cats:
       - building
-      - same
     colls:
       - icon
     fa6: f66b
@@ -30099,7 +29714,6 @@ superdi:
     fa: f66d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f66d
@@ -30165,7 +29779,6 @@ superdi:
     fa: f535
     cats:
       - animal
-      - same
     colls:
       - icon
     fa6: f535
@@ -30287,7 +29900,6 @@ superdi:
     fa: f66f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f66f
@@ -30296,7 +29908,6 @@ superdi:
     fa: f1ab
     cats:
       - concept
-      - same
     colls:
       - icon
     fa6: f1ab
@@ -30319,7 +29930,6 @@ superdi:
     fa: f5fc
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5fc
@@ -30328,7 +29938,6 @@ superdi:
     fa: f812
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f812
@@ -30491,7 +30100,6 @@ superdi:
     fa: f5fd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5fd
@@ -30514,7 +30122,6 @@ superdi:
     fa: f06c
     cats:
       - plant
-      - same
     colls:
       - icon
     fa6: f06c
@@ -30623,7 +30230,6 @@ superdi:
     fa: f537
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f537
@@ -30766,7 +30372,6 @@ superdi:
     fa: f1cd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1cd
@@ -30838,7 +30443,6 @@ superdi:
     fa: f0eb
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0eb
@@ -31030,7 +30634,6 @@ superdi:
     fa: f195
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f195
@@ -31039,7 +30642,6 @@ superdi:
     fa: f03a
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f03a
@@ -31055,7 +30657,6 @@ superdi:
     fa: f0cb
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0cb
@@ -31064,7 +30665,6 @@ superdi:
     fa: f0ca
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0ca
@@ -31115,7 +30715,6 @@ superdi:
     fa: f124
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f124
@@ -31124,7 +30723,6 @@ superdi:
     fa: f023
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f023
@@ -31133,7 +30731,6 @@ superdi:
     fa: f3c1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f3c1
@@ -31605,7 +31202,6 @@ superdi:
     ga: E026
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f002
@@ -31692,7 +31288,6 @@ superdi:
     fa: f279
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f279
@@ -31729,7 +31324,6 @@ superdi:
     fa: f276
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f276
@@ -31760,7 +31354,6 @@ superdi:
     fa: f5a1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5a1
@@ -31776,7 +31369,6 @@ superdi:
     fa: f222
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f222
@@ -31792,7 +31384,6 @@ superdi:
     fa: f227
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f227
@@ -31808,7 +31399,6 @@ superdi:
     fa: f229
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f229
@@ -31845,7 +31435,6 @@ superdi:
     fa: f6fa
     cats:
       - clothing
-      - same
     colls:
       - icon
     fa6: f6fa
@@ -32141,7 +31730,6 @@ superdi:
     fa: f538
     cats:
       - concept
-      - same
     colls:
       - icon
     fa6: f538
@@ -32157,7 +31745,6 @@ superdi:
     fa: f223
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f223
@@ -32222,7 +31809,6 @@ superdi:
     fa: f753
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f753
@@ -32260,7 +31846,6 @@ superdi:
     fa: f2db
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2db
@@ -32283,7 +31868,6 @@ superdi:
     fa: f131
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f131
@@ -32530,7 +32114,6 @@ superdi:
     fa: f7b5
     cats:
       - clothing
-      - same
     colls:
       - icon
     fa6: f7b5
@@ -32631,7 +32214,6 @@ superdi:
     fa: f0d6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0d6
@@ -32647,7 +32229,6 @@ superdi:
     fa: f53a
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f53a
@@ -32663,7 +32244,6 @@ superdi:
     fa: f53c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f53c
@@ -32721,7 +32301,6 @@ superdi:
     fa: f5a6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5a6
@@ -32738,7 +32317,6 @@ superdi:
     fa: f186
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f186
@@ -32803,7 +32381,6 @@ superdi:
     fa: f5a7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5a7
@@ -32910,7 +32487,6 @@ superdi:
     fa: f7b6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f7b6
@@ -32997,7 +32573,6 @@ superdi:
     fa: f001
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f001
@@ -33153,7 +32728,6 @@ superdi:
     fa: f6ff
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f6ff
@@ -33162,7 +32736,6 @@ superdi:
     fa: f22c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f22c
@@ -33297,7 +32870,6 @@ superdi:
     fa: f53e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f53e
@@ -33306,7 +32878,6 @@ superdi:
     fa: f481
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f481
@@ -33413,7 +32984,6 @@ superdi:
     fa: f247
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f247
@@ -33422,7 +32992,6 @@ superdi:
     fa: f248
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f248
@@ -33480,7 +33049,6 @@ superdi:
     fa: f613
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f613
@@ -33749,7 +33317,6 @@ superdi:
     fa: f03b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f03b
@@ -33872,7 +33439,6 @@ superdi:
     fa: f5aa
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5aa
@@ -33889,7 +33455,6 @@ superdi:
     fa: f53f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f53f
@@ -33905,7 +33470,6 @@ superdi:
     fa: f482
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f482
@@ -33978,7 +33542,6 @@ superdi:
     fa: f1d8
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1d8
@@ -34015,7 +33578,6 @@ superdi:
     fa: f4cd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f4cd
@@ -34024,7 +33586,6 @@ superdi:
     fa: f1dd
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f1dd
@@ -34097,7 +33658,6 @@ superdi:
     fa: f5ab
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5ab
@@ -34113,7 +33673,6 @@ superdi:
     fa: f0ea
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0ea
@@ -34143,7 +33702,6 @@ superdi:
     fa: f04c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f04c
@@ -34160,7 +33718,6 @@ superdi:
     fa: f1b0
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f1b0
@@ -34218,7 +33775,6 @@ superdi:
     fa: f67c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f67c
@@ -34290,7 +33846,6 @@ superdi:
     fa: f5ac
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5ac
@@ -34299,7 +33854,6 @@ superdi:
     fa: f5ad
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5ad
@@ -34372,7 +33926,6 @@ superdi:
     fa: f816
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f816
@@ -34530,7 +34083,6 @@ superdi:
     fa: f095
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f095
@@ -34546,7 +34098,6 @@ superdi:
     fa: f3dd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f3dd
@@ -34569,7 +34120,6 @@ superdi:
     fa: f2a0
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2a0
@@ -34671,7 +34221,6 @@ superdi:
     fa: f4d3
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f4d3
@@ -34708,7 +34257,6 @@ superdi:
     fa: f484
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f484
@@ -34866,7 +34414,6 @@ superdi:
     fa: f818
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f818
@@ -34910,7 +34457,6 @@ superdi:
     fa: f072
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f072
@@ -34919,7 +34465,6 @@ superdi:
     fa: f5af
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5af
@@ -34928,7 +34473,6 @@ superdi:
     fa: f5b0
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5b0
@@ -35014,7 +34558,6 @@ superdi:
     fa: f04b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f04b
@@ -35073,7 +34616,6 @@ superdi:
     fa: f1e6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1e6
@@ -35117,7 +34659,6 @@ superdi:
     fa: f2ce
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2ce
@@ -35281,7 +34822,6 @@ superdi:
     fa: f2fe
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2fe
@@ -35290,7 +34830,6 @@ superdi:
     fa: f75a
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f75a
@@ -35306,7 +34845,6 @@ superdi:
     fa: f619
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f619
@@ -35442,7 +34980,6 @@ superdi:
     fa: f011
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f011
@@ -35486,7 +35023,6 @@ superdi:
     fa: f5b1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5b1
@@ -35495,7 +35031,6 @@ superdi:
     fa: f485
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f485
@@ -35553,7 +35088,6 @@ superdi:
     fa: f02f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f02f
@@ -35779,7 +35313,6 @@ superdi:
     fa: f029
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f029
@@ -35859,7 +35392,6 @@ superdi:
     fa: f10d
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f10d
@@ -35868,7 +35400,6 @@ superdi:
     fa: f10e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f10e
@@ -35933,7 +35464,6 @@ superdi:
     fa: f7b9
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f7b9
@@ -36159,7 +35689,6 @@ superdi:
     fa: f8d9
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f8d9
@@ -36169,7 +35698,6 @@ superdi:
     fa: f1b8
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f1b8
@@ -36255,7 +35783,6 @@ superdi:
     fa: f3e5
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f3e5
@@ -36264,7 +35791,6 @@ superdi:
     fa: f122
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f122
@@ -36280,7 +35806,6 @@ superdi:
     fa: f75e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f75e
@@ -36331,7 +35856,6 @@ superdi:
     fa: f079
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f079
@@ -36460,7 +35984,6 @@ superdi:
     fa: f018
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f018
@@ -36742,7 +36265,6 @@ superdi:
     fa: f4d7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f4d7
@@ -36759,7 +36281,6 @@ superdi:
     fa: f09e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f09e
@@ -36789,7 +36310,6 @@ superdi:
     fa: f158
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f158
@@ -36812,7 +36332,6 @@ superdi:
     fa: f545
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f545
@@ -36821,7 +36340,6 @@ superdi:
     fa: f546
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f546
@@ -36830,7 +36348,6 @@ superdi:
     fa: f547
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f547
@@ -36839,7 +36356,6 @@ superdi:
     fa: f548
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f548
@@ -36883,7 +36399,6 @@ superdi:
     fa: f156
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f156
@@ -37117,7 +36632,6 @@ superdi:
     fa: f7c0
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f7c0
@@ -37352,7 +36866,6 @@ superdi:
     fa: f7c2
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f7c2
@@ -37522,7 +37035,6 @@ superdi:
     fa: f233
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f233
@@ -37622,7 +37134,6 @@ superdi:
     fa: f61f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f61f
@@ -37639,7 +37150,6 @@ superdi:
     fa: f064
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f064
@@ -37774,7 +37284,6 @@ superdi:
     fa: f20b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f20b
@@ -37937,7 +37446,6 @@ superdi:
     ga: EC26
     cats:
       - clothing
-      - same
     colls:
       - icon
     fa6: f553
@@ -37946,7 +37454,6 @@ superdi:
     fa: f54b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f54b
@@ -37955,7 +37462,6 @@ superdi:
     ga: E7E7
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f54f
@@ -38133,7 +37639,6 @@ superdi:
     fa: f012
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f012
@@ -38142,7 +37647,6 @@ superdi:
     fa: f5b7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5b7
@@ -38179,7 +37683,6 @@ superdi:
     fa: f7c4
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f7c4
@@ -38230,7 +37733,6 @@ superdi:
     fa: f0e8
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0e8
@@ -38344,7 +37846,6 @@ superdi:
     fa: f714
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f714
@@ -38437,7 +37938,6 @@ superdi:
     fa: f715
     cats:
       - weapon
-      - same
     colls:
       - icon
     fa6: f715
@@ -38481,7 +37981,6 @@ superdi:
     fa: f7cc
     cats:
       - vehicle
-      - same
     colls:
       - icon
     fa6: f7cc
@@ -38630,7 +38129,6 @@ superdi:
     fa: f75f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f75f
@@ -38646,7 +38144,6 @@ superdi:
     fa: f48d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f48d
@@ -38809,7 +38306,6 @@ superdi:
     fa: f7d2
     cats:
       - vehicle
-      - same
     colls:
       - icon
     fa6: f7d2
@@ -38846,7 +38342,6 @@ superdi:
     fa: f5ba
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5ba
@@ -38925,7 +38420,6 @@ superdi:
     fa: f0dc
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0dc
@@ -38990,7 +38484,6 @@ superdi:
     fa: f0dd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0dd
@@ -39027,7 +38520,6 @@ superdi:
     fa: f0de
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0de
@@ -39085,7 +38577,6 @@ superdi:
     fa: f5bb
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f5bb
@@ -39298,7 +38789,6 @@ superdi:
     fa: f891
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f891
@@ -39538,7 +39028,6 @@ superdi:
     fa: f110
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f110
@@ -39666,7 +39155,6 @@ superdi:
     fa: f5bc
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5bc
@@ -39745,7 +39233,6 @@ superdi:
     fa: f5bd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5bd
@@ -39797,7 +39284,6 @@ superdi:
     fa: f0c8
     cats:
       - shape
-      - same
     colls:
       - icon
     fa6: f0c8
@@ -39813,7 +39299,6 @@ superdi:
     fa: f45c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f45c
@@ -39885,7 +39370,6 @@ superdi:
     ga: E7E9
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: e289
@@ -39936,7 +39420,6 @@ superdi:
     fa: f5bf
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5bf
@@ -39994,7 +39477,6 @@ superdi:
     fa: f089
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f089
@@ -40010,7 +39492,6 @@ superdi:
     fa: f621
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f621
@@ -40425,7 +39906,6 @@ superdi:
     fa: f04d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f04d
@@ -40448,7 +39928,6 @@ superdi:
     fa: f54e
     cats:
       - place
-      - same
     colls:
       - icon
     fa6: f54e
@@ -40499,7 +39978,6 @@ superdi:
     fa: f21d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f21d
@@ -40508,7 +39986,6 @@ superdi:
     fa: f0cc
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0cc
@@ -40580,7 +40057,6 @@ superdi:
     fa: f551
     cats:
       - food
-      - same
     colls:
       - icon
     fa6: f551
@@ -40617,7 +40093,6 @@ superdi:
     fa: f12c
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f12c
@@ -40656,7 +40131,6 @@ superdi:
     fa: f0f2
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0f2
@@ -40665,7 +40139,6 @@ superdi:
     fa: f5c1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5c1
@@ -40760,7 +40233,6 @@ superdi:
     fa: f12b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f12b
@@ -40895,7 +40367,6 @@ superdi:
     fa: f5c3
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5c3
@@ -41136,7 +40607,6 @@ superdi:
     fa: f0ce
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0ce
@@ -41175,7 +40645,6 @@ superdi:
     fa: f490
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f490
@@ -41205,7 +40674,6 @@ superdi:
     fa: f02b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f02b
@@ -41214,7 +40682,6 @@ superdi:
     fa: f02c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f02c
@@ -41265,7 +40732,6 @@ superdi:
     fa: f4db
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f4db
@@ -41409,7 +40875,6 @@ superdi:
     fa: f62e
     cats:
       - body
-      - same
     colls:
       - icon
     fa6: f62e
@@ -41418,7 +40883,6 @@ superdi:
     fa: f62f
     cats:
       - body
-      - same
     colls:
       - icon
     fa6: f62f
@@ -41462,7 +40926,6 @@ superdi:
     fa: f769
     cats:
       - weather
-      - same
     colls:
       - icon
     fa6: f769
@@ -41471,7 +40934,6 @@ superdi:
     fa: f76b
     cats:
       - weather
-      - same
     colls:
       - icon
     fa6: f76b
@@ -41585,7 +41047,6 @@ superdi:
     fa: f120
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f120
@@ -41636,7 +41097,6 @@ superdi:
     fa: f034
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f034
@@ -41645,7 +41105,6 @@ superdi:
     fa: f035
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f035
@@ -41920,7 +41379,6 @@ superdi:
     fa: f08d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f08d
@@ -42104,7 +41562,6 @@ superdi:
     fa: f204
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f204
@@ -42113,7 +41570,6 @@ superdi:
     fa: f205
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f205
@@ -42129,7 +41585,6 @@ superdi:
     fa: f71e
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f71e
@@ -42208,7 +41663,6 @@ superdi:
     fa: f6a1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f6a1
@@ -42308,7 +41762,6 @@ superdi:
     fa: f25c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f25c
@@ -42324,7 +41777,6 @@ superdi:
     fa: f637
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f637
@@ -42389,7 +41841,6 @@ superdi:
     fa: f224
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f225
@@ -42433,7 +41884,6 @@ superdi:
     fa: f1f8
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1f8
@@ -42449,7 +41899,6 @@ superdi:
     ga: EBA6
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2ed
@@ -42493,7 +41942,6 @@ superdi:
     fa: f1bb
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1bb
@@ -42811,7 +42259,6 @@ superdi:
     ga: EB69
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: e589
@@ -42821,7 +42268,6 @@ superdi:
     fa: f0d1
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f0d1
@@ -42837,7 +42283,6 @@ superdi:
     fa: f63b
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f63b
@@ -42846,7 +42291,6 @@ superdi:
     fa: f4df
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f4df
@@ -42855,7 +42299,6 @@ superdi:
     fa: f63c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f63c
@@ -42885,7 +42328,6 @@ superdi:
     fa: f1e4
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f1e4
@@ -42965,7 +42407,6 @@ superdi:
     fa: f26c
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f26c
@@ -43093,7 +42534,6 @@ superdi:
     fa: f5ca
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5ca
@@ -43123,7 +42563,6 @@ superdi:
     fa: f0cd
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f0cd
@@ -43189,7 +42628,6 @@ superdi:
     fa: f29a
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f29a
@@ -43226,7 +42664,6 @@ superdi:
     fa: f09c
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f09c
@@ -43284,7 +42721,6 @@ superdi:
     fa: f093
     cats:
       - action
-      - same
     colls:
       - icon
     fa6: f093
@@ -43335,7 +42771,6 @@ superdi:
     fa: f007
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f007
@@ -43358,7 +42793,6 @@ superdi:
     fa: f4fb
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4fb
@@ -43367,7 +42801,6 @@ superdi:
     fa: f4fc
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4fc
@@ -43383,7 +42816,6 @@ superdi:
     fa: f4fd
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4fd
@@ -43413,7 +42845,6 @@ superdi:
     fa: f501
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f501
@@ -43422,7 +42853,6 @@ superdi:
     fa: f728
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f728
@@ -43431,7 +42861,6 @@ superdi:
     fa: f502
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f502
@@ -43447,7 +42876,6 @@ superdi:
     fa: f503
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f503
@@ -43456,7 +42884,6 @@ superdi:
     fa: f504
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f504
@@ -43465,7 +42892,6 @@ superdi:
     fa: f82f
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f82f
@@ -43474,7 +42900,6 @@ superdi:
     fa: f234
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f234
@@ -43483,7 +42908,6 @@ superdi:
     fa: f21b
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f21b
@@ -43492,7 +42916,6 @@ superdi:
     fa: f505
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f505
@@ -43501,7 +42924,6 @@ superdi:
     fa: f506
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f506
@@ -43510,7 +42932,6 @@ superdi:
     fa: f507
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f507
@@ -43519,7 +42940,6 @@ superdi:
     fa: f508
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f508
@@ -43535,7 +42955,6 @@ superdi:
     fa: f0c0
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f0c0
@@ -43558,7 +42977,6 @@ superdi:
     fa: f2e7
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f2e7
@@ -43623,7 +43041,6 @@ superdi:
     fa: f5cb
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5cb
@@ -43667,7 +43084,6 @@ superdi:
     fa: f221
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f221
@@ -43676,7 +43092,6 @@ superdi:
     fa: f226
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f226
@@ -43685,7 +43100,6 @@ superdi:
     fa: f228
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f228
@@ -43716,7 +43130,6 @@ superdi:
     fa: f492
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f492
@@ -43725,7 +43138,6 @@ superdi:
     fa: f493
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f493
@@ -43755,7 +43167,6 @@ superdi:
     fa: f03d
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f03d
@@ -43771,7 +43182,6 @@ superdi:
     fa: f4e2
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f4e2
@@ -43780,7 +43190,6 @@ superdi:
     fa: f6a7
     cats:
       - building
-      - same
     colls:
       - icon
     fa6: f6a7
@@ -43888,7 +43297,6 @@ superdi:
     ga: E3EE
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: e074
@@ -43911,7 +43319,6 @@ superdi:
     fa: f897
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f897
@@ -43942,7 +43349,6 @@ superdi:
     fa: f026
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f026
@@ -43993,7 +43399,6 @@ superdi:
     fa: f729
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f729
@@ -44067,7 +43472,6 @@ superdi:
     fa: f555
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f555
@@ -44118,7 +43522,6 @@ superdi:
     fa: f494
     cats:
       - building
-      - same
     colls:
       - icon
     fa6: f494
@@ -44162,7 +43565,6 @@ superdi:
     fa: f773
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f773
@@ -44262,7 +43664,6 @@ superdi:
     fa: f83e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f83e
@@ -44342,7 +43743,6 @@ superdi:
     fa: f5cd
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f5cd
@@ -44407,7 +43807,6 @@ superdi:
     fa: f193
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f193
@@ -44479,7 +43878,6 @@ superdi:
     fa: f1eb
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f1eb
@@ -44516,7 +43914,6 @@ superdi:
     fa: f72e
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f72e
@@ -44567,7 +43964,6 @@ superdi:
     fa: f2d0
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f2d0
@@ -44576,7 +43972,6 @@ superdi:
     fa: f2d1
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f2d1
@@ -44585,7 +43980,6 @@ superdi:
     fa: f2d2
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f2d2
@@ -44616,7 +44010,6 @@ superdi:
     fa: f72f
     cats:
       - object
-      - same
     colls:
       - icon
     fa6: f72f
@@ -44779,7 +44172,6 @@ superdi:
     fa: f159
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f159
@@ -44971,7 +44363,6 @@ superdi:
     fa: f497
     cats:
       - medical
-      - same
     colls:
       - icon
     fa6: f497
@@ -44987,7 +44378,6 @@ superdi:
     fa: f157
     cats:
       - symbol
-      - same
     colls:
       - icon
     fa6: f157
@@ -46215,13 +45605,6 @@ superdi:
       - amanda
     img: ../assets/img/amanda/image6.jpg
     friendly: image
-    colls:
-      - amanda
-  amanda_tired:
-    friendly: amanda_tired
-    cats:
-      - art
-    img: ../y/img/amanda_tired.png
     colls:
       - amanda
   anchor_circle_check:
@@ -48393,7 +47776,6 @@ superdi:
     friendly: hands
     cats:
       - people
-      - same
     colls:
       - fa6
     fa6: f4c2
@@ -49032,7 +48414,6 @@ superdi:
     friendly: mars
     cats:
       - symbol
-      - same
     colls:
       - fa6
     fa6: f224
@@ -49289,7 +48670,6 @@ superdi:
       - transport
       - travel
       - vehicle
-      - same
     colls:
       - fa6
     fa6: e532
@@ -49489,8 +48869,7 @@ superdi:
     fa6: f470
   person_dress:
     friendly: person
-    cats:
-      - gender
+    cats: []
     colls:
       - fa6
     fa6: f182
@@ -51145,8 +50524,8 @@ superdi:
     fa6: e59a
   barnowl1:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/barnowl1.png
     friendly: eule
     colls:
@@ -51155,8 +50534,8 @@ superdi:
     key: barnowl1
   bear1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear1.png
     friendly: brown bear
     colls:
@@ -51164,8 +50543,8 @@ superdi:
     key: bear1
   bear2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear2.png
     friendly: red panda
     colls:
@@ -51173,16 +50552,17 @@ superdi:
     key: bear2
   bear3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear3.png
     friendly: bear
     colls:
       - animals
+    key: bear3
   bear4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear4.png
     friendly: bear
     colls:
@@ -51190,8 +50570,8 @@ superdi:
     key: bear4
   bear5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear5.png
     friendly: bear
     colls:
@@ -51199,24 +50579,26 @@ superdi:
     key: bear5
   bear6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear6.png
     friendly: bear
     colls:
       - animals
+    key: bear6
   bear7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear7.png
     friendly: bear
     colls:
       - animals
+    key: bear7
   bear8:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear8.png
     friendly: bear
     colls:
@@ -51224,16 +50606,17 @@ superdi:
     key: bear8
   bear9:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bear9.png
     friendly: bear
     colls:
       - animals
+    key: bear9
   bee1:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/bee1.png
     friendly: bee
     colls:
@@ -51242,16 +50625,17 @@ superdi:
     key: bee1
   bee2:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/bee2.png
     friendly: bee
     colls:
       - animals
+    key: bee2
   bird1:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird1.png
     friendly: bird
     colls:
@@ -51259,72 +50643,75 @@ superdi:
     key: bird1
   bird10:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird10.png
     friendly: bird
     colls:
       - animals
+    key: bird10
   bird11:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird11.png
     friendly: bird
     colls:
       - animals
+    key: bird11
   bird12:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird12.png
     friendly: bird
     colls:
       - animals
+    key: bird12
   bird13:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird13.png
     friendly: bird
     colls:
       - animals
   bird14:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird14.png
     friendly: bird
     colls:
       - animals
   bird15:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird15.png
     friendly: bird
     colls:
       - animals
   bird16:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird16.png
     friendly: bird
     colls:
       - animals
   bird17:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird17.png
     friendly: bird
     colls:
       - animals
   bird18:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird18.png
     friendly: bird
     colls:
@@ -51333,56 +50720,56 @@ superdi:
     key: bird18
   bird19:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird19.png
     friendly: bird
     colls:
       - animals
   bird2:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird2.png
     friendly: bird
     colls:
       - animals
   bird20:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird20.png
     friendly: bird
     colls:
       - animals
   bird21:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird21.png
     friendly: bird
     colls:
       - animals
   bird22:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird22.png
     friendly: bird
     colls:
       - animals
   bird23:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird23.png
     friendly: bird
     colls:
       - animals
   bird24:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird24.png
     friendly: bird
     colls:
@@ -51391,80 +50778,80 @@ superdi:
     key: bird24
   bird25:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird25.png
     friendly: bird
     colls:
       - animals
   bird26:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird26.png
     friendly: bird
     colls:
       - animals
   bird27:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird27.png
     friendly: bird
     colls:
       - animals
   bird28:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird28.png
     friendly: bird
     colls:
       - animals
   bird29:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird29.png
     friendly: bird
     colls:
       - animals
   bird3:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird3.png
     friendly: bird
     colls:
       - animals
   bird30:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird30.png
     friendly: bird
     colls:
       - animals
   bird31:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird31.png
     friendly: bird
     colls:
       - animals
   bird32:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird32.png
     friendly: bird
     colls:
       - animals
   bird33:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird33.png
     friendly: bird
     colls:
@@ -51473,16 +50860,16 @@ superdi:
     key: bird33
   bird34:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird34.png
     friendly: bird
     colls:
       - animals
   bird35:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird35.png
     friendly: bird
     colls:
@@ -51491,160 +50878,160 @@ superdi:
     key: bird35
   bird36:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird36.png
     friendly: bird
     colls:
       - animals
   bird37:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird37.png
     friendly: bird
     colls:
       - animals
   bird38:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird38.png
     friendly: bird
     colls:
       - animals
   bird39:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird39.png
     friendly: bird
     colls:
       - animals
   bird4:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird4.png
     friendly: bird
     colls:
       - animals
   bird40:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird40.png
     friendly: bird
     colls:
       - animals
   bird41:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird41.png
     friendly: bird
     colls:
       - animals
   bird42:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird42.png
     friendly: bird
     colls:
       - animals
   bird43:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird43.png
     friendly: bird
     colls:
       - animals
   bird44:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird44.png
     friendly: bird
     colls:
       - animals
   bird45:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird45.png
     friendly: bird
     colls:
       - animals
   bird46:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird46.png
     friendly: bird
     colls:
       - animals
   bird47:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird47.png
     friendly: bird
     colls:
       - animals
   bird48:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird48.png
     friendly: bird
     colls:
       - animals
   bird49:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird49.png
     friendly: bird
     colls:
       - animals
   bird5:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird5.png
     friendly: bird
     colls:
       - animals
   bird50:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird50.png
     friendly: bird
     colls:
       - animals
   bird51:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird51.png
     friendly: bird
     colls:
       - animals
   bird52:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird52.png
     friendly: bird
     colls:
       - animals
   bird53:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird53.png
     friendly: bird
     colls:
@@ -51653,8 +51040,8 @@ superdi:
     key: bird53
   bird54:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird54.png
     friendly: bird
     colls:
@@ -51663,8 +51050,8 @@ superdi:
     key: bird54
   bird55:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird55.png
     friendly: bird
     colls:
@@ -51672,32 +51059,32 @@ superdi:
     key: bird55
   bird56:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird56.png
     friendly: bird
     colls:
       - animals
   bird57:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird57.png
     friendly: bird
     colls:
       - animals
   bird58:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird58.png
     friendly: bird
     colls:
       - animals
   bird59:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird59.png
     friendly: bird
     colls:
@@ -51706,32 +51093,32 @@ superdi:
     key: bird59
   bird6:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird6.png
     friendly: bird
     colls:
       - animals
   bird60:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird60.png
     friendly: bird
     colls:
       - animals
   bird61:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird61.png
     friendly: bird
     colls:
       - animals
   bird62:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird62.png
     friendly: bird
     colls:
@@ -51739,136 +51126,136 @@ superdi:
     key: bird62
   bird63:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird63.png
     friendly: bird
     colls:
       - animals
   bird64:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird64.png
     friendly: bird
     colls:
       - animals
   bird65:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird65.png
     friendly: bird
     colls:
       - animals
   bird66:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird66.png
     friendly: bird
     colls:
       - animals
   bird67:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird67.png
     friendly: bird
     colls:
       - animals
   bird68:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird68.png
     friendly: bird
     colls:
       - animals
   bird69:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird69.png
     friendly: bird
     colls:
       - animals
   bird7:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird7.png
     friendly: bird
     colls:
       - animals
   bird70:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird70.png
     friendly: bird
     colls:
       - animals
   bird71:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird71.png
     friendly: bird
     colls:
       - animals
   bird72:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird72.png
     friendly: bird
     colls:
       - animals
   bird73:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird73.png
     friendly: bird
     colls:
       - animals
   bird74:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird74.png
     friendly: bird
     colls:
       - animals
   bird75:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird75.png
     friendly: bird
     colls:
       - animals
   bird76:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird76.png
     friendly: bird
     colls:
       - animals
   bird77:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird77.png
     friendly: bird
     colls:
       - animals
   bird78:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird78.png
     friendly: bird
     colls:
@@ -51877,72 +51264,72 @@ superdi:
     key: bird78
   bird79:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird79.png
     friendly: bird
     colls:
       - animals
   bird8:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird8.png
     friendly: bird
     colls:
       - animals
   bird80:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird80.png
     friendly: bird
     colls:
       - animals
   bird81:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird81.png
     friendly: bird
     colls:
       - animals
   bird82:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird82.png
     friendly: bird
     colls:
       - animals
   bird83:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird83.png
     friendly: bird
     colls:
       - animals
   bird84:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird84.png
     friendly: bird
     colls:
       - animals
   bird85:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird85.png
     friendly: bird
     colls:
       - animals
   bird86:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird86.png
     friendly: bird
     colls:
@@ -51951,152 +51338,152 @@ superdi:
     key: bird86
   bird87:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird87.png
     friendly: bird
     colls:
       - animals
   bird88:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird88.png
     friendly: bird
     colls:
       - animals
   bird89:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird89.png
     friendly: bird
     colls:
       - animals
   bird9:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird9.png
     friendly: bird
     colls:
       - animals
   bird90:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird90.png
     friendly: bird
     colls:
       - animals
   bird91:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird91.png
     friendly: bird
     colls:
       - animals
   bird92:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird92.png
     friendly: bird
     colls:
       - animals
   bird93:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird93.png
     friendly: bird
     colls:
       - animals
   bird94:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bird94.png
     friendly: bird
     colls:
       - animals
   bison1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bison1.png
     friendly: bison
     colls:
       - animals
   bison2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bison2.png
     friendly: bison
     colls:
       - animals
   bison3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bison3.png
     friendly: bison
     colls:
       - animals
   bock1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bock1.png
     friendly: bock
     colls:
       - animals
   bock2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bock2.png
     friendly: bock
     colls:
       - animals
   bock3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bock3.png
     friendly: bock
     colls:
       - animals
   bock4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/bock4.png
     friendly: bock
     colls:
       - animals
   buffalo1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/buffalo1.png
     friendly: buffalo
     colls:
       - animals
   bussard:
     cats:
-      - animals
       - bird
+      - animal
     img: ../assets/img/animals/bird/bussard.png
     friendly: bussard
     colls:
       - animals
   butterfly1:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly1.png
     friendly: butterfly
     colls:
@@ -52105,752 +51492,752 @@ superdi:
     key: butterfly1
   butterfly2:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly2.png
     friendly: butterfly
     colls:
       - animals
   butterfly3:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly3.png
     friendly: butterfly
     colls:
       - animals
   butterfly4:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly4.png
     friendly: butterfly
     colls:
       - animals
   butterfly5:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly5.png
     friendly: butterfly
     colls:
       - animals
   butterfly6:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly6.png
     friendly: butterfly
     colls:
       - animals
   butterfly7:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/butterfly7.png
     friendly: butterfly
     colls:
       - animals
   camel1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/camel1.png
     friendly: camel
     colls:
       - animals
   cat1:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat1.png
     friendly: cat
     colls:
       - animals
   cat10:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat10.png
     friendly: cat
     colls:
       - animals
   cat11:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat11.png
     friendly: cat
     colls:
       - animals
   cat12:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat12.png
     friendly: cat
     colls:
       - animals
   cat13:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat13.png
     friendly: cat
     colls:
       - animals
   cat14:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat14.png
     friendly: cat
     colls:
       - animals
   cat15:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat15.png
     friendly: cat
     colls:
       - animals
   cat16:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat16.png
     friendly: cat
     colls:
       - animals
   cat17:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat17.png
     friendly: cat
     colls:
       - animals
   cat18:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat18.png
     friendly: cat
     colls:
       - animals
   cat19:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat19.png
     friendly: cat
     colls:
       - animals
   cat2:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat2.png
     friendly: cat
     colls:
       - animals
   cat20:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat20.png
     friendly: cat
     colls:
       - animals
   cat21:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat21.png
     friendly: cat
     colls:
       - animals
   cat22:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat22.png
     friendly: cat
     colls:
       - animals
   cat23:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat23.png
     friendly: cat
     colls:
       - animals
   cat24:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat24.png
     friendly: cat
     colls:
       - animals
   cat25:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat25.png
     friendly: cat
     colls:
       - animals
   cat26:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat26.png
     friendly: cat
     colls:
       - animals
   cat27:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat27.png
     friendly: cat
     colls:
       - animals
   cat28:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat28.png
     friendly: cat
     colls:
       - animals
   cat29:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat29.png
     friendly: cat
     colls:
       - animals
   cat3:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat3.png
     friendly: cat
     colls:
       - animals
   cat30:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat30.png
     friendly: cat
     colls:
       - animals
   cat31:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat31.png
     friendly: cat
     colls:
       - animals
   cat32:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat32.png
     friendly: cat
     colls:
       - animals
   cat33:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat33.png
     friendly: cat
     colls:
       - animals
   cat34:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat34.png
     friendly: cat
     colls:
       - animals
   cat35:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat35.png
     friendly: cat
     colls:
       - animals
   cat36:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat36.png
     friendly: cat
     colls:
       - animals
   cat37:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat37.png
     friendly: cat
     colls:
       - animals
   cat38:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat38.png
     friendly: cat
     colls:
       - animals
   cat39:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat39.png
     friendly: cat
     colls:
       - animals
   cat4:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat4.png
     friendly: cat
     colls:
       - animals
   cat5:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat5.png
     friendly: cat
     colls:
       - animals
   cat6:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat6.png
     friendly: cat
     colls:
       - animals
   cat7:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat7.png
     friendly: cat
     colls:
       - animals
   cat8:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat8.png
     friendly: cat
     colls:
       - animals
   cat9:
     cats:
-      - animals
       - cat
+      - animal
     img: ../assets/img/animals/cat/cat9.png
     friendly: cat
     colls:
       - animals
   cow1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/cow1.png
     friendly: cow
     colls:
       - animals
   deer1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/deer1.png
     friendly: deer
     colls:
       - animals
   deer2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/deer2.png
     friendly: deer
     colls:
       - animals
   deer3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/deer3.png
     friendly: deer
     colls:
       - animals
   deer4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/deer4.png
     friendly: deer
     colls:
       - animals
   deer5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/deer5.png
     friendly: deer
     colls:
       - animals
   doe1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/doe1.png
     friendly: doe
     colls:
       - animals
   doe2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/doe2.png
     friendly: doe
     colls:
       - animals
   doe3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/doe3.png
     friendly: doe
     colls:
       - animals
   doe4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/doe4.png
     friendly: doe
     colls:
       - animals
   dog1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dog1.png
     friendly: dog
     colls:
       - animals
   dog2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dog2.png
     friendly: dog
     colls:
       - animals
   dog3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dog3.png
     friendly: dog
     colls:
       - animals
   dog4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dog4.png
     friendly: dog
     colls:
       - animals
   dragon1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon1.png
     friendly: dragon
     colls:
       - animals
   dragon2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon2.png
     friendly: dragon
     colls:
       - animals
   dragon3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon3.png
     friendly: dragon
     colls:
       - animals
   dragon4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon4.png
     friendly: dragon
     colls:
       - animals
   dragon5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon5.png
     friendly: dragon
     colls:
       - animals
   dragon6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon6.png
     friendly: dragon
     colls:
       - animals
   dragon7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/dragon7.png
     friendly: dragon
     colls:
       - animals
   elefant1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/elefant1.png
     friendly: elefant
     colls:
       - animals
   elefant2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/elefant2.png
     friendly: elefant
     colls:
       - animals
   elefant3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/elefant3.png
     friendly: elefant
     colls:
       - animals
   elefant4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/elefant4.png
     friendly: elefant
     colls:
       - animals
   fish1:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish1.png
     friendly: fish
     colls:
       - animals
   fish10:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish10.png
     friendly: fish
     colls:
       - animals
   fish11:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish11.png
     friendly: fish
     colls:
       - animals
   fish12:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish12.png
     friendly: fish
     colls:
       - animals
   fish13:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish13.png
     friendly: fish
     colls:
       - animals
   fish14:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish14.png
     friendly: fish
     colls:
       - animals
   fish15:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish15.png
     friendly: fish
     colls:
       - animals
   fish16:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish16.png
     friendly: fish
     colls:
       - animals
   fish17:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish17.png
     friendly: fish
     colls:
       - animals
   fish18:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish18.png
     friendly: fish
     colls:
       - animals
   fish19:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish19.png
     friendly: fish
     colls:
       - animals
   fish2:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish2.png
     friendly: fish
     colls:
       - animals
   fish20:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish20.png
     friendly: fish
     colls:
       - animals
   fish21:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish21.png
     friendly: fish
     colls:
       - animals
   fish22:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish22.png
     friendly: fish
     colls:
       - animals
   fish23:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish23.png
     friendly: fish
     colls:
       - animals
   fish24:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish24.png
     friendly: fish
     colls:
       - animals
   fish25:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish25.png
     friendly: fish
     colls:
       - animals
   fish26:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish26.png
     friendly: fish
     colls:
       - animals
   fish27:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish27.png
     friendly: fish
     colls:
       - animals
   fish28:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish28.png
     friendly: fish
     colls:
       - animals
   fish3:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish3.png
     friendly: fish
     colls:
       - animals
   fish30:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish30.png
     friendly: sea horse
     colls:
@@ -52858,8 +52245,8 @@ superdi:
     key: fish30
   fish31:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish31.png
     friendly: turtle
     colls:
@@ -52867,8 +52254,8 @@ superdi:
     key: fish31
   fish32:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish32.png
     friendly: turtle
     colls:
@@ -52876,24 +52263,24 @@ superdi:
     key: fish32
   fish33:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish33.png
     friendly: fish
     colls:
       - animals
   fish34:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish34.png
     friendly: fish
     colls:
       - animals
   fish35:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish35.png
     friendly: sea lion
     colls:
@@ -52901,8 +52288,8 @@ superdi:
     key: fish35
   fish36:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish36.png
     friendly: sea bear
     colls:
@@ -52910,8 +52297,8 @@ superdi:
     key: fish36
   fish37:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish37.png
     friendly: sea bear
     colls:
@@ -52919,8 +52306,8 @@ superdi:
     key: fish37
   fish38:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish38.png
     friendly: sea star
     colls:
@@ -52928,632 +52315,632 @@ superdi:
     key: fish38
   fish4:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish4.png
     friendly: fish
     colls:
       - animals
   fish5:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish5.png
     friendly: fish
     colls:
       - animals
   fish6:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish6.png
     friendly: fish
     colls:
       - animals
   fish7:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish7.png
     friendly: fish
     colls:
       - animals
   fish8:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish8.png
     friendly: fish
     colls:
       - animals
   fish9:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/fish9.png
     friendly: fish
     colls:
       - animals
   fox1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/fox1.png
     friendly: fox
     colls:
       - animals
   fox2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/fox2.png
     friendly: fox
     colls:
       - animals
   fox3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/fox3.png
     friendly: fox
     colls:
       - animals
   frog1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog1.png
     friendly: frog
     colls:
       - animals
   frog10:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog10.png
     friendly: frog
     colls:
       - animals
   frog2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog2.png
     friendly: frog
     colls:
       - animals
   frog3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog3.png
     friendly: frog
     colls:
       - animals
   frog4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog4.png
     friendly: frog
     colls:
       - animals
   frog5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog5.png
     friendly: frog
     colls:
       - animals
   frog6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog6.png
     friendly: frog
     colls:
       - animals
   frog7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog7.png
     friendly: frog
     colls:
       - animals
   frog8:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog8.png
     friendly: frog
     colls:
       - animals
   frog9:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/frog9.png
     friendly: frog
     colls:
       - animals
   gecko1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/gecko1.png
     friendly: gecko
     colls:
       - animals
   giraffe1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/giraffe1.png
     friendly: giraffe
     colls:
       - animals
   giraffe2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/giraffe2.png
     friendly: giraffe
     colls:
       - animals
   giraffe3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/giraffe3.png
     friendly: giraffe
     colls:
       - animals
   giraffe4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/giraffe4.png
     friendly: giraffe
     colls:
       - animals
   giraffe5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/giraffe5.png
     friendly: giraffe
     colls:
       - animals
   gorilla1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/gorilla1.png
     friendly: gorilla
     colls:
       - animals
   gorilla2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/gorilla2.png
     friendly: gorilla
     colls:
       - animals
   gorilla3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/gorilla3.png
     friendly: gorilla
     colls:
       - animals
   hamster1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/hamster1.png
     friendly: hamster
     colls:
       - animals
   hedgehog1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/hedgehog1.png
     friendly: hedgehog
     colls:
       - animals
   hen1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/hen1.png
     friendly: hen
     colls:
       - animals
   hippo1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/hippo1.png
     friendly: hippo
     colls:
       - animals
   horse1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/horse1.png
     friendly: horse
     colls:
       - animals
   horse2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/horse2.png
     friendly: horse
     colls:
       - animals
   horse3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/horse3.png
     friendly: horse
     colls:
       - animals
   horse4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/horse4.png
     friendly: horse
     colls:
       - animals
   iguana1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/iguana1.png
     friendly: iguana
     colls:
       - animals
   jellyfish1:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/jellyfish1.png
     friendly: jellyfish
     colls:
       - animals
   jellyfish2:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/jellyfish2.png
     friendly: jellyfish
     colls:
       - animals
   jellyfish3:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/jellyfish3.png
     friendly: jellyfish
     colls:
       - animals
   jellyfish4:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/jellyfish4.png
     friendly: jellyfish
     colls:
       - animals
   jellyfish5:
     cats:
-      - animals
       - sea
+      - animal
     img: ../assets/img/animals/sea/jellyfish5.png
     friendly: jellyfish
     colls:
       - animals
   kangaroo1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/kangaroo1.png
     friendly: kangaroo
     colls:
       - animals
   koala1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/koala1.png
     friendly: koala
     colls:
       - animals
   koala2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/koala2.png
     friendly: koala
     colls:
       - animals
   koala3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/koala3.png
     friendly: koala
     colls:
       - animals
   koala4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/koala4.png
     friendly: koala
     colls:
       - animals
   lama1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lama1.png
     friendly: lama
     colls:
       - animals
   lama2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lama2.png
     friendly: lama
     colls:
       - animals
   lama3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lama3.png
     friendly: lama
     colls:
       - animals
   lamb1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lamb1.png
     friendly: lamb
     colls:
       - animals
   leopard1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard1.png
     friendly: leopard
     colls:
       - animals
   leopard2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard2.png
     friendly: leopard
     colls:
       - animals
   leopard3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard3.png
     friendly: leopard
     colls:
       - animals
   leopard4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard4.png
     friendly: leopard
     colls:
       - animals
   leopard5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard5.png
     friendly: leopard
     colls:
       - animals
   leopard6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard6.png
     friendly: leopard
     colls:
       - animals
   leopard7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/leopard7.png
     friendly: leopard
     colls:
       - animals
   libelle1:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/libelle1.png
     friendly: libelle
     colls:
       - animals
   lion1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lion1.png
     friendly: lion
     colls:
       - animals
   lion2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lion2.png
     friendly: lion
     colls:
       - animals
   lion3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lion3.png
     friendly: lion
     colls:
       - animals
   lion4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lion4.png
     friendly: lion
     colls:
       - animals
   lizard1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lizard1.png
     friendly: lizard
     colls:
       - animals
   lux1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/lux1.png
     friendly: lux
     colls:
       - animals
   marsupial1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/marsupial1.png
     friendly: marsupial
     colls:
       - animals
   monkey1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey1.png
     friendly: monkey
     colls:
       - animals
   monkey10:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey10.png
     friendly: monkey
     colls:
       - animals
   monkey11:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey11.png
     friendly: monkey
     colls:
       - animals
   monkey2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey2.png
     friendly: monkey
     colls:
       - animals
   monkey3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey3.png
     friendly: monkey
     colls:
       - animals
   monkey4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey4.png
     friendly: monkey
     colls:
       - animals
   monkey5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey5.png
     friendly: monkey
     colls:
       - animals
   monkey6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey6.png
     friendly: monkey
     colls:
       - animals
   monkey7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey7.png
     friendly: monkey
     colls:
       - animals
   monkey8:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey8.png
     friendly: monkey
     colls:
       - animals
   monkey9:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/monkey9.png
     friendly: monkey
     colls:
       - animals
   mouse1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/mouse1.png
     friendly: mouse
     colls:
       - animals
   panda1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda1.png
     friendly: panda bear
     colls:
@@ -53561,8 +52948,8 @@ superdi:
     key: panda1
   panda2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda2.png
     friendly: panda bear
     colls:
@@ -53570,8 +52957,8 @@ superdi:
     key: panda2
   panda3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda3.png
     friendly: panda bear
     colls:
@@ -53579,8 +52966,8 @@ superdi:
     key: panda3
   panda4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda4.png
     friendly: panda bear
     colls:
@@ -53588,8 +52975,8 @@ superdi:
     key: panda4
   panda5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda5.png
     friendly: panda bear
     colls:
@@ -53597,288 +52984,288 @@ superdi:
     key: panda5
   panda6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda6.png
     friendly: panda
     colls:
       - animals
   panda7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda7.png
     friendly: panda
     colls:
       - animals
   panda8:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/panda8.png
     friendly: panda
     colls:
       - animals
   photo10:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/photo10.png
     friendly: photo
     colls:
       - animals
   pig1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/pig1.png
     friendly: pig
     colls:
       - animals
   puffin1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/puffin1.png
     friendly: puffin
     colls:
       - animals
   rabbit1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rabbit1.png
     friendly: rabbit
     colls:
       - animals
   rabbit2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rabbit2.png
     friendly: rabbit
     colls:
       - animals
   rabbit3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rabbit3.png
     friendly: rabbit
     colls:
       - animals
   rabbit4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rabbit4.png
     friendly: rabbit
     colls:
       - animals
   rabbit5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rabbit5.png
     friendly: rabbit
     colls:
       - animals
   rabbit6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rabbit6.png
     friendly: rabbit
     colls:
       - animals
   racoon1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/racoon1.png
     friendly: racoon
     colls:
       - animals
   rhino1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/rhino1.png
     friendly: rhino
     colls:
       - animals
   sheep1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/sheep1.png
     friendly: sheep
     colls:
       - animals
   sheep2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/sheep2.png
     friendly: sheep
     colls:
       - animals
   sheep3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/sheep3.png
     friendly: sheep
     colls:
       - animals
   sloth1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/sloth1.png
     friendly: sloth
     colls:
       - animals
   snake1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/snake1.png
     friendly: snake
     colls:
       - animals
   snake2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/snake2.png
     friendly: snake
     colls:
       - animals
   snake3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/snake3.png
     friendly: snake
     colls:
       - animals
   snake4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/snake4.png
     friendly: snake
     colls:
       - animals
   squirrel1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel1.png
     friendly: squirrel
     colls:
       - animals
   squirrel2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel2.png
     friendly: squirrel
     colls:
       - animals
   squirrel3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel3.png
     friendly: squirrel
     colls:
       - animals
   squirrel4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel4.png
     friendly: squirrel
     colls:
       - animals
   squirrel5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel5.png
     friendly: squirrel
     colls:
       - animals
   squirrel6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel6.png
     friendly: squirrel
     colls:
       - animals
   squirrel7:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/squirrel7.png
     friendly: squirrel
     colls:
       - animals
   tiger1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/tiger1.png
     friendly: tiger
     colls:
       - animals
   tiger2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/tiger2.png
     friendly: tiger
     colls:
       - animals
   tiger3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/tiger3.png
     friendly: tiger
     colls:
       - animals
   tortoise1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/tortoise1.png
     friendly: tortoise
     colls:
       - animals
   tortoise2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/tortoise2.png
     friendly: tortoise
     colls:
       - animals
   wallaby1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wallaby1.png
     friendly: wallaby
     colls:
       - animals
   wasp1:
     cats:
-      - animals
       - insect
+      - animal
     img: ../assets/img/animals/insect/wasp1.png
     friendly: wasp
     colls:
@@ -53887,80 +53274,80 @@ superdi:
     key: wasp1
   wolf1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wolf1.png
     friendly: wolf
     colls:
       - animals
   wolf2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wolf2.png
     friendly: wolf
     colls:
       - animals
   wolf3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wolf3.png
     friendly: wolf
     colls:
       - animals
   wolf4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wolf4.png
     friendly: wolf
     colls:
       - animals
   wolf5:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wolf5.png
     friendly: wolf
     colls:
       - animals
   wolf6:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/wolf6.png
     friendly: wolf
     colls:
       - animals
   zebra1:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/zebra1.png
     friendly: zebra
     colls:
       - animals
   zebra2:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/zebra2.png
     friendly: zebra
     colls:
       - animals
   zebra3:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/zebra3.png
     friendly: zebra
     colls:
       - animals
   zebra4:
     cats:
-      - animals
       - earth
+      - animal
     img: ../assets/img/animals/earth/zebra4.png
     friendly: zebra
     colls:
@@ -53969,33 +53356,34 @@ superdi:
     friendly: minou
     cats:
       - animal
-    img: ../y/img/minou.png
+    img: ../assets/img/animals/cat/minou.png
     colls:
       - animals
   frog_mini:
     friendly: frog_mini
     cats:
-      - animals
-    img: ../y/img/frog_mini.png
+      - animal
+    img: ../assets/img/animals/earth/frog_mini.png
     colls:
       - animals
   frog_bluish:
     friendly: frog_bluish
-    cats: []
-    img: ../y/img/frog_bluish.png
+    cats:
+      - animal
+    img: ../assets/img/animals/earth/frog_bluish.png
     colls:
       - animals
   frog_yellow:
     friendly: frog_yellow
     cats:
-      - animals
-    img: ../y/img/frog_yellow.png
+      - animal
+    img: ../assets/img/animals/earth/frog_yellow.png
     colls:
       - animals
   waterball:
     friendly: waterball
     cats: []
-    img: ../y/img/waterball.png
+    img: ../assets/img/hallo/waterball.png
     colls:
       - all
   aaron:
