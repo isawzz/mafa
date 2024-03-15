@@ -41,9 +41,9 @@ function onclickClear(inp,grid){
 }
 function onclickCollDone(){
 	collCloseSecondary();
-	console.log('sec',UI.collSecondary)
+	//console.log('sec',UI.collSecondary)
 	UI.collPrimary.name = UI.collSecondary.name;
-	collOpenPrimary();
+	collOpenPrimary(5,7);
 }
 async function onclickCollItem(ev) {
   evNoBubble(ev);
@@ -127,7 +127,7 @@ async function onclickCollections() {
 
 	UI.collPrimary = { div: dPrimary, name: collName }; //{name:'amanda'};
 	UI.collSecondary = { div: dSecondary, name: null };
-	collOpenPrimary(4, 4);
+	collOpenPrimary(5, 7);
 }
 async function onclickCollSelectAll(ev) {
 	//if secondary is open, use that, otherwise use primary
@@ -336,6 +336,7 @@ async function onclickNewCollection(name) {
 	}
 	UI.collSecondary.name = name; 
 	collOpenSecondary(4, 3);
+	collOpenPrimary(4, 3);
 }
 async function onclickPlan() { showCalendarApp(); }
 async function onclickPlay() { showTables(); }

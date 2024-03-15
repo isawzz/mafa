@@ -1,7 +1,12 @@
 onload = start;
 
-async function start() { test20(); }
+async function start() { test25(); }
 
+async function test25() {
+	await prelims();
+	await switchToMenu(UI.nav, 'collections');
+	await onclickNewCollection('critters');
+}
 async function test24(){
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');
@@ -64,7 +69,6 @@ async function test21_catsausmisten() {
 	}
 	downloadAsYaml(M, 'mnew1');
 }
-
 async function test20() {
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');

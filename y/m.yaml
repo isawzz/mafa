@@ -41,6 +41,7 @@ superdi:
       - medical
     colls:
       - emo
+    key: a_button_blood_type
   ab_button_blood_type:
     friendly: ab_button_blood_type
     img: ../assets/img/emo/ab-button-blood-type.png
@@ -1435,7 +1436,6 @@ superdi:
       - plant
     colls:
       - emo
-      - spotit
     key: broccoli
   broken_heart:
     friendly: broken_heart
@@ -1509,7 +1509,6 @@ superdi:
       - household
     colls:
       - emo
-      - spotit
     fa6: e4cf
     key: bucket
   buffalo:
@@ -1967,7 +1966,6 @@ superdi:
       - object
     colls:
       - emo
-      - spotit
     key: cheese_wedge
   chequered_flag:
     friendly: chequered_flag
@@ -6556,7 +6554,7 @@ superdi:
       - event
     colls:
       - emo
-    key: 1st_place_medal
+    key: key
   keyboard:
     friendly: keyboard
     img: ../assets/img/emo/keyboard.png
@@ -13820,6 +13818,8 @@ superdi:
       - clothing
     colls:
       - emo
+      - spotit
+    key: womans_hat
   womans_sandal:
     friendly: womans_sandal
     img: ../assets/img/emo/womans-sandal.png
@@ -13921,6 +13921,7 @@ superdi:
       - event
     colls:
       - emo
+      - spotit
     key: wrapped_gift
   wrench:
     friendly: wrench
@@ -14135,6 +14136,7 @@ superdi:
       - symbol
     colls:
       - icon
+    key: abstract_003
   abstract_004:
     friendly: abstract_004
     ga: EE1B
@@ -14184,6 +14186,7 @@ superdi:
       - symbol
     colls:
       - icon
+    key: abstract_010
   abstract_011:
     friendly: abstract_011
     ga: EE22
@@ -14198,6 +14201,7 @@ superdi:
       - symbol
     colls:
       - icon
+    key: abstract_012
   abstract_013:
     friendly: abstract_013
     ga: EE24
@@ -14226,6 +14230,7 @@ superdi:
       - symbol
     colls:
       - icon
+    key: abstract_016
   abstract_017:
     friendly: abstract_017
     ga: EE28
@@ -42616,6 +42621,8 @@ superdi:
       - mythical
     colls:
       - icon
+      - spotit
+    key: unicorn
   unicycle:
     friendly: unicycle
     ga: E60E
@@ -50638,6 +50645,7 @@ superdi:
     friendly: bee
     colls:
       - animals
+      - critters
     key: bee2
   bird1:
     cats:
@@ -51505,6 +51513,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly2
   butterfly3:
     cats:
       - insect
@@ -51513,6 +51523,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly3
   butterfly4:
     cats:
       - insect
@@ -51521,6 +51533,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly4
   butterfly5:
     cats:
       - insect
@@ -51529,6 +51543,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly5
   butterfly6:
     cats:
       - insect
@@ -51537,6 +51553,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly6
   butterfly7:
     cats:
       - insect
@@ -51545,6 +51563,8 @@ superdi:
     friendly: butterfly
     colls:
       - animals
+      - critters
+    key: butterfly7
   camel1:
     cats:
       - earth
@@ -53391,7 +53411,8 @@ superdi:
     friendly: waterball
     cats: []
     img: ../assets/img/hallo/waterball.png
-    colls: []
+    colls:
+      - all
   aaron:
     friendly: aaron
     cats:
@@ -53399,6 +53420,7 @@ superdi:
     img: ../assets/img/users/aaron.jpg
     colls:
       - users
+    key: aaron
   afia:
     friendly: afia
     cats:
@@ -56269,6 +56291,7 @@ superdi:
     img: ../assets/games/nations/templates/VP.png
     colls:
       - nations
+    key: VP
   war:
     friendly: war
     cats:

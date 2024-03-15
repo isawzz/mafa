@@ -1,7 +1,8 @@
 
 
-async function onclickAsSecondary(name) {
+async function onclickAsSecondary(ev) {
 
+	name = UI.collPrimary.name;
 	if (name == 'all' || collLocked(name)){
 		showMessage(`ERROR! collection ${name} cannot be altered!`);
 		return;
@@ -14,6 +15,7 @@ async function onclickAsSecondary(name) {
 	UI.collSecondary.name = name; 
 	UI.collPrimary.name = 'all'; 
 	collOpenSecondary(4, 3);
+	//collClosePrimary();
 	collOpenPrimary(4, 3);
 }
 
@@ -30,7 +32,7 @@ async function onclickRemoveSelected() {
 		// *** SAFETY CHECK!!!!! ***
 		if (collLocked(collname)) continue;
 
-		let item=M.superdi[kye];
+		let item=M.superdi[key];
 		removeInPlace(item.colls,collname);
 		di[key]=item;
 	}

@@ -130,6 +130,7 @@ function collCloseSecondary() {
 	mStyle(d, { w: 0, wmin: 0, border: 'transparent' });
 	//console.log('d', d)
 	UI.collSecondary.isOpen = false;
+	cmdEnable(UI.asSecondary);
 
 }
 async function collDelete(collname) {
@@ -152,9 +153,9 @@ async function collDelete(collname) {
 }
 async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 	let item = M.superdi[k];
-	console.log('item', item)
+	//console.log('item', item)
 	let colls = item.colls;
-	console.log('colls', colls)
+	//console.log('colls', colls)
 	assertion(colls.includes(collname), `item ${k} from coll ${collname} does not have ${collname} in colls!!!!!!`)
 	if (colls.length == 1) {
 		console.log('deleting', k, '!!!!!!!!!!!!');
@@ -313,7 +314,7 @@ function collLocked(collname) {
 }
 async function collOnDropImage(url, dDrop) {
 	let item = UI.draggedItem;
-	//console.log(dDrop, item); //return;
+	//console.log('dropped', item); //return;
 	UI.draggedItem = null;
 	let coll = UI.collSecondary;
 
@@ -388,7 +389,8 @@ function collOpenSecondary(rows, cols) {
 	coll.dInstruction.innerHTML = '* drag images into the shaded area *'
 	let grid = coll.grid;
 	mStyle(grid, { bg: '#00000030' })
-	enableImageDrop(grid, collOnDropImage);
+	enableImageOrItemDrop(grid, collOnDropImage);
+	cmdDisable(UI.asSecondary);
 }
 function collPresent(coll, rows, cols) {
 	let d1 = iDiv(coll);
@@ -638,6 +640,33 @@ function enableImageDrop(elem, onDropCallback) {
 		event.preventDefault(); // Prevent the browser's default file open behavior
 		elem.style.border = originalBorderStyle; // Restore the original border style
 
+		const files = event.dataTransfer.files; // Get the files that were dropped
+		if (files.length > 0) {
+			const reader = new FileReader();
+			reader.onload = evReader => {
+				onDropCallback(evReader.target.result, elem);
+			};
+			reader.readAsDataURL(files[0]);
+		}
+	});
+}
+function enableImageOrItemDrop(elem, onDropCallback) {
+	const originalBorderStyle = elem.style.border; // Store the original border style to restore it later
+
+	elem.addEventListener('dragover', function (event) { event.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
+	elem.addEventListener('dragenter', function (event) { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
+	elem.addEventListener('dragleave', function (event) { elem.style.border = originalBorderStyle; }); // Restore the original border if the item is dragged out without dropping
+
+	// Restore the original border and call the callback function when an image is dropped
+	elem.addEventListener('drop', function (event) {
+		event.preventDefault(); // Prevent the browser's default file open behavior
+		elem.style.border = originalBorderStyle; // Restore the original border style
+
+		if (isdef(UI.draggedItem)) {
+			//console.log('dropping item',UI.draggedItem); 
+			onDropCallback(null,elem);
+			return;
+		}
 		const files = event.dataTransfer.files; // Get the files that were dropped
 		if (files.length > 0) {
 			const reader = new FileReader();
@@ -1166,12 +1195,13 @@ function showImageInBatch(key, dParent, styles = {}) {
 	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
 	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 	assertion(el, 'PROBLEM mit' + key);
-	el.ondragstart = () => UI.draggedItem = o;
 	let label = mDom(d1, { fz: 11, cursor: 'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' });
 	label.onclick = onclickCollItemLabel;
 	mStyle(d1, { cursor: 'pointer' });
 	d1.onclick = onclickCollItem;
 	d1.setAttribute('key', key);
+	d1.setAttribute('draggable',true)
+	d1.ondragstart = () => {UI.draggedItem = o; }; // console.log('drag',UI.draggedItem);};
 	return d1;
 }
 function showNavbar() {
