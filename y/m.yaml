@@ -1435,6 +1435,7 @@ superdi:
       - plant
     colls:
       - emo
+      - spotit
     key: broccoli
   broken_heart:
     friendly: broken_heart
@@ -1508,7 +1509,9 @@ superdi:
       - household
     colls:
       - emo
+      - spotit
     fa6: e4cf
+    key: bucket
   buffalo:
     friendly: buffalo
     text: '&#128003;'
@@ -2106,6 +2109,8 @@ superdi:
       - symbol
     colls:
       - emo
+      - spotit
+    key: christmas_tree
   church:
     friendly: church
     img: ../assets/img/emo/church.png
@@ -13313,6 +13318,8 @@ superdi:
       - instrument
     colls:
       - emo
+      - spotit
+    key: violin
   volcano:
     friendly: volcano
     img: ../assets/img/emo/volcano.png
@@ -53384,8 +53391,7 @@ superdi:
     friendly: waterball
     cats: []
     img: ../assets/img/hallo/waterball.png
-    colls:
-      - all
+    colls: []
   aaron:
     friendly: aaron
     cats:
