@@ -1,19 +1,52 @@
 
+async function deleteEvent(id) {
+  let result = await simpleUpload('postEvent', { id });
+  delete Items[id];
+  mBy(id).remove();
+}
 
 async function onEventEdited(id, text, time) {
-  console.log(id, text, time)
+  console.log('onEventEdited',id, text, time)
   let e = Items[id];
   if (nundef(time)) {
     [time, text] = extractTime(text);
   }
   e.time = time;
   e.text = text;
-  let result = await simpleUpload('postEvent', e);
+  let result = await simpleUpload('postUpdateEvent', e);
 	console.log('result',result)
   Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
   mBy(id).firstChild.value = getEventValue(e); 
   closePopup();
 }
+async function postEventChange(data) {
+  return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
+}
+function showEventOpen(id) {
+  let e = Items[id];
+  if (!e) return;
+  let date = new Date(Number(e.day));
+  let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
+  let time = e.time;
+  let popup = openPopup();
+  let d = mBy(id);
+  let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
+  let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
+  mStyle(popup, { left: left, top: top, w: wp, h: hp });
+  let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
+  let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
+  let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
+  mOnEnter(inpt);
+	console.log('event text:',e.text)
+  let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
+	let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
+  let buttons = mDom(line, { display: 'inline-block' });
+  let bsend = mButton('Save', () => onEventEdited(id, ta.value, inpt.value), buttons);
+  mButton('Cancel', () => closePopup(), buttons, { hmargin: 10 })
+  mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
+  mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
+}
+
 function uiTypeEvent(dParent, o, styles = {}) {
   Items[o.id] = o;
   let id = o.id;

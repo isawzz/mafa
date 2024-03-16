@@ -131,11 +131,6 @@ function cropTo(tool, wnew, hnew) {
   let ynew = y + (hnew - h) / 2;
   redrawImage(img, dParent, xnew, ynew, wnew, wnew, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
-async function deleteEvent(id) {
-  let result = await simpleUpload('postEvent', { id });
-  delete Items[id];
-  mBy(id).remove();
-}
 function drawPix(ctx, x, y, color = 'red', sz = 5) {
   ctx.fillStyle = color;
   ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz)
@@ -162,11 +157,13 @@ async function encryptData(data) {
   return new Uint8Array(encryptedBuffer).toString();
 }
 function extractTime(input) {
-  const regex = /\b([0-9]|1[0-9]|2[0-3])[h:]\S*\b/g;
+  const regex = /\b([0-9]|1[0-9]|2[0-3])[h:]*\S*\b/g;
   const match = input.match(regex);
   if (match) {
-    const result = input.replace(regex, '').trim();
-    return [match[0], result];
+    let time = match[0];
+    let text = input.replace(time, '').trim();
+    // console.log('time found!',time,text)
+    return [time, text];
   } else {
     return ['', input];
   }
@@ -1742,9 +1739,6 @@ function playerStatCount(key, n, dParent, styles = {}) {
   d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
   return d;
 }
-async function postEventChange(data) {
-  return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
-}
 async function postUserChange(data) {
   data = valf(data, U)
   return Serverdata.users[data.name] = await mPostRoute('postUser', data);
@@ -1910,29 +1904,6 @@ function showChatWindow() {
     ev.target.value = '';
   });
 }
-function showEventOpen(id) {
-  let e = Items[id];
-  if (!e) return;
-  let date = new Date(Number(e.day));
-  let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
-  let time = e.time;
-  let popup = openPopup();
-  let d = mBy(id);
-  let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
-  let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
-  mStyle(popup, { left: left, top: top, w: wp, h: hp });
-  let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
-  let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
-  let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
-  mOnEnter(inpt);
-  let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
-  let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
-  let buttons = mDom(line, { display: 'inline-block' });
-  let bsend = mButton('Save', () => onEventEdited(id, ta.value, inpt.value), buttons);
-  mButton('Cancel', () => closePopup(), buttons, { hmargin: 10 })
-  mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
-  mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
-}
 function showImage(key, dParent, styles = {}) {
   let o = M.superdi[key];
   if (nundef(o)) { console.log('showImage:key not found', key); return; }
@@ -2048,8 +2019,10 @@ function sockInit(){
   Socket = io(server);
   Socket.on('deleteTable', sockGetDeleteTable); //x => console.log('::SOCK table:', x));
   Socket.on('disconnect', x => console.log('::SOCK disconnect:', x));
+  Socket.on('event', onsockEvent);
   Socket.on('message', showChatMessage);
   Socket.on('newTable', sockGetNewTable); //x => console.log('::SOCK table:', x));
+  Socket.on('superdi', onsockSuperdi);
   Socket.on('turnUpdate', sockGetTurnUpdate); //x => console.log('::SOCK table:', x));
   Socket.on('userChange', x => console.log('::SOCK userChange:', x));
   Socket.on('update', x => console.log('::SOCK update:', x));

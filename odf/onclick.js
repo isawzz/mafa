@@ -458,7 +458,6 @@ function onclickDay(d, styles) {
   let x = uiTypeEvent(d, o, styles); 
   x.inp.focus();
 }
-function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 function onclickMenu(ev) {
 	let keys = evToAttr(ev, 'key');

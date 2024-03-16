@@ -41843,7 +41843,7 @@ function mDom(dParent, styles = {}, opts = {}) {
   for (const opt in opts) { 
     let name=valf(aliases[opt], opt), val=opts[opt];
     //id src width height seem to work with setAttribute
-    if (['style','tag','innerHTML','className','checked'].includes(name) || name.startsWith('on')) d[name]=val;
+    if (['style','tag','innerHTML','className','checked','value'].includes(name) || name.startsWith('on')) d[name]=val;
     else d.setAttribute(name,val); 
   }
   mStyle(d, styles);

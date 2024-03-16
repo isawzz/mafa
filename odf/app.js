@@ -408,6 +408,20 @@ app.post('/postEvent', (req, res) => {
 	fs.writeFileSync(fname, y, 'utf8');
 	res.json(data);
 });
+app.post('/postUpdateEvent', (req, res) => {
+	let id = req.body.id;
+	let data = req.body;
+	console.log('<== post update event')
+	console.log('data', data)
+
+	if (isEmpty(data.text)) delete Session.events[id]; else lookupSetOverride(Session, ['events', id], data);
+	let y = yaml.dump(Session.events);
+	let fname = path.join(dbDirectory, 'events.yaml');
+	fs.writeFileSync(fname, y, 'utf8');
+	io.emit('event',data);
+	res.json(`events updated successfully!`);
+	//res.json(data);
+});
 app.post('/postImage', (req, res) => {
 	console.log('<== post image')
 	const data = req.body;
