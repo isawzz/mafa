@@ -1,46 +1,36 @@
 
-async function onclickEditCategories() {
-	let selist = UI.selectedImages; //console.log('selist', selist)
-	let keys = selist.map(x => stringBefore(x, '@'));
-	let arrs = keys.map(x => M.superdi[x].cats);
-	let lst = unionOfArrays(arrs); //console.log('inter', lst);
-	let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
-	sortByDescending(catlist,'value');
 
-	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
-	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
-	//cats = cats.split('@');
-	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
-	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
-
-	//console.log('cats', cats);
-	//console.log('*BREAK*');	return;
-
-	let di = {}, changed = false;
-	for (const kc of selist) {
-		let key = stringBefore(kc, '@');
-		let o = M.superdi[key];
-		if (sameList(cats,o.cats)) continue;
-		changed = true;
-		o.cats=cats;
-		di[key] = o;
-	}
-
-	if (!changed) { console.log('categories unchanged!',cats); collClearSelections(); return; }
-	console.log('items changed:',Object.keys(di));
-
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+async function onEventEdited(id, text, time) {
+  console.log(id, text, time)
+  let e = Items[id];
+  if (nundef(time)) {
+    [time, text] = extractTime(text);
+  }
+  e.time = time;
+  e.text = text;
+  let result = await simpleUpload('postEvent', e);
+	console.log('result',result)
+  Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
+  mBy(id).firstChild.value = getEventValue(e); 
+  closePopup();
 }
-
-function uiGadgetTypeCheckListInput(form, content, styles, opts) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
-	let dOuter = mDom(form, styles)
-	let dParent = mDom(dOuter, { pabottom: 10, box: true }); 
-	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
-	return () =>DA.formResult;
+function uiTypeEvent(dParent, o, styles = {}) {
+  Items[o.id] = o;
+  let id = o.id;
+  let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
+  mStyle(ui, { overflow: 'hidden', display: 'flex', gap: 2, padding: 2, 'align-items': 'center' }); //,'justify-items':'center'})
+  let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
+  let fz = 15;
+  let stInput = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, h: h, border: 'solid 1px silver', box: true, margin: 0, padding: 0 };
+  let inp = mDom(ui, stInput, { html: o.text, tag: 'input', className: 'no_outline', onclick: ev => { evNoBubble(ev) } }); //;selectText(ev.target);}});
+  inp.value = getEventValue(o);
+  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
+  fz = 14;
+  let stButton = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, box: true, fg: 'silver', bg: 'white', family: 'pictoFa', display: 'flex' };
+  let b = mDom(ui, stButton, { html: String.fromCharCode('0x' + M.superdi.pen_square.fa) });
+  ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
+  mStyle(inp, { w: wtotal - wbutton });
+  return { ui: ui, inp: inp, id: id };
 }
 
 

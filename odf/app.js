@@ -244,7 +244,7 @@ function getTablesInfo(){
 app.get('/session', (req, res) => {
 	console.log('==> get session')
 	let s={}; addKeys()
-	res.json({users:Session.users,config:Session.config,tables:getTablesInfo()});
+	res.json({users:Session.users,config:Session.config,tables:getTablesInfo()}); //,events:Session.events});
 });
 app.get('/table', (req, res) => {
 	let params = req.query;
@@ -400,11 +400,11 @@ app.post('/postEvent', (req, res) => {
 	let id = req.body.id;
 	let data = req.body;
 	console.log('<== post event')
-	//console.log('data', data)
-	let fname = path.join(dbDirectory, 'events.yaml');
+	console.log('data', data)
 
 	if (isEmpty(data.text)) delete Session.events[id]; else lookupSetOverride(Session, ['events', id], data);
 	let y = yaml.dump(Session.events);
+	let fname = path.join(dbDirectory, 'events.yaml');
 	fs.writeFileSync(fname, y, 'utf8');
 	res.json(data);
 });

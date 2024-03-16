@@ -488,9 +488,8 @@ async function getEvent(id, cachedOk = true) {
   return res;
 }
 async function getEvents(cachedOk = false) { 
-  let res = lookup(Serverdata, ['events']); 
   if (!cachedOk) Serverdata.events = await mGetRoute('events'); 
-  return res;
+  return Serverdata.events;
 }
 function getEventValue(o) {
   if (isEmpty(o.time)) return o.text;
@@ -944,7 +943,7 @@ function measureElement(el) {
   let info = window.getComputedStyle(el, null);
   return { w: info.width, h: info.height };
 }
-function measureHeight(dParent, styles = {}) {
+function measureHeightOfTextStyle(dParent, styles = {}) {
   let d = mDom(dParent, styles, { html: 'Hql' });
   let s = measureElement(d);
   d.remove();
@@ -1723,19 +1722,6 @@ async function ondropPreviewImage(dParent, url, key) {
     mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
   }
 }
-async function onEventEdited(id, text, time) {
-  console.log(id, text, time)
-  let e = Items[id];
-  if (nundef(time)) {
-    [time, text] = extractTime(text);
-  }
-  e.time = time;
-  e.text = text;
-  let result = await simpleUpload('postEvent', e);
-  Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
-  mBy(id).firstChild.value = getEventValue(e); 
-  closePopup();
-}
 function openPopup(name = 'dPopup') {
   closePopup();
   let popup = document.createElement('div');
@@ -1903,11 +1889,11 @@ function setColors(c) {
   setCssVar('--fgTitle', contrast(4))
   setCssVar('--fgSubtitle', contrast(3))
 }
-function showCalendarApp() {
+async function showCalendarApp() {
   if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
   showTitle('Calendar');
   let d1 = mDiv('dMain', { w: 800, h: 800 }); //, bg: 'white' })
-  let x = DA.calendar = uiTypeCalendar(d1);
+  let x = DA.calendar = await uiTypeCalendar(d1);
 }
 function showChatMessage(o) {
   let d = mBy('dChatWindow'); if (nundef(d)) return;
@@ -2253,7 +2239,7 @@ function tryJSONParse(astext) {
     return { message: 'ERROR', text: astext }
   }
 }
-function uiTypeCalendar(dParent) {
+async function uiTypeCalendar(dParent) {
   const [wcell, hcell, gap] = [120, 100, 10];
   let outerStyles = {
     rounding: 4, patop: 4, pabottom: 4, weight: 'bold', box: true,
@@ -2264,7 +2250,7 @@ function uiTypeCalendar(dParent) {
   innerStyles.w = wcell - 11.75;
   innerStyles.hmin = `calc( 100% - 23px )`;//hcell-32
   let fz = 12;
-  let h = measureHeight(dParent, { fz: fz });
+  let h = measureHeightOfTextStyle(dParent, { fz: fz }); console.log('h',h)
   let eventStyles = { fz: fz, hmin: h, w: '100%' };
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -2281,17 +2267,17 @@ function uiTypeCalendar(dParent) {
   var dDate = mDiv(dTitle, { display: 'flex', gap: gap }, 'dDate', '', 'title');
   var dButtons = mDiv(dTitle, { display: 'flex', gap: gap });
   mButton('Prev',
-    () => {
+    async () => {
       let m = currentDate.getMonth();
       let y = currentDate.getFullYear();
-      if (m == 0) setDate(12, y - 1); else setDate(m, y);
+      if (m == 0) setDate(12, y - 1); else await setDate(m, y);
     },
     dButtons, { w: 70, margin: 0 }, 'input');
   mButton('Next',
-    () => {
+    async () => {
       let m = currentDate.getMonth();
       let y = currentDate.getFullYear();
-      if (m == 11) setDate(1, y + 1); else setDate(m + 2, y);
+      if (m == 11) setDate(1, y + 1); else await setDate(m + 2, y);
     }, dButtons, { w: 70, margin: 0 }, 'input');
   var dMonth, dYear;
   function getDayDiv(dt) {
@@ -2302,7 +2288,7 @@ function uiTypeCalendar(dParent) {
     if (ui.style.opacity === 0) return null;
     return ui.children[0]; 
   }
-  function setDate(m, y) {
+  async function setDate(m, y) {
     currentDate.setMonth(m - 1);
     currentDate.setFullYear(y);
     mClear(dDate);
@@ -2319,7 +2305,7 @@ function uiTypeCalendar(dParent) {
       dDays[i] = cell;
     }
     populate(currentDate);
-    refreshEvents();
+    await refreshEvents();
     return { container, date: currentDate, dDate, dGrid, dMonth, dYear, setDate, populate };
   }
   function populate() {
@@ -2350,6 +2336,7 @@ function uiTypeCalendar(dParent) {
   }
   async function refreshEvents() {
     let events = await getEvents();
+    console.log('refreshing events',events)
     for (const k in events) {
       let o = events[k];
       let dt = new Date(Number(o.day));
@@ -2359,26 +2346,9 @@ function uiTypeCalendar(dParent) {
     }
     mDummyFocus();
   }
-  setDate(currentDate.getMonth() + 1, currentDate.getFullYear()); 
+  await setDate(currentDate.getMonth() + 1, currentDate.getFullYear()); 
+
   return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
-}
-function uiTypeEvent(dParent, o, styles = {}) {
-  Items[o.id] = o;
-  let id = o.id;
-  let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
-  mStyle(ui, { overflow: 'hidden', display: 'flex', gap: 2, padding: 2, 'align-items': 'center' }); //,'justify-items':'center'})
-  let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
-  let fz = 15;
-  let stInput = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, h: h, border: 'solid 1px silver', box: true, margin: 0, padding: 0 };
-  let inp = mDom(ui, stInput, { html: o.text, tag: 'input', className: 'no_outline', onclick: ev => { evNoBubble(ev) } }); //;selectText(ev.target);}});
-  inp.value = getEventValue(o);
-  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
-  fz = 14;
-  let stButton = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, box: true, fg: 'silver', bg: 'white', family: 'pictoFa', display: 'flex' };
-  let b = mDom(ui, stButton, { html: String.fromCharCode('0x' + M.superdi.pen_square.fa) });
-  ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
-  mStyle(inp, { w: wtotal - wbutton });
-  return { ui: ui, inp: inp, id: id };
 }
 function uiTypeExtraWorker(w) {
   let [res, n] = [stringBefore(w, ':'), Number(stringAfter(w, ':'))];

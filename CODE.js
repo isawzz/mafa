@@ -1,3 +1,24 @@
+
+function _uiTypeCheckList(lst,dParent,styles={},opts={}){
+	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
+	lst.forEach((text, index) => {
+		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`});
+		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
+		mNewline(d,0);
+	});
+	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
+	let rp=getRect(dParent); console.log('rp',rp);
+	let hParent = rp.h;
+	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
+	console.log('hParent',hParent);
+	let p=mGetStyle(dParent,'pabottom'); console.log('pb',p,mGetStyle(dParent,'padding'))
+	let h=hParent-r.y; //-p;
+	mStyle(d,{hmax:h});//,pabottom:10,box:true});
+	return d;
+	//check all the boxes that are set for this element
+
+	//mButton('done',)
+}
 function uiGadgetTypeCheckListInput(form, content, styles, opts) {
 
 

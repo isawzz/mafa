@@ -95,6 +95,7 @@ superdi:
       - event
     colls:
       - emo
+    key: admission_tickets
   aerial_tramway:
     friendly: aerial_tramway
     img: ../assets/img/emo/aerial-tramway.png
