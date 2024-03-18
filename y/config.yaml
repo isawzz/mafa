@@ -117,22 +117,14 @@ games:
       # allow_exchange: 'yes,no'
       # jokers_per_group: '3,2,1'
   huti:
-    friendly: Huti
+    friendly: Chapeau
     logo: top_hat
     color: orange
     defaulthandsorting: rank
     options:
       #mode: 'solo,multi,hotseat'
       mode: 'solo,hotseat,multi'
-      handsize: '3,5,11'
-      coins: '3,5,10'
-      maxrounds: '1,3,5,7'
-      phase_order: 'fixed,anti,choice'
-      thinking_time: '3,20,5,10'
-      auto_weiter: 'no,yes'
-      # allow_sequences: 'yes,no'
-      # allow_exchange: 'yes,no'
-      # jokers_per_group: '3,2,1'
+      handsize: '3,5,11,1'
   nations:
     friendly: Nations
     logo: world_map
