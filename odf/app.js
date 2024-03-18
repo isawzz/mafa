@@ -385,7 +385,7 @@ app.post('/deleteTable', (req, res) => {
 		deleteTable(id);
 		emitToPlayers(t.fen.playerNames,'deleteTable',getTablesInfo());
 	}
-	res.json('table deleted');
+	res.json(getTablesInfo());
 });
 app.post('/postConfig', (req, res) => {
 	console.log('<== post config')

@@ -1,0 +1,153 @@
+id: T8eCNAhKDEpJF65lqk_o
+fen:
+  id: T8eCNAhKDEpJF65lqk_o
+  owner: amanda
+  players:
+    felix:
+      name: felix
+      color: '#1f8fff'
+      icon: felix
+      civ: ethiopia
+      level: chieftain
+      military: 0
+      stability: 0
+      food: 4
+      stone: 7
+      gold: 5
+      vp: 5
+      workers: 5
+      book: 0
+      cards:
+        - a
+        - b:stele
+        - b:quarry
+        - m:axeman
+        - b:caravan
+        - d:0
+        - w
+        - c
+        - c
+        - w
+        - w
+        - w
+        - w
+        - w
+      extraWorkers:
+        - food:3
+        - food:3
+        - food:3
+        - food:3
+        - stability:3
+        - stability:3
+        - stability:3
+        - stability:3
+    amanda:
+      name: amanda
+      color: '#f28cb2'
+      icon: amanda
+      civ: rome
+      level: chieftain
+      military: 0
+      stability: 0
+      food: 2
+      stone: 6
+      gold: 6
+      vp: 4
+      workers: 5
+      book: 0
+      cards:
+        - a
+        - b:farm
+        - b:quarry
+        - b:legionary
+        - b:aqueduct
+        - d:0
+        - w
+        - c
+        - c
+        - w
+        - w
+        - w
+        - w
+        - w
+      extraWorkers:
+        - food:3
+        - food:3
+        - food:3
+        - food:3
+        - stability:3
+        - stability:3
+        - stability:3
+        - stability:3
+  playerNames:
+    - felix
+    - amanda
+  numPlayers: 2
+  age: 1
+  events:
+    - assyrian_deportations
+    - attila
+    - yello_turban_rebellion
+    - hellenism
+    - qin_unification
+    - rigveda
+    - aryan_migration
+    - sea_peoples
+    - shang_oracle_bones
+    - bread_and_games
+    - pax_romana
+    - taoism
+  progressCards:
+    - legionary
+    - immortal
+    - forum
+    - archer
+    - mount_ararat
+    - trireme
+    - siege_of_troy
+    - mine
+    - sun_tzu
+    - battle_of_kadesh
+    - library
+    - battle_of_cannae
+    - israel
+    - buddha
+    - granary
+    - forge
+    - vatican
+    - petra
+    - lighthouse
+    - gaul
+    - macedonia
+  market:
+    - hoplite
+    - wars_of_alexander
+    - terracotta_army
+    - cyrus_the_great
+    - iron_working
+    - nubia
+    - stonehenge
+    - pelopponesian_war
+    - city_wall
+    - ziggurat
+    - siwa_oasis
+    - qin_shi_huang
+    - aqueduct
+    - hispania
+    - archimedes
+    - babylonia
+    - mount_kailash
+    - hannibal
+    - warring_states
+    - the_odyssey
+    - punic_wars
+  plorder:
+    - felix
+    - amanda
+  round: 1
+  phase: growth
+  turn:
+    - felix
+    - amanda
+game: nations
+friendly: duel of Plymouth

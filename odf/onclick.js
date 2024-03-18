@@ -458,6 +458,7 @@ function onclickDay(d, styles) {
   let x = uiTypeEvent(d, o, styles); 
   x.inp.focus();
 }
+function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 function onclickMenu(ev) {
 	let keys = evToAttr(ev, 'key');
@@ -546,11 +547,39 @@ async function onclickNewCollection(name) {
 	collOpenPrimary(4, 3);
 }
 async function onclickPlan() { await showCalendarApp(); }
-async function onclickPlay() { showTables(); }
+async function onclickPlay() { 
+	await showTables(); 
+	showGames();
+
+}
 async function onclickTable(id) { await switchToTable(id); }
 async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
 	if (!uname) return;
 	await switchToUser(uname);
+}
+async function onEventEdited(id, text, time) {
+  console.log('onEventEdited',id, text, time)
+  let e = Items[id];
+  if (nundef(time)) {
+    [time, text] = extractTime(text);
+  }
+  e.time = time;
+  e.text = text;
+  let result = await simpleUpload('postUpdateEvent', e);
+	console.log('result',result)
+  Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
+  mBy(id).firstChild.value = getEventValue(e); 
+  closePopup();
+}
+async function onsockEvent(x){
+	console.log('SOCK::event',x)
+	Serverdata.events[x.id]=x;
+	//TODO: if calendar app is open refreshEvents!
+}
+async function onsockSuperdi(x){
+	console.log('SOCK::superdi',x)
+	//TODO: update superdi!
+	//M.superdi[x.id]=x;
 }

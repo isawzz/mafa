@@ -642,6 +642,11 @@ function createScaledCanvasFromImage(src) {
 		img.src = src;
 	});
 }
+async function deleteEvent(id) {
+  let result = await simpleUpload('postEvent', { id });
+  delete Items[id];
+  mBy(id).remove();
+}
 function deleteKeyFromLocalSuperdi(k) {
 	delete M.superdi[k];
 
@@ -1040,7 +1045,7 @@ function menuEnable(menu, key) { mClassRemove(iDiv(menu.commands[key]), 'disable
 async function menuOpen(menu, key) {
 	let cmd = menu.commands[key];	//console.log('clicked',menu,cmd);
 	menu.cur = key;
-	mClass(iDiv(cmd), 'activeLink')
+	mClass(iDiv(cmd), 'activeLink'); console.log('cmd',cmd)
 	await cmd.open();
 }
 function measureHeight(elem){return mGetStyle(elem, 'h')}
@@ -1179,6 +1184,9 @@ async function ondropShowImage(url, dDrop) {
 
 	img.onclick = storeMouseCoords;
 }
+async function postEventChange(data) {
+  return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
+}
 async function postImage(img, path) {
 	let dataUrl = imgToDataUrl(img);
 	let o = { image: dataUrl, path: path };
@@ -1210,6 +1218,31 @@ async function showDashboard() {
 	mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${U.name}! this is your dashboard` })
 }
 function showDiv(d) { mStyle(d, { bg: rColor() }); console.log(d, mGetStyle(d, 'w')); }
+function showEventOpen(id) {
+  let e = Items[id];
+  if (!e) return;
+  let date = new Date(Number(e.day));
+  let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
+  let time = e.time;
+  let popup = openPopup();
+  let d = mBy(id);
+  let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
+  let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
+  mStyle(popup, { left: left, top: top, w: wp, h: hp });
+  let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
+  let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
+  let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
+  mOnEnter(inpt);
+	console.log('event text:',e.text)
+  let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
+	
+	let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
+  let buttons = mDom(line, { display: 'inline-block' });
+  let bsend = mButton('Save', () => onEventEdited(id, ta.value, inpt.value), buttons);
+  mButton('Cancel', () => closePopup(), buttons, { hmargin: 10 })
+  mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
+  mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
+}
 function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	let [keys, index, numCells] = [coll.keys, coll.index, coll.rows * coll.cols];
 	if (isEmpty(keys) && alertEmpty) showMessage('nothing has been added to this collection yet!');
@@ -1278,7 +1311,7 @@ function showNavbar() {
 	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
 	commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, clearMain);
 	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
-	commands.play = menuCommand(nav.l, 'nav', 'play', null, showTables, clearMain);
+	commands.play = menuCommand(nav.l, 'nav', 'play', null, onclickPlay, clearMain);
 	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
 	nav.commands = commands;
 	// console.log(commands)
@@ -1376,78 +1409,6 @@ function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'frame
 		selectedPics.push(selkey); collSelect(elem);
 	}
 }
-function uiTypeCheckList(lst,dParent,styles={},opts={}){
-	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
-	//console.log('lst',lst)
-	lst.forEach((o, index) => {
-		let [text,value]=[o.name,o.value];
-		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`,checked:value});
-		//dcheck.checked = value;
-		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
-		mNewline(d,0);
-	});
-	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
-	let rp=getRect(dParent); //console.log('rp',rp);
-	let hParent = rp.h;
-	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
-	//console.log('hParent',hParent);
-	let p=mGetStyle(dParent,'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
-	let h=hParent-r.y; //-p;
-	mStyle(d,{hmax:h});//,pabottom:10,box:true});
-	return d;
-	//check all the boxes that are set for this element
-
-	//mButton('done',)
-}
-function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
-
-	mStyle(dParent,{w:1000})
-	let dg = mDom(dParent);
-	let list = lst; // lst.map(x=>x.name); list.sort();
-	//console.log('list',list)
-
-	let items = []; //make measured checkbox items
-	for (const o of list) {
-		let div = mCheckbox(dg,o.name,o.value);
-		items.push({ nam:o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
-	}
-	let wmax = arrMax(items,'w'); //console.log('wmax',wmax); //measure max width of items
-	let cols=3; 
-	let wgrid=wmax*cols+100; //(wmax+15) * (cols) + 10;
-	dg.remove();
-
-	dg = mDom(dParent);
-	// *** input ***
-	let inp = mDom(dg, {w100:true,box:true,mabottom:10}, { className: 'input', tag: 'input', type: 'text' });
-
-	// *** buttons ***
-	let db=mDom(dg,{w100:true,box:true,align:'right',mabottom:4});
-	mButton('cancel',()=>DA.formResult=null,db,{},'input');
-	mButton('clear',ev=>{ev.preventDefault();onclickClear(inp,grid)},db,{maleft:10},'input');
-	mButton('done',()=>DA.formResult=extractWords(inp.value,' '),db,{maleft:10},'input');
-
-	// *** grid ***
-	mStyle(dg, { w:wgrid,box:true,padding:10 }); //, w: wgrid })
-	
-	//let grid = mGridFromItems(dg,items,500,cols); //createItemsGrid(dg, items, 500, cols);
-	let grid = mGrid(null,cols,dg,{w100:true,gap:10,matop:4,hmax:500});	
-	items.map(x=>mAppend(grid,iDiv(x)));
-
-	//when checkbox val changes inp needs to change and checkboxes need to be rearranged! possibly new checkboxes created!
-	let chks=Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
-	//console.log('cheks',chks)
-	for(const chk of chks){
-		chk.addEventListener('click',ev=>checkToInput(ev,inp,grid))
-	}
-
-	inp.value = list.filter(x=>x.value).map(x=>x.name).join(', ');
-	inp.addEventListener('keypress',ev=>inpToChecklist(ev, grid));
-	//when inp is changed, checkboxes need to be modified
-	//only when pressing enter in input box OR when entering a comma?
-
-	return {dg,inp,grid};
-
-}
 function uiGadgetTypeCheckList(form, content, styles, opts) {
 
 	//was soll der content sein? wo soll der content berechnet werden?
@@ -1522,6 +1483,96 @@ function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
 
 	return () => form.getAttribute('proceed') == 'yes';
+}
+function uiTypeCheckList(lst,dParent,styles={},opts={}){
+	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
+	//console.log('lst',lst)
+	lst.forEach((o, index) => {
+		let [text,value]=[o.name,o.value];
+		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`,checked:value});
+		//dcheck.checked = value;
+		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
+		mNewline(d,0);
+	});
+	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
+	let rp=getRect(dParent); //console.log('rp',rp);
+	let hParent = rp.h;
+	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
+	//console.log('hParent',hParent);
+	let p=mGetStyle(dParent,'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
+	let h=hParent-r.y; //-p;
+	mStyle(d,{hmax:h});//,pabottom:10,box:true});
+	return d;
+	//check all the boxes that are set for this element
+
+	//mButton('done',)
+}
+function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
+
+	mStyle(dParent,{w:1000})
+	let dg = mDom(dParent);
+	let list = lst; // lst.map(x=>x.name); list.sort();
+	//console.log('list',list)
+
+	let items = []; //make measured checkbox items
+	for (const o of list) {
+		let div = mCheckbox(dg,o.name,o.value);
+		items.push({ nam:o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
+	}
+	let wmax = arrMax(items,'w'); //console.log('wmax',wmax); //measure max width of items
+	let cols=3; 
+	let wgrid=wmax*cols+100; //(wmax+15) * (cols) + 10;
+	dg.remove();
+
+	dg = mDom(dParent);
+	// *** input ***
+	let inp = mDom(dg, {w100:true,box:true,mabottom:10}, { className: 'input', tag: 'input', type: 'text' });
+
+	// *** buttons ***
+	let db=mDom(dg,{w100:true,box:true,align:'right',mabottom:4});
+	mButton('cancel',()=>DA.formResult=null,db,{},'input');
+	mButton('clear',ev=>{ev.preventDefault();onclickClear(inp,grid)},db,{maleft:10},'input');
+	mButton('done',()=>DA.formResult=extractWords(inp.value,' '),db,{maleft:10},'input');
+
+	// *** grid ***
+	mStyle(dg, { w:wgrid,box:true,padding:10 }); //, w: wgrid })
+	
+	//let grid = mGridFromItems(dg,items,500,cols); //createItemsGrid(dg, items, 500, cols);
+	let grid = mGrid(null,cols,dg,{w100:true,gap:10,matop:4,hmax:500});	
+	items.map(x=>mAppend(grid,iDiv(x)));
+
+	//when checkbox val changes inp needs to change and checkboxes need to be rearranged! possibly new checkboxes created!
+	let chks=Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	//console.log('cheks',chks)
+	for(const chk of chks){
+		chk.addEventListener('click',ev=>checkToInput(ev,inp,grid))
+	}
+
+	inp.value = list.filter(x=>x.value).map(x=>x.name).join(', ');
+	inp.addEventListener('keypress',ev=>inpToChecklist(ev, grid));
+	//when inp is changed, checkboxes need to be modified
+	//only when pressing enter in input box OR when entering a comma?
+
+	return {dg,inp,grid};
+
+}
+function uiTypeEvent(dParent, o, styles = {}) {
+  Items[o.id] = o;
+  let id = o.id;
+  let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
+  mStyle(ui, { overflow: 'hidden', display: 'flex', gap: 2, padding: 2, 'align-items': 'center' }); //,'justify-items':'center'})
+  let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
+  let fz = 15;
+  let stInput = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, h: h, border: 'solid 1px silver', box: true, margin: 0, padding: 0 };
+  let inp = mDom(ui, stInput, { html: o.text, tag: 'input', className: 'no_outline', onclick: ev => { evNoBubble(ev) } }); //;selectText(ev.target);}});
+  inp.value = getEventValue(o);
+  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
+  fz = 14;
+  let stButton = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, box: true, fg: 'silver', bg: 'white', family: 'pictoFa', display: 'flex' };
+  let b = mDom(ui, stButton, { html: String.fromCharCode('0x' + M.superdi.pen_square.fa) });
+  ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
+  mStyle(inp, { w: wtotal - wbutton });
+  return { ui: ui, inp: inp, id: id };
 }
 function unionOfArrays() {
 	// arguments should be lists or one list of lists

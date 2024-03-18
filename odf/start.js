@@ -4,9 +4,12 @@ async function start() { test25(); }
 
 async function test25() {
 	await prelims();
-	await switchToMenu(UI.nav, 'plan');
 
-	console.log('events',Serverdata.events,Serverdata)
+	//await natCreateGame();
+	await switchToMenu(UI.nav, 'play');
+  //await showTables(); 
+
+	//console.log('events',Serverdata.events,Serverdata)
 	//await onclickNewCollection('critters');
 }
 async function prelims() {
@@ -24,6 +27,7 @@ async function prelims() {
 
 	UI.nav = showNavbar();
 	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
+	dTitle = mBy('dTitle');
 	//UI.gadgetUsername = mGadget('username', { right: 0, top: 30 });
 
 	await switchToUser(localStorage.getItem('username'));

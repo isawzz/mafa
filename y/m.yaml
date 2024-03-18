@@ -2842,6 +2842,7 @@ superdi:
       - person
     colls:
       - emo
+    text: '&#128081;'
     fa6: f521
   crying_cat:
     friendly: crying_cat

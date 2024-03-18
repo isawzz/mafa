@@ -1,6 +1,6 @@
-async function __getUser(uname, cachedOk = false) { 
-  let res = lookup(Serverdata, ['users',uname]); 
-  if (!res || !cachedOk) res = await mGetRoute('user',{uname}); 
+async function __getUser(uname, cachedOk = false) {
+  let res = lookup(Serverdata, ['users', uname]);
+  if (!res || !cachedOk) res = await mGetRoute('user', { uname });
   if (!res) { res = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
   Serverdata.users[uname] = res;
   return res;
@@ -62,46 +62,46 @@ function addToolX(cropper, d) {
 function arrRemoveDuplicates(arr) { return Array.from(new Set(arr)); }
 function buyProgressCard(ev) {
   let o = evToAttrElem(ev, 'key');
-  console.log('player buys',o.val);
+  console.log('player buys', o.val);
   o.elem.remove();
   let spot = M.selectedCivSpot
   if (isdef(spot)) {
     spot.innerHTML = '';
-    let [w,h]=[mGetStyle(spot,'w'),mGetStyle(spot,'h')];
+    let [w, h] = [mGetStyle(spot, 'w'), mGetStyle(spot, 'h')];
     mAppend(spot, o.elem);
-    mStyle(o.elem, { h: h,w:w });
+    mStyle(o.elem, { h: h, w: w });
     o.elem.onclick = () => selectCivSpot(spot)
-    mClassRemove(M.selectedCivSpot,'shadow');
+    mClassRemove(M.selectedCivSpot, 'shadow');
     M.selectedCivSpot = null;
   }
 }
-function cardRect(ctx,x,y,color){
-  let dark='#635651';
-  let light='#D9C7BD';
-  delta=20;
-  let ybar=y+33;
-  let o=findNextBar(ctx,x,x+100,ybar,ybar+20, color,10);
-  if (nundef(o)) o=findNextBar(ctx,x,x+100,ybar,ybar+20, color,15);
-  console.log('bar',o);
-  let xnew=o.x;
-  let o1=findNextBar(ctx,xnew,xnew+20,ybar,ybar+20, dark,delta);
-  if (nundef(o1)) o1=findNextBar(ctx,xnew,xnew+20,ybar,ybar+20, dark,delta+10);
-  console.log('dark',o1)
-  let xx=o1.x+30;
-  let o2=findNextBar(ctx,xx,xx+100,ybar,ybar+20, color,delta);
-  console.log('bar',o2)
-  let xline=x+33;
-  let o3=findNextLine(ctx,xline,xline+20,y,y+100, color)
-  if (nundef(o3)) o3=findNextLine(ctx,xline,xline+20,y,y+100, color,delta)
-  console.log('line',o3)
-  let ynew=o3.y;
-  let o4=findNextLine(ctx,xline,xline+20,ynew,ynew+20, dark,delta)
-  if (nundef(o4)) o4=findNextLine(ctx,xline,xline+20,ynew,ynew+20, dark,delta+10)
-  console.log('line',o4)
-  ynew = o4.y+80;
-  let o5=findNextLine(ctx,xline,xline+20,ynew,ynew+100, color)
-  console.log('line',o5)
-  return {x:o1.x,y:o4.y,w:o2.x-o1.x,h:o5.y-o4.y};
+function cardRect(ctx, x, y, color) {
+  let dark = '#635651';
+  let light = '#D9C7BD';
+  delta = 20;
+  let ybar = y + 33;
+  let o = findNextBar(ctx, x, x + 100, ybar, ybar + 20, color, 10);
+  if (nundef(o)) o = findNextBar(ctx, x, x + 100, ybar, ybar + 20, color, 15);
+  console.log('bar', o);
+  let xnew = o.x;
+  let o1 = findNextBar(ctx, xnew, xnew + 20, ybar, ybar + 20, dark, delta);
+  if (nundef(o1)) o1 = findNextBar(ctx, xnew, xnew + 20, ybar, ybar + 20, dark, delta + 10);
+  console.log('dark', o1)
+  let xx = o1.x + 30;
+  let o2 = findNextBar(ctx, xx, xx + 100, ybar, ybar + 20, color, delta);
+  console.log('bar', o2)
+  let xline = x + 33;
+  let o3 = findNextLine(ctx, xline, xline + 20, y, y + 100, color)
+  if (nundef(o3)) o3 = findNextLine(ctx, xline, xline + 20, y, y + 100, color, delta)
+  console.log('line', o3)
+  let ynew = o3.y;
+  let o4 = findNextLine(ctx, xline, xline + 20, ynew, ynew + 20, dark, delta)
+  if (nundef(o4)) o4 = findNextLine(ctx, xline, xline + 20, ynew, ynew + 20, dark, delta + 10)
+  console.log('line', o4)
+  ynew = o4.y + 80;
+  let o5 = findNextLine(ctx, xline, xline + 20, ynew, ynew + 100, color)
+  console.log('line', o5)
+  return { x: o1.x, y: o4.y, w: o2.x - o1.x, h: o5.y - o4.y };
 }
 function closeApps() {
   if (isdef(DA.calendar)) { closePopup(); delete DA.calendar; }
@@ -185,14 +185,14 @@ function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
     num = o.line.length;
     res.push(o)
   }
-  console.log('result',res);
+  console.log('result', res);
   let diff = 243;
-  let cand = res.filter(o=>o.val>=40 && o.val<=500); 
-  let [kleinere, groessere] = findMidlines(cand,diff); 
+  let cand = res.filter(o => o.val >= 40 && o.val <= 500);
+  let [kleinere, groessere] = findMidlines(cand, diff);
   let topmost, bottommost;
   for (const l3 of res) {
-    let distleft = kleinere.val - l3.val; 
-    let distright = l3.val-groessere.val;
+    let distleft = kleinere.val - l3.val;
+    let distright = l3.val - groessere.val;
     if (isWithinDelta(distleft, diffleft, 2)) {
       topmost = l3;
     }
@@ -206,17 +206,17 @@ function findDarkBars(ctx, w, h, cgoal, diffleft, diffright) {
 function findDarkLines(ctx, w, h, cgoal) {
   let [_, restlist] = findPoints(ctx, 0, w, 0, h, cgoal, 20);
   let y, num = 201;
-  let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue','crimson','seagreen','skyblue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
+  let colors = ['yellow', 'orange', 'red', 'pink', 'violet', 'blue', 'crimson', 'seagreen', 'skyblue', 'teal', 'green', 'sienna', 'grey', 'black'], i = 0;
   let res = [];
   while (i < colors.length) {
     let color = colors[i++];
     let o = nextLine(ctx, restlist, color);
-    if (!o.line) {console.log('o',o); break;}
+    if (!o.line) { console.log('o', o); break; }
     restlist = o.rest;
     num = o.line.length;
-    if (num>112) res.push(o)
+    if (num > 112) res.push(o)
   }
-  console.log('result',res);
+  console.log('result', res);
   let diff = 261, diff2 = 22;
   let [kleinere, groessere] = findMidlines(res, diff);
   let topmost, bottommost;
@@ -224,17 +224,17 @@ function findDarkLines(ctx, w, h, cgoal) {
     if (isWithinDelta(kleinere.val - l3.val, diff2, 2)) {
       topmost = l3;
     }
-    if (isWithinDelta(l3.val-groessere.val, diff2, 2)) {
+    if (isWithinDelta(l3.val - groessere.val, diff2, 2)) {
       bottommost = l3;
     }
   }
   let [ytop, ybottom] = [nundef(topmost) ? 0 : topmost.val, nundef(bottommost) ? h : bottommost.val]
   return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
 }
-function findEdgeHor(ctx,x1,x2,h,cgoal,lighting=true){
-  let [list, _] = findPoints(ctx, x1, x2, 0, h, cgoal, 20); 
+function findEdgeHor(ctx, x1, x2, h, cgoal, lighting = true) {
+  let [list, _] = findPoints(ctx, x1, x2, 0, h, cgoal, 20);
   if (lighting) list = list.filter(o => isLightAfter(ctx, o.x, o.y) && isLightBefore(ctx, o.x, o.y));
-  let vfreq = findMostFrequentVal(list, 'x'); 
+  let vfreq = findMostFrequentVal(list, 'x');
   return list.filter(o => o.x == vfreq);
 }
 function findEdgesApart(list, dx, dy, prop) {
@@ -248,13 +248,13 @@ function findEdgesApart(list, dx, dy, prop) {
   list = good.concat(good2);
   return list;
 }
-function findEdgeVert(ctx,y1,y2,w,cgoal,lighting=true){
-  let [_, list] = findPoints(ctx, 0, w, y1, y2, cgoal, 20); 
-  let vfreq = findMostFrequentVal(list, 'y'); 
+function findEdgeVert(ctx, y1, y2, w, cgoal, lighting = true) {
+  let [_, list] = findPoints(ctx, 0, w, y1, y2, cgoal, 20);
+  let vfreq = findMostFrequentVal(list, 'y');
   return list.filter(o => o.y == vfreq);
 }
-function findLeftLine(ct, w, h, cgoal, xStart=0) {
-  let [restlist, _] = findPointsBoth(ct, xStart, xStart+40, 0, h, cgoal, 20);
+function findLeftLine(ct, w, h, cgoal, xStart = 0) {
+  let [restlist, _] = findPointsBoth(ct, xStart, xStart + 40, 0, h, cgoal, 20);
   let o = nextBar(ct, restlist, 'red');
   return o.val;
 }
@@ -272,9 +272,9 @@ function findMidlines(res, diff) {
   let groessere = mid1 == kleinere ? mid2 : mid1;
   return [kleinere, groessere];
 }
-function findMostFrequentVal(arr,prop,delta=0) {
+function findMostFrequentVal(arr, prop, delta = 0) {
   if (!Array.isArray(arr) || arr.length === 0) {
-    return null; 
+    return null;
   }
   let frequencyMap = new Map();
   for (let i = 0; i < arr.length; i++) {
@@ -297,7 +297,7 @@ function findNextBar(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
       let c = isPix(ctx, x, y, cgoal, delta);
       if (c) {
         drawPixFrame(ctx, x - 1, y - 1, 'red', 3)
-        let len = 1, yy = y + 1; xx = x; 
+        let len = 1, yy = y + 1; xx = x;
         while (yy < y2) {
           let p = getPixRgb(ctx, xx, yy);
           let c1 = isPix(ctx, xx, yy, cgoal, delta + 10);
@@ -315,7 +315,7 @@ function findNextLine(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
       let c = isPix(ctx, x, y, cgoal, delta);
       if (c) {
         drawPixFrame(ctx, x - 1, y - 1, 'red', 3)
-        let len = 1, xx = x + 1; yy = y; 
+        let len = 1, xx = x + 1; yy = y;
         while (xx < x2) {
           let p = getPixRgb(ctx, xx, yy);
           let c1 = isPix(ctx, xx, yy, cgoal, delta + 10);
@@ -379,16 +379,16 @@ function findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false)
       let found = true;
       for (let x = xStart; x < xStart + sz; x++) {
         for (let y = yStart; y < yStart + sz; y++) {
-          p = isPix(ctx, x, y, cgoal, 20); 
+          p = isPix(ctx, x, y, cgoal, 20);
           if (lightCounts && isPix(ctx, x, y, 'white', 10)) p = true;
           if (!p) { found = false; break; }
         }
         if (!found) break;
       }
-      if (found) return true; 
+      if (found) return true;
     }
   }
-  return false; 
+  return false;
 }
 function findRightLine(ct, w, h, cgoal) {
   let [restlist, _] = findPointsBoth(ct, w - 40, w, 0, h, cgoal, 20);
@@ -411,14 +411,14 @@ function generateArrayColors(startColor, endColor, numSteps) {
   return colors;
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
-function getActivePlayer(fen){
+function getActivePlayer(fen) {
   if (fen.playerNames.includes(U.name)) return U.name; else return fen.turn[0];
 }
 function getBar(ctx, list, val) {
   let res = list.filter(p => isWithinDelta(p.x, val, 2) && (isLightBefore(ctx, p.x, p.y) || isLightAfter(ctx, p.x, p.y)));
   return res;
 }
-function getBg(d){  let style = window.getComputedStyle(toElem(d));  let bg = valf(style.backgroundColor,style.background);  return colorHex(bg);}
+function getBg(d) { let style = window.getComputedStyle(toElem(d)); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
 function getBrowser() {
   var userAgent = navigator.userAgent;
   if (userAgent.match(/chrome|chromium|crios/i)) {
@@ -441,51 +441,51 @@ function getBrowser() {
   }
 }
 function getButtonId(key) { return 'b' + capitalize(key); }
-function getCivSpot(civ,row,col,fact=1){
-  let rAdvisor={x:11,y:27,w:87,h:136}; //von persia
-  let rColony1={x:10,y:193,w:87,h:137}; //von japan
-  let rColony2={x:122,y:192,w:87,h:136}; //von india
-  let rColonyUpPersia={x:122,y:26,w:87,h:136}; //von portugal
-  let rBuilding1={x:132,y:26,w:87,h:136}; //von portugal
-  let rBuilding1Persia={x:243,y:26,w:87,h:136}; //von persia
-  let rBuilding2={x:243,y:28,w:87,h:136};
-  let dxBuildings=rBuilding2.x-(rBuilding1.x+rBuilding1.w);
-  let rWic={x:700,y:26,w:87,h:136}; //calculated
-  let rLastWonder={x:700,y:193,w:87,h:136};
-  let rWonder={x:674,y:193,w:87,h:136};
-  let dxWonders=25;
-  for(const r of [rAdvisor,rColony1,rColony2,rColonyUpPersia,rBuilding1,rBuilding1Persia,rBuilding2,rWic,rLastWonder,rWonder]){
-    r.x*=fact;r.y*=fact;r.w*=fact;r.h*=fact;
+function getCivSpot(civ, row, col, fact = 1) {
+  let rAdvisor = { x: 11, y: 27, w: 87, h: 136 }; //von persia
+  let rColony1 = { x: 10, y: 193, w: 87, h: 137 }; //von japan
+  let rColony2 = { x: 122, y: 192, w: 87, h: 136 }; //von india
+  let rColonyUpPersia = { x: 122, y: 26, w: 87, h: 136 }; //von portugal
+  let rBuilding1 = { x: 132, y: 26, w: 87, h: 136 }; //von portugal
+  let rBuilding1Persia = { x: 243, y: 26, w: 87, h: 136 }; //von persia
+  let rBuilding2 = { x: 243, y: 28, w: 87, h: 136 };
+  let dxBuildings = rBuilding2.x - (rBuilding1.x + rBuilding1.w);
+  let rWic = { x: 700, y: 26, w: 87, h: 136 }; //calculated
+  let rLastWonder = { x: 700, y: 193, w: 87, h: 136 };
+  let rWonder = { x: 674, y: 193, w: 87, h: 136 };
+  let dxWonders = 25;
+  for (const r of [rAdvisor, rColony1, rColony2, rColonyUpPersia, rBuilding1, rBuilding1Persia, rBuilding2, rWic, rLastWonder, rWonder]) {
+    r.x *= fact; r.y *= fact; r.w *= fact; r.h *= fact;
   }
-  dxBuildings*=fact;
-  dxWonders*=fact;
-  if (row==0 && col==0) return rAdvisor;
-  if (row==0 && col == 1 && civ=='persia') return rColonyUpPersia;
-  if (row==0 && col == 1) return rBuilding1;
-  if (row==0 && col == 2 && civ=='persia') return rBuilding1Persia;
-  if (row==0 && col == 2) return rBuilding2;
+  dxBuildings *= fact;
+  dxWonders *= fact;
+  if (row == 0 && col == 0) return rAdvisor;
+  if (row == 0 && col == 1 && civ == 'persia') return rColonyUpPersia;
+  if (row == 0 && col == 1) return rBuilding1;
+  if (row == 0 && col == 2 && civ == 'persia') return rBuilding1Persia;
+  if (row == 0 && col == 2) return rBuilding2;
   if (row == 0 && col == 6) return rWic;
-  let r,dist;
-  if (row == 0){
-    r=rBuilding2;
-    dist=dxBuildings+r.w
-    return {x:r.x+dist*(col-2),y:r.y,w:r.w,h:r.h};
+  let r, dist;
+  if (row == 0) {
+    r = rBuilding2;
+    dist = dxBuildings + r.w
+    return { x: r.x + dist * (col - 2), y: r.y, w: r.w, h: r.h };
   }
-  if (row==1 && col == 0) return rColony1;
-  if (row==1 && col == 1 && civ!='china' && civ!='poland') return rColony2;
-  if (row==1 && col == 6) return rLastWonder;
-  r=rLastWonder;
-  dist=dxWonders+r.w;
-  return {x:r.x-dist*(6-col),y:r.y,w:r.w,h:r.h};
+  if (row == 1 && col == 0) return rColony1;
+  if (row == 1 && col == 1 && civ != 'china' && civ != 'poland') return rColony2;
+  if (row == 1 && col == 6) return rLastWonder;
+  r = rLastWonder;
+  dist = dxWonders + r.w;
+  return { x: r.x - dist * (6 - col), y: r.y, w: r.w, h: r.h };
 }
 function getDivId(key) { return 'd' + capitalize(key); }
-async function getEvent(id, cachedOk = true) { 
-  let res = lookup(Serverdata, ['events',id]); 
-  if (!cachedOk) Serverdata.events[id] = await mGetRoute('event',{id}); 
+async function getEvent(id, cachedOk = true) {
+  let res = lookup(Serverdata, ['events', id]);
+  if (!cachedOk) Serverdata.events[id] = await mGetRoute('event', { id });
   return res;
 }
-async function getEvents(cachedOk = false) { 
-  if (!cachedOk) Serverdata.events = await mGetRoute('events'); 
+async function getEvents(cachedOk = false) {
+  if (!cachedOk) Serverdata.events = await mGetRoute('events');
   return Serverdata.events;
 }
 function getEventValue(o) {
@@ -495,21 +495,21 @@ function getEventValue(o) {
 function getIdKey(elem) { let id = mBy(elem).id; return id.substring(1).toLowerCase(); }
 function getLine(ctx, list, val) {
   let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
-  let ls=sortBy(res,'x');
-  let segments = [],seg=[];
-  let i=-1; let lastx=-1;
-  while(++i<ls.length){
-    let el=ls[i];
-    if (lastx>=0 && el.x>lastx+1){
-      segments.push(seg);seg=[];
-    }else{
-      if (el.x != lastx)  seg.push(el);
+  let ls = sortBy(res, 'x');
+  let segments = [], seg = [];
+  let i = -1; let lastx = -1;
+  while (++i < ls.length) {
+    let el = ls[i];
+    if (lastx >= 0 && el.x > lastx + 1) {
+      segments.push(seg); seg = [];
+    } else {
+      if (el.x != lastx) seg.push(el);
     }
-    lastx=el.x;
+    lastx = el.x;
   }
   segments.push(seg);
-  let len=0,best=null;
-  for(const s of segments){if (s.length>len){len=s.length;best=s}}
+  let len = 0, best = null;
+  for (const s of segments) { if (s.length > len) { len = s.length; best = s } }
   return best;
 }
 function getMouseCoordinates(event) {
@@ -532,21 +532,21 @@ function getServerurl() {
   let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
   return server;
 }
-function getThemeBg(){  let style = window.getComputedStyle(document.body);  let bg = valf(style.backgroundColor,style.background);  return colorHex(bg);}
-function getThemeDark(){ return getCSSVariable('--bgNav'); } //  let bg=getThemeBg();return colorIdealText(bg);}
-function getThemeFg(){ return getCSSVariable('--fgButtonHover'); } //  let bg=getThemeBg();return colorIdealText(bg);}
-function getTurnPlayers(fen){
+function getThemeBg() { let style = window.getComputedStyle(document.body); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
+function getThemeDark() { return getCSSVariable('--bgNav'); } //  let bg=getThemeBg();return colorIdealText(bg);}
+function getThemeFg() { return getCSSVariable('--fgButtonHover'); } //  let bg=getThemeBg();return colorIdealText(bg);}
+function getTurnPlayers(fen) {
   return fen.turn.join(', ');
 }
-function getUname() { assertion(Clientdata.lastUser == U.name,`getUname!!!!!!!${Clientdata.lastUser} != ${U.name}`); return Clientdata.lastUser; } //U ? U.name : 'guest' }
-async function getUser(uname, cachedOk = false) { 
-  let res = lookup(Serverdata, ['users',uname]); 
-  if (!res || !cachedOk) res = await mGetRoute('user',{uname}); 
+function getUname() { assertion(Clientdata.lastUser == U.name, `getUname!!!!!!!${Clientdata.lastUser} != ${U.name}`); return Clientdata.lastUser; } //U ? U.name : 'guest' }
+async function getUser(uname, cachedOk = false) {
+  let res = lookup(Serverdata, ['users', uname]);
+  if (!res || !cachedOk) res = await mGetRoute('user', { uname });
   if (!res) { res = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
   Serverdata.users[uname] = res;
   return res;
 }
-function hourglassUpdate(){
+function hourglassUpdate() {
 }
 async function imgAsync(dParent, styles, opts) {
   let path = opts.src;
@@ -581,11 +581,11 @@ async function imgToServer(canvas, path) {
   let o = { image: dataUrl, path: path };
   console.log('...postImage o', o)
   let resp = await mPostRoute('postImage', o);
-  return resp; 
+  return resp;
 }
-function instructionUpdate(){
+function instructionUpdate() {
 }
-function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; } return isLetter(s[0]); } 
+function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; } return isLetter(s[0]); }
 function isBetween(n, a, b) { return n >= a && n <= b }
 function isGrayColor(color, diff = 60) {
   const rgb = colorHexToRgb(color);
@@ -610,11 +610,11 @@ function isLightBeforeV(ctx, x, y) {
 function isMyTurn(fen) {
   return fen.turn.includes(U.name)
 }
-function isPix(ctx, x, y, color, delta=10) {
+function isPix(ctx, x, y, color, delta = 10) {
   let rgb = isString(color) ? colorRGB(color, true) : color;
   let p = getPixRgb(ctx, x, y);
   let found = isWithinDelta(p.r, rgb.r, delta) && isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta);
-  return found?p:null;
+  return found ? p : null;
 }
 function isPixDark(ctx, x, y) {
   var pix = ctx.getImageData(x, y, 1, 1).data;
@@ -909,7 +909,7 @@ function mCropResizePan(dParent, img, dButtons) {
   }
 }
 function mDropZone(dropZone, onDrop) {
-  dropZone.setAttribute('allowDrop',true)
+  dropZone.setAttribute('allowDrop', true)
   dropZone.addEventListener('dragover', function (event) {
     event.preventDefault();
     dropZone.style.border = '2px dashed #007bff';
@@ -1028,22 +1028,22 @@ async function mPostRoute(route, o = {}) {
     return 'ERROR 1';
   }
 }
-async function natCardsFinalProcessing(){
-  let path='y/nat/cards1/';
-  M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); 
+async function natCardsFinalProcessing() {
+  let path = 'y/nat/cards1/';
+  M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
   let dParentGood = toElem('dExtra');
   let dParentBad = toElem('dTitle');
-  for(const k in M.natCards){
+  for (const k in M.natCards) {
     let card = M.natCards[k];
-    let [age,type]=[card.age,card.Type];
+    let [age, type] = [card.age, card.Type];
     if (type == 'event' || age == 0) continue;
-    let img = await imgAsync(dParentBad, {}, { src: path+k+'.png', tag: 'img' });
-    let cv=await rotateAndWriteAge(img,card);
+    let img = await imgAsync(dParentBad, {}, { src: path + k + '.png', tag: 'img' });
+    let cv = await rotateAndWriteAge(img, card);
     await imgToServer(cv, `assets/games/nations/cards/${k}.png`);
   }
-  async function rotateAndWriteAge(img,card) {
-    let diStage={0:'I',1:'I',2:'II',3:'III',4:'II II'};
-    let [w,h]=[img.width,img.height];
+  async function rotateAndWriteAge(img, card) {
+    let diStage = { 0: 'I', 1: 'I', 2: 'II', 3: 'III', 4: 'II II' };
+    let [w, h] = [img.width, img.height];
     mDom('dExtra', { h: 4 })
     let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
     let ctx2 = cv2.getContext('2d');
@@ -1055,11 +1055,11 @@ async function natCardsFinalProcessing(){
     let ctx3 = cv3.getContext('2d');
     ctx3.drawImage(cv2, 0, 0);
     let x = cv3.width / 2;
-    let y = cv3.height; 
+    let y = cv3.height;
     ctx3.fillStyle = 'white';
     ctx3.font = '20px Arial';
     ctx3.textAlign = 'center';
-    let text = diStage[card.age]; 
+    let text = diStage[card.age];
     ctx3.fillText(text, x, y);
     return cv3;
   }
@@ -1084,7 +1084,7 @@ async function natCardsKleinereCard() {
   let path = `../assets/games/nations/cards/${card.Path}`;
   let type = card.Type;
   let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
-  let [wImg, hImg] = [img.width, img.height]; 
+  let [wImg, hImg] = [img.width, img.height];
   let [cgoal, clight, lighting] = type == 'event' ? ['#6C4F64', '#E7BB97', false] : ['#59544E', '#DBCEBE', true];
   let [wCanvas, hCanvas] = [wImg, hImg];
   let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wCanvas, height: hCanvas });
@@ -1109,15 +1109,15 @@ async function natCardsManual() {
   let dParentGood = toElem('dExtra');
   let dParentBad = toElem('dTitle');
   DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
-  let di = {second_boer_war:'right',opium_war:'right',balkan_wars:'right', antikythera_mechanism:'left',uluru:null,mount_kailash:null,terracotta_army: 'top', uraniborg: 'left', great_barrier_reef: 'right', hawaii:'left' };
-  let list=Object.keys(di);
-  list=['second_boer_war','opium_war','balkan_wars']; // all done!
+  let di = { second_boer_war: 'right', opium_war: 'right', balkan_wars: 'right', antikythera_mechanism: 'left', uluru: null, mount_kailash: null, terracotta_army: 'top', uraniborg: 'left', great_barrier_reef: 'right', hawaii: 'left' };
+  let list = Object.keys(di);
+  list = ['second_boer_war', 'opium_war', 'balkan_wars']; // all done!
   for (const k of list) {
     let card = M.natCards[k];
     let path = `../assets/games/nations/cards/${card.Path}`;
     let type = card.Type;
     let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
-    let [wImg, hImg] = [img.width, img.height]; 
+    let [wImg, hImg] = [img.width, img.height];
     let [cgoal, clight, lighting] = type == 'event' ? ['#6C4F64', '#E7BB97', false] : ['#59544E', '#DBCEBE', true];
     let [wCanvas, hCanvas] = [wImg, hImg];
     let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wCanvas, height: hCanvas });
@@ -1130,14 +1130,14 @@ async function natCardsManual() {
     let ctx11 = cv11.getContext('2d', { willReadFrequently: true });
     ctx11.drawImage(img, 0, 0, wImg, hImg, 0, 0, wCanvas, hCanvas);
     let noside = di[k];
-    let xStart = type == 'war'?20:0;
-    let left = noside == 'left' ? 0 : findLeftLine(ctx1, wCanvas, hCanvas, cgoal,xStart); console.log('left', left)
+    let xStart = type == 'war' ? 20 : 0;
+    let left = noside == 'left' ? 0 : findLeftLine(ctx1, wCanvas, hCanvas, cgoal, xStart); console.log('left', left)
     let right = noside == 'right' ? wCanvas : findRightLine(ctx1, wCanvas, hCanvas, cgoal); console.log('right', right)
     let top = noside == 'top' ? 0 : findTopLine(ctx1, wCanvas, hCanvas, cgoal); console.log('top', top)
-    let bot = noside == 'bottom'||type=='war' ? hCanvas : findBottomLine(ctx1, wCanvas, hCanvas, cgoal); console.log('bot', bot)
+    let bot = noside == 'bottom' || type == 'war' ? hCanvas : findBottomLine(ctx1, wCanvas, hCanvas, cgoal); console.log('bot', bot)
     let [x1, x2, y1, y2, dx, dy, factw, facth] = [left, right, top, bot, 8, 8, 2, 2];
-    if (k == 'hawaii') {dx=16; factw=1.2}
-    else if (k.includes('antiky')) {dx=16; factw=1.1; dy=10;}
+    if (k == 'hawaii') { dx = 16; factw = 1.2 }
+    else if (k.includes('antiky')) { dx = 16; factw = 1.1; dy = 10; }
     ctx.drawImage(cv1, x1, y1, x2 - x1, y2 - y1, dx, dy, w - factw * dx, h - facth * dy);
     let diColors = { advisor: 'orange', battle: 'grey', building: 'deepskyblue', colony: 'green', event: 'purple', golden_age: 'gold', military: 'red', war: 'black', natural: 'maroon', wonder: 'sienna' };
     ctx.strokeStyle = diColors[card.Type];
@@ -1145,8 +1145,8 @@ async function natCardsManual() {
     ctx.strokeRect(0, 0, w, h);
     await imgToServer(canvas, `y/nat/${type}/${k}.png`);
   }
-  function findLeftLine(ct, w, h, cgoal, xStart=0) {
-    let [restlist, _] = findPointsBoth(ct, xStart, xStart+40, 0, h, cgoal, 20);
+  function findLeftLine(ct, w, h, cgoal, xStart = 0) {
+    let [restlist, _] = findPointsBoth(ct, xStart, xStart + 40, 0, h, cgoal, 20);
     let o = nextBar(ct, restlist, 'red');
     return o.val;
   }
@@ -1184,13 +1184,13 @@ async function natCardsSaveType(type) {
     military: { diffleft: 176, diffright: 63, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }
   };
   for (const k of list) {
-    if (['second_boer_war','opium_war','balkan_wars','antikythera_mechanism','uluru','mount_kailash','hawaii','great_barrier_reef','uraniborg', 'terracotta', 'pyramids', 'hagia', 'kremlin', 'potemkin'].some(x => k.includes(x))) continue;
+    if (['second_boer_war', 'opium_war', 'balkan_wars', 'antikythera_mechanism', 'uluru', 'mount_kailash', 'hawaii', 'great_barrier_reef', 'uraniborg', 'terracotta', 'pyramids', 'hagia', 'kremlin', 'potemkin'].some(x => k.includes(x))) continue;
     console.log('____________', k)
     let [canvas, ctx, w, h] = await natGetEmptyCardCanvas(dParentGood);
     let card = M.natCards[k];
     let path = `../assets/games/nations/cards/${card.Path}`;
     let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
-    let [wImg, hImg] = [img.width, img.height]; 
+    let [wImg, hImg] = [img.width, img.height];
     let [cgoal, clight, lighting] = type == 'event' ? ['#6C4F64', '#E7BB97', false] : ['#59544E', '#DBCEBE', true];
     let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
     let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
@@ -1244,14 +1244,14 @@ async function natCardsTester() {
     military: { diffleft: 176, diffright: 63, dx: 250, y: 240, xmin: 180, top: 176, bot: 67 }
   };
   for (const k of list) {
-    if (['second_boer_war','opium_war','balkan_wars','antiky','uluru','mount_kailash','hawaii','great_barrier_reef','uraniborg', 'terracotta', 'pyramids', 'hagia', 'kremlin', 'potemkin'].some(x => k.includes(x))) continue;
+    if (['second_boer_war', 'opium_war', 'balkan_wars', 'antiky', 'uluru', 'mount_kailash', 'hawaii', 'great_barrier_reef', 'uraniborg', 'terracotta', 'pyramids', 'hagia', 'kremlin', 'potemkin'].some(x => k.includes(x))) continue;
     console.log('____________', k)
     let [canvas, ctx, w, h] = await natGetEmptyCardCanvas(dParentGood);
     let card = M.natCards[k];
     let path = `../assets/games/nations/cards/${card.Path}`;
     let type = card.Type;
     let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
-    let [wImg, hImg] = [img.width, img.height]; 
+    let [wImg, hImg] = [img.width, img.height];
     let [cgoal, clight, lighting] = type == 'event' ? ['#6C4F64', '#E7BB97', false] : ['#59544E', '#DBCEBE', true];
     let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
     let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
@@ -1305,7 +1305,7 @@ async function natCardsWrongFormatAberIntact() {
   let path = `../assets/games/nations/cards/${card.Path}`;
   let type = card.Type;
   let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
-  let [wImg, hImg] = [img.width, img.height]; 
+  let [wImg, hImg] = [img.width, img.height];
   let [cgoal, clight, lighting] = type == 'event' ? ['#6C4F64', '#E7BB97', false] : ['#59544E', '#DBCEBE', true];
   let [wCanvas, hCanvas] = [wImg, hImg];
   let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wCanvas, height: hCanvas });
@@ -1329,7 +1329,7 @@ async function natCivsToLandscape() {
   async function imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
     if (isdef(mBy('img1'))) mBy('img1').remove();
     let img = mDom(imgParent, { position: 'absolute', top: '100vh', h: width }, { tag: 'img', id: 'img1' });
-    await loadImageAsync(src, img); 
+    await loadImageAsync(src, img);
     await onloadCiv(img, ...arguments);
   }
   async function onloadCiv(img, src, width, name, viewParent, imgParent, sendToServer, downloadAtClient) {
@@ -1367,14 +1367,14 @@ async function natCivsToLandscape() {
     await imgSaveAsLandscape(src, width, name, viewParent, imgParent, sendToServer, downloadAtClient);
   }
 }
-function natCreate(owner,players){
+function natCreate(owner, players) {
   if (isList(players)) {
-    let list=players;
-    players={};
-    list.map(x=>players[x]={});
+    let list = players;
+    players = {};
+    list.map(x => players[x] = {});
   }
-  if (nundef(players[owner])) players[owner]={};
-  let fen={id:rUniqueId(20),owner:owner,players:players}
+  if (nundef(players[owner])) players[owner] = {};
+  let fen = { id: rUniqueId(20), owner: owner, players: players }
   let playerNames = fen.playerNames = Object.keys(players);
   let numPlayers = fen.numPlayers = playerNames.length;
   fen.age = 1;
@@ -1386,84 +1386,84 @@ function natCreate(owner,players){
     if (c.Type == 'event') fen.events.push(k); else fen.progressCards.push(k);
   }
   arrShuffle(fen.progressCards);
-  fen.progressCards = arrTake(fen.progressCards,42);
+  fen.progressCards = arrTake(fen.progressCards, 42);
   arrShuffle(fen.events);
   fen.market = [];
-  for(let i=0;i<21;i++) {
-    let k=fen.progressCards.shift(); 
-    fen.market.push(k); 
+  for (let i = 0; i < 21; i++) {
+    let k = fen.progressCards.shift();
+    fen.market.push(k);
   }
-  let civs = rChoose(M.civNames,numPlayers);
-  let i=0;
-  for(const name in fen.players){
-    let pl=fen.players[name];
+  let civs = rChoose(M.civNames, numPlayers);
+  let i = 0;
+  for (const name in fen.players) {
+    let pl = fen.players[name];
     pl.name = name;
-    assertion(isdef(Serverdata.users[name]),`unknown user ${name}`);
-    addKeys(Serverdata.users[name],pl); 
-    if (nundef(pl.civ)) pl.civ=civs[i++];
-    if (nundef(pl.level)) pl.level=rChoose(M.levels);
-    let civ=M.civs[pl.civ];
-    addKeys(civ.res,pl);
-    pl.book=0;
-    pl.cards=jsCopy(civ.cards);
-    pl.extraWorkers=jsCopy(civ.workers);
+    assertion(isdef(Serverdata.users[name]), `unknown user ${name}`);
+    addKeys(Serverdata.users[name], pl);
+    if (nundef(pl.civ)) pl.civ = civs[i++];
+    if (nundef(pl.level)) pl.level = rChoose(M.levels);
+    let civ = M.civs[pl.civ];
+    addKeys(civ.res, pl);
+    pl.book = 0;
+    pl.cards = jsCopy(civ.cards);
+    pl.extraWorkers = jsCopy(civ.workers);
   }
-  let plorder=fen.plorder = jsCopy(playerNames); arrShuffle(plorder);
+  let plorder = fen.plorder = jsCopy(playerNames); arrShuffle(plorder);
   fen.round = 1;
   fen.phase = 'growth'; // growth newEvent action production turnOrder war events  
   fen.turn = jsCopy(fen.playerNames);
   return fen;
 }
-async function natCreateGame(){
-  let fen = natCreate(U.name,['felix','amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
-  let s=JSON.stringify(fen);
-  let res=await mPostRoute('postNewTable',{id:fen.id,fen:fen, game:'nations',friendly:generate_table_name(fen.numPlayers)});
+async function natCreateGame() {
+  let fen = natCreate(U.name, ['felix', 'amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
+  let s = JSON.stringify(fen);
+  let res = await mPostRoute('postNewTable', { id: fen.id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
 }
-async function natDetectBB(card,dParent){
+async function natDetectBB(card, dParent) {
   dParent = toElem(dParent);
   let path = `../assets/games/nations/cards/${card.Path}`;
   let img = await imgAsync(dParent, {}, { src: path, tag: 'img' })
-  let [w, h] = [img.width, img.height]; 
+  let [w, h] = [img.width, img.height];
   if (h > w) { img.remove(); console.log(`NOT in landscape! ${k} ${src}`); return; }
   let canvas = mDom(dParent, {}, { tag: 'canvas', width: w, height: h });
   let ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0, w, h);
-  let edgecolor=card.Type=='event'?'#6C4F64':'#59544E'; //'#544744';
-  let lightcolor=card.Type=='event'?'#E7BB97':'#DBCEBE';
-  let [rect,tmiss,bmiss,lmiss,rmiss]=calcBoundingBox(ctx,w,h,edgecolor,lightcolor);
+  let edgecolor = card.Type == 'event' ? '#6C4F64' : '#59544E'; //'#544744';
+  let lightcolor = card.Type == 'event' ? '#E7BB97' : '#DBCEBE';
+  let [rect, tmiss, bmiss, lmiss, rmiss] = calcBoundingBox(ctx, w, h, edgecolor, lightcolor);
   let cv1 = mDom(dParent, {}, { tag: 'canvas', width: rect.w, height: rect.h });
   let ct1 = cv1.getContext('2d', { willReadFrequently: true });
-  ct1.drawImage(img,-rect.left,-rect.top);
-  return [rect,cv1,ct1,tmiss,bmiss,lmiss,rmiss];
+  ct1.drawImage(img, -rect.left, -rect.top);
+  return [rect, cv1, ct1, tmiss, bmiss, lmiss, rmiss];
 }
-async function natGameView(fen,plname){
+async function natGameView(fen, plname) {
   clear_timeouts();
   natTitle();
-  await natPresent(fen,plname);
+  await natPresent(fen, plname);
   if (!fen.turn.includes(plname)) {
     return;
   }
   selPrep(fen);
   natPreAction()
 }
-async function natGetEmptyCardCanvas(dParent){
+async function natGetEmptyCardCanvas(dParent) {
   dParent = toElem(dParent);
-  if (nundef(DA.eimg)){
+  if (nundef(DA.eimg)) {
     DA.eimg = await imgAsync(dParent, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
-    mDom(dParent,{h:10});
+    mDom(dParent, { h: 10 });
   }
   let eimg = DA.eimg;
   let [w, h] = [eimg.width, eimg.height];
   let canvas = mDom(dParent, {}, { tag: 'canvas', width: w, height: h });
   let ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(eimg, 0, 0, w, h);
-  return [canvas,ctx,w,h];
+  return [canvas, ctx, w, h];
 }
-async function natLoadAssets(){
+async function natLoadAssets() {
   if (isdef(M.natCards)) return;
   M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');
   M.civs = await mGetYaml('../assets/games/nations/civs.yaml');
-  M.civNames = Object.keys(M.civs); 
+  M.civNames = Object.keys(M.civs);
   M.levels = ['chieftain', 'prince', 'king', 'emperor'];
 }
 async function natLoadCardInfo() {
@@ -1485,7 +1485,7 @@ async function natLoadCardInfo() {
       let key = normalizeString(card.Name.toLowerCase());
       let age = valf(diStage[card.Stage], 0);
       let fname = isdef(card.Stage) ? `age${age}_` : '';
-      fname += key; 
+      fname += key;
       fname += '.jpg';
       card.Path = fname;
       card.Type = type;
@@ -1510,7 +1510,7 @@ async function natLoadCardInfo() {
   let final = list2dict(realList, 'key');
   downloadAsYaml(final, 'nationsCards')
 }
-async function natModCard(name, color, idx, dims) { 
+async function natModCard(name, color, idx, dims) {
   let path = `../assets/games/nations/cards/${name}`; //.jpg`;
   let dParent = toElem('dExtra');
   let img = await imgAsync(dParent, {}, { src: path, tag: 'img', id: 'img' + idx })
@@ -1526,7 +1526,7 @@ function natModCardLandscape(dParent, img, name, color, idx, dims, w, h) {
   let y1, y2, x1, x2, prevy, prevx;
   let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
   console.log('resY', resy, prevy)
-  let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); 
+  let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims);
   console.log('resX', resx)
   let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
   console.log('wsmall', wsmall, 'hsmall', hsmall)
@@ -1552,7 +1552,7 @@ function natModCardPortrait(dParent, img, name, color, idx, dims, w, h) {
   let y1, y2, x1, x2, prevy, prevx;
   let resy = [ystart, y1, y2, yend, isRotated, prevy] = calcBoundsY(ctx, dims.dx, h, 261);
   console.log('resY', resy)
-  let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims); 
+  let resx = [xstart, x1, x2, xend, prevx, rot] = allDarkPoints(ctx, w, dims);
   console.log('resX', resx)
   let [wsmall, hsmall] = [xend - xstart, yend - ystart + 1];
   console.log('wsmall', wsmall, 'hsmall', hsmall)
@@ -1568,44 +1568,44 @@ function natModCardPortrait(dParent, img, name, color, idx, dims, w, h) {
   ct2.stroke();
   return cv2;
 }
-function natPreAction(){
-  let [fen,phase]=[Clientdata.fen,Clientdata.fen.phase];
-  mDom('dTitleLeft',{bg:mGetStyle(dTitle,'bg'),fg:'contrast'},{html:`Age ${fen.age}.${fen.round}: <b style='color:orange'>${phase}</b> (${U.name})`})
-  switch(phase){
-    case 'growth': selectAddItems(natSelItemsGrowth(fen), natSelectedGrowth,'g'); break;// 'must select your growth'); break; 
+function natPreAction() {
+  let [fen, phase] = [Clientdata.fen, Clientdata.fen.phase];
+  mDom('dTitleLeft', { bg: mGetStyle(dTitle, 'bg'), fg: 'contrast' }, { html: `Age ${fen.age}.${fen.round}: <b style='color:orange'>${phase}</b> (${U.name})` })
+  switch (phase) {
+    case 'growth': selectAddItems(natSelItemsGrowth(fen), natSelectedGrowth, 'g'); break;// 'must select your growth'); break; 
   }
 }
-async function natPresent(fen,plname){
+async function natPresent(fen, plname) {
   mClear('dMain');
-  let dParent = mDiv('dMain'); 
-  let [owner,players,age,round,phase]=[fen.owner,fen.players,fen.age,fen.round,fen.phase]
+  let dParent = mDiv('dMain');
+  let [owner, players, age, round, phase] = [fen.owner, fen.players, fen.age, fen.round, fen.phase]
   let [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(dParent);
-  mStyle(dOpenTable,{w:862})
+  mStyle(dOpenTable, { w: 862 })
   let pl = players[plname];
-  natPresentMarket(dOpenTable,fen.market, 163);
-  mDom(dOpenTable, { h: 10,w:'100%' })
-  await natPresentCiv(dOpenTable,pl, .98);
-  natStats(fen,plname,dOben)
+  natPresentMarket(dOpenTable, fen.market, 163);
+  mDom(dOpenTable, { h: 10, w: '100%' })
+  await natPresentCiv(dOpenTable, pl, .98);
+  natStats(fen, plname, dOben)
 }
-async function natPresentCiv(dParent,pl,fact){
-  let [w,h]=[800*fact,420*fact];
+async function natPresentCiv(dParent, pl, fact) {
+  let [w, h] = [800 * fact, 420 * fact];
   let dciv = mDom(dParent, { w: w, h: h, maleft: 56, bg: 'red', position: 'relative' });
-  let iciv = await loadImageAsync(`../assets/games/nations/civs/civ_${pl.civ}.png`, mDom(dciv, { w:w,h:h,position: 'absolute' }, { tag: 'img' }));
+  let iciv = await loadImageAsync(`../assets/games/nations/civs/civ_${pl.civ}.png`, mDom(dciv, { w: w, h: h, position: 'absolute' }, { tag: 'img' }));
   M.civCells = [];
   for (let i = 0; i < 2; i++) {
     for (let j = 0; j < 7; j++) {
       let r = getCivSpot(pl.civ, i, j, fact);
-      let [dx,dy,dw,dh]=[10,10,15,20].map(x=>x*fact)
-      let d = mDom(dciv, { box: true, w: r.w+dw, h: r.h+dh, left: r.x-dx, top: r.y-dy, position: 'absolute', overflow: 'hidden' });
+      let [dx, dy, dw, dh] = [10, 10, 15, 20].map(x => x * fact)
+      let d = mDom(dciv, { box: true, w: r.w + dw, h: r.h + dh, left: r.x - dx, top: r.y - dy, position: 'absolute', overflow: 'hidden' });
       mCenterCenterFlex(d);
       M.civCells.push(d);
     }
   }
 }
-function natPresentMarket(dParent,market,h){
+function natPresentMarket(dParent, market, h) {
   let d1 = mDiv(dParent); mFlex(d1);
-  let [rows,cols]=[3,market.length/3]; 
-  let fact=1.565; let w=h/fact; 
+  let [rows, cols] = [3, market.length / 3];
+  let fact = 1.565; let w = h / fact;
   let dcost = mGrid(rows, 1, d1, { 'align-self': 'start' });
   for (let cost = 3; cost >= 1; cost--) {
     let d2 = mDom(dcost, { display: 'flex', 'justify-content': 'center', 'flex-flow': 'column', box: true, margin: 2, h: h, overflow: 'hidden' }, {});
@@ -1614,44 +1614,44 @@ function natPresentMarket(dParent,market,h){
   let grid = mGrid(rows, cols, d1, { 'align-self': 'start' });
   let cells = [];
   for (let i = 0; i < rows * cols; i++) {
-    let d = mDom(grid, { box: true, vmargin: 2, hmargin:5, h: h, w:w, overflow: 'hidden' });
+    let d = mDom(grid, { box: true, vmargin: 2, hmargin: 5, h: h, w: w, overflow: 'hidden' });
     mCenterCenterFlex(d);
     cells.push(d);
   }
   let n = rows * cols;
   for (let i = 0; i < n; i++) {
-    let k=market[i];
-    if (k=='_') continue;
+    let k = market[i];
+    if (k == '_') continue;
     let img = mDom(cells[i], { h: h, w: w }, { tag: 'img', src: `../assets/games/nations/cards/${k}.png` });
     img.setAttribute('key', k)
   }
 }
-function natSelectedGrowth(ev){
+function natSelectedGrowth(ev) {
   let [A, fen] = [Clientdata.A, Clientdata.fen];
-  let id=evToId(ev)
-  A.selected=A.di[id];
-  console.log('selects',A.selected);
+  let id = evToId(ev)
+  A.selected = A.di[id];
+  console.log('selects', A.selected);
   sendMyMove(A.selected.key)
 }
-function natSelItemsGrowth(){
-  let fen=Clientdata.fen;  let pl=fen.players[U.name];  assertion(pl,`PLAYER DOES NOT EXIST ${U.name}`);
+function natSelItemsGrowth() {
+  let fen = Clientdata.fen; let pl = fen.players[U.name]; assertion(pl, `PLAYER DOES NOT EXIST ${U.name}`);
   let items = [], i = 0;
-  for (const cmd of ['gold','food','stone','book']) {
-    let item = { o: M.superdi[cmd], a: cmd, key: cmd, friendly: cmd, path:null, index:i }; // src: `../assets/games/nations/templates/${cmd}.${cmd=='book'?'svg':'png'}`, index: i };
+  for (const cmd of ['gold', 'food', 'stone', 'book']) {
+    let item = { o: M.superdi[cmd], a: cmd, key: cmd, friendly: cmd, path: null, index: i }; // src: `../assets/games/nations/templates/${cmd}.${cmd=='book'?'svg':'png'}`, index: i };
     i++;
     items.push(item);
   }
-  let w=pl.extraWorkers;
+  let w = pl.extraWorkers;
   if (!isEmpty(w)) {
-    let wWoDuplicates=arrRemoveDuplicates(w);
-    for(const w1 of wWoDuplicates){
-      let item=uiTypeExtraWorker(w1); items.push(item);item.index=i++;
+    let wWoDuplicates = arrRemoveDuplicates(w);
+    for (const w1 of wWoDuplicates) {
+      let item = uiTypeExtraWorker(w1); items.push(item); item.index = i++;
     }
   }
   return items;
 }
-function natStats(fen,pl,dParent){
-  let player_stat_items = uiTypePlayerStats(fen,pl,dParent,{},{wmin:260,bg:'beige',fg:'contrast'})
+function natStats(fen, pl, dParent) {
+  let player_stat_items = uiTypePlayerStats(fen, pl, dParent, {}, { wmin: 260, bg: 'beige', fg: 'contrast' })
   for (const plname in fen.players) {
     let pl1 = fen.players[plname];
     let item = player_stat_items[plname];
@@ -1664,20 +1664,20 @@ function natStats(fen,pl,dParent){
     playerStatCount('book', pl1.book, d);
     playerStatCount('VP', pl1.vp, d);
     playerStatCount('worker', pl1.workers, d);
-    mDom(d,{h:6,w:'100%'});
-    mDom(d,{family:'algerian'},{html:`${pl1.civ}`})
+    mDom(d, { h: 6, w: '100%' });
+    mDom(d, { family: 'algerian' }, { html: `${pl1.civ}` })
     if (fen.turn.includes(plname)) {
       show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
     }
-    mDom(d,{position:'absolute',top:0},{html:pl1.level})
+    mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })
   }
 }
-function natTitle(){
+function natTitle() {
   mClear(dTitle);
-  mStyle(dTitle,{display:'flex','justify-content':'space-between','align-items':'center',box:true,h:42,w:'100%'})
-  mDom(dTitle,{display:'flex','justify-content':'space-evenly','align-items':'center',paleft:10},{id:'dTitleLeft'})
-  mDom(dTitle,{},{id:'dTitleMiddle'})
-  mDom(dTitle,{display:'flex','justify-content':'end','align-items':'center',box:true, wmin:200},{id:'dTitleRight'})
+  mStyle(dTitle, { display: 'flex', 'justify-content': 'space-between', 'align-items': 'center', box: true, h: 42, w: '100%' })
+  mDom(dTitle, { display: 'flex', 'justify-content': 'space-evenly', 'align-items': 'center', paleft: 10 }, { id: 'dTitleLeft' })
+  mDom(dTitle, {}, { id: 'dTitleMiddle' })
+  mDom(dTitle, { display: 'flex', 'justify-content': 'end', 'align-items': 'center', box: true, wmin: 200 }, { id: 'dTitleRight' })
 }
 function nextBar(ctx, rest, color) {
   list = rest;
@@ -1701,7 +1701,7 @@ async function ondropPreviewImage(dParent, url, key) {
     UI.imgColl.value = o.cats[0];
     UI.imgName.value = o.friendly;
   }
-  assertion(dParent == UI.dDrop,`problem bei ondropPreviewImage parent:${dParent}, dDrop:${UI.dDrop}`)
+  assertion(dParent == UI.dDrop, `problem bei ondropPreviewImage parent:${dParent}, dDrop:${UI.dDrop}`)
   dParent = UI.dDrop;
   let dButtons = UI.dButtons;
   let dTool = UI.dTool;
@@ -1733,8 +1733,8 @@ function playerStatCount(key, n, dParent, styles = {}) {
   let sz = valf(styles.sz, 16);
   addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'center', fz: sz, align: 'center' }, styles);
   let d = mDiv(dParent, styles);
-  let o=M.superdi[key];
-  if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg:'grey' }); //mSym(key, d, { h: sz, 'line-height': sz, w: '100%' });
+  let o = M.superdi[key];
+  if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg: 'grey' }); //mSym(key, d, { h: sz, 'line-height': sz, w: '100%' });
   else mText(key, d, { h: sz, fz: sz, w: '100%' });
   d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
   return d;
@@ -1756,12 +1756,12 @@ async function _prelims() {
     await switchToMenu('home')
   }
 }
-function presentExtraWorker(item,dParent,styles={}){
-  let sz=styles.sz; 
-  addKeys({paright:10,bg:'white',rounding:'50%',hmargin:8,h:30,position:'relative'},styles)
-  let d=mDom(dParent,styles);mFlex(d);
-  let img=mDom(d,{h:'100%'},{tag:'img',src:'../assets/games/nations/templates/worker.png'})
-  let img2=mDom(d,{h:sz*2/3,w:sz*2/3,position:'absolute',top:'17%',left:'40%'},{tag:'img',src:`../assets/games/nations/templates/${item.o.res}.png`});
+function presentExtraWorker(item, dParent, styles = {}) {
+  let sz = styles.sz;
+  addKeys({ paright: 10, bg: 'white', rounding: '50%', hmargin: 8, h: 30, position: 'relative' }, styles)
+  let d = mDom(dParent, styles); mFlex(d);
+  let img = mDom(d, { h: '100%' }, { tag: 'img', src: '../assets/games/nations/templates/worker.png' })
+  let img2 = mDom(d, { h: sz * 2 / 3, w: sz * 2 / 3, position: 'absolute', top: '17%', left: '40%' }, { tag: 'img', src: `../assets/games/nations/templates/${item.o.res}.png` });
   return d;
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
@@ -1789,9 +1789,9 @@ function resizeTo(tool, wnew, hnew) {
   }
   redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
 }
-async function rotateAndWriteAge(img,card) {
-  let diStage={0:'I',1:'I',2:'II',3:'III',4:'II II'};
-  let [w,h]=[img.width,img.height];
+async function rotateAndWriteAge(img, card) {
+  let diStage = { 0: 'I', 1: 'I', 2: 'II', 3: 'III', 4: 'II II' };
+  let [w, h] = [img.width, img.height];
   mDom('dExtra', { h: 4 })
   let cv2 = mDom('dExtra', {}, { tag: 'canvas', width: h, height: w });
   let ctx2 = cv2.getContext('2d');
@@ -1803,11 +1803,11 @@ async function rotateAndWriteAge(img,card) {
   let ctx3 = cv3.getContext('2d');
   ctx3.drawImage(cv2, 0, 0);
   let x = cv3.width / 2;
-  let y = cv3.height; 
+  let y = cv3.height;
   ctx3.fillStyle = 'white';
   ctx3.font = '20px Arial';
   ctx3.textAlign = 'center';
-  let text = diStage(card.age); 
+  let text = diStage(card.age);
   ctx3.fillText(text, x, y);
   return cv3;
 }
@@ -1839,20 +1839,20 @@ function selectAddItems(items, callback = null, instruction = null) {
   }
 }
 function selectCivSpot(d) {
-  if (isdef(M.selectedCivSpot)) mClassRemove(M.selectedCivSpot,'shadow');
+  if (isdef(M.selectedCivSpot)) mClassRemove(M.selectedCivSpot, 'shadow');
   M.selectedCivSpot = d;
-  mClass(d,'shadow')
+  mClass(d, 'shadow')
 }
-function selectExtraWorker(item){
+function selectExtraWorker(item) {
 }
-function selPrep(fen,autosubmit=false){
+function selPrep(fen, autosubmit = false) {
   Clientdata.A = { level: 0, di: {}, ll: [], items: [], selected: [], tree: null, breadcrumbs: [], sib: [], command: null, autosubmit: autosubmit };
-  Clientdata.fen=fen;
+  Clientdata.fen = fen;
 }
-function sendMyMove(key){
+function sendMyMove(key) {
   let name = U.name;
   let table = Clientdata.fen.id;
-  sockPostMove(table,name,key);
+  sockPostMove(table, name, key);
 }
 function setColors(c) {
   let hsl = colorHSL(c, true);
@@ -1904,7 +1904,7 @@ function showChatWindow() {
     ev.target.value = '';
   });
 }
-function showImage(key, dParent, styles = {}) {
+function showImage(key, dParent, styles = {}, useSymbol=false) {
   let o = M.superdi[key];
   if (nundef(o)) { console.log('showImage:key not found', key); return; }
   let [w, h] = [valf(styles.w, styles.sz), valf(styles.h, styles.sz)];
@@ -1916,40 +1916,46 @@ function showImage(key, dParent, styles = {}) {
     dParent = mDom(dParent, styles);
   }
   let [sz, fz, fg] = [.9 * w, .8 * h, valf(styles.fg, rColor())];
+  let hline=valf(styles.hline*fz,fz);
   let d1 = mDiv(dParent, { position: 'relative', h: fz, overflow: 'hidden' });
   mCenterCenterFlex(d1)
   let el = null;
-  if (isdef(o.img)) {
-    el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
-  }
-  else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
-  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: fz, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-  else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-  else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+
+  if (!useSymbol && isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+  else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: hline, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+  else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: hline, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+  else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+  else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoGame', bg: valf(styles.bg,'beige'), fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+  else if (isdef(o.img))     el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
   assertion(el, 'PROBLEM mit' + key);
   mStyle(el, { cursor: 'pointer' })
   return d1;
 }
-function showMessage(msg,ms=3000){
-  let d=mBy('dMessage');
-  mStyle(d,{h:21,bg:'red',fg:'yellow'}); //getThemeFg()});
-  d.innerHTML=msg;
+function showMessage(msg, ms = 3000) {
+  let d = mBy('dMessage');
+  mStyle(d, { h: 21, bg: 'red', fg: 'yellow' }); //getThemeFg()});
+  d.innerHTML = msg;
   clearTimeout(TO.message);
-  TO.message = setTimeout(()=>mStyle('dMessage',{h:0}),ms)
+  TO.message = setTimeout(() => mStyle('dMessage', { h: 0 }), ms)
 }
-async function showTable(table,name){
-  console.log('showTable',name,table)
-  if (!table.fen.playerNames.includes(name)) showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`)
-  else if (table.game == 'nations'){ await natGameView(table.fen,name); }
-  else showMessage(`GAME ${table.game.toUpperCase()} NOT YET IMPLEMENTED!`)
+async function showTable(table, name) {
+  console.log('showTable', name, table);
+  if (!table) { showMessage('table deleted!'); await showTables(); }
+  else if (!table.fen.playerNames.includes(name)) {showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`);Clientdata.table = null;}
+  else if (table.game == 'nations') { await natGameView(table.fen, name); }
+  else {showMessage(`GAME ${table.game.toUpperCase()} NOT YET IMPLEMENTED!`);Clientdata.table = null;}
 }
-async function showTables(){
-  Clientdata.table=null;
+async function _showTables() {
+  Clientdata.table = null;
   Serverdata.tables = tables = await mGetRoute('tables');
-  console.log('tables',tables);
-  tables.map(x=>x.prior=x.turn.includes(U.name)?1:x.players.includes(U.name)?2:3);
-  sortBy(tables,'prior');
-  let dParent = mDom('dMain', {}, {className:'section'}); 
+  console.log('tables', tables);
+  tables.map(x => x.prior = x.turn.includes(U.name) ? 1 : x.players.includes(U.name) ? 2 : 3);
+  sortBy(tables, 'prior');
+  
+  let dParent=mBy('dTableList');
+  if (isdef(dParent)) {mClear(dParent);}
+  else dParent = mDom('dMain', {}, { className: 'section',id:'dTableList' });
+
   if (isEmpty(tables)) { mText('no active game tables', dParent); return []; }
   tables.map(x => x.game_friendly = capitalize(x.game));
   mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
@@ -1960,15 +1966,16 @@ async function showTables(){
   let d = iDiv(t);
   for (const ri of t.rowitems) {
     let r = iDiv(ri);
-    if (ri.o.prior == 1) mDom(r,{},{tag:'td',html:get_waiting_html(24)}); //'my turn!'});
-    let h = hFunc('delete', 'deleteTable', ri.o.friendly);
+    //console.log('ri',ri)
+    if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: get_waiting_html(24) }); //'my turn!'});
+    let h = hFunc('delete', 'deleteTable', ri.o.id);
     c = mAppend(r, mCreate('td'));
     c.innerHTML = h;
   }
 }
 function showTitle(title) {
   mClear('dTitle');
-  return mDom('dTitle', {maleft:20}, { tag: 'h1', html: title, classes: 'title' });
+  return mDom('dTitle', { maleft: 20 }, { tag: 'h1', html: title, classes: 'title' });
 }
 function showUser() {
   mClear(dUser);
@@ -1994,27 +2001,30 @@ async function simpleUpload(route, o) {
     return 'ERROR 1';
   }
 }
-function sockGetDeleteTable(x){
-  let fen = x.fen;
-  let tables = x.tables;
-  Serverdata.tables = tables;
-  console.log('::SOCK deleted table:',id);
-  console.log('... new table:',tables.find(x=>x.id == fen.id));
+function sockGetDeleteTable(x) {
+  console.log('x',x)
+  // let fen = x.fen;
+  // let tables = x.tables;
+  // Serverdata.tables = tables;
+  // console.log('::SOCK deleted table:', id);
+  // console.log('... new table:', tables.find(x => x.id == fen.id));
+
+
 }
-function sockGetNewTable(x){
+function sockGetNewTable(x) {
   let table = x.table;
   let tables = x.tables;
   Serverdata.tables = tables;
-  console.log('::SOCK new table:',table);
+  console.log('::SOCK new table:', table);
 }
-function sockGetTurnUpdate(turn){
-  console.log('::SOCK turn:',turn);
+function sockGetTurnUpdate(turn) {
+  console.log('::SOCK turn:', turn);
   Clientdata.fen.turn = turn;
   instructionUpdate();
   hourglassUpdate();
   tabtitleUpdate();
 }
-function sockInit(){
+function sockInit() {
   let server = getServerurl();
   Socket = io(server);
   Socket.on('deleteTable', sockGetDeleteTable); //x => console.log('::SOCK table:', x));
@@ -2027,11 +2037,11 @@ function sockInit(){
   Socket.on('userChange', x => console.log('::SOCK userChange:', x));
   Socket.on('update', x => console.log('::SOCK update:', x));
 }
-function sockPostMove(id,name,move){
-  Socket.emit('move',{id,name,move});
+function sockPostMove(id, name, move) {
+  Socket.emit('move', { id, name, move });
 }
-function sockPostUserChange(oldname,newname){
-  Socket.emit('userChange',{oldname,newname});
+function sockPostUserChange(oldname, newname) {
+  Socket.emit('userChange', { oldname, newname });
 }
 function sortByMultipleProperties(list) {
   let props = Array.from(arguments).slice(1);
@@ -2052,156 +2062,16 @@ function squareTo(tool, sznew = 128) {
   redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function start() { test73_game(); }
-async function switchToMenu(menu) { 
-  console.log('====>switchToMenu',menu)
-  Clientdata.lastMenu = menu; 
+async function switchToMenu(menu) {
+  console.log('====>switchToMenu', menu)
+  Clientdata.lastMenu = menu;
   await mOnclick(menu);
 }
-async function switchToTable(id){
-  let res = Clientdata.table = await mGetRoute('table',{id});
-  await showTable(res,getUname())
+async function switchToTable(id) {
+  let res = Clientdata.table = await mGetRoute('table', { id });
+  await showTable(res, getUname())
 }
-function tabtitleUpdate(){
-}
-async function test100_odf(){
-  Serverdata = await mGetRoute('session'); //session ist: users,config,
-  Info = await mGetYaml('../assets/info.yaml');
-  await loadCollections();
-  loadPlayerColors();
-  sockInit();
-  console.log('M',M,'\nServerdata',Serverdata,'\nClientdata',Clientdata,'\nDA',DA,Session,TO,window.TO)
-}
-async function test69_event() {
-  M.natCards = await mGetYaml('../assets/games/nations/cards.yaml'); return;
-  let dParentGood = toElem('dExtra');
-  let dParentBad = toElem('dTitle');
-  DA.eimg = await imgAsync(dParentBad, {}, { src: '../assets/games/nations/empty_inner_card.png', tag: 'img' });
-  let di = {second_boer_war:'right',opium_war:'right',balkan_wars:'right', antikythera_mechanism:'left',uluru:null,mount_kailash:null,terracotta_army: 'top', uraniborg: 'left', great_barrier_reef: 'right', hawaii:'left' };
-  let list=Object.keys(di);
-  list=['second_boer_war','opium_war','balkan_wars']; // all done!
-  for (const k of list) {
-    let card = M.natCards[k];
-    let path = `../assets/games/nations/cards/${card.Path}`;
-    let type = card.Type;
-    let img = await imgAsync(dParentBad, {}, { src: path, tag: 'img' })
-    let [wImg, hImg] = [img.width, img.height]; 
-    let [cgoal, clight, lighting] = type == 'event' ? ['#6C4F64', '#E7BB97', false] : ['#59544E', '#DBCEBE', true];
-    let [wCanvas, hCanvas] = [wImg, hImg];
-    let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wCanvas, height: hCanvas });
-    let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
-    ctx1.drawImage(img, 0, 0, wImg, hImg, 0, 0, wCanvas, hCanvas);
-    console.log('____________', k)
-    let [canvas, ctx, w, h] = await natGetEmptyCardCanvas(dParentGood);
-    mDom(dParentGood, { h: 10 });
-    let cv11 = mDom(dParentBad, {}, { tag: 'canvas', width: wCanvas, height: hCanvas });
-    let ctx11 = cv11.getContext('2d', { willReadFrequently: true });
-    ctx11.drawImage(img, 0, 0, wImg, hImg, 0, 0, wCanvas, hCanvas);
-    let noside = di[k];
-    let xStart = type == 'war'?20:0;
-    let left = noside == 'left' ? 0 : findLeftLine(ctx1, wCanvas, hCanvas, cgoal,xStart); console.log('left', left)
-    let right = noside == 'right' ? wCanvas : findRightLine(ctx1, wCanvas, hCanvas, cgoal); console.log('right', right)
-    let top = noside == 'top' ? 0 : findTopLine(ctx1, wCanvas, hCanvas, cgoal); console.log('top', top)
-    let bot = noside == 'bottom'||type=='war' ? hCanvas : findBottomLine(ctx1, wCanvas, hCanvas, cgoal); console.log('bot', bot)
-    let [x1, x2, y1, y2, dx, dy, factw, facth] = [left, right, top, bot, 8, 8, 2, 2];
-    if (k == 'hawaii') {dx=16; factw=1.2}
-    else if (k.includes('antiky')) {dx=16; factw=1.1; dy=10;}
-    ctx.drawImage(cv1, x1, y1, x2 - x1, y2 - y1, dx, dy, w - factw * dx, h - facth * dy);
-    let diColors = { advisor: 'orange', battle: 'grey', building: 'deepskyblue', colony: 'green', event: 'purple', golden_age: 'gold', military: 'red', war: 'black', natural: 'maroon', wonder: 'sienna' };
-    ctx.strokeStyle = diColors[card.Type];
-    ctx.lineWidth = 28;
-    ctx.strokeRect(0, 0, w, h);
-    await imgToServer(canvas, `y/nat/${type}/${k}.png`);
-  }
-  function findLeftLine(ct, w, h, cgoal, xStart=0) {
-    let [restlist, _] = findPointsBoth(ct, xStart, xStart+40, 0, h, cgoal, 20);
-    let o = nextBar(ct, restlist, 'red');
-    return o.val;
-  }
-  function findRightLine(ct, w, h, cgoal) {
-    let [restlist, _] = findPointsBoth(ct, w - 40, w, 0, h, cgoal, 20);
-    let o = nextBar(ct, restlist, 'orange');
-    return o.val;
-  }
-  function findTopLine(ct, w, h, cgoal) {
-    let [_, restlist] = findPointsBoth(ct, 0, w, 0, 40, cgoal, 20);
-    let o = nextLine(ct, restlist, 'blue');
-    return o.val;
-  }
-  function findBottomLine(ct, w, h, cgoal) {
-    let [_, restlist] = findPointsBoth(ct, 0, w, h - 30, h, cgoal, 20);
-    let o = nextLine(ct, restlist, 'green');
-    return o.val;
-  }
-}
-async function test70_game(){
- await prelims();
- onclickNATIONS();
-}
-async function test71_civDetect(){
-  let orange=`#F17D2D`;
-  let blue=`#0F9AD7`;
-  let green=`#429F47`; // `#6CAA3F`
-  let red=`#BA1B35`;
-  let brown=`#996142`; // `#BC6A33`
-  M.civs=['america','arabia','china','egypt','ethiopia','greece','india','japan','korea','mali','mongolia','persia','poland','portugal','rome','venice','vikings'];
-  let player=M.player = {civ:'persia'}; //rChoose(M.civs)};
-  let dciv=mDom('dMain');
-  let img=await loadImageAsync(`../assets/games/nations/civs/civ_${player.civ}.png`, mDom(dciv, {position:'absolute'}, { tag: 'img' }));
-  let [wImg, hImg] = [img.width, img.height]; 
-  let dParentBad = toElem('dTitle');
-  let cv1 = mDom(dParentBad, {}, { tag: 'canvas', width: wImg, height: hImg });
-  let ctx1 = cv1.getContext('2d', { willReadFrequently: true });
-  ctx1.drawImage(img, 0, 0, wImg, hImg);
-  let rAdvisor={x:11,y:27,w:87,h:136}; //von persia
-  let yUnten=rAdvisor.y+rAdvisor.h+5;
-  let rColony1={x:10,y:193,w:87,h:137}; //von japan
-  let rColony2={x:122,y:192,w:87,h:136}; //von india
-  let rBuilding1={x:132,y:26,w:87,h:136}; //von portugal
-  let rColonyUpPersia={x:122,y:26,w:87,h:136}; //von portugal
-  console.log('rColonyUpPersia',rColonyUpPersia);
-  let rBuilding1Persia={x:243,y:26,w:87,h:136}; //von persia
-  console.log('rBuilding1Persia',rBuilding1Persia);
-  let xBuilding2=rBuilding1.x+rBuilding1.w+5;
-  let rBuilding2={x:243,y:28,w:87,h:136};
-  let dxBuildings=rBuilding2.x-(rBuilding1.x+rBuilding1.w);
-  console.log('dx buildings',dxBuildings)
-  let rWic={x:700,y:26,w:87,h:136}; //calculated
-  let rLastWonder={x:700,y:193,w:87,h:136};
-  let rWonder={x:674,y:193,w:87,h:136};
-  let dxWonders=26;
-}
-async function test72_civSpots(){
-  await prelims();
-  onclickNATIONS();
-}
-async function test73_game(){
-  await prelims(); if (!U) {console.log('no user!');await switchToUser('felix')}
-  await natLoadAssets(); 
-  mButton('START',natCreateGame,'dMain');
-}
-async function test74_svgImage(){
-  let d=mBy('dMain');
-  let img = mDom(d,{h:200},{tag:'img',src:'../assets/games/nations/templates/book.svg'});
-}
-async function test75_login(){
-  await prelims();
-  console.log('user is',U.name)
-  await switchToUser(U.name == 'felix'?'amanda':'felix');
-  console.log('user now:',U.name)
-}
-async function test76_simplestuff(){
-  await prelims();
-  await switchToUser('mac');
-  await switchToMenu('plan');
-}
-async function test77_showTables(){
-  await prelims();
-  await natLoadAssets(); 
-  await natCreateGame();
-  await showTables(); return;
-}
-async function test78_allcommands(){
-  await prelims();
+function tabtitleUpdate() {
 }
 function tryJSONParse(astext) {
   try {
@@ -2223,7 +2093,7 @@ async function uiTypeCalendar(dParent) {
   innerStyles.w = wcell - 11.75;
   innerStyles.hmin = `calc( 100% - 23px )`;//hcell-32
   let fz = 12;
-  let h = measureHeightOfTextStyle(dParent, { fz: fz }); console.log('h',h)
+  let h = measureHeightOfTextStyle(dParent, { fz: fz }); console.log('h', h)
   let eventStyles = { fz: fz, hmin: h, w: '100%' };
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
   const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -2259,7 +2129,7 @@ async function uiTypeCalendar(dParent) {
     if (i < 1 || i > info.numDays) return null;
     let ui = dDays[i];
     if (ui.style.opacity === 0) return null;
-    return ui.children[0]; 
+    return ui.children[0];
   }
   async function setDate(m, y) {
     currentDate.setMonth(m - 1);
@@ -2309,26 +2179,26 @@ async function uiTypeCalendar(dParent) {
   }
   async function refreshEvents() {
     let events = await getEvents();
-    console.log('refreshing events',events)
+    console.log('refreshing events', events)
     for (const k in events) {
       let o = events[k];
       let dt = new Date(Number(o.day));
       let dDay = getDayDiv(dt);
-      if (!dDay) continue; 
+      if (!dDay) continue;
       uiTypeEvent(dDay, o, eventStyles);
     }
     mDummyFocus();
   }
-  await setDate(currentDate.getMonth() + 1, currentDate.getFullYear()); 
+  await setDate(currentDate.getMonth() + 1, currentDate.getFullYear());
 
   return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
 }
 function uiTypeExtraWorker(w) {
   let [res, n] = [stringBefore(w, ':'), Number(stringAfter(w, ':'))];
   let s = `worker (cost:${res} ${n})`
-  let present = presentExtraWorker; 
-  let select = selectExtraWorker; 
-  return {itemtype:'worker', a: s, key: `worker_${res}`, o: { res: res, n: n }, friendly: s, present,select}
+  let present = presentExtraWorker;
+  let select = selectExtraWorker;
+  return { itemtype: 'worker', a: s, key: `worker_${res}`, o: { res: res, n: n }, friendly: s, present, select }
 }
 function uiTypePlayerStats(fen, pl, dParent, outerStyles = {}, innerStyles = {}) {
   addKeys({ dir: 'column', display: 'flex' }, outerStyles);
@@ -2355,7 +2225,7 @@ function uiTypePlayerStats(fen, pl, dParent, outerStyles = {}, innerStyles = {})
   }
   return items;
 }
-async function updateClientData(){
+async function updateClientData() {
 }
 async function uploadImg(img, unique, coll, name) {
   return new Promise((resolve, reject) => {

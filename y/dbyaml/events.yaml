@@ -1,18 +1,1 @@
-f_1710057600000_1710600722970:
-  id: f_1710057600000_1710600722970
-  created: 1710600722970
-  day: '1710057600000'
-  time: '10'
-  text: event
-  user: felix
-  shared: false
-  subscribers: []
-d_1709452800000_1710601075049:
-  id: d_1709452800000_1710601075049
-  created: 1710601075049
-  day: '1709452800000'
-  time: 3h
-  text: heute wollen wir einen spaziergangn machen!
-  user: felix
-  shared: false
-  subscribers: []
+{}
