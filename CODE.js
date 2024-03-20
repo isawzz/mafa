@@ -1,4 +1,12 @@
 
+function userToM(o){
+	let m={};
+	for(const k in o){
+		if (k=='icon') m.img=`../assets/img/users/${o[k]}.jpg`;
+		else m[k]=o[k];
+	}
+	return m;
+}
 function _uiTypeCheckList(lst,dParent,styles={},opts={}){
 	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
 	lst.forEach((text, index) => {

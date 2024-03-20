@@ -177,7 +177,7 @@ async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 	}
 }
 function collDisableItemCommands(){
-	for(const cmd of [UI.editCollItem]){
+	for(const cmd of [UI.asAvatar,UI.editCollItem]){
 		if (nundef(cmd)) continue;
 		cmdDisable(cmd);
 	}
@@ -189,7 +189,7 @@ function collDisableListCommands(){
 	}
 }
 function collEnableItemCommands(){
-	for(const cmd of [UI.editCollItem]){
+	for(const cmd of [UI.asAvatar,UI.editCollItem]){
 		if (nundef(cmd)) continue;
 		cmdEnable(cmd);
 	}
@@ -538,6 +538,7 @@ function collSidebar() {
 	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d,gap);
 	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d,3*gap);
 
+	UI.asAvatar = mCommand(d, 'asAvatar', 'Set Avatar'); mNewline(d,gap);
 
 	//onclickCollClearSelections	//cmdDisable(UI.collSelectAll);
 	// UI.addCategory = mCommand(d, 'addCategory', 'Add Categories'); mNewline(d);
@@ -1045,7 +1046,7 @@ function menuEnable(menu, key) { mClassRemove(iDiv(menu.commands[key]), 'disable
 async function menuOpen(menu, key) {
 	let cmd = menu.commands[key];	//console.log('clicked',menu,cmd);
 	menu.cur = key;
-	mClass(iDiv(cmd), 'activeLink'); console.log('cmd',cmd)
+	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
 	await cmd.open();
 }
 function measureHeight(elem){return mGetStyle(elem, 'h')}

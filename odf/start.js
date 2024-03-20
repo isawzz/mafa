@@ -1,12 +1,42 @@
 onload = start;
 
-async function start() { test25(); }
+async function start() { test26_userpic(); }
 
+async function test26_userpic(){
+
+	await prelims(); //return;
+	let dParent = clearBodyDiv();
+	let users = await mGetRoute('users');
+	//console.log('users',users);
+	let user=rChoose(users); //users.mac;//
+	let o=user;
+	//let o = user = userToM(user)
+	console.log('k',user)
+	let d=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
+	//let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
+	let el = mDom(d, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
+
+	let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',border:'solid white 3px'})
+	let el1 = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
+
+	mDom(dParent,{},{tag:'img',src:user.img})
+	
+	//showImage(user,dParent)
+
+	//users sollen auch in superdi sein!!! mit einem spezialtype 'user'
+	//oder nicht?
+	//gibt es irgendeinen grund dass users nicht in superdi sein sollten?
+	//kann ich es auf einfache art getrennt halten?
+
+	//ok ich muss die weireden raushauen!!!
+
+}
 async function test25() {
 	await prelims();
 
 	//await natCreateGame();
 	await switchToMenu(UI.nav, 'play');
+	showGameMenu('bluff')
   //await showTables(); 
 
 	//console.log('events',Serverdata.events,Serverdata)

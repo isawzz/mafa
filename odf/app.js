@@ -206,6 +206,15 @@ app.get('/user', (req, res) => {
 	//console.log(data)
 	res.json(data);
 });
+app.get('/users', (req, res) => { 
+	let users = lookup(Session,['users']);
+	let di={};
+	for(const k in users){
+		if (k.includes('_') || k.includes('unsafe') || k == 'guest') continue;
+		di[k]=users[k];
+	}
+	return res.json(di); 
+});
 app.get('/config', (req, res) => {
 	console.log('==> get config')
 	res.json(Session.config);
@@ -445,13 +454,18 @@ app.post('/postImage', (req, res) => {
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let data = req.body;
-	if (nundef(data.icon)) data.icon = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
-	console.log('<== post user')
+	console.log('<== post user',data)
+	if (nundef(data.key) || nundef(M.superdi[data.key])) data.key = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
+	// if (isdef(data.key) && isdef(M.superdi[data.key])) {
+	// 	o.key=data.key;
+	// }else if (fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))){
+	// 	o.img=`../assets/img/users/${name}.jpg`;
+	// }else o.img=`../assets/img/users/unknown_user.jpg`;//
 	let fname = path.join(dbDirectory, 'users.yaml');
-	lookupSetOverride(Session, ['users', name], data);
+	lookupSetOverride(Session, ['users', name], o);
 	let y = yaml.dump(Session.users);
 	fs.writeFileSync(fname, y, 'utf8');
-	res.json(data);
+	res.json(o);
 });
 app.post('/postNewItem', (req, res) => {
 	let key = req.body.key;

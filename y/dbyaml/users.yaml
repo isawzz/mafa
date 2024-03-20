@@ -1,64 +1,52 @@
 felix:
   name: felix
   color: '#1f8fff'
-  icon: felix
+  key: felix
 amanda:
   name: amanda
   color: '#f28cb2'
-  icon: amanda
-max:
-  name: max
-  color: '#2626d9'
-  icon: unknown_user
+  key: amanda
 lauren:
   name: lauren
   color: '#ada0ee'
-  icon: lauren
+  key: lauren
 lili:
   name: lili
   color: '#6762f3'
-  icon: lili
+  key: lili
 mitra:
   name: mitra
   color: '#db7094'
-  icon: mitra
+  key: mitra
 gul:
   name: gul
   color: '#89cffa'
-  icon: gul
-louis:
-  name: louis
-  color: '#ec4169'
-  icon: unknown_user
+  key: gul
 mac:
   name: mac
   color: '#ff6bb5'
-  icon: mac
-harald:
-  name: harald
-  color: '#ff5500'
-  icon: unknown_user
+  key: mac
 guest:
   name: guest
   color: '#777777'
-  icon: guest
+  key: guest
 fe_ox:
   name: fe_ox
   color: '#663399'
-  icon: unknown_user
-hallo:
-  name: hallo
-  color: '#b42222'
-  icon: hallo
+  key: unknown_user
 unsafe:
   name: unsafe
   color: '#c29551'
-  icon: unknown_user
+  key: unknown_user
 ____unsafe:
   name: ____unsafe
   color: '#aaff00'
-  icon: unknown_user
+  key: unknown_user
 mimi:
   name: mimi
   color: '#f28cb2'
-  icon: mimi
+  key: mimi
+nasi:
+  name: nasi
+  color: '#26d926'
+  key: nasi

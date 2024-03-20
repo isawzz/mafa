@@ -14,38 +14,52 @@ function generateTableName(n) {
 		if (!existing.includes(s)) return s;
 	}
 }
-function onclickGameMenuItem(ev) {
+async function onclickGameMenuItem(ev) {
 	let gamename = evToAttr(ev, 'gamename');
 	//stop_game();
-	showGameOptionsMenu(gamename);
+	await showGameMenu(gamename);
 }
-function showGameOptions(dParent, game) {
+async function showGameOptions(dParent, game) {
 	mRemoveChildrenFromIndex(dParent, 2);
 	let poss = Serverdata.config.games[game].options;
 	if (nundef(poss)) return;
 	for (const p in poss) {
-		let key = p;
+		let key = p; //console.log('key',key)
 		let val = poss[p];
 		if (isString(val)) {
 			let list = val.split(',');
-			let fs = mRadioGroup(dParent, {}, `d_${key}`, key);
+			let legend = key.includes('per')?stringBefore(key,'_')+'/'+stringAfterLast(key,'_'):key;
+			let fs = mRadioGroup(dParent, {}, `d_${key}`, legend);
 			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
 			measure_fieldset(fs);
 		}
 	}
 }
-function showGameOptionsMenu(gamename) {
+async function showGameMenu(gamename) {
 	//let dMenu = mBy('dMenu'); iClear(dMenu);
-	let dMenu = mBy('dOptionsMenu'); if (isdef(dMenu)) { mClear(dMenu); } else dMenu = mDom('dMain', {}, { className: 'section', id: 'dOptionsMenu' });
+	let dMenu = mBy('dGameMenu'); if (isdef(dMenu)) { mClear(dMenu); } else dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' });
 	mText(`<h2>game options</h2>`, dMenu, { maleft: 12 });
 	// show_standard_title(dMenu, 'Game Options');
 	let d = mDiv(dMenu, { align: 'center' }, 'fMenuInput');
-	let dOptions = mDiv(d, {}, 'dMenuInput'); mCenterFlex(dOptions);
-	let dButtons = mDiv(d, { display: 'flex', justify: 'center', w: '100%' }, 'dMenuButtons');
+	let style={ display: 'flex', justify: 'center', w: '100%', gap:10, matop:10 };
+	let dPlayers = mDiv(d, style, 'dMenuPlayers'); mCenterFlex(dPlayers);
+	let dOptions = mDiv(d, style, 'dMenuInput'); mCenterFlex(dOptions);
+	let dButtons = mDiv(d, style, 'dMenuButtons');
 	DA.playerlist = null;
-	showGameOptions(dOptions, gamename);
-	let astart = maButton('Start', start_game, dButtons);
-	let acancel = maButton('Cancel', ()=>mClear(dMenu), dButtons);
+	await showGamePlayers(dPlayers, gamename);
+	await showGameOptions(dOptions, gamename);
+	let astart = mButton('Start', startGame, dButtons, {}, ['button', 'input']);
+	let acancel = mButton('Cancel', ()=>mClear(dMenu), dButtons, {}, ['button', 'input']);
+}
+async function showGamePlayers(dParent,gamename){
+	let users = await mGetRoute('users');
+	console.log('users',users);
+	let user=rChoose(users)
+	console.log('k',user)
+	let m=userToM(user);
+	showImage(m,dParent);
+
+	//ok ich muss die weireden raushauen!!!
 }
 function showGames(ms = 500) {
 	//let dParent = mBy('dGames');mClear(dParent);
@@ -56,7 +70,7 @@ function showGames(ms = 500) {
 
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
 	gamelist = dict2list(Serverdata.config.games, 'key'); gamelist = sortBy(gamelist, 'friendly').map(x => x.key);
-	console.log('gamelist', gamelist)
+	//console.log('gamelist', gamelist)
 
 
 	for (const gname of gamelist) {
@@ -78,7 +92,7 @@ function showGames(ms = 500) {
 async function showTables() {
 	Clientdata.table = null;
 	Serverdata.tables = tables = await mGetRoute('tables');
-	console.log('tables', tables);
+	//console.log('tables', tables);
 	tables.map(x => x.prior = x.turn.includes(U.name) ? 1 : x.players.includes(U.name) ? 2 : 3);
 	sortBy(tables, 'prior');
 
@@ -102,6 +116,23 @@ async function showTables() {
 		c = mAppend(r, mCreate('td'));
 		c.innerHTML = h;
 	}
+}
+function startGame() {
+  let gamename = DA.gamename;
+  // let options = collect_game_specific_options(gamename);
+	console.log(Serverdata,DA)
+  let poss = Serverdata.config.games[gamename].options;
+  if (nundef(poss)) return;
+  let options = {};
+  for (const p in poss) {
+    let fs = mBy(`d_${p}`);
+    let val = get_checked_radios(fs)[0];
+    options[p] = isNumber(val) ? Number(val) : val;
+  }
+  let players = DA.playerlist ? DA.playerlist.map(x => ({ name: x.uname, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') })) : create_random_players(options.nplayers);
+	console.log('DA',DA);
+	console.log(gamename,players,options);
+  //_start_game(gamename, players, options); hide('dMenu');
 }
 
 

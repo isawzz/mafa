@@ -146,6 +146,28 @@ body{
 	margin:0;
 	background: var(--bgBody) !important;
 }
+legend {
+  /* border: 1px solid green; */
+  color: green;
+  font-size: 90%;
+  margin-left: 16px;
+  text-align: left;
+}
+fieldset {
+  font-size: 90%;
+  border: none;
+  margin-top: 2%;
+  height: 96%;
+  /* float: left; */
+  position: relative;
+  text-align: left;
+  color: dimgray;
+}
+fieldset .disabled {
+  color: #404b56;
+  opacity: 0.3;
+  cursor: default;
+}
 
 .activeLink { 
 	color: var(--fgButtonActive) !important;
@@ -161,6 +183,9 @@ body{
   to {
     opacity: 1;
   }
+}
+.button {
+	min-width: 80px;
 }
 .darker{
 	background: var(--bgDarker);
