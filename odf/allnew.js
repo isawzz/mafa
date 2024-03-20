@@ -1906,10 +1906,10 @@ function showChatWindow() {
 }
 function showImage(key, dParent, styles = {}, useSymbol=false) {
   let o = M.superdi[key];
-  if (nundef(o)){
-    if (isDict(key)) {o=key;key=o.key;}
-    else if (key.includes('.')) {o={img:key,key:stringBefore(stringAfterLast(key,'/'),'.')}; key=o.key;}
-  }
+  // if (nundef(o)){
+  //   if (isDict(key)) {o=key;key=o.key;}
+  //   else if (key.includes('.')) {o={img:key,key:stringBefore(stringAfterLast(key,'/'),'.')}; key=o.key;}
+  // }
 
   if (nundef(o)) { console.log('showImage:key not found', key); return; }
   let [w, h] = [valf(styles.w, styles.sz), valf(styles.h, styles.sz)];

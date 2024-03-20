@@ -12,16 +12,18 @@ async function test26_userpic(){
 	let o=user;
 	//let o = user = userToM(user)
 	console.log('k',user)
-	let d=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
-	//let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
-	let el = mDom(d, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
 
-	let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',border:'solid white 3px'})
-	let el1 = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
+	// let d=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
+	// //let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
+	// let el = mDom(d, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
 
-	mDom(dParent,{},{tag:'img',src:user.img})
+	// let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',border:'solid white 3px'})
+	// let el1 = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
+
 	
-	//showImage(user,dParent)
+	// mDom(dParent,{},{tag:'img',src:M.superdi[user.key].img})
+	
+	showImage(user.key,dParent)
 
 	//users sollen auch in superdi sein!!! mit einem spezialtype 'user'
 	//oder nicht?
