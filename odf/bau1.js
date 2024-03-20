@@ -61,6 +61,20 @@ async function showGamePlayers(dParent,gamename){
 
 	//ok ich muss die weireden raushauen!!!
 }
+function get_user_pic_and_name(uname, dParent, sz = 50, border = 'solid medium white') {
+	let u=Serverdata.users[uname];
+	let src=M.superdi[u.key].img;
+	console.log('src',src,u)
+  let html = `
+      <div username='${uname}' style='text-align:center;font-size:${sz / 2.8}px'>
+        <img src='${src}' width='${sz}' height='${sz}' class='img_person' style='margin:0;border:${border}'>
+        <div style='margin-top:${-sz / 6}px'>${uname}</div>
+      </div>`;
+  let elem = mCreateFrom(html);
+  mAppend(dParent, elem);
+  return elem;
+}
+
 function showGames(ms = 500) {
 	//let dParent = mBy('dGames');mClear(dParent);
 	let dParent = mBy('dGameList'); if (isdef(dParent)) { mClear(dParent); } else dParent = mDom('dMain', {}, { className: 'section', id: 'dGameList' });

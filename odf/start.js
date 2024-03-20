@@ -7,23 +7,34 @@ async function test26_userpic(){
 	await prelims(); //return;
 	let dParent = clearBodyDiv();
 	let users = await mGetRoute('users');
-	//console.log('users',users);
-	let user=rChoose(users); //users.mac;//
-	let o=user;
+	let list = dict2list(users);
+
+	//console.log('users',list);return;
+	list=list.filter(x=>isdef(M.superdi[x.key]));
+	list.map(x=>x.img=M.superdi[x.key].img)
+	assertion(list.every(x=>isdef(x.img)),"FAIL!!!!");
+
+	let user=rChoose(list);
+
+	let key = user.key;
+	let img = user.img;
+
+	showImage(key,dParent,{h:200,round:true});
+	return;
+
+
 	//let o = user = userToM(user)
-	console.log('k',user)
+	console.log('name',user.name);
+	mDom(dParent,{},{tag:'img',src:user.img})
 
-	// let d=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
-	// //let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
-	// let el = mDom(d, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
+	let d=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
+	let el = mDom(d, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: user.img });	
 
-	// let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',border:'solid white 3px'})
-	// let el1 = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });	
+	let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',border:'solid white 3px'})
+	let el1 = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: user.img });	
 
+	let pic=get_user_pic_and_name(user.name,dParent);
 	
-	// mDom(dParent,{},{tag:'img',src:M.superdi[user.key].img})
-	
-	showImage(user.key,dParent)
 
 	//users sollen auch in superdi sein!!! mit einem spezialtype 'user'
 	//oder nicht?
