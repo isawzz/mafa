@@ -542,7 +542,10 @@ function getUname() { assertion(Clientdata.lastUser == U.name, `getUname!!!!!!!$
 async function getUser(uname, cachedOk = false) {
   let res = lookup(Serverdata, ['users', uname]);
   if (!res || !cachedOk) res = await mGetRoute('user', { uname });
-  if (!res) { res = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
+  if (!res) { 
+    let key=isdef(M.superdi[uname])?uname:rChoose(Object.keys(M.superdi))
+    res = await postUserChange({ name: uname, color: rChoose(M.playerColors), key }); 
+  }
   Serverdata.users[uname] = res;
   return res;
 }
@@ -1374,7 +1377,7 @@ function natCreate(owner, players) {
     list.map(x => players[x] = {});
   }
   if (nundef(players[owner])) players[owner] = {};
-  let fen = { id: rUniqueId(20), owner: owner, players: players }
+  let fen = { owner: owner, players: players }
   let playerNames = fen.playerNames = Object.keys(players);
   let numPlayers = fen.numPlayers = playerNames.length;
   fen.age = 1;
@@ -1415,9 +1418,10 @@ function natCreate(owner, players) {
   return fen;
 }
 async function natCreateGame() {
+  let id = generateTableId();
   let fen = natCreate(U.name, ['felix', 'amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
   let s = JSON.stringify(fen);
-  let res = await mPostRoute('postNewTable', { id: fen.id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
+  let res = await mPostRoute('postNewTable', { status:'started', id: id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
 }
 async function natDetectBB(card, dParent) {
   dParent = toElem(dParent);
@@ -1943,41 +1947,6 @@ function showMessage(msg, ms = 3000) {
   clearTimeout(TO.message);
   TO.message = setTimeout(() => mStyle('dMessage', { h: 0 }), ms)
 }
-async function showTable(table, name) {
-  console.log('showTable', name, table);
-  if (!table) { showMessage('table deleted!'); await showTables(); }
-  else if (!table.fen.playerNames.includes(name)) {showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`);Clientdata.table = null;}
-  else if (table.game == 'nations') { await natGameView(table.fen, name); }
-  else {showMessage(`GAME ${table.game.toUpperCase()} NOT YET IMPLEMENTED!`);Clientdata.table = null;}
-}
-async function _showTables() {
-  Clientdata.table = null;
-  Serverdata.tables = tables = await mGetRoute('tables');
-  console.log('tables', tables);
-  tables.map(x => x.prior = x.turn.includes(U.name) ? 1 : x.players.includes(U.name) ? 2 : 3);
-  sortBy(tables, 'prior');
-  
-  let dParent=mBy('dTableList');
-  if (isdef(dParent)) {mClear(dParent);}
-  else dParent = mDom('dMain', {}, { className: 'section',id:'dTableList' });
-
-  if (isEmpty(tables)) { mText('no active game tables', dParent); return []; }
-  tables.map(x => x.game_friendly = capitalize(x.game));
-  mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
-  let t = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'players'], 'tables', false);
-  mTableCommandify(t.rowitems, {
-    0: (item, val) => hFunc(val, 'onclickTable', item.o.id, item.id),
-  });
-  let d = iDiv(t);
-  for (const ri of t.rowitems) {
-    let r = iDiv(ri);
-    //console.log('ri',ri)
-    if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: get_waiting_html(24) }); //'my turn!'});
-    let h = hFunc('delete', 'deleteTable', ri.o.id);
-    c = mAppend(r, mCreate('td'));
-    c.innerHTML = h;
-  }
-}
 function showTitle(title) {
   mClear('dTitle');
   return mDom('dTitle', { maleft: 20 }, { tag: 'h1', html: title, classes: 'title' });
@@ -2006,41 +1975,19 @@ async function simpleUpload(route, o) {
     return 'ERROR 1';
   }
 }
-function sockGetDeleteTable(x) {
-  console.log('x',x)
-  // let fen = x.fen;
-  // let tables = x.tables;
-  // Serverdata.tables = tables;
-  // console.log('::SOCK deleted table:', id);
-  // console.log('... new table:', tables.find(x => x.id == fen.id));
-
-
-}
-function sockGetNewTable(x) {
-  let table = x.table;
-  let tables = x.tables;
-  Serverdata.tables = tables;
-  console.log('::SOCK new table:', table);
-}
-function sockGetTurnUpdate(turn) {
-  console.log('::SOCK turn:', turn);
-  Clientdata.fen.turn = turn;
-  instructionUpdate();
-  hourglassUpdate();
-  tabtitleUpdate();
-}
 function sockInit() {
   let server = getServerurl();
   Socket = io(server);
-  Socket.on('deleteTable', sockGetDeleteTable); //x => console.log('::SOCK table:', x));
+  Socket.on('deleteTable', onsockDeleteTable); //x => console.log('::SOCK table:', x));
   Socket.on('disconnect', x => console.log('::SOCK disconnect:', x));
   Socket.on('event', onsockEvent);
   Socket.on('message', showChatMessage);
-  Socket.on('newTable', sockGetNewTable); //x => console.log('::SOCK table:', x));
+  Socket.on('table', onsockTable); //x => console.log('::SOCK table:', x));
+  Socket.on('newTable', onsockNewTable); //x => console.log('::SOCK table:', x));
   Socket.on('superdi', onsockSuperdi);
-  Socket.on('turnUpdate', sockGetTurnUpdate); //x => console.log('::SOCK table:', x));
-  Socket.on('userChange', x => console.log('::SOCK userChange:', x));
-  Socket.on('update', x => console.log('::SOCK update:', x));
+  Socket.on('turnUpdate', onsockTurnUpdate); //x => console.log('::SOCK table:', x));
+  // Socket.on('userChange', x => console.log('::SOCK userChange:', x));
+  // Socket.on('update', x => console.log('::SOCK update:', x));
 }
 function sockPostMove(id, name, move) {
   Socket.emit('move', { id, name, move });

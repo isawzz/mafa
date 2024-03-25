@@ -61,6 +61,16 @@ async function onclickAddSelected() {
 	await loadAssets();
 	collPostReload();
 }
+async function onclickAsAvatar(ev) {
+	let item = UI.selectedImages[0];
+	console.log('item', item)
+	let o = collKeyCollnameFromSelkey(item);
+	let key = o.key;
+	let m = M.superdi[key];
+	U.key = key;
+	let res = await postUserChange(U);
+	console.log('res', res)
+}
 async function onclickAsSecondary(ev) {
 
 	name = UI.collPrimary.name;
@@ -432,6 +442,135 @@ async function oninputCollFilter(ev){
 	showImageBatch(coll, 0, false);
 
 }
+async function onsockSuperdi(x){
+	console.log('SOCK::superdi',x)
+	//TODO: update superdi!
+	//M.superdi[x.id]=x;
+}
+//#endregion
+
+//#region play
+async function onclickClearPlayers(){
+	for (const item of DA.allPlayers) {
+		if (item.isSelected && U.name != item.name) {
+			style_not_playing(item, '', DA.playerlist);
+		}
+	}
+	assertion(!isEmpty(DA.playerlist), "uname removed from playerlist!!!!!!!!!!!!!!!")
+	DA.lastName = DA.playerlist[0].name; // DA.allPlayers.find(x=>x.uname == DA.playerlist[0]);
+
+}
+async function onclickDeleteTable(id) {
+	let res = await mPostRoute('deleteTable', { id });
+	//console.log('res', res, Serverdata.tables)
+}
+async function onclickGameMenuItem(ev) {
+	let gamename = evToAttr(ev, 'gamename');
+	//stop_game();
+	await showGameMenu(gamename);
+}
+async function onclickJoinTable(id){
+	//console.log(U.name,'clicked join',id);
+	let table = Serverdata.tables.find(x=>x.id == id);
+	assertion(nundef(table.players.find(x=>x.name == U.name)),'already joined!!!');
+	table.players.push(createHumanPlayer(U.name));
+	table.playerNames = table.players.map(x=>x.name);
+	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
+	console.log('res',res);
+
+}
+async function onclickLeaveTable(id){
+	//console.log(U.name,'clicked leave',id);
+	let table = Serverdata.tables.find(x=>x.id == id);
+	assertion(isdef(table.players.find(x=>x.name == U.name)),'not in joined players!!!!');
+	//console.log('players',table.players);
+	let player=table.players.find(x=>x.name == U.name);
+	removeInPlace(table.players,player); 
+	table.playerNames = table.players.map(x=>x.name);
+	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
+	console.log('res',res);
+}
+async function onclickOpenToJoinGame(){
+	let options = collectOptions();
+	//if (nundef(options.minPlayers)) options.minPlayers = 1;
+	//if (nundef(options.maxPlayers)) options.maxPlayers = 10;
+	let players = collectPlayers(options);
+
+
+	addTable(DA.gamename,players,options);
+}
+async function onclickPlay() { 
+	await showTables(); 
+	showGames();
+
+}
+async function onclickStartGame(){
+	collectOptions();
+	collectPlayers();
+}
+async function onclickTable(id) { await switchToTable(id); }
+
+async function onsockDeleteTable(x) {
+  //console.log('x',x)
+  Serverdata.tables = x.tables;
+  //console.log('::SOCK deleteTable:', tables);
+  showTables()
+}
+function onsockNewTable(x) {
+  let table = x.table;
+  let tables = x.tables;
+  Serverdata.tables = tables;
+  console.log('::SOCK new table:', table);
+  showTables();
+}
+function onsockTable(x) {
+  let table = x.table;
+  let tables = x.tables;
+  Serverdata.tables = tables;
+  console.log('::SOCK table:', table);
+  showTables()
+}
+function onsockTurnUpdate(turn) {
+  console.log('::SOCK turn:', turn);
+  Clientdata.fen.turn = turn;
+  instructionUpdate();
+  hourglassUpdate();
+  tabtitleUpdate();
+}
+//#endregion
+
+//#region plan
+function onclickDay(d, styles) {
+  let tsDay = d.id; 
+  let tsCreated = Date.now();
+  let id = generateEventId(tsDay, tsCreated);
+  let uname = U ? U.name : 'guest';
+  let o = { id: id, created: tsCreated, day: tsDay, time: '', text: '', user: uname, shared: false, subscribers: [] };
+  Items[id] = o;
+  let x = uiTypeEvent(d, o, styles); 
+  x.inp.focus();
+}
+function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
+async function onclickPlan() { await showCalendarApp(); }
+async function onEventEdited(id, text, time) {
+  console.log('onEventEdited',id, text, time)
+  let e = Items[id];
+  if (nundef(time)) {
+    [time, text] = extractTime(text);
+  }
+  e.time = time;
+  e.text = text;
+  let result = await simpleUpload('postUpdateEvent', e);
+	console.log('result',result)
+  Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
+  mBy(id).firstChild.value = getEventValue(e); 
+  closePopup();
+}
+async function onsockEvent(x){
+	console.log('SOCK::event',x)
+	Serverdata.events[x.id]=x;
+	//TODO: if calendar app is open refreshEvents!
+}
 //#endregion
 
 async function onclickColor(ev) {
@@ -448,17 +587,6 @@ async function onclickCommand(ev) {
 	let cmd = UI[key];
 	await cmd.open();
 }
-function onclickDay(d, styles) {
-  let tsDay = d.id; 
-  let tsCreated = Date.now();
-  let id = generateEventId(tsDay, tsCreated);
-  let uname = U ? U.name : 'guest';
-  let o = { id: id, created: tsCreated, day: tsDay, time: '', text: '', user: uname, shared: false, subscribers: [] };
-  Items[id] = o;
-  let x = uiTypeEvent(d, o, styles); 
-  x.inp.focus();
-}
-function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 function onclickMenu(ev) {
 	let keys = evToAttr(ev, 'key');
@@ -546,40 +674,9 @@ async function onclickNewCollection(name) {
 	collOpenSecondary(4, 3);
 	collOpenPrimary(4, 3);
 }
-async function onclickPlan() { await showCalendarApp(); }
-async function onclickPlay() { 
-	await showTables(); 
-	showGames();
-
-}
-async function onclickTable(id) { await switchToTable(id); }
 async function onclickTest() { console.log('nations!!!!'); }
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user),{w:100,margin:0},{content:'username',align:'br',placeholder:' <username> '});
 	if (!uname) return;
 	await switchToUser(uname);
-}
-async function onEventEdited(id, text, time) {
-  console.log('onEventEdited',id, text, time)
-  let e = Items[id];
-  if (nundef(time)) {
-    [time, text] = extractTime(text);
-  }
-  e.time = time;
-  e.text = text;
-  let result = await simpleUpload('postUpdateEvent', e);
-	console.log('result',result)
-  Items[id] = lookupSetOverride(Serverdata, ['events', id], e);
-  mBy(id).firstChild.value = getEventValue(e); 
-  closePopup();
-}
-async function onsockEvent(x){
-	console.log('SOCK::event',x)
-	Serverdata.events[x.id]=x;
-	//TODO: if calendar app is open refreshEvents!
-}
-async function onsockSuperdi(x){
-	console.log('SOCK::superdi',x)
-	//TODO: update superdi!
-	//M.superdi[x.id]=x;
 }

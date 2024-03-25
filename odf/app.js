@@ -242,11 +242,12 @@ app.get('/filenames', async (req, res) => {
 });
 function getTablesInfo(){
 	let info=[];
+	//console.log('session.tables',Session.tables); return [];
 	for(const id in Session.tables){
 		//ich solltehaben: game, players, friendlyname, turn als minimum
 		let t = Session.tables[id];
-		let o={game:t.game,players:t.fen.playerNames,turn:t.fen.turn,friendly:t.friendly,id:id}
-		info.push(o);
+		//let o={game:t.game,players:t.fen.playerNames,turn:t.fen.turn,friendly:t.friendly,id:id}
+		info.push(t);
 	}
 	return info;
 }
@@ -392,7 +393,7 @@ app.post('/deleteTable', (req, res) => {
 	let t=lookup(Session,['tables',id]);
 	if (t){
 		deleteTable(id);
-		emitToPlayers(t.fen.playerNames,'deleteTable',getTablesInfo());
+		io.emit('deleteTable',getTablesInfo());
 	}
 	res.json(getTablesInfo());
 });
@@ -451,21 +452,30 @@ app.post('/postImage', (req, res) => {
 		fileName: fname,
 	});
 });
+app.post('/postTable', (req, res) => {
+	let id = req.body.id;
+	let table = Session.tables[id];
+	for(const k in req.body){
+		table[k]=req.body[k];
+	}
+	// console.log('<== post newTable',id); //return;
+	saveTable(id,table);
+	let fen = req.body.fen;
+	io.emit('table',{tables:getTablesInfo(),table:table});
+	// if (isdef(fen)) emitToPlayers(table.playerNames,'table',{tables:getTablesInfo(),table:table});
+	// else io.emit('table',{tables:getTablesInfo(),table:table});
+	res.json(`table ${id} posted successfully!`);
+});
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let data = req.body;
 	console.log('<== post user',data)
 	if (nundef(data.key) || nundef(M.superdi[data.key])) data.key = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
-	// if (isdef(data.key) && isdef(M.superdi[data.key])) {
-	// 	o.key=data.key;
-	// }else if (fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))){
-	// 	o.img=`../assets/img/users/${name}.jpg`;
-	// }else o.img=`../assets/img/users/unknown_user.jpg`;//
 	let fname = path.join(dbDirectory, 'users.yaml');
-	lookupSetOverride(Session, ['users', name], o);
+	lookupSetOverride(Session, ['users', name], data);
 	let y = yaml.dump(Session.users);
 	fs.writeFileSync(fname, y, 'utf8');
-	res.json(o);
+	res.json(data);
 });
 app.post('/postNewItem', (req, res) => {
 	let key = req.body.key;
@@ -484,10 +494,11 @@ app.post('/postNewItem', (req, res) => {
 app.post('/postNewTable', (req, res) => {
 	let id = req.body.id;
 	let fen = req.body.fen;
-	console.log('<== post newTable',id)
+	console.log('<== post newTable',id); //return;
 	saveTable(id,req.body);
-	emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
-	res.json('table posted successfully!');
+	if (isdef(fen)) emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
+	else io.emit('newTable',{tables:getTablesInfo(),table:req.body});
+	res.json(`table ${id} posted successfully!`);
 });
 //#region batch update of multiple items:
 app.post('/postUpdateSuperdi', (req, res) => {

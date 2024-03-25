@@ -1,19 +1,27 @@
 
-async function onclickAsAvatar(ev){
-	let item = UI.selectedImages[0];
-	console.log('item',item)
-	let o=collKeyCollnameFromSelkey(item);
-	let key = o.key;
-	let m=M.superdi[key];
-	U.avatar=key;
-	let res = await postUserChange(U);
-	console.log('res',res)
+function a_game() {
+	function setup(table) {
+		let fen = {};
+		fen.players = {};
+		for (const pl of table.players) {
+			fen.players[pl.name] = pl;
+		}
+		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
+		return fen;
+	}
+	function checkGameover(table) { return false; }
+	function present(table, name) { a_game_present(table,name); } //if (nundef(name)) name = U.name; showMessage(`BINGO!!! ${table.friendly} view ${name}`); } 
+	return { setup, checkGameover, present };
 }
-function showAvatar(dParent,sz){
-	
+function a_game_present(table, name) {
+
+	//was soll passieren?
+	//erstmal clear page I guess
+	mClear('dPage');
+	let d=mDom('dPage',{margin:10,bg:'blue'});mCenterCenterFlex(d)
+	mDom(d,{fz:100,fg:'white'},{html:`we are playing ${table.game}!!!!`})
+
 }
-
-
 
 
 

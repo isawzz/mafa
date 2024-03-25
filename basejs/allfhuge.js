@@ -9277,7 +9277,7 @@ function arrMax(arr, f) { return arrMinMax(arr, f).max; }
 function arrMin(arr, f) { return arrMinMax(arr, f).min; }
 function arrMinMax(arr, func) {
   if (nundef(func)) func = x => x;
-  else if (isString(func)) {let val=func;func = x=>x[val];}
+  else if (isString(func)) { let val = func; func = x => x[val]; }
   let min = func(arr[0]), max = func(arr[0]), imin = 0, imax = 0;
   for (let i = 1, len = arr.length; i < len; i++) {
     let v = func(arr[i]);
@@ -9408,7 +9408,7 @@ function arrTake(arr, n = 0, from = 0) {
     return n > 0 ? keys.slice(from, from + n).map(x => (arr[x])) : keys.slice(from).map(x => (arr[x]));
   } else return n > 0 ? arr.slice(from, from + n) : arr.slice(from);
 }
-function arrTakeFrom(arr, a) { return takeFromTo(arr, a, arr.length-1); }
+function arrTakeFrom(arr, a) { return takeFromTo(arr, a, arr.length - 1); }
 function arrTakeFromEnd(arr, n) {
   if (arr.length <= n) return arr.map(x => x); else return arr.slice(arr.length - n);
 }
@@ -9884,7 +9884,7 @@ function being_blackmailed() {
   else if (cmd == 'reject') { post_reject_blackmail(); }
   else { post_defend_blackmail(); }
 }
-function bestContrastingColor(color, colorlist=['white','black']) {
+function bestContrastingColor(color, colorlist = ['white', 'black']) {
   let contrast = 0;
   let result = null;
   let rgb = colorRGB(color, true);
@@ -14869,9 +14869,9 @@ function colorLighter(c, zero1 = .2, log = true) {
   c = colorFrom(c);
   return pSBC(zero1, c, undefined, !log);
 }
-function colorLum(cAny,percent=false) {
+function colorLum(cAny, percent = false) {
   let hsl = colorHSL(cAny, true);
-  return percent?hsl.l*100:hsl.l;
+  return percent ? hsl.l * 100 : hsl.l;
 }
 function colorMap(spec) {
   const Colormap = {
@@ -14996,7 +14996,7 @@ function colorMellow(c, zero1 = .3, factorLum = .5) {
 function colorMix(c1, c2, percent = 50) {
   return pSBC(percent / 100, colorHex(c2), colorHex(c1), true);
 }
-function colorMix1(c1,c2,percent){
+function colorMix1(c1, c2, percent) {
   let o1 = colorRGB(c1, true); let rgbA = [o1.r, o1.g, o1.b];
   let o2 = colorRGB(c2, true); let rgbB = [o2.r, o2.g, o2.b];
   amountToMix = percent / 100;
@@ -15082,7 +15082,7 @@ function colorPalSet(chStart, nHues = 2, { ch2, lum = 50, sat = 100, lumSatMode 
   }
   return palettes;
 }
-function colorPalShade(color,min=-0.8,max=0.8,step=0.2) {
+function colorPalShade(color, min = -0.8, max = 0.8, step = 0.2) {
   let res = [];
   for (let frac = min; frac <= max; frac += step) {
     let c = pSBC(frac, color, undefined, true);
@@ -15090,7 +15090,7 @@ function colorPalShade(color,min=-0.8,max=0.8,step=0.2) {
   }
   return res;
 }
-function colorPalShade(color,min=-0.8,max=0.8,step=0.2) {
+function colorPalShade(color, min = -0.8, max = 0.8, step = 0.2) {
   let res = [];
   for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
     let c = pSBC(frac, color, undefined, true);
@@ -16220,7 +16220,7 @@ async function create_pic_dicts(list = ['e', 'd', 'f', 's']) {
 }
 function create_random_players(n = 1) {
   let colors = rWheel(n);
-  let res = [{ name: 'mimi', playmode: 'human', color: colors[0] }];
+  let res = [{ name: myname, playmode: 'human', color: colors[0] }];
   let names = rChoose(MyNames, n - 1);
   if (!isList(names)) names = [names];
   for (let i = 1; i < n; i++) {
@@ -21051,8 +21051,8 @@ function evStop(ev) {
 }
 function evToAttr(ev, attr) {
   let elem = ev.target;
-  let val=null;
-  while(nundef(val) && isdef(elem)){
+  let val = null;
+  while (nundef(val) && isdef(elem)) {
     val = elem.getAttribute(attr);
     if (isdef(val)) return val;
     elem = elem.parentNode;
@@ -21061,16 +21061,16 @@ function evToAttr(ev, attr) {
 }
 function evToAttrElem(ev, attr) {
   let elem = ev.target;
-  let val=null;
-  while(nundef(val) && isdef(elem)){
+  let val = null;
+  while (nundef(val) && isdef(elem)) {
     val = elem.getAttribute(attr);
-    if (isdef(val)) return {val,elem};
+    if (isdef(val)) return { val, elem };
     elem = elem.parentNode;
   }
   return null;
 }
 function evToClass(ev, className) {
-  let elem = findParentWithClass(ev.target,className);
+  let elem = findParentWithClass(ev.target, className);
   return elem;
 }
 function evToClosestId(ev) {
@@ -21110,8 +21110,8 @@ function evToProp(ev, prop) {
 }
 function evToTargetAttribute(ev, attr) {
   let elem = ev.target;
-  let val=null;
-  while(nundef(val) && isdef(elem)){
+  let val = null;
+  while (nundef(val) && isdef(elem)) {
     val = elem.getAttribute(attr);
     elem = elem.parentNode;
   }
@@ -28120,9 +28120,9 @@ function getpal(ipal_dep = -1, ihue = 0, bOrf = 'b', pal) {
   else if (ihue >= nHues) ihue %= nHues;
   return p[ipal_dep][ihue][bOrf];
 }
-function getPalette(color, type = 'shade', min=-0.8,max=0.8,step=0.2) {
+function getPalette(color, type = 'shade', min = -0.8, max = 0.8, step = 0.2) {
   color = colorFrom(color);
-  return colorPalShade(color,min,max,step);
+  return colorPalShade(color, min, max, step);
 }
 function getPaletteFromHues(hues) {
   let colors = hues.map(h => colorFromHue(h));
@@ -31931,7 +31931,7 @@ function iDetect(itemInfoKey) {
   }
   return [item, info, key];
 }
-function iDiv(i) { return isdef(i.live) ? i.live.div : valf(i.div, i.ui,i);  } //isdef(i.div) ? i.div : i; }
+function iDiv(i) { return isdef(i.live) ? i.live.div : valf(i.div, i.ui, i); } //isdef(i.div) ? i.div : i; }
 function iDivs(ilist) { return isEmpty(ilist) ? [] : isItem(ilist[0]) ? ilist.map(x => iDiv(x)) : ilist; }
 function iDoor(r1, dir, r2, styles = {}) {
   r1 = isString(r1) ? Items[r1] : r1;
@@ -36213,7 +36213,7 @@ function linkObjects(id, oid) {
 function list2dict(arr, keyprop = 'id', uniqueKeys = true) {
   let di = {};
   for (const a of arr) {
-    let key= typeof (a) == 'object'?a[keyprop]:a;
+    let key = typeof (a) == 'object' ? a[keyprop] : a;
     if (uniqueKeys) lookupSet(di, [key], a);
     else lookupAddToList(di, [key], a);
   }
@@ -41457,9 +41457,9 @@ function mClassToggle(d, classes) {
   d = toElem(d);
   for (const c of wlist) if (d.classList.contains(c)) mClassRemove(d, c); else mClass(d, c);
 }
-function mClear(d) { 
+function mClear(d) {
   //clearElement(toElem(d)); }
-  toElem(d).innerHTML='';
+  toElem(d).innerHTML = '';
 }
 function mColFlex(dParent, chflex = [1, 5, 1], bgs) {
   let styles = { opacity: 1, display: 'flex', aitems: 'stretch', 'flex-flow': 'nowrap' };
@@ -41838,13 +41838,13 @@ function mDom(dParent, styles = {}, opts = {}) {
     inner: 'innerHTML',
     html: 'innerHTML',
     w: 'width',
-    h:'height',
+    h: 'height',
   };
-  for (const opt in opts) { 
-    let name=valf(aliases[opt], opt), val=opts[opt];
+  for (const opt in opts) {
+    let name = valf(aliases[opt], opt), val = opts[opt];
     //id src width height seem to work with setAttribute
-    if (['style','tag','innerHTML','className','checked','value'].includes(name) || name.startsWith('on')) d[name]=val;
-    else d.setAttribute(name,val); 
+    if (['style', 'tag', 'innerHTML', 'className', 'checked', 'value'].includes(name) || name.startsWith('on')) d[name] = val;
+    else d.setAttribute(name, val);
   }
   mStyle(d, styles);
   return d;
@@ -41981,7 +41981,7 @@ function measureText1(text, fz, family, weight = 900) {
   let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   return { w: metrics.width, h: actualHeight };
 }
-function measureTextX(text, fz, family='arial', weight = 900) {
+function measureTextX(text, fz, family = 'arial', weight = 900) {
   let sFont = '' + weight + ' ' + fz + 'px ' + family;
   sFont = sFont.trim();
   var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'));
@@ -41990,7 +41990,7 @@ function measureTextX(text, fz, family='arial', weight = 900) {
   var metrics = context.measureText(text);
   let actualHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
   console.log(metrics.width, actualHeight, fz)
-  return { w: metrics.width, h: actualHeight, fz: fz, metrics:metrics };
+  return { w: metrics.width, h: actualHeight, fz: fz, metrics: metrics };
 }
 function measureWord(w, fz) { let styles = { fz: fz, family: 'arial' }; return getSizeWithStyles(w, styles); }
 function mEdit(label, value, dParent, handler, styles, classes, id) {
@@ -42432,7 +42432,7 @@ function mFlexLinebreak(d) { if (isString(d)) d = mBy(d); let lb = mDiv(d); mCla
 function mFlexLR(d) { mStyle(d, { display: 'flex', 'justify-content': 'space-between', 'align-items': 'center' }); }
 function mFlexSpacebetween(d) { mFlexLR(d); }
 function mFlexV(d) { mStyle(d, { display: 'flex', 'align-items': 'center' }); }
-function mFlexVWrap(d) { mStyle(d, { display: 'flex', 'align-items': 'center', 'flex-flow':'row wrap' }); }
+function mFlexVWrap(d) { mStyle(d, { display: 'flex', 'align-items': 'center', 'flex-flow': 'row wrap' }); }
 function mFlexWrap(d) { mFlex(d, 'w'); }
 function mFlexWrapGrow(d) { d.style.display = 'flex'; d.style.flexWrap = 'wrap'; d.style.flex = 1; }
 function mFlip(card, ms, callback) {
@@ -42504,9 +42504,9 @@ function mGetStyle(elem, prop) {
   if (nundef(val)) val = getStyleProp(elem, prop);
   if (val.endsWith('px')) return firstNumber(val); else return val;
 }
-function mGetStyles(elem,proplist){
-  let res={};
-  for(const p of proplist){res[p]=mGetStyle(elem,p)}
+function mGetStyles(elem, proplist) {
+  let res = {};
+  for (const p of proplist) { res[p] = mGetStyle(elem, p) }
   return res;
 }
 function mGetStyleX(elem, prop) {
@@ -42618,7 +42618,7 @@ function mHand(n, R, uidParent) {
 function mHasClass(el, className) {
   if (el.classList) return el.classList.contains(className);
   else {
-    let x=!!el.className; //weired stuff!!! dont know why I did that!
+    let x = !!el.className; //weired stuff!!! dont know why I did that!
     // console.log('x',x)
     return isString(x) && !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
   }
@@ -42918,7 +42918,7 @@ function minimaxCopy(node, depth, alpha, beta, maxDepth, maxim) {
 function minimizeObjects() { let ids = getDefaultObjectIds(); ids.map(x => UIS[x].minimize()); }
 function mInner(html, dParent, styles) { dParent.innerHTML = html; if (isdef(styles)) mStyle(dParent, styles); }
 function mInput(dParent, styles, id, placeholder, classtr = 'input', tabindex = null, value = '', selectOnClick = false, type = "text") {
-  let html = `<input type="${type}" autocomplete="off" ${selectOnClick ? 'onclick="this.select();"':''} id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">`;
+  let html = `<input type="${type}" autocomplete="off" ${selectOnClick ? 'onclick="this.select();"' : ''} id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">`;
   let d = mAppend(dParent, mCreateFrom(html));
   if (isdef(styles)) mStyle(d, styles);
   return d;
@@ -44303,8 +44303,9 @@ function mStyle(elem, styles, unit = 'px') {
     styles['border-radius'] = rtop + ' ' + rtop + ' ' + rbot + ' ' + rbot;
   }
   if (isdef(styles.box)) styles['box-sizing'] = 'border-box';
-  if (isdef(styles.round)) styles['border-radius'] = '50%';
+  if (isdef(styles.round)) { elem.style.setProperty('border-radius', '50%'); }
   for (const k in styles) {
+    if (['round','box'].includes(k)) continue;
     let val = styles[k];
     let key = k;
     if (isdef(STYLE_PARAMS[k])) key = STYLE_PARAMS[k];
@@ -44700,6 +44701,14 @@ function mTableRow(t, o, headers, id) {
     colitems.push({ div: col, key: k, val: val });
   }
   return { div: elem, colitems: colitems };
+}
+function mTableStylify(rowitems, di) {
+  for (const item of rowitems) {
+    for (const index in di) {
+      let colitem = item.colitems[index];
+      mStyle(colitem.div,di[index]);
+    }
+  }
 }
 function mTableTransition(d, ms = 800) {
   toElem(d).animate([{ opacity: .25 }, { opacity: 1 },], { fill: 'both', duration: ms, easing: 'ease' });
@@ -53233,7 +53242,7 @@ function rBehaviorCode() {
 function rCard(postfix = 'n', ranks = '*A23456789TJQK', suits = 'HSDC') { return rChoose(ranks) + rChoose(suits) + postfix; }
 function rChoose(arr, n = 1, func = null, exceptIndices = null) {
   //console.log('arr',arr)
-  if (isDict(arr)) arr=dict2list(arr,'key');
+  if (isDict(arr)) arr = dict2list(arr, 'key');
   let indices = arrRange(0, arr.length - 1);
   if (isdef(exceptIndices)) {
     for (const i of exceptIndices) removeInPlace(indices, i);
@@ -71691,16 +71700,16 @@ function valf() {
   for (const arg of arguments) if (isdef(arg)) return arg;
   return null;
 }
-function valfKey(o,arr){
-	for(const w of arr){if (isdef(o[w])) return w;}
-	return null;
+function valfKey(o, arr) {
+  for (const w of arr) { if (isdef(o[w])) return w; }
+  return null;
 }
-function valfHtml(key){
-	let o=M.superdi[key];
-	let di={text:'emoNoto',fa6:'fa6',fa:'pictoFa',ga:'pictoGame'};
-	let k1=valfKey(o,Object.keys(di));
-	if (k1) return {html:String.fromCharCode('0x' + o[k1]),family:di[k1]}
-	return null;
+function valfHtml(key) {
+  let o = M.superdi[key];
+  let di = { text: 'emoNoto', fa6: 'fa6', fa: 'pictoFa', ga: 'pictoGame' };
+  let k1 = valfKey(o, Object.keys(di));
+  if (k1) return { html: String.fromCharCode('0x' + o[k1]), family: di[k1] }
+  return null;
 }
 function valfi() {
   for (const arg of arguments) {
@@ -71710,9 +71719,9 @@ function valfi() {
 }
 function valnwhite() {
   for (const arg of arguments) {
-    console.log('arg',arg)
+    console.log('arg', arg)
     if (nundef(arg) || isEmpty(arg) || isWhiteSpace(arg)) {
-      console.log('white',arg);
+      console.log('white', arg);
       continue;
     }
     return arg;

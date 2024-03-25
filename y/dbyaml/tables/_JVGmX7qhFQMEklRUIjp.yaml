@@ -1,0 +1,22 @@
+status: started
+id: _JVGmX7qhFQMEklRUIjp
+fen:
+  players:
+    amanda:
+      name: amanda
+      playmode: human
+      strategy: ''
+  turn:
+    - amanda
+game: a_game
+owner: amanda
+friendly: joust of Bern
+players:
+  - name: amanda
+    playmode: human
+    strategy: ''
+playerNames:
+  - amanda
+options:
+  mode: multi
+  handsize: 10

@@ -1,47 +1,87 @@
 onload = start;
 
-async function start() { test26_userpic(); }
+async function start() { test33(); }
 
+async function test33() {
+	await prelims(); 
+	await switchToMenu(UI.nav, 'play'); 
+	showGameMenu('a_game');
+
+	let id = Serverdata.tables[0].id;
+	await onclickTable(id)
+}
+async function test32_userpics(){
+	await prelims(); 
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+
+	let d=mDom('dMain',{display:'flex',gap:6})
+	for(const name in users) showUserImage(name,d,40);
+}
+async function test31_dirpics(){
+	await prelims(); 
+	await showDirPics(`../assets/img/amanda`,'dMain')
+}
+async function test30_userdirpics(){
+	await prelims(); 
+	let imgs=await mGetFiles('../assets/img/users');
+	//console.log(imgs); return;
+	for(const fname of imgs){
+		let src=`../assets/img/users/${fname}`;
+		let sz=100;
+		let styles = {'object-position': 'center top','object-fit':'cover',h:sz,w:sz,round:true,border:`${rColor()} 2px solid`}
+		let img=mDom('dMain',styles,{tag:'img',src}); 
+
+	}
+}
+async function test29_userpic(){
+	await prelims(); 
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+	for(const name in users) showUserImage(name,'dMain',40);
+}
+async function test28_userpic(){
+	await prelims(); //return;
+	switchToUser('max');
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+	showUserImage('amanda','dMain',40);
+}
+async function test27_userpic(){
+	await prelims(); //return;
+	switchToUser('max');
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+
+	let u=users.felix; //rChoose(users);	console.log('pick user',u)
+	showim1(u.key,'dMain',{round:true,border:`${u.color} 3px solid`});
+
+}
 async function test26_userpic(){
 
 	await prelims(); //return;
-	let dParent = clearBodyDiv();
+
+	switchToUser('max');
+
 	let users = await mGetRoute('users');
-	let list = dict2list(users);
+	console.log('users',users);
 
-	//console.log('users',list);return;
-	list=list.filter(x=>isdef(M.superdi[x.key]));
-	list.map(x=>x.img=M.superdi[x.key].img)
-	assertion(list.every(x=>isdef(x.img)),"FAIL!!!!");
+	//let u=rChoose(users);	console.log('pick user',u)
 
-	let user=rChoose(list);
+	let src=M.superdi.felix.img;
+	let img=mDom('dMain',{round:true,border:'white 3px solid'},{tag:'img',src}); return;
 
-	let key = user.key;
-	let img = user.img;
-
-	showImage(key,dParent,{h:200,round:true});
-	return;
-
-
-	//let o = user = userToM(user)
-	console.log('name',user.name);
-	mDom(dParent,{},{tag:'img',src:user.img})
-
-	let d=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',outline:'solid white 3px'})
-	let el = mDom(d, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: user.img });	
-
-	let d1=mDom(dParent,{w:130,h:130,box:true,rounding:'50%',overflow:'hidden',border:'solid white 3px'})
-	let el1 = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: user.img });	
-
-	let pic=get_user_pic_and_name(user.name,dParent);
-	
-
-	//users sollen auch in superdi sein!!! mit einem spezialtype 'user'
-	//oder nicht?
-	//gibt es irgendeinen grund dass users nicht in superdi sein sollten?
-	//kann ich es auf einfache art getrennt halten?
-
-	//ok ich muss die weireden raushauen!!!
+	for(const uname in users){
+		let u=users[uname];
+		assertion(isdef(u.key),`user ${u.name} has no key!!!!!!!!!!!!!`);
+		let d1=mDom('dMain');
+		showim(u.key,d1,{sz:100,round:true})
+		break;
+	}
 
 }
 async function test25() {
@@ -85,6 +125,19 @@ async function prelims() {
 	window.onkeydown = keyDownHandler;
 	window.onkeyup = keyUpHandler;
 
+	DA.funcs={ a_game:a_game(), }; //implemented games!
+	for(const gname in Serverdata.config.games){
+
+		if (isdef(DA.funcs[gname])) continue;
+		DA.funcs[gname] = defaultGameFunc();
+	}
+	console.log(DA.funcs);
 
 
+}
+function defaultGameFunc(){
+	function setup(table) { return {players:table.players,turn:table.owner}; } 
+	function checkGameover(table) { return false; }
+	function present(table, name) { showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`); } 
+	return { setup, checkGameover, present };
 }

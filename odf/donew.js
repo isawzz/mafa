@@ -1,3 +1,20 @@
+async function addTable(gamename, players, options) {
+	//console.log('addTable',gamename,players,options);
+	let playerNames = players.map(x => x.name);
+	assertion(playerNames[0] == U.name, `addTable: owner should be ${U.name} and first in ${playerNames.join(',')}`);
+	let res = await mPostRoute('postNewTable', {
+		status: 'open',
+		id: generateTableId(),
+		fen: null,
+		game: gamename,
+		owner: playerNames[0],
+		friendly: generateTableName(),
+		players: players,
+		playerNames: playerNames,
+		options
+	});
+	console.log('res', res)
+}
 function adjustCropper(img, dc, sz) {
 	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
 	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
@@ -70,7 +87,7 @@ function adjustComplex(panData) {
 	mStyle(panData.dCrop, { left: cx - wNew / 2, top: cy - hNew / 2, w: wNew, h: hNew });
 }
 function checkToInput(ev, inp, grid) {
-	let checklist=Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
 	let names = checklist.filter(x => x.checked).map(x => x.name);
 	sortCheckboxes(grid);
 	names.sort();
@@ -176,42 +193,63 @@ async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 		di[k] = item;
 	}
 }
-function collDisableItemCommands(){
-	for(const cmd of [UI.asAvatar,UI.editCollItem]){
+function collDisableItemCommands() {
+	for (const cmd of [UI.asAvatar, UI.editCollItem]) {
 		if (nundef(cmd)) continue;
 		cmdDisable(cmd);
 	}
 }
-function collDisableListCommands(){
-	for(const cmd of [UI.collClearSelections,UI.deleteSelected,UI.addSelected,UI.removeSelected,UI.editCategories,UI.addCategory,UI.removeCategory]){
+function collDisableListCommands() {
+	for (const cmd of [UI.collClearSelections, UI.deleteSelected, UI.addSelected, UI.removeSelected, UI.editCategories, UI.addCategory, UI.removeCategory]) {
 		if (nundef(cmd)) continue;
 		cmdDisable(cmd);
 	}
 }
-function collEnableItemCommands(){
-	for(const cmd of [UI.asAvatar,UI.editCollItem]){
+function collEnableItemCommands() {
+	for (const cmd of [UI.asAvatar, UI.editCollItem]) {
 		if (nundef(cmd)) continue;
 		cmdEnable(cmd);
 	}
 }
-function collEnableListCommands(){
-	for(const cmd of [UI.collClearSelections,UI.addSelected,UI.editCategories,UI.addCategory,UI.removeCategory]){
+function collEnableListCommands() {
+	for (const cmd of [UI.collClearSelections, UI.addSelected, UI.editCategories, UI.addCategory, UI.removeCategory]) {
 		if (nundef(cmd)) continue;
 		cmdEnable(cmd);
 	}
-	let selist=UI.selectedImages;
+	let selist = UI.selectedImages;
 	//console.log('selist',selist);
-	let colls = selist.filter(x=>!collLocked(stringAfter(x,'@')));
+	let colls = selist.filter(x => !collLocked(stringAfter(x, '@')));
 	if (isEmpty(colls)) return;
 
-	for(const cmd of [UI.deleteSelected,UI.removeSelected,]){
+	for (const cmd of [UI.deleteSelected, UI.removeSelected,]) {
 		if (nundef(cmd)) continue;
 		cmdEnable(cmd);
 	}
+}
+function collectOptions() {
+	let poss = Serverdata.config.games[DA.gamename].options;
+	if (nundef(poss)) return;
+	let options = DA.options = {};
+	for (const p in poss) {
+		let fs = mBy(`d_${p}`);
+		let val = get_checked_radios(fs)[0];
+		options[p] = isNumber(val) ? Number(val) : val;
+	}
+	return options;
+}
+function collectPlayers(options) {
+
+	let players = [];
+	if (isList(DA.playerlist)) players = DA.playerlist.map(x => ({ name: x.name, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') }));
+	// : rPlayers(U.name,valf(options.nplayers-1);
+	// let players = DA.playerlist.map(x => ({ name: x.uname, playmode: x.playmode }));
+	// for (const pl of players) { if (isEmpty(pl.strategy)) pl.strategy = valf(options.strategy, 'random'); }
+	return players;
+	// startgame(game, players, options); hide('dMenu');
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
 
-function collFilterImages(coll,s) {
+function collFilterImages(coll, s) {
 	//console.log('filter on', s)
 	//if (isEmpty(s)) list = coll.masterKeys; //return;
 	let di = {};
@@ -279,9 +317,9 @@ async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inp
 	dPopup.remove();
 	await collOnDroppedItem(item, coll);
 }
-function collFromElement(elem){
-	let id = findAttributeInAncestors(elem,'id'); //console.log('ancestor is',id);//find Ancestor with id collPrimary or collSecondary
-	let coll = id == 'collPrimary'?UI.collPrimary:id == 'collSecondary'?UI.collSecondary:null;
+function collFromElement(elem) {
+	let id = findAttributeInAncestors(elem, 'id'); //console.log('ancestor is',id);//find Ancestor with id collPrimary or collSecondary
+	let coll = id == 'collPrimary' ? UI.collPrimary : id == 'collSecondary' ? UI.collSecondary : null;
 	return coll;
 }
 function collGenSelkey(key, collname) { return `${key}@${collname}`; }
@@ -292,7 +330,7 @@ function collInitCollection(name, coll) {
 	if (!isReload) {
 		coll.index = 0; coll.pageIndex = 1; coll.name = name; coll.filter = null;
 	}
-	
+
 	//console.log('coll',coll.name,coll.index,coll.pageIndex,coll.filter);
 
 	let list = [];
@@ -311,25 +349,25 @@ function collInitCollection(name, coll) {
 	let dlColl = mDatalist(d, colls, { placeholder: "<select from list>" });
 	dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value, coll);
 	dlColl.inpElem.value = name;
-	list = sortByFunc(list,x=>M.superdi[x].friendly); // ***sorting by name!
-	coll.masterKeys = list; 
-	coll.keys = coll.filter?collFilterImages(coll,coll.filter):list;
+	list = sortByFunc(list, x => M.superdi[x].friendly); // ***sorting by name!
+	coll.masterKeys = list;
+	coll.keys = coll.filter ? collFilterImages(coll, coll.filter) : list;
 
 	//filter
 	let cats = collectCats(coll.keys);
 	cats.sort();
 	d = mDom(dMenu); mFlexV(d);
 	let wLabel = coll.cols < 6 ? 117 : 'auto';
-	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit:true, html: 'Filter:' });
-	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>", value:coll.filter });
+	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit: true, html: 'Filter:' });
+	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>", value: coll.filter });
 	dlCat.inpElem.oninput = oninputCollFilter;
 
 	d = mDom(dMenu, { gap: 10, align: 'right' });
-	if (coll.cols < 6) mStyle(d, { w100: true }); 
+	if (coll.cols < 6) mStyle(d, { w100: true });
 	if (coll == UI.collSecondary) mButton('done', onclickCollDone, d, { w: 70, margin: 0, maleft: 10 }, 'input');
 	mButton('prev', onclickCollPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
 	mButton('next', onclickCollNext, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
-	
+
 	collClearSelections();
 	showImageBatch(coll);
 	//showDiv(dMenu); return;
@@ -515,30 +553,30 @@ function collSidebar() {
 
 	// console.log('r',getRect('dLeft'))
 	//mClear('dLeft');
-	let wmin=170;
-	mStyle('dLeft', { wmin: wmin,  });
-	let d = mDom('dLeft', { wmin: wmin-10, margin: 10, matop: 160,h:window.innerHeight-getRect('dLeft').y-102 }); //, bg:'#00000020'  }); 
-	let gap=5;
+	let wmin = 170;
+	mStyle('dLeft', { wmin: wmin, });
+	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let gap = 5;
 
 	// *** selection commands ***
-	UI.collSelectAll = mCommand(d, 'collSelectAll', 'Select All'); mNewline(d,gap);
-	UI.collSelectPage = mCommand(d, 'collSelectPage', 'Select Page'); mNewline(d,gap);
-	UI.collClearSelections = mCommand(d, 'collClearSelections', 'Clear Selection'); mNewline(d,gap);
-	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d,gap);
-	UI.removeCategory = mCommand(d, 'removeCategory', 'Remove Category'); mNewline(d,gap);
-	UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d,gap);
+	UI.collSelectAll = mCommand(d, 'collSelectAll', 'Select All'); mNewline(d, gap);
+	UI.collSelectPage = mCommand(d, 'collSelectPage', 'Select Page'); mNewline(d, gap);
+	UI.collClearSelections = mCommand(d, 'collClearSelections', 'Clear Selection'); mNewline(d, gap);
+	UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d, gap);
+	UI.removeCategory = mCommand(d, 'removeCategory', 'Remove Category'); mNewline(d, gap);
+	UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d, gap);
 	UI.addSelected = mCommand(d, 'addSelected', 'Add Selected'); mNewline(d, gap);
 	UI.removeSelected = mCommand(d, 'removeSelected', 'Remove Selected'); mNewline(d, gap);
-	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d,3*gap);
+	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d, 3 * gap);
 	collDisableListCommands();
 
 	// *** collectino commands ***
-	UI.newCollection = mCommand(d, 'newCollection', 'New Collection'); mNewline(d,gap);
-	UI.asSecondary = mCommand(d, 'asSecondary', 'Open DragDrop'); mNewline(d,gap);
-	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection');	mNewline(d,gap);
-	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection');	mNewline(d,3*gap);
+	UI.newCollection = mCommand(d, 'newCollection', 'New Collection'); mNewline(d, gap);
+	UI.asSecondary = mCommand(d, 'asSecondary', 'Open DragDrop'); mNewline(d, gap);
+	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection'); mNewline(d, gap);
+	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection'); mNewline(d, 3 * gap);
 
-	UI.asAvatar = mCommand(d, 'asAvatar', 'Set Avatar'); mNewline(d,gap);
+	UI.asAvatar = mCommand(d, 'asAvatar', 'Set Avatar'); mNewline(d, gap);
 
 	//onclickCollClearSelections	//cmdDisable(UI.collSelectAll);
 	// UI.addCategory = mCommand(d, 'addCategory', 'Add Categories'); mNewline(d);
@@ -618,6 +656,7 @@ async function cropOrExpandImageAndGetDataUrl(imageSrc, x, y) {
 		img.src = imageSrc;
 	});
 }
+function createHumanPlayer(name) { return { name, playmode: 'human', strategy: 'random' }; }
 function createScaledCanvasFromImage(src) {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
@@ -644,9 +683,9 @@ function createScaledCanvasFromImage(src) {
 	});
 }
 async function deleteEvent(id) {
-  let result = await simpleUpload('postEvent', { id });
-  delete Items[id];
-  mBy(id).remove();
+	let result = await simpleUpload('postEvent', { id });
+	delete Items[id];
+	mBy(id).remove();
 }
 function deleteKeyFromLocalSuperdi(k) {
 	delete M.superdi[k];
@@ -662,12 +701,12 @@ function deleteKeyFromLocalSuperdi(k) {
 		removeInPlace(lst, k); if (isEmpty(lst)) { delete M.byCat[cat]; removeInPlace(M.categories, cat); }
 	}
 }
-function doYourThing(inp,grid){
+function doYourThing(inp, grid) {
 	//console.log('______ ',inp.value)
-	let words = extractWords(inp.value,' ').map(x => x.toLowerCase());
+	let words = extractWords(inp.value, ' ').map(x => x.toLowerCase());
 	//console.log('words', words);
 
-	let checklist=Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
 	let allNames = checklist.map(x => x.name);
 	let names = checklist.filter(x => x.checked).map(x => x.name);
 
@@ -679,9 +718,9 @@ function doYourThing(inp,grid){
 			//console.log('a new name!', w);
 			//how do I add another checkbox?
 			let div = mCheckbox(grid, w);
-			let chk=div.firstChild;
+			let chk = div.firstChild;
 			chk.checked = true;
-			chk.addEventListener('click',ev=>checkToInput(ev,inp,grid))
+			chk.addEventListener('click', ev => checkToInput(ev, inp, grid))
 			needToSortChildren = true;
 
 		} else {
@@ -692,9 +731,9 @@ function doYourThing(inp,grid){
 		}
 	}
 
-	for(const name of names){
+	for (const name of names) {
 		if (!words.includes(name)) {
-			let chk = checklist.find(x=>x.name == name);
+			let chk = checklist.find(x => x.name == name);
 			chk.checked = false;
 		}
 	}
@@ -738,7 +777,7 @@ function enableImageOrItemDrop(elem, onDropCallback) {
 
 		if (isdef(UI.draggedItem)) {
 			//console.log('dropping item',UI.draggedItem); 
-			onDropCallback(null,elem);
+			onDropCallback(null, elem);
 			return;
 		}
 		const files = event.dataTransfer.files; // Get the files that were dropped
@@ -772,16 +811,16 @@ function enableImageDrop_trial1_W(elem, onDropCallback) {
 		}
 	});
 }
-function extractWords(s,allowed) { 
-	let specialChars=toLetters(' ,-.!?;:');
-	if (isdef(allowed)) specialChars=arrMinus(specialChars,toLetters(allowed));
-	let parts = splitAtAnyOf(s, specialChars.join('')).map(x=>x.trim()); 
-	return parts.filter(x=>!isEmpty(x)); 
+function extractWords(s, allowed) {
+	let specialChars = toLetters(' ,-.!?;:');
+	if (isdef(allowed)) specialChars = arrMinus(specialChars, toLetters(allowed));
+	let parts = splitAtAnyOf(s, specialChars.join('')).map(x => x.trim());
+	return parts.filter(x => !isEmpty(x));
 }
-function generateRandomWords(n,unique=false) {
+function generateRandomWords(n, unique = false) {
 	// Sample words to pick from
 	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
-	
+
 	// Generate the array
 	let randomWords = [];
 	for (let i = 0; i < n; i++) {
@@ -791,14 +830,29 @@ function generateRandomWords(n,unique=false) {
 	}
 	return randomWords;
 }
-function getCheckedNames(dParent){
-	let checks=Array.from(dParent.querySelectorAll('input[type="checkbox"]')); //dParent.getElementsByTagName('input'));
-	let res=[];
-	for(const ch of checks) {
+function generateTableId() { return rUniqueId(20); }
+function generateTableName(n) {
+	let existing = Serverdata.tables.map(x => x.friendly);
+	while (true) {
+		let cap = rChoose(M.capital);
+		let parts = cap.split(' ');
+		if (parts.length == 2) cap = stringBefore(cap, ' '); else cap = stringBefore(cap, '-');
+		cap = cap.trim();
+		let arr = ['battle of ', 'rally of ', 'showdown in ', 'summit of ', 'joust of ', 'tournament of ', 'rendezvous in ', 'soirée in ', 'festival of '];//,'encounter in ']; //['battle of ', 'war of ']
+		//let s = rChoose(['meetup in ','carnival of ','summit of ','tournament of ','forum of ','rendezvous in ','soirée in ']) + cap;
+		let s = (n == 2 ? 'duel of ' : rChoose(arr)) + cap;
+		if (!existing.includes(s)) return s;
+	}
+}
+function getCheckedNames(dParent) {
+	let checks = Array.from(dParent.querySelectorAll('input[type="checkbox"]')); //dParent.getElementsByTagName('input'));
+	let res = [];
+	for (const ch of checks) {
 		if (ch.checked) res.push(ch.name);
 	}
 	return res;
 }
+function getGameColor(gamename) { return Serverdata.config.games[gamename].color; }
 function getMouseCoordinatesRelativeToElement(ev, elem) {
 	// Get the bounding rectangle of the element
 	if (nundef(elem)) elem = ev.target;
@@ -810,6 +864,7 @@ function getMouseCoordinatesRelativeToElement(ev, elem) {
 
 	return { x, y };
 }
+function getUserColor(uname) { return Serverdata.users[uname].color; }
 async function imgAsIsInDiv(url, dParent) {
 	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
 	let sz = 300;
@@ -870,19 +925,19 @@ function inpToChecklist(ev, grid) {
 	let key = ev.key;
 	let inp = ev.target;
 
-	if (key == 'Backspace'){
-		let s=inp.value;
+	if (key == 'Backspace') {
+		let s = inp.value;
 		let cursorPos = inp.selectionStart;
-		let ch = cursorPos == 0? null:inp.value[cursorPos - 1];
-		if (!ch || isWhiteSpace(ch)){
-			doYourThing(inp,grid);
+		let ch = cursorPos == 0 ? null : inp.value[cursorPos - 1];
+		if (!ch || isWhiteSpace(ch)) {
+			doYourThing(inp, grid);
 		}
-		console.log('Backspace',ch); 
+		console.log('Backspace', ch);
 		return;
 	}
 
 	if (key == 'Enter') ev.preventDefault();
-	if (isExpressionSeparator(key) || key == 'Enter') doYourThing(inp,grid);
+	if (isExpressionSeparator(key) || key == 'Enter') doYourThing(inp, grid);
 }
 function intersectionOfArrays() {
 	// Check if the input is an array of arrays
@@ -891,8 +946,8 @@ function intersectionOfArrays() {
 	return arrs.reduce((acc, array) => acc.filter(element => array.includes(element)));
 }
 function isPointOutsideOf(form, x, y) { const r = form.getBoundingClientRect(); return (x < r.left || x > r.right || y < r.top || y > r.bottom); }
-function isExpressionSeparator(ch){ return ',-.!?;:'.includes(ch);}
-function isWordSeparator(ch){ return ' ,-.!?;:'.includes(ch);}
+function isExpressionSeparator(ch) { return ',-.!?;:'.includes(ch); }
+function isWordSeparator(ch) { return ' ,-.!?;:'.includes(ch); }
 function keyDownHandler(ev) {
 	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
 	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
@@ -929,9 +984,9 @@ async function loadAssets() {
 	M.collections = Object.keys(byColl); M.collections.sort();
 	M.names = Object.keys(byFriendly); M.names.sort();
 }
-function mCheckbox(dg,name,value){
+function mCheckbox(dg, name, value) {
 	let di = mDom(dg, { display: 'inline-block' });
-	let chk = mDom(di, {}, { tag: 'input', type: 'checkbox', id: getUID('c'), name:name });
+	let chk = mDom(di, {}, { tag: 'input', type: 'checkbox', id: getUID('c'), name: name });
 	if (isdef(value)) chk.checked = value;
 	let label = mDom(di, {}, { tag: 'label', html: name, for: chk.id });
 	return di;
@@ -1007,20 +1062,20 @@ function mDropZone1(dropZone, onDrop) {
 function mGrid(rows, cols, dParent, styles = {}) {
 
 	//dParent.innerHTML = '';
-	addKeys({display:'inline-grid',gridCols:'repeat(' + cols + ',1fr)'},styles);
+	addKeys({ display: 'inline-grid', gridCols: 'repeat(' + cols + ',1fr)' }, styles);
 	if (rows) styles.gridRows = 'repeat(' + rows + ',auto)';
 	else styles.overy = 'auto';
 
-  let d = mDiv(dParent, styles);
+	let d = mDiv(dParent, styles);
 
-  return d;
+	return d;
 }
-function mGridFromItems(dParent, items, maxHeight, numColumns){return mGridFromElements(dParent, items.map(x=>iDiv(x)),maxHeight,numColumns);}
+function mGridFromItems(dParent, items, maxHeight, numColumns) { return mGridFromElements(dParent, items.map(x => iDiv(x)), maxHeight, numColumns); }
 function mGridFromElements(dParent, elems, maxHeight, numColumns) {
 	dParent.innerHTML = '';
-	let cols=`repeat(${numColumns}, 1fr)`; //'repeat(auto-fill, minmax(0, 1fr))';
-	let grid=mDom(dParent,{display:'inline-grid',gridCols:cols,gap:10,padding:4,overy:'auto',hmax:maxHeight})
-	elems.forEach(x => mAppend(grid,x));
+	let cols = `repeat(${numColumns}, 1fr)`; //'repeat(auto-fill, minmax(0, 1fr))';
+	let grid = mDom(dParent, { display: 'inline-grid', gridCols: cols, gap: 10, padding: 4, overy: 'auto', hmax: maxHeight })
+	elems.forEach(x => mAppend(grid, x));
 	return grid;
 }
 function menuCommand(dParent, menuKey, key, html, open, close) {
@@ -1049,8 +1104,8 @@ async function menuOpen(menu, key) {
 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
 	await cmd.open();
 }
-function measureHeight(elem){return mGetStyle(elem, 'h')}
-function measureWidth(elem){return mGetStyle(elem, 'w')}
+function measureHeight(elem) { return mGetStyle(elem, 'h') }
+function measureWidth(elem) { return mGetStyle(elem, 'w') }
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
 	let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
@@ -1078,10 +1133,10 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		addKeys(hPos, formStyles); //,top:rect.bottom,right:}; //,bg:'red'}; //,w:100,h:100};
 		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
 		dialog.addEventListener('mouseup', ev => {
-			if (isPointOutsideOf(form,ev.clientX,ev.clientY)){ 
+			if (isPointOutsideOf(form, ev.clientX, ev.clientY)) {
 				//console.log('clicked point outside!!!',ev.clientX,ev.clientY)
-				resolve(null); 
-				dialog.remove(); 
+				resolve(null);
+				dialog.remove();
 			}
 		});
 		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
@@ -1097,13 +1152,13 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 
 		//console.log('evalFunc',evalFunc)
 		dialog.showModal();
-		form.onsubmit = (ev) => { 
+		form.onsubmit = (ev) => {
 			//console.log('submitting!!!!!!!!!!!!!!!')
-			ev.preventDefault(); 
-			let val=evalFunc(); 
+			ev.preventDefault();
+			let val = evalFunc();
 			//console.log('val',val)
-			dialog.remove(); 
-			resolve(val);  
+			dialog.remove();
+			resolve(val);
 		};
 	});
 }
@@ -1186,7 +1241,7 @@ async function ondropShowImage(url, dDrop) {
 	img.onclick = storeMouseCoords;
 }
 async function postEventChange(data) {
-  return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
+	return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
 }
 async function postImage(img, path) {
 	let dataUrl = imgToDataUrl(img);
@@ -1198,9 +1253,9 @@ function presentImageCropper(url) {
 	let d = mDom('dMain', { position: 'absolute', h: 500, w: 500, bg: 'navy' });
 	let img = mDom(d, { w: 300, h: 300, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
 }
-function rWords(n=1){
-	let words = getColorNames().map(x=>x.toLowerCase());
-	let arr = rChoose(words,n);
+function rWords(n = 1) {
+	let words = getColorNames().map(x => x.toLowerCase());
+	let arr = rChoose(words, n);
 	return arr;
 }
 async function showColors() {
@@ -1218,31 +1273,175 @@ async function showColors() {
 async function showDashboard() {
 	mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${U.name}! this is your dashboard` })
 }
+async function showDirPics(dir, dParent) {
+	let imgs = await mGetFiles(dir);
+	//console.log(imgs); return;
+	for (const fname of imgs) {
+		let src = `${dir}/${fname}`;
+		let sz = 200;
+		let styles = { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${rColor()} 2px solid` }
+		let img = mDom(dParent, styles, { tag: 'img', src });
+
+	}
+}
 function showDiv(d) { mStyle(d, { bg: rColor() }); console.log(d, mGetStyle(d, 'w')); }
 function showEventOpen(id) {
-  let e = Items[id];
-  if (!e) return;
-  let date = new Date(Number(e.day));
-  let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
-  let time = e.time;
-  let popup = openPopup();
-  let d = mBy(id);
-  let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
-  let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
-  mStyle(popup, { left: left, top: top, w: wp, h: hp });
-  let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
-  let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
-  let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
-  mOnEnter(inpt);
-	console.log('event text:',e.text)
-  let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
-	
+	let e = Items[id];
+	if (!e) return;
+	let date = new Date(Number(e.day));
+	let [day, month, year] = [date.getDate(), date.getMonth(), date.getFullYear()];
+	let time = e.time;
+	let popup = openPopup();
+	let d = mBy(id);
+	let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
+	let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
+	mStyle(popup, { left: left, top: top, w: wp, h: hp });
+	let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
+	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
+	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
+	mOnEnter(inpt);
+	console.log('event text:', e.text)
+	let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
+
 	let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
-  let buttons = mDom(line, { display: 'inline-block' });
-  let bsend = mButton('Save', () => onEventEdited(id, ta.value, inpt.value), buttons);
-  mButton('Cancel', () => closePopup(), buttons, { hmargin: 10 })
-  mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
-  mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
+	let buttons = mDom(line, { display: 'inline-block' });
+	let bsend = mButton('Save', () => onEventEdited(id, ta.value, inpt.value), buttons);
+	mButton('Cancel', () => closePopup(), buttons, { hmargin: 10 })
+	mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
+	mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
+}
+async function showGameMenu(gamename) {
+	//let dMenu = mBy('dMenu'); iClear(dMenu);
+	let dMenu = mBy('dGameMenu'); if (isdef(dMenu)) { mClear(dMenu); } else dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' });
+	mText(`<h2>game options</h2>`, dMenu, { maleft: 12 });
+	// show_standard_title(dMenu, 'Game Options');
+	let d = mDiv(dMenu, { align: 'center' }, 'fMenuInput');
+	let style = { display: 'flex', justify: 'center', w: '100%', gap: 10, matop: 10 };
+	let dPlayers = mDiv(d, style, 'dMenuPlayers'); mCenterFlex(dPlayers);
+	let dOptions = mDiv(d, style, 'dMenuInput'); mCenterFlex(dOptions);
+	let dButtons = mDiv(d, style, 'dMenuButtons');
+	DA.gamename = gamename;
+	await showGamePlayers(dPlayers, gamename);
+	await showGameOptions(dOptions, gamename);
+	let astart = mButton('Start', onclickStartGame, dButtons, {}, ['button', 'input']);
+	let ajoin = mButton('Open to Join', onclickOpenToJoinGame, dButtons, {}, ['button', 'input']);
+	let acancel = mButton('Cancel', () => mClear(dMenu), dButtons, {}, ['button', 'input']);
+	let bclear = mButton('Clear Players', onclickClearPlayers, dButtons, {}, ['button', 'input']);
+
+}
+async function showGameOptions(dParent, game) {
+	mRemoveChildrenFromIndex(dParent, 2);
+	let poss = Serverdata.config.games[game].options;
+	if (nundef(poss)) return;
+	for (const p in poss) {
+		let key = p; //console.log('key',key)
+		let val = poss[p];
+		if (isString(val)) {
+			let list = val.split(',');
+			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
+			let fs = mRadioGroup(dParent, {}, `d_${key}`, legend);
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
+			measure_fieldset(fs);
+		}
+	}
+}
+async function showGamePlayers(dParent, gamename) {
+	let users = await mGetRoute('users');
+	//console.log('users',users);
+
+	let d = mDom(dParent, { display: 'flex', gap: 6, wrap: true })
+	DA.playerlist = [];
+	DA.allPlayers = [];
+	DA.lastName = null;
+	let params = [gamename, DA.playerlist];
+	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
+
+	for (const name in users) {
+		let d1 = mDom(d, { cursor: 'pointer' });
+		d1.setAttribute('username', name)
+		let img = showUserImage(name, d1, 40); //for(const i of range(3))showUserImage(name,d,40);
+		let label = mDom(d1, { matop: -4, fz: 12, hline: 12 }, { html: name });
+
+		let item = { name, div: d1, state: 0, strategy: '', isSelected: false };
+		DA.allPlayers.push(item);
+		if (name == U.name) { toggle_select(item, funcs, gamename, DA.playerlist); DA.lastName = name; }
+		else d1.onclick = ev => {
+			if (ev.shiftKey) {
+				console.log('shift!!!')
+				let list = DA.allPlayers;
+				if (nundef(DA.lastName)) DA.lastName = list[0].name;
+				console.log(DA.lastName, list)
+				let x1 = list.find(x => x.name == DA.lastName);
+				let i1 = list.indexOf(x1);
+				let x2 = list.find(x => x.name == item.name);
+				let i2 = list.indexOf(x2);
+				if (i1 == i2) return;
+				if (i1 > i2) [i1, i2] = [i2, i1];
+				assertion(i1 < i2, "NOT IN CORRECT ORDER!!!!!")
+				for (let i = i1; i <= i2; i++) {
+					let xitem = DA.allPlayers[i];
+					if (xitem.isSelected) continue;
+					style_playing_as_human(xitem, gamename, DA.playerlist);
+				}
+				DA.lastName = item.uname;
+			} else {
+				toggle_select(item, funcs, gamename, DA.playerlist);
+				if (item.isSelected) DA.lastName = item.name;
+			}
+		}
+
+	}
+}
+function showGames(ms = 500) {
+	//let dParent = mBy('dGames');mClear(dParent);
+	let dParent = mBy('dGameList'); if (isdef(dParent)) { mClear(dParent); } else dParent = mDom('dMain', {}, { className: 'section', id: 'dGameList' });
+
+	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
+	let d = mDiv(dParent, { fg: 'white', animation: 'appear 1s ease both' }, 'game_menu'); mFlexWrap(d);
+
+	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
+	gamelist = dict2list(Serverdata.config.games, 'key'); gamelist = sortBy(gamelist, 'friendly').map(x => x.key);
+	//console.log('gamelist', gamelist)
+
+
+	for (const gname of gamelist) {
+		let g = Serverdata.config.games[gname];
+		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
+		let d1 = mDiv(d, { cursor: 'pointer', rounding: 10, margin: 10, padding: 0, patop: 10, w: 140, height: 100, bg: bg, position: 'relative' }, g.id);
+		d1.setAttribute('gamename', gname);
+		d1.onclick = onclickGameMenuItem;
+		mCenterFlex(d1);
+
+		let o = M.superdi[g.logo];
+		let el = mDom(d1, { matop: 0, mabottom: 6, fz: 65, hline: 65, family: 'emoNoto', fg: 'white', display: 'inline-block' }, { html: o.text });
+
+		//showImage(g.logo,d1,{bg:'transparent',fg:'orange',hline:100},true); //mDiv(d1, { fz: 50, family: sym.family, 'line-height': 55 }, null, sym.text);
+		mLinebreak(d1);
+		mDiv(d1, { fz: 18, align: 'center' }, null, g.friendly);
+	}
+}
+function showim(key, dParent, styles = {}, imgFit = 'fill', useSymbol = false) {
+	//values for imgFit: fill, cover, contain, none, scale-down
+	let o = M.superdi[key];
+	let h = valf(styles.h, styles.sz, 100);
+	let w = valf(styles.w, styles.sz, 'auto');
+	let fz = h * .9;
+	let hline = fz;
+	addKeys({ w, h, fz, hline }, styles);
+	let d1 = mDom(dParent, styles);
+	let el;
+	if (!useSymbol && isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: hline, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: hline, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoGame', bg: valf(styles.bg, 'beige'), fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+	return el;
+}
+function showim1(key, d, styles = {}, opts = {}) {
+	let src = M.superdi[key].img;
+	let img = mDom(d, styles, { tag: 'img', src });
+	return img;
 }
 function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	let [keys, index, numCells] = [coll.keys, coll.index, coll.rows * coll.cols];
@@ -1302,8 +1501,8 @@ function showImageInBatch(key, dParent, styles = {}) {
 	mStyle(d1, { cursor: 'pointer' });
 	d1.onclick = onclickCollItem;
 	d1.setAttribute('key', key);
-	d1.setAttribute('draggable',true)
-	d1.ondragstart = () => {UI.draggedItem = o; }; // console.log('drag',UI.draggedItem);};
+	d1.setAttribute('draggable', true)
+	d1.ondragstart = () => { UI.draggedItem = o; }; // console.log('drag',UI.draggedItem);};
 	return d1;
 }
 function showNavbar() {
@@ -1318,15 +1517,67 @@ function showNavbar() {
 	// console.log(commands)
 	return nav;
 }
-function sortCheckboxes(grid){
+async function showTables() {
+	Clientdata.table = null;
+	let me = U.name;
+	Serverdata.tables = tables = await mGetRoute('tables');
+	//console.log('tables', tables);
+	//return;
+	tables.map(x => x.prior = x.status == 'open' ? 0 : x.fen.turn.includes(me) ? 1 : x.playerNames.includes(me) ? 2 : 3);
+	sortBy(tables, 'prior');
+
+	let dParent = mBy('dTableList');
+	if (isdef(dParent)) { mClear(dParent); }
+	else dParent = mDom('dMain', {}, { className: 'section', id: 'dTableList' });
+
+	if (isEmpty(tables)) { mText('no active game tables', dParent); return []; }
+	tables.map(x => x.game_friendly = capitalize(Serverdata.config.games[x.game].friendly));
+	// tables.map(x => x.playerNames = x.players.map(y => y.name));
+	mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
+	let t = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'playerNames'], 'tables', false);
+
+	mTableCommandify(t.rowitems.filter(ri => ri.o.status == 'started'), {
+		0: (item, val) => hFunc(val, 'onclickTable', item.o.id, item.id),
+	});
+	mTableStylify(t.rowitems.filter(ri => ri.o.status == 'open'), { 0: { fg: 'blue' }, });
+
+	let d = iDiv(t);
+	for (const ri of t.rowitems) {
+		let r = iDiv(ri);
+		let id = ri.o.id; //console.log('id', id)
+		//console.log('ri',ri)
+		if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: get_waiting_html(24) }); //'my turn!'});
+
+		if (ri.o.status == 'open') {
+			//join or leave button!
+			//depending on U.name status!
+			let playerNames = ri.o.playerNames;
+			if (playerNames.includes(me)) {
+				let h1 = hFunc('leave', 'onclickLeaveTable', ri.o.id); let c = mAppend(r, mCreate('td')); c.innerHTML = h1;
+			} else {
+				let h1 = hFunc('join', 'onclickJoinTable', ri.o.id); let c = mAppend(r, mCreate('td')); c.innerHTML = h1;
+			}
+		}
+		if (ri.o.owner != me) continue;
+		let h = hFunc('delete', 'onclickDeleteTable', id); let c = mAppend(r, mCreate('td')); c.innerHTML = h;
+		if (ri.o.status == 'open') { let h1 = hFunc('start', 'onclickStartTable', id); let c1 = mAppend(r, mCreate('td')); c1.innerHTML = h1; }
+
+	}
+}
+function showUserImage(uname, d, sz = 40) {
+	//values for imgFit: fill, cover, contain, none, scale-down
+	let u = Serverdata.users[uname];
+	return showim1(u.key, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 2px solid` });
+}
+function sortCheckboxes(grid) {
 	let divs = arrChildren(grid);
-	divs.map(x=>x.remove());
+	divs.map(x => x.remove());
 
-	let chyes=divs.filter(x=>x.firstChild.checked == true);
-	let chno=divs.filter(x=>!chyes.includes(x));
+	let chyes = divs.filter(x => x.firstChild.checked == true);
+	let chno = divs.filter(x => !chyes.includes(x));
 
-	chyes=sortByFunc(chyes, x => x.firstChild.name);
-	chno=sortByFunc(chno, x => x.firstChild.name);
+	chyes = sortByFunc(chyes, x => x.firstChild.name);
+	chno = sortByFunc(chno, x => x.firstChild.name);
 	for (const d of chyes) { mAppend(grid, d) }
 	for (const d of chno) { mAppend(grid, d) }
 }
@@ -1378,6 +1629,29 @@ function startPanning(ev) {
 	}
 	panStart(ev);
 }
+function style_not_playing(item, game, list) {
+	let ui = iDiv(item); let uname = ui.getAttribute('username');
+	mStyle(ui, { bg: 'transparent', fg: 'black' });
+	arrLast(arrChildren(ui)).innerHTML = uname;
+	item.ifunc = 0; item.playmode = 'none'; removeInPlace(list, item);
+	item.isSelected = false;
+}
+function style_playing_as_bot(item, game, list) {
+	let ui = iDiv(item); let uname = ui.getAttribute('username'); let bg = getGameColor(game);
+	mStyle(ui, { bg: bg, fg: colorIdealText(bg) });
+	arrLast(arrChildren(ui)).innerHTML = uname.substring(0, 3) + 'bot';
+	item.ifunc = 2; item.playmode = 'bot';
+	item.isSelected = true;
+}
+function style_playing_as_human(item, game, list) {
+	//console.log('item',item,game,list)
+	let ui = iDiv(item); let uname = ui.getAttribute('username');
+	let color = getUserColor(uname);
+	mStyle(ui, { bg: color, fg: colorIdealText(color) });
+	arrLast(arrChildren(ui)).innerHTML = uname;
+	item.ifunc = 1; item.playmode = 'human'; list.push(item);
+	item.isSelected = true;
+}
 async function switchToMenu(menu, key) {
 	menuCloseCurrent(menu);
 	await menuOpen(menu, key);
@@ -1401,6 +1675,10 @@ async function switchToUser(uname) {
 		if (cur == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t, uname);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
 	}
+}
+function toggle_select(item, funcs) {
+	let params = [...arguments];
+	let ifunc = (valf(item.ifunc, 0) + 1) % funcs.length; let f = funcs[ifunc]; f(item, ...params.slice(2));
 }
 function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'framedPicture') {
 	//console.log('HALLO!',selkey)
@@ -1436,9 +1714,9 @@ function uiGadgetTypeCheckList(form, content, styles, opts) {
 function uiGadgetTypeCheckListInput(form, content, styles, opts) {
 	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
 	let dOuter = mDom(form, styles)
-	let dParent = mDom(dOuter, { pabottom: 10, box: true }); 
+	let dParent = mDom(dOuter, { pabottom: 10, box: true });
 	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
-	return () =>DA.formResult;
+	return () => DA.formResult;
 }
 function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
 	let inputs = [];
@@ -1456,7 +1734,7 @@ function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
 	};
 }
 function uiGadgetTypeSelect(form, dict, styles = {}, opts = {}) {
-	let select = DA.select=mDom(form,styles,{className:'input',tag:'select'});
+	let select = DA.select = mDom(form, styles, { className: 'input', tag: 'select' });
 	//console.log('dict',dict);
 	if (isList(dict)) dict = list2dict(dict);
 	mDom(select, {}, { tag: 'option', html: '' });
@@ -1466,9 +1744,9 @@ function uiGadgetTypeSelect(form, dict, styles = {}, opts = {}) {
 		let [content, val] = [k, dict[k]];
 		mDom(select, {}, { tag: 'option', html: content, value: val });
 	}
-	mDom(form, { display:'none' }, { tag: 'input', type: 'submit' });
-	select.addEventListener('change',()=>form.submit());
-	return () => {console.log('selected',DA.select,DA.select.value);return DA.select.value;}
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	select.addEventListener('change', () => form.submit());
+	return () => { console.log('selected', DA.select, DA.select.value); return DA.select.value; }
 }
 function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
 	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
@@ -1485,24 +1763,24 @@ function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 
 	return () => form.getAttribute('proceed') == 'yes';
 }
-function uiTypeCheckList(lst,dParent,styles={},opts={}){
-	let d = mDom(dParent,{overy:'auto'}); //hier drin kommt die liste!
+function uiTypeCheckList(lst, dParent, styles = {}, opts = {}) {
+	let d = mDom(dParent, { overy: 'auto' }); //hier drin kommt die liste!
 	//console.log('lst',lst)
 	lst.forEach((o, index) => {
-		let [text,value]=[o.name,o.value];
-		let dcheck=mDom(d,{},{tag:'input',type:'checkbox',name:text,value:text,id:`ch_${index}`,checked:value});
+		let [text, value] = [o.name, o.value];
+		let dcheck = mDom(d, {}, { tag: 'input', type: 'checkbox', name: text, value: text, id: `ch_${index}`, checked: value });
 		//dcheck.checked = value;
-		let dlabel=mDom(d,{},{tag:'label',for:dcheck.id,html:text});
-		mNewline(d,0);
+		let dlabel = mDom(d, {}, { tag: 'label', for: dcheck.id, html: text });
+		mNewline(d, 0);
 	});
-	let r=getRect(d); //console.log('r',r); //soviel braucht die liste
-	let rp=getRect(dParent); //console.log('rp',rp);
+	let r = getRect(d); //console.log('r',r); //soviel braucht die liste
+	let rp = getRect(dParent); //console.log('rp',rp);
 	let hParent = rp.h;
-	if (hParent == 0) hParent = mGetStyle(dParent,'max-height');
+	if (hParent == 0) hParent = mGetStyle(dParent, 'max-height');
 	//console.log('hParent',hParent);
-	let p=mGetStyle(dParent,'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
-	let h=hParent-r.y; //-p;
-	mStyle(d,{hmax:h});//,pabottom:10,box:true});
+	let p = mGetStyle(dParent, 'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
+	let h = hParent - r.y; //-p;
+	mStyle(d, { hmax: h });//,pabottom:10,box:true});
 	return d;
 	//check all the boxes that are set for this element
 
@@ -1510,70 +1788,70 @@ function uiTypeCheckList(lst,dParent,styles={},opts={}){
 }
 function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
 
-	mStyle(dParent,{w:1000})
+	mStyle(dParent, { w: 1000 })
 	let dg = mDom(dParent);
 	let list = lst; // lst.map(x=>x.name); list.sort();
 	//console.log('list',list)
 
 	let items = []; //make measured checkbox items
 	for (const o of list) {
-		let div = mCheckbox(dg,o.name,o.value);
-		items.push({ nam:o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
+		let div = mCheckbox(dg, o.name, o.value);
+		items.push({ nam: o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
 	}
-	let wmax = arrMax(items,'w'); //console.log('wmax',wmax); //measure max width of items
-	let cols=3; 
-	let wgrid=wmax*cols+100; //(wmax+15) * (cols) + 10;
+	let wmax = arrMax(items, 'w'); //console.log('wmax',wmax); //measure max width of items
+	let cols = 3;
+	let wgrid = wmax * cols + 100; //(wmax+15) * (cols) + 10;
 	dg.remove();
 
 	dg = mDom(dParent);
 	// *** input ***
-	let inp = mDom(dg, {w100:true,box:true,mabottom:10}, { className: 'input', tag: 'input', type: 'text' });
+	let inp = mDom(dg, { w100: true, box: true, mabottom: 10 }, { className: 'input', tag: 'input', type: 'text' });
 
 	// *** buttons ***
-	let db=mDom(dg,{w100:true,box:true,align:'right',mabottom:4});
-	mButton('cancel',()=>DA.formResult=null,db,{},'input');
-	mButton('clear',ev=>{ev.preventDefault();onclickClear(inp,grid)},db,{maleft:10},'input');
-	mButton('done',()=>DA.formResult=extractWords(inp.value,' '),db,{maleft:10},'input');
+	let db = mDom(dg, { w100: true, box: true, align: 'right', mabottom: 4 });
+	mButton('cancel', () => DA.formResult = null, db, {}, 'input');
+	mButton('clear', ev => { ev.preventDefault(); onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
+	mButton('done', () => DA.formResult = extractWords(inp.value, ' '), db, { maleft: 10 }, 'input');
 
 	// *** grid ***
-	mStyle(dg, { w:wgrid,box:true,padding:10 }); //, w: wgrid })
-	
+	mStyle(dg, { w: wgrid, box: true, padding: 10 }); //, w: wgrid })
+
 	//let grid = mGridFromItems(dg,items,500,cols); //createItemsGrid(dg, items, 500, cols);
-	let grid = mGrid(null,cols,dg,{w100:true,gap:10,matop:4,hmax:500});	
-	items.map(x=>mAppend(grid,iDiv(x)));
+	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax: 500 });
+	items.map(x => mAppend(grid, iDiv(x)));
 
 	//when checkbox val changes inp needs to change and checkboxes need to be rearranged! possibly new checkboxes created!
-	let chks=Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
 	//console.log('cheks',chks)
-	for(const chk of chks){
-		chk.addEventListener('click',ev=>checkToInput(ev,inp,grid))
+	for (const chk of chks) {
+		chk.addEventListener('click', ev => checkToInput(ev, inp, grid))
 	}
 
-	inp.value = list.filter(x=>x.value).map(x=>x.name).join(', ');
-	inp.addEventListener('keypress',ev=>inpToChecklist(ev, grid));
+	inp.value = list.filter(x => x.value).map(x => x.name).join(', ');
+	inp.addEventListener('keypress', ev => inpToChecklist(ev, grid));
 	//when inp is changed, checkboxes need to be modified
 	//only when pressing enter in input box OR when entering a comma?
 
-	return {dg,inp,grid};
+	return { dg, inp, grid };
 
 }
 function uiTypeEvent(dParent, o, styles = {}) {
-  Items[o.id] = o;
-  let id = o.id;
-  let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
-  mStyle(ui, { overflow: 'hidden', display: 'flex', gap: 2, padding: 2, 'align-items': 'center' }); //,'justify-items':'center'})
-  let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
-  let fz = 15;
-  let stInput = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, h: h, border: 'solid 1px silver', box: true, margin: 0, padding: 0 };
-  let inp = mDom(ui, stInput, { html: o.text, tag: 'input', className: 'no_outline', onclick: ev => { evNoBubble(ev) } }); //;selectText(ev.target);}});
-  inp.value = getEventValue(o);
-  inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
-  fz = 14;
-  let stButton = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, box: true, fg: 'silver', bg: 'white', family: 'pictoFa', display: 'flex' };
-  let b = mDom(ui, stButton, { html: String.fromCharCode('0x' + M.superdi.pen_square.fa) });
-  ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
-  mStyle(inp, { w: wtotal - wbutton });
-  return { ui: ui, inp: inp, id: id };
+	Items[o.id] = o;
+	let id = o.id;
+	let ui = mDom(dParent, styles, { id: id }); //, className:'no_events'}); //onclick:ev=>evNoBubble(ev) }); 
+	mStyle(ui, { overflow: 'hidden', display: 'flex', gap: 2, padding: 2, 'align-items': 'center' }); //,'justify-items':'center'})
+	let [wtotal, wbutton, h] = [mGetStyle(dParent, 'w'), 17, styles.hmin];
+	let fz = 15;
+	let stInput = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, h: h, border: 'solid 1px silver', box: true, margin: 0, padding: 0 };
+	let inp = mDom(ui, stInput, { html: o.text, tag: 'input', className: 'no_outline', onclick: ev => { evNoBubble(ev) } }); //;selectText(ev.target);}});
+	inp.value = getEventValue(o);
+	inp.addEventListener('keyup', ev => { if (ev.key == 'Enter') { mDummyFocus(); onEventEdited(id, inp.value); } });
+	fz = 14;
+	let stButton = { overflow: 'hidden', hline: fz * 4 / 5, fz: fz, box: true, fg: 'silver', bg: 'white', family: 'pictoFa', display: 'flex' };
+	let b = mDom(ui, stButton, { html: String.fromCharCode('0x' + M.superdi.pen_square.fa) });
+	ui.onclick = ev => { evNoBubble(ev); onclickExistingEvent(ev); }
+	mStyle(inp, { w: wtotal - wbutton });
+	return { ui: ui, inp: inp, id: id };
 }
 function unionOfArrays() {
 	// arguments should be lists or one list of lists

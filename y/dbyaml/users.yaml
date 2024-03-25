@@ -16,7 +16,7 @@ lili:
   key: lili
 mitra:
   name: mitra
-  color: '#db7094'
+  color: '#ffc400'
   key: mitra
 gul:
   name: gul
@@ -24,20 +24,12 @@ gul:
   key: gul
 mac:
   name: mac
-  color: '#ff6bb5'
+  color: '#4d0085'
   key: mac
 guest:
   name: guest
   color: '#777777'
   key: guest
-fe_ox:
-  name: fe_ox
-  color: '#663399'
-  key: unknown_user
-unsafe:
-  name: unsafe
-  color: '#c29551'
-  key: unknown_user
 ____unsafe:
   name: ____unsafe
   color: '#aaff00'
@@ -50,3 +42,12 @@ nasi:
   name: nasi
   color: '#26d926'
   key: nasi
+max:
+  name: max
+  color: '#ba55d3'
+  key: baby_chick
+  avatar: amanda10_12
+maria:
+  name: maria
+  color: '#ffa07a'
+  key: maria

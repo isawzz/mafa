@@ -1,3 +1,80 @@
+async function _showTables() {
+  Clientdata.table = null;
+  Serverdata.tables = tables = await mGetRoute('tables');
+  console.log('tables', tables);
+  tables.map(x => x.prior = x.turn.includes(U.name) ? 1 : x.players.includes(U.name) ? 2 : 3);
+  sortBy(tables, 'prior');
+  
+  let dParent=mBy('dTableList');
+  if (isdef(dParent)) {mClear(dParent);}
+  else dParent = mDom('dMain', {}, { className: 'section',id:'dTableList' });
+
+  if (isEmpty(tables)) { mText('no active game tables', dParent); return []; }
+  tables.map(x => x.game_friendly = capitalize(x.game));
+  mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
+  let t = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'players'], 'tables', false);
+  mTableCommandify(t.rowitems, {
+    0: (item, val) => hFunc(val, 'onclickTable', item.o.id, item.id),
+  });
+  let d = iDiv(t);
+  for (const ri of t.rowitems) {
+    let r = iDiv(ri);
+    //console.log('ri',ri)
+    if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: get_waiting_html(24) }); //'my turn!'});
+    let h = hFunc('delete', 'deleteTable', ri.o.id);
+    c = mAppend(r, mCreate('td'));
+    c.innerHTML = h;
+  }
+}
+async function _openToJoinGame() {
+	let gamename = DA.gamename;
+	// let options = collect_game_specific_options(gamename);
+	//console.log(Serverdata,DA)
+	let poss = Serverdata.config.games[gamename].options;
+	if (nundef(poss)) return;
+	let options = {};
+	for (const p in poss) {
+		let fs = mBy(`d_${p}`);
+		let val = get_checked_radios(fs)[0];
+		options[p] = isNumber(val) ? Number(val) : val;
+	}
+	let players = DA.playerlist ? DA.playerlist.map(x => ({ name: x.uname, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') })) : create_random_players(options.nplayers);
+	console.log('DA', DA);
+	console.log(gamename, players, options);
+
+}
+function _showUserImage(uname,d,sz){
+	let u=Serverdata.users[uname];
+	showim1(u.key,d,{h:sz,w:sz,round:true,border:`${u.color} 2px solid`});
+}
+function toggle_select(item, selected, selstyle = 'selected') {
+  let ui = iDiv(item);
+  item.isSelected = !item.isSelected;
+  if (item.isSelected) {
+    mStyleOrClass(ui, selstyle);
+  } else if (isString(selstyle)) {
+    mClassRemove(ui, selstyle);
+  } else if (isdef(item.style)) {
+    mStyle(ui, item.style);
+  } else {
+    mStyleUndo(ui, selstyle);
+  }
+  if (isdef(selected)) {
+    if (isList(selected)) {
+      if (item.isSelected) {
+        console.assert(!selected.includes(item), 'UNSELECTED PIC IN PICLIST!!!!!!!!!!!!')
+        selected.push(item);
+      } else {
+        console.assert(selected.includes(item), 'PIC NOT IN PICLIST BUT HAS BEEN SELECTED!!!!!!!!!!!!')
+        removeInPlace(selected, item);
+      }
+    } else {
+      mStyle(iDiv(selected), selected.style);
+      selected.isSelected = false;
+    }
+  }
+  return item.isSelected ? item : null;
+}
 
 function userToM(o){
 	let m={};
