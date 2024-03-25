@@ -3,7 +3,7 @@ onload = start;
 async function start() { test33(); }
 
 async function test33() {
-	await prelims(); 
+	await prelims(); return;
 	await switchToMenu(UI.nav, 'play'); 
 	showGameMenu('a_game');
 
