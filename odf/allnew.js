@@ -538,7 +538,7 @@ function getThemeFg() { return getCSSVariable('--fgButtonHover'); } //  let bg=g
 function getTurnPlayers(fen) {
   return fen.turn.join(', ');
 }
-function getUname() { assertion(Clientdata.lastUser == U.name, `getUname!!!!!!!${Clientdata.lastUser} != ${U.name}`); return Clientdata.lastUser; } //U ? U.name : 'guest' }
+function getUname() { assertion(Clientdata.curUser == U.name, `getUname!!!!!!!${Clientdata.curUser} != ${U.name}`); return Clientdata.curUser; } //U ? U.name : 'guest' }
 async function getUser(uname, cachedOk = false) {
   let res = lookup(Serverdata, ['users', uname]);
   if (!res || !cachedOk) res = await mGetRoute('user', { uname });
@@ -1421,7 +1421,7 @@ async function natCreateGame() {
   let id = generateTableId();
   let fen = natCreate(U.name, ['felix', 'amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
   let s = JSON.stringify(fen);
-  let res = await mPostRoute('postNewTable', { status:'started', id: id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
+  let res = await mPostRoute('postTable', { status:'started', id: id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
 }
 async function natDetectBB(card, dParent) {
   dParent = toElem(dParent);
@@ -1983,7 +1983,7 @@ function sockInit() {
   Socket.on('event', onsockEvent);
   Socket.on('message', showChatMessage);
   Socket.on('table', onsockTable); //x => console.log('::SOCK table:', x));
-  Socket.on('newTable', onsockNewTable); //x => console.log('::SOCK table:', x));
+  //Socket.on('newTable', onsockNewTable); //x => console.log('::SOCK table:', x));
   Socket.on('superdi', onsockSuperdi);
   Socket.on('turnUpdate', onsockTurnUpdate); //x => console.log('::SOCK table:', x));
   // Socket.on('userChange', x => console.log('::SOCK userChange:', x));
@@ -2014,11 +2014,6 @@ function squareTo(tool, sznew = 128) {
   redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function start() { test73_game(); }
-async function switchToMenu(menu) {
-  console.log('====>switchToMenu', menu)
-  Clientdata.lastMenu = menu;
-  await mOnclick(menu);
-}
 async function switchToTable(id) {
   let res = Clientdata.table = await mGetRoute('table', { id });
   await showTable(res, getUname())

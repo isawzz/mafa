@@ -98,6 +98,7 @@ function isEmpty(arr) {
 }
 function isList(arr) { return Array.isArray(arr); }
 function isString(param) { return typeof param == 'string'; }
+function jsCopy(o) { return JSON.parse(JSON.stringify(o)); }
 function lookup(dict, keys) {
 	let d = dict;
 	let ilast = keys.length - 1;
@@ -245,8 +246,10 @@ function getTablesInfo(){
 	//console.log('session.tables',Session.tables); return [];
 	for(const id in Session.tables){
 		//ich solltehaben: game, players, friendlyname, turn als minimum
-		let t = Session.tables[id];
+		let t = jsCopy(Session.tables[id]);
 		//let o={game:t.game,players:t.fen.playerNames,turn:t.fen.turn,friendly:t.friendly,id:id}
+		//fen weglassen!!! dann brauch ich aber den turn!!!
+		if (isdef(t.fen)) {t.turn = t.fen.turn;		delete t.fen;}
 		info.push(t);
 	}
 	return info;
@@ -319,21 +322,8 @@ function handle_move(x){
 	removeInPlace(fen.turn,name)
 	//save new fen when all players moved? or after each and every move?
 
-	//broadcast fen
+
 	io.emit('turnUpdate',fen.turn);
-
-
-	// if (turn.includes(name)) {
-	// 	lookupSet(table,['moves',name],x.move);
-	// 	console.log('moves so far',table.moves);
-	// }
-	// //sobald alle slots gefuellt sind, setze fen.moves und broadcast
-	// //jetzt kann jeder integrieren und updaten
-	// let donelist = Object.keys(table.moves);
-	// if (donelist.length == turn.length){
-	// 	donelist.map(x=>fen.players[x].lastmove=)
-	// }
-
 }
 function handle_update(x) { console.log('::update', x); io.emit('update', x); }
 function handle_userChange(x, id) {
@@ -454,17 +444,16 @@ app.post('/postImage', (req, res) => {
 });
 app.post('/postTable', (req, res) => {
 	let id = req.body.id;
-	let table = Session.tables[id];
+	let table = valf(Session.tables[id],{}); 
 	for(const k in req.body){
 		table[k]=req.body[k];
 	}
 	// console.log('<== post newTable',id); //return;
 	saveTable(id,table);
-	let fen = req.body.fen;
-	io.emit('table',{tables:getTablesInfo(),table:table});
+	io.emit('table',{table:table});
 	// if (isdef(fen)) emitToPlayers(table.playerNames,'table',{tables:getTablesInfo(),table:table});
 	// else io.emit('table',{tables:getTablesInfo(),table:table});
-	res.json(`table ${id} posted successfully!`);
+	res.json(table);
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
@@ -490,15 +479,6 @@ app.post('/postNewItem', (req, res) => {
 	}else{
 		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
 	}
-});
-app.post('/postNewTable', (req, res) => {
-	let id = req.body.id;
-	let fen = req.body.fen;
-	console.log('<== post newTable',id); //return;
-	saveTable(id,req.body);
-	if (isdef(fen)) emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
-	else io.emit('newTable',{tables:getTablesInfo(),table:req.body});
-	res.json(`table ${id} posted successfully!`);
 });
 //#region batch update of multiple items:
 app.post('/postUpdateSuperdi', (req, res) => {

@@ -492,51 +492,37 @@ async function onclickLeaveTable(id){
 }
 async function onclickOpenToJoinGame(){
 	let options = collectOptions();
-	//if (nundef(options.minPlayers)) options.minPlayers = 1;
-	//if (nundef(options.maxPlayers)) options.maxPlayers = 10;
 	let players = collectPlayers(options);
-
-
-	addTable(DA.gamename,players,options);
+	let t = createOpenTable(DA.gamename,players,options);
+	let res = await mPostRoute('postTable', t);
 }
 async function onclickPlay() { 
 	await showTables(); 
 	showGames();
-
 }
 async function onclickStartGame(){
-	collectOptions();
-	collectPlayers();
+	let options = collectOptions();
+	let players = collectPlayers(options);
+	let table = createOpenTable(DA.gamename,players,options);
+	table = setTableToStarted(table);
+	let res = await mPostRoute('postTable', table); 
+}
+async function onclickStartTable(id) {
+	//console.log('BINGO!!!!!!!!!!!!!', id);
+	let table = Serverdata.tables.find(x => x.id == id); assertion(isdef(table), `table with id ${id} not in Serverdata!`);
+	table =  setTableToStarted(table);
+	let res = await mPostRoute('postTable', table); 
+	//console.log('res', res);
+}
+function setTableToStarted(table){
+	//console.log(table.id,table.game, table.friendly, table.players);
+	let status =table.status = 'started';
+	let id=table.id;
+	let fen = table.fen = DA.funcs[table.game].setup(table); //create initial fen
+	return table;	
 }
 async function onclickTable(id) { await switchToTable(id); }
 
-async function onsockDeleteTable(x) {
-  //console.log('x',x)
-  Serverdata.tables = x.tables;
-  //console.log('::SOCK deleteTable:', tables);
-  showTables()
-}
-function onsockNewTable(x) {
-  let table = x.table;
-  let tables = x.tables;
-  Serverdata.tables = tables;
-  console.log('::SOCK new table:', table);
-  showTables();
-}
-function onsockTable(x) {
-  let table = x.table;
-  let tables = x.tables;
-  Serverdata.tables = tables;
-  console.log('::SOCK table:', table);
-  showTables()
-}
-function onsockTurnUpdate(turn) {
-  console.log('::SOCK turn:', turn);
-  Clientdata.fen.turn = turn;
-  instructionUpdate();
-  hourglassUpdate();
-  tabtitleUpdate();
-}
 //#endregion
 
 //#region plan
@@ -592,8 +578,10 @@ function onclickMenu(ev) {
 	let keys = evToAttr(ev, 'key');
 	let [menuKey, cmdKey] = keys.split('_');
 	let menu = UI[menuKey];
-	menuCloseCurrent(menu);
-	menuOpen(menu, cmdKey);
+
+	switchToMenu(menu,cmdKey);
+	// menuCloseCurrent(menu);
+	// menuOpen(menu, cmdKey);
 }
 async function onclickNATIONS() {
   if (nundef(M.natCards)) M.natCards = await mGetYaml('../assets/games/nations/cards.yaml');

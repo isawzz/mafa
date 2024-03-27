@@ -1,3 +1,71 @@
+//#region app.js 
+app.post('/postTable', (req, res) => {
+	let id = req.body.id;
+	let table = valf(Session.tables[id],{}); 
+	for(const k in req.body){
+		table[k]=req.body[k];
+	}
+	// console.log('<== post newTable',id); //return;
+	saveTable(id,table);
+	//let fen = req.body.fen;
+	io.emit('table',{table:table});
+	// if (isdef(fen)) emitToPlayers(table.playerNames,'table',{tables:getTablesInfo(),table:table});
+	// else io.emit('table',{tables:getTablesInfo(),table:table});
+	res.json(table);
+});
+app.post('/postNewTable', (req, res) => {
+	let id = req.body.id;
+	let fen = req.body.fen;
+	console.log('<== post newTable',id); //return;
+	saveTable(id,req.body);
+	//if (isdef(fen)) emitToPlayers(fen.playerNames,'newTable',{table:req.body});
+	// if (isdef(fen)) emitToPlayers(fen.playerNames,'newTable',{tables:getTablesInfo(),table:req.body});
+	// else io.emit('newTable',{tables:getTablesInfo(),table:req.body});
+	io.emit('newTable',{table:req.body});
+	res.json(`table ${id} posted successfully!`);
+});
+
+//#endregion
+//#region 27.3.24
+function handle_move(x){ 
+	console.log('::move', arguments);  
+	//console.log('Session tables',Session.tables)
+	let table = lookup(Session,['tables',x.id]);
+	//console.log('table',table);
+	//wie kann ich temp move zu table saven?
+	let fen = table.fen;
+	let turn = fen.turn;
+	console.log('turn',turn)
+	let name = x.name;
+	let move = x.move;
+
+	//simplest:
+	if (!turn.includes(name)) {console.log('!!!move mismatch',name,move);return;}
+	lookupSetOverride(fen,['moves',name],move);
+	removeInPlace(fen.turn,name)
+	//save new fen when all players moved? or after each and every move?
+
+	//broadcast fen
+	io.emit('turnUpdate',fen.turn);
+
+
+	// if (turn.includes(name)) {
+	// 	lookupSet(table,['moves',name],x.move);
+	// 	console.log('moves so far',table.moves);
+	// }
+	// //sobald alle slots gefuellt sind, setze fen.moves und broadcast
+	// //jetzt kann jeder integrieren und updaten
+	// let donelist = Object.keys(table.moves);
+	// if (donelist.length == turn.length){
+	// 	donelist.map(x=>fen.players[x].lastmove=)
+	// }
+
+}
+async function _switchToMenu(menu) {
+  console.log('====>switchToMenu', menu)
+  Clientdata.lastMenu = menu;
+  await mOnclick(menu);
+}
 async function _showTables() {
   Clientdata.table = null;
   Serverdata.tables = tables = await mGetRoute('tables');
@@ -808,7 +876,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 	// dialog.showModal();
 	// inp.focus();
 }
-
+//#endregion
 //#region gadgets mprompt WORKS!
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;
@@ -923,7 +991,6 @@ async function mPPP(gadget) {
 
 
 //#endregion
-
 //#region collection zeug!
 function confirmYesNo(question) {
   const result = prompt(question + "\n\n(Yes/No)");

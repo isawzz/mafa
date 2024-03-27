@@ -1,8 +1,7 @@
-async function addTable(gamename, players, options) {
-	//console.log('addTable',gamename,players,options);
+function createOpenTable(gamename, players, options) {
 	let playerNames = players.map(x => x.name);
-	assertion(playerNames[0] == U.name, `addTable: owner should be ${U.name} and first in ${playerNames.join(',')}`);
-	let res = await mPostRoute('postNewTable', {
+	assertion(playerNames[0] == U.name, `_addTable: owner should be ${U.name} and first in ${playerNames.join(',')}`);
+	let t={
 		status: 'open',
 		id: generateTableId(),
 		fen: null,
@@ -12,8 +11,9 @@ async function addTable(gamename, players, options) {
 		players: players,
 		playerNames: playerNames,
 		options
-	});
-	console.log('res', res)
+	};
+	return t;
+
 }
 function adjustCropper(img, dc, sz) {
 	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
@@ -1400,9 +1400,10 @@ function showGames(ms = 500) {
 	let d = mDiv(dParent, { fg: 'white', animation: 'appear 1s ease both' }, 'game_menu'); mFlexWrap(d);
 
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = dict2list(Serverdata.config.games, 'key'); gamelist = sortBy(gamelist, 'friendly').map(x => x.key);
+	//gamelist = dict2list(Serverdata.config.games, 'key'); gamelist = sortBy(gamelist, 'friendly').map(x => x.key);
+	gamelist = ['spotit','a_game']
 	//console.log('gamelist', gamelist)
-
+	
 
 	for (const gname of gamelist) {
 		let g = Serverdata.config.games[gname];
@@ -1511,7 +1512,7 @@ function showNavbar() {
 	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
 	commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, clearMain);
 	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
-	commands.play = menuCommand(nav.l, 'nav', 'play', null, onclickPlay, clearMain);
+	commands.play = menuCommand(nav.l, 'nav', 'play', 'Tables', onclickPlay, clearMain);
 	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
 	nav.commands = commands;
 	// console.log(commands)
@@ -1519,11 +1520,13 @@ function showNavbar() {
 }
 async function showTables() {
 	Clientdata.table = null;
+	assertion(Clientdata.curUser == U.name,"ShowTables!!!!!!!")
 	let me = U.name;
-	Serverdata.tables = tables = await mGetRoute('tables');
+	// let tables=Serverdata.tables;
+	let tables = Serverdata.tables = await mGetRoute('tables');
 	//console.log('tables', tables);
 	//return;
-	tables.map(x => x.prior = x.status == 'open' ? 0 : x.fen.turn.includes(me) ? 1 : x.playerNames.includes(me) ? 2 : 3);
+	tables.map(x => x.prior = x.status == 'open' ? 0 : x.turn.includes(me) ? 1 : x.playerNames.includes(me) ? 2 : 3);
 	sortBy(tables, 'prior');
 
 	let dParent = mBy('dTableList');
@@ -1654,6 +1657,7 @@ function style_playing_as_human(item, game, list) {
 }
 async function switchToMenu(menu, key) {
 	menuCloseCurrent(menu);
+	Clientdata.curMenu = key; //console.log('switchToMenu',Clientdata)
 	await menuOpen(menu, key);
 }
 async function switchToUser(uname) {
@@ -1661,7 +1665,7 @@ async function switchToUser(uname) {
 	if (isEmpty(uname)) uname = 'guest';
 	sockPostUserChange(U ? U.name : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
-	Clientdata.lastUser = uname;
+	Clientdata.curUser = uname;
 	localStorage.setItem('username', uname);
 
 	iDiv(UI.user).innerHTML = uname;
@@ -1671,8 +1675,8 @@ async function switchToUser(uname) {
 	else {
 		menuEnable(UI.nav, 'plan');
 		let t = Clientdata.table;
-		let cur = UI.nav.cur; //console.log('current menu is', cur);
-		if (cur == 'play' && isdef(t) && t.fen.playerNames.includes(uname)) await showTable(t, uname);
+		let cur = Clientdata.curMenu; //UI.nav.cur; //console.log('current menu is', cur);
+		if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t, uname);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
 	}
 }

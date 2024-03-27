@@ -1,3 +1,88 @@
+async function test32_userpics(){
+	await prelims(); 
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+
+	let d=mDom('dMain',{display:'flex',gap:6})
+	for(const name in users) showUserImage(name,d,40);
+}
+async function test31_dirpics(){
+	await prelims(); 
+	await showDirPics(`../assets/img/amanda`,'dMain')
+}
+async function test30_userdirpics(){
+	await prelims(); 
+	let imgs=await mGetFiles('../assets/img/users');
+	//console.log(imgs); return;
+	for(const fname of imgs){
+		let src=`../assets/img/users/${fname}`;
+		let sz=100;
+		let styles = {'object-position': 'center top','object-fit':'cover',h:sz,w:sz,round:true,border:`${rColor()} 2px solid`}
+		let img=mDom('dMain',styles,{tag:'img',src}); 
+
+	}
+}
+async function test29_userpic(){
+	await prelims(); 
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+	for(const name in users) showUserImage(name,'dMain',40);
+}
+async function test28_userpic(){
+	await prelims(); //return;
+	switchToUser('max');
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+	showUserImage('amanda','dMain',40);
+}
+async function test27_userpic(){
+	await prelims(); //return;
+	switchToUser('max');
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+
+	let u=users.felix; //rChoose(users);	console.log('pick user',u)
+	showim1(u.key,'dMain',{round:true,border:`${u.color} 3px solid`});
+
+}
+async function test26_userpic(){
+
+	await prelims(); //return;
+
+	switchToUser('max');
+
+	let users = await mGetRoute('users');
+	console.log('users',users);
+
+	//let u=rChoose(users);	console.log('pick user',u)
+
+	let src=M.superdi.felix.img;
+	let img=mDom('dMain',{round:true,border:'white 3px solid'},{tag:'img',src}); return;
+
+	for(const uname in users){
+		let u=users[uname];
+		assertion(isdef(u.key),`user ${u.name} has no key!!!!!!!!!!!!!`);
+		let d1=mDom('dMain');
+		showim(u.key,d1,{sz:100,round:true})
+		break;
+	}
+
+}
+async function test25() {
+	await prelims();
+
+	//await natCreateGame();
+	await switchToMenu(UI.nav, 'play');
+	showGameMenu('bluff')
+  //await showTables(); 
+
+	//console.log('events',Serverdata.events,Serverdata)
+	//await onclickNewCollection('critters');
+}
 async function test24(){
 	await prelims();
 	await switchToMenu(UI.nav, 'collections');
