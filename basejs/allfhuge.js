@@ -31755,10 +31755,11 @@ function i_am_acting_host() { return U.name == Z.fen.acting_host; }
 function i_am_host() { return U.name == Z.host; }
 function i_am_trigger() { return is_multi_trigger(U.name); }
 function i52(i) { return isList(i) ? i.map(x => Card52.getItem(x)) : Card52.getItem(i); }
-function iAdd(item, liveprops, addprops) {
+function iAdd(item, liveprops={}, addprops={}) {
   let id, l;
   if (isString(item)) { id = item; item = valf(Items[id], {}); }
   let el = valf(liveprops.div, liveprops.ui, iDiv(item), null);
+  // console.log(id,el,liveprops,addprops); //.id,item.id,el)
   id = valnwhite(addprops.id, item.id, (el ? el.id : getUID()), getUID());
   item.id = id; if (nundef(Items[id])) Items[id] = item; if (el) el.id = id;
   if (nundef(item.live)) item.live = {};
@@ -41842,6 +41843,7 @@ function mDom(dParent, styles = {}, opts = {}) {
   };
   for (const opt in opts) {
     let name = valf(aliases[opt], opt), val = opts[opt];
+    //console.log('name',name,'val',val)
     //id src width height seem to work with setAttribute
     if (['style', 'tag', 'innerHTML', 'className', 'checked', 'value'].includes(name) || name.startsWith('on')) d[name] = val;
     else d.setAttribute(name, val);
@@ -71719,9 +71721,9 @@ function valfi() {
 }
 function valnwhite() {
   for (const arg of arguments) {
-    console.log('arg', arg)
+    //console.log('arg', arg)
     if (nundef(arg) || isEmpty(arg) || isWhiteSpace(arg)) {
-      console.log('white', arg);
+      //console.log('white', arg);
       continue;
     }
     return arg;

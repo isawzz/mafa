@@ -1,7 +1,18 @@
 onload = start;
 
-async function start() { test33(); }
+async function start() { test34_makeACard(); }
 
+async function test34_makeACard(){
+	await loadAssets();
+	let d=mDom('dMain');
+
+	let card=cBlank(d); console.log(card)
+	cRound(d,{w:100,h:100})
+	cPortrait(d)
+	cLandscape(d)
+
+
+}
 async function test33() {
 	await prelims(); 
 	await switchToMenu(UI.nav, 'play'); 
