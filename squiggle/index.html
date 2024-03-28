@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Squiggle Shape Example</title>
+</head>
+<body>
+
+<div id="squiggleContainer" style="width: 200px; height: 100px;"></div>
+
+<script>
+    function drawSquiggle() {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const squiggleSvg = document.createElementNS(svgNS, "svg");
+        squiggleSvg.setAttribute("width", 200);
+        squiggleSvg.setAttribute("height", 100);
+        squiggleSvg.setAttribute("viewBox", "0 0 200 100");
+
+        // Create the squiggle path
+        const path = document.createElementNS(svgNS, "path");
+        const d = "M10,50 Q20,-20 50,50 T90,50 T130,50 T170,50 T210,50";
+        path.setAttribute("d", d);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "black");
+        path.setAttribute("stroke-width", 2);
+
+        squiggleSvg.appendChild(path);
+        document.getElementById('squiggleContainer').appendChild(squiggleSvg);
+    }
+
+    drawSquiggle();
+</script>
+
+</body>
+</html>

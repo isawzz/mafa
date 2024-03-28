@@ -4,7 +4,7 @@ async function start() { test34_makeACard(); }
 
 async function test34_makeACard(){
 	await loadAssets();
-	let d=mDom('dMain',{display:'flex',gap:10,valign:'center',justify:'start'});
+	let d=mDom('dMain',{display:'flex',wrap:true,gap:10,valign:'center',justify:'start'});
 	cBlank(d); 
 	cRound(d,{w:100,h:100})
 	cPortrait(d)
