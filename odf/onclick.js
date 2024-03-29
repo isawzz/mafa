@@ -503,9 +503,7 @@ async function onclickPlay() {
 async function onclickStartGame(){
 	let options = collectOptions();
 	let players = collectPlayers(options);
-	let table = createOpenTable(DA.gamename,players,options);
-	table = setTableToStarted(table);
-	let res = await mPostRoute('postTable', table); 
+	await startGame(DA.gamename,players,options);
 }
 async function onclickStartTable(id) {
 	//console.log('BINGO!!!!!!!!!!!!!', id);

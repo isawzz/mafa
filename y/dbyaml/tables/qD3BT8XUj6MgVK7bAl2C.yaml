@@ -1,21 +1,20 @@
 status: started
-id: 3oNipfOj6GS5RelPLEXk
+id: qD3BT8XUj6MgVK7bAl2C
 fen:
   players:
-    amanda:
-      name: amanda
+    - name: amanda
       playmode: human
       strategy: ''
-    lauren:
-      name: lauren
+    - name: lauren
       playmode: human
       strategy: ''
-  turn:
-    - amanda
-    - lauren
-game: a_game
+    - name: lili
+      playmode: human
+      strategy: ''
+  turn: amanda
+game: setgame
 owner: amanda
-friendly: soirée in Sofia
+friendly: joust of Lusaka
 players:
   - name: amanda
     playmode: human
@@ -23,9 +22,13 @@ players:
   - name: lauren
     playmode: human
     strategy: ''
+  - name: lili
+    playmode: human
+    strategy: ''
 playerNames:
   - amanda
   - lauren
+  - lili
 options:
   mode: multi
-  handsize: 10
+  winning_score: 25

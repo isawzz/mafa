@@ -1,6 +1,18 @@
 onload = start;
 
-async function start() { test34_makeACard(); }
+async function start() { test36(); }
+
+async function test36(){
+	let d=clearBodyDiv();
+	setDrawCard(d,'red_diamond_1_solid');
+}
+async function test35(){
+	await prelims();
+	await switchToMenu(UI.nav,'play');
+	//how to start a game of set?
+	let players = ['amanda','mimi'].map(x=>createHumanPlayer(x));
+	await startGame('setgame',players,{winning_score:1});
+}
 
 async function test34_makeACard(){
 	await loadAssets();
@@ -10,8 +22,8 @@ async function test34_makeACard(){
 	cPortrait(d)
 	cLandscape(d)
 	//logItems();
-	let c=get_number_card('23_red'); mAppend(d,iDiv(c)); console.log(c);
-	let c1=cNumber('24_blue');mAppend(d,iDiv(c1));console.log(c);
+	//let c=get_number_card('23_red'); mAppend(d,iDiv(c)); console.log(c);
+	let c1=cNumber('24_blue');mAppend(d,iDiv(c1));console.log(c1);
 
 	//cSet
 	let cset=cLandscape(d);
@@ -24,26 +36,6 @@ async function test34_makeACard(){
 	//draw_set_card_test(d)
 	
 }
-function draw_set_card_test(dParent) {
-  let card = cLandscape(dParent, { w: 120 });
-  let d = iDiv(card, { h: '100%' });
-  mCenterCenterFlex(d);
-  let sz = card.sz / 4;
-	let bg='indigo'; //`linear-gradient(${RED},black`
-  let styles = { w: sz, h: sz, bg, margin: 4 }; // sz / 10, border: `solid 3px ${GREEN}` };
-  let d1 = drawShape('circle', d, styles); //mCenterCenterFlex(d1); mText('A', d1, { fz: sz / 4, fg: 'white' });
-  drawShape('circle', d, styles);
-  drawShape('circle', d, styles);
-}
-function drawShape(key, dParent, styles, classes, sizing) {
-  if (nundef(styles)) styles = { w: 96, h: 96, bg: 'random' };
-  if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
-  let d = mDiv(dParent, styles, null, null, classes, sizing);
-  if (key == 'circle' || key == 'ellipse') mStyle(d, { rounding: '50%' });
-  else mStyle(d, { 'clip-path': PolyClips[key] });
-  return d;
-}
-
 async function test33() {
 	await prelims(); 
 	await switchToMenu(UI.nav, 'play'); 
@@ -82,7 +74,7 @@ async function prelims() {
 	window.onkeydown = keyDownHandler;
 	window.onkeyup = keyUpHandler;
 
-	DA.funcs={ a_game:a_game(), }; //implemented games!
+	DA.funcs={ a_game:a_game(),setgame:setgame(), }; //implemented games!
 	for(const gname in Serverdata.config.games){
 
 		if (isdef(DA.funcs[gname])) continue;

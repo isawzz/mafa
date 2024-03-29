@@ -4,7 +4,7 @@ felix:
   key: felix
 amanda:
   name: amanda
-  color: '#f28cb2'
+  color: '#008a8a'
   key: amanda
 lauren:
   name: lauren

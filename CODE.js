@@ -1,3 +1,10 @@
+function onsockNewTable(x) {
+  let table = x.table;
+  //let tables = x.tables;
+  //Serverdata.tables = tables;
+  console.log('::SOCK new table:', table);
+  showTables();
+}
 function rest(ckey) {
 
 	let styles = { fg: color, h: sm, fz: sm, hline: sm, weight: 'bold' };

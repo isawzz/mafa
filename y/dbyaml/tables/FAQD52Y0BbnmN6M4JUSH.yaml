@@ -1,0 +1,31 @@
+status: started
+id: FAQD52Y0BbnmN6M4JUSH
+fen:
+  players:
+    amanda:
+      name: amanda
+      playmode: human
+      strategy: ''
+    lauren:
+      name: lauren
+      playmode: human
+      strategy: ''
+  turn:
+    - amanda
+    - lauren
+game: setgame
+owner: amanda
+friendly: joust of Dhaka
+players:
+  - name: amanda
+    playmode: human
+    strategy: ''
+  - name: lauren
+    playmode: human
+    strategy: ''
+playerNames:
+  - amanda
+  - lauren
+options:
+  mode: multi
+  winning_score: 25

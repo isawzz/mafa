@@ -1,4 +1,28 @@
+//#region games
+function a_game() {
+	function setup(table) {
+		let fen = {};
+		fen.players = {};
+		for (const pl of table.players) {
+			fen.players[pl.name] = pl;
+		}
+		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
+		return fen;
+	}
+	function checkGameover(table) { return false; }
+	function present(table, name) { a_game_present(table, name); } //if (nundef(name)) name = U.name; showMessage(`BINGO!!! ${table.friendly} view ${name}`); } 
+	return { setup, checkGameover, present };
+}
+function a_game_present(table, name) {
 
+	//was soll passieren?
+	//erstmal clear page I guess
+	mClear('dMain');
+	let d = mDom('dMain', { margin: 10, bg: '#00000080' }); mCenterCenterFlex(d)
+	mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
+
+}
+//#endregion
 
 function cBlank(dParent, styles = {}, opts={}) {
   if (nundef(styles.h)) styles.h = valf(styles.sz,100);
@@ -18,10 +42,46 @@ function cLandscape(dParent, styles = {}, opts={}) {
   if (nundef(styles.h)) styles.h = styles.w * .65;
   return cBlank(dParent, styles, opts);
 }
+function cNumber(ckey, styles = {}, opts = {}) { //h = 100, w = null, backcolor = BLUE, ov = .3) {
+	addKeys({ border: 'silver', h: 100 }, styles);
+	addKeys({ backcolor: BLUE, ov: .3, key: ckey, type:'num' }, opts);
+	let c = cPortrait(null, styles, opts); //get an empty card
+
+	let sym = c.rank = stringBefore(ckey, '_');
+	let color = c.suit = c.val = stringAfter(ckey, '_');
+	let sz = c.h;
+	let [sm, lg, w, h] = [sz / 8, sz / 4, c.w, c.h];
+	
+	let styleSmall={ fg: color, h: sm, fz: sm, hline: sm, weight: 'bold' };
+	cPrintSym(c, sym, styleSmall, 'tl')
+	cPrintSym(c, sym, styleSmall, 'tr')
+	styleSmall.transform = 'rotate(180deg)';
+	cPrintSym(c, sym, styleSmall, 'bl')
+	cPrintSym(c, sym, styleSmall, 'br')
+
+	let styleBig = { matop: (h - lg) / 2, family: 'algerian', fg: color, fz: lg, h: lg, w: w, hline: lg, align: 'center' }
+	styleBig={ display:'inline', family: 'algerian', fg: color, fz: lg, hline: lg}
+	cPrintSym(c, sym, styleBig, 'cc')
+	return c;
+}
 function cPortrait(dParent, styles = {}, opts={}) {
   if (nundef(styles.h)) styles.h = 100;
   if (nundef(styles.w)) styles.w = styles.h * .7;
   return cBlank(dParent, styles, opts);
+}
+function cPrintSym(card, sym, styles, pos) {
+	let d = iDiv(card);
+
+	let opts={};
+	if (isNumber(sym)){
+		opts.html=sym;
+	} else if (sym.includes('/')){
+		opts.tag='img';
+		opts.src=sym;
+	}
+
+	let d1 = mDom(d, styles, opts);
+	mPlace(d1, pos, pos[0]=='c'?0:2, pos[1]=='c'?0:2);
 }
 function cRound(dParent, styles = {}, opts={}) {
   styles.w = valf(styles.w, 100);
@@ -29,6 +89,9 @@ function cRound(dParent, styles = {}, opts={}) {
   styles.rounding = '50%';
   return cBlank(dParent, styles, opts);
 }
+function deckDeal(deck, n) { return deck.splice(0, n); }
+
+
 function mItem(liveprops={},opts={}) {
 	let id = valf(opts.id,getUID());
   let item = opts;
@@ -75,11 +138,64 @@ function mPlace(elem, pos, offx, offy) {
   elem.style.position = 'absolute';
   elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
 }
+
+function drawShape(key, dParent, styles, classes, sizing) {
+  if (nundef(styles)) styles = { w: 96, h: 96, bg: 'random' };
+  if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
+  let d = mDiv(dParent, styles, null, null, classes, sizing);
+  if (key == 'circle' || key == 'ellipse') mStyle(d, { rounding: '50%' });
+  else mStyle(d, { 'clip-path': PolyClips[key] });
+  return d;
+}
+function getGameFriendly(game){return Serverdata.config.games[game].friendly;}
 function logItems(){Object.keys(Items).sort().forEach(k=>console.log('Items',Items[k]));}
+async function onsockDeleteTable(x) {
+  //console.log('x',x)
+  Serverdata.tables = x.tables;
+  //console.log('::SOCK deleteTable:', tables);
+  let [me,table,menu]=[Clientdata.curUser,Clientdata.curTable,Clientdata.curMenu]; console.log('SOCK deleteTable',me,menu,table);
+  //if ()
+  showTables()
+}
+async function onsockTable(x) {
+  let table = x.table;
+  //let tables = x.tables;
+  //Serverdata.tables = tables;
+  console.log('::SOCK table:', table);
+  if (Clientdata.curMenu == 'play'){
+    if (table.status == 'started' && table.fen.turn.includes(Clientdata.curUser)) await showTable(table,Clientdata.curUser);
+    else await showTables();
+  }
+}
+function onsockTurnUpdate(turn) {
+  console.log('::SOCK turn:', turn);
+  Clientdata.fen.turn = turn;
+  instructionUpdate();
+  hourglassUpdate();
+  tabtitleUpdate();
+}
+async function showTable(table, name) {
+	//console.log('showTable', name, table, table.playerNames.includes(name));
+	//console.log('Clientdata',Clientdata);
+	if (!table) { showMessage('table deleted!'); return await showTables(); }
+	else if (!table.playerNames.includes(name)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+
+	DA.funcs[table.game].present(table,name);
+
+}
 
 
-
-
+function draw_set_card_test(dParent) {
+  let card = cLandscape(dParent, { w: 120 });
+  let d = iDiv(card, { h: '100%' });
+  mCenterCenterFlex(d);
+  let sz = card.sz / 4;
+	let bg='indigo'; //`linear-gradient(${RED},black`
+  let styles = { w: sz, h: sz, bg, margin: 4 }; // sz / 10, border: `solid 3px ${GREEN}` };
+  let d1 = drawShape('circle', d, styles); //mCenterCenterFlex(d1); mText('A', d1, { fz: sz / 4, fg: 'white' });
+  drawShape('circle', d, styles);
+  drawShape('circle', d, styles);
+}
 
 
 
