@@ -5,14 +5,14 @@ async function start() { test38(); }
 async function test38(){
 	await prelims();
 
-	mStyle('dMain',{opacity:0})
-	await switchToMenu(UI.nav, 'play');
+	// mStyle('dMain',{opacity:0})
+	// await switchToMenu(UI.nav, 'play');
 	
-	//return;
+	// //return;
 	
-	//how to start a game of set?
-	let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
-	await startGame('setgame', players, { winning_score: 1 });
+	// //how to start a game of set?
+	// let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
+	// await startGame('setgame', players, { winning_score: 1 });
 
 }
 
