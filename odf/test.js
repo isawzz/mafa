@@ -1,3 +1,80 @@
+async function test37(){
+	await prelims();
+	setLoadPatterns('dBuffer');
+
+	let deck = setCreateDeck();
+	let grid=mGrid(4,3,'dMain',{gap:12})
+	for(const i of range(12)){
+		let card = deck[i]; //'red_diamond_3_striped';
+		setDrawCard(card,grid,100);
+	}
+
+	mRise(grid);
+}
+async function test36() {
+	// let d=clearBodyDiv();
+	await prelims();
+	setLoadPatterns('dBuffer');
+
+	// await mSleep(10)
+	// let el=mgSvg(d);
+	let d = mDom('dMain')
+
+	let d1 = mDom(d, { w: 500, h: 500, bg: 'red' });
+
+	let color = 'indigo'
+	let fill = 'url(#striped-green)'; // 'url(#striped-' + color + ')';
+
+	let el = mCreateFrom(`<svg width="300" height="130" xmlns="http://www.w3.org/2000/svg">
+  		<rect width="200" height="100" x="10" y="10" rx="20" ry="20" fill="${fill}" />
+		</svg>`);
+	mAppend(d1, el)
+
+	// let svg = mgTag('svg', d, {height: '100%', width: '100%', }); //, { class: 'card', face: '2C', height: '100%', width: '100%', preserveAspectRatio: 'none', viewBox: "-120 -168 240 336" });
+	// let g = mgTag('g', svg);
+	// let rect = mgTag('rect', g, { width: 239, height: 335, x: 0, y: 168, rx: 12, ry: 12, fill: "red", stroke: "black" });
+	// console.log('rect',rect)
+
+
+	//setDrawCard(d,'red_squiggle_1_solid');
+}
+async function test35() {
+	await prelims();
+	await switchToMenu(UI.nav, 'play');
+	//how to start a game of set?
+	let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
+	await startGame('setgame', players, { winning_score: 1 });
+}
+async function test34_makeACard() {
+	await loadAssets();
+	let d = mDom('dMain', { display: 'flex', wrap: true, gap: 10, valign: 'center', justify: 'start' });
+	cBlank(d);
+	cRound(d, { w: 100, h: 100 })
+	cPortrait(d)
+	cLandscape(d)
+	//logItems();
+	//let c=get_number_card('23_red'); mAppend(d,iDiv(c)); console.log(c);
+	let c1 = cNumber('24_blue'); mAppend(d, iDiv(c1)); console.log(c1);
+
+	//cSet
+	let cset = cLandscape(d);
+	let d1 = iDiv(cset);
+	let style = { w: 20, h: 30, bg: 'indigo' };
+	let d2 = drawShape('circle', d1, style); mPlace(d2, 'cc');
+	let d3 = drawShape('circle', d1, style); mPlace(d3, 'cl', 0, 10, 0);
+	let d4 = drawShape('circle', d1, style); mPlace(d4, 'cr', 0, 10, 0);
+
+	//draw_set_card_test(d)
+
+}
+async function test33() {
+	await prelims();
+	await switchToMenu(UI.nav, 'play');
+	showGameMenu('a_game');
+
+	// let id = Serverdata.tables[0].id;
+	// await onclickTable(id)
+}
 async function test32_userpics(){
 	await prelims(); 
 

@@ -1,8 +1,3 @@
-
-function cSet() {
-
-}
-
 function setgame() {
 	function setup(table) {
 		let fen = {};
@@ -36,84 +31,85 @@ function setCreateDeck() {
 	arrShuffle(deck);
 	return deck;
 }
+function setDrawCard(card, dParent, sz = 100) {
+	//card eg purple_squiggle_2_open	
+	const paths = {
+		diamond: "M25 0 L50 50 L25 100 L0 50 Z",
+		squiggle: "M38.4,63.4c2,16.1,11,19.9,10.6,28.3c1,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z",
+		oval: "M25,95C14.2,95,5.5,85.2,5.5,80V20C5.5,13.2,14.2,5.2,25,5.2S44.5,13.2,44.5,20v60 C44.5,85.2,35.8,95,25,95z"
+	}
+	const colors = { red: '#e74c3c', green: '#27ae60', purple: '#8e44ad' };
+	let [color, shape, num, fill] = card.split('_');
+	var attr = {
+		d: paths[shape], 
+		fill: fill=='striped'?`url(#striped-${color})`:fill=='solid'?colors[color]:'none',
+		stroke: colors[color]
+	};
+	let h = sz, w = sz / .65;
+	let ws = w / 4;
+	let hs = 2 * ws;
+	let d0 = mDom(dParent, { display: 'flex', w, h, bg: 'white', rounding: 10 });
+	mStyle(d0, { justify: 'center', 'align-items': 'center', gap: 6 })
+	let shapeSvg = `<svg viewbox="-2 -2 54 104">` + makeSVG("path", attr) + '</svg>';
+	for (const i of range(num)) {
+		let d1 = mDom(d0, { h: hs, w: ws }, { html: shapeSvg });
+	}
+	return d0;
+}
+function setLoadPatterns(dParent){
+	dParent = toElem(dParent);
+	let id="setpatterns";
+	if (isdef(mBy(id))) {console.log('SCHON DA!!!'); return;}
+	let html = `
+		<svg id="setpatterns" width="0" height="0">
+			<!--  Define the patterns for the different fill colors  -->
+			<pattern id="striped-red" patternUnits="userSpaceOnUse" width="4" height="4">
+				<path d="M-1,1 H5" style="stroke:#e74c3c; stroke-width:1" />
+			</pattern>
+			<pattern id="striped-green" patternUnits="userSpaceOnUse" width="4" height="4">
+				<path d="M-1,1 H5" style="stroke:#27ae60; stroke-width:1" />
+			</pattern>
+			<pattern id="striped-purple" patternUnits="userSpaceOnUse" width="4" height="4">
+				<path d="M-1,1 H5" style="stroke:#8e44ad; stroke-width:1" />
+			</pattern>
+		</svg>
+		`;
+	let el=mCreateFrom(html);
+	mAppend(dParent,el)
+}
 function setPresent(table, name) {
+	setLoadPatterns('dPage');
 	mClear('dMain');
-	let d = mDom('dMain', { margin: 10, bg: '#00000080' }); mCenterCenterFlex(d)
+	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
 	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
 
 	let [fen,playerNames,players,turn]=[table.fen,table.playerNames,table.fen.players,table.fen.turn];
 	let cards = fen.cards;
-	let dBoard=mGrid(cards.length/3,3,d,{gap:4});
+	let dBoard=mGrid(cards.length/3,3,d,{gap:14});
+	let items = [];
 	for(const c of cards){
 		//mDom(dBoard,{},{html:c})
-		setDrawCard(dBoard,c); break;
+		let d = setDrawCard(c,dBoard);
+		let item = mItem({div:d},{key:c});
+		if (turn.includes(name)) d.onclick = ()=>setOnclickCard(item,items);
+		items.push(item);
 	}
 
 }
-function setDrawCard(dParent,card){
-	const paths = {
-		diamond: {
-			d: "M25 0 L50 50 L25 100 L0 50 Z"
-		},
-		squiggle: {
-			d: "M38.4,63.4c0,16.1,11,19.9,10.6,28.3c-0.5,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z"
-		},
-		oval: {
-			d: "M25,99.5C14.2,99.5,5.5,90.8,5.5,80V20C5.5,9.2,14.2,0.5,25,0.5S44.5,9.2,44.5,20v60 C44.5,90.8,35.8,99.5,25,99.5z"
-		}
+function setOnclickCard(item,items){
+	toggleItemSelection(item);
+	let n=items.length;
+	let selitems=items.filter(x=>x.isSelected);
+	let m = selitems.length;
+	console.log(`${m} out of ${n} items selected!`);
+	if (m == 3){
+		//check if this is a set!
+		console.log('selected',selitems)
+		//send move!
 	}
-	const colors = {
-		red: '#e74c3c',
-		green: '#27ae60',
-		purple: '#8e44ad'
-	};
-	const makeSVG = function(tag, attrs) {
-		var el= "<" + tag;
-		for (var k in attrs)
-			el += " " + k + "=\"" + attrs[k] + "\"";
-		return el + "/>";
-	}
-	
-  let shapes = '';
-	console.log('card',card);
 
-	let [color,shape,number,fill]=card.split('_');
-	fill='solid'
-	number=Number(number);
-  var attr = paths[shape];
-  if(fill=="striped"){
-    attr.fill = 'url(#striped-'+color+')';
-  } else if(fill=="open"){
-    attr.fill = 'none';
-  } else if(fill=="solid"){
-    attr.fill = colors[color];
-  }
-  for(var i=0;i<number;i++){
-    shapes += '<svg viewbox="-2 -2 54 104">' + makeSVG("path", attr) + '</svg>';
-		break;
-  }
-	let html = '<div class="card1 fill-red"><div class="card-content">' + shapes + '</div>'+ '</div>';
-
-	html=`<div class="card1 fill-red fadeIn"><div class="card-content"><svg viewBox="-2 -2 54 104"><path d="M25 0 L50 50 L25 100 L0 50 Z" fill="#e74c3c"></path></svg><svg viewBox="-2 -2 54 104"><path d="M25 0 L50 50 L25 100 L0 50 Z" fill="#e74c3c"></path></svg></div></div>`
-	console.log(html);
-	let d=mCreateFrom(html)
-	mStyle(dParent,{margin:10,padding:10,bg:'black'})
-	mAppend(dParent,d);
-	// mAppend(dParent,mDom(null,{w:100,h:100,bg:'red'}));
-	// return;
-	//let d=mDom(dParent,{},{className:'card fill-'+color, html:'<div class="card-content">' + shapes + '</div>'});
-	//let d1=mDom(d,{},{className:'card-content'})
-  // var dcard = $("<div />", {
-  //   class: 'card fill-'+color,
-  //   html: '<div class="card-content">' + shapes + '</div>'
-  // }).data("color", color)
-  //   .data("shape", shape)
-  //   .data("number", number)
-  //   .data("fill", fill);
-	// console.log(dcard)
-	// dParent.append(dcard[0])
-  return d;
 }
+
 
 
 

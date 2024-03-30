@@ -149,6 +149,12 @@ function drawShape(key, dParent, styles, classes, sizing) {
 }
 function getGameFriendly(game){return Serverdata.config.games[game].friendly;}
 function logItems(){Object.keys(Items).sort().forEach(k=>console.log('Items',Items[k]));}
+function makeSVG(tag, attrs) {
+	var el= "<" + tag;
+	for (var k in attrs)
+		el += " " + k + "=\"" + attrs[k] + "\"";
+	return el + "/>";
+}
 async function onsockDeleteTable(x) {
   //console.log('x',x)
   Serverdata.tables = x.tables;
@@ -181,6 +187,13 @@ async function showTable(table, name) {
 	else if (!table.playerNames.includes(name)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
 	DA.funcs[table.game].present(table,name);
+  mRise('dMain');
+
+}
+async function startGame(gamename,players,options){
+	let table = createOpenTable(gamename,players,options);
+	table = setTableToStarted(table);
+	let res = await mPostRoute('postTable', table); 
 
 }
 

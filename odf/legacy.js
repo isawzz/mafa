@@ -187,3 +187,58 @@ function make_set_deck(n_or_attr_list) {
   }
   return list;
 }
+
+//svg zeug
+function gBg(g, color) { g.setAttribute('fill', color); }
+function gCanvas(area, w, h, color, originInCenter = true) {
+  let dParent = mBy(area);
+  let div = stage3_prepContainer(dParent);
+  div.style.width = w + 'px';
+  div.style.height = h + 'px';
+  let svg = gSvg();
+  let style = `margin:0;padding:0;position:absolute;top:0px;left:0px;width:100%;height:100%;`
+  svg.setAttribute('style', style);
+  mColor(svg, color);
+  div.appendChild(svg);
+  let g = gG();
+  if (originInCenter) g.style.transform = "translate(50%, 50%)";
+  svg.appendChild(g);
+  return g;
+}
+function gCreate(tag) { return document.createElementNS('http:/' + '/www.w3.org/2000/svg', tag); }
+function gEllipse(w, h) { let r = gCreate('ellipse'); r.setAttribute('rx', w / 2); r.setAttribute('ry', h / 2); return r; }
+function gFg(g, color, thickness) { g.setAttribute('stroke', color); if (thickness) g.setAttribute('stroke-width', thickness); }
+function gG() { return gCreate('g'); }
+function gHex(w, h) { let pts = size2hex(w, h); return gPoly(pts); }
+function gLine(x1, y1, x2, y2) { let r = gCreate('line'); r.setAttribute('x1', x1); r.setAttribute('y1', y1); r.setAttribute('x2', x2); r.setAttribute('y2', y2); return r; }
+function gPoly(pts) { let r = gCreate('polygon'); if (pts) r.setAttribute('points', pts); return r; }
+function gPos(g, x, y) { g.style.transform = `translate(${x}px, ${y}px)`; }
+function gRect(w, h) { let r = gCreate('rect'); r.setAttribute('width', w); r.setAttribute('height', h); r.setAttribute('x', -w / 2); r.setAttribute('y', -h / 2); return r; }
+function gShape(shape, w = 20, h = 20, color = 'green', rounding) {
+  let el = gG();
+  if (nundef(shape)) shape = 'rect';
+  if (shape != 'line') agColoredShape(el, shape, w, h, color);
+  else gStroke(el, color, w);
+  if (isdef(rounding) && shape == 'rect') {
+    let r = el.children[0];
+    gRounding(r, rounding);
+  }
+  return el;
+}
+function gSize(g, w, h, shape = null, iChild = 0) {
+  let el = (getTypeOf(g) != 'g') ? g : g.children[iChild];
+  let t = getTypeOf(el);
+  switch (t) {
+    case 'rect': el.setAttribute('width', w); el.setAttribute('height', h); el.setAttribute('x', -w / 2); el.setAttribute('y', -h / 2); break;
+    case 'ellipse': el.setAttribute('rx', w / 2); el.setAttribute('ry', h / 2); break;
+    default:
+      if (shape) {
+        switch (shape) {
+          case 'hex': let pts = size2hex(w, h); el.setAttribute('points', pts); break;
+        }
+      }
+  }
+  return el;
+}
+function gStroke(g, color, thickness) { g.setAttribute('stroke', color); if (thickness) g.setAttribute('stroke-width', thickness); }
+function gSvg() { return gCreate('svg'); }
