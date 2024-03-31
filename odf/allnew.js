@@ -1417,12 +1417,6 @@ function natCreate(owner, players) {
   fen.turn = jsCopy(fen.playerNames);
   return fen;
 }
-async function natCreateGame() {
-  let id = generateTableId();
-  let fen = natCreate(U.name, ['felix', 'amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
-  let s = JSON.stringify(fen);
-  let res = await mPostRoute('postTable', { status:'started', id: id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
-}
 async function natDetectBB(card, dParent) {
   dParent = toElem(dParent);
   let path = `../assets/games/nations/cards/${card.Path}`;
@@ -1975,26 +1969,6 @@ async function simpleUpload(route, o) {
     return 'ERROR 1';
   }
 }
-function sockInit() {
-  let server = getServerurl();
-  Socket = io(server);
-  Socket.on('deleteTable', onsockDeleteTable); //x => console.log('::SOCK table:', x));
-  Socket.on('disconnect', x => console.log('::SOCK disconnect:', x));
-  Socket.on('event', onsockEvent);
-  Socket.on('message', showChatMessage);
-  Socket.on('table', onsockTable); //x => console.log('::SOCK table:', x));
-  //Socket.on('newTable', onsockNewTable); //x => console.log('::SOCK table:', x));
-  Socket.on('superdi', onsockSuperdi);
-  Socket.on('turnUpdate', onsockTurnUpdate); //x => console.log('::SOCK table:', x));
-  // Socket.on('userChange', x => console.log('::SOCK userChange:', x));
-  // Socket.on('update', x => console.log('::SOCK update:', x));
-}
-function sockPostMove(id, name, move) {
-  Socket.emit('move', { id, name, move });
-}
-function sockPostUserChange(oldname, newname) {
-  Socket.emit('userChange', { oldname, newname });
-}
 function sortByMultipleProperties(list) {
   let props = Array.from(arguments).slice(1);
   return list.sort((a, b) => {
@@ -2012,11 +1986,6 @@ function squareTo(tool, sznew = 128) {
   let sz = Math.max(w, h)
   let [x1, y1] = [x - (sz - w) / 2, y - (sz - h) / 2];
   redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
-}
-async function start() { test73_game(); }
-async function switchToTable(id) {
-  let res = Clientdata.table = await mGetRoute('table', { id });
-  await showTable(res, getUname())
 }
 function tabtitleUpdate() {
 }

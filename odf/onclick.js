@@ -469,48 +469,9 @@ async function onclickGameMenuItem(ev) {
 	//stop_game();
 	await showGameMenu(gamename);
 }
-async function onclickJoinTable(id){
-	//console.log(U.name,'clicked join',id);
-	let table = Serverdata.tables.find(x=>x.id == id);
-	assertion(nundef(table.players.find(x=>x.name == U.name)),'already joined!!!');
-	table.players.push(createHumanPlayer(U.name));
-	table.playerNames = table.players.map(x=>x.name);
-	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
-	console.log('res',res);
-
-}
-async function onclickLeaveTable(id){
-	//console.log(U.name,'clicked leave',id);
-	let table = Serverdata.tables.find(x=>x.id == id);
-	assertion(isdef(table.players.find(x=>x.name == U.name)),'not in joined players!!!!');
-	//console.log('players',table.players);
-	let player=table.players.find(x=>x.name == U.name);
-	removeInPlace(table.players,player); 
-	table.playerNames = table.players.map(x=>x.name);
-	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
-	console.log('res',res);
-}
-async function onclickOpenToJoinGame(){
-	let options = collectOptions();
-	let players = collectPlayers(options);
-	let t = createOpenTable(DA.gamename,players,options);
-	let res = await mPostRoute('postTable', t);
-}
 async function onclickPlay() { 
 	await showTables(); 
 	showGames();
-}
-async function onclickStartGame(){
-	let options = collectOptions();
-	let players = collectPlayers(options);
-	await startGame(DA.gamename,players,options);
-}
-async function onclickStartTable(id) {
-	//console.log('BINGO!!!!!!!!!!!!!', id);
-	let table = Serverdata.tables.find(x => x.id == id); assertion(isdef(table), `table with id ${id} not in Serverdata!`);
-	table =  setTableToStarted(table);
-	let res = await mPostRoute('postTable', table); 
-	//console.log('res', res);
 }
 function setTableToStarted(table){
 	//console.log(table.id,table.game, table.friendly, table.players);
@@ -519,7 +480,6 @@ function setTableToStarted(table){
 	let fen = table.fen = DA.funcs[table.game].setup(table); //create initial fen
 	return table;	
 }
-async function onclickTable(id) { await switchToTable(id); }
 
 //#endregion
 

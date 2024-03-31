@@ -1,3 +1,36 @@
+async function onsockTable(x) {
+  console.log('::SOCK table:', x, Clientdata);
+  let [msg, id, turn] = [x.msg, x.id, x.turn];
+
+  if (Clientdata.curMenu != 'play') return; //wenn ich nicht in menu play bin mach garnichts
+
+  //not in turn and no spacific table open: showTables
+  let me=getUname()
+  let isSameTableOpen = lookup(Clientdata,['table','id']) == id;
+
+  if (isSameTableOpen || turn.includes(me) && !Clientdata.table) return await switchToTable(id);
+
+  if (CLientdata.table) return await showTables()
+  if (!turn.includes(me) && !Clientdata.table) await showTables();
+
+  //
+
+  //ich bin jetzt der client. 
+  //wenn ich in menu play ohne specific table bin, mach showTables
+  //wenn ich in play mit specific table bin mach showTable falls die id stimmt
+
+
+
+  // let table = x.table;
+  // //let tables = x.tables;
+  // //Serverdata.tables = tables;
+  // console.log('::SOCK table:', table,Clientdata);
+  // //return;
+  // if (Clientdata.curMenu == 'play'){
+  //   if (table.status == 'started' && table.fen.turn.includes(Clientdata.curUser)) await showTable(table,Clientdata.curUser);
+  //   else await showTables();
+  // }
+}
 
 function mist(){
 	let [w,h]=[100,70];
@@ -333,6 +366,44 @@ function rest(ckey) {
 
 
 //#region app.js 
+app.post('/postTable', (req, res) => {
+	let id = req.body.id;
+	let newtable = req.body;
+
+	let isNew = nundef(Session.tables[id]);
+	let isStarted = newtable.status == 'started';
+
+	saveTable(id,newtable);
+	//io.emit('tables',{tables:getTablesInfo(),table:newtable,isNew,isStarted});
+	// if (isNew && !isStarted) io.emit('tables',getTablesInfo());
+	// else if (isNew) 
+
+
+	//let table = valf(Session.tables[id],{}); 
+	//for(const k in req.body){		table[k]=req.body[k];	}
+	// console.log('<== post newTable',id); //return;
+	//saveTable(id,table);
+	// io.emit('table',{table:table});
+	// if (isdef(fen)) emitToPlayers(table.playerNames,'table',{tables:getTablesInfo(),table:table});
+	// else io.emit('table',{tables:getTablesInfo(),table:table});
+	let msg=`table posted: ${newtable.friendly} new:${isNew} status:${newtable.status}`;
+	console.log(msg)
+	io.emit('table',{msg,id})
+	res.json(msg);
+});
+app.post('/postTable', (req, res) => {
+	let id = req.body.id;
+	let table = valf(Session.tables[id],{}); 
+	for(const k in req.body){
+		table[k]=req.body[k];
+	}
+	// console.log('<== post newTable',id); //return;
+	saveTable(id,table);
+	io.emit('table',{table:table});
+	// if (isdef(fen)) emitToPlayers(table.playerNames,'table',{tables:getTablesInfo(),table:table});
+	// else io.emit('table',{tables:getTablesInfo(),table:table});
+	res.json(table);
+});
 app.post('/postTable', (req, res) => {
 	let id = req.body.id;
 	let table = valf(Session.tables[id],{}); 

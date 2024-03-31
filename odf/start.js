@@ -5,8 +5,11 @@ async function start() { test38(); }
 async function test38(){
 	await prelims();
 
+	mButton('felix',()=>switchToUser('felix'),'dExtra')
+	mButton('amanda',()=>switchToUser('amanda'),'dExtra')
+
 	// mStyle('dMain',{opacity:0})
-	// await switchToMenu(UI.nav, 'play');
+	await switchToMenu(UI.nav, 'play');
 	
 	// //return;
 	
@@ -58,7 +61,8 @@ async function prelims() {
 }
 function defaultGameFunc() {
 	function setup(table) { return { players: table.players, turn: table.owner }; }
+	async function activate(table,name) {console.log('activate for',name)}
 	function checkGameover(table) { return false; }
-	function present(table, name) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
-	return { setup, checkGameover, present };
+	async function present(table, name) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
+	return { setup, activate, checkGameover, present };
 }

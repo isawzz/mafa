@@ -1401,7 +1401,7 @@ function showGames(ms = 500) {
 
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
 	//gamelist = dict2list(Serverdata.config.games, 'key'); gamelist = sortBy(gamelist, 'friendly').map(x => x.key);
-	gamelist = ['spotit','a_game','setgame']
+	gamelist = ['setgame']
 	//console.log('gamelist', gamelist)
 	
 

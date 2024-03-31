@@ -11,11 +11,18 @@ function setgame() {
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
 		return fen;
 	}
+	async function activate(table,name) {await setActivate(); console.log('activate for',name);}
 	function checkGameover(table) { 
 		return table.playerNames.some(x=>x.score == table.options.winning_score);
 	}
-	function present(table, name) { setPresent(table, name); } //if (nundef(name)) name = U.name; showMessage(`BINGO!!! ${table.friendly} view ${name}`); } 
-	return { setup, checkGameover, present };
+	async function present(table, name) { await setPresent(table, name); } //if (nundef(name)) name = U.name; showMessage(`BINGO!!! ${table.friendly} view ${name}`); } 
+	return { setup, activate, checkGameover, present };
+}
+async function setActivate(){
+	for(const item of Clientdata.items){
+		iDiv(item).onclick = ()=>setOnclickCard(item,Clientdata.items);
+
+	}
 }
 function setCreateDeck() {
 	let deck = [];
@@ -59,7 +66,7 @@ function setDrawCard(card, dParent, sz = 100) {
 function setLoadPatterns(dParent){
 	dParent = toElem(dParent);
 	let id="setpatterns";
-	if (isdef(mBy(id))) {console.log('SCHON DA!!!'); return;}
+	if (isdef(mBy(id))) {return;}
 	let html = `
 		<svg id="setpatterns" width="0" height="0">
 			<!--  Define the patterns for the different fill colors  -->
@@ -77,7 +84,7 @@ function setLoadPatterns(dParent){
 	let el=mCreateFrom(html);
 	mAppend(dParent,el)
 }
-function setPresent(table, name) {
+async function setPresent(table, name) {
 	setLoadPatterns('dPage');
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
@@ -86,17 +93,17 @@ function setPresent(table, name) {
 	let [fen,playerNames,players,turn]=[table.fen,table.playerNames,table.fen.players,table.fen.turn];
 	let cards = fen.cards;
 	let dBoard=mGrid(cards.length/3,3,d,{gap:14});
-	let items = [];
+	let items = Clientdata.items = [];
 	for(const c of cards){
 		//mDom(dBoard,{},{html:c})
 		let d = setDrawCard(c,dBoard);
 		let item = mItem({div:d},{key:c});
-		if (turn.includes(name)) d.onclick = ()=>setOnclickCard(item,items);
 		items.push(item);
 	}
 
+
 }
-function setOnclickCard(item,items){
+async function setOnclickCard(item,items){
 	toggleItemSelection(item);
 	let n=items.length;
 	let selitems=items.filter(x=>x.isSelected);
@@ -105,7 +112,10 @@ function setOnclickCard(item,items){
 	if (m == 3){
 		//check if this is a set!
 		console.log('selected',selitems)
+		let move = selitems.map(x=>x.key);
+		sendMyMove(move);
 		//send move!
+
 	}
 
 }

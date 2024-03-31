@@ -321,9 +321,8 @@ function handle_move(x){
 	lookupSetOverride(fen,['moves',name],move);
 	removeInPlace(fen.turn,name)
 	//save new fen when all players moved? or after each and every move?
-
-
-	io.emit('turnUpdate',fen.turn);
+	emitToPlayers(table.playerNames,'move',x);
+	//io.emit('turnUpdate',fen.turn);
 }
 function handle_update(x) { console.log('::update', x); io.emit('update', x); }
 function handle_userChange(x, id) {
@@ -444,16 +443,17 @@ app.post('/postImage', (req, res) => {
 });
 app.post('/postTable', (req, res) => {
 	let id = req.body.id;
-	let table = valf(Session.tables[id],{}); 
-	for(const k in req.body){
-		table[k]=req.body[k];
-	}
-	// console.log('<== post newTable',id); //return;
-	saveTable(id,table);
-	io.emit('table',{table:table});
-	// if (isdef(fen)) emitToPlayers(table.playerNames,'table',{tables:getTablesInfo(),table:table});
-	// else io.emit('table',{tables:getTablesInfo(),table:table});
-	res.json(table);
+	let newtable = req.body;
+
+	let isNew = nundef(Session.tables[id]);
+	let isStarted = newtable.status == 'started';
+
+	saveTable(id,newtable);
+	let msg=`table posted: ${newtable.friendly} new:${isNew} status:${newtable.status}`;
+	console.log(msg)
+	let turn=isStarted?newtable.fen.turn:[];
+	io.emit('table',{msg,id,turn})
+	res.json(msg);
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
