@@ -15,7 +15,7 @@ const configFile = path.join(uploadDirectory, 'config.yaml');
 const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
 const superdiFile = path.join(uploadDirectory, 'm.yaml');
-const tablesDir = path.join(dbDirectory, 'tables');
+const tablesDir = path.join(uploadDirectory, 'tables');
 var Session = {}; // session ist nur fuer temp data: just mem
 var Superdi = {};
 
