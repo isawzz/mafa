@@ -1,3 +1,33 @@
+________ 4/1/24
+- move implementen!
+choices:
+1. sende ein postmove das broadcasted wird
+2. am client wird integrated
+3. sobald admin alle moves hat
+variants:
+- race first one wins (set) ohne timestamp
+
+- sort from simplest to most complicated
+a) just one player: 
+in this case, can just modify table, postTable
+da brauch ich nix ausser postTable
+
+b) simultaneous, once=first move counts (all choose membership): 
+
+c) simultaneous, may correct (all choose membership): 
+server has move dict, one for each player in turn
+as soon as has complete dict, inc step counter and broadcast
+d) race just first one wins
+ server erhaelt move
+ server inc move counter and broadcasts {move,stepForMove,step,id};
+	move muss player, timestamp und moveinfo enthalten
+e) race, rank all (set/spotit):
+server erhaelt move
+server inc move counter and broadcasts {move,stepForMove,step,id};
+f) race, rank|all within time frame:
+
+
+
 ________ 3/18/24
 - huti heisst chapeau
 

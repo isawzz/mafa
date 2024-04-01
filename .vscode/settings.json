@@ -14,7 +14,7 @@
 	"editor.gotoLocation.alternativeReferenceCommand": "editor.action.goToTypeDefinition",
 	"editor.wordBasedSuggestionsMode": "allDocuments",
 	"extensions.ignoreRecommendations": true,
-  "editor.fontSize": 15,
+  "editor.fontSize": 17,
   "terminal.integrated.fontSize": 15,
   "debug.console.fontSize": 15,
   "git.enableSmartCommit": true,
