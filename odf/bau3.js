@@ -1,28 +1,25 @@
 
-async function switchToTable(id) {
-  console.log('switchToTable!!!',id)
-  let res = Clientdata.table = await mGetRoute('table', { id });
-  await showTable(res, getUname())
-}
 async function onclickTable(id) { 
 	console.log('_____ onclickTable')
-	await switchToTable(id); 
+  await showTable(id)
 }
 async function onclickJoinTable(id){
-	//console.log(U.name,'clicked join',id);
+	//console.log(getUname(),'clicked join',id);
 	let table = Serverdata.tables.find(x=>x.id == id);
-	assertion(nundef(table.players.find(x=>x.name == U.name)),'already joined!!!');
-	table.players.push(createHumanPlayer(U.name));
+	let me = getUname();
+	assertion(nundef(table.players.find(x=>x.name == me)),'already joined!!!');
+	table.players.push(createHumanPlayer(me));
 	table.playerNames = table.players.map(x=>x.name);
 	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
 	console.log('res',res);
 }
 async function onclickLeaveTable(id){
-	//console.log(U.name,'clicked leave',id);
+	//console.log(getUname(),'clicked leave',id);
 	let table = Serverdata.tables.find(x=>x.id == id);
-	assertion(isdef(table.players.find(x=>x.name == U.name)),'not in joined players!!!!');
+	let me = getUname();
+	assertion(isdef(table.players.find(x=>x.name == me)),'not in joined players!!!!');
 	//console.log('players',table.players);
-	let player=table.players.find(x=>x.name == U.name);
+	let player=table.players.find(x=>x.name == me);
 	removeInPlace(table.players,player); 
 	table.playerNames = table.players.map(x=>x.name);
 	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
@@ -41,7 +38,7 @@ async function onclickStartGame(){
 	let players = collectPlayers(options); 
 
 	//console.log(jsCopy(players))
-	let name=getUname();	let names = [name];if (name=='felix')names.push('amanda'); else names.push('felix');
+	let me=getUname();	let names = [me];if (me=='felix')names.push('amanda'); else names.push('felix');
 	players = names.map(x=>createHumanPlayer(x)); // TEST!
 	//console.log(jsCopy(players))
 
@@ -59,12 +56,6 @@ async function startGame(gamename,players,options){
 	table = setTableToStarted(table); //fen is created here!!!!
 	let res = await mPostRoute('postTable', table); 
 
-}
-async function natCreateGame() {
-  let id = generateTableId();
-  let fen = natCreate(U.name, ['felix', 'amanda']); //{felix:{level:'emperor'},lili:{civ:'rome'},lauren:{civ:'mongolia'}});
-  let s = JSON.stringify(fen);
-  let res = await mPostRoute('postTable', { status:'started', id: id, fen: fen, game: 'nations', friendly: generateTableName(fen.numPlayers) });
 }
 
 

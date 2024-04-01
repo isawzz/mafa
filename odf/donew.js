@@ -1,6 +1,8 @@
 function createOpenTable(gamename, players, options) {
 	let playerNames = players.map(x => x.name);
-	assertion(playerNames[0] == U.name, `_addTable: owner should be ${U.name} and first in ${playerNames.join(',')}`);
+	let me = getUname();
+
+	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
 	let t={
 		status: 'open',
 		id: generateTableId(),
@@ -241,11 +243,7 @@ function collectPlayers(options) {
 
 	let players = [];
 	if (isList(DA.playerlist)) players = DA.playerlist.map(x => ({ name: x.name, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') }));
-	// : rPlayers(U.name,valf(options.nplayers-1);
-	// let players = DA.playerlist.map(x => ({ name: x.uname, playmode: x.playmode }));
-	// for (const pl of players) { if (isEmpty(pl.strategy)) pl.strategy = valf(options.strategy, 'random'); }
 	return players;
-	// startgame(game, players, options); hide('dMenu');
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
 
@@ -377,7 +375,7 @@ function collKeyCollnameFromElem(elem) { return { key: elem.getAttribute('key'),
 function collKeyCollnameFromSelkey(selkey) { return { key: stringBefore(selkey, '@'), collname: stringAfter(selkey, '@') }; }
 
 function collLocked(collname) {
-	if (U.name != '____unsafe' && ['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
+	if (getUname() != '____unsafe' && ['all', 'amanda', 'animals', 'big', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname)) {
 		//console.log(`LOCKED collection ${collname}`);
 		return true;
 	}
@@ -1271,7 +1269,7 @@ async function showColors() {
 	}
 }
 async function showDashboard() {
-	mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${U.name}! this is your dashboard` })
+	mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${getUname()}! this is your dashboard` })
 }
 async function showDirPics(dir, dParent) {
 	let imgs = await mGetFiles(dir);
@@ -1356,6 +1354,7 @@ async function showGamePlayers(dParent, gamename) {
 	let params = [gamename, DA.playerlist];
 	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
 
+	let me = getUname();
 	for (const name in users) {
 		let d1 = mDom(d, { cursor: 'pointer' });
 		d1.setAttribute('username', name)
@@ -1364,7 +1363,7 @@ async function showGamePlayers(dParent, gamename) {
 
 		let item = { name, div: d1, state: 0, strategy: '', isSelected: false };
 		DA.allPlayers.push(item);
-		if (name == U.name) { toggle_select(item, funcs, gamename, DA.playerlist); DA.lastName = name; }
+		if (name == me) { toggle_select(item, funcs, gamename, DA.playerlist); DA.lastName = name; }
 		else d1.onclick = ev => {
 			if (ev.shiftKey) {
 				console.log('shift!!!')
@@ -1520,8 +1519,7 @@ function showNavbar() {
 }
 async function showTables() {
 	Clientdata.table = null;
-	assertion(Clientdata.curUser == U.name,"ShowTables!!!!!!!")
-	let me = U.name;
+	let me = getUname();
 	// let tables=Serverdata.tables;
 	let tables = Serverdata.tables = await mGetRoute('tables');
 	//console.log('tables', tables);
@@ -1553,7 +1551,6 @@ async function showTables() {
 
 		if (ri.o.status == 'open') {
 			//join or leave button!
-			//depending on U.name status!
 			let playerNames = ri.o.playerNames;
 			if (playerNames.includes(me)) {
 				let h1 = hFunc('leave', 'onclickLeaveTable', ri.o.id); let c = mAppend(r, mCreate('td')); c.innerHTML = h1;
@@ -1663,7 +1660,7 @@ async function switchToMenu(menu, key) {
 async function switchToUser(uname) {
 	if (!isEmpty(uname)) uname = normalizeString(uname);
 	if (isEmpty(uname)) uname = 'guest';
-	sockPostUserChange(U ? U.name : '', uname); //das ist nur fuer die client id!
+	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
 	Clientdata.curUser = uname;
 	localStorage.setItem('username', uname);

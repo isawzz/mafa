@@ -11,11 +11,11 @@ function setgame() {
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
 		return fen;
 	}
-	async function activate(table,name) {await setActivate(); console.log('activate for',name);}
+	async function activate(table) {await setActivate(); console.log('activate for',getUname());}
 	function checkGameover(table) { 
 		return table.playerNames.some(x=>x.score == table.options.winning_score);
 	}
-	async function present(table, name) { await setPresent(table, name); } //if (nundef(name)) name = U.name; showMessage(`BINGO!!! ${table.friendly} view ${name}`); } 
+	async function present(table) { await setPresent(table); } 
 	return { setup, activate, checkGameover, present };
 }
 async function setActivate(){
@@ -84,7 +84,7 @@ function setLoadPatterns(dParent){
 	let el=mCreateFrom(html);
 	mAppend(dParent,el)
 }
-async function setPresent(table, name) {
+async function setPresent(table) {
 	setLoadPatterns('dPage');
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
@@ -108,10 +108,10 @@ async function setOnclickCard(item,items){
 	let n=items.length;
 	let selitems=items.filter(x=>x.isSelected);
 	let m = selitems.length;
-	console.log(`${m} out of ${n} items selected!`);
+	//console.log(`${m} out of ${n} items selected!`);
 	if (m == 3){
 		//check if this is a set!
-		console.log('selected',selitems)
+		//console.log('selected',selitems)
 		let move = selitems.map(x=>x.key);
 		sendMyMove(move);
 		//send move!

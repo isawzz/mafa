@@ -49,7 +49,7 @@ async function prelims() {
 	window.onkeydown = keyDownHandler;
 	window.onkeyup = keyUpHandler;
 
-	DA.funcs = { a_game: a_game(), setgame: setgame(), }; //implemented games!
+	DA.funcs = { setgame: setgame(), }; //implemented games!
 	for (const gname in Serverdata.config.games) {
 
 		if (isdef(DA.funcs[gname])) continue;
@@ -61,8 +61,8 @@ async function prelims() {
 }
 function defaultGameFunc() {
 	function setup(table) { return { players: table.players, turn: table.owner }; }
-	async function activate(table,name) {console.log('activate for',name)}
+	async function activate(table) {console.log('activate for',getUname())}
 	function checkGameover(table) { return false; }
-	async function present(table, name) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
+	async function present(table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
 	return { setup, activate, checkGameover, present };
 }

@@ -1,3 +1,41 @@
+//#region NEW!
+function getActivePlayer(fen) { if (fen.playerNames.includes(U.name)) return U.name; else return fen.turn[0]; }
+function sendMyMove(key) {
+  let name = getUname();
+  let table = Clientdata.fen.id;
+  sockPostMove(table, name, key);
+}
+async function switchToTable(id) {
+  console.log('_switchToTable!!!',id)
+  let res = await mGetRoute('table', { id });
+  await showTable(res, getUname())
+}
+//#region games
+function a_game() {
+	function setup(table) {
+		let fen = {};
+		fen.players = {};
+		for (const pl of table.players) {
+			fen.players[pl.name] = pl;
+		}
+		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
+		return fen;
+	}
+	function checkGameover(table) { return false; }
+	function present(table) { a_game_present(table); } 
+	return { setup, checkGameover, present };
+}
+function a_game_present(table, name) {
+
+	//was soll passieren?
+	//erstmal clear page I guess
+	mClear('dMain');
+	let d = mDom('dMain', { margin: 10, bg: '#00000080' }); mCenterCenterFlex(d)
+	mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
+
+}
+//#endregion
+
 //#region nat
 function approx(n, goal, delta) { return Math.abs(n - goal) <= delta; }
 function allDarkPoints(ctx, w, dims) {
@@ -1075,7 +1113,6 @@ function startgame(game, players, options = {}) {
 
 
 //#endregion
-
 
 function arrInsertAt(arr, x, i) {
 	arr.splice(i, 0, x);

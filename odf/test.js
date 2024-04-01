@@ -805,9 +805,9 @@ async function test74_svgImage(){
 }
 async function test75_login(){
   await prelims();
-  console.log('user is',U.name)
-  await switchToUser(U.name == 'felix'?'amanda':'felix');
-  console.log('user now:',U.name)
+	let me = getUname(); console.log('user is',me)
+  await switchToUser(me == 'felix'?'amanda':'felix');
+  console.log('user now:',getUname())
 }
 async function test76_simplestuff(){
   await prelims();

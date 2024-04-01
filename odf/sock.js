@@ -25,16 +25,16 @@ async function onsockDeleteTable(x) {
   //console.log('x',x)
   Serverdata.tables = x.tables;
   //console.log('::SOCK deleteTable:', tables);
-  let [me, table, menu] = [Clientdata.curUser, Clientdata.curTable, Clientdata.curMenu]; console.log('SOCK deleteTable', me, menu, table);
-  //if ()
+  let [me, table, menu] = [getUname(), Clientdata.curTable, Clientdata.curMenu]; 
+  console.log('SOCK deleteTable', me, menu, table);
   showTables()
 }
 async function onsockMove(x) {
   console.log('::SOCK move:', x);
 }
 async function onsockTable(x) {
-  console.log('::SOCK table:', x, Clientdata);
-  let [msg, id, turn] = [x.msg, x.id, x.turn];
+  console.log('::SOCK table:', 'new',x,'old', Clientdata.table);
+  let [msg, id, turn, isNew] = [x.msg, x.id, x.turn, x.isNew];
 
   if (Clientdata.curMenu != 'play') return; //wenn ich nicht in menu play bin mach garnichts
 
@@ -42,12 +42,12 @@ async function onsockTable(x) {
   let me=getUname();
   let isSameTableOpen = lookup(Clientdata,['table','id']) == id;
 
-  if (isSameTableOpen || turn.includes(me) && !Clientdata.table) return await switchToTable(id);
+  if (isSameTableOpen || isNew && turn.includes(me) && !Clientdata.table) return await showTable(id); 
 
   if (!Clientdata.table) return await showTables(); 
 }
 async function onsockTables(x) {
-  console.log('::SOCK tables:', x, Clientdata); return;
+  console.log('::SOCK tables:', x, Clientdata); //return;
 
   if (Clientdata.curMenu == 'play' && !Clientdata.curTable) showTables();
 }

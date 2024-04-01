@@ -451,8 +451,9 @@ async function onsockSuperdi(x){
 
 //#region play
 async function onclickClearPlayers(){
+	let me = getUname();
 	for (const item of DA.allPlayers) {
-		if (item.isSelected && U.name != item.name) {
+		if (item.isSelected && me != item.name) {
 			style_not_playing(item, '', DA.playerlist);
 		}
 	}
@@ -488,7 +489,7 @@ function onclickDay(d, styles) {
   let tsDay = d.id; 
   let tsCreated = Date.now();
   let id = generateEventId(tsDay, tsCreated);
-  let uname = U ? U.name : 'guest';
+  let uname = U ? getUname() : 'guest';
   let o = { id: id, created: tsCreated, day: tsDay, time: '', text: '', user: uname, shared: false, subscribers: [] };
   Items[id] = o;
   let x = uiTypeEvent(d, o, styles); 

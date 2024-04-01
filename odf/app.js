@@ -452,7 +452,7 @@ app.post('/postTable', (req, res) => {
 	let msg=`table posted: ${newtable.friendly} new:${isNew} status:${newtable.status}`;
 	console.log(msg)
 	let turn=isStarted?newtable.fen.turn:[];
-	io.emit('table',{msg,id,turn})
+	io.emit('table',{msg,id,turn,isNew})
 	res.json(msg);
 });
 app.post('/postUser', (req, res) => {
