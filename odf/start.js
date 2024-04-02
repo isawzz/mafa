@@ -64,5 +64,6 @@ function defaultGameFunc() {
 	async function activate(table) {console.log('activate for',getUname())}
 	function checkGameover(table) { return false; }
 	async function present(table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
-	return { setup, activate, checkGameover, present };
+	async function stepComplete(table,o) {console.log(`integrate if step complete for ${table.friendly}`); }
+	return { setup, activate, checkGameover, present, stepComplete };
 }

@@ -8,7 +8,7 @@ function sockInit() {
   Socket.on('message', showChatMessage);
   Socket.on('table', onsockTable); //x => console.log('::SOCK table:', x));
   Socket.on('tables', onsockTables); //x => console.log('::SOCK table:', x));
-  Socket.on('move', onsockMove); //x => console.log('::SOCK move:', x));
+  Socket.on('move', onsockReceiveMove); //onsockMove); //x => console.log('::SOCK move:', x));
   //Socket.on('newTable', onsockNewTable); //x => console.log('::SOCK table:', x));
   Socket.on('superdi', onsockSuperdi);
   Socket.on('turnUpdate', onsockTurnUpdate); //x => console.log('::SOCK table:', x));
@@ -16,7 +16,8 @@ function sockInit() {
   // Socket.on('update', x => console.log('::SOCK update:', x));
 }
 function sockPostMove(id, name, move) {
-  Socket.emit('move', { id, name, move });
+  assertion(false,'sockPostMove shouldnt be called!!!')
+  //Socket.emit('move', { id, name, move });
 }
 function sockPostUserChange(oldname, newname) {
   Socket.emit('userChange', { oldname, newname });

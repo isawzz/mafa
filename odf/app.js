@@ -455,6 +455,23 @@ app.post('/postTable', (req, res) => {
 	io.emit('table',{msg,id,turn,isNew})
 	res.json(msg);
 });
+const Moves={};//per table,
+app.post('/move', (req, res) => {
+	let o = req.body;
+	let [id,friendly,name,move,type,step,turn]=[o.id,o.friendly,o.name,o.move,o.type,o.step,o.turn];
+	if (nundef(Moves[id])) Moves[id]=[];
+	if (nundef(Moves[id][step])) Moves[id].push({});
+	if (nundef(Moves[id][step][name])) Moves[id][step][name]={move,type,turn};
+
+	if (type == 'race1'){
+		o.step++;
+	}
+
+	io.emit('move',o);
+	let msg=`move ${friendly} ${step} ${name} [${turn.join(',')}]`;
+	console.log(msg);
+	res.json(msg);
+});
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let data = req.body;

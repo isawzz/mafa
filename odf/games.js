@@ -16,7 +16,8 @@ function setgame() {
 		return table.playerNames.some(x=>x.score == table.options.winning_score);
 	}
 	async function present(table) { await setPresent(table); } 
-	return { setup, activate, checkGameover, present };
+	async function stepComplete(table,o) { await setStepComplete(table,o); } 
+	return { setup, activate, checkGameover, present, stepComplete };
 }
 async function setActivate(){
 	for(const item of Clientdata.items){
@@ -113,9 +114,19 @@ async function setOnclickCard(item,items){
 		//check if this is a set!
 		//console.log('selected',selitems)
 		let move = selitems.map(x=>x.key);
-		sendMyMove(move);
+		await sendMyMove(move,'race1');
 		//send move!
 
 	}
+
+}
+async function setStepComplete(table,o){
+	table.step=o.step;
+	let pl = table.fen.players[o.name];
+	pl.score++;
+	Clientdata.table = table;
+	console.log('player scores',table.playerNames.map(x=>table.fen.players[x].score));
+	let [step,fen]=[table.step,table.fen];
+	if (getUname()==o.name) await mPostRoute('postTable', {step,fen});
 
 }

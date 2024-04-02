@@ -66,7 +66,6 @@ function cRound(dParent, styles = {}, opts={}) {
 }
 function deckDeal(deck, n) { return deck.splice(0, n); }
 
-
 function mItem(liveprops={},opts={}) {
 	let id = valf(opts.id,getUID());
   let item = opts;
