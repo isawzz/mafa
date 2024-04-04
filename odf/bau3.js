@@ -1,6 +1,6 @@
 
 async function onclickTable(id) { 
-	console.log('_____ onclickTable')
+	//console.log('_____ onclickTable')
   await showTable(id)
 }
 async function onclickJoinTable(id){

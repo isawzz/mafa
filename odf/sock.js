@@ -34,7 +34,7 @@ async function onsockMove(x) {
   console.log('::SOCK move:', x);
 }
 async function onsockTable(x) {
-  console.log('::SOCK table:', 'new',x,'old', Clientdata.table);
+  //console.log('::SOCK table:', 'new',x,'old', Clientdata.table);
   let [msg, id, turn, isNew] = [x.msg, x.id, x.turn, x.isNew];
 
   if (Clientdata.curMenu != 'play') return; //wenn ich nicht in menu play bin mach garnichts

@@ -459,9 +459,12 @@ const Moves={};//per table,
 app.post('/move', (req, res) => {
 	let o = req.body;
 	let [id,friendly,name,move,type,step,turn]=[o.id,o.friendly,o.name,o.move,o.type,o.step,o.turn];
+	let ts = new Date().getTime();
+
+	let m=look
 	if (nundef(Moves[id])) Moves[id]=[];
 	if (nundef(Moves[id][step])) Moves[id].push({});
-	if (nundef(Moves[id][step][name])) Moves[id][step][name]={move,type,turn};
+	if (nundef(Moves[id][step][name])) Moves[id][step][name]={move,type,turn,ts};
 
 	if (type == 'race1'){
 		o.step++;

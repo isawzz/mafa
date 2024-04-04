@@ -13,7 +13,7 @@ function setgame() {
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
 		return fen;
 	}
-	async function activate(table) {await setActivate(); console.log('activate for',getUname());}
+	async function activate(table) {await setActivate(); } //console.log('activate for',getUname());}
 	function checkGameover(table) { 
 		return table.playerNames.some(x=>x.score == table.options.winning_score);
 	}
@@ -127,6 +127,7 @@ async function setOnclickCard(item,items){
 
 }
 async function setStepComplete(table,o){
+	console.log('___ stepComplete')
 	table.step=o.step;
 	let pl = table.fen.players[o.name];
 	pl.score++;
@@ -140,7 +141,7 @@ function setStats(fen, dParent, layout) {
 	let me=getUname();
   let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { wmin: 130, bg: 'beige', fg: 'contrast' })
   for (const plname in fen.players) {
-    let pl1 = fen.players[plname]; console.log('player',pl1)
+    let pl1 = fen.players[plname]; //console.log('player',pl1)
     let item = player_stat_items[plname];
     let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
     playerStatCount('', pl1.score, d);
