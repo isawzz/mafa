@@ -1535,7 +1535,7 @@ async function showTables() {
 	tables.map(x => x.game_friendly = capitalize(Serverdata.config.games[x.game].friendly));
 	// tables.map(x => x.playerNames = x.players.map(y => y.name));
 	mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
-	let t = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'playerNames'], 'tables', false);
+	let t = UI.tables = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'playerNames'], 'tables', false);
 
 	mTableCommandify(t.rowitems.filter(ri => ri.o.status == 'started'), {
 		0: (item, val) => hFunc(val, 'onclickTable', item.o.id, item.id),
@@ -1673,7 +1673,7 @@ async function switchToUser(uname) {
 		menuEnable(UI.nav, 'plan');
 		let t = Clientdata.table;
 		let cur = Clientdata.curMenu; //UI.nav.cur; //console.log('current menu is', cur);
-		if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t, uname);
+		if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t.id);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
 	}
 }

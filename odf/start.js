@@ -10,6 +10,7 @@ async function test38(){
 
 	// mStyle('dMain',{opacity:0})
 	await switchToMenu(UI.nav, 'play');
+	await onclickTable(Serverdata.tables[0].id)
 	
 	// //return;
 	

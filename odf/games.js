@@ -4,10 +4,12 @@ function setgame() {
 		fen.players = {};
 		for (const o of table.players) {
 			let pl = fen.players[o.name] = o;
+			pl.color = getUserColor(o.name)
 			pl.score = 0;
 		}
 		fen.deck = setCreateDeck();
 		fen.cards = deckDeal(fen.deck,12);
+		fen.plorder = jsCopy(table.playerNames);
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
 		return fen;
 	}
@@ -89,11 +91,13 @@ async function setPresent(table) {
 	setLoadPatterns('dPage');
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
+  let [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
+	// mCenterCenterFlex(dOben);
 	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
 
 	let [fen,playerNames,players,turn]=[table.fen,table.playerNames,table.fen.players,table.fen.turn];
 	let cards = fen.cards;
-	let dBoard=mGrid(cards.length/3,3,d,{gap:14});
+	let dBoard=mGrid(cards.length/3,3,dOpenTable,{gap:14});
 	let items = Clientdata.items = [];
 	for(const c of cards){
 		//mDom(dBoard,{},{html:c})
@@ -102,6 +106,8 @@ async function setPresent(table) {
 		items.push(item);
 	}
 
+	//setStats(table.fen, dRechts,'col');
+	setStats(table.fen, dOben,'rowflex')
 
 }
 async function setOnclickCard(item,items){
@@ -129,4 +135,19 @@ async function setStepComplete(table,o){
 	let [step,fen]=[table.step,table.fen];
 	if (getUname()==o.name) await mPostRoute('postTable', {step,fen});
 
+}
+function setStats(fen, dParent, layout) {
+	let me=getUname();
+  let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { wmin: 130, bg: 'beige', fg: 'contrast' })
+  for (const plname in fen.players) {
+    let pl1 = fen.players[plname]; console.log('player',pl1)
+    let item = player_stat_items[plname];
+    let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
+    playerStatCount('', pl1.score, d);
+    mDom(d, { h: 6, w: '100%' });
+    if (fen.turn.includes(plname)) {
+      show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
+    }
+    // mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })
+  }
 }

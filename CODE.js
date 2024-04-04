@@ -1,3 +1,34 @@
+function uiTypePlayerStats(fen, me, dParent, layout, innerStyles = {}) {
+  let dOuter = mDom(dParent);
+  if (layout == 'rowflex') mStyle(dOuter,{display:'flex',justify:'center'});
+  else if (layout == 'col') mStyle(dOuter,{display:'flex',dir:'column'});
+  //addKeys({ bg:'blue', display: 'flex' }, outerStyles);
+  //let dOuter=mDom(dParent,outerStyles);//mCenterCenterFlex(dOuter);
+  // mStyle(dParent, outerStyles);
+  //console.log('outerStyles',outerStyles)
+  let styles = jsCopy(innerStyles);
+  addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
+  let show_first = me;
+  let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
+  let items = {};
+  for (const name of order) {
+    let pl = fen.players[name];
+    //let imgPath = `../assets/img/users/${pl.icon}.jpg`;
+    styles['border-color'] = name == me?colorLighter(pl.color):pl.color;
+    let d = mDom(dOuter, styles, { id: name2id(name) })
+    //let picstyle = { w: 50, h: 50, box: true };
+    // let ucolor = pl.color;
+    // if (pl.playmode == 'bot') {
+    //   copyKeys({ rounding: 0, border: `double 6px ${ucolor}` }, picstyle);
+    // } else {
+    //   copyKeys({ rounding: '50%', border: `solid 2px white` }, picstyle);
+    // }
+    let img = showUserImage(name, d, 40);
+    //let img = mImage(imgPath, d, picstyle, 'img_person');
+    items[name] = { div: d, name: name };
+  }
+  return items;
+}
 async function onsockTable(x) {
   console.log('::SOCK table:', x, Clientdata);
   let [msg, id, turn] = [x.msg, x.id, x.turn];
