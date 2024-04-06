@@ -1,3 +1,50 @@
+async function _onsockDeleteTable(x) {
+  //console.log('x',x)
+  Serverdata.tables = x.tables;
+  //console.log('::SOCK deleteTable:', tables);
+  let [me, table, menu] = [getUname(), Clientdata.curTable, Clientdata.curMenu]; 
+  //console.log('SOCK deleteTable', me, menu, table);
+  showTables()
+}
+async function _onsockMove(x) {
+  //console.log('::SOCK move:', x);
+}
+async function sendMyMove(move,type) {
+  let name = getUname(); 
+	let table = Clientdata.table;
+  let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = table.fen.turn;
+	console.log('___ sendMyMove',step,name); //type,move,turn)
+	let res = await mPostRoute('move',{id,friendly,name,move,type,step,turn});
+	//console.log('result',res)
+  // sockPostMove(table, me, o);
+}
+function onsockReceiveMove(o){
+	//integrate move according to type and complete step if complete
+	let [event,moves]=[o.event,o.moves];
+	o=event;
+	console.log('___ onsockReceiveMove',o.step,o.name,o.ts,moves); //return;
+	let [id,friendly,name,move,type,step,turn,ts]=[o.id,o.friendly,o.name,o.move,o.type,o.step,o.turn,o.ts];
+	let table = Clientdata.table;
+	if (!table || table.id != id) {console.log(`not playing at table ${id}`); return;}
+
+	let func = DA.funcs[table.game];
+	console.log('...process',type,turn,friendly);
+	//somebody moved but fen has not changed
+
+	//checkIfStepComplete
+	// if (type == 'r1'){
+
+	// 	table.step=step;
+	// 	//stepComplete
+	// 	//console.log('game',table.game)
+	// 	func.stepComplete(table,o)
+	// }
+
+}
+
 function uiTypePlayerStats(fen, me, dParent, layout, innerStyles = {}) {
   let dOuter = mDom(dParent);
   if (layout == 'rowflex') mStyle(dOuter,{display:'flex',justify:'center'});
@@ -397,6 +444,46 @@ function rest(ckey) {
 
 
 //#region app.js 
+app.post('/move', (req, res) => {
+	let o = req.body;
+	let [id, friendly, name, move, type, step, turn] = [o.id, o.friendly, o.name, o.move, o.type, o.step, o.turn];
+	let ts = o.ts = new Date().getTime();
+	console.log('=>move', step, name, ts);
+	let table = Session.tables[id];
+
+	if (step < table.step) { console.log('ignore', step, name); return res.json('ignore'); }
+	lookupAddToList(Moves, [id], o);
+
+	//1. alle players auf dieser table sollen den move erhalten
+	console.log('players', table.playerNames)
+	emitToPlayers(table.playerNames, 'move', { event: o, moves: Moves[id]}); //.slice(-2) });
+	res.json(o); //return; //`move ${name} ${step} ${ts}`); return;
+
+	//type can be r1=race only 1 per player, 
+	// let m=lookup(Moves,[id,step,name]);
+
+	// if (nundef(Moves[id])) Moves[id]=[];
+	// if (nundef(Moves[id][step])) Moves[id].push({});
+	// if (nundef(Moves[id][step][name])) Moves[id][step][name]={move,type,turn,ts};
+
+	// if (type == 'race1'){
+	// 	o.step++;
+	// }
+
+	// io.emit('move',o);
+	// let msg=`move ${friendly} ${step} ${name} [${turn.join(',')}]`;
+	// //console.log(msg);
+	// res.json(msg);
+
+});
+
+function _handle_login(x, id) {
+	console.log('::login:', x, id);
+	byClient[id] = x;
+	byUsername[x] = id;
+	io.emit('message', `${x} logged in!`);
+}
+
 app.post('/postTable', (req, res) => {
 	let id = req.body.id;
 	let newtable = req.body;

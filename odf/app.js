@@ -29,6 +29,7 @@ app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 
 //#region functions
 function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
+function arrClear(arr){arr.length=0;return arr;}
 function copyKeys(ofrom, oto, except = {}, only = null) {
 	let keys = isdef(only) ? only : Object.keys(ofrom);
 	for (const k of keys) {
@@ -37,21 +38,23 @@ function copyKeys(ofrom, oto, except = {}, only = null) {
 	}
 	return oto;
 }
-function deleteFile(filePath){
+function deleteFile(filePath) {
 	fs.unlink(filePath, (err) => {
-    if (err) {
-        console.error('Error deleting file:', err);
-        return;
-    }
-    console.log('File deleted:', filePath);
-	});	
+		if (err) {
+			console.error('Error deleting file:', err);
+			return;
+		}
+		console.log('File deleted:', filePath);
+	});
 }
-function deleteTable(id){		delete Session.tables[id]; 	deleteFile(getTablePath(id));}
-function emitToPlayers(namelist,msgtype,o){
-	for(const name of namelist){
-		let id = byUsername[name]; //console.log('name',name,'\nid',id)
-		let client = clients[id]; //console.log('client',client)
-		if (client) client.emit(msgtype,o);
+function deleteTable(id) { delete Session.tables[id]; deleteFile(getTablePath(id)); }
+function emitToPlayers(namelist, msgtype, o) {
+	for (const name of namelist) {
+		let idlist = byUsername[name]; console.log('name', name, '\nid', idlist);
+		for (const id of idlist) {
+			let client = clients[id]; console.log(name, client.id); //isdef(client),Object.keys(client))
+			if (client) client.emit(msgtype, o);
+		}
 	}
 }
 async function getFiles(dir) {
@@ -61,7 +64,7 @@ async function getFiles(dir) {
 	return files;
 
 }
-function getTablePath(id){return path.join(tablesDir,`${id}.yaml`);}
+function getTablePath(id) { return path.join(tablesDir, `${id}.yaml`); }
 function deepMerge(target, source) {
 	// Check if the arguments are objects
 	if (typeof target !== 'object' || typeof source !== 'object') {
@@ -177,14 +180,14 @@ function lookupSetOverride(dict, keys, val) {
 }
 function nundef(x) { return x === null || x === undefined; }
 function removeInPlace(arr, el) {
-  let i = arr.indexOf(el);
-  if (i > -1) arr.splice(i, 1);
-  return i;
+	let i = arr.indexOf(el);
+	if (i > -1) arr.splice(i, 1);
+	return i;
 }
 function saveConfig() {
 	let y = yaml.dump(Session.config); fs.writeFileSync(configFile, y, 'utf8');
 }
-function saveTable(id,o){
+function saveTable(id, o) {
 	lookupSetOverride(Session, ['tables', id], o);
 	let y = yaml.dump(Session.tables[id]);
 	fs.writeFileSync(getTablePath(id), y, 'utf8');
@@ -207,14 +210,20 @@ app.get('/user', (req, res) => {
 	//console.log(data)
 	res.json(data);
 });
-app.get('/users', (req, res) => { 
-	let users = lookup(Session,['users']);
-	let di={};
-	for(const k in users){
+app.get('/otherUser', (req, res) => {
+	let params = req.query;
+	let [name1, name2] = [params.name1, params.name2];
+	let name = Session.lastUser = (Session.lastUser == name1 ? name2 : name1);
+	res.json(name);
+});
+app.get('/users', (req, res) => {
+	let users = lookup(Session, ['users']);
+	let di = {};
+	for (const k in users) {
 		if (k.includes('_') || k.includes('unsafe') || k == 'guest') continue;
-		di[k]=users[k];
+		di[k] = users[k];
 	}
-	return res.json(di); 
+	return res.json(di);
 });
 app.get('/config', (req, res) => {
 	console.log('==> get config')
@@ -241,34 +250,34 @@ app.get('/filenames', async (req, res) => {
 		res.status(500).json({ error: 'Error reading directory', details: err.message });
 	}
 });
-function getTablesInfo(){
-	let info=[];
+function getTablesInfo() {
+	let info = [];
 	//console.log('session.tables',Session.tables); return [];
-	for(const id in Session.tables){
+	for (const id in Session.tables) {
 		//ich solltehaben: game, players, friendlyname, turn als minimum
 		let t = jsCopy(Session.tables[id]);
 		//let o={game:t.game,players:t.fen.playerNames,turn:t.fen.turn,friendly:t.friendly,id:id}
 		//fen weglassen!!! dann brauch ich aber den turn!!!
-		if (isdef(t.fen)) {t.turn = t.fen.turn;		delete t.fen;}
+		if (isdef(t.fen)) { t.turn = t.fen.turn; delete t.fen; }
 		info.push(t);
 	}
 	return info;
 }
 app.get('/session', (req, res) => {
 	console.log('==> get session')
-	let s={}; addKeys()
-	res.json({users:Session.users,config:Session.config,tables:getTablesInfo()}); //,events:Session.events});
+	let s = {}; addKeys()
+	res.json({ users: Session.users, config: Session.config, tables: getTablesInfo() }); //,events:Session.events});
 });
 app.get('/table', (req, res) => {
 	let params = req.query;
-	console.log('==> get table:\n params', params); //Object.keys(params))
+	//console.log('==> get table:\n params', params); //Object.keys(params))
 	//can also get a table by friendly name
 	let data = lookup(Session, ['tables', params.id]);
 	if (!data) {
 		//search tables by friendly name contains id
-		for(const id in Session.tables){
-			let t=Session.tables[id];
-			if (t.friendly.toLowerCase().includes(params.id.toLowerCase())) {data=t; break;}
+		for (const id in Session.tables) {
+			let t = Session.tables[id];
+			if (t.friendly.toLowerCase().includes(params.id.toLowerCase())) { data = t; break; }
 		}
 	}
 	//console.log(data)
@@ -285,104 +294,107 @@ const byClient = {};
 const byUsername = {};
 const clients = {};
 io.on('connection', (client) => {
-	clients[client.id]=client;
+	clients[client.id] = client;
 	//handle_connect(client.id);
 	//client.emit('message','hello')
-	client.on('login', x => handle_login(x, client.id));
+	//client.on('login', x => handle_login(x, client.id));
 	client.on('userChange', x => handle_userChange(x, client.id));
 	client.on('message', handle_message);
 	client.on('move', handle_move);
 	client.on('update', handle_update);
-	client.on('disconnect', handle_disconnect); // ()=>handle_disconnect(socket.id));
+	client.on('disconnect', x => handle_disconnect(x, client.id)); // ()=>handle_disconnect(socket.id));
 });
 function handle_connect(id) { console.log('::connected', id); io.emit('message', 'someone logged in!'); }
-function handle_disconnect(x) { console.log('::io.disconnected', x); io.emit('message', x); }
-function handle_login(x, id) {
-	console.log('::login:', x, id);
-	byClient[id] = x;
-	byUsername[x] = id;
-	io.emit('message', `${x} logged in!`);
+function handle_disconnect(x,id) { 
+	console.log('::io.disconnected', id); 
+	let uname=byClient[id];
+	let idlist=byUsername[uname];
+	removeInPlace(idlist,id);
+	io.emit('message', `${uname} left`); 
 }
 function handle_message(x) { console.log('::message', arguments); io.emit('message', x); }
-function handle_move(x){ 
-	console.log('::move', arguments);  
+function handle_move(x) {
+	console.log('::move', arguments);
 	//console.log('Session tables',Session.tables)
-	let table = lookup(Session,['tables',x.id]);
+	let table = lookup(Session, ['tables', x.id]);
 	//console.log('table',table);
 	//wie kann ich temp move zu table saven?
 	let fen = table.fen;
 	let turn = fen.turn;
-	console.log('turn',turn)
+	console.log('turn', turn)
 	let name = x.name;
 	let move = x.move;
 
 	//simplest:
-	if (!turn.includes(name)) {console.log('!!!move mismatch',name,move);return;}
-	lookupSetOverride(fen,['moves',name],move);
-	removeInPlace(fen.turn,name)
+	if (!turn.includes(name)) { console.log('!!!move mismatch', name, move); return; }
+	lookupSetOverride(fen, ['moves', name], move);
+	removeInPlace(fen.turn, name)
 	//save new fen when all players moved? or after each and every move?
-	emitToPlayers(table.playerNames,'move',x);
+	emitToPlayers(table.playerNames, 'move', x);
 	//io.emit('turnUpdate',fen.turn);
 }
 function handle_update(x) { console.log('::update', x); io.emit('update', x); }
 function handle_userChange(x, id) {
-	console.log('::user change',x.newname); //, x, id);
+	if (x.oldname == x.newname) { console.log('no change:', x.oldname); return; }
+	console.log('::user change', x.newname);
 	byClient[id] = x.newname;
-	lookupAddToList(byUsername,[x.newname],id);
-	let old = byUsername[x.oldname];
-	if (isdef(old)) removeInPlace(old,id);
+	lookupAddToList(byUsername, [x.newname], id);
+	let list = byUsername[x.oldname];
+	//console.log('list',list,id)
+	if (isList(list) && list.includes(id)) removeInPlace(list, id);
 	io.emit('userChange', `${id} is now ${x.newname}`);
 }
 //#endregion
 
 //#region post routes (uses emit)
 app.post('/deleteImage', (req, res) => {
-	let path1 = path.join(__dirname,req.body.path);
-	console.log('!!!deleting',path1);
-	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
+	let path1 = path.join(__dirname, req.body.path);
+	console.log('!!!deleting', path1);
+	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO', path1)
 	res.json(`image deleted ${req.body.path}`);
 });
 app.post('/moveImage', (req, res) => {
-	let [olddir,newdir,filename]=[req.body.olddir,req.body.newdir,req.body.filename];
-	console.log('...move',olddir,newdir,filename);
-	let oldpath = path.join(assetsDirectory,'img',olddir,filename);
-	let newpath = path.join(assetsDirectory,'img',newdir,filename);
+	let [olddir, newdir, filename] = [req.body.olddir, req.body.newdir, req.body.filename];
+	console.log('...move', olddir, newdir, filename);
+	let oldpath = path.join(assetsDirectory, 'img', olddir, filename);
+	let newpath = path.join(assetsDirectory, 'img', newdir, filename);
 	if (fs.existsSync(newpath)) {
-		console.log('@@@@@@@ NOT UNIQUE:',filename)
+		console.log('@@@@@@@ NOT UNIQUE:', filename)
 		filename = `i${Date.now()}_${filename}`;
-		newpath = path.join(assetsDirectory,'img',newdir,filename);
+		newpath = path.join(assetsDirectory, 'img', newdir, filename);
 	}
-	let dir=path.join(assetsDirectory,'img',newdir);
+	let dir = path.join(assetsDirectory, 'img', newdir);
 	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-	else console.log('dir',dir,'already exists');
-	console.log('move',oldpath,newpath);
+	else console.log('dir', dir, 'already exists');
+	console.log('move', oldpath, newpath);
 	if (fs.existsSync(oldpath)) {
-		fs.renameSync(oldpath,newpath); 
-		res.json({newpath:`../assets/img/${newdir}/${filename}`,msg:`image renamed to ${filename} in ${newdir}`});
-	}	else {
-		console.log('!!!NO',oldpath);
+		fs.renameSync(oldpath, newpath);
+		res.json({ newpath: `../assets/img/${newdir}/${filename}`, msg: `image renamed to ${filename} in ${newdir}` });
+	} else {
+		console.log('!!!NO', oldpath);
 		res.json(`did NOT find ${oldpath}`);
 	}
 });
 app.post('/deleteItem', (req, res) => {
 	let key = req.body.key;
-	if (nundef(M.superdi[key]))	{
+	if (nundef(M.superdi[key])) {
 		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
-	}else{
+	} else {
 		delete M.superdi[key];
 		let y = yaml.dump(M);
 		fs.writeFileSync(superdiFile, y, 'utf8');
-		io.emit('superdi',key);
+		io.emit('superdi', key);
 		res.json(`item ${key} deleted successfully!`);
 	}
 });
 app.post('/deleteTable', (req, res) => {
 	let id = req.body.id;
-	console.log('<== delete table',id);
-	let t=lookup(Session,['tables',id]);
-	if (t){
+	console.log('<== delete table', id);
+	let t = lookup(Session, ['tables', id]);
+	if (t) {
 		deleteTable(id);
-		io.emit('deleteTable',getTablesInfo());
+		io.emit('tables', getTablesInfo());
+		//io.emit('deleteTable', getTablesInfo());
 	}
 	res.json(getTablesInfo());
 });
@@ -417,7 +429,7 @@ app.post('/postUpdateEvent', (req, res) => {
 	let y = yaml.dump(Session.events);
 	let fname = path.join(dbDirectory, 'events.yaml');
 	fs.writeFileSync(fname, y, 'utf8');
-	io.emit('event',data);
+	io.emit('event', data);
 	res.json(`events updated successfully!`);
 	//res.json(data);
 });
@@ -434,7 +446,7 @@ app.post('/postImage', (req, res) => {
 	} else {
 		fname = path.join(__dirname, p);
 	}
-	console.log('fname', fname); 
+	console.log('fname', fname);
 	fs.writeFileSync(fname, base64Data, 'base64');
 	res.json({
 		message: 'File uploaded successfully',
@@ -448,38 +460,57 @@ app.post('/postTable', (req, res) => {
 	let isNew = nundef(Session.tables[id]);
 	let isStarted = newtable.status == 'started';
 
-	saveTable(id,newtable);
-	let msg=`table posted: ${newtable.friendly} new:${isNew} status:${newtable.status}`;
+	saveTable(id, newtable);
+	let msg = `table posted: ${newtable.friendly} new:${isNew} status:${newtable.status}`;
 	console.log(msg)
-	let turn=isStarted?newtable.fen.turn:[];
-	io.emit('table',{msg,id,turn,isNew})
+	let turn = isStarted ? newtable.fen.turn : [];
+	io.emit('table', { msg, id, turn, isNew })
 	res.json(msg);
 });
-const Moves={};//per table,
+
+//app.get('/lastUser', (req, res) => { res.json(Session.lastUser); });
+
+const Moves = {};//per table, a list of steps, each step has a list of moves for each player
 app.post('/move', (req, res) => {
 	let o = req.body;
-	let [id,friendly,name,move,type,step,turn]=[o.id,o.friendly,o.name,o.move,o.type,o.step,o.turn];
-	let ts = new Date().getTime();
+	let [id, friendly, name, move, type, step, turn] = [o.id, o.friendly, o.name, o.move, o.type, o.step, o.turn];
+	let ts = o.ts = new Date().getTime();
+	console.log('=>move', step, name, ts);
+	let table = Session.tables[id];
 
-	let m=look
-	if (nundef(Moves[id])) Moves[id]=[];
-	if (nundef(Moves[id][step])) Moves[id].push({});
-	if (nundef(Moves[id][step][name])) Moves[id][step][name]={move,type,turn,ts};
+	if (step < table.step) { console.log('ignore', step, name); return res.json('ignore'); }
+	lookupAddToList(Moves, [id], o);
 
-	if (type == 'race1'){
-		o.step++;
-	}
+	//1. alle players auf dieser table sollen den move erhalten
+	console.log('players', table.playerNames)
+	emitToPlayers(table.playerNames, 'move', { event: o, moves: Moves[id]}); //.slice(-2) });
+	res.json(o); 
+});
+app.post('/moveComplete', (req, res) => {
+	let o = req.body;
+	//der letzte move wird weggeschmissen!!!!!!!!!
+	let [id, friendly, name, fen, step, turn] = [o.id, o.friendly, o.name, o.fen, o.step, o.turn];
+	let table = Session.tables[id];
 
-	io.emit('move',o);
-	let msg=`move ${friendly} ${step} ${name} [${turn.join(',')}]`;
-	console.log(msg);
-	res.json(msg);
+	if (step < table.step) { console.log('ignore', step, name); return res.json('ignore'); }
+
+	table.fen = fen;
+	table.turn = turn;
+	table.step++;
+	Moves[id]=[];
+	saveTable(id, table);
+	emitToPlayers(table.playerNames,'table',table);
+	io.emit('tables',getTablesInfo());
+	// let msg = `table posted: ${table.friendly} new:${false} status:${table.status}`;
+	// console.log(msg)
+	// io.emit('moveComplete', { msg, id, turn:table.fen.turn, isNew:false })
+	// res.json(msg);
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let data = req.body;
-	console.log('<== post user',data)
-	if (nundef(data.key) || nundef(M.superdi[data.key])) data.key = fs.existsSync(path.join(assetsDirectory,`img/users/${name}.jpg`))?name:'unknown_user';
+	console.log('<== post user', data)
+	if (nundef(data.key) || nundef(M.superdi[data.key])) data.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';
 	let fname = path.join(dbDirectory, 'users.yaml');
 	lookupSetOverride(Session, ['users', name], data);
 	let y = yaml.dump(Session.users);
@@ -489,70 +520,70 @@ app.post('/postUser', (req, res) => {
 app.post('/postNewItem', (req, res) => {
 	let key = req.body.key;
 	let item = req.body.item;
-	if (nundef(M.superdi[key]))	{
+	if (nundef(M.superdi[key])) {
 		M.superdi[key] = item;
 		let y = yaml.dump(M);
 		fs.writeFileSync(superdiFile, y, 'utf8');
-		item.key=key;
-		io.emit('superdi',item);
+		item.key = key;
+		io.emit('superdi', item);
 		res.json(`item ${key} posted successfully!`);
-	}else{
+	} else {
 		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
 	}
 });
 //#region batch update of multiple items:
 app.post('/postUpdateSuperdi', (req, res) => {
 	let partialdi = req.body.di;
-	let toBeDeleted = valf(req.body.deletedKeys,[]);
-	let collname = req.body.collname; 
+	let toBeDeleted = valf(req.body.deletedKeys, []);
+	let collname = req.body.collname;
 	let deleteCollection = req.body.deleteCollection; //true when deleting a collection entirely!
 	console.log('<== postUpdateSuperdi')
-	console.log('to be deleted',toBeDeleted);
-	console.log('to be updated:',Object.keys(partialdi));
-	for(const k of toBeDeleted){
+	console.log('to be deleted', toBeDeleted);
+	console.log('to be updated:', Object.keys(partialdi));
+	for (const k of toBeDeleted) {
 		//image needs to be deleted as well!!!!
 		let item = M.superdi[k];
-		if (nundef(item.img) || item.colls.length>1) {
-			console.log('!!!no image!!!',k)
+		if (nundef(item.img) || item.colls.length > 1) {
+			console.log('!!!no image!!!', k)
 			continue;
 		}
-		let path1 = path.join(__dirname,item.img);
-		console.assert(path1.includes(collname),'!!!!!!!!!!!!!!!!!!');
-		console.log('!!!!!!!!!!!!!deleting',path1);
-		if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO',path1)
+		let path1 = path.join(__dirname, item.img);
+		console.assert(path1.includes(collname), '!!!!!!!!!!!!!!!!!!');
+		console.log('!!!!!!!!!!!!!deleting', path1);
+		if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO', path1)
 		delete M.superdi[k];
 	}
-	for(const k in partialdi){
-		M.superdi[k]=partialdi[k];
+	for (const k in partialdi) {
+		M.superdi[k] = partialdi[k];
 	}
-	if (deleteCollection == true){
-		let p=path.join(assetsDirectory,'img',collname);
+	if (deleteCollection == true) {
+		let p = path.join(assetsDirectory, 'img', collname);
 		if (fs.existsSync(p)) fs.rmdirSync(p);
 	}
 	let y = yaml.dump(M);
 	fs.writeFileSync(superdiFile, y, 'utf8');
-	io.emit('superdi',partialdi);
+	io.emit('superdi', partialdi);
 	res.json(`Superdi updated successfully!`);
 });
 //#endregion
 app.post('/postUpdateItem', (req, res) => {
 	let key = req.body.key;
 	let item = req.body.item;
-	if (nundef(M.superdi[key]))	{
+	if (nundef(M.superdi[key])) {
 		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
-	}else{
+	} else {
 		M.superdi[key] = item;
 		let y = yaml.dump(M);
 		fs.writeFileSync(superdiFile, y, 'utf8');
-		item.key=key;
-		io.emit('superdi',item);
+		item.key = key;
+		io.emit('superdi', item);
 		res.json(`item ${key} updated successfully!`);
 	}
 });
 app.post('/renameImgDir', (req, res) => {
 	let oldname = req.body.oldname;
 	let newname = req.body.newname;
-	fs.renameSync(path.join(assetsDirectory,`img/${oldname}`),path.join(assetsDirectory,`img/${newname}`));
+	fs.renameSync(path.join(assetsDirectory, `img/${oldname}`), path.join(assetsDirectory, `img/${newname}`));
 	res.json(`dir ${oldname} renamed successfully!`);
 });
 
@@ -572,11 +603,11 @@ async function init() {
 	//console.log('tablesDir',tablesDir)
 	let tablefiles = await fsp.readdir(tablesDir);
 	//console.log('tablefiles',tablefiles);
-	for(const f of tablefiles){
-		let p = path.join(tablesDir,f)
+	for (const f of tablefiles) {
+		let p = path.join(tablesDir, f)
 		//console.log('path',p)
 		yamlFile = fs.readFileSync(p, 'utf8');
-		let o=yaml.load(yamlFile);
+		let o = yaml.load(yamlFile);
 		Session.tables[o.id] = o;
 	}
 	server.listen(PORT, () => console.log('listening on port ' + PORT));

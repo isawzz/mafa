@@ -18,12 +18,15 @@ function setgame() {
 		return table.playerNames.some(x=>x.score == table.options.winning_score);
 	}
 	async function present(table) { await setPresent(table); } 
+	async function robotMove(table) {await setRobotMove(table); } //console.log('activate for',getUname());}
 	async function stepComplete(table,o) { await setStepComplete(table,o); } 
-	return { setup, activate, checkGameover, present, stepComplete };
+	return { setup, activate, checkGameover, present, robotMove, stepComplete };
 }
 async function setActivate(){
 	for(const item of Clientdata.items){
-		iDiv(item).onclick = ()=>setOnclickCard(item,Clientdata.items);
+		let d=iDiv(item);
+		d.onclick = ()=>setOnclickCard(item,Clientdata.items);
+		mStyle(d,{cursor:'pointer'})
 
 	}
 }
@@ -101,43 +104,57 @@ async function setPresent(table) {
 	let items = Clientdata.items = [];
 	for(const c of cards){
 		//mDom(dBoard,{},{html:c})
-		let d = setDrawCard(c,dBoard);
+		let d = setDrawCard(c,dBoard,70); 
 		let item = mItem({div:d},{key:c});
 		items.push(item);
 	}
 
 	//setStats(table.fen, dRechts,'col');
-	setStats(table.fen, dOben,'rowflex')
+	setStats(table.fen, dOben,'rowflex',false)
 
 }
 async function setOnclickCard(item,items){
+	console.log('click')
 	toggleItemSelection(item);
 	let n=items.length;
+	console.log(n);
 	let selitems=items.filter(x=>x.isSelected);
 	let m = selitems.length;
+	console.log(selitems,m);
 	//console.log(`${m} out of ${n} items selected!`);
-	if (m == 3){
+	if (m > 0){ //TESTING!!!
 		//check if this is a set!
-		//console.log('selected',selitems)
+		//console.log('selected',selitems);
 		let move = selitems.map(x=>x.key);
-		await sendMyMove(move,'race1');
+
+		let table=Clientdata.curTable;
+		let fen=table.fen;
+		let pl=fen.players[getUname()];
+		pl.score++;
+		await sendMoveComplete(fen);
 		//send move!
 
 	}
 
+}
+async function setRobotMove(table){
+	let me=getUname();
+	let item = rChoose(Clientdata.items);
+	let move = [item.key];
+	await sendMyMove(move,'r1');
 }
 async function setStepComplete(table,o){
 	console.log('___ stepComplete')
 	table.step=o.step;
 	let pl = table.fen.players[o.name];
 	pl.score++;
-	Clientdata.table = table;
+	Clientdata.curTable = table;
 	console.log('player scores',table.playerNames.map(x=>table.fen.players[x].score));
 	let [step,fen]=[table.step,table.fen];
 	if (getUname()==o.name) await mPostRoute('postTable', {step,fen});
 
 }
-function setStats(fen, dParent, layout) {
+function setStats(fen, dParent, layout, showTurn=true) {
 	let me=getUname();
   let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { wmin: 130, bg: 'beige', fg: 'contrast' })
   for (const plname in fen.players) {
@@ -146,7 +163,7 @@ function setStats(fen, dParent, layout) {
     let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
     playerStatCount('', pl1.score, d);
     mDom(d, { h: 6, w: '100%' });
-    if (fen.turn.includes(plname)) {
+    if (showTurn && fen.turn.includes(plname)) {
       show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
     }
     // mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })

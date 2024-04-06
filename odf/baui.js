@@ -66,6 +66,17 @@ function cRound(dParent, styles = {}, opts={}) {
 }
 function deckDeal(deck, n) { return deck.splice(0, n); }
 
+function draw_set_card_test(dParent) {
+  let card = cLandscape(dParent, { w: 120 });
+  let d = iDiv(card, { h: '100%' });
+  mCenterCenterFlex(d);
+  let sz = card.sz / 4;
+	let bg='indigo'; //`linear-gradient(${RED},black`
+  let styles = { w: sz, h: sz, bg, margin: 4 }; // sz / 10, border: `solid 3px ${GREEN}` };
+  let d1 = drawShape('circle', d, styles); //mCenterCenterFlex(d1); mText('A', d1, { fz: sz / 4, fg: 'white' });
+  drawShape('circle', d, styles);
+  drawShape('circle', d, styles);
+}
 function mItem(liveprops={},opts={}) {
 	let id = valf(opts.id,getUID());
   let item = opts;
@@ -113,6 +124,7 @@ function mPlace(elem, pos, offx, offy) {
   elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
 }
 
+function arrClear(arr){arr.length=0;return arr;}
 function drawShape(key, dParent, styles, classes, sizing) {
   if (nundef(styles)) styles = { w: 96, h: 96, bg: 'random' };
   if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
@@ -129,19 +141,65 @@ function makeSVG(tag, attrs) {
 		el += " " + k + "=\"" + attrs[k] + "\"";
 	return el + "/>";
 }
-
-
-function draw_set_card_test(dParent) {
-  let card = cLandscape(dParent, { w: 120 });
-  let d = iDiv(card, { h: '100%' });
-  mCenterCenterFlex(d);
-  let sz = card.sz / 4;
-	let bg='indigo'; //`linear-gradient(${RED},black`
-  let styles = { w: sz, h: sz, bg, margin: 4 }; // sz / 10, border: `solid 3px ${GREEN}` };
-  let d1 = drawShape('circle', d, styles); //mCenterCenterFlex(d1); mText('A', d1, { fz: sz / 4, fg: 'white' });
-  drawShape('circle', d, styles);
-  drawShape('circle', d, styles);
+async function onclickTable(id) { 
+	//console.log('_____ onclickTable')
+  await showTable(id)
 }
+async function onclickJoinTable(id){
+	//console.log(getUname(),'clicked join',id);
+	let table = Serverdata.tables.find(x=>x.id == id);
+	let me = getUname();
+	assertion(nundef(table.players.find(x=>x.name == me)),'already joined!!!');
+	table.players.push(createHumanPlayer(me));
+	table.playerNames = table.players.map(x=>x.name);
+	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
+	console.log('res',res);
+}
+async function onclickLeaveTable(id){
+	//console.log(getUname(),'clicked leave',id);
+	let table = Serverdata.tables.find(x=>x.id == id);
+	let me = getUname();
+	assertion(isdef(table.players.find(x=>x.name == me)),'not in joined players!!!!');
+	//console.log('players',table.players);
+	let player=table.players.find(x=>x.name == me);
+	removeInPlace(table.players,player); 
+	table.playerNames = table.players.map(x=>x.name);
+	let res = await mPostRoute('postTable', { id, players: table.players, playerNames:table.playerNames });
+	console.log('res',res);
+}
+async function onclickOpenToJoinGame(){
+	console.log('_____ onclickOpenToJoinGame')
+	let options = collectOptions();
+	let players = collectPlayers(options);
+	let t = createOpenTable(DA.gamename,players,options);
+	let res = await mPostRoute('postTable', t);
+}
+async function onclickStartGame(){
+	//console.log('_____ onclickStartGame')
+	let options = collectOptions();
+	let players = collectPlayers(options); 
+
+	//console.log(jsCopy(players))
+	let me=getUname();	let names = [me];if (me=='felix')names.push('amanda'); else names.push('felix');
+	players = names.map(x=>createHumanPlayer(x)); // TEST!
+	//console.log(jsCopy(players))
+
+	await startGame(DA.gamename,players,options);
+}
+async function onclickStartTable(id) {
+	console.log('_____ onclickStartTable')
+	let table = Serverdata.tables.find(x => x.id == id); assertion(isdef(table), `table with id ${id} not in Serverdata!`);
+	table =  setTableToStarted(table);
+	let res = await mPostRoute('postTable', table); 
+	//console.log('res', res);
+}
+async function startGame(gamename,players,options){
+	let table = createOpenTable(gamename,players,options);
+	table = setTableToStarted(table); //fen is created here!!!!
+	let res = await mPostRoute('postTable', table); 
+
+}
+
 
 
 

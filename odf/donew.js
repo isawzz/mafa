@@ -1518,7 +1518,7 @@ function showNavbar() {
 	return nav;
 }
 async function showTables() {
-	Clientdata.table = null;
+	Clientdata.curTable = null;
 	let me = getUname();
 	// let tables=Serverdata.tables;
 	let tables = Serverdata.tables = await mGetRoute('tables');
@@ -1657,6 +1657,10 @@ async function switchToMenu(menu, key) {
 	Clientdata.curMenu = key; //console.log('switchToMenu',Clientdata)
 	await menuOpen(menu, key);
 }
+async function switchToOtherUser(name1,name2) {
+	let uname = await mGetRoute('otherUser',{name1,name2});
+	await switchToUser(uname);
+}
 async function switchToUser(uname) {
 	if (!isEmpty(uname)) uname = normalizeString(uname);
 	if (isEmpty(uname)) uname = 'guest';
@@ -1671,7 +1675,7 @@ async function switchToUser(uname) {
 	if (uname == 'guest') { await switchToMenu(UI.nav, 'home'); menuDisable(UI.nav, 'plan'); }
 	else {
 		menuEnable(UI.nav, 'plan');
-		let t = Clientdata.table;
+		let t = Clientdata.curTable;
 		let cur = Clientdata.curMenu; //UI.nav.cur; //console.log('current menu is', cur);
 		if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t.id);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));

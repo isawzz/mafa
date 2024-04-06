@@ -1,6 +1,13 @@
 onload = start;
 
-async function start() { test38(); }
+async function start() { test39(); }
+
+async function test39(){
+	await prelims();
+	await switchToOtherUser('amanda','felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+}
 
 async function test38(){
 	await prelims();
@@ -8,9 +15,11 @@ async function test38(){
 	mButton('felix',()=>switchToUser('felix'),'dExtra')
 	mButton('amanda',()=>switchToUser('amanda'),'dExtra')
 
+	await switchToOtherUser('amanda','felix');
+	
 	// mStyle('dMain',{opacity:0})
 	await switchToMenu(UI.nav, 'play');
-	await onclickTable(Serverdata.tables[0].id)
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id)
 	
 	// //return;
 	
@@ -36,9 +45,15 @@ async function prelims() {
 	UI.nav = showNavbar();
 	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
 	dTitle = mBy('dTitle');
-	//UI.gadgetUsername = mGadget('username', { right: 0, top: 30 });
-
+	
 	await switchToUser(localStorage.getItem('username'));
+
+	//let x=rChoose(range(1,100,10)); console.log('x',x);	await mSleep(x);
+	// let name=await mGetRoute('lastUser'); console.log('lastUser',name);
+	// let uname = name == 'felix'?'amanda':'felix';	//immer verschiedenen user verwenden
+	// await switchToUser(uname);
+
+	//await switchToOtherUser('amanda','felix');
 
 	let t5 = performance.now();
 
@@ -65,6 +80,7 @@ function defaultGameFunc() {
 	async function activate(table) {console.log('activate for',getUname())}
 	function checkGameover(table) { return false; }
 	async function present(table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
+	async function robotMove(table) {console.log('robot moves for',getUname())}
 	async function stepComplete(table,o) {console.log(`integrate if step complete for ${table.friendly}`); }
-	return { setup, activate, checkGameover, present, stepComplete };
+	return { setup, activate, checkGameover, present, robotMove, stepComplete };
 }

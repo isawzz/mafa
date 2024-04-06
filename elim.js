@@ -1,6 +1,6 @@
 //#region NEW!
 function getActivePlayer(fen) { if (fen.playerNames.includes(U.name)) return U.name; else return fen.turn[0]; }
-function sendMyMove(key) {
+function _sendMyMove(key) {
   let name = getUname();
   let table = Clientdata.fen.id;
   sockPostMove(table, name, key);

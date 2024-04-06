@@ -1,32 +1,51 @@
 async function sendMyMove(move,type) {
   let name = getUname(); 
-	let table = Clientdata.table;
+	let table = Clientdata.curTable;
   let id = table.id;
 	let friendly = table.friendly;
-	let step = valf(table.step,0);
+	let step = table.step;
 	let turn = table.fen.turn;
-	console.log('___ sendMyMove',step,name); //type,move,turn)
-	mPostRoute('move',{id,friendly,name,move,type,step,turn})
+	//console.log('___ sendMyMove',step,name); //type,move,turn)
+	let res = await mPostRoute('move',{id,friendly,name,move,type,step,turn});
+	//console.log('result',res)
   // sockPostMove(table, me, o);
 }
+async function sendMoveComplete(fen) {
+  let name = getUname(); 
+	let table = Clientdata.curTable;
+  let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = fen.turn;
+	//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	//console.log('result',res)
+  // sockPostMove(table, me, o);
+}
+async function onsockReceiveMove(o){
+	let [e,mlist]=[o.event,o.moves];
+	//console.log('___ onsockReceiveMove',e.step,e.name,e.ts,mlist); //return;
+	let [id,friendly,name,move,type,step,turn,ts]=[e.id,e.friendly,e.name,e.move,e.type,e.step,e.turn,e.ts];
+	let table = Clientdata.curTable;
+	if (!table || table.id != id) {console.log(`not playing at table ${id}`); return;}
 
-function onsockReceiveMove(o){
-	//integrate move according to type and complete step if complete
-	console.log('___ onsockReceiveMove',o.step,o.name);
-	let [id,friendly,name,move,type,step,turn]=[o.id,o.friendly,o.name,o.move,o.type,o.step,o.turn];
-	let table = Clientdata.table;
-	if (!table) {console.log(`not playing at table ${id}`)}
+	let func = DA.funcs[table.game];
+	//console.log('...process',type,turn,friendly);
+	//somebody moved but fen has not changed
 
 	//checkIfStepComplete
-	if (type == 'race1'){
-		table.step=step;
-		//stepComplete
-		//console.log('game',table.game)
-		DA.funcs[table.game].stepComplete(table,o)
-	}
+	// if (type == 'r1'){
+
+	// 	table.step=step;
+	// 	//stepComplete
+	// 	//console.log('game',table.game)
+	// 	func.stepComplete(table,o)
+	// }
 
 }
-
+async function onsockReceiveMoveComplete(o){
+	console.log('onsockReceiveMoveComplete',o);
+}
 
 
 
