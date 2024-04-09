@@ -7,26 +7,14 @@ fen:
       playmode: human
       strategy: random
       color: '#008a8a'
-      score: -1
+      score: 2
     felix:
       name: felix
       playmode: human
       strategy: random
       color: '#1f8fff'
-      score: 198
+      score: 199
   deck:
-    - green_squiggle_3_striped
-    - green_diamond_3_striped
-    - green_oval_1_striped
-    - red_oval_3_striped
-    - purple_diamond_1_open
-    - purple_diamond_2_open
-    - red_diamond_3_open
-    - red_squiggle_3_solid
-    - purple_oval_2_striped
-    - purple_diamond_2_solid
-    - purple_oval_3_solid
-    - green_squiggle_3_solid
     - purple_oval_1_open
     - purple_squiggle_2_open
     - red_squiggle_2_solid
@@ -85,9 +73,9 @@ fen:
     - green_diamond_1_striped
     - green_oval_3_striped
   cards:
-    - green_diamond_1_open
+    - red_diamond_3_open
     - red_diamond_1_solid
-    - red_squiggle_2_open
+    - purple_diamond_2_solid
     - purple_squiggle_2_solid
     - purple_diamond_1_solid
     - red_oval_3_solid
@@ -123,7 +111,7 @@ playerNames:
 options:
   mode: multi
   winning_score: 25
-step: 199
+step: 203
 turn:
   - amanda
   - felix

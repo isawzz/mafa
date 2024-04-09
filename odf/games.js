@@ -30,26 +30,35 @@ async function setRobotMove(table){
 	mShield(dOpenTable,{bg:'#00000010'});
 
 	T.botset = rChoose(T.sets);
+	setClickNext(T.botset);
+}
+function setClickNext(list){
+
+	if (isEmpty(list)) return;
+
+	TO.main = setTimeout(()=>{
+		let item = list[0];
+		setOnclickCard(item,T.items);
+	})
 
 
-	return;
 
-	let item = rChoose(T.items);
-  let name = getUname(); 
-	console.log(name,'click',item.key)
-	//if (name == 'felix') await mSleep(10);
-	await mSleep(rChoose([0,10,20,30,40]));
-	let fen=table.fen;
-	let pl=fen.players[name];
-	pl.score++;
-	// await sendMoveComplete(fen);
-  let id = table.id;
-	let friendly = table.friendly;
-	let step = table.step;
-	let turn = fen.turn;
-	//console.log('___ sendMoveComplete',step,name); //type,move,turn)
-	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
-	console.log('res',res)
+	// let item = rChoose(T.items);
+  // let name = getUname(); 
+	// console.log(name,'click',item.key)
+	// //if (name == 'felix') await mSleep(10);
+	// await mSleep(rChoose([0,10,20,30,40]));
+	// let fen=table.fen;
+	// let pl=fen.players[name];
+	// pl.score++;
+	// // await sendMoveComplete(fen);
+  // let id = table.id;
+	// let friendly = table.friendly;
+	// let step = table.step;
+	// let turn = fen.turn;
+	// //console.log('___ sendMoveComplete',step,name); //type,move,turn)
+	// let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	// console.log('res',res)
 }
 async function setActivate(){
 	T.sets=setFindAllSets(T.items);
@@ -284,7 +293,7 @@ async function setOnclickCard(item,items){
 	let fen=table.fen;
 
 	console.log('click',item.key,m)
-	if (m == 3){
+	if (m == 3 || TESTING){
 		//disable ui
 		mShield(T.dBoard,{bg:'#00000000'});
 		
@@ -293,7 +302,7 @@ async function setOnclickCard(item,items){
 		console.log('isSet',isSet);
 
 		//if yes, increase score, remove items, add 3 new items
-		if (isSet){
+		if (isSet || TESTING){
 			let keys=selitems.map(x=>x.key);
 			let n=fen.cards.length-12;//##
 			let need=3-n;
