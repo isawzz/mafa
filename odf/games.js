@@ -37,9 +37,11 @@ function setClickNext(list){
 	if (isEmpty(list)) return;
 
 	TO.main = setTimeout(()=>{
-		let item = list[0];
+		let item = list.shift();
+
 		setOnclickCard(item,T.items);
-	})
+		//setClickNext(list);
+	},5000)
 
 
 

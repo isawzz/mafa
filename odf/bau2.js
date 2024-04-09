@@ -7,11 +7,11 @@ async function showTable(id) {
 	if (!table) { showMessage('table deleted!'); return await showTables(); }
 	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
-	Clientdata.table = table; console.log('_____showTable',table.fen.players[me]);
+	Clientdata.table = table; console.log('___showTable'); //,me); //table.fen.players[me]);
 	
 	clear_timeouts();
-	await waitForUnlocked();
-	setLock();
+	//await waitForUnlocked();
+	//setLock();
 
 	//natTitle();
 	showTitle(`${table.friendly} ${me}`);
@@ -29,7 +29,7 @@ async function showTable(id) {
 	if (table.fen.players[me].playmode == 'bot') await func.robotMove(table,me); 
 	else await func.activate(table);
 
-	resetLock();
+	//resetLock();
 	// DA.mc=0; if (TESTING && DA.mc++<2) await func.robotMove(table,me); else await func.activate(table);
 }
 function setLock(){console.log('locked');DA.LOCK=true;}
