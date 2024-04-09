@@ -22,13 +22,48 @@ function setgame() {
 	async function stepComplete(table,o) { await setStepComplete(table,o); } 
 	return { setup, activate, checkGameover, present, robotMove, stepComplete };
 }
+async function setRobotMove(table){
+	T.sets=setFindAllSets(T.items);
+	let buttons = mDom(dOpenTable,{w100:true,gap:10,matop:20});mCenterCenterFlex(buttons)
+	mButton('NO Set',setOnclickNoSet,buttons,{w:80},'input');
+	T.bHint=mButton('Hint',setOnclickHint,buttons,{w:80},'input');
+	mShield(dOpenTable,{bg:'#00000010'});
+
+	T.botset = rChoose(T.sets);
+
+
+	return;
+
+	let item = rChoose(T.items);
+  let name = getUname(); 
+	console.log(name,'click',item.key)
+	//if (name == 'felix') await mSleep(10);
+	await mSleep(rChoose([0,10,20,30,40]));
+	let fen=table.fen;
+	let pl=fen.players[name];
+	pl.score++;
+	// await sendMoveComplete(fen);
+  let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = fen.turn;
+	//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	console.log('res',res)
+}
 async function setActivate(){
-	for(const item of Clientdata.items){
+	T.sets=setFindAllSets(T.items);
+
+	for(const item of T.items){
 		let d=iDiv(item);
-		d.onclick = ()=>setOnclickCard(item,Clientdata.items);
+		d.onclick = ()=>setOnclickCard(item,T.items);
 		mStyle(d,{cursor:'pointer'})
 
 	}
+	let buttons = mDom(dOpenTable,{w100:true,gap:10,matop:20});mCenterCenterFlex(buttons)
+	mButton('NO Set',setOnclickNoSet,buttons,{w:80},'input');
+	T.bHint=mButton('Hint',setOnclickHint,buttons,{w:80},'input');
+
 }
 function setCreateDeck() {
 	let deck = [];
@@ -90,21 +125,55 @@ function setLoadPatterns(dParent){
 	let el=mCreateFrom(html);
 	mAppend(dParent,el)
 }
+async function setOnclickNoSet(){
+	mShield(dOpenTable,{bg:'#00000030'});
+	let me = getUname();
+	let table = Clientdata.table;
+	let fen=table.fen;
+
+	//if yes, increase score, remove items, add 3 new items
+	if (isEmpty(T.sets)){
+		//add 1 cards!
+		let newCards = deckDeal(fen.deck,1);//get 3 more cards from deck
+		fen.cards.push(newCards[0]);
+		fen.players[me].score++;
+		
+	}else{
+		fen.players[me].score--;
+	}
+
+	let name = getUname(); 
+	let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = fen.turn;
+	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	console.log('res',res)
+}
+async function setOnclickHint(){
+	if (isEmpty(T.sets)) {console.log('no set');return;}
+	//this should only work if no card is clicked?
+	let set = rChoose(T.sets);
+	await setOnclickCard(set[0],T.items)
+
+}
 async function setPresent(table) {
+	T={};
 	setLoadPatterns('dPage');
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
-  let [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
+  [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
 	// mCenterCenterFlex(dOben);
 	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
 
 	let [fen,playerNames,players,turn]=[table.fen,table.playerNames,table.fen.players,table.fen.turn];
 	let cards = fen.cards;
-	let dBoard=mGrid(cards.length/3,3,dOpenTable,{gap:14});
-	let items = Clientdata.items = [];
+	let dp=mDom(dOpenTable,{w100:true});mCenterFlex(dp);
+	let dBoard=T.dBoard=mGrid(cards.length/3,3,dp,{gap:14});
+	let items = T.items = [];
 	for(const c of cards){
 		//mDom(dBoard,{},{html:c})
-		let d = setDrawCard(c,dBoard,70); 
+		let d = setDrawCard(c,dBoard,TESTING?70:110); 
 		let item = mItem({div:d},{key:c});
 		items.push(item);
 	}
@@ -113,42 +182,12 @@ async function setPresent(table) {
 	setStats(table.fen, dOben,'rowflex',false)
 
 }
-async function setOnclickCard(item,items){
-	console.log('click')
-	toggleItemSelection(item);
-	let n=items.length;
-	console.log(n);
-	let selitems=items.filter(x=>x.isSelected);
-	let m = selitems.length;
-	console.log(selitems,m);
-	//console.log(`${m} out of ${n} items selected!`);
-	if (m > 0){ //TESTING!!!
-		//check if this is a set!
-		//console.log('selected',selitems);
-		let move = selitems.map(x=>x.key);
-
-		let table=Clientdata.curTable;
-		let fen=table.fen;
-		let pl=fen.players[getUname()];
-		pl.score++;
-		await sendMoveComplete(fen);
-		//send move!
-
-	}
-
-}
-async function setRobotMove(table){
-	let me=getUname();
-	let item = rChoose(Clientdata.items);
-	let move = [item.key];
-	await sendMyMove(move,'r1');
-}
 async function setStepComplete(table,o){
 	console.log('___ stepComplete')
 	table.step=o.step;
 	let pl = table.fen.players[o.name];
 	pl.score++;
-	Clientdata.curTable = table;
+	Clientdata.table = table;
 	console.log('player scores',table.playerNames.map(x=>table.fen.players[x].score));
 	let [step,fen]=[table.step,table.fen];
 	if (getUname()==o.name) await mPostRoute('postTable', {step,fen});
@@ -156,7 +195,7 @@ async function setStepComplete(table,o){
 }
 function setStats(fen, dParent, layout, showTurn=true) {
 	let me=getUname();
-  let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { wmin: 130, bg: 'beige', fg: 'contrast' })
+  let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { patop:8, mabottom:20, wmin: 130, bg: 'beige', fg: 'contrast' })
   for (const plname in fen.players) {
     let pl1 = fen.players[plname]; //console.log('player',pl1)
     let item = player_stat_items[plname];
@@ -168,4 +207,130 @@ function setStats(fen, dParent, layout, showTurn=true) {
     }
     // mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })
   }
+}
+async function rest(item,items){
+	//console.log('click')
+	toggleItemSelection(item);
+	let n=items.length;
+	//console.log(n);
+	let selitems=items.filter(x=>x.isSelected);
+	let m = selitems.length;
+	//console.log(selitems,m);
+	//console.log(`${m} out of ${n} items selected!`);
+	if (m > 0){ //TESTING!!!
+		//check if this is a set!
+		//console.log('selected',selitems);
+		let move = selitems.map(x=>x.key);
+		let table=Clientdata.table;
+		let fen=table.fen;
+		let pl=fen.players[getUname()];
+		pl.score++;
+		await sendMoveComplete(fen);
+		//send move!
+	}
+}
+function checkIfSet(keys){
+	let arr=makeArrayWithParts(keys);
+	let isSet = arr.every(x=>checkIfAllSameOrDifferent(x));
+	return isSet;
+}
+function checkIfAllSameOrDifferent(arr) {
+	if (arr.length === 0) {
+			return true; // Consider an empty array as meeting the criteria
+	}
+	
+	// Check if all elements are the same
+	const allSame = arr.every(element => element === arr[0]);
+	if (allSame) {
+			return true;
+	}
+	
+	// Check if all elements are unique
+	const uniqueElements = new Set(arr);
+	const allDifferent = uniqueElements.size === arr.length;
+	
+	return allDifferent;
+}
+function setFindAllSets(items){
+  let result = [];
+  for(var x = 0; x < items.length; x++){
+    for(var y = x+1; y < items.length; y++){
+      for(var z = y+1; z < items.length; z++){
+				assertion(items[x]!=items[y],`WTF!?!?!?! ${items[x].key} ${items[y].key}`)
+				let list = [items[x],items[y],items[z]];
+				let keys =list.map(x=>x.key);
+				if (checkIfSet(keys)) result.push(list);
+      }
+    }
+  }
+	//if (TESTING) console.log('sets',result.map(x=>x.map(y=>y.key)));
+  return result;
+}
+function makeArrayWithParts(keys){
+	let arr=[];keys[0].split('_').map(x=>arr.push([]));
+	for(const key of keys){
+		let parts = key.split('_');
+		for(let i=0;i<parts.length;i++) arr[i].push(parts[i]);
+	}
+	return arr;
+}
+async function setOnclickCard(item,items){
+	toggleItemSelection(item);
+	let selitems=items.filter(x=>x.isSelected);
+	let keys=selitems.map(x=>x.key);
+	let m = selitems.length;
+	let me = getUname();
+	let table = Clientdata.table;
+	let fen=table.fen;
+
+	console.log('click',item.key,m)
+	if (m == 3){
+		//disable ui
+		mShield(T.dBoard,{bg:'#00000000'});
+		
+		//check if set condition is met
+		let isSet = checkIfSet(keys);
+		console.log('isSet',isSet);
+
+		//if yes, increase score, remove items, add 3 new items
+		if (isSet){
+			let keys=selitems.map(x=>x.key);
+			let n=fen.cards.length-12;//##
+			let need=3-n;
+			let newCards = deckDeal(fen.deck,need);//## get 3 more cards from deck
+			for(let i=0;i<3;i++) if (i<need) arrReplace1(fen.cards,keys[i],newCards[i]); else removeInPlace(fen.cards,keys[i])
+			fen.players[me].score++;
+			
+		}else{
+			fen.players[me].score--;
+		}
+
+		let name = getUname(); 
+		let id = table.id;
+		let friendly = table.friendly;
+		let step = table.step;
+		let turn = fen.turn;
+		//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+		let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+		console.log('res',res)
+	}
+	else if (m>=1) disableButton(T.bHint); else enableButton(T.bHint);
+}
+async function setGhostMove(table){
+	let item = rChoose(T.items);
+  let name = getUname(); 
+	console.log(name,'click',item.key)
+	//if (name == 'felix') await mSleep(10);
+	await mSleep(rChoose([0,10,20,30,40]));
+	let fen=table.fen;
+	let pl=fen.players[name];
+	pl.score++;
+	// await sendMoveComplete(fen);
+  let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = fen.turn;
+	//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	console.log('res',res)
 }

@@ -1,6 +1,17 @@
 onload = start;
 
-async function start() { test39(); }
+async function start() { TESTING=false;await prelims(); } 
+async function start() { TESTING=true;test40(); }
+
+async function test40(){
+	await prelims();
+	await switchToOtherUser('amanda','felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+
+	mButton('bot',onclickBot,dExtra)
+	mButton('human',onclickHuman,dExtra)
+}
 
 async function test39(){
 	await prelims();
@@ -8,7 +19,6 @@ async function test39(){
 	await switchToMenu(UI.nav, 'play');
 	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
 }
-
 async function test38(){
 	await prelims();
 

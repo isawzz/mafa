@@ -50,9 +50,9 @@ function deleteFile(filePath) {
 function deleteTable(id) { delete Session.tables[id]; deleteFile(getTablePath(id)); }
 function emitToPlayers(namelist, msgtype, o) {
 	for (const name of namelist) {
-		let idlist = byUsername[name]; console.log('name', name, '\nid', idlist);
+		let idlist = byUsername[name]; //console.log('name', name, '\nid', idlist);
 		for (const id of idlist) {
-			let client = clients[id]; console.log(name, client.id); //isdef(client),Object.keys(client))
+			let client = clients[id]; //console.log(name, client.id); //isdef(client),Object.keys(client))
 			if (client) client.emit(msgtype, o);
 		}
 	}
@@ -300,7 +300,7 @@ io.on('connection', (client) => {
 	//client.on('login', x => handle_login(x, client.id));
 	client.on('userChange', x => handle_userChange(x, client.id));
 	client.on('message', handle_message);
-	client.on('move', handle_move);
+	//client.on('move', handle_move);
 	client.on('update', handle_update);
 	client.on('disconnect', x => handle_disconnect(x, client.id)); // ()=>handle_disconnect(socket.id));
 });
@@ -309,7 +309,7 @@ function handle_disconnect(x,id) {
 	console.log('::io.disconnected', id); 
 	let uname=byClient[id];
 	let idlist=byUsername[uname];
-	removeInPlace(idlist,id);
+	if (isList(idlist)) removeInPlace(idlist,id);
 	io.emit('message', `${uname} left`); 
 }
 function handle_message(x) { console.log('::message', arguments); io.emit('message', x); }
@@ -457,14 +457,33 @@ app.post('/postTable', (req, res) => {
 	let id = req.body.id;
 	let newtable = req.body;
 
-	let isNew = nundef(Session.tables[id]);
-	let isStarted = newtable.status == 'started';
+	let table = lookup(Session,['tables',id]);
+	let isNew = !table;
+	if (isNew) table = newtable; else	copyKeys(newtable,table);
+	let isStarted = table.status == 'started';
 
-	saveTable(id, newtable);
-	let msg = `table posted: ${newtable.friendly} new:${isNew} status:${newtable.status}`;
+	saveTable(id, table);
+	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
 	console.log(msg)
-	let turn = isStarted ? newtable.fen.turn : [];
+	let turn = isStarted ? table.fen.turn : [];
 	io.emit('table', { msg, id, turn, isNew })
+	res.json(msg);
+});
+app.post('/postPlayer', (req, res) => {
+	//id=tableId, name=playerName, andere props sind player attributes
+	let id = req.body.id;
+	let name = req.body.name;
+	let o = jsCopy(req.body); delete o.id;
+	let table = lookup(Session,['tables',id]);
+	if (!table) res.json('CANNOT postPlayer OUTSIDE OF TABLE!!!')
+	let [fen,players]=[table.fen,table.players];
+	copyKeys(o,fen.players[name])
+	let pl = table.players.find(x=>x.name == name);
+	copyKeys(o,pl);
+	saveTable(id, table);
+	let msg = `${name} posted: ${Object.keys(o).join(',')}`;
+	console.log(msg)
+	emitToPlayers(table.playerNames,'table',table);
 	res.json(msg);
 });
 
@@ -488,10 +507,10 @@ app.post('/move', (req, res) => {
 });
 app.post('/moveComplete', (req, res) => {
 	let o = req.body;
-	//der letzte move wird weggeschmissen!!!!!!!!!
 	let [id, friendly, name, fen, step, turn] = [o.id, o.friendly, o.name, o.fen, o.step, o.turn];
 	let table = Session.tables[id];
 
+	console.log(name,'step',step,'table.step',table.step)
 	if (step < table.step) { console.log('ignore', step, name); return res.json('ignore'); }
 
 	table.fen = fen;
@@ -504,7 +523,7 @@ app.post('/moveComplete', (req, res) => {
 	// let msg = `table posted: ${table.friendly} new:${false} status:${table.status}`;
 	// console.log(msg)
 	// io.emit('moveComplete', { msg, id, turn:table.fen.turn, isNew:false })
-	// res.json(msg);
+	res.json(`step: ${table.step}`);
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;

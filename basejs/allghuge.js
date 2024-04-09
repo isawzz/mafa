@@ -1,4 +1,4 @@
-var dNav;
+var dNav,dOpenTable;
 var Session = {};
 var Clientdata = {};
 var ClientId;
@@ -3016,6 +3016,7 @@ var dMap;
 var DMAX;
 var dMenu;
 var dMessage;
+var dMiddle;
 var DMM = {};
 var dMoveControls;
 var dOben;

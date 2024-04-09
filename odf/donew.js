@@ -654,6 +654,7 @@ async function cropOrExpandImageAndGetDataUrl(imageSrc, x, y) {
 		img.src = imageSrc;
 	});
 }
+function createBotPlayer(name) { return { name, playmode: 'bot', strategy: 'random' }; }
 function createHumanPlayer(name) { return { name, playmode: 'human', strategy: 'random' }; }
 function createScaledCanvasFromImage(src) {
 	return new Promise((resolve, reject) => {
@@ -1518,7 +1519,7 @@ function showNavbar() {
 	return nav;
 }
 async function showTables() {
-	Clientdata.curTable = null;
+	Clientdata.table = null;
 	let me = getUname();
 	// let tables=Serverdata.tables;
 	let tables = Serverdata.tables = await mGetRoute('tables');
@@ -1675,7 +1676,7 @@ async function switchToUser(uname) {
 	if (uname == 'guest') { await switchToMenu(UI.nav, 'home'); menuDisable(UI.nav, 'plan'); }
 	else {
 		menuEnable(UI.nav, 'plan');
-		let t = Clientdata.curTable;
+		let t = Clientdata.table;
 		let cur = Clientdata.curMenu; //UI.nav.cur; //console.log('current menu is', cur);
 		if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t.id);
 		else await switchToMenu(UI.nav, valf(cur, 'home'));

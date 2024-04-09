@@ -1,3 +1,252 @@
+function mStyle(elem, styles={}, unit = 'px') {
+	//remove: rest,wrest,hrest,whrest
+  elem = toElem(elem);
+
+	let style={};
+
+  //if (isdef(styles.whrest)) { delete styles.whrest; styles.w = styles.h = 'rest'; } else if (isdef(styles.wh100)) { styles.w = styles.h = '100%'; delete styles.wh100; }
+  if (isdef(styles.w100)) styles.w = '100%'; else if (isdef(styles.wrest)) styles.w = 'rest';
+  if (isdef(styles.h100)) styles.h = '100%'; else if (isdef(styles.hrest)) styles.h = 'rest';
+  let dParent = elem.parentNode;
+  if (isdef(dParent)) {
+    //console.log('dParent',dParent)
+    let pad = dParent && isdef(dParent.style.padding) ? parseInt(dParent.style.padding) : 0;
+    let rp = getRect(dParent);
+    let r = getRect(elem, dParent);
+    if (styles.w == 'rest') {
+      let left = r.l;
+      let w = rp.w;
+      let wrest = w - left - pad;
+      styles.w = wrest;
+    }
+    if (styles.h == 'rest') {
+      let r1 = getRect(dParent.lastChild, dParent);
+      let hrest = rp.h - (r1.y) - pad;
+      styles.h = hrest;
+    }
+  }
+  let bg, fg;
+  if (isdef(styles.bg) || isdef(styles.fg)) {
+    [bg, fg] = colorsFromBFA(styles.bg, styles.fg, styles.alpha);
+  }
+  if (isdef(styles.vpadding) || isdef(styles.hpadding)) {
+    styles.padding = valf(styles.vpadding, 0) + unit + ' ' + valf(styles.hpadding, 0) + unit;
+  }
+  if (isdef(styles.vmargin) || isdef(styles.hmargin)) {
+    styles.margin = valf(styles.vmargin, 0) + unit + ' ' + valf(styles.hmargin, 0) + unit;
+    //console.log('margin should be',styles.margin)
+  }
+  if (isdef(styles.upperRounding) || isdef(styles.lowerRounding)) {
+    let rtop = '' + valf(styles.upperRounding, 0) + unit;
+    let rbot = '' + valf(styles.lowerRounding, 0) + unit;
+    styles['border-radius'] = rtop + ' ' + rtop + ' ' + rbot + ' ' + rbot;
+  }
+  if (isdef(styles.box)) styles['box-sizing'] = 'border-box';
+  if (isdef(styles.round)) { elem.style.setProperty('border-radius', '50%'); }
+  for (const k in styles) {
+    if (['round','box'].includes(k)) continue;
+    let val = styles[k];
+    let key = k;
+    if (isdef(STYLE_PARAMS[k])) key = STYLE_PARAMS[k];
+    else if (k == 'font' && !isString(val)) {
+      let fz = f.size; if (isNumber(fz)) fz = '' + fz + 'px';
+      let ff = f.family;
+      let fv = f.variant;
+      let fw = isdef(f.bold) ? 'bold' : isdef(f.light) ? 'light' : f.weight;
+      let fs = isdef(f.italic) ? 'italic' : f.style;
+      if (nundef(fz) || nundef(ff)) return null;
+      let s = fz + ' ' + ff;
+      if (isdef(fw)) s = fw + ' ' + s;
+      if (isdef(fv)) s = fv + ' ' + s;
+      if (isdef(fs)) s = fs + ' ' + s;
+      elem.style.setProperty(k, s);
+      continue;
+    } else if (k.includes('class')) {
+      mClass(elem, styles[k]);
+    } else if (k == 'border') {
+      if (isNumber(val)) val = `solid ${val}px ${isdef(styles.fg) ? styles.fg : '#ffffff80'}`;
+      if (val.indexOf(' ') < 0) val = 'solid 1px ' + val;
+    } else if (k == 'ajcenter') {
+      elem.style.setProperty('justify-content', 'center');
+      elem.style.setProperty('align-items', 'center');
+    } else if (k == 'layout') {
+      if (val[0] == 'f') {
+        val = val.slice(1);
+        elem.style.setProperty('display', 'flex');
+        elem.style.setProperty('flex-wrap', 'wrap');
+        let hor, vert;
+        if (val.length == 1) hor = vert = 'center';
+        else {
+          let di = { c: 'center', s: 'start', e: 'end' };
+          hor = di[val[1]];
+          vert = di[val[2]];
+        }
+        let justStyle = val[0] == 'v' ? vert : hor;
+        let alignStyle = val[0] == 'v' ? hor : vert;
+        elem.style.setProperty('justify-content', justStyle);
+        elem.style.setProperty('align-items', alignStyle);
+        switch (val[0]) {
+          case 'v': elem.style.setProperty('flex-direction', 'column'); break;
+          case 'h': elem.style.setProperty('flex-direction', 'row'); break;
+        }
+      } else if (val[0] == 'g') {
+        val = val.slice(1);
+        elem.style.setProperty('display', 'grid');
+        let n = allNumbers(val);
+        let cols = n[0];
+        let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
+        elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
+        elem.style.setProperty('place-content', 'center');
+      }
+    } else if (k == 'layflex') {
+      elem.style.setProperty('display', 'flex');
+      elem.style.setProperty('flex', '0 1 auto');
+      elem.style.setProperty('flex-wrap', 'wrap');
+      if (val == 'v') { elem.style.setProperty('writing-mode', 'vertical-lr'); }
+    } else if (k == 'laygrid') {
+      elem.style.setProperty('display', 'grid');
+      let n = allNumbers(val);
+      let cols = n[0];
+      let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
+      elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
+      elem.style.setProperty('place-content', 'center');
+    }
+    if (key == 'font-weight') { elem.style.setProperty(key, val); continue; }
+    else if (key == 'background-color') elem.style.background = bg;
+    else if (key == 'color') elem.style.color = fg;
+    else if (key == 'opacity') elem.style.opacity = val;
+    else if (key == 'wrap') { if (val == 'hard') elem.setAttribute('wrap', 'hard'); else elem.style.flexWrap = 'wrap'; }
+    else if (k.startsWith('dir')) {
+      isCol = val[0] == 'c';
+      elem.style.setProperty('flex-direction', 'column');
+    } else if (key == 'flex') {
+      if (isNumber(val)) val = '' + val + ' 1 0%';
+      elem.style.setProperty(key, makeUnitString(val, unit));
+    } else {
+      elem.style.setProperty(key, makeUnitString(val, unit));
+    }
+  }
+}
+async function setRobotMove(table){
+	let me=getUname();
+	let item = rChoose(Clientdata.items);
+	let move = [item.key];
+	await sendMyMove(move,'r1');
+}
+
+async function setOnclickCard(item,items){
+	//console.log('click')
+	toggleItemSelection(item);
+	let n=items.length;
+	//console.log(n);
+	let selitems=items.filter(x=>x.isSelected);
+	let m = selitems.length;
+	//console.log(selitems,m);
+	//console.log(`${m} out of ${n} items selected!`);
+	if (m > 0){ //TESTING!!!
+		//check if this is a set!
+		//console.log('selected',selitems);
+		let move = selitems.map(x=>x.key);
+		let table=Clientdata.curTable;
+		let fen=table.fen;
+		let pl=fen.players[getUname()];
+		pl.score++;
+		await sendMoveComplete(fen);
+		//send move!
+
+	}
+
+}
+async function sendMyMove(move,type) {
+  let name = getUname(); 
+	let table = Clientdata.curTable;
+  let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = table.fen.turn;
+	//console.log('___ sendMyMove',step,name); //type,move,turn)
+	let res = await mPostRoute('move',{id,friendly,name,move,type,step,turn});
+	//console.log('result',res)
+  // sockPostMove(table, me, o);
+}
+async function onsockReceiveMove(o){
+	let [e,mlist]=[o.event,o.moves];
+	//console.log('___ onsockReceiveMove',e.step,e.name,e.ts,mlist); //return;
+	let [id,friendly,name,move,type,step,turn,ts]=[e.id,e.friendly,e.name,e.move,e.type,e.step,e.turn,e.ts];
+	let table = Clientdata.curTable;
+	if (!table || table.id != id) {console.log(`not playing at table ${id}`); return;}
+
+	let func = DA.funcs[table.game];
+	//console.log('...process',type,turn,friendly);
+	//somebody moved but fen has not changed
+
+	//checkIfStepComplete
+	// if (type == 'r1'){
+
+	// 	table.step=step;
+	// 	//stepComplete
+	// 	//console.log('game',table.game)
+	// 	func.stepComplete(table,o)
+	// }
+
+}
+async function sendMoveComplete(fen) {
+  let name = getUname(); 
+	let table = Clientdata.curTable;
+  let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = fen.turn;
+	//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	//console.log('result',res)
+  // sockPostMove(table, me, o);
+}
+async function onsockTable(x) {
+  console.log('::SOCK table:'); //, 'new',x,'old', Clientdata.curTable);
+  let [msg, id, turn, isNew] = [x.msg, x.id, x.turn, x.isNew];
+
+  if (Clientdata.curMenu != 'play') return; //wenn ich nicht in menu play bin mach garnichts
+
+  //not in turn and no spacific table open: showTables
+  let me=getUname();
+  let isSameTableOpen = lookup(Clientdata,['curTable','id']) == id;
+
+  if (isSameTableOpen || isNew && turn.includes(me) && !Clientdata.curTable) return await showTable(id); 
+
+  if (!Clientdata.curTable) return await showTables(); 
+}
+async function onsockReceiveMoveComplete(o){
+	console.log('onsockReceiveMoveComplete',o);
+}
+function sockInit() {
+  let server = getServerurl();
+  Socket = io(server);
+  // Socket.on('deleteTable', onsockDeleteTable); //x => console.log('::SOCK table:', x));
+  Socket.on('disconnect', x => console.log('::SOCK disconnect:', x));
+  Socket.on('event', onsockEvent);
+  Socket.on('message', showChatMessage);
+  Socket.on('table', onsockTable); //x => console.log('::SOCK table:', x));
+  Socket.on('tables', onsockTables); //x => console.log('::SOCK table:', x));
+  Socket.on('move', onsockReceiveMove); //onsockMove); //x => console.log('::SOCK move:', x));
+  //Socket.on('moveComplete', onsockReceiveMoveComplete); //onsockMove); //x => console.log('::SOCK move:', x));
+  //Socket.on('newTable', onsockNewTable); //x => console.log('::SOCK table:', x));
+  Socket.on('superdi', onsockSuperdi);
+  //Socket.on('turnUpdate', onsockTurnUpdate); //x => console.log('::SOCK table:', x));
+  // Socket.on('userChange', x => console.log('::SOCK userChange:', x));
+  // Socket.on('update', x => console.log('::SOCK update:', x));
+}
+function _onsockTurnUpdate(turn) {
+  //console.log('::SOCK turn:', turn);
+  Clientdata.curTable.fen.turn = turn;
+  //instructionUpdate();
+  //hourglassUpdate();
+  //tabtitleUpdate();
+}
+function _sockPostMove(id, name, move) {
+  assertion(false,'sockPostMove shouldnt be called!!!')
+  //Socket.emit('move', { id, name, move });
+}
 async function _onsockDeleteTable(x) {
   //console.log('x',x)
   Serverdata.tables = x.tables;
