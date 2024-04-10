@@ -1,4 +1,9 @@
 
+function arrClear(arr) { arr.length = 0; return arr; }
+function clearTable() {
+  for (const k in TO) clearTimeout(TO[k]);
+  removeCountdownG();
+}
 function cBlank(dParent, styles = {}, opts = {}) {
 	if (nundef(styles.h)) styles.h = valf(styles.sz, 100);
 	if (nundef(styles.w)) styles.w = styles.h * .7;
@@ -77,6 +82,22 @@ function draw_set_card_test(dParent) {
 	drawShape('circle', d, styles);
 	drawShape('circle', d, styles);
 }
+function drawShape(key, dParent, styles, classes, sizing) {
+	if (nundef(styles)) styles = { w: 96, h: 96, bg: 'random' };
+	if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
+	let d = mDiv(dParent, styles, null, null, classes, sizing);
+	if (key == 'circle' || key == 'ellipse') mStyle(d, { rounding: '50%' });
+	else mStyle(d, { 'clip-path': PolyClips[key] });
+	return d;
+}
+function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
+function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
+function makeSVG(tag, attrs) {
+	var el = "<" + tag;
+	for (var k in attrs)
+		el += " " + k + "=\"" + attrs[k] + "\"";
+	return el + "/>";
+}
 function mItem(liveprops = {}, opts = {}) {
 	let id = valf(opts.id, getUID());
 	let item = opts;
@@ -122,24 +143,6 @@ function mPlace(elem, pos, offx, offy) {
 	let di = { t: 'top', b: 'bottom', r: 'right', l: 'left' };
 	elem.style.position = 'absolute';
 	elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
-}
-
-function arrClear(arr) { arr.length = 0; return arr; }
-function drawShape(key, dParent, styles, classes, sizing) {
-	if (nundef(styles)) styles = { w: 96, h: 96, bg: 'random' };
-	if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
-	let d = mDiv(dParent, styles, null, null, classes, sizing);
-	if (key == 'circle' || key == 'ellipse') mStyle(d, { rounding: '50%' });
-	else mStyle(d, { 'clip-path': PolyClips[key] });
-	return d;
-}
-function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
-function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
-function makeSVG(tag, attrs) {
-	var el = "<" + tag;
-	for (var k in attrs)
-		el += " " + k + "=\"" + attrs[k] + "\"";
-	return el + "/>";
 }
 async function onclickBot(){
 	let name=getUname();
@@ -211,6 +214,40 @@ async function onclickStartTable(id) {
 async function onclickTable(id) {
 	//console.log('_____ onclickTable')
 	await showTable(id)
+}
+async function showTable(id) {
+	//console.log('showTable', getUname()); //name, table.friendly, table.playerNames.includes(name));
+	//console.log('Clientdata',Clientdata);
+	let table = await mGetRoute('table', { id }); 
+	let me = getUname();
+
+	if (!table) { showMessage('table deleted!'); return await showTables(); }
+	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+
+	Clientdata.table = table; console.log('___showTable'); //,me); //table.fen.players[me]);
+	
+	clearTable();
+	//await waitForUnlocked();
+	//setLock();
+
+	//natTitle();
+	showTitle(`${table.friendly} ${me}`);
+
+	let func=DA.funcs[table.game];
+	await func.present(table); // await natPresent(fen, plname);
+	mRise('dMain');
+
+	//if this table contains robots, kann hier einen robot move ausloesen!
+	//versuch das mal!!!
+	//robotMove(me);
+
+	if (!table.fen.turn.includes(me)) { return; }
+
+	if (table.fen.players[me].playmode == 'bot') await func.robotMove(table,me); 
+	else await func.activate(table);
+
+	//resetLock();
+	// DA.mc=0; if (TESTING && DA.mc++<2) await func.robotMove(table,me); else await func.activate(table);
 }
 async function startGame(gamename, players, options) {
 	let table = createOpenTable(gamename, players, options);

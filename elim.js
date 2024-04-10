@@ -1,3 +1,27 @@
+//#region set timer
+function formatDate3(d) { 
+	if (nundef(d)) d = new Date(); 
+	return d.toISOString().slice(0, 19).replace(/-/g, "/").replace("T", " "); 
+}
+
+function setShowTimer(){	
+	let d=mBy('dTimer'); 
+	if (nundef(d)) d=mDom(dOpenTable,{},{id:'dTimer'});
+	d.innerHTML = formatDate3();
+}
+function setRemoveTimer(){	let d=mBy('dTimer'); if (isdef(d)) d.remove();}
+//#endregion
+//#region lock
+function setLock(){console.log('locked');DA.LOCK=true;}
+function resetLock(){console.log('frei');DA.LOCK=false;}
+function isLocked(){return DA.LOCK==true;}
+async function waitForUnlocked(){
+	while(isLocked()){
+		console.log('.')
+	}
+	return;
+}
+//#endregion
 //#region NEW!
 function getActivePlayer(fen) { if (fen.playerNames.includes(U.name)) return U.name; else return fen.turn[0]; }
 function _sendMyMove(key) {

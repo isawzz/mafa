@@ -476,7 +476,7 @@ app.post('/postPlayer', (req, res) => {
 	let o = jsCopy(req.body); delete o.id;
 	let table = lookup(Session,['tables',id]);
 	if (!table) res.json('CANNOT postPlayer OUTSIDE OF TABLE!!!')
-	let [fen,players]=[table.fen,table.players];
+	let fen=table.fen;
 	copyKeys(o,fen.players[name])
 	let pl = table.players.find(x=>x.name == name);
 	copyKeys(o,pl);

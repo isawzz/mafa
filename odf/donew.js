@@ -99,7 +99,7 @@ function clearBodyDiv(styles = {}, opts = {}) { document.body.innerHTML = ''; re
 
 function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
 
-function clearMain() { clear_timeouts(); mClear('dMain'); mClear('dTitle'); }
+function clearMain() { clearTable(); mClear('dMain'); mClear('dTitle'); }
 
 function clearParent(ev) { mClear(ev.target.parentNode); }
 

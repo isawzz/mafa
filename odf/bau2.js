@@ -1,47 +1,42 @@
-async function showTable(id) {
-	//console.log('showTable', getUname()); //name, table.friendly, table.playerNames.includes(name));
-	//console.log('Clientdata',Clientdata);
-	let table = await mGetRoute('table', { id }); 
+
+async function setOnclickCard(item,items){
+	console.log('click',item.key)
+	toggleItemSelection(item);
+	let selitems=items.filter(x=>x.isSelected);
+	let keys=selitems.map(x=>x.key);
+	let m = selitems.length;
 	let me = getUname();
+	let table = Clientdata.table;
+	let fen=table.fen;
+	let pl=fen.players[me];
+	if (m == 3 || TESTING && m==3){
+		mShield(dOpenTable,{bg:'#00000000'}); //disable ui
+		let isSet = checkIfSet(keys); //console.log('isSet',isSet); //check if set condition is met
+		//if yes, increase score, remove items, add 3 new items
+		if (isSet || TESTING){
+			let keys=selitems.map(x=>x.key);
+			let n=fen.cards.length-12;//##
+			let need=3-n;
+			let newCards = deckDeal(fen.deck,need);//## get 3 more cards from deck
+			for(let i=0;i<3;i++) if (i<need) arrReplace1(fen.cards,keys[i],newCards[i]); else removeInPlace(fen.cards,keys[i])
+			fen.players[me].score++;
+			
+		}else{
+			fen.players[me].score--;
+		}
 
-	if (!table) { showMessage('table deleted!'); return await showTables(); }
-	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+		let name = getUname(); 
+		let id = table.id;
+		let friendly = table.friendly;
+		let step = table.step;
+		let turn = fen.turn;
+		//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+		let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
 
-	Clientdata.table = table; console.log('___showTable'); //,me); //table.fen.players[me]);
-	
-	clear_timeouts();
-	//await waitForUnlocked();
-	//setLock();
-
-	//natTitle();
-	showTitle(`${table.friendly} ${me}`);
-
-	let func=DA.funcs[table.game];
-	await func.present(table); // await natPresent(fen, plname);
-	mRise('dMain');
-
-	//if this table contains robots, kann hier einen robot move ausloesen!
-	//versuch das mal!!!
-	//robotMove(me);
-
-	if (!table.fen.turn.includes(me)) { return; }
-
-	if (table.fen.players[me].playmode == 'bot') await func.robotMove(table,me); 
-	else await func.activate(table);
-
-	//resetLock();
-	// DA.mc=0; if (TESTING && DA.mc++<2) await func.robotMove(table,me); else await func.activate(table);
-}
-function setLock(){console.log('locked');DA.LOCK=true;}
-function resetLock(){console.log('frei');DA.LOCK=false;}
-function isLocked(){return DA.LOCK==true;}
-async function waitForUnlocked(){
-	while(isLocked()){
-		console.log('.')
+		console.log('res',res)
 	}
-	return;
+	else if (m>=1) disableButton(T.bHint); else enableButton(T.bHint);
 }
-
 
 
 

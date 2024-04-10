@@ -1,8 +1,22 @@
 onload = start;
 
 async function start() { TESTING=false;await prelims(); } 
-async function start() { TESTING=true;test40(); }
+async function start() { TESTING=true; test42(); }
 
+async function test42(){
+	await prelims();
+	//await switchToOtherUser('amanda','felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+
+	mButton('bot',onclickBot,dExtra)
+	mButton('human',onclickHuman,dExtra)
+}
+async function test41_timer(){
+	await prelims();
+	let cd = createCountdownG('dMain',{}, 5000, ()=>{console.log('DONE!');removeCountdownG();});
+	console.log('timer',cd);
+}
 async function test40(){
 	await prelims();
 	await switchToOtherUser('amanda','felix');

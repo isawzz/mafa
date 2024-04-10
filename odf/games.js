@@ -29,19 +29,31 @@ async function setRobotMove(table){
 	T.bHint=mButton('Hint',setOnclickHint,buttons,{w:80},'input');
 	mShield(dOpenTable,{bg:'#00000010'});
 
-	T.botset = rChoose(T.sets);
-	setClickNext(T.botset);
+	T.dTimer = mDom(dOpenTable);
+	if (isEmpty(T.sets)) createCountdownG(T.dTimer,{},2000,setOnclickNoSet());
+	else{
+		T.list = rChoose(T.sets);
+		createCountdownG(T.dTimer,{},2000,setClickNext);
+	}
 }
-function setClickNext(list){
 
-	if (isEmpty(list)) return;
+function setClickNext(){
 
-	TO.main = setTimeout(()=>{
-		let item = list.shift();
+	//assertion(!isEmpty(T.list),'T.list is empty!!!');
+	if (isEmpty(T.list)) {console.log('list empty!');return;}
 
-		setOnclickCard(item,T.items);
-		//setClickNext(list);
-	},5000)
+	let el=T.list.shift();
+	setOnclickCard(el,T.items);
+	if (!isEmpty(T.list)) createCountdownG(T.dTimer,{},2000,setClickNext);
+
+	// if (isEmpty(list)) {setRemoveTimer();return;}
+
+
+	// TO.main = setTimeout(()=>{
+	// 	let item = list.shift();
+	// 	setOnclickCard(item,T.items);
+	// 	//setClickNext(list);
+	// },5000);
 
 
 
@@ -284,48 +296,6 @@ function makeArrayWithParts(keys){
 		for(let i=0;i<parts.length;i++) arr[i].push(parts[i]);
 	}
 	return arr;
-}
-async function setOnclickCard(item,items){
-	toggleItemSelection(item);
-	let selitems=items.filter(x=>x.isSelected);
-	let keys=selitems.map(x=>x.key);
-	let m = selitems.length;
-	let me = getUname();
-	let table = Clientdata.table;
-	let fen=table.fen;
-
-	console.log('click',item.key,m)
-	if (m == 3 || TESTING){
-		//disable ui
-		mShield(T.dBoard,{bg:'#00000000'});
-		
-		//check if set condition is met
-		let isSet = checkIfSet(keys);
-		console.log('isSet',isSet);
-
-		//if yes, increase score, remove items, add 3 new items
-		if (isSet || TESTING){
-			let keys=selitems.map(x=>x.key);
-			let n=fen.cards.length-12;//##
-			let need=3-n;
-			let newCards = deckDeal(fen.deck,need);//## get 3 more cards from deck
-			for(let i=0;i<3;i++) if (i<need) arrReplace1(fen.cards,keys[i],newCards[i]); else removeInPlace(fen.cards,keys[i])
-			fen.players[me].score++;
-			
-		}else{
-			fen.players[me].score--;
-		}
-
-		let name = getUname(); 
-		let id = table.id;
-		let friendly = table.friendly;
-		let step = table.step;
-		let turn = fen.turn;
-		//console.log('___ sendMoveComplete',step,name); //type,move,turn)
-		let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
-		console.log('res',res)
-	}
-	else if (m>=1) disableButton(T.bHint); else enableButton(T.bHint);
 }
 async function setGhostMove(table){
 	let item = rChoose(T.items);

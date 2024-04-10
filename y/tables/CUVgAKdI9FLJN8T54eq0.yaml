@@ -1,0 +1,60 @@
+status: started
+id: CUVgAKdI9FLJN8T54eq0
+fen:
+  players:
+    felix:
+      name: felix
+      playmode: bot
+      strategy: random
+      color: '#1f8fff'
+      score: 24
+    amanda:
+      name: amanda
+      playmode: human
+      strategy: random
+      color: '#008a8a'
+      score: 0
+  deck: []
+  cards:
+    - null
+    - green_oval_1_solid
+    - purple_diamond_1_striped
+    - red_squiggle_3_striped
+    - null
+    - green_squiggle_2_striped
+    - red_diamond_3_open
+    - red_diamond_2_striped
+    - green_squiggle_1_striped
+    - null
+    - red_oval_3_open
+    - green_oval_2_solid
+  plorder:
+    - felix
+    - amanda
+  turn:
+    - felix
+    - amanda
+game: setgame
+owner: felix
+friendly: rally of Gibraltar
+players:
+  - name: felix
+    playmode: bot
+    strategy: random
+    color: '#1f8fff'
+    score: 0
+  - name: amanda
+    playmode: human
+    strategy: random
+    color: '#008a8a'
+    score: 0
+playerNames:
+  - felix
+  - amanda
+options:
+  mode: multi
+  winning_score: 25
+step: 24
+turn:
+  - felix
+  - amanda

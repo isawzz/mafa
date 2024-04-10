@@ -13775,12 +13775,19 @@ class SimpleTimer {
 		this.paused = false;
 		this.TO = null;
 	}
-	togglePause() { if (this.paused) this.continue(); else this.pause(); }
 	clear() { let elapsed = this.stop(); clearElement(this.elem); return elapsed; }
 	continue() {
 		if (!this.running) this.start();
 		else if (!this.paused) return;
 		else { this.paused = false; this.TO = setInterval(this.tickHandler.bind(this), this.interval); }
+	}
+	output() {
+		this.elem.innerHTML = timeConversion(Math.max(this.msLeft, 0), 'msh');
+	}
+	pause() {
+		if (this.paused || !this.running) return;
+		clearInterval(this.TO);
+		this.paused = true;
 	}
 	tickHandler() {
 		this.msLeft -= this.interval;
@@ -13795,6 +13802,7 @@ class SimpleTimer {
 			}
 		}
 	}
+	togglePause() { if (this.paused) this.continue(); else this.pause(); }
 	start() {
 		if (this.running) this.stop();
 		this.started = new Date().now;
@@ -13804,20 +13812,12 @@ class SimpleTimer {
 		this.output();
 		this.TO = setInterval(this.tickHandler.bind(this), this.interval);
 	}
-	output() {
-		this.elem.innerHTML = timeConversion(Math.max(this.msLeft, 0), 'msh');
-	}
 	stop() {
 		if (!this.running) return;
 		clearInterval(this.TO);
 		this.TO = null;
 		this.running = false;
 		return this.msLeft;
-	}
-	pause() {
-		if (this.paused || !this.running) return;
-		clearInterval(this.TO);
-		this.paused = true;
 	}
 }
 class SoloPlayer {
