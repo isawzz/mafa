@@ -1,5 +1,5 @@
 status: started
-id: CUVgAKdI9FLJN8T54eq0
+id: BmJMqab8lKV42h3Ff7E_
 fen:
   players:
     felix:
@@ -7,27 +7,27 @@ fen:
       playmode: bot
       strategy: random
       color: '#1f8fff'
-      score: 24
+      score: 17
     amanda:
       name: amanda
-      playmode: human
+      playmode: bot
       strategy: random
       color: '#008a8a'
-      score: 0
+      score: 9
   deck: []
   cards:
     - null
-    - green_oval_1_solid
-    - purple_diamond_1_striped
-    - red_squiggle_3_striped
-    - null
-    - green_squiggle_2_striped
+    - red_diamond_2_open
     - red_diamond_3_open
-    - red_diamond_2_striped
-    - green_squiggle_1_striped
+    - purple_diamond_3_open
     - null
-    - red_oval_3_open
     - green_oval_2_solid
+    - red_squiggle_1_open
+    - purple_oval_2_striped
+    - purple_diamond_2_solid
+    - red_oval_1_striped
+    - purple_oval_2_open
+    - null
   plorder:
     - felix
     - amanda
@@ -36,7 +36,7 @@ fen:
     - amanda
 game: setgame
 owner: felix
-friendly: rally of Gibraltar
+friendly: battle of Kuwait City
 players:
   - name: felix
     playmode: bot
@@ -44,7 +44,7 @@ players:
     color: '#1f8fff'
     score: 0
   - name: amanda
-    playmode: human
+    playmode: bot
     strategy: random
     color: '#008a8a'
     score: 0
@@ -54,7 +54,7 @@ playerNames:
 options:
   mode: multi
   winning_score: 25
-step: 24
+step: 2
 turn:
   - felix
   - amanda

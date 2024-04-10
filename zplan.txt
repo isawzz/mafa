@@ -1,3 +1,20 @@
+________ 10.April 2024
+also: consolidation moves muessen am server stattfinden!
+
+Set:
+a clickt set 1
+b clickt set 2 zugleich
+jeder sendet sein set
+am server werden die cards vom set entfernt und replaced
+das neue board wird an die players geschickt
+
+wie koennte man es anders machen?
+a clickt set 1
+es wird an den owner geschickt
+der owner entfernt die 3 cards, increments player score, broadcast
+
+
+
 ________ 4/1/24
 - move implementen!
 choices:

@@ -469,6 +469,32 @@ app.post('/postTable', (req, res) => {
 	io.emit('table', { msg, id, turn, isNew })
 	res.json(msg);
 });
+app.post('/mergeTable', (req, res) => {
+	let id = req.body.id;
+	let odata = req.body.override;
+	let mdata = req.body.merge;
+	let table = lookup(Session,['tables',id]);
+
+});
+
+app.post('/testMerge', (req, res) => {
+	let id = req.body.id;
+	let odata = req.body.override;
+	let mdata = req.body.merge;
+	let newtable = req.body;
+
+	let table = lookup(Session,['tables',id]);
+	let isNew = !table;
+	if (isNew) table = newtable; else	copyKeys(newtable,table);
+	let isStarted = table.status == 'started';
+
+	saveTable(id, table);
+	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
+	console.log(msg)
+	let turn = isStarted ? table.fen.turn : [];
+	io.emit('table', { msg, id, turn, isNew })
+	res.json(msg);
+});
 app.post('/postPlayer', (req, res) => {
 	//id=tableId, name=playerName, andere props sind player attributes
 	let id = req.body.id;
