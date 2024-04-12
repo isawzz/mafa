@@ -1,3 +1,232 @@
+async function test47_olist() {
+	let o = {
+		"amanda": {
+			"name": "amanda",
+			"playmode": "human",
+			"strategy": "random",
+			"color": "#008a8a",
+			"score": 0
+		}
+	};
+	console.log('o.amanda.score', o.amanda.score)
+	let onew = jsCopy(o);
+	onew.amanda.score = 33; //o.amanda.score+1;
+	let output = deepMergeOverrideLists(o, onew);
+	console.log(output.amanda.score)
+}
+async function test46_olist() {
+	let o = {
+		"status": "started",
+		"id": "NTnY0CLpMAdmaRhkDiVo",
+		"fen": {
+			"players": {
+				"felix": {
+					"name": "felix",
+					"playmode": "human",
+					"strategy": "random",
+					"color": "#1f8fff",
+					"score": 0
+				},
+				"amanda": {
+					"name": "amanda",
+					"playmode": "human",
+					"strategy": "random",
+					"color": "#008a8a",
+					"score": 0
+				}
+			},
+			"deck": [
+				"red_oval_2_solid",
+				"green_diamond_2_solid",
+				"green_squiggle_3_open",
+				"green_oval_3_solid",
+				"green_oval_3_open",
+				"green_squiggle_3_solid",
+				"green_squiggle_2_striped",
+				"purple_squiggle_2_solid",
+				"green_diamond_1_solid",
+				"purple_squiggle_3_open",
+				"purple_oval_2_striped",
+				"red_diamond_1_striped",
+				"red_diamond_2_open",
+				"purple_oval_1_solid",
+				"red_oval_3_solid",
+				"red_oval_1_solid",
+				"red_diamond_2_striped",
+				"purple_oval_1_open",
+				"red_squiggle_2_open",
+				"red_diamond_1_solid",
+				"green_diamond_2_open",
+				"purple_oval_3_open",
+				"green_oval_1_open",
+				"purple_diamond_1_solid",
+				"green_oval_2_open",
+				"red_oval_2_striped",
+				"green_oval_2_striped",
+				"green_diamond_1_open",
+				"green_oval_3_striped",
+				"red_diamond_1_open",
+				"red_diamond_3_solid",
+				"purple_oval_3_solid",
+				"purple_diamond_2_open",
+				"red_squiggle_3_striped",
+				"purple_squiggle_1_open",
+				"purple_squiggle_2_open",
+				"purple_diamond_3_striped",
+				"purple_diamond_1_striped",
+				"red_squiggle_2_striped",
+				"green_oval_2_solid",
+				"red_oval_1_open",
+				"green_oval_1_solid",
+				"purple_diamond_3_open",
+				"purple_squiggle_1_striped",
+				"green_diamond_3_striped",
+				"purple_oval_1_striped",
+				"red_oval_2_open",
+				"green_squiggle_1_solid",
+				"green_squiggle_2_solid",
+				"red_squiggle_1_striped",
+				"green_squiggle_2_open",
+				"red_oval_1_striped",
+				"red_squiggle_1_open",
+				"green_diamond_3_solid",
+				"red_oval_3_striped",
+				"purple_squiggle_1_solid",
+				"purple_diamond_2_solid",
+				"purple_diamond_1_open",
+				"red_squiggle_3_open",
+				"green_diamond_1_striped",
+				"red_squiggle_3_solid",
+				"purple_diamond_3_solid",
+				"purple_oval_2_open",
+				"red_diamond_2_solid",
+				"red_squiggle_1_solid",
+				"purple_diamond_2_striped",
+				"red_diamond_3_open",
+				"red_squiggle_2_solid",
+				"red_diamond_3_striped"
+			],
+			"cards": [
+				"red_oval_3_open",
+				"purple_squiggle_3_striped",
+				"purple_squiggle_2_striped",
+				"purple_squiggle_3_solid",
+				"purple_oval_2_solid",
+				"green_squiggle_3_striped",
+				"green_squiggle_1_striped",
+				"green_diamond_2_striped",
+				"green_squiggle_1_open",
+				"purple_oval_3_striped",
+				"green_oval_1_striped",
+				"green_diamond_3_open"
+			],
+			"plorder": [
+				"felix",
+				"amanda"
+			],
+			"turn": [
+				"felix",
+				"amanda"
+			]
+		},
+		"game": "setgame",
+		"owner": "felix",
+		"friendly": "showdown in Nuuk",
+		"playerNames": [
+			"felix",
+			"amanda"
+		],
+		"options": {
+			"mode": "multi",
+			"winning_score": 25
+		},
+		"step": 0
+	};
+
+	let onew = jsCopy(o);
+	onew.fen.players.amanda.score = onew.fen.players.amanda.score + 3; //"witz";
+	let output = deepMergeOverrideLists(onew, o);
+	console.log(output.fen.players.amanda)
+}
+async function test45() {
+	await prelims();
+	await switchToOtherUser('amanda', 'felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+
+	mButton('bot', onclickBot, dExtra)
+	mButton('human', onclickHuman, dExtra)
+	mButton('felix', () => switchToUser('felix'), 'dExtra')
+	mButton('amanda', () => switchToUser('amanda'), 'dExtra')
+}
+async function test44_merge() {
+	// Example usage
+	const obj1 = { a: 1, b: [{ id: 1, value: "Target" }, { name: 3 }], c: "Hello" };
+	const obj2 = { b: [{ name: 3, vel: 3 }, { id: 1, value: "Source", extra: "Info" }, { id: 4 }], c: "World", d: "Extra" };
+
+	const merged = deepMerge(obj1, obj2);
+	console.log(merged);
+	// Expected output: { a: 1, b: [{ id: 1, value: "Source", extra: "Info" },{id:2, name:3},{id:3}], c: "World", d: "Extra" }
+
+}
+async function test43_merge() {
+	// Example usage
+	const obj1 = { a: 1, b: { c: 1, d: { a: 1, b: 1 } } };
+	const obj2 = { b: { d: { a: 2 } }, e: 3 };
+
+	const merged = deepMerge(obj1, obj2);
+	console.log(merged);
+	// Output: { a: 1, b: { c: 1, d: 2 }, e: 3 }
+
+}
+async function test42() {
+	await prelims();
+	//await switchToOtherUser('amanda','felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+
+	mButton('bot', onclickBot, dExtra)
+	mButton('human', onclickHuman, dExtra)
+}
+async function test41_timer() {
+	await prelims();
+	let cd = createCountdownG('dMain', {}, 5000, () => { console.log('DONE!'); removeCountdownG(); });
+	console.log('timer', cd);
+}
+async function test40() {
+	await prelims();
+	await switchToOtherUser('amanda', 'felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+
+	mButton('bot', onclickBot, dExtra)
+	mButton('human', onclickHuman, dExtra)
+}
+async function test39() {
+	await prelims();
+	await switchToOtherUser('amanda', 'felix');
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+}
+async function test38() {
+	await prelims();
+
+	mButton('felix', () => switchToUser('felix'), 'dExtra')
+	mButton('amanda', () => switchToUser('amanda'), 'dExtra')
+
+	await switchToOtherUser('amanda', 'felix');
+
+	// mStyle('dMain',{opacity:0})
+	await switchToMenu(UI.nav, 'play');
+	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id)
+
+	// //return;
+
+	// //how to start a game of set?
+	// let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
+	// await startGame('setgame', players, { winning_score: 1 });
+
+}
 async function test37(){
 	await prelims();
 	setLoadPatterns('dBuffer');

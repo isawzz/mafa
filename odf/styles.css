@@ -146,6 +146,18 @@ body{
 	margin:0;
 	background: var(--bgBody) !important;
 }
+.button {
+	padding: 5px 10px;
+	font-size: 16px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	min-width: 80px;
+	outline: none;
+	cursor:pointer;
+}
+.button:hover{
+	background:'#000000a0';
+}
 legend {
   /* border: 1px solid green; */
   color: green;
@@ -183,9 +195,6 @@ fieldset .disabled {
   to {
     opacity: 1;
   }
-}
-.button {
-	min-width: 80px;
 }
 .darker{
 	background: var(--bgDarker);
@@ -384,6 +393,23 @@ fieldset .disabled {
 	background: #ffff0080 !important;
 	/* outline: solid 8px #ffff0080;
 	outline-offset: -6px; */
+}
+.slow_gradient_blink {
+	background: linear-gradient(270deg, #fffffd, #00000080);
+	background-size: 400% 400%;
+	-webkit-animation: AnimationName 5s linear infinite;
+	animation: AnimationName 5s linear infinite;
+}
+@keyframes AnimationName {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }
 .subtitle{
 	color: var(--fgSubtitle);

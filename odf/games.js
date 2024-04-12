@@ -11,6 +11,7 @@ function setgame() {
 		fen.cards = deckDeal(fen.deck,12);
 		fen.plorder = jsCopy(table.playerNames);
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
+		delete table.players;
 		return fen;
 	}
 	async function activate(table) {await setActivate(); } //console.log('activate for',getUname());}
@@ -30,49 +31,17 @@ async function setRobotMove(table){
 	mShield(dOpenTable,{bg:'#00000010'});
 
 	T.dTimer = mDom(dOpenTable);
-	if (isEmpty(T.sets)) createCountdownG(T.dTimer,{},2000,setOnclickNoSet());
+	if (isEmpty(T.sets)) createCountdownG(T.dTimer,{},1000,setOnclickNoSet());
 	else{
 		T.list = rChoose(T.sets);
 		createCountdownG(T.dTimer,{},2000,setClickNext);
 	}
 }
-
 function setClickNext(){
-
-	//assertion(!isEmpty(T.list),'T.list is empty!!!');
 	if (isEmpty(T.list)) {console.log('list empty!');return;}
-
 	let el=T.list.shift();
 	setOnclickCard(el,T.items);
-	if (!isEmpty(T.list)) createCountdownG(T.dTimer,{},2000,setClickNext);
-
-	// if (isEmpty(list)) {setRemoveTimer();return;}
-
-
-	// TO.main = setTimeout(()=>{
-	// 	let item = list.shift();
-	// 	setOnclickCard(item,T.items);
-	// 	//setClickNext(list);
-	// },5000);
-
-
-
-	// let item = rChoose(T.items);
-  // let name = getUname(); 
-	// console.log(name,'click',item.key)
-	// //if (name == 'felix') await mSleep(10);
-	// await mSleep(rChoose([0,10,20,30,40]));
-	// let fen=table.fen;
-	// let pl=fen.players[name];
-	// pl.score++;
-	// // await sendMoveComplete(fen);
-  // let id = table.id;
-	// let friendly = table.friendly;
-	// let step = table.step;
-	// let turn = fen.turn;
-	// //console.log('___ sendMoveComplete',step,name); //type,move,turn)
-	// let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
-	// console.log('res',res)
+	if (!isEmpty(T.list)) createCountdownG(T.dTimer,{},4000,setClickNext);
 }
 async function setActivate(){
 	T.sets=setFindAllSets(T.items);
@@ -102,19 +71,19 @@ function setCreateDeck() {
 	arrShuffle(deck);
 	return deck;
 }
-function setDrawCard(card, dParent, sz = 100) {
+function setDrawCard(card, dParent, colors, sz = 100) {
 	//card eg purple_squiggle_2_open	
 	const paths = {
 		diamond: "M25 0 L50 50 L25 100 L0 50 Z",
 		squiggle: "M38.4,63.4c2,16.1,11,19.9,10.6,28.3c1,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z",
 		oval: "M25,95C14.2,95,5.5,85.2,5.5,80V20C5.5,13.2,14.2,5.2,25,5.2S44.5,13.2,44.5,20v60 C44.5,85.2,35.8,95,25,95z"
 	}
-	const colors = { red: '#e74c3c', green: '#27ae60', purple: '#8e44ad' };
 	let [color, shape, num, fill] = card.split('_');
 	var attr = {
 		d: paths[shape], 
 		fill: fill=='striped'?`url(#striped-${color})`:fill=='solid'?colors[color]:'none',
-		stroke: colors[color]
+		stroke: colors[color],
+		'stroke-width':2,
 	};
 	let h = sz, w = sz / .65;
 	let ws = w / 4;
@@ -127,7 +96,11 @@ function setDrawCard(card, dParent, sz = 100) {
 	}
 	return d0;
 }
-function setLoadPatterns(dParent){
+function setGameover(table){
+	table.status = 'over';
+	table.winners = getPlayersWithMaxScore(table.fen);
+}
+function setLoadPatterns(dParent, colors){
 	dParent = toElem(dParent);
 	let id="setpatterns";
 	if (isdef(mBy(id))) {return;}
@@ -135,43 +108,18 @@ function setLoadPatterns(dParent){
 		<svg id="setpatterns" width="0" height="0">
 			<!--  Define the patterns for the different fill colors  -->
 			<pattern id="striped-red" patternUnits="userSpaceOnUse" width="4" height="4">
-				<path d="M-1,1 H5" style="stroke:#e74c3c; stroke-width:1" />
+				<path d="M-1,1 H5" style="stroke:${colors.red}; stroke-width:1" />
 			</pattern>
 			<pattern id="striped-green" patternUnits="userSpaceOnUse" width="4" height="4">
-				<path d="M-1,1 H5" style="stroke:#27ae60; stroke-width:1" />
+				<path d="M-1,1 H5" style="stroke:${colors.green}; stroke-width:1" />
 			</pattern>
 			<pattern id="striped-purple" patternUnits="userSpaceOnUse" width="4" height="4">
-				<path d="M-1,1 H5" style="stroke:#8e44ad; stroke-width:1" />
+				<path d="M-1,1 H5" style="stroke:${colors.purple}; stroke-width:1" />
 			</pattern>
 		</svg>
 		`;
 	let el=mCreateFrom(html);
 	mAppend(dParent,el)
-}
-async function setOnclickNoSet(){
-	mShield(dOpenTable,{bg:'#00000030'});
-	let me = getUname();
-	let table = Clientdata.table;
-	let fen=table.fen;
-
-	//if yes, increase score, remove items, add 3 new items
-	if (isEmpty(T.sets)){
-		//add 1 cards!
-		let newCards = deckDeal(fen.deck,1);//get 3 more cards from deck
-		fen.cards.push(newCards[0]);
-		fen.players[me].score++;
-		
-	}else{
-		fen.players[me].score--;
-	}
-
-	let name = getUname(); 
-	let id = table.id;
-	let friendly = table.friendly;
-	let step = table.step;
-	let turn = fen.turn;
-	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
-	console.log('res',res)
 }
 async function setOnclickHint(){
 	if (isEmpty(T.sets)) {console.log('no set');return;}
@@ -182,7 +130,9 @@ async function setOnclickHint(){
 }
 async function setPresent(table) {
 	T={};
-	setLoadPatterns('dPage');
+	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
+
+	setLoadPatterns('dPage',colors);
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
   [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
@@ -196,7 +146,7 @@ async function setPresent(table) {
 	let items = T.items = [];
 	for(const c of cards){
 		//mDom(dBoard,{},{html:c})
-		let d = setDrawCard(c,dBoard,TESTING?70:110); 
+		let d = setDrawCard(c,dBoard,colors,TESTING?100:110); 
 		let item = mItem({div:d},{key:c});
 		items.push(item);
 	}

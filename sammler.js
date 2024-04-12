@@ -755,6 +755,11 @@ function setNewCenterOverlay(d, x, y) {
 
 
 }
+function statusMessage(msg, top=600) {
+	let d=mBy('ribbon');if (isdef(d)) d.remove();
+	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
+  d = mDom(dTitle,{bg,mabottom:10,align:'center',padding:10,fz:40,w100:true},{html:msg, id:'ribbon'}); 
+}
 function storeMouseCoords(ev){
 	let img=ev.target;
 	let d=img.parentNode;

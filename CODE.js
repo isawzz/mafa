@@ -1,3 +1,441 @@
+function statusMessage(msg, top=600) {
+	let d=mBy('ribbon');if (isdef(d)) d.remove();
+	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
+  d = mDom(dTitle,{bg,mabottom:10,align:'center',padding:10,fz:40,w100:true},{html:msg, id:'ribbon'}); 
+  // d = mDom('dTitle',{align:'center',padding:10,fz:40,w100:true},{classes:'slow_gradient_blink', html:msg, id:'ribbon'}); 
+  // let def_styles = { padding: 20, align: 'center', position: 'absolute', fg: 'contrast', fz: 24, w: '100vw' };
+  // copyKeys(styles, def_styles);
+  // let dContent = mDiv(d, def_styles, null, msg);
+  // return dContent;
+}
+async function _prelims() {
+  if (nundef(M.superdi)) {
+    Serverdata = await mGetRoute('session'); //session ist: users,config,
+    Info = await mGetYaml('../assets/info.yaml');
+    await loadCollections();
+    loadPlayerColors();
+    showNavbar();
+    sockInit();
+    dTitle = mDom('dTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
+    await switchToUser(localStorage.getItem('username'));  //danach ist U IMMER gesetzt!!!!
+    await switchToMenu('home')
+  }
+}
+
+//#region deepMerge 2
+function cloneIfNecessary(value, optionsArgument) {
+  var clone = optionsArgument && optionsArgument.clone === true
+  return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+function deepmerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+  } else {
+    return mergeObject(target, source, optionsArgument)
+  }
+}
+function defaultArrayMerge(target, source, optionsArgument) {
+  var destination = target.slice()
+  source.forEach(function (e, i) {
+    if (typeof destination[i] === 'undefined') {
+      destination[i] = cloneIfNecessary(e, optionsArgument)
+    } else if (isMergeableObject(e)) {
+      destination[i] = deepmerge(target[i], e, optionsArgument)
+    } else if (target.indexOf(e) === -1) {
+      destination.push(cloneIfNecessary(e, optionsArgument))
+    }
+  })
+  return destination
+}
+function emptyTarget(val) {
+  return Array.isArray(val) ? [] : {}
+}
+function isMergeableObject(val) {
+  var nonNullObject = val && typeof val === 'object'
+  return nonNullObject
+    && Object.prototype.toString.call(val) !== '[object RegExp]'
+    && Object.prototype.toString.call(val) !== '[object Date]'
+}
+function mergeCombine(base, drueber) { return _deepMerge(base, drueber); }
+function _deepMerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: _defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || _defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : _cloneIfNecessary(source, optionsArgument)
+  } else {
+    return _mergeObject(target, source, optionsArgument)
+  }
+}
+function _cloneIfNecessary(value, optionsArgument) {
+  var clone = optionsArgument && optionsArgument.clone === true
+  return (clone && _isMergeableObject(value)) ? deepmerge(_emptyTarget(value), value, optionsArgument) : value
+}
+function _defaultArrayMerge(target, source, optionsArgument) {
+  var destination = target.slice()
+  source.forEach(function (e, i) {
+    if (typeof destination[i] === 'undefined') {
+      destination[i] = _cloneIfNecessary(e, optionsArgument)
+    } else if (_isMergeableObject(e)) {
+      destination[i] = deepmerge(target[i], e, optionsArgument)
+    } else if (target.indexOf(e) === -1) {
+      destination.push(_cloneIfNecessary(e, optionsArgument))
+    }
+  })
+  return destination
+}
+function _emptyTarget(val) {
+  return Array.isArray(val) ? [] : {}
+}
+function _isMergeableObject(val) {
+  var nonNullObject = val && typeof val === 'object'
+  return nonNullObject
+    && Object.prototype.toString.call(val) !== '[object RegExp]'
+    && Object.prototype.toString.call(val) !== '[object Date]'
+}
+function _mergeObject(target, source, optionsArgument) {
+  var destination = {}
+  if (_isMergeableObject(target)) {
+    Object.keys(target).forEach(function (key) {
+      destination[key] = _cloneIfNecessary(target[key], optionsArgument)
+    })
+  }
+  Object.keys(source).forEach(function (key) {
+    if (!_isMergeableObject(source[key]) || !target[key]) {
+      destination[key] = _cloneIfNecessary(source[key], optionsArgument)
+    } else {
+      destination[key] = _deepMerge(target[key], source[key], optionsArgument)
+    }
+  })
+  return destination;
+}
+
+//#endregion
+
+//#region deepMerge 1
+function getKey(item) { return item.key || item.id || item.name; }
+function mergeArrays(target, source) {
+	const merged = Array.from(target);
+	const keyMap = {};
+
+	target.forEach((item, index) => {
+		const itemKey = getKey(item);
+		if (itemKey) keyMap[itemKey] = index;
+	});
+
+	source.forEach((item) => {
+		const itemKey = getKey(item);
+		if (itemKey && keyMap[itemKey] !== undefined) {
+			merged[keyMap[itemKey]] = deepMerge(target[keyMap[itemKey]], item);
+		} else {
+			merged.push(item);
+		}
+	});
+
+	return merged;
+}
+function deepMerge(target, source) {
+	if (Array.isArray(target) && Array.isArray(source)) {
+		return mergeArrays(target, source);
+	} else if (isObject(target) && isObject(source)) {
+		const output = Object.assign({}, target);
+		Object.keys(source).forEach(key => {
+			if (isObject(source[key]) || Array.isArray(source[key])) {
+				if (!(key in target)) {
+					Object.assign(output, { [key]: source[key] });
+				} else {
+					output[key] = deepMerge(target[key], source[key]);
+				}
+			} else {
+				Object.assign(output, { [key]: source[key] });
+			}
+		});
+		return output;
+	}
+	return source;
+}
+function deepMergeConcatLists(target, source) {
+	if (Array.isArray(target) && Array.isArray(source)) {
+		// Concatenating arrays
+		return [...target, ...source];
+	} else if (isObject(target) && isObject(source)) {
+		const output = Object.assign({}, target);
+		Object.keys(source).forEach(key => {
+			if (isObject(source[key])) {
+				if (!(key in target)) {
+					Object.assign(output, { [key]: source[key] });
+				} else {
+					output[key] = deepMergeConcatLists(target[key], source[key]);
+				}
+			} else if (Array.isArray(source[key])) {
+				// Merge arrays
+				output[key] = target[key] ? deepMergeConcatLists(target[key], source[key]) : source[key];
+			} else {
+				Object.assign(output, { [key]: source[key] });
+			}
+		});
+		return output;
+	}
+	// Return source if neither an object nor an array
+	return source;
+}
+function deepMergeIndex(target, source) {
+	// Check if the arguments are objects
+	if (typeof target !== 'object' || typeof source !== 'object') {
+		throw new Error('Both arguments must be objects');
+	}
+
+	// Iterate through the source object
+	for (const key in source) {
+		if (source.hasOwnProperty(key)) {
+			// Check if the key exists in the target object
+			if (target.hasOwnProperty(key)) {
+				// If both values are objects, recursively merge them
+				if (typeof target[key] === 'object' && typeof source[key] === 'object') {
+					target[key] = deepMergeIndex(target[key], source[key]);
+				} else {
+					// Otherwise, overwrite the value in the target object
+					target[key] = source[key];
+				}
+			} else {
+				// If the key does not exist in the target object, add it
+				target[key] = source[key];
+			}
+		}
+	}
+
+	return target;
+}
+function deepMergeOverrideLists(target,source) {
+	let output = Object.assign({}, source);
+	if (isObject(source) && isObject(target)) {
+		Object.keys(target).forEach(key => {
+			if (isObject(target[key])) {
+				if (!(key in source))
+					Object.assign(output, { [key]: target[key] });
+				else
+					output[key] = deepMergeOverrideLists(source[key], target[key]);
+			} else {
+				Object.assign(output, { [key]: target[key] });
+			}
+		});
+	}
+	return output;
+}
+//#endregion
+
+
+
+
+//#region April 10 2024
+async function showTable(id) {
+	//console.log('showTable', getUname()); //name, table.friendly, table.playerNames.includes(name));
+	//console.log('Clientdata',Clientdata);
+	let table = await mGetRoute('table', { id }); 
+	let me = getUname();
+
+	if (!table) { showMessage('table deleted!'); return await showTables(); }
+	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+
+	Clientdata.table = table; console.log('___showTable'); //,me); //table.fen.players[me]);
+	
+	clearTable();
+	//await waitForUnlocked();
+	//setLock();
+
+	//natTitle();
+	showTitle(`${table.friendly} ${me}`);
+
+	let func=DA.funcs[table.game];
+	await func.present(table); // await natPresent(fen, plname);
+	mRise('dMain');
+
+	//if this table contains robots, kann hier einen robot move ausloesen!
+	//versuch das mal!!!
+	//robotMove(me);
+
+	if (!table.fen.turn.includes(me)) { return; }
+
+	if (table.fen.players[me].playmode == 'bot') await func.robotMove(table,me); 
+	else await func.activate(table);
+
+	//resetLock();
+	// DA.mc=0; if (TESTING && DA.mc++<2) await func.robotMove(table,me); else await func.activate(table);
+}
+async function setOnclickNoSet(){
+	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+	let [me, table] = [getUname(), Clientdata.table];
+	let [fen, pl] = [table.fen, table.fen.players[me]];
+
+	//if yes, increase score, remove items, add 3 new items
+	if (isEmpty(T.sets)){
+		//add 1 cards!
+		let newCards = deckDeal(fen.deck,1);//get 3 more cards from deck
+		if (!isEmpty(newCards))	fen.cards.push(newCards[0]);
+		pl.score++;
+	}else{
+		pl.score--;
+	}
+
+	let name = getUname(); 
+	let id = table.id;
+	let friendly = table.friendly;
+	let step = table.step;
+	let turn = fen.turn;
+	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	console.log('res',res)
+}
+
+function setClickNext(){
+	if (isEmpty(T.list)) {console.log('list empty!');return;}
+
+	let el=T.list.shift();
+	setOnclickCard(el,T.items);
+	if (!isEmpty(T.list)) createCountdownG(T.dTimer,{},4000,setClickNext);
+
+	// if (isEmpty(list)) {setRemoveTimer();return;}
+
+
+	// TO.main = setTimeout(()=>{
+	// 	let item = list.shift();
+	// 	setOnclickCard(item,T.items);
+	// 	//setClickNext(list);
+	// },5000);
+
+
+
+	// let item = rChoose(T.items);
+  // let name = getUname(); 
+	// console.log(name,'click',item.key)
+	// //if (name == 'felix') await mSleep(10);
+	// await mSleep(rChoose([0,10,20,30,40]));
+	// let fen=table.fen;
+	// let pl=fen.players[name];
+	// pl.score++;
+	// // await sendMoveComplete(fen);
+  // let id = table.id;
+	// let friendly = table.friendly;
+	// let step = table.step;
+	// let turn = fen.turn;
+	// //console.log('___ sendMoveComplete',step,name); //type,move,turn)
+	// let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+	// console.log('res',res)
+}
+async function setOnclickCard(item, items) {
+	console.log('click', item.key)
+	toggleItemSelection(item);
+	let selitems = items.filter(x => x.isSelected);
+	let keys = selitems.map(x => x.key);
+	let m = selitems.length;
+	if (m == 3 || TESTING && m == 3) {
+		mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+		let me = getUname();
+		let table = Clientdata.table;
+		let fen = table.fen;
+		let pl = fen.players[me];
+		let isSet = checkIfSet(keys); console.log('isSet',isSet); //check if set condition is met
+		//if yes, increase score, remove items, add 3 new items
+		if (isSet || TESTING) {
+			let n = Math.max(0,fen.cards.length - 12);//##
+			let need = 3 - n;
+			let newCards = deckDeal(fen.deck, need);//## get 3 more cards from deck
+			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
+			pl.score++;
+		} else {
+			pl.score--;
+		}
+
+		// let name = getUname();
+		// let id = table.id;
+		// let friendly = table.friendly;
+		// let step = table.step;
+		// let turn = fen.turn;
+		//console.log('___ sendMoveComplete',step,name); //type,move,turn)
+		// let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
+		let res = await mPostRoute('mergeTable', table);
+
+		console.log('res', res)
+	}
+	else if (m >= 1) disableButton(T.bHint); else enableButton(T.bHint);
+}
+function deepMergeOverrideLists(onew,oold) {
+	let output = Object.assign({}, oold);
+	if (isObject(oold) && isObject(onew)) {
+		Object.keys(onew).forEach(key => {
+			if (isObject(onew[key])) {
+				if (!(key in oold))
+					Object.assign(output, { [key]: onew[key] });
+				else
+					output[key] = deepMergeOverrideLists(oold[key], onew[key]);
+			} else {
+				Object.assign(output, { [key]: onew[key] });
+			}
+		});
+	}
+	return output;
+}
+function deepMergeOverrideLists(target,source) {
+	let output = Object.assign({}, source);
+	if (isObject(source) && isObject(target)) {
+		Object.keys(target).forEach(key => {
+			if (isObject(target[key])) {
+				if (!(key in source))
+					Object.assign(output, { [key]: target[key] });
+				else
+					output[key] = deepMergeOverrideLists(source[key], target[key]);
+			} else {
+				Object.assign(output, { [key]: target[key] });
+			}
+		});
+	}
+	return output;
+}
+function isObject(item) {  return (item && typeof item === 'object' && !Array.isArray(item));}
+
+function deepMerge(target, source) {
+  let output = Object.assign({}, target);
+  if (isObject(target) && isObject(source)) {
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key])) {
+        if (!(key in target))
+          Object.assign(output, { [key]: source[key] });
+        else
+          output[key] = deepMerge(target[key], source[key]);
+      } else {
+        Object.assign(output, { [key]: source[key] });
+      }
+    });
+  }
+  return output;
+}
+function deepMerge(target, source) {
+  if (Array.isArray(target) && Array.isArray(source)) {
+    // Concatenating arrays
+    return [...target, ...source];
+  } else if (isObject(target) && isObject(source)) {
+    const output = Object.assign({}, target);
+    Object.keys(source).forEach(key => {
+      if (isObject(source[key])) {
+        if (!(key in target)) {
+          Object.assign(output, { [key]: source[key] });
+        } else {
+          output[key] = deepMerge(target[key], source[key]);
+        }
+      } else if (Array.isArray(source[key])) {
+        // Merge arrays
+        output[key] = target[key] ? deepMerge(target[key], source[key]) : source[key];
+      } else {
+        Object.assign(output, { [key]: source[key] });
+      }
+    });
+    return output;
+  }
+  // Return source if neither an object nor an array
+  return source;
+}
 async function setOnclickCard(item,items){
 	console.log('click',item.key)
 	toggleItemSelection(item);
@@ -734,9 +1172,27 @@ function rest(ckey) {
 }
 
 
-
+//#endregion
 
 //#region app.js 
+app.post('/testMerge', (req, res) => {
+	let id = req.body.id;
+	let odata = req.body.override;
+	let mdata = req.body.merge;
+	let newtable = req.body;
+
+	let table = lookup(Session, ['tables', id]);
+	let isNew = !table;
+	if (isNew) table = newtable; else copyKeys(newtable, table);
+	let isStarted = table.status == 'started';
+
+	saveTable(id, table);
+	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
+	console.log(msg)
+	let turn = isStarted ? table.fen.turn : [];
+	io.emit('table', { msg, id, turn, isNew })
+	res.json(msg);
+});
 app.post('/move', (req, res) => {
 	let o = req.body;
 	let [id, friendly, name, move, type, step, turn] = [o.id, o.friendly, o.name, o.move, o.type, o.step, o.turn];
@@ -842,6 +1298,7 @@ app.post('/postNewTable', (req, res) => {
 });
 
 //#endregion
+
 //#region 27.3.24
 function handle_move(x){ 
 	console.log('::move', arguments);  
@@ -1693,6 +2150,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 	// inp.focus();
 }
 //#endregion
+
 //#region gadgets mprompt WORKS!
 function mGadget(name, styles = {}, opts = {}) {
 	let d = document.body;

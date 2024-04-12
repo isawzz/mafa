@@ -69,6 +69,14 @@ function cRound(dParent, styles = {}, opts = {}) {
 	styles.rounding = '50%';
 	return cBlank(dParent, styles, opts);
 }
+function createCountdownG(dParent, styles = {}, ms = 3000, callback = null) {
+	removeCountdownG();
+	if (isEmpty(styles)) styles = { display: 'inline', fz: 40, fg: 'white', bg: 'gray' }; //{ w: 80, maleft: 10, fg: 'red', weight: 'bold' };
+	let dCountdown = mDom(dParent, styles, { id: 'dCountdown' });
+	let cd = DA.countdown = new SimpleTimer(dCountdown, 1000, null, ms, callback);
+	cd.start();
+	return cd;
+}
 function deckDeal(deck, n) { return deck.splice(0, n); }
 
 function draw_set_card_test(dParent) {
@@ -91,7 +99,15 @@ function drawShape(key, dParent, styles, classes, sizing) {
 	return d;
 }
 function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
+
+function getPlayersWithMaxScore(fen){
+	let list=dict2list(fen.players,'name');
+	list=sortByDescending(list,'score');
+	maxlist=arrTakeWhile(list,x=>x.score == list[0].score);
+	return maxlist.map(x=>x.name);
+}
 function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
+
 function makeSVG(tag, attrs) {
 	var el = "<" + tag;
 	for (var k in attrs)
@@ -164,7 +180,8 @@ async function onclickJoinTable(id) {
 	//console.log(getUname(),'clicked join',id);
 	let table = Serverdata.tables.find(x => x.id == id);
 	let me = getUname();
-	assertion(nundef(table.players.find(x => x.name == me)), 'already joined!!!');
+	assertion(table.status == 'open','too late to join! game has already started!')
+	assertion(!table.playerNames.includes(me), `${me} already joined!!!`);
 	table.players.push(createHumanPlayer(me));
 	table.playerNames = table.players.map(x => x.name);
 	let res = await mPostRoute('postTable', { id, players: table.players, playerNames: table.playerNames });
@@ -174,6 +191,7 @@ async function onclickLeaveTable(id) {
 	//console.log(getUname(),'clicked leave',id);
 	let table = Serverdata.tables.find(x => x.id == id);
 	let me = getUname();
+	assertion(table.status == 'open','too late to leave! game has already started!')
 	assertion(isdef(table.players.find(x => x.name == me)), 'not in joined players!!!!');
 	//console.log('players',table.players);
 	let player = table.players.find(x => x.name == me);
@@ -215,40 +233,16 @@ async function onclickTable(id) {
 	//console.log('_____ onclickTable')
 	await showTable(id)
 }
-async function showTable(id) {
-	//console.log('showTable', getUname()); //name, table.friendly, table.playerNames.includes(name));
-	//console.log('Clientdata',Clientdata);
-	let table = await mGetRoute('table', { id }); 
-	let me = getUname();
+function removeCountdownG() { if (isdef(DA.countdown)) { DA.countdown.clear(); DA.countdown.elem.remove(); DA.countdown = null; } }
 
-	if (!table) { showMessage('table deleted!'); return await showTables(); }
-	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
-
-	Clientdata.table = table; console.log('___showTable'); //,me); //table.fen.players[me]);
-	
-	clearTable();
-	//await waitForUnlocked();
-	//setLock();
-
-	//natTitle();
-	showTitle(`${table.friendly} ${me}`);
-
-	let func=DA.funcs[table.game];
-	await func.present(table); // await natPresent(fen, plname);
-	mRise('dMain');
-
-	//if this table contains robots, kann hier einen robot move ausloesen!
-	//versuch das mal!!!
-	//robotMove(me);
-
-	if (!table.fen.turn.includes(me)) { return; }
-
-	if (table.fen.players[me].playmode == 'bot') await func.robotMove(table,me); 
-	else await func.activate(table);
-
-	//resetLock();
-	// DA.mc=0; if (TESTING && DA.mc++<2) await func.robotMove(table,me); else await func.activate(table);
+function showGameover(table) {
+  let winners = table.winners;
+	let msg = winners.length > 1? `GAME OVER - The winners are ${winners.join(', ')}!!!`:`GAME OVER - The winner is ${winners[0]}!!!`;
+	let d=mBy('ribbon');if (isdef(d)) d.remove();
+	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
+  d = mDom(dTitle,{bg,mabottom:10,align:'center',padding:10,fz:40,w100:true},{html:msg, id:'ribbon'}); 
 }
+
 async function startGame(gamename, players, options) {
 	let table = createOpenTable(gamename, players, options);
 	table = setTableToStarted(table); //fen is created here!!!!

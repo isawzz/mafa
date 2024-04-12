@@ -1,55 +1,27 @@
 onload = start;
 
-async function start() { TESTING=false;await prelims(); } 
-async function start() { TESTING=true; test42(); }
+async function start() { TESTING = false; await prelims(); }
+async function start() { TESTING = true; test49(); }//test47_olist(); }
 
-async function test42(){
+async function test49() {
 	await prelims();
-	//await switchToOtherUser('amanda','felix');
-	await switchToMenu(UI.nav, 'play');
-	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+	testShowTestButtons();
+	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
 
-	mButton('bot',onclickBot,dExtra)
-	mButton('human',onclickHuman,dExtra)
+	// table.fen.deck = []; await sendMergeTable();
+	// let tnew = jsCopy(table); tnew.status = 'over'; await mPostRoute('mergeTable', tnew);
+	// let x = mergeCombine(table, tnew); console.log(x.status, x.turn)
+
 }
-async function test41_timer(){
-	await prelims();
-	let cd = createCountdownG('dMain',{}, 5000, ()=>{console.log('DONE!');removeCountdownG();});
-	console.log('timer',cd);
-}
-async function test40(){
-	await prelims();
-	await switchToOtherUser('amanda','felix');
-	await switchToMenu(UI.nav, 'play');
-	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
+async function sendMergeTable(table) { return await mPostRoute('mergeTable', valf(table,Clientdata.table)); }
 
-	mButton('bot',onclickBot,dExtra)
-	mButton('human',onclickHuman,dExtra)
-}
-
-async function test39(){
+async function test48() {
 	await prelims();
-	await switchToOtherUser('amanda','felix');
-	await switchToMenu(UI.nav, 'play');
-	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id);
-}
-async function test38(){
-	await prelims();
+	testShowTestButtons();
+	await testShowFirstTableFelixAmanda();
 
-	mButton('felix',()=>switchToUser('felix'),'dExtra')
-	mButton('amanda',()=>switchToUser('amanda'),'dExtra')
-
-	await switchToOtherUser('amanda','felix');
-	
-	// mStyle('dMain',{opacity:0})
-	await switchToMenu(UI.nav, 'play');
-	if (Serverdata.tables.length > 0) await onclickTable(Serverdata.tables[0].id)
-	
-	// //return;
-	
-	// //how to start a game of set?
-	// let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
-	// await startGame('setgame', players, { winning_score: 1 });
+	// let tnew = jsCopy(table); tnew.status = 'over'; await mPostRoute('mergeTable', tnew);
+	// let x = mergeCombine(table, tnew); console.log(x.status, x.turn)
 
 }
 
@@ -69,7 +41,7 @@ async function prelims() {
 	UI.nav = showNavbar();
 	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
 	dTitle = mBy('dTitle');
-	
+
 	await switchToUser(localStorage.getItem('username'));
 
 	//let x=rChoose(range(1,100,10)); console.log('x',x);	await mSleep(x);
@@ -100,11 +72,35 @@ async function prelims() {
 
 }
 function defaultGameFunc() {
-	function setup(table) { return { players: table.players, turn: table.owner }; }
-	async function activate(table) {console.log('activate for',getUname())}
+	function setup(table) { let fen = { players: table.players, turn: [table.owner] }; delete table.players; }
+	async function activate(table) { console.log('activate for', getUname()) }
 	function checkGameover(table) { return false; }
 	async function present(table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
-	async function robotMove(table) {console.log('robot moves for',getUname())}
-	async function stepComplete(table,o) {console.log(`integrate if step complete for ${table.friendly}`); }
+	async function robotMove(table) { console.log('robot moves for', getUname()) }
+	async function stepComplete(table, o) { console.log(`integrate if step complete for ${table.friendly}`); }
 	return { setup, activate, checkGameover, present, robotMove, stepComplete };
+}
+async function testOnclickDeck0(){
+	let tnew = jsCopy(Clientdata.table);
+	tnew.fen.deck=[]; 
+
+	//let x=deepmergeOverride(Clientdata.table,tnew); console.log(x.fen.deck); return;
+	let res = await sendMergeTable(tnew);
+	console.log('res',res.fen.deck)
+}
+function testShowTestButtons() {
+	let dExtra = mDom('dExtra', { display: 'flex', gap: 10 });
+	mButton('bot', onclickBot, dExtra);
+	mButton('human', onclickHuman, dExtra);
+	mButton('felix', () => switchToUser('felix'), dExtra);
+	mButton('amanda', () => switchToUser('amanda'), dExtra);
+	mButton('deck 0', testOnclickDeck0, dExtra);
+}
+async function testShowFirstTableFelixAmanda() {
+	await switchToOtherUser('amanda', 'felix');
+	await switchToMenu(UI.nav, 'play');
+	let table = lookup(Serverdata.tables, [0]); //console.log('table',table); return;
+	if (table) await onclickTable(table.id);
+	return Clientdata.table;
+
 }

@@ -1257,6 +1257,13 @@ function rWords(n = 1) {
 	let arr = rChoose(words, n);
 	return arr;
 }
+function setTableToStarted(table) {
+	//console.log(table.id,table.game, table.friendly, table.players);
+	table.status = 'started';
+	table.step = 0;
+	table.fen = DA.funcs[table.game].setup(table); //create initial fen
+	return table;
+}
 async function showColors() {
 	showTitle('Set Color Theme');
 	let sz = 30;
@@ -1538,7 +1545,7 @@ async function showTables() {
 	mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
 	let t = UI.tables = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'playerNames'], 'tables', false);
 
-	mTableCommandify(t.rowitems.filter(ri => ri.o.status == 'started'), {
+	mTableCommandify(t.rowitems.filter(ri => ri.o.status != 'open'), {
 		0: (item, val) => hFunc(val, 'onclickTable', item.o.id, item.id),
 	});
 	mTableStylify(t.rowitems.filter(ri => ri.o.status == 'open'), { 0: { fg: 'blue' }, });

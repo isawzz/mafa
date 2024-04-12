@@ -1,3 +1,171 @@
+//#region deepMerge
+function mergeArrays(target, source) {
+	function getKey(item) { return item.key || item.id || item.name; }
+	const merged = Array.from(target);
+	const keyMap = {};
+
+	target.forEach((item, index) => {
+		const itemKey = getKey(item);
+		if (itemKey) keyMap[itemKey] = index;
+	});
+
+	source.forEach((item) => {
+		const itemKey = getKey(item);
+		if (itemKey && keyMap[itemKey] !== undefined) {
+			merged[keyMap[itemKey]] = deepMerge(target[keyMap[itemKey]], item);
+		} else {
+			merged.push(item);
+		}
+	});
+
+	return merged;
+}
+function deepMerge(target, source) {
+	if (Array.isArray(target) && Array.isArray(source)) {
+		return mergeArrays(target, source);
+	} else if (isObject(target) && isObject(source)) {
+		const output = Object.assign({}, target);
+		Object.keys(source).forEach(key => {
+			if (isObject(source[key]) || Array.isArray(source[key])) {
+				if (!(key in target)) {
+					Object.assign(output, { [key]: source[key] });
+				} else {
+					output[key] = deepMerge(target[key], source[key]);
+				}
+			} else {
+				Object.assign(output, { [key]: source[key] });
+			}
+		});
+		return output;
+	}
+	return source;
+}
+function deepMergeConcatLists(target, source) {
+	if (Array.isArray(target) && Array.isArray(source)) {
+		// Concatenating arrays
+		return [...target, ...source];
+	} else if (isObject(target) && isObject(source)) {
+		const output = Object.assign({}, target);
+		Object.keys(source).forEach(key => {
+			if (isObject(source[key])) {
+				if (!(key in target)) {
+					Object.assign(output, { [key]: source[key] });
+				} else {
+					output[key] = deepMergeConcatLists(target[key], source[key]);
+				}
+			} else if (Array.isArray(source[key])) {
+				// Merge arrays
+				output[key] = target[key] ? deepMergeConcatLists(target[key], source[key]) : source[key];
+			} else {
+				Object.assign(output, { [key]: source[key] });
+			}
+		});
+		return output;
+	}
+	// Return source if neither an object nor an array
+	return source;
+}
+function deepMergeIndex(target, source) {
+	// Check if the arguments are objects
+	if (typeof target !== 'object' || typeof source !== 'object') {
+		throw new Error('Both arguments must be objects');
+	}
+
+	// Iterate through the source object
+	for (const key in source) {
+		if (source.hasOwnProperty(key)) {
+			// Check if the key exists in the target object
+			if (target.hasOwnProperty(key)) {
+				// If both values are objects, recursively merge them
+				if (typeof target[key] === 'object' && typeof source[key] === 'object') {
+					target[key] = deepMergeIndex(target[key], source[key]);
+				} else {
+					// Otherwise, overwrite the value in the target object
+					target[key] = source[key];
+				}
+			} else {
+				// If the key does not exist in the target object, add it
+				target[key] = source[key];
+			}
+		}
+	}
+
+	return target;
+}
+function deepMergeOverrideLists(target,source) {
+	let output = Object.assign({}, source);
+	if (isObject(source) && isObject(target)) {
+		Object.keys(target).forEach(key => {
+			if (isObject(target[key])) {
+				if (!(key in source))
+					Object.assign(output, { [key]: target[key] });
+				else
+					output[key] = deepMergeOverrideLists(source[key], target[key]);
+			} else {
+				Object.assign(output, { [key]: target[key] });
+			}
+		});
+	}
+	return output;
+}
+//#endregion
+//#region mergeNew
+function deepmergeOverride(base, drueber) { return mergeOverrideArrays(base, drueber); }
+function mergeOverrideArrays(base, drueber) {
+  return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
+}
+function overwriteMerge(destinationArray, sourceArray, options) { return sourceArray }
+function deepmerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+  } else {
+    return mergeObject(target, source, optionsArgument)
+  }
+}
+function defaultArrayMerge(target, source, optionsArgument) {
+  var destination = target.slice()
+  source.forEach(function (e, i) {
+    if (typeof destination[i] === 'undefined') {
+      destination[i] = cloneIfNecessary(e, optionsArgument)
+    } else if (isMergeableObject(e)) {
+      destination[i] = deepmerge(target[i], e, optionsArgument)
+    } else if (target.indexOf(e) === -1) {
+      destination.push(cloneIfNecessary(e, optionsArgument))
+    }
+  })
+  return destination
+}
+function cloneIfNecessary(value, optionsArgument) {
+  var clone = optionsArgument && optionsArgument.clone === true
+  return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+function isMergeableObject(val) {
+  var nonNullObject = val && typeof val === 'object'
+  return nonNullObject
+    && Object.prototype.toString.call(val) !== '[object RegExp]'
+    && Object.prototype.toString.call(val) !== '[object Date]'
+}
+function mergeObject(target, source, optionsArgument) {
+  var destination = {}
+  if (isMergeableObject(target)) {
+    Object.keys(target).forEach(function (key) {
+      destination[key] = cloneIfNecessary(target[key], optionsArgument)
+    })
+  }
+  Object.keys(source).forEach(function (key) {
+    if (!isMergeableObject(source[key]) || !target[key]) {
+      destination[key] = cloneIfNecessary(source[key], optionsArgument)
+    } else {
+      destination[key] = deepmerge(target[key], source[key], optionsArgument)
+    }
+  })
+  return destination;
+}
+//#endregion
+
 async function __getUser(uname, cachedOk = false) {
   let res = lookup(Serverdata, ['users', uname]);
   if (!res || !cachedOk) res = await mGetRoute('user', { uname });
@@ -608,6 +776,7 @@ function isLightBeforeV(ctx, x, y) {
   return false;
 }
 function isMyTurn(fen) {  return fen.turn.includes(getUname())}
+function isObject(item) { return item && typeof item === 'object' && !Array.isArray(item); }
 function isPix(ctx, x, y, color, delta = 10) {
   let rgb = isString(color) ? colorRGB(color, true) : color;
   let p = getPixRgb(ctx, x, y);
@@ -1089,19 +1258,6 @@ function playerStatCount(key, n, dParent, styles = {}) {
 async function postUserChange(data) {
   data = valf(data, U)
   return Serverdata.users[data.name] = await mPostRoute('postUser', data);
-}
-async function _prelims() {
-  if (nundef(M.superdi)) {
-    Serverdata = await mGetRoute('session'); //session ist: users,config,
-    Info = await mGetYaml('../assets/info.yaml');
-    await loadCollections();
-    loadPlayerColors();
-    showNavbar();
-    sockInit();
-    dTitle = mDom('dTitle'); mFlexV(dTitle); mStyle(dTitle, { gap: 14, hpadding: 14 })
-    await switchToUser(localStorage.getItem('username'));  //danach ist U IMMER gesetzt!!!!
-    await switchToMenu('home')
-  }
 }
 function presentExtraWorker(item, dParent, styles = {}) {
   let sz = styles.sz;

@@ -27,9 +27,10 @@ const cors = require('cors'); app.use(cors());
 app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 //#endregion
 
+
 //#region functions
 function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
-function arrClear(arr){arr.length=0;return arr;}
+function arrClear(arr) { arr.length = 0; return arr; }
 function copyKeys(ofrom, oto, except = {}, only = null) {
 	let keys = isdef(only) ? only : Object.keys(ofrom);
 	for (const k of keys) {
@@ -51,6 +52,7 @@ function deleteTable(id) { delete Session.tables[id]; deleteFile(getTablePath(id
 function emitToPlayers(namelist, msgtype, o) {
 	for (const name of namelist) {
 		let idlist = byUsername[name]; //console.log('name', name, '\nid', idlist);
+		if (nundef(idlist)) continue;
 		for (const id of idlist) {
 			let client = clients[id]; //console.log(name, client.id); //isdef(client),Object.keys(client))
 			if (client) client.emit(msgtype, o);
@@ -65,33 +67,6 @@ async function getFiles(dir) {
 
 }
 function getTablePath(id) { return path.join(tablesDir, `${id}.yaml`); }
-function deepMerge(target, source) {
-	// Check if the arguments are objects
-	if (typeof target !== 'object' || typeof source !== 'object') {
-		throw new Error('Both arguments must be objects');
-	}
-
-	// Iterate through the source object
-	for (const key in source) {
-		if (source.hasOwnProperty(key)) {
-			// Check if the key exists in the target object
-			if (target.hasOwnProperty(key)) {
-				// If both values are objects, recursively merge them
-				if (typeof target[key] === 'object' && typeof source[key] === 'object') {
-					target[key] = deepMerge(target[key], source[key]);
-				} else {
-					// Otherwise, overwrite the value in the target object
-					target[key] = source[key];
-				}
-			} else {
-				// If the key does not exist in the target object, add it
-				target[key] = source[key];
-			}
-		}
-	}
-
-	return target;
-}
 function isdef(x) { return x !== null && x !== undefined; }
 function isEmpty(arr) {
 	return arr === undefined || !arr
@@ -100,6 +75,7 @@ function isEmpty(arr) {
 		|| Object.entries(arr).length === 0;
 }
 function isList(arr) { return Array.isArray(arr); }
+function isObject(item) { return (item && typeof item === 'object' && !Array.isArray(item)); }
 function isString(param) { return typeof param == 'string'; }
 function jsCopy(o) { return JSON.parse(JSON.stringify(o)); }
 function lookup(dict, keys) {
@@ -305,12 +281,12 @@ io.on('connection', (client) => {
 	client.on('disconnect', x => handle_disconnect(x, client.id)); // ()=>handle_disconnect(socket.id));
 });
 function handle_connect(id) { console.log('::connected', id); io.emit('message', 'someone logged in!'); }
-function handle_disconnect(x,id) { 
-	console.log('::io.disconnected', id); 
-	let uname=byClient[id];
-	let idlist=byUsername[uname];
-	if (isList(idlist)) removeInPlace(idlist,id);
-	io.emit('message', `${uname} left`); 
+function handle_disconnect(x, id) {
+	console.log('::io.disconnected', id);
+	let uname = byClient[id];
+	let idlist = byUsername[uname];
+	if (isList(idlist)) removeInPlace(idlist, id);
+	io.emit('message', `${uname} left`);
 }
 function handle_message(x) { console.log('::message', arguments); io.emit('message', x); }
 function handle_move(x) {
@@ -457,35 +433,9 @@ app.post('/postTable', (req, res) => {
 	let id = req.body.id;
 	let newtable = req.body;
 
-	let table = lookup(Session,['tables',id]);
+	let table = lookup(Session, ['tables', id]);
 	let isNew = !table;
-	if (isNew) table = newtable; else	copyKeys(newtable,table);
-	let isStarted = table.status == 'started';
-
-	saveTable(id, table);
-	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
-	console.log(msg)
-	let turn = isStarted ? table.fen.turn : [];
-	io.emit('table', { msg, id, turn, isNew })
-	res.json(msg);
-});
-app.post('/mergeTable', (req, res) => {
-	let id = req.body.id;
-	let odata = req.body.override;
-	let mdata = req.body.merge;
-	let table = lookup(Session,['tables',id]);
-
-});
-
-app.post('/testMerge', (req, res) => {
-	let id = req.body.id;
-	let odata = req.body.override;
-	let mdata = req.body.merge;
-	let newtable = req.body;
-
-	let table = lookup(Session,['tables',id]);
-	let isNew = !table;
-	if (isNew) table = newtable; else	copyKeys(newtable,table);
+	if (isNew) table = newtable; else copyKeys(newtable, table);
 	let isStarted = table.status == 'started';
 
 	saveTable(id, table);
@@ -500,16 +450,15 @@ app.post('/postPlayer', (req, res) => {
 	let id = req.body.id;
 	let name = req.body.name;
 	let o = jsCopy(req.body); delete o.id;
-	let table = lookup(Session,['tables',id]);
+	let table = lookup(Session, ['tables', id]);
 	if (!table) res.json('CANNOT postPlayer OUTSIDE OF TABLE!!!')
-	let fen=table.fen;
-	copyKeys(o,fen.players[name])
-	let pl = table.players.find(x=>x.name == name);
-	copyKeys(o,pl);
+	let fen = table.fen;
+	if (nundef(fen)) res.json('CANNOT postPlayer wthout a fen!!!')
+	copyKeys(o, fen.players[name])
 	saveTable(id, table);
 	let msg = `${name} posted: ${Object.keys(o).join(',')}`;
 	console.log(msg)
-	emitToPlayers(table.playerNames,'table',table);
+	emitToPlayers(table.playerNames, 'table', table);
 	res.json(msg);
 });
 
@@ -528,24 +477,24 @@ app.post('/move', (req, res) => {
 
 	//1. alle players auf dieser table sollen den move erhalten
 	console.log('players', table.playerNames)
-	emitToPlayers(table.playerNames, 'move', { event: o, moves: Moves[id]}); //.slice(-2) });
-	res.json(o); 
+	emitToPlayers(table.playerNames, 'move', { event: o, moves: Moves[id] }); //.slice(-2) });
+	res.json(o);
 });
 app.post('/moveComplete', (req, res) => {
 	let o = req.body;
 	let [id, friendly, name, fen, step, turn] = [o.id, o.friendly, o.name, o.fen, o.step, o.turn];
 	let table = Session.tables[id];
 
-	console.log(name,'step',step,'table.step',table.step)
+	console.log(name, 'step', step, 'table.step', table.step)
 	if (step < table.step) { console.log('ignore', step, name); return res.json('ignore'); }
 
 	table.fen = fen;
 	table.turn = turn;
 	table.step++;
-	Moves[id]=[];
+	Moves[id] = [];
 	saveTable(id, table);
-	emitToPlayers(table.playerNames,'table',table);
-	io.emit('tables',getTablesInfo());
+	emitToPlayers(table.playerNames, 'table', table);
+	io.emit('tables', getTablesInfo());
 	// let msg = `table posted: ${table.friendly} new:${false} status:${table.status}`;
 	// console.log(msg)
 	// io.emit('moveComplete', { msg, id, turn:table.fen.turn, isNew:false })
@@ -632,8 +581,135 @@ app.post('/renameImgDir', (req, res) => {
 	res.json(`dir ${oldname} renamed successfully!`);
 });
 
+//#region mergeNew
+function deepmergeOverride(base, drueber) { return mergeOverrideArrays(base, drueber); }
+function mergeOverrideArrays(base, drueber) {
+  return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
+}
+function overwriteMerge(destinationArray, sourceArray, options) { return sourceArray }
+function deepmerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+  } else {
+    return mergeObject(target, source, optionsArgument)
+  }
+}
+function defaultArrayMerge(target, source, optionsArgument) {
+  var destination = target.slice()
+  source.forEach(function (e, i) {
+    if (typeof destination[i] === 'undefined') {
+      destination[i] = cloneIfNecessary(e, optionsArgument)
+    } else if (isMergeableObject(e)) {
+      destination[i] = deepmerge(target[i], e, optionsArgument)
+    } else if (target.indexOf(e) === -1) {
+      destination.push(cloneIfNecessary(e, optionsArgument))
+    }
+  })
+  return destination
+}
+function cloneIfNecessary(value, optionsArgument) {
+  var clone = optionsArgument && optionsArgument.clone === true
+  return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+function isMergeableObject(val) {
+  var nonNullObject = val && typeof val === 'object'
+  return nonNullObject
+    && Object.prototype.toString.call(val) !== '[object RegExp]'
+    && Object.prototype.toString.call(val) !== '[object Date]'
+}
+function mergeObject(target, source, optionsArgument) {
+  var destination = {}
+  if (isMergeableObject(target)) {
+    Object.keys(target).forEach(function (key) {
+      destination[key] = cloneIfNecessary(target[key], optionsArgument)
+    })
+  }
+  Object.keys(source).forEach(function (key) {
+    if (!isMergeableObject(source[key]) || !target[key]) {
+      destination[key] = cloneIfNecessary(source[key], optionsArgument)
+    } else {
+      destination[key] = deepmerge(target[key], source[key], optionsArgument)
+    }
+  })
+  return destination;
+}
 
 
+//#endregion
+//#region mergeNew
+function deepmergeOverride(base, drueber) { return mergeOverrideArrays(base, drueber); }
+function mergeOverrideArrays(base, drueber) {
+  return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
+}
+function overwriteMerge(destinationArray, sourceArray, options) { return sourceArray }
+function deepmerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+  } else {
+    return mergeObject(target, source, optionsArgument)
+  }
+}
+function defaultArrayMerge(target, source, optionsArgument) {
+  var destination = target.slice()
+  source.forEach(function (e, i) {
+    if (typeof destination[i] === 'undefined') {
+      destination[i] = cloneIfNecessary(e, optionsArgument)
+    } else if (isMergeableObject(e)) {
+      destination[i] = deepmerge(target[i], e, optionsArgument)
+    } else if (target.indexOf(e) === -1) {
+      destination.push(cloneIfNecessary(e, optionsArgument))
+    }
+  })
+  return destination
+}
+function cloneIfNecessary(value, optionsArgument) {
+  var clone = optionsArgument && optionsArgument.clone === true
+  return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+function isMergeableObject(val) {
+  var nonNullObject = val && typeof val === 'object'
+  return nonNullObject
+    && Object.prototype.toString.call(val) !== '[object RegExp]'
+    && Object.prototype.toString.call(val) !== '[object Date]'
+}
+function mergeObject(target, source, optionsArgument) {
+  var destination = {}
+  if (isMergeableObject(target)) {
+    Object.keys(target).forEach(function (key) {
+      destination[key] = cloneIfNecessary(target[key], optionsArgument)
+    })
+  }
+  Object.keys(source).forEach(function (key) {
+    if (!isMergeableObject(source[key]) || !target[key]) {
+      destination[key] = cloneIfNecessary(source[key], optionsArgument)
+    } else {
+      destination[key] = deepmerge(target[key], source[key], optionsArgument)
+    }
+  })
+  return destination;
+}
+//#endregion
+
+app.post('/mergeTable', (req, res) => {
+	let id = req.body.id;
+	//console.log('merge',Object.keys(req.body),req.body.status)
+	let table = lookup(Session, ['tables', id]);
+	table = deepmergeOverride(table,req.body); //deepMergeOverrideLists(table,req.body);
+	//console.log('!!!',table.status)
+	saveTable(id, table);
+	let msg = `table merged: ${table.friendly} merged`;
+	//console.log(msg)
+	let turn = table.fen.turn;
+	io.emit('table', { msg, id, turn, isNew: false })
+	emitToPlayers(table.playerNames, 'table', table);
+	res.json(table);
+});
 
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');

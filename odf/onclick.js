@@ -474,14 +474,6 @@ async function onclickPlay() {
 	await showTables();
 	showGames();
 }
-function setTableToStarted(table) {
-	//console.log(table.id,table.game, table.friendly, table.players);
-	let status = table.status = 'started';
-	let id = table.id;
-	table.step = 0;
-	let fen = table.fen = DA.funcs[table.game].setup(table); //create initial fen
-	return table;
-}
 
 //#endregion
 
