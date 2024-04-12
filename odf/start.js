@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = false; await prelims(); }
-async function start() { TESTING = true; test49(); }//test47_olist(); }
+//async function start() { TESTING = true; test49(); }//test47_olist(); }
 
 async function test49() {
 	await prelims();
