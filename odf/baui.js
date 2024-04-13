@@ -1,9 +1,25 @@
 
-function arrClear(arr) { arr.length = 0; return arr; }
-function clearTable() {
-  for (const k in TO) clearTimeout(TO[k]);
-  removeCountdownG();
+function arrAllSameOrDifferent(arr) {
+	if (arr.length === 0) {
+		return true; // Consider an empty array as meeting the criteria
+	}
+
+	// Check if all elements are the same
+	const allSame = arr.every(element => element === arr[0]);
+	if (allSame) {
+		return true;
+	}
+
+	// Check if all elements are unique
+	const uniqueElements = new Set(arr);
+	const allDifferent = uniqueElements.size === arr.length;
+
+	return allDifferent;
 }
+function arrClear(arr) { arr.length = 0; return arr; }
+
+function clearEvents() { for (const k in TO) clearTimeout(TO[k]); }
+
 function cBlank(dParent, styles = {}, opts = {}) {
 	if (nundef(styles.h)) styles.h = valf(styles.sz, 100);
 	if (nundef(styles.w)) styles.w = styles.h * .7;
@@ -69,14 +85,6 @@ function cRound(dParent, styles = {}, opts = {}) {
 	styles.rounding = '50%';
 	return cBlank(dParent, styles, opts);
 }
-function createCountdownG(dParent, styles = {}, ms = 3000, callback = null) {
-	removeCountdownG();
-	if (isEmpty(styles)) styles = { display: 'inline', fz: 40, fg: 'white', bg: 'gray' }; //{ w: 80, maleft: 10, fg: 'red', weight: 'bold' };
-	let dCountdown = mDom(dParent, styles, { id: 'dCountdown' });
-	let cd = DA.countdown = new SimpleTimer(dCountdown, 1000, null, ms, callback);
-	cd.start();
-	return cd;
-}
 function deckDeal(deck, n) { return deck.splice(0, n); }
 
 function draw_set_card_test(dParent) {
@@ -100,14 +108,22 @@ function drawShape(key, dParent, styles, classes, sizing) {
 }
 function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
 
-function getPlayersWithMaxScore(fen){
-	let list=dict2list(fen.players,'name');
-	list=sortByDescending(list,'score');
-	maxlist=arrTakeWhile(list,x=>x.score == list[0].score);
-	return maxlist.map(x=>x.name);
+function getPlayersWithMaxScore(fen) {
+	let list = dict2list(fen.players, 'name');
+	list = sortByDescending(list, 'score');
+	maxlist = arrTakeWhile(list, x => x.score == list[0].score);
+	return maxlist.map(x => x.name);
 }
 function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
 
+function makeArrayWithParts(keys) {
+	let arr = []; keys[0].split('_').map(x => arr.push([]));
+	for (const key of keys) {
+		let parts = key.split('_');
+		for (let i = 0; i < parts.length; i++) arr[i].push(parts[i]);
+	}
+	return arr;
+}
 function makeSVG(tag, attrs) {
 	var el = "<" + tag;
 	for (var k in attrs)
@@ -160,27 +176,35 @@ function mPlace(elem, pos, offx, offy) {
 	elem.style.position = 'absolute';
 	elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
 }
-async function onclickBot(){
-	let name=getUname();
+async function onclickBot() {
+	let name = getUname();
 	let table = Clientdata.table;
 	let plmode = table.fen.players[name].playmode;
 	if (plmode == 'bot') return;
 	let id = table.id;
-	await mPostRoute('postPlayer',{id,name,playmode:'bot'});
+	await mPostRoute('postPlayer', { id, name, playmode: 'bot' });
 }
-async function onclickHuman(){
-	let name=getUname();
+async function onclickHybrid() {
+	let name = getUname();
+	let table = Clientdata.table;
+	let plmode = table.fen.players[name].playmode;
+	if (plmode == 'hybrid') return;
+	let id = table.id;
+	await mPostRoute('postPlayer', { id, name, playmode: 'hybrid' });
+}
+async function onclickHuman() {
+	let name = getUname();
 	let table = Clientdata.table;
 	let plmode = table.fen.players[name].playmode;
 	if (plmode == 'human') return;
 	let id = table.id;
-	await mPostRoute('postPlayer',{id,name,playmode:'human'});
+	await mPostRoute('postPlayer', { id, name, playmode: 'human' });
 }
 async function onclickJoinTable(id) {
 	//console.log(getUname(),'clicked join',id);
 	let table = Serverdata.tables.find(x => x.id == id);
 	let me = getUname();
-	assertion(table.status == 'open','too late to join! game has already started!')
+	assertion(table.status == 'open', 'too late to join! game has already started!')
 	assertion(!table.playerNames.includes(me), `${me} already joined!!!`);
 	table.players.push(createHumanPlayer(me));
 	table.playerNames = table.players.map(x => x.name);
@@ -191,7 +215,7 @@ async function onclickLeaveTable(id) {
 	//console.log(getUname(),'clicked leave',id);
 	let table = Serverdata.tables.find(x => x.id == id);
 	let me = getUname();
-	assertion(table.status == 'open','too late to leave! game has already started!')
+	assertion(table.status == 'open', 'too late to leave! game has already started!')
 	assertion(isdef(table.players.find(x => x.name == me)), 'not in joined players!!!!');
 	//console.log('players',table.players);
 	let player = table.players.find(x => x.name == me);
@@ -209,7 +233,7 @@ async function onclickOpenToJoinGame() {
 }
 async function onclickStartGame() {
 	//console.log('_____ onclickStartGame')
-	let options = collectOptions();
+	let options = collectOptions(); console.log(options)
 	let players = collectPlayers(options);
 
 	if (TESTING) {
@@ -230,17 +254,16 @@ async function onclickStartTable(id) {
 	//console.log('res', res);
 }
 async function onclickTable(id) {
-	//console.log('_____ onclickTable')
+	console.log('_____ onclickTable')
 	await showTable(id)
 }
-function removeCountdownG() { if (isdef(DA.countdown)) { DA.countdown.clear(); DA.countdown.elem.remove(); DA.countdown = null; } }
 
 function showGameover(table) {
-  let winners = table.winners;
-	let msg = winners.length > 1? `GAME OVER - The winners are ${winners.join(', ')}!!!`:`GAME OVER - The winner is ${winners[0]}!!!`;
-	let d=mBy('ribbon');if (isdef(d)) d.remove();
+	let winners = table.winners;
+	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;
+	let d = mBy('ribbon'); if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
-  d = mDom(dTitle,{bg,mabottom:10,align:'center',padding:10,fz:40,w100:true},{html:msg, id:'ribbon'}); 
+	d = mDom(dTitle, { bg, mabottom: 10, align: 'center', padding: 10, fz: 40, w100: true }, { html: msg, id: 'ribbon' });
 }
 
 async function startGame(gamename, players, options) {

@@ -8,54 +8,39 @@ function setgame() {
 			pl.score = 0;
 		}
 		fen.deck = setCreateDeck();
-		fen.cards = deckDeal(fen.deck,12);
+		fen.cards = deckDeal(fen.deck, 12);
 		fen.plorder = jsCopy(table.playerNames);
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
 		delete table.players;
 		return fen;
 	}
-	async function activate(table) {await setActivate(); } //console.log('activate for',getUname());}
-	function checkGameover(table) { 
-		return table.playerNames.some(x=>x.score == table.options.winning_score);
+	async function activate(table) { await setActivate(); } //console.log('activate for',getUname());}
+	function checkGameover(table) {
+		return table.playerNames.some(x => x.score == table.options.winning_score);
 	}
-	async function present(table) { await setPresent(table); } 
-	async function robotMove(table) {await setRobotMove(table); } //console.log('activate for',getUname());}
-	async function stepComplete(table,o) { await setStepComplete(table,o); } 
-	return { setup, activate, checkGameover, present, robotMove, stepComplete };
+	async function present(table) { await setPresent(table); }
+	async function hybridMove(table) { await setHybridMove(table); } //console.log('activate for',getUname());}
+	async function botMove(table) { await setBotMove(table); } //console.log('activate for',getUname());}
+	async function stepComplete(table, o) {}// await setStepComplete(table, o); }
+	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
-async function setRobotMove(table){
-	T.sets=setFindAllSets(T.items);
-	let buttons = mDom(dOpenTable,{w100:true,gap:10,matop:20});mCenterCenterFlex(buttons)
-	mButton('NO Set',setOnclickNoSet,buttons,{w:80},'input');
-	T.bHint=mButton('Hint',setOnclickHint,buttons,{w:80},'input');
-	mShield(dOpenTable,{bg:'#00000010'});
-
-	T.dTimer = mDom(dOpenTable);
-	if (isEmpty(T.sets)) createCountdownG(T.dTimer,{},1000,setOnclickNoSet());
-	else{
-		T.list = rChoose(T.sets);
-		createCountdownG(T.dTimer,{},2000,setClickNext);
-	}
+async function setActivate() {
+	T.sets = setFindAllSets(T.items);
+	setShowButtons();
+	setActivateCards();
 }
-function setClickNext(){
-	if (isEmpty(T.list)) {console.log('list empty!');return;}
-	let el=T.list.shift();
-	setOnclickCard(el,T.items);
-	if (!isEmpty(T.list)) createCountdownG(T.dTimer,{},4000,setClickNext);
-}
-async function setActivate(){
-	T.sets=setFindAllSets(T.items);
-
-	for(const item of T.items){
-		let d=iDiv(item);
-		d.onclick = ()=>setOnclickCard(item,T.items);
-		mStyle(d,{cursor:'pointer'})
+function setActivateCards(){
+	for (const item of T.items) {
+		let d = iDiv(item);
+		d.onclick = () => setOnclickCard(item, T.items);
+		mStyle(d, { cursor: 'pointer' })
 
 	}
-	let buttons = mDom(dOpenTable,{w100:true,gap:10,matop:20});mCenterCenterFlex(buttons)
-	mButton('NO Set',setOnclickNoSet,buttons,{w:80},'input');
-	T.bHint=mButton('Hint',setOnclickHint,buttons,{w:80},'input');
-
+}
+function setCheckIfSet(keys) {
+	let arr = makeArrayWithParts(keys);
+	let isSet = arr.every(x => arrAllSameOrDifferent(x));
+	return isSet;
 }
 function setCreateDeck() {
 	let deck = [];
@@ -80,10 +65,10 @@ function setDrawCard(card, dParent, colors, sz = 100) {
 	}
 	let [color, shape, num, fill] = card.split('_');
 	var attr = {
-		d: paths[shape], 
-		fill: fill=='striped'?`url(#striped-${color})`:fill=='solid'?colors[color]:'none',
+		d: paths[shape],
+		fill: fill == 'striped' ? `url(#striped-${color})` : fill == 'solid' ? colors[color] : 'none',
 		stroke: colors[color],
-		'stroke-width':2,
+		'stroke-width': 2,
 	};
 	let h = sz, w = sz / .65;
 	let ws = w / 4;
@@ -96,14 +81,29 @@ function setDrawCard(card, dParent, colors, sz = 100) {
 	}
 	return d0;
 }
-function setGameover(table){
+function setFindAllSets(items) {
+	let result = [];
+	for (var x = 0; x < items.length; x++) {
+		for (var y = x + 1; y < items.length; y++) {
+			for (var z = y + 1; z < items.length; z++) {
+				assertion(items[x] != items[y], `WTF!?!?!?! ${items[x].key} ${items[y].key}`)
+				let list = [items[x], items[y], items[z]];
+				let keys = list.map(x => x.key);
+				if (setCheckIfSet(keys)) result.push(list);
+			}
+		}
+	}
+	//if (TESTING) console.log('sets',result.map(x=>x.map(y=>y.key)));
+	return result;
+}
+function setGameover(table) {
 	table.status = 'over';
 	table.winners = getPlayersWithMaxScore(table.fen);
 }
-function setLoadPatterns(dParent, colors){
+function setLoadPatterns(dParent, colors) {
 	dParent = toElem(dParent);
-	let id="setpatterns";
-	if (isdef(mBy(id))) {return;}
+	let id = "setpatterns";
+	if (isdef(mBy(id))) { return; }
 	let html = `
 		<svg id="setpatterns" width="0" height="0">
 			<!--  Define the patterns for the different fill colors  -->
@@ -118,150 +118,62 @@ function setLoadPatterns(dParent, colors){
 			</pattern>
 		</svg>
 		`;
-	let el=mCreateFrom(html);
-	mAppend(dParent,el)
+	let el = mCreateFrom(html);
+	mAppend(dParent, el)
 }
-async function setOnclickHint(){
-	if (isEmpty(T.sets)) {console.log('no set');return;}
+async function setOnclickHint() {
+	if (isEmpty(T.sets)) { console.log('no set'); return; }
 	//this should only work if no card is clicked?
 	let set = rChoose(T.sets);
-	await setOnclickCard(set[0],T.items)
+	await setOnclickCard(set[0], T.items)
 
 }
 async function setPresent(table) {
-	T={};
+	T = {};
 	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
 
-	setLoadPatterns('dPage',colors);
+	setLoadPatterns('dPage', colors);
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
-  [dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
+	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
 	// mCenterCenterFlex(dOben);
 	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
 
-	let [fen,playerNames,players,turn]=[table.fen,table.playerNames,table.fen.players,table.fen.turn];
+	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.fen.players, table.fen.turn];
 	let cards = fen.cards;
-	let dp=mDom(dOpenTable,{w100:true});mCenterFlex(dp);
-	let dBoard=T.dBoard=mGrid(cards.length/3,3,dp,{gap:14});
+	let dp = mDom(dOpenTable, { w100: true }); mCenterFlex(dp);
+	let dBoard = T.dBoard = mGrid(cards.length / 3, 3, dp, { gap: 14 });
 	let items = T.items = [];
-	for(const c of cards){
+	for (const c of cards) {
 		//mDom(dBoard,{},{html:c})
-		let d = setDrawCard(c,dBoard,colors,TESTING?100:110); 
-		let item = mItem({div:d},{key:c});
+		let d = setDrawCard(c, dBoard, colors, TESTING ? 80 : 100);
+		let item = mItem({ div: d }, { key: c });
 		items.push(item);
 	}
 
 	//setStats(table.fen, dRechts,'col');
-	setStats(table.fen, dOben,'rowflex',false)
+	setStats(table.fen, dOben, 'rowflex', false)
 
 }
-async function setStepComplete(table,o){
-	console.log('___ stepComplete')
-	table.step=o.step;
-	let pl = table.fen.players[o.name];
-	pl.score++;
-	Clientdata.table = table;
-	console.log('player scores',table.playerNames.map(x=>table.fen.players[x].score));
-	let [step,fen]=[table.step,table.fen];
-	if (getUname()==o.name) await mPostRoute('postTable', {step,fen});
+function setShowButtons(){
+	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
+	mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
+	T.bHint = mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
 
 }
-function setStats(fen, dParent, layout, showTurn=true) {
-	let me=getUname();
-  let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { patop:8, mabottom:20, wmin: 130, bg: 'beige', fg: 'contrast' })
-  for (const plname in fen.players) {
-    let pl1 = fen.players[plname]; //console.log('player',pl1)
-    let item = player_stat_items[plname];
-    let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
-    playerStatCount('', pl1.score, d);
-    mDom(d, { h: 6, w: '100%' });
-    if (showTurn && fen.turn.includes(plname)) {
-      show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
-    }
-    // mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })
-  }
-}
-async function rest(item,items){
-	//console.log('click')
-	toggleItemSelection(item);
-	let n=items.length;
-	//console.log(n);
-	let selitems=items.filter(x=>x.isSelected);
-	let m = selitems.length;
-	//console.log(selitems,m);
-	//console.log(`${m} out of ${n} items selected!`);
-	if (m > 0){ //TESTING!!!
-		//check if this is a set!
-		//console.log('selected',selitems);
-		let move = selitems.map(x=>x.key);
-		let table=Clientdata.table;
-		let fen=table.fen;
-		let pl=fen.players[getUname()];
-		pl.score++;
-		await sendMoveComplete(fen);
-		//send move!
+function setStats(fen, dParent, layout, showTurn = true) {
+	let me = getUname();
+	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { patop: 8, mabottom: 20, wmin: 130, bg: 'beige', fg: 'contrast' })
+	for (const plname in fen.players) {
+		let pl1 = fen.players[plname]; //console.log('player',pl1)
+		let item = player_stat_items[plname];
+		let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
+		playerStatCount('', pl1.score, d);
+		mDom(d, { h: 6, w: '100%' });
+		if (showTurn && fen.turn.includes(plname)) {
+			show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
+		}
+		// mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })
 	}
 }
-function checkIfSet(keys){
-	let arr=makeArrayWithParts(keys);
-	let isSet = arr.every(x=>checkIfAllSameOrDifferent(x));
-	return isSet;
-}
-function checkIfAllSameOrDifferent(arr) {
-	if (arr.length === 0) {
-			return true; // Consider an empty array as meeting the criteria
-	}
-	
-	// Check if all elements are the same
-	const allSame = arr.every(element => element === arr[0]);
-	if (allSame) {
-			return true;
-	}
-	
-	// Check if all elements are unique
-	const uniqueElements = new Set(arr);
-	const allDifferent = uniqueElements.size === arr.length;
-	
-	return allDifferent;
-}
-function setFindAllSets(items){
-  let result = [];
-  for(var x = 0; x < items.length; x++){
-    for(var y = x+1; y < items.length; y++){
-      for(var z = y+1; z < items.length; z++){
-				assertion(items[x]!=items[y],`WTF!?!?!?! ${items[x].key} ${items[y].key}`)
-				let list = [items[x],items[y],items[z]];
-				let keys =list.map(x=>x.key);
-				if (checkIfSet(keys)) result.push(list);
-      }
-    }
-  }
-	//if (TESTING) console.log('sets',result.map(x=>x.map(y=>y.key)));
-  return result;
-}
-function makeArrayWithParts(keys){
-	let arr=[];keys[0].split('_').map(x=>arr.push([]));
-	for(const key of keys){
-		let parts = key.split('_');
-		for(let i=0;i<parts.length;i++) arr[i].push(parts[i]);
-	}
-	return arr;
-}
-async function setGhostMove(table){
-	let item = rChoose(T.items);
-  let name = getUname(); 
-	console.log(name,'click',item.key)
-	//if (name == 'felix') await mSleep(10);
-	await mSleep(rChoose([0,10,20,30,40]));
-	let fen=table.fen;
-	let pl=fen.players[name];
-	pl.score++;
-	// await sendMoveComplete(fen);
-  let id = table.id;
-	let friendly = table.friendly;
-	let step = table.step;
-	let turn = fen.turn;
-	//console.log('___ sendMoveComplete',step,name); //type,move,turn)
-	let res = await mPostRoute('moveComplete',{id,friendly,name,fen,step,turn});
-	console.log('res',res)
-}
+

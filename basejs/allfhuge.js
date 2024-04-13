@@ -9044,7 +9044,7 @@ function aristoGame3(g) {
   console.log('Game', g);
 }
 function aristoUi(dParent, g) {
-  clearTable();
+  clearEvents();
   let d1 = mDiv(dParent, { w: '100%' }); mFlex(d1, 'v');
   let dWorld = mDiv(d1, { bg: 'random', hmin: 170, flex: 1 });
   mFlex(dWorld);
@@ -13611,7 +13611,7 @@ function cleanup_or_resplay(oldgroup) {
 function cleanupOldGame() {
   updateUserScore();
   if (isdef(G)) { G.clear(); }
-  clearTable();
+  clearEvents();
   clearStats();
   clearFleetingMessage();
 }
@@ -13695,7 +13695,7 @@ function clear_selection() {
 function clear_status() { if (nundef(mBy('dStatus'))) return; clearTimeout(TO.fleeting); mRemove("dStatus"); }
 function clear_table_all() {
   clear_table_events();
-  if (isdef(mBy('table'))) clearTable();
+  if (isdef(mBy('table'))) clearEvents();
   resetUIDs();
   Items = {};
 }
@@ -13825,7 +13825,7 @@ function clearStats() {
 }
 function clearStatus() { clearFleetingMessage(); }
 function clearStep() { }
-function clearTable() {
+function clearEvents() {
   clearElement('dTable');
   clearElement('dHistory');
   show_title();
@@ -35701,7 +35701,7 @@ function kriegTest00UI() {
 }
 function kriegTest00UI_engine(back, front) {
   if (back.is_out_of_cards()) { console.log('!!!!!!!!!!!!!!!!'); front.presentGameover(back.winner(), kriegTest00UI); return; }
-  clearTable(dTable);
+  clearEvents(dTable);
   back.make_random_moveX();
   back.make_random_moveX();
   back.print_state();
@@ -36099,13 +36099,13 @@ function levelStep10() {
   setTimeout(levelStep11, 500);
 }
 function levelStep11() {
-  clearTable();
+  clearEvents();
   setTimeout(levelStep12, 500);
 }
 function levelStep12() {
   addBadge(dLeiste, currentLevel);
   hide('dLevelComplete');
-  clearTable();
+  clearEvents();
   setTimeout(playRubberBandSound, 500);
   setBackgroundColor();
   showLevel();
@@ -46907,7 +46907,7 @@ function onClickFloppy() {
 }
 function onClickFreezer() { console.log('YEP! onClickFreezer!!!!!!!'); hide('freezer'); startUnit(); }
 function onClickFreezer2(ev) {
-  clearTable(); mRemoveClass(mBy('freezer2'), 'aniSlowlyAppear'); hide('freezer2'); auxOpen = false;
+  clearEvents(); mRemoveClass(mBy('freezer2'), 'aniSlowlyAppear'); hide('freezer2'); auxOpen = false;
   startUnit();
 }
 function onClickGamename(inputElem) {
@@ -48054,7 +48054,7 @@ function open_prompt() {
     console.log('g.' + k, g[k]);
   }
   delete g.levels;
-  clearTable(); set_background_color(g.color);
+  clearEvents(); set_background_color(g.color);
   QContextCounter += 1;
   show_game_name(g.friendly);
   show_title(g.table.friendly);
@@ -52345,7 +52345,7 @@ function promptStart() {
   dTable = dLineTableMiddle;
   dTitle = dLineTitleMiddle;
   if (nundef(dTable)) return;
-  clearTable();
+  clearEvents();
   let delay = GFUNC[currentGame].prompt();
   setTimeout(activateUi, delay);
 }
@@ -53010,7 +53010,7 @@ function race_check_endcondition() {
 function race_open_prompt(fen) {
   console.assert(!uiActivated, 'open_prompt_ with uiActivated ON !!!!!!!!!!!!!!!!!!!!!!!!!!');
   let g = update_game_values();
-  clearTable(); set_background_color(g.color);
+  clearEvents(); set_background_color(g.color);
   QContextCounter += 1;
   show_game_name(g.friendly);
   show_title(g.table.friendly);
@@ -54209,7 +54209,7 @@ function reload_prompt(fen) {
   g.color = getColorDictColor(g.color);
   g.winning_score = Session.cur_table.options.winning_score;
   delete g.levels;
-  clearTable(); set_background_color(g.color);
+  clearEvents(); set_background_color(g.color);
   QContextCounter += 1;
   show_game_name(g.friendly);
   show_title(g.table.friendly);
@@ -54950,7 +54950,7 @@ function resetPlayerCards() {
 function resetRound() {
   clearTimeouts();
   clearFleetingMessage();
-  clearTable();
+  clearEvents();
 }
 function resetScore() {
   Score = { gameChange: true, levelChange: true, nTotal: 0, nCorrect: 0, nCorrect1: 0, nPos: 0, nNeg: 0, labels: true };

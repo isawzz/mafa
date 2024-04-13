@@ -190,7 +190,7 @@ async function test42() {
 }
 async function test41_timer() {
 	await prelims();
-	let cd = createCountdownG('dMain', {}, 5000, () => { console.log('DONE!'); removeCountdownG(); });
+	let cd = createCountdownG('dMain', {}, 5000, () => { console.log('DONE!'); }); 
 	console.log('timer', cd);
 }
 async function test40() {

@@ -1,3 +1,169 @@
+//#region set
+async function setBotMove(table) {
+	await setHybridMove(table); 
+	// T.sets = setFindAllSets(T.items);
+	// setShowButtons();
+	// mShield(dOpenTable, { bg: '#00000010' });
+	// //setActivateBot();
+}
+async function setHybridMove(table) {
+	T.sets = setFindAllSets(T.items);
+	setShowButtons();
+	setActivateCards();
+
+	await mSleep(2000);
+	if (isEmpty(T.sets)) if (!DA.INTERRUPT) setOnclickNoSet(); 
+	else {
+		let list = rChoose(T.sets);
+		if (!DA.INTERRUPT) setOnclickCard(list[0]);
+		await mSleep(2000);
+		if (!DA.INTERRUPT) setOnclickCard(list[1]);
+		await mSleep(2000);
+		if (!DA.INTERRUPT) setOnclickCard(list[2]);
+
+	}
+
+
+
+	console.log('DONE!')
+
+	//setActivateBot();
+	//mShield(dOpenTable, { bg: '#00000010' });
+	//setActivateBot();
+}
+async function setActivateBot(){
+	console.log('setActivateBot')
+	T.dTimer = mDom(dOpenTable);
+
+	// if (isEmpty(T.sets)) setOnclickNoSet(); 
+	// else {
+	// 	let list = rChoose(T.sets);
+	// 	setClickNext(list);
+	// }
+}
+function setClickNext() {
+	if (isEmpty(T.list)) { console.log('list empty!'); return; }
+	let el = T.list.shift();
+	setOnclickCard(el, T.items);
+	if (!isEmpty(T.list)) createCountdownG(T.dTimer, {}, 1000, setClickNext);
+}
+async function _setStepComplete(table, o) {
+	console.log('___ stepComplete')
+	table.step = o.step;
+	let pl = table.fen.players[o.name];
+	pl.score++;
+	Clientdata.table = table;
+	console.log('player scores', table.playerNames.map(x => table.fen.players[x].score));
+	let [step, fen] = [table.step, table.fen];
+	if (getUname() == o.name) await mPostRoute('postTable', { step, fen });
+
+}
+//#endregion
+
+//#region app.js
+app.post('/mergeTable', (req, res) => {
+	let id = req.body.id;
+	console.log('::merge',++StepCounter); //Object.keys(req.body),req.body.status)
+	let table = lookup(Session, ['tables', id]);
+	table = deepmergeOverride(table,req.body); //deepMergeOverrideLists(table,req.body);
+	//console.log('!!!',table.status)
+	saveTable(id, table);
+	// let msg = `table merged: ${table.friendly} merged`;
+	// //console.log(msg)
+	// let turn = table.fen.turn;
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(table.playerNames, 'table', table);
+	res.json(table);
+});
+io.on('connection', (client) => {
+	clients[client.id] = client;
+	client.on('userChange', x => handle_userChange(x, client.id));
+	client.on('disconnect', x => handle_disconnect(x, client.id)); // ()=>handle_disconnect(socket.id));
+	//handle_connect(client.id);
+	//client.emit('message','hello')
+	//client.on('login', x => handle_login(x, client.id));
+	client.on('message', handle_message);
+	//client.on('move', handle_move);
+	client.on('update', handle_update);
+});
+function handle_connect(id) { console.log('::connected', id); io.emit('message', 'someone logged in!'); }
+function handle_message(x) { console.log('::message', arguments); io.emit('message', x); }
+function handle_update(x) { console.log('::update', x); io.emit('update', x); }
+function _handle_move(x) {
+	console.log('::move', arguments);
+	//console.log('Session tables',Session.tables)
+	let table = lookup(Session, ['tables', x.id]);
+	//console.log('table',table);
+	//wie kann ich temp move zu table saven?
+	let fen = table.fen;
+	let turn = fen.turn;
+	console.log('turn', turn)
+	let name = x.name;
+	let move = x.move;
+
+	//simplest:
+	if (!turn.includes(name)) { console.log('!!!move mismatch', name, move); return; }
+	lookupSetOverride(fen, ['moves', name], move);
+	removeInPlace(fen.turn, name)
+	//save new fen when all players moved? or after each and every move?
+	emitToPlayers(table.playerNames, 'move', x);
+	//io.emit('turnUpdate',fen.turn);
+}
+
+//#endregion
+
+//#region april 12 2024
+function createCountdownG(dParent, styles = {}, ms = 3000, callback = null) {
+	//_removeCountdownG();
+	setTimeout(()=>{
+		dParent.innerHTML = timeConversion(Math.max(ms, 0), 'msh');
+		if (callback) callback();
+	},ms)
+	// if (isEmpty(styles)) styles = { display: 'inline', fz: 40, fg: 'white', bg: 'gray' }; //{ w: 80, maleft: 10, fg: 'red', weight: 'bold' };
+	// let dCountdown = mDom(dParent, styles, { id: 'dCountdown' });
+	// let cd = DA.countdown = new SimpleTimer(dCountdown, 1000, null, ms, callback);
+	// cd.start();
+	// return cd;
+}
+function setActivateBot(){
+	console.log('setActivateBot')
+	T.dTimer = mDom(dOpenTable);
+	if (isEmpty(T.sets)) createCountdownG(T.dTimer, {}, 1000, setOnclickNoSet());
+	else {
+		T.list = rChoose(T.sets);
+		createCountdownG(T.dTimer, {}, 1000, setClickNext);
+	}
+}
+function createCountdownG(dParent, styles = {}, ms = 3000, callback = null) {
+	//_removeCountdownG();
+	if (isEmpty(styles)) styles = { display: 'inline', fz: 40, fg: 'white', bg: 'gray' }; //{ w: 80, maleft: 10, fg: 'red', weight: 'bold' };
+	let dCountdown = mDom(dParent, styles, { id: 'dCountdown' });
+	let cd = DA.countdown = new SimpleTimer(dCountdown, 1000, null, ms, callback);
+	cd.start();
+	return cd;
+}
+function removeCountdownG() {}; // if (isdef(DA.countdown)) { DA.countdown.clear(); DA.countdown.elem.remove(); DA.countdown = null; } }
+async function rest(item, items) {
+	//console.log('click')
+	toggleItemSelection(item);
+	let n = items.length;
+	//console.log(n);
+	let selitems = items.filter(x => x.isSelected);
+	let m = selitems.length;
+	//console.log(selitems,m);
+	//console.log(`${m} out of ${n} items selected!`);
+	if (m > 0) { //TESTING!!!
+		//check if this is a set!
+		//console.log('selected',selitems);
+		let move = selitems.map(x => x.key);
+		let table = Clientdata.table;
+		let fen = table.fen;
+		let pl = fen.players[getUname()];
+		pl.score++;
+		await sendMoveComplete(fen);
+		//send move!
+	}
+}
 function statusMessage(msg, top=600) {
 	let d=mBy('ribbon');if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
@@ -21,6 +187,7 @@ async function _prelims() {
     await switchToMenu('home')
   }
 }
+//#endregion
 
 //#region deepMerge 2
 function cloneIfNecessary(value, optionsArgument) {
@@ -226,9 +393,6 @@ function deepMergeOverrideLists(target,source) {
 	return output;
 }
 //#endregion
-
-
-
 
 //#region April 10 2024
 async function showTable(id) {

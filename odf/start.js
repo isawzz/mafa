@@ -1,7 +1,7 @@
 onload = start;
 
-async function start() { TESTING = false; await prelims(); }
-//async function start() { TESTING = true; test49(); }//test47_olist(); }
+async function start() { TESTING = false; await prelims(); await switchToMenu(UI.nav, 'play'); }
+async function start() { TESTING = true; test49(); }//test47_olist(); }
 
 async function test49() {
 	await prelims();
@@ -13,7 +13,6 @@ async function test49() {
 	// let x = mergeCombine(table, tnew); console.log(x.status, x.turn)
 
 }
-async function sendMergeTable(table) { return await mPostRoute('mergeTable', valf(table,Clientdata.table)); }
 
 async function test48() {
 	await prelims();
@@ -76,9 +75,10 @@ function defaultGameFunc() {
 	async function activate(table) { console.log('activate for', getUname()) }
 	function checkGameover(table) { return false; }
 	async function present(table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
-	async function robotMove(table) { console.log('robot moves for', getUname()) }
+	async function hybridMove(table) { console.log('hybrid moves for', getUname()) }
+	async function botMove(table) { console.log('robot moves for', getUname()) }
 	async function stepComplete(table, o) { console.log(`integrate if step complete for ${table.friendly}`); }
-	return { setup, activate, checkGameover, present, robotMove, stepComplete };
+	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
 async function testOnclickDeck0(){
 	let tnew = jsCopy(Clientdata.table);
@@ -91,6 +91,7 @@ async function testOnclickDeck0(){
 function testShowTestButtons() {
 	let dExtra = mDom('dExtra', { display: 'flex', gap: 10 });
 	mButton('bot', onclickBot, dExtra);
+	mButton('hybrid', onclickHybrid, dExtra);
 	mButton('human', onclickHuman, dExtra);
 	mButton('felix', () => switchToUser('felix'), dExtra);
 	mButton('amanda', () => switchToUser('amanda'), dExtra);

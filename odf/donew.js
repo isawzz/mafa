@@ -99,7 +99,7 @@ function clearBodyDiv(styles = {}, opts = {}) { document.body.innerHTML = ''; re
 
 function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
 
-function clearMain() { clearTable(); mClear('dMain'); mClear('dTitle'); }
+function clearMain() { DA.counter = 0; clearEvents(); mClear('dMain'); mClear('dTitle'); }
 
 function clearParent(ev) { mClear(ev.target.parentNode); }
 
@@ -230,8 +230,8 @@ function collEnableListCommands() {
 }
 function collectOptions() {
 	let poss = Serverdata.config.games[DA.gamename].options;
-	if (nundef(poss)) return;
 	let options = DA.options = {};
+	if (nundef(poss)) return options;
 	for (const p in poss) {
 		let fs = mBy(`d_${p}`);
 		let val = get_checked_radios(fs)[0];

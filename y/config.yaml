@@ -140,8 +140,8 @@ games:
     color: pink
     game_type: race
     options:
-      mode: 'solo,hotseat,multi'
-      winning_score: '5,10,20,25'
+      mode: 'training,solo,multi'
+      # winning_score: '5,10,20,25'
   sheriff:
     friendly: Sheriff
     logo: police_officer

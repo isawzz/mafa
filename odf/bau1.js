@@ -1,13 +1,56 @@
+
+function checkInterrupt(){return DA.counterBot != DA.counter; }
+async function setAutoMove(table) {
+	DA.counterBot=DA.counter;
+	T.sets = setFindAllSets(T.items);
+	await mSleep(2000);if (checkInterrupt()) return;
+	if (isEmpty(T.sets)) await setOnclickNoSet(); 
+	else {
+		let list = rChoose(T.sets); console.log('set',list);
+		await setOnclickCard(list[0], T.items); 
+		await mSleep(2000);if (checkInterrupt()) return;
+		await setOnclickCard(list[1], T.items); 
+		await mSleep(2000);if (checkInterrupt()) return;
+		await setOnclickCard(list[2], T.items); 
+
+	}
+}
+async function setBotMove(table) {
+	setShowButtons();
+	mShield(dOpenTable, { bg: '#00000010' });
+	await setAutoMove(table); 
+}
+async function setHybridMove(table) {
+	setShowButtons();
+	setActivateCards();
+	await setAutoMove(table);
+}
+
+
+
+
+
+
+
+
+
+
+
+async function setGhostMove(table) {
+	T.sets = setFindAllSets(T.items);
+
+}
 async function setOnclickCard(item, items) {
 	//console.log('click', item.key)
 	toggleItemSelection(item);
 	let selitems = items.filter(x => x.isSelected);
 	let [keys, m] = [selitems.map(x => x.key), selitems.length];
 	if (m == 3 || TESTING && m == 3) {
+		clearEvents();
 		mShield(dOpenTable, { bg: '#00000000' }); //disable ui
 		let [me, table] = [getUname(), Clientdata.table];
 		let [fen, pl] = [table.fen, table.fen.players[me]];
-		let isSet = checkIfSet(keys); //console.log('isSet', isSet); //check if set condition is met
+		let isSet = setCheckIfSet(keys); //console.log('isSet', isSet); //check if set condition is met
 		if (isSet || TESTING) { //if yes, increase score, remove items, add 3 new items
 			// <12:0 (deck should be Empty), 12:3, 13:2, 14:1, ab 15:0
 			assertion(fen.cards.length>=12 || isEmpty(fen.deck),`LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
@@ -19,11 +62,12 @@ async function setOnclickCard(item, items) {
 		} else {
 			pl.score--;
 		}
-		let res = await mPostRoute('mergeTable', table); // console.log('res', res)
+		let res = await sendMergeTable(table); // console.log('res', res)
 	}
 	else if (m >= 1) disableButton(T.bHint); else enableButton(T.bHint);
 }
 async function setOnclickNoSet(){
+	clearEvents();
 	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
 	let [me, table] = [getUname(), Clientdata.table];
 	let [fen, pl] = [table.fen, table.fen.players[me]];
@@ -40,8 +84,9 @@ async function setOnclickNoSet(){
 	}else{
 		pl.score--;
 	}
-	let res = await mPostRoute('mergeTable', table); // console.log('res', res)
+	let res = await sendMergeTable(table); // console.log('res', res)
 }
+async function sendMergeTable(table) { return await mPostRoute('mergeTable', valf(table,Clientdata.table)); }
 
 
 

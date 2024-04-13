@@ -53,8 +53,10 @@ function emitToPlayers(namelist, msgtype, o) {
 	for (const name of namelist) {
 		let idlist = byUsername[name]; //console.log('name', name, '\nid', idlist);
 		if (nundef(idlist)) continue;
+		// console.log('ids for',name,idlist)
 		for (const id of idlist) {
 			let client = clients[id]; //console.log(name, client.id); //isdef(client),Object.keys(client))
+			o.clientid=client.id;
 			if (client) client.emit(msgtype, o);
 		}
 	}
@@ -271,16 +273,9 @@ const byUsername = {};
 const clients = {};
 io.on('connection', (client) => {
 	clients[client.id] = client;
-	//handle_connect(client.id);
-	//client.emit('message','hello')
-	//client.on('login', x => handle_login(x, client.id));
 	client.on('userChange', x => handle_userChange(x, client.id));
-	client.on('message', handle_message);
-	//client.on('move', handle_move);
-	client.on('update', handle_update);
-	client.on('disconnect', x => handle_disconnect(x, client.id)); // ()=>handle_disconnect(socket.id));
+	client.on('disconnect', x => handle_disconnect(x, client.id)); 
 });
-function handle_connect(id) { console.log('::connected', id); io.emit('message', 'someone logged in!'); }
 function handle_disconnect(x, id) {
 	console.log('::io.disconnected', id);
 	let uname = byClient[id];
@@ -288,28 +283,6 @@ function handle_disconnect(x, id) {
 	if (isList(idlist)) removeInPlace(idlist, id);
 	io.emit('message', `${uname} left`);
 }
-function handle_message(x) { console.log('::message', arguments); io.emit('message', x); }
-function handle_move(x) {
-	console.log('::move', arguments);
-	//console.log('Session tables',Session.tables)
-	let table = lookup(Session, ['tables', x.id]);
-	//console.log('table',table);
-	//wie kann ich temp move zu table saven?
-	let fen = table.fen;
-	let turn = fen.turn;
-	console.log('turn', turn)
-	let name = x.name;
-	let move = x.move;
-
-	//simplest:
-	if (!turn.includes(name)) { console.log('!!!move mismatch', name, move); return; }
-	lookupSetOverride(fen, ['moves', name], move);
-	removeInPlace(fen.turn, name)
-	//save new fen when all players moved? or after each and every move?
-	emitToPlayers(table.playerNames, 'move', x);
-	//io.emit('turnUpdate',fen.turn);
-}
-function handle_update(x) { console.log('::update', x); io.emit('update', x); }
 function handle_userChange(x, id) {
 	if (x.oldname == x.newname) { console.log('no change:', x.oldname); return; }
 	console.log('::user change', x.newname);
@@ -696,17 +669,14 @@ function mergeObject(target, source, optionsArgument) {
 }
 //#endregion
 
+var StepCounter=0;
 app.post('/mergeTable', (req, res) => {
 	let id = req.body.id;
-	//console.log('merge',Object.keys(req.body),req.body.status)
+	console.log('::merge',++StepCounter); //Object.keys(req.body),req.body.status)
 	let table = lookup(Session, ['tables', id]);
-	table = deepmergeOverride(table,req.body); //deepMergeOverrideLists(table,req.body);
-	//console.log('!!!',table.status)
+	table = deepmergeOverride(table,req.body);
 	saveTable(id, table);
-	let msg = `table merged: ${table.friendly} merged`;
-	//console.log(msg)
-	let turn = table.fen.turn;
-	io.emit('table', { msg, id, turn, isNew: false })
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
 	emitToPlayers(table.playerNames, 'table', table);
 	res.json(table);
 });

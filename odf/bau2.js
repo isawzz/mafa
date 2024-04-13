@@ -1,6 +1,7 @@
 
 async function showTable(id) {
-	//console.log('showTable', getUname()); //name, table.friendly, table.playerNames.includes(name));//console.log('Clientdata',Clientdata);
+	DA.counter=valf(DA.counter,0);DA.Counter+=1;
+	console.log('___showTable', DA.counter, getUname()); //name, table.friendly, table.playerNames.includes(name));//console.log('Clientdata',Clientdata);
 	let table = await mGetRoute('table', { id }); 
 	let me = getUname();
 
@@ -10,8 +11,8 @@ async function showTable(id) {
 	Clientdata.table = table; //console.log('___showTable'); //,me); //table.fen.players[me]);
 	//console.log('table.status',table.status,table); return;
 	
-	clearTable();
-	showTitle(`${table.friendly} ${me}`);
+	clearEvents();
+	showTitle(`${table.friendly}`);
 	let func=DA.funcs[table.game];
 	await func.present(table); 
 	mRise('dMain');
@@ -22,8 +23,10 @@ async function showTable(id) {
 
 	if (!table.fen.turn.includes(me)) return; 
 
-	if (table.fen.players[me].playmode == 'bot') await func.robotMove(table,me); 
-	else await func.activate(table);
+	let mode = table.fen.players[me].playmode;
+	if (mode == 'bot') return await func.botMove(table,me); 
+	else if (mode == 'hybrid') return await func.hybridMove(table,me); 
+	else if (mode == 'human') return await func.activate(table);
 
 }
 
