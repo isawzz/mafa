@@ -5,10 +5,14 @@ async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
 	await prelims();
+	// let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
+	// testShowTestButtons(table);
 	await switchToTables();
 	await clickOnGame('setgame'); //how do I click on the div with attr gamename setgame
+	await clickOnPlayer('mac');
 
-	clickOnPlayer('amanda');
+	//was soll fuer ein player menu kommen?
+	//wie mach ich einen dialog?
 
 	
 

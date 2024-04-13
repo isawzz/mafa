@@ -25,9 +25,10 @@ function clearEvents() { for (const k in TO) clearTimeout(TO[k]); }
 function clickOnElemWithAttr(prop,val){
 	let d=document.querySelectorAll(`[${prop}="${val}"]`)[0];
 	if (isdef(d)) d.click();
+	return d;
 }
 async function clickOnGame(gamename){await showGameMenu(gamename);}
-function clickOnPlayer(name){clickOnElemWithAttr('username',name);}
+async function clickOnPlayer(name){return await showGameMenuPlayerDialog(name);}
 function cBlank(dParent, styles = {}, opts = {}) {
 	if (nundef(styles.h)) styles.h = valf(styles.sz, 100);
 	if (nundef(styles.w)) styles.w = styles.h * .7;

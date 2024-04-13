@@ -472,11 +472,15 @@ async function onclickGameMenuItem(ev) {
 }
 async function onclickGameMenuPlayer(ev){
 	let name = evToAttr(ev, 'username'); //console.log('name',name); return;
+	let shift = ev.shiftKey;
+	await showGameMenuPlayerDialog(name,shift);
+}
+async function showGameMenuPlayerDialog(name,shift=false){
 	let item = DA.allPlayers.find(x=>x.name == name);
 	let gamename = DA.gamename;
 
 	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
-	if (ev.shiftKey) {
+	if (shift) {
 		console.log('shift!!!')
 		let list = DA.allPlayers;
 		if (nundef(DA.lastName)) DA.lastName = list[0].name;
