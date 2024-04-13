@@ -677,7 +677,7 @@ app.post('/mergeTable', (req, res) => {
 	table = deepmergeOverride(table,req.body);
 	saveTable(id, table);
 	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
-	emitToPlayers(table.playerNames, 'table', table);
+	emitToPlayers(table.playerNames, 'merged', table);
 	res.json(table);
 });
 

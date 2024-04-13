@@ -1,3 +1,6 @@
+async function switchToTables(){return await switchToMainMenu('play');}
+async function switchToMainMenu(name){return await switchToMenu(UI.nav,name);}
+
 
 function arrAllSameOrDifferent(arr) {
 	if (arr.length === 0) {
@@ -19,7 +22,12 @@ function arrAllSameOrDifferent(arr) {
 function arrClear(arr) { arr.length = 0; return arr; }
 
 function clearEvents() { for (const k in TO) clearTimeout(TO[k]); }
-
+function clickOnElemWithAttr(prop,val){
+	let d=document.querySelectorAll(`[${prop}="${val}"]`)[0];
+	if (isdef(d)) d.click();
+}
+async function clickOnGame(gamename){await showGameMenu(gamename);}
+function clickOnPlayer(name){clickOnElemWithAttr('username',name);}
 function cBlank(dParent, styles = {}, opts = {}) {
 	if (nundef(styles.h)) styles.h = valf(styles.sz, 100);
 	if (nundef(styles.w)) styles.w = styles.h * .7;
@@ -254,10 +262,10 @@ async function onclickStartTable(id) {
 	//console.log('res', res);
 }
 async function onclickTable(id) {
-	console.log('_____ onclickTable')
+	//console.log('_____ onclickTable')
 	await showTable(id)
 }
-
+function openGameMenuFor(gamename){clickOnElemWithAttr('gamename',gamename);}
 function showGameover(table) {
 	let winners = table.winners;
 	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;

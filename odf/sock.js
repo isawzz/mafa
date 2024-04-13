@@ -19,6 +19,15 @@ async function onsockReceiveMove(o) {
   // }
 
 }
+async function onsockMerged(x){
+  //console.log('merged',x); //x is table
+  let me = getUname();
+  let isSameTableOpen = lookup(Clientdata, ['table', 'id']) == x.id;
+  if (!isSameTableOpen) return;
+  INTERRUPT();
+  showTable(x);
+
+}
 async function onsockTable(x) {
   //console.log('::SOCK table:'); //, 'new',x,'old', Clientdata.table);
   let [msg, id, turn, isNew] = [x.msg, x.id, x.turn, x.isNew];
@@ -75,6 +84,7 @@ function sockInit() {
   Socket.on('disconnect', x => console.log('::SOCK disconnect:', x));
   Socket.on('event', onsockEvent);
   Socket.on('message', showChatMessage);
+  Socket.on('merged', onsockMerged);
   Socket.on('table', onsockTable);
   Socket.on('tables', onsockTables);
   Socket.on('move', onsockReceiveMove);

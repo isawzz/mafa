@@ -1213,16 +1213,6 @@ async function mPrompt(gadget) {
 		};
 	});
 }
-async function mSleep(ms = 1000) {
-	return new Promise(
-		(res, rej) => {
-			if (ms <= 3000) {
-				setTimeout(res, ms);
-			} else {
-				console.log('param should be less than 3001');
-			}
-		});
-}
 async function ondropSaveUrl(url) {
 	console.log('save dropped url to config:', url);
 	Serverdata.config = mPostRoute('postConfig', { url: url });
@@ -1349,54 +1339,6 @@ async function showGameOptions(dParent, game) {
 			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
 			measure_fieldset(fs);
 		}
-	}
-}
-async function showGamePlayers(dParent, gamename) {
-	let users = await mGetRoute('users');
-	//console.log('users',users);
-
-	let d = mDom(dParent, { display: 'flex', gap: 6, wrap: true })
-	DA.playerlist = [];
-	DA.allPlayers = [];
-	DA.lastName = null;
-	let params = [gamename, DA.playerlist];
-	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
-
-	let me = getUname();
-	for (const name in users) {
-		let d1 = mDom(d, { cursor: 'pointer' });
-		d1.setAttribute('username', name)
-		let img = showUserImage(name, d1, 40); //for(const i of range(3))showUserImage(name,d,40);
-		let label = mDom(d1, { matop: -4, fz: 12, hline: 12 }, { html: name });
-
-		let item = { name, div: d1, state: 0, strategy: '', isSelected: false };
-		DA.allPlayers.push(item);
-		if (name == me) { toggle_select(item, funcs, gamename, DA.playerlist); DA.lastName = name; }
-		else d1.onclick = ev => {
-			if (ev.shiftKey) {
-				console.log('shift!!!')
-				let list = DA.allPlayers;
-				if (nundef(DA.lastName)) DA.lastName = list[0].name;
-				console.log(DA.lastName, list)
-				let x1 = list.find(x => x.name == DA.lastName);
-				let i1 = list.indexOf(x1);
-				let x2 = list.find(x => x.name == item.name);
-				let i2 = list.indexOf(x2);
-				if (i1 == i2) return;
-				if (i1 > i2) [i1, i2] = [i2, i1];
-				assertion(i1 < i2, "NOT IN CORRECT ORDER!!!!!")
-				for (let i = i1; i <= i2; i++) {
-					let xitem = DA.allPlayers[i];
-					if (xitem.isSelected) continue;
-					style_playing_as_human(xitem, gamename, DA.playerlist);
-				}
-				DA.lastName = item.uname;
-			} else {
-				toggle_select(item, funcs, gamename, DA.playerlist);
-				if (item.isSelected) DA.lastName = item.name;
-			}
-		}
-
 	}
 }
 function showGames(ms = 500) {
