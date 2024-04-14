@@ -1,5 +1,100 @@
+async function __getUser(uname, cachedOk = false) {
+  let res = lookup(Serverdata, ['users', uname]);
+  if (!res || !cachedOk) res = await mGetRoute('user', { uname });
+  if (!res) { res = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
+  Serverdata.users[uname] = res;
+  return res;
+}
+
 //#region set
 async function showGamePlayers(dParent, gamename) {
+	let users = await mGetRoute('users');
+	//console.log('users',users);
+
+	let d = mDom(dParent, { display: 'flex', gap: 6, wrap: true })
+	DA.playerlist = [];
+	DA.allPlayers = [];
+	DA.lastName = null;
+	DA.playerOptions = {};
+	//let params = [gamename, DA.playerlist];
+	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
+
+	let me = getUname();
+	for (const name in users) {
+		let d1 = mDom(d, { cursor: 'pointer',border: `transparent` });
+		d1.setAttribute('username', name)
+		let img = showUserImage(name, d1, 40); //for(const i of range(3))showUserImage(name,d,40);
+		let label = mDom(d1, { matop: -4, fz: 12, hline: 12 }, { html: name });
+
+		let item = { name, div: d1, state: 0, strategy: '', isSelected: false };
+		//console.log('rect',getRect(d1))
+		DA.allPlayers.push(item);
+		d1.onclick = onclickGameMenuPlayer;
+		// if (name == me) { toggle_select(item, funcs, gamename, DA.playerlist); DA.lastName = name; }
+		// else d1.onclick = onclickGameMenuPlayer;
+
+	}
+	//let myItem = DA.allPlayers.find(x=>x.name == me);
+	await clickOnPlayer(me);
+}
+async function showPlayerOptions(dAnchor, name, game) {
+	//alle config game options (options und ploptions) muessen unique sein!!!
+
+	let dParent = valf(mBy('dPlayerOptions'), mDom('dGameMenu', { position: 'absolute', display: 'inline-block' }, { id: 'dPlayerOptions' }));
+	mClear(dParent)
+	let dOptions = mDom(dParent)
+	mCenterFlex(dOptions);
+	// let style = { display: 'flex', justify: 'center', w: '100%', gap: 10, matop: 10 };
+	//let dOptions = mDiv(dParent, style, 'dMenuInput'); mCenterFlex(dOptions);
+	let poss = Serverdata.config.games[game].ploptions;
+	if (nundef(poss)) return;
+	for (const p in poss) {
+		let key = p; console.log('key', key)
+		let val = poss[p];
+		if (isString(val)) {
+			let list = val.split(',');
+			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
+			let fs = mRadioGroup(dOptions, {}, `d_${key}`, legend);
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
+			measure_fieldset(fs);
+		}
+	}
+	let r = getRect(dAnchor); console.log(r)
+	let r1 = getRect(dParent); let [w, h] = [r1.w, r1.h]; console.log(w, h)
+	let bg = getUserColor(name)
+	mStyle(dParent, { top: 0, left: r.l - w / 2 + r.w / 2, bg: '#eee', rounding: 8, border: `solid 3px ${bg}` });
+	mStyle(dParent, { top: r.t - r1.h, left: r.l - w / 2 + r.w / 2, bg: '#eee', rounding: 8, border: `solid 3px ${bg}` });
+	mStyle(dAnchor, { bg: bg })
+}
+
+
+
+async function rest() {
+	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
+	if (shift) {
+		console.log('shift!!!')
+		let list = DA.allPlayers;
+		if (nundef(DA.lastName)) DA.lastName = list[0].name;
+		console.log(DA.lastName, list)
+		let x1 = list.find(x => x.name == DA.lastName);
+		let i1 = list.indexOf(x1);
+		let x2 = list.find(x => x.name == item.name);
+		let i2 = list.indexOf(x2);
+		if (i1 == i2) return;
+		if (i1 > i2) [i1, i2] = [i2, i1];
+		assertion(i1 < i2, "NOT IN CORRECT ORDER!!!!!")
+		for (let i = i1; i <= i2; i++) {
+			let xitem = DA.allPlayers[i];
+			if (xitem.isSelected) continue;
+			style_playing_as_human(xitem, gamename, DA.playerlist);
+		}
+		DA.lastName = item.uname;
+	} else {
+		toggle_select(item, funcs, gamename, DA.playerlist);
+		if (item.isSelected) DA.lastName = item.name;
+	}
+
+}async function showGamePlayers(dParent, gamename) {
 	let users = await mGetRoute('users');
 	//console.log('users',users);
 
@@ -157,6 +252,26 @@ function _handle_move(x) {
 	emitToPlayers(table.playerNames, 'move', x);
 	//io.emit('turnUpdate',fen.turn);
 }
+app.post('/muell', (req, res) => {
+	let fname = path.join(dbDirectory, 'users.yaml');
+	lookupSetOverride(Session, ['users', name], data);
+	let y = yaml.dump(Session.users);
+	fs.writeFileSync(fname, y, 'utf8');
+	res.json(data);
+
+	let id = req.body.id;
+	let newtable = req.body;
+	let table = lookup(Session, ['tables', id]);
+	let isNew = !table;
+	if (isNew) table = newtable; else copyKeys(newtable, table);
+	let isStarted = table.status == 'started';
+	saveTable(id, table);
+	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
+	console.log(msg)
+	let turn = isStarted ? table.fen.turn : [];
+	io.emit('table', { msg, id, turn, isNew })
+	res.json(msg);
+});
 
 //#endregion
 

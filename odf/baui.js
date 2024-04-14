@@ -245,7 +245,7 @@ async function onclickStartGame() {
 	let options = collectOptions(); console.log(options)
 	let players = collectPlayers(options);
 
-	if (TESTING) {
+	if (TESTING && lookup(DA,['testOptions','justFelixAmanda'])) {
 		//console.log(jsCopy(players))
 		let me = getUname();
 		let names = [me]; if (me == 'felix') names.push('amanda'); else names.push('felix');

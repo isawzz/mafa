@@ -4,12 +4,12 @@ async function start() { TESTING = false; await prelims(); await switchToMenu(UI
 async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
-	await prelims();
-	// let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
-	// testShowTestButtons(table);
+	await prelims(); 
+	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
+	testShowTestButtons(table);
 	await switchToTables();
 	await clickOnGame('setgame'); //how do I click on the div with attr gamename setgame
-	await clickOnPlayer('mac');
+	//await clickOnPlayer(getUname());
 
 	//was soll fuer ein player menu kommen?
 	//wie mach ich einen dialog?
@@ -19,8 +19,6 @@ async function test51() {
 
 
 
-	// let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
-	// testShowTestButtons(table);
 	// console.log('game',Serverdata.config.games[table.game]);
 }
 async function test50() {

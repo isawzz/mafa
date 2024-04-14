@@ -1,6 +1,7 @@
 function createOpenTable(gamename, players, options) {
 	let playerNames = players.map(x => x.name);
 	let me = getUname();
+	console.log('players',players)
 
 	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
 	let t={
@@ -1267,7 +1268,9 @@ async function showColors() {
 	}
 }
 async function showDashboard() {
-	mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${getUname()}! this is your dashboard` })
+	let me = getUname();
+	mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${me}! this is your dashboard` });
+	if (me == 'guest') mDom('dMain',{align:'center',className:'section'},{html:'click username in upper left corner to log in'})
 }
 async function showDirPics(dir, dParent) {
 	let imgs = await mGetFiles(dir);
@@ -1324,6 +1327,8 @@ async function showGameMenu(gamename) {
 	let acancel = mButton('Cancel', () => mClear(dMenu), dButtons, {}, ['button', 'input']);
 	let bclear = mButton('Clear Players', onclickClearPlayers, dButtons, {}, ['button', 'input']);
 
+	//await showGameMenuPlayerDialog(getUname())
+	//setTimeout(()=>clickOnPlayer(getUname()),10)
 }
 async function showGameOptions(dParent, game) {
 	mRemoveChildrenFromIndex(dParent, 2);
@@ -1622,8 +1627,11 @@ async function switchToUser(uname) {
 	iDiv(UI.user).innerHTML = uname;
 	setColors(U.color);
 
-	if (uname == 'guest') { await switchToMenu(UI.nav, 'home'); menuDisable(UI.nav, 'plan'); }
-	else {
+	if (uname == 'guest') { 
+		await switchToMenu(UI.nav, 'home'); 
+		menuDisable(UI.nav, 'plan'); 
+		//showMessage('click user name in upper left corner to log in!',5000)
+	}	else {
 		menuEnable(UI.nav, 'plan');
 		let t = Clientdata.table;
 		let cur = Clientdata.curMenu; //UI.nav.cur; //console.log('current menu is', cur);

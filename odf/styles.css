@@ -35,7 +35,7 @@
 	inset:unset;
 	outline:unset;
 	border:unset;
-	top:anchor(bottom);
+	bottom:anchor(top);
 	left:anchor(left);
 }
 dialog:-internal-dialog-in-top-layer {
@@ -162,7 +162,7 @@ legend {
   /* border: 1px solid green; */
   color: green;
   font-size: 90%;
-  margin-left: 16px;
+  margin-left: 12px;
   text-align: left;
 }
 fieldset {

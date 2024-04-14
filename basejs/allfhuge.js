@@ -43915,7 +43915,7 @@ function mRadioToggle(label, val, dParent, styles = {}, is_on = true) {
   return d;
 }
 function mRemove(elem) {
-  elem = toElem(elem);
+  elem = toElem(elem); if (nundef(elem)) return;
   var a = elem.attributes, i, l, n;
   if (a) {
     for (i = a.length - 1; i >= 0; i -= 1) {

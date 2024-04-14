@@ -475,35 +475,6 @@ async function onclickGameMenuPlayer(ev){
 	let shift = ev.shiftKey;
 	await showGameMenuPlayerDialog(name,shift);
 }
-async function showGameMenuPlayerDialog(name,shift=false){
-	let item = DA.allPlayers.find(x=>x.name == name);
-	let gamename = DA.gamename;
-
-	let funcs = [style_not_playing, style_playing_as_human, style_playing_as_bot];
-	if (shift) {
-		console.log('shift!!!')
-		let list = DA.allPlayers;
-		if (nundef(DA.lastName)) DA.lastName = list[0].name;
-		console.log(DA.lastName, list)
-		let x1 = list.find(x => x.name == DA.lastName);
-		let i1 = list.indexOf(x1);
-		let x2 = list.find(x => x.name == item.name);
-		let i2 = list.indexOf(x2);
-		if (i1 == i2) return;
-		if (i1 > i2) [i1, i2] = [i2, i1];
-		assertion(i1 < i2, "NOT IN CORRECT ORDER!!!!!")
-		for (let i = i1; i <= i2; i++) {
-			let xitem = DA.allPlayers[i];
-			if (xitem.isSelected) continue;
-			style_playing_as_human(xitem, gamename, DA.playerlist);
-		}
-		DA.lastName = item.uname;
-	} else {
-		toggle_select(item, funcs, gamename, DA.playerlist);
-		if (item.isSelected) DA.lastName = item.name;
-	}
-
-}
 async function onclickPlay() {
 	await showTables();
 	showGames();

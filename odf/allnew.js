@@ -166,13 +166,6 @@ function mergeObject(target, source, optionsArgument) {
 }
 //#endregion
 
-async function __getUser(uname, cachedOk = false) {
-  let res = lookup(Serverdata, ['users', uname]);
-  if (!res || !cachedOk) res = await mGetRoute('user', { uname });
-  if (!res) { res = await postUserChange({ name: uname, color: rChoose(M.playerColors) }); }
-  Serverdata.users[uname] = res;
-  return res;
-}
 function addEditable(dParent, styles = {}, opts = {}) {
   addKeys({ tag: 'input', classes: 'plain' }, opts)
   addKeys({ wmax: '90%', box: true }, styles);
@@ -704,14 +697,14 @@ function getTurnPlayers(fen) {
   return fen.turn.join(', ');
 }
 function getUname() { assertion(Clientdata.curUser == U.name, `getUname!!!!!!!${Clientdata.curUser} != ${U.name}`); return Clientdata.curUser; }
-async function getUser(uname, cachedOk = false) {
-  let res = lookup(Serverdata, ['users', uname]);
-  if (!res || !cachedOk) res = await mGetRoute('user', { uname });
+async function getUser(name, cachedOk = false) {
+  let res = lookup(Serverdata, ['users', name]);
+  if (!res || !cachedOk) res = await mGetRoute('user', { name });
   if (!res) {
-    let key = isdef(M.superdi[uname]) ? uname : rChoose(Object.keys(M.superdi))
-    res = await postUserChange({ name: uname, color: rChoose(M.playerColors), key });
+    let key = isdef(M.superdi[name]) ? name : rChoose(Object.keys(M.superdi))
+    res = await postUserChange({ name, color: rChoose(M.playerColors), key });
   }
-  Serverdata.users[uname] = res;
+  Serverdata.users[name] = res;
   return res;
 }
 function hourglassUpdate() {

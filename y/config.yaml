@@ -141,7 +141,7 @@ games:
     game_type: race
     ploptions:
       level: 1,2,3,4,5
-      mode: bot,human
+      playmode: bot,human
     options:
       mode: 'training,solo,multi'
       # winning_score: '5,10,20,25'

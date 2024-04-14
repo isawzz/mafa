@@ -16,6 +16,7 @@ const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
 const superdiFile = path.join(uploadDirectory, 'm.yaml');
 const tablesDir = path.join(uploadDirectory, 'tables');
+const usersDir = path.join(uploadDirectory, 'users');
 var Session = {}; // session ist nur fuer temp data: just mem
 var Superdi = {};
 
@@ -69,6 +70,7 @@ async function getFiles(dir) {
 
 }
 function getTablePath(id) { return path.join(tablesDir, `${id}.yaml`); }
+function getUserPath(name) { return path.join(usersDir, `${name}.yaml`); }
 function isdef(x) { return x !== null && x !== undefined; }
 function isEmpty(arr) {
 	return arr === undefined || !arr
@@ -170,10 +172,15 @@ function saveTable(id, o) {
 	let y = yaml.dump(Session.tables[id]);
 	fs.writeFileSync(getTablePath(id), y, 'utf8');
 }
-function saveUser(uname) {
-	let p = path.join(uploadDirectory, 'users', uname + '.yaml');
-	let y = yaml.dump(Session.users[uname]); fs.writeFileSync(p, y, 'utf8');
+function saveUser(name, o) {
+	lookupSetOverride(Session, ['users', name], o);
+	let y = yaml.dump(Session.users[name]);
+	fs.writeFileSync(getUserPath(name), y, 'utf8');
 }
+// function saveUser(uname) {
+// 	let p = path.join(uploadDirectory, 'users', uname + '.yaml');
+// 	let y = yaml.dump(Session.users[uname]); fs.writeFileSync(p, y, 'utf8');
+// }
 function valf() {
 	for (const arg of arguments) if (isdef(arg)) return arg;
 	return null;
@@ -181,9 +188,8 @@ function valf() {
 //#endregion
 
 app.get('/user', (req, res) => {
-	let params = req.query;
-	let name = params.uname;
-	//console.log('==> get user:', params)
+	let name = req.query.name;
+	//console.log('==> get user:', name)
 	let data = lookup(Session, ['users', name]);
 	//console.log(data)
 	res.json(data);
@@ -475,14 +481,16 @@ app.post('/moveComplete', (req, res) => {
 });
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
-	let data = req.body;
-	console.log('<== post user', data)
-	if (nundef(data.key) || nundef(M.superdi[data.key])) data.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';
-	let fname = path.join(dbDirectory, 'users.yaml');
-	lookupSetOverride(Session, ['users', name], data);
-	let y = yaml.dump(Session.users);
-	fs.writeFileSync(fname, y, 'utf8');
-	res.json(data);
+	let userdata = req.body;
+	console.log('<== post user', userdata)
+	if (nundef(userdata.key) || nundef(M.superdi[userdata.key])) userdata.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';
+	let user = lookup(Session, ['users', name]);
+	let isNew = !user;
+	if (isNew) user = userdata; else copyKeys(userdata, user);
+	saveUser(name, user);
+	let msg = `user posted: ${user.name} new:${isNew}`;
+	console.log(msg)
+	res.json(user);
 });
 app.post('/postNewItem', (req, res) => {
 	let key = req.body.key;
@@ -685,15 +693,23 @@ async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');
 	Session.config = yaml.load(yamlFile);
 	yamlFile = fs.readFileSync(usersFile, 'utf8');
-	Session.users = valf(yaml.load(yamlFile), {});
+	// Session.users = valf(yaml.load(yamlFile), {});
+	Session.users = {};
+	let userfiles = await fsp.readdir(usersDir);
+	for (const f of userfiles) {
+		let p = path.join(usersDir, f)
+		//console.log('path',p)
+		yamlFile = fs.readFileSync(p, 'utf8');
+		let o = yaml.load(yamlFile);
+		Session.users[o.name] = o;
+	}
+
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
 	Session.events = valf(yaml.load(yamlFile), {});
 	yamlFile = fs.readFileSync(superdiFile, 'utf8');
 	M = valf(yaml.load(yamlFile), {});
 	Session.tables = {};
-	//console.log('tablesDir',tablesDir)
 	let tablefiles = await fsp.readdir(tablesDir);
-	//console.log('tablefiles',tablefiles);
 	for (const f of tablefiles) {
 		let p = path.join(tablesDir, f)
 		//console.log('path',p)
