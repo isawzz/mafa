@@ -252,7 +252,6 @@ async function onclickStartGame() {
 		players = names.map(x => createHumanPlayer(x)); // TEST!
 		//console.log(jsCopy(players))
 	}
-
 	await startGame(DA.gamename, players, options);
 }
 async function onclickStartTable(id) {

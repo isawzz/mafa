@@ -4,19 +4,24 @@ async function showGameMenuPlayerDialog(name, shift = false) {
 	let gamename = DA.gamename;
 	let da = iDiv(item);
 
-	let state = DA.playerlist.includes(name)? isdef(mBy('dPlayerOptions'))?'yesOpen':'yesClosed':'no';
-	console.log('...state',state);
-	if (state == 'yesClosed') setPlayerNotPlaying(da, name, gamename);
-	else if (state == 'no') setPlayerPlaying(da,name,gamename);
-	else collectPlayerOptions('dPlayerOptions',name,gamename);
+	let lastname=DA.lastName;
+	DA.lastName = name;
+	if (DA.playerList.includes(lastname)) collectPlayerOptions('dPlayerOptions',lastname,gamename);
+	if (!DA.playerList.includes(name)) setPlayerNotPlaying(da, name, gamename);
+	else setPlayerPlaying(da, name, gamename);
+
+	// let state = DA.playerlist.includes(name) ? isdef(mBy('dPlayerOptions')) ? 'yesOpen' : 'yesClosed' : 'no';
+	// if (state == 'yesClosed') setPlayerNotPlaying(da, name, gamename);
+	// else if (state == 'no') setPlayerPlaying(da, name, gamename);
+	// else collectPlayerOptions('dPlayerOptions', name, gamename);
 }
-function setPlayerNotPlaying(da, name, gamename){
-	removeInPlace(DA.playerlist,name);
+function setPlayerNotPlaying(da, name, gamename) {
+	removeInPlace(DA.playerlist, name);
 	mRemove('dPlayerOptions');
-	mStyle(da,{bg:'transparent',fg:'black',border: `transparent`});
+	mStyle(da, { bg: 'transparent', fg: 'black', border: `transparent` });
 }
 function setPlayerPlaying(da, name, gamename) {
-	addIf(DA.playerlist,name);
+	addIf(DA.playerlist, name);
 	let dParent = mBy('dGameMenu'); //document.body;
 	let id = 'dPlayerOptions'; mRemove(id); // if (isdef(mBy(id))) mBy(id).remove();
 	let bg = getUserColor(name);
@@ -36,20 +41,20 @@ function setPlayerPlaying(da, name, gamename) {
 			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
 			//console.log('legend',legend)
 			let fs = mRadioGroup(dOptions, {}, `d_${key}`, legend);
-			console.log('fs',fs)
+			console.log('fs', fs)
 			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
 			measure_fieldset(fs);
 		}
 	}
-	mStyle(da, { bg,fg:'white',border:'white' })
+	mStyle(da, { bg, fg: 'white', border: 'white' })
 	let r = getRect(da); console.log(r)
 	let rp = getRect(dOptions);
 	mIfNotRelative(dParent); mPos(d, r.x - rp.w / 2, -58)
-	mButtonX(dOptions,ev=>collectPlayerOptions(dOptions,name,gamename),18,1,'dimgray');
+	mButtonX(dOptions, ev => collectPlayerOptions(dOptions, name, gamename), 18, 1, 'dimgray');
 }
-function mExists(d){return isdef(toElem(d));}
-async function collectPlayerOptions(d,name,gamename){
-	if (!mExists('dPlayerOptions')) {console.log('opts',name,DA.playerOptions[name]);return;}
+function mExists(d) { return isdef(toElem(d)); }
+async function collectPlayerOptions(d, name, gamename) {
+	if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
 	let poss = Serverdata.config.games[gamename].ploptions;
 	let options = {};
 	if (nundef(poss)) return options;
@@ -58,7 +63,7 @@ async function collectPlayerOptions(d,name,gamename){
 		let val = get_checked_radios(fs)[0];
 		options[p] = isNumber(val) ? Number(val) : val;
 	}
-	lookupSetOverride(DA.playerOptions,[name],options);
+	lookupSetOverride(DA.playerOptions, [name], options);
 	mRemove(d);
 	return options;
 }
@@ -73,7 +78,7 @@ async function showGamePlayers(dParent, gamename) {
 	DA.playerOptions = {};
 	let me = getUname();
 	for (const name in users) {
-		let d1 = mDom(d, { cursor: 'pointer',border: `transparent` });
+		let d1 = mDom(d, { cursor: 'pointer', border: `transparent` });
 		d1.setAttribute('username', name)
 		let img = showUserImage(name, d1, 40); //for(const i of range(3))showUserImage(name,d,40);
 		let label = mDom(d1, { matop: -4, fz: 12, hline: 12 }, { html: name });

@@ -1,3 +1,13 @@
+async function showGameMenuPlayerDialog0(name, shift = false) {
+	let item = DA.allPlayers.find(x => x.name == name);
+	let gamename = DA.gamename;
+	let da = iDiv(item);
+	let state = DA.playerlist.includes(name) ? isdef(mBy('dPlayerOptions')) ? 'yesOpen' : 'yesClosed' : 'no';
+	console.log('...state', state);
+	if (state == 'yesClosed') setPlayerNotPlaying(da, name, gamename);
+	else if (state == 'no') setPlayerPlaying(da, name, gamename);
+	else collectPlayerOptions('dPlayerOptions', name, gamename);
+}
 async function __getUser(uname, cachedOk = false) {
   let res = lookup(Serverdata, ['users', uname]);
   if (!res || !cachedOk) res = await mGetRoute('user', { uname });
