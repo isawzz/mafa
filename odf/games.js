@@ -163,12 +163,14 @@ function setShowButtons(){
 }
 function setStats(fen, dParent, layout, showTurn = true) {
 	let me = getUname();
-	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, { patop: 8, mabottom: 20, wmin: 130, bg: 'beige', fg: 'contrast' })
+	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
 	for (const plname in fen.players) {
 		let pl1 = fen.players[plname]; //console.log('player',pl1)
 		let item = player_stat_items[plname];
 		let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
-		playerStatCount('', pl1.score, d);
+		playerStatCount('star', pl1.score, d);
+		playerStatCount('stairs', pl1.score, d);
 		mDom(d, { h: 6, w: '100%' });
 		if (showTurn && fen.turn.includes(plname)) {
 			show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });

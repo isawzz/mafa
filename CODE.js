@@ -1,5 +1,10 @@
 
 //#region showGamePlayers
+function __setPlayerNotPlaying(da, name, gamename) {
+	removeInPlace(DA.playerList, name);
+	mRemove('dPlayerOptions');
+	mStyle(da, { bg: 'transparent', fg: 'black', border: `transparent` });
+}
 async function showGamePlayers(dParent, gamename) {
 	let users = await mGetRoute('users');
 	//console.log('users',users);

@@ -4,5 +4,5 @@ key: amanda
 div: {}
 isSelected: false
 setgame:
-  level: 1
+  level: 3
   playmode: human

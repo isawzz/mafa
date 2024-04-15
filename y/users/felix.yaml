@@ -4,5 +4,5 @@ key: felix
 div: {}
 isSelected: false
 setgame:
-  level: 5
+  level: 1
   playmode: human

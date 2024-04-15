@@ -1,3 +1,6 @@
 name: diana
 color: '#4d0085'
 key: bird15
+setgame:
+  level: 2
+  playmode: human
