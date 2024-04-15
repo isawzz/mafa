@@ -25138,7 +25138,7 @@ function get_checked_radios(rg) {
   let inputs = rg.getElementsByTagName('INPUT');
   let list = [];
   for (const ch of inputs) {
-    let checked = ch.getAttribute('checked');
+    //let checked = ch.getAttribute('checked');console.log('checked',checked,ch.checked)
     if (ch.checked) list.push(ch.value);
   }
   return list;

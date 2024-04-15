@@ -1313,7 +1313,7 @@ function mRemoveIfExists(d){ d=toElem(d);if (isdef(d)) d.remove();}
 
 
 async function showGameMenu(gamename) {
-	let users = await mGetRoute('users');console.log('users',users);
+	let users = Serverdata.users = await mGetRoute('users');//console.log('users',users);
 	mRemoveIfExists('dGameMenu');
 	let dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' }); 
 	mDom(dMenu,{maleft:12},{ html:`<h2>game options</h2>`});

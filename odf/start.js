@@ -9,18 +9,8 @@ async function test51() {
 	testShowTestButtons(table);
 	await switchToTables();
 	await clickOnGame('setgame'); //how do I click on the div with attr gamename setgame
-	//await clickOnPlayer(getUname());
-
-	//was soll fuer ein player menu kommen?
-	//wie mach ich einen dialog?
-
-	
-
-
-
-
-	// console.log('game',Serverdata.config.games[table.game]);
 }
+
 async function test50() {
 	await prelims();
 	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;

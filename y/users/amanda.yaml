@@ -1,3 +1,6 @@
 name: amanda
 color: '#008a8a'
 key: amanda
+setgame:
+  level: 2
+  playmode: human

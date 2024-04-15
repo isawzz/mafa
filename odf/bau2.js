@@ -25,48 +25,85 @@ async function showGameMenuPlayerDialog(name, shift = false) {
 	let gamename = DA.gamename;
 	let da = iDiv(item);
 
-	setPlayerPlaying(item,gamename);
+	await setPlayerPlaying(item,gamename);
 }
-function setPlayerPlaying(item, gamename) {
-	let [name,da] =[item.name,item.div];
+function getGamePlayerOptions(gamename){return Serverdata.config.games[gamename].ploptions;}
+async function setPlayerPlaying(item, gamename) {
+	let [name,da] =[item.name,item.div]; //console.log('da',da)
 	addIf(DA.playerList, name);
-	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
-	let id = 'dPlayerOptions'; mRemoveIfExists(id);
 	let bg = getUserColor(name);
-	let rounding = 6;
-	let d = mDom(dParent, { display: 'inline-block', padding:4, bg, rounding }, { id });
-	mDom(d,{},{html:`${name} ${gamename}`}); //title
-
-	//hier brauch ich noch die options!!!!
-
 	mStyle(da, { bg, fg: 'white', border: 'white' });
-	let r = getRectInt(da,mBy('dGameMenu')); 
-	let rp = getRectInt(d); 
-	let [x,y,w,h]=[r.x-rp.w/2+r.w/2,r.y-rp.h-4,rp.w,rp.h];
-	console.log('pos',x,y,w,h);
-	mIfNotRelative(dParent);
-	// let mark=mDom(dParent,{w,h,bg:'red'});
-	mPos(d,x,y); //r.x,r.y);
-	//mIfNotRelative(dParent); mPos(d, r.x - rp.w / 2, -58); // r.y - rp.h)
-	//mButtonX(dOptions, ev => collectPlayerOptions(dOptions, name, gamename), 18, 1, 'dimgray');
+	let poss = getGamePlayerOptions(gamename);
+	let id = 'dPlayerOptions'; 	
+	let lastpl = DA.lastPlayerItem;
+	DA.lastPlayerItem = item;
+	let dold = mBy(id); 
+	if (isdef(dold)){ await collectPlayerOptions(lastpl,gamename); dold.remove();}
+	
+	//if player options window is open collect
 
-	return;
-
-	let dOptions = mDom(d, { bg: '#ffffffd0', border: `solid 2px ${bg}`, rounding }); mCenterFlex(dOptions);
-
-	let poss = Serverdata.config.games[gamename].ploptions;
 	if (nundef(poss)) return;
+	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
+	let rounding = 6;
+	let d1 = mDom(dParent, { bg:colorLight(bg,50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding:3, rounding }, { id });
+	mDom(d1,{},{html:`${name}`}); //title
+	d = mDom(d1, {}); mCenterFlex(d);
+	mCenterCenter(d);
+
 	for (const p in poss) {
-		let key = p; console.log('key', key)
+		let key = p; //console.log('key', key)
 		let val = poss[p];
 		if (isString(val)) {
 			let list = val.split(',');
 			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
-			//console.log('legend',legend)
-			let fs = mRadioGroup(dOptions, {}, `d_${key}`, legend);
-			console.log('fs', fs)
-			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
+			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
+			let is_on = lookup(Serverdata.users,[gamename,p]); is_on = is_on?true:false;
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, is_on); }
+
 			measure_fieldset(fs);
+		}
+	}
+
+	let r = getRectInt(da,mBy('dGameMenu')); 
+	let rp = getRectInt(d1); 
+	let [y,w,h]=[r.y-rp.h-4,rp.w,rp.h];
+	let x=r.x-rp.w/2+r.w/2;
+	if (x<0) x=r.x-22;
+	if (x>window.innerWidth-w-100) x=r.x-w+r.w+14; 
+	//console.log('pos',x,y,w,h);
+	mIfNotRelative(dParent);
+	mPos(d1,x,y); 
+	mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
+}
+async function collectPlayerOptions(item, gamename) {
+	let name = item.name;
+	let options = valf(item[gamename],{});
+	console.log('___collect\nitem',name,options); //return;
+	//if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
+	let poss = Serverdata.config.games[gamename].ploptions;
+	if (nundef(poss)) return options;
+	for (const p in poss) {
+		let fs = mBy(`d_${p}`);
+		let val = get_checked_radios(fs)[0]; //console.log(p,val)
+		options[p] = isNumber(val) ? Number(val) : val;
+	}
+	item[gamename]=options;
+	let id = 'dPlayerOptions'; mRemoveIfExists(id);//mRemove(d);
+	//console.log('collected',DA.playerList.map(x=>DA.allPlayers[x]));
+	//options with org user options compare 
+	let uold = Serverdata.users[item.name];
+	let unew = {}; 
+	for(const k in item){
+		if (['div','isSelected'].includes(k)) continue;
+		unew[k]=jsCopy(item[k]);
+	}
+	//console.log('item',item)
+	for(const k in unew[gamename]){
+		if (lookup(uold,[gamename,k]) != unew[gamename][k]){
+			console.log(`${k} CHANGED!!!!`,lookup(uold,[gamename,k]),unew[gamename][k])
+			await postUserChange(unew);
+			console.log('new user opts',name,Serverdata.users[name][gamename]);
+			return;
 		}
 	}
 }
@@ -95,20 +132,6 @@ function setPlayerNotPlaying(da, name, gamename) {
 }
 function mExists(d) { return isdef(toElem(d)); }
 
-async function collectPlayerOptions(d, name, gamename) {
-	if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
-	let poss = Serverdata.config.games[gamename].ploptions;
-	let options = {};
-	if (nundef(poss)) return options;
-	for (const p in poss) {
-		let fs = mBy(`d_${p}`);
-		let val = get_checked_radios(fs)[0];
-		options[p] = isNumber(val) ? Number(val) : val;
-	}
-	lookupSetOverride(DA.playerOptions, [name], options);
-	mRemove(d);
-	return options;
-}
 
 async function onclickClearPlayers() {
 	assertion(false, 'onclickClearPlayers NOT IMPLEMENTED!')
