@@ -450,17 +450,6 @@ async function onsockSuperdi(x) {
 //#endregion
 
 //#region play
-async function onclickClearPlayers() {
-	let me = getUname();
-	for (const item of DA.allPlayers) {
-		if (item.isSelected && me != item.name) {
-			style_not_playing(item, '', DA.playerlist);
-		}
-	}
-	assertion(!isEmpty(DA.playerlist), "uname removed from playerlist!!!!!!!!!!!!!!!")
-	DA.lastName = DA.playerlist[0].name; // DA.allPlayers.find(x=>x.uname == DA.playerlist[0]);
-
-}
 async function onclickDeleteTable(id) {
 	let res = await mPostRoute('deleteTable', { id });
 	//console.log('res', res, Serverdata.tables)
@@ -469,11 +458,6 @@ async function onclickGameMenuItem(ev) {
 	let gamename = evToAttr(ev, 'gamename');
 	//stop_game();
 	await showGameMenu(gamename);
-}
-async function onclickGameMenuPlayer(ev){
-	let name = evToAttr(ev, 'username'); //console.log('name',name); return;
-	let shift = ev.shiftKey;
-	await showGameMenuPlayerDialog(name,shift);
 }
 async function onclickPlay() {
 	await showTables();

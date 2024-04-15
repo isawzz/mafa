@@ -1,33 +1,56 @@
 
+async function showGamePlayers(dParent, users) {
+	let me = getUname();
+	mStyle(dParent, { wrap: true })
+	for (const name in users) {
+		let d = mDom(dParent, { align: 'center', padding: 2, cursor: 'pointer', border: `transparent` });
+		d.setAttribute('username', name)
+		let img = showUserImage(name, d, 40); //for(const i of range(3))showUserImage(name,d,40);
+		let label = mDom(d, { matop: -4, fz: 12, hline: 12 }, { html: name });
+		let item = jsCopy(users[name]);
+		item.div = d;
+		item.isSelected = false;
+		DA.allPlayers[name] = item;
+		d.onclick = onclickGameMenuPlayer;
+	}
+	await clickOnPlayer(me);
+}
+async function onclickGameMenuPlayer(ev) {
+	let name = evToAttr(ev, 'username'); //console.log('name',name); return;
+	let shift = ev.shiftKey;
+	await showGameMenuPlayerDialog(name, shift);
+}
 async function showGameMenuPlayerDialog(name, shift = false) {
-	let item = DA.allPlayers.find(x => x.name == name);
+	let item = DA.allPlayers[name];
 	let gamename = DA.gamename;
 	let da = iDiv(item);
 
-	let lastname=DA.lastName;
-	DA.lastName = name;
-	if (DA.playerList.includes(lastname)) collectPlayerOptions('dPlayerOptions',lastname,gamename);
-	if (!DA.playerList.includes(name)) setPlayerNotPlaying(da, name, gamename);
-	else setPlayerPlaying(da, name, gamename);
-
-	// let state = DA.playerlist.includes(name) ? isdef(mBy('dPlayerOptions')) ? 'yesOpen' : 'yesClosed' : 'no';
-	// if (state == 'yesClosed') setPlayerNotPlaying(da, name, gamename);
-	// else if (state == 'no') setPlayerPlaying(da, name, gamename);
-	// else collectPlayerOptions('dPlayerOptions', name, gamename);
+	setPlayerPlaying(item,gamename);
 }
-function setPlayerNotPlaying(da, name, gamename) {
-	removeInPlace(DA.playerlist, name);
-	mRemove('dPlayerOptions');
-	mStyle(da, { bg: 'transparent', fg: 'black', border: `transparent` });
-}
-function setPlayerPlaying(da, name, gamename) {
-	addIf(DA.playerlist, name);
-	let dParent = mBy('dGameMenu'); //document.body;
-	let id = 'dPlayerOptions'; mRemove(id); // if (isdef(mBy(id))) mBy(id).remove();
+function setPlayerPlaying(item, gamename) {
+	let [name,da] =[item.name,item.div];
+	addIf(DA.playerList, name);
+	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
+	let id = 'dPlayerOptions'; mRemoveIfExists(id);
 	let bg = getUserColor(name);
 	let rounding = 6;
-	let d = mDom(dParent, { bg, rounding }, { id });
-	mStyle(d, { display: 'inline-block' });
+	let d = mDom(dParent, { display: 'inline-block', padding:4, bg, rounding }, { id });
+	mDom(d,{},{html:`${name} ${gamename}`}); //title
+
+	//hier brauch ich noch die options!!!!
+
+	mStyle(da, { bg, fg: 'white', border: 'white' });
+	let r = getRectInt(da,mBy('dGameMenu')); 
+	let rp = getRectInt(d); 
+	let [x,y,w,h]=[r.x-rp.w/2+r.w/2,r.y-rp.h-4,rp.w,rp.h];
+	console.log('pos',x,y,w,h);
+	mIfNotRelative(dParent);
+	// let mark=mDom(dParent,{w,h,bg:'red'});
+	mPos(d,x,y); //r.x,r.y);
+	//mIfNotRelative(dParent); mPos(d, r.x - rp.w / 2, -58); // r.y - rp.h)
+	//mButtonX(dOptions, ev => collectPlayerOptions(dOptions, name, gamename), 18, 1, 'dimgray');
+
+	return;
 
 	let dOptions = mDom(d, { bg: '#ffffffd0', border: `solid 2px ${bg}`, rounding }); mCenterFlex(dOptions);
 
@@ -46,13 +69,32 @@ function setPlayerPlaying(da, name, gamename) {
 			measure_fieldset(fs);
 		}
 	}
-	mStyle(da, { bg, fg: 'white', border: 'white' })
-	let r = getRect(da); console.log(r)
-	let rp = getRect(dOptions);
-	mIfNotRelative(dParent); mPos(d, r.x - rp.w / 2, -58)
-	mButtonX(dOptions, ev => collectPlayerOptions(dOptions, name, gamename), 18, 1, 'dimgray');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function setPlayerNotPlaying(da, name, gamename) {
+	removeInPlace(DA.playerList, name);
+	mRemove('dPlayerOptions');
+	mStyle(da, { bg: 'transparent', fg: 'black', border: `transparent` });
 }
 function mExists(d) { return isdef(toElem(d)); }
+
 async function collectPlayerOptions(d, name, gamename) {
 	if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
 	let poss = Serverdata.config.games[gamename].ploptions;
@@ -67,32 +109,19 @@ async function collectPlayerOptions(d, name, gamename) {
 	mRemove(d);
 	return options;
 }
-async function showGamePlayers(dParent, gamename) {
-	let users = await mGetRoute('users');
-	//console.log('users',users);
 
-	let d = mDom(dParent, { display: 'flex', gap: 6, wrap: true })
-	DA.playerlist = [];
-	DA.allPlayers = [];
-	DA.lastName = null;
-	DA.playerOptions = {};
+async function onclickClearPlayers() {
+	assertion(false, 'onclickClearPlayers NOT IMPLEMENTED!')
 	let me = getUname();
-	for (const name in users) {
-		let d1 = mDom(d, { cursor: 'pointer', border: `transparent` });
-		d1.setAttribute('username', name)
-		let img = showUserImage(name, d1, 40); //for(const i of range(3))showUserImage(name,d,40);
-		let label = mDom(d1, { matop: -4, fz: 12, hline: 12 }, { html: name });
-
-		let item = { name, div: d1, state: 0, strategy: '', isSelected: false };
-		//console.log('rect',getRect(d1))
-		DA.allPlayers.push(item);
-		d1.onclick = onclickGameMenuPlayer;
-		// if (name == me) { toggle_select(item, funcs, gamename, DA.playerlist); DA.lastName = name; }
-		// else d1.onclick = onclickGameMenuPlayer;
-
+	for (const name in DA.allPlayers) {
+		let item = DA.allPlayers[name];
+		if (item.isSelected && me != name) {
+			style_not_playing(item, '', DA.playerList);
+		}
 	}
-	//let myItem = DA.allPlayers.find(x=>x.name == me);
-	await clickOnPlayer(me);
+	assertion(!isEmpty(DA.playerList), "uname removed from playerList!!!!!!!!!!!!!!!")
+	DA.lastName = DA.playerList[0].name; // DA.allPlayers.find(x=>x.uname == DA.playerList[0]);
+
 }
 
 

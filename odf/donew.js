@@ -243,7 +243,7 @@ function collectOptions() {
 function collectPlayers(options) {
 
 	let players = [];
-	if (isList(DA.playerlist)) players = DA.playerlist.map(x => ({ name: x.name, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') }));
+	if (isList(DA.playerList)) players = DA.playerList.map(x => DA.allPlayers[x]); //({ name: x.name, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') }));
 	return players;
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
@@ -1309,29 +1309,31 @@ function showEventOpen(id) {
 	mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
 	mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
 }
+function mRemoveIfExists(d){ d=toElem(d);if (isdef(d)) d.remove();}
+
+
 async function showGameMenu(gamename) {
-	//let dMenu = mBy('dMenu'); iClear(dMenu);
-	let dMenu = mBy('dGameMenu'); if (isdef(dMenu)) { mClear(dMenu); } else dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' });
-	mText(`<h2>game options</h2>`, dMenu, { maleft: 12 });
-	// show_standard_title(dMenu, 'Game Options');
-	let d = mDiv(dMenu, { align: 'center' }, 'fMenuInput');
-	let style = { display: 'flex', justify: 'center', w: '100%', gap: 10, matop: 10 };
-	let dPlayers = mDiv(d, style, 'dMenuPlayers'); mCenterFlex(dPlayers);
-	let dOptions = mDiv(d, style, 'dMenuInput'); mCenterFlex(dOptions);
-	let dButtons = mDiv(d, style, 'dMenuButtons');
+	let users = await mGetRoute('users');console.log('users',users);
+	mRemoveIfExists('dGameMenu');
+	let dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' }); 
+	mDom(dMenu,{maleft:12},{ html:`<h2>game options</h2>`});
+	let style = { display: 'flex', justify: 'center', w: '100%', gap: 10, matop: 6 };
+	let dPlayers = mDiv(dMenu, style, 'dMenuPlayers'); //mCenterFlex(dPlayers);
+	let dOptions = mDiv(dMenu, style, 'dMenuOptions'); //mCenterFlex(dOptions);
+	let dButtons = mDiv(dMenu, style, 'dMenuButtons');
 	DA.gamename = gamename;
-	await showGamePlayers(dPlayers, gamename);
+	DA.gameOptions = {};
+	DA.playerList = [];
+	DA.allPlayers = {};
+	DA.lastName = null;
+	await showGamePlayers(dPlayers, users);
 	await showGameOptions(dOptions, gamename);
 	let astart = mButton('Start', onclickStartGame, dButtons, {}, ['button', 'input']);
 	let ajoin = mButton('Open to Join', onclickOpenToJoinGame, dButtons, {}, ['button', 'input']);
 	let acancel = mButton('Cancel', () => mClear(dMenu), dButtons, {}, ['button', 'input']);
 	let bclear = mButton('Clear Players', onclickClearPlayers, dButtons, {}, ['button', 'input']);
-
-	//await showGameMenuPlayerDialog(getUname())
-	//setTimeout(()=>clickOnPlayer(getUname()),10)
 }
 async function showGameOptions(dParent, game) {
-	mRemoveChildrenFromIndex(dParent, 2);
 	let poss = Serverdata.config.games[game].options;
 	if (nundef(poss)) return;
 	for (const p in poss) {
