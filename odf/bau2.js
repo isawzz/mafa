@@ -1,4 +1,26 @@
 
+async function showGameMenu(gamename) {
+	let users = Serverdata.users = await mGetRoute('users');//console.log('users',users);
+	//for(const name in users){		console.log('',name,users[name][gamename]);	}
+	mRemoveIfExists('dGameMenu');
+	let dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' }); 
+	mDom(dMenu,{maleft:12},{ html:`<h2>game options</h2>`});
+	let style = { display: 'flex', justify: 'center', w: '100%', gap: 10, matop: 6 };
+	let dPlayers = mDiv(dMenu, style, 'dMenuPlayers'); //mCenterFlex(dPlayers);
+	let dOptions = mDiv(dMenu, style, 'dMenuOptions'); //mCenterFlex(dOptions);
+	let dButtons = mDiv(dMenu, style, 'dMenuButtons');
+	DA.gamename = gamename;
+	DA.gameOptions = {};
+	DA.playerList = [];
+	DA.allPlayers = {};
+	DA.lastName = null;
+	await showGamePlayers(dPlayers, users);
+	await showGameOptions(dOptions, gamename);
+	let astart = mButton('Start', onclickStartGame, dButtons, {}, ['button', 'input']);
+	let ajoin = mButton('Open to Join', onclickOpenToJoinGame, dButtons, {}, ['button', 'input']);
+	let acancel = mButton('Cancel', () => mClear(dMenu), dButtons, {}, ['button', 'input']);
+	let bclear = mButton('Clear Players', onclickClearPlayers, dButtons, {}, ['button', 'input']);
+}
 async function showGamePlayers(dParent, users) {
 	let me = getUname();
 	mStyle(dParent, { wrap: true })
@@ -57,8 +79,22 @@ async function setPlayerPlaying(item, gamename) {
 			let list = val.split(',');
 			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
 			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
-			let is_on = lookup(Serverdata.users,[gamename,p]); is_on = is_on?true:false;
-			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, is_on); }
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
+
+			//set radio elem with value of this player to true
+			//let is_on = lookup(DA.allPlayers,[name,gamename,p]); is_on = is_on?true:false;
+			let userval = lookup(DA.allPlayers,[name,gamename,p]);
+			let radio;
+			let chi=fs.children;
+			for(const ch of chi){
+				//console.log(ch);
+				let id = ch.id;
+				if (nundef(id)) continue;
+				let radioval = stringAfterLast(id,'_');
+				if (isNumber(radioval)) radioval = Number(radioval);
+				//console.log('val',radioval);
+				if (userval == radioval) ch.firstChild.checked = true;
+			}
 
 			measure_fieldset(fs);
 		}
@@ -102,7 +138,7 @@ async function collectPlayerOptions(item, gamename) {
 		if (lookup(uold,[gamename,k]) != unew[gamename][k]){
 			console.log(`${k} CHANGED!!!!`,lookup(uold,[gamename,k]),unew[gamename][k])
 			await postUserChange(unew);
-			console.log('new user opts',name,Serverdata.users[name][gamename]);
+			console.log('server opts',name,Serverdata.users[name][gamename]);
 			return;
 		}
 	}

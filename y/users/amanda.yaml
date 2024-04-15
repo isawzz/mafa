@@ -1,6 +1,8 @@
 name: amanda
 color: '#008a8a'
 key: amanda
+div: {}
+isSelected: false
 setgame:
-  level: 2
+  level: 1
   playmode: human

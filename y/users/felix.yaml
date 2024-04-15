@@ -1,6 +1,8 @@
 name: felix
 color: '#1f8fff'
 key: felix
+div: {}
+isSelected: false
 setgame:
-  level: 1
-  playmode: bot
+  level: 5
+  playmode: human

@@ -1,3 +1,6 @@
 name: gul
 color: '#d9269d'
 key: gul
+setgame:
+  level: 1
+  playmode: human

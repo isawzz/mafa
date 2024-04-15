@@ -1,3 +1,6 @@
 name: lauren
 color: '#008080'
 key: lauren
+setgame:
+  level: 4
+  playmode: human
