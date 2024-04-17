@@ -2157,6 +2157,29 @@ async function srcToDataUrl(src, h) {
 		img.src = src;
 	});
 }
+function style_not_playing(item, game, list) {
+	let ui = iDiv(item); let uname = ui.getAttribute('username');
+	mStyle(ui, { bg: 'transparent', fg: 'black' });
+	arrLast(arrChildren(ui)).innerHTML = uname;
+	item.ifunc = 0; item.playmode = 'none'; removeInPlace(list, item);
+	item.isSelected = false;
+}
+function style_playing_as_bot(item, game, list) {
+	let ui = iDiv(item); let uname = ui.getAttribute('username'); let bg = getGameColor(game);
+	mStyle(ui, { bg: bg, fg: colorIdealText(bg) });
+	arrLast(arrChildren(ui)).innerHTML = uname.substring(0, 3) + 'bot';
+	item.ifunc = 2; item.playmode = 'bot';
+	item.isSelected = true;
+}
+function style_playing_as_human(item, game, list) {
+	//console.log('item',item,game,list)
+	let ui = iDiv(item); let uname = ui.getAttribute('username');
+	let color = getUserColor(uname);
+	mStyle(ui, { bg: color, fg: colorIdealText(color) });
+	arrLast(arrChildren(ui)).innerHTML = uname;
+	item.ifunc = 1; item.playmode = 'human'; list.push(item);
+	item.isSelected = true;
+}
 async function uploadAll(data, path, mode = 'w') {
 	//a ... append text/json
 	//w ... override text/json

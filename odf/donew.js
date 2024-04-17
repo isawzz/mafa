@@ -1,23 +1,3 @@
-function createOpenTable(gamename, players, options) {
-	let playerNames = players.map(x => x.name);
-	let me = getUname();
-	console.log('players',players)
-
-	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
-	let t={
-		status: 'open',
-		id: generateTableId(),
-		fen: null,
-		game: gamename,
-		owner: playerNames[0],
-		friendly: generateTableName(),
-		players: players,
-		playerNames: playerNames,
-		options
-	};
-	return t;
-
-}
 function adjustCropper(img, dc, sz) {
 	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
 	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
@@ -239,12 +219,6 @@ function collectOptions() {
 		options[p] = isNumber(val) ? Number(val) : val;
 	}
 	return options;
-}
-function collectPlayers(options) {
-
-	let players = [];
-	if (isList(DA.playerList)) players = DA.playerList.map(x => DA.allPlayers[x]); //({ name: x.name, playmode: x.playmode, strategy: valf(x.strategy, options.strategy, 'random') }));
-	return players;
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
 
@@ -655,8 +629,6 @@ async function cropOrExpandImageAndGetDataUrl(imageSrc, x, y) {
 		img.src = imageSrc;
 	});
 }
-function createBotPlayer(name) { return { name, playmode: 'bot', strategy: 'random' }; }
-function createHumanPlayer(name) { return { name, playmode: 'human', strategy: 'random' }; }
 function createScaledCanvasFromImage(src) {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
@@ -1489,7 +1461,9 @@ async function showTables() {
 			//join or leave button!
 			let playerNames = ri.o.playerNames;
 			if (playerNames.includes(me)) {
-				let h1 = hFunc('leave', 'onclickLeaveTable', ri.o.id); let c = mAppend(r, mCreate('td')); c.innerHTML = h1;
+				if (ri.o.owner != me) {
+					let h1 = hFunc('leave', 'onclickLeaveTable', ri.o.id); let c = mAppend(r, mCreate('td')); c.innerHTML = h1;
+				}
 			} else {
 				let h1 = hFunc('join', 'onclickJoinTable', ri.o.id); let c = mAppend(r, mCreate('td')); c.innerHTML = h1;
 			}
@@ -1564,29 +1538,6 @@ function startPanning(ev) {
 		console.log('* THE END *', panData)
 	}
 	panStart(ev);
-}
-function style_not_playing(item, game, list) {
-	let ui = iDiv(item); let uname = ui.getAttribute('username');
-	mStyle(ui, { bg: 'transparent', fg: 'black' });
-	arrLast(arrChildren(ui)).innerHTML = uname;
-	item.ifunc = 0; item.playmode = 'none'; removeInPlace(list, item);
-	item.isSelected = false;
-}
-function style_playing_as_bot(item, game, list) {
-	let ui = iDiv(item); let uname = ui.getAttribute('username'); let bg = getGameColor(game);
-	mStyle(ui, { bg: bg, fg: colorIdealText(bg) });
-	arrLast(arrChildren(ui)).innerHTML = uname.substring(0, 3) + 'bot';
-	item.ifunc = 2; item.playmode = 'bot';
-	item.isSelected = true;
-}
-function style_playing_as_human(item, game, list) {
-	//console.log('item',item,game,list)
-	let ui = iDiv(item); let uname = ui.getAttribute('username');
-	let color = getUserColor(uname);
-	mStyle(ui, { bg: color, fg: colorIdealText(color) });
-	arrLast(arrChildren(ui)).innerHTML = uname;
-	item.ifunc = 1; item.playmode = 'human'; list.push(item);
-	item.isSelected = true;
 }
 async function switchToMenu(menu, key) {
 	menuCloseCurrent(menu);

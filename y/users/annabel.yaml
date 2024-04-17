@@ -2,5 +2,5 @@ name: annabel
 color: '#f07f7f'
 key: annabel
 setgame:
-  level: 1
+  level: 2
   playmode: human

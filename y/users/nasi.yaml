@@ -1,3 +1,6 @@
 name: nasi
 color: '#f0e78e'
 key: nasi
+setgame:
+  level: 1
+  playmode: human

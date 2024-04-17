@@ -1,3 +1,6 @@
 name: valerie
 color: '#ffff00'
 key: valerie
+setgame:
+  level: 4
+  playmode: human

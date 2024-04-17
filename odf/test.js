@@ -223,7 +223,7 @@ async function test38() {
 	// //return;
 
 	// //how to start a game of set?
-	// let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
+	// let players = ['amanda', 'mimi'].map(x => createGamePlayer(x,'setgame'));
 	// await startGame('setgame', players, { winning_score: 1 });
 
 }
@@ -271,7 +271,7 @@ async function test35() {
 	await prelims();
 	await switchToMenu(UI.nav, 'play');
 	//how to start a game of set?
-	let players = ['amanda', 'mimi'].map(x => createHumanPlayer(x));
+	let players = ['amanda', 'mimi'].map(x => createGamePlayer(x));
 	await startGame('setgame', players, { winning_score: 1 });
 }
 async function test34_makeACard() {

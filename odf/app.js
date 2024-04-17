@@ -487,6 +487,8 @@ app.post('/postUser', (req, res) => {
 	let user = lookup(Session, ['users', name]);
 	let isNew = !user;
 	if (isNew) user = userdata; else copyKeys(userdata, user);
+	delete user.div;
+	delete user.isSelected;
 	saveUser(name, user);
 	let msg = `user posted: ${user.name} new:${isNew}`;
 	console.log(msg)

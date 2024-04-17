@@ -2,9 +2,9 @@ function setgame() {
 	function setup(table) {
 		let fen = {};
 		fen.players = {};
-		for (const o of table.players) {
-			let pl = fen.players[o.name] = o;
-			pl.color = getUserColor(o.name)
+		for (const name in table.players) {
+			let pl = fen.players[name] = table.players[name];
+			pl.color = getUserColor(name)
 			pl.score = 0;
 		}
 		fen.deck = setCreateDeck();

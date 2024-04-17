@@ -1,6 +1,33 @@
+_____ mi 17.4.24 airport 400
+5:03 AM 4/17/2024 400
+ok - nach collect options passiert was?
+6:06 AM 4/17/2024 460
+6:34 AM 4/17/2024 488
+8:10 AM 4/17/2024 550
+ok - wo muss ich das div und isSelected raushauen?
+ok - when updating player, remove div and isSelected!!!!
+ok - ich moechte dass der player selbst im game selbst die
+level,playmode opts als props hat!
+8:10 AM 4/17/2024 550
+8:25 AM 4/17/2024 565
+8:27 AM 4/17/2024 567
+8:43 AM 4/17/2024 580
+pause
+9:56 AM 4/17/2024 600
+
+noch einmal echt ueberlegen was da los ist!!!
+
+
+
+
+
+
+
+
+
+
 ________ 10.April 2024
 also: consolidation moves muessen am server stattfinden!
-
 Set:
 a clickt set 1
 b clickt set 2 zugleich
@@ -12,9 +39,6 @@ wie koennte man es anders machen?
 a clickt set 1
 es wird an den owner geschickt
 der owner entfernt die 3 cards, increments player score, broadcast
-
-
-
 ________ 4/1/24
 - move implementen!
 choices:

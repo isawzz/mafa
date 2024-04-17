@@ -121,8 +121,7 @@ async function testShowFirstTableFelixAmanda() {
 	await switchToOtherUser('amanda', 'felix');
 	await switchToMenu(UI.nav, 'play');
 	let table = lookup(Serverdata.tables, [0]); //console.log('table',table); return;
-	if (table) await onclickTable(table.id);
-	return Clientdata.table;
+	if (table && table.status != 'open') {await onclickTable(table.id);	return Clientdata.table;}
 
 }
 async function testOnclickBot(ev){

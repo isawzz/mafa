@@ -374,6 +374,7 @@ async function setPlayerPlaying(item, gamename) {
 				if (isNumber(radioval)) radioval = Number(radioval);
 				//console.log('val',radioval);
 				if (userval == radioval) ch.firstChild.checked = true;
+				else if (nundef(userval) && `${radioval}` == arrLast(list)) ch.firstChild.checked = true;
 			}
 
 			measure_fieldset(fs);
@@ -416,7 +417,7 @@ async function collectPlayerOptions(item, gamename) {
 	//console.log('item',item)
 	for(const k in unew[gamename]){
 		if (lookup(uold,[gamename,k]) != unew[gamename][k]){
-			console.log(`${k} CHANGED!!!!`,lookup(uold,[gamename,k]),unew[gamename][k])
+			console.log(`${k} CHANGED!!!!`,lookup(uold,[gamename,k]),unew[gamename][k]);
 			await postUserChange(unew);
 			console.log('server opts',name,Serverdata.users[name][gamename]);
 			return;
@@ -654,17 +655,6 @@ async function onclickHuman() {
 	let id = table.id;
 	await mPostRoute('postPlayer', { id, name, playmode: 'human' });
 }
-async function onclickJoinTable(id) {
-	//console.log(getUname(),'clicked join',id);
-	let table = Serverdata.tables.find(x => x.id == id);
-	let me = getUname();
-	assertion(table.status == 'open', 'too late to join! game has already started!')
-	assertion(!table.playerNames.includes(me), `${me} already joined!!!`);
-	table.players.push(createHumanPlayer(me));
-	table.playerNames = table.players.map(x => x.name);
-	let res = await mPostRoute('postTable', { id, players: table.players, playerNames: table.playerNames });
-	console.log('res', res);
-}
 async function onclickLeaveTable(id) {
 	//console.log(getUname(),'clicked leave',id);
 	let table = Serverdata.tables.find(x => x.id == id);
@@ -678,25 +668,18 @@ async function onclickLeaveTable(id) {
 	let res = await mPostRoute('postTable', { id, players: table.players, playerNames: table.playerNames });
 	console.log('res', res);
 }
-async function onclickOpenToJoinGame() {
-	console.log('_____ onclickOpenToJoinGame')
-	let options = collectOptions();
-	let players = collectPlayers(options);
-	let t = createOpenTable(DA.gamename, players, options);
-	let res = await mPostRoute('postTable', t);
-}
 async function onclickStartGame() {
-	//console.log('_____ onclickStartGame')
-	let options = collectOptions(); console.log(options)
+	console.log('_____ onclickStartGame')
+	let options = collectOptions(); //console.log(options)
 	let players = collectPlayers(options);
 
 	if (TESTING && lookup(DA,['testOptions','justFelixAmanda'])) {
-		//console.log(jsCopy(players))
+		// console.log(jsCopy(players))
 		let me = getUname();
 		let names = [me]; if (me == 'felix') names.push('amanda'); else names.push('felix');
-		players = names.map(x => createHumanPlayer(x)); // TEST!
-		//console.log(jsCopy(players))
+		players = names.map(x => createGamePlayer(x,DA.gamename)); // TEST!
 	}
+	//console.log(jsCopy(players))
 	await startGame(DA.gamename, players, options);
 }
 async function onclickStartTable(id) {
@@ -720,6 +703,7 @@ function showGameover(table) {
 }
 
 async function startGame(gamename, players, options) {
+	console.log('startGame: players',players)
 	let table = createOpenTable(gamename, players, options);
 	table = setTableToStarted(table); //fen is created here!!!!
 	let res = await mPostRoute('postTable', table);
