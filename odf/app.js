@@ -410,11 +410,12 @@ app.post('/postImage', (req, res) => {
 });
 app.post('/postTable', (req, res) => {
 	let id = req.body.id;
-	let newtable = req.body;
+	let newTable = req.body;
 
 	let table = lookup(Session, ['tables', id]);
-	let isNew = !table;
-	if (isNew) table = newtable; else copyKeys(newtable, table);
+	let isNew = !table || table.status == 'open';
+	if (isNew) table = newTable; else copyKeys(newTable, table);
+	console.log(newTable.status);
 	let isStarted = table.status == 'started';
 
 	saveTable(id, table);

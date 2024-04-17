@@ -37,7 +37,7 @@ async function onsockTable(x) {
   //not in turn and no spacific table open: showTables
   let me = getUname();
   let isSameTableOpen = lookup(Clientdata, ['table', 'id']) == id;
-  //console.log('isSameTableOpen',isSameTableOpen,lookup(Clientdata,['table','id']),id)
+  console.log('isSameTableOpen',isSameTableOpen,lookup(Clientdata,['table','id']),id,isNew,turn.includes(me))
 
   if (isSameTableOpen || isNew && turn.includes(me) && !Clientdata.table) return await showTable(id);
 

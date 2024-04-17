@@ -1,0 +1,17 @@
+id: kMbEo6JLCDUiYep943Nm
+players:
+  amanda:
+    name: amanda
+    color: '#008a8a'
+    key: amanda
+    level: 3
+    playmode: human
+  felix:
+    name: felix
+    color: '#1f8fff'
+    key: felix
+    level: 5
+    playmode: human
+playerNames:
+  - amanda
+  - felix
