@@ -38,12 +38,12 @@ async function setBotMove(table) {
 	if (isNaN(DA.counterBot) || nundef(DA.counterBot)) DA.counterBot = DA.counter;
 	if (DA.counterBot < DA.counter) { DA.counterBot = DA.counter; DA.inAutomove = false; }
 
-	setShowButtons();
+	T.bHint = setShowButtons();
 	mShield(dOpenTable, { bg: '#00000010' });
 	await setAutoMove(table);
 }
 async function setHybridMove(table) {
-	setShowButtons();
+	T.bHint = setShowButtons();
 	setActivateCards();
 	await setAutoMove(table);
 }

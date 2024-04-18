@@ -1,14 +1,15 @@
 onload = start;
 
 async function start() { TESTING = false; await prelims(); await switchToMenu(UI.nav, 'play'); }
-async function start() { TESTING = true; test51(); }//test47_olist(); }
+//async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
-	TESTING = 'felixAmanda';
+	//TESTING = 'felixAmanda';
 	await prelims();
-	await switchToOtherUser('amanda', 'felix');
+	await switchToOtherUser('mitra', 'mimi');
 	await switchToMenu(UI.nav, 'play');
-	await clickOnGame('setgame'); 
+	//await clickOnGame('setgame'); 
+	await onclickTable('Paris');
 }
 
 async function prelims() {
@@ -82,9 +83,11 @@ function testUpdateTestButtons() {
 
 	UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
 	UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
+	UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
 	let me = getUname();
 	if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
 	else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
+	else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
 
 	if (nundef(table)) return;
 	let playmode = getPlaymode(table,me);
@@ -134,6 +137,14 @@ async function testOnclickAmanda(ev) {
 	}
 	mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
 	await switchToUser('amanda');
+}
+async function testOnclickMimi(ev) {
+	//unselect bot and human buttons (TODO: hybrid)
+	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
+	}
+	mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
+	await switchToUser('mimi');
 }
 
 

@@ -58975,7 +58975,7 @@ function show_hourglass(uname, d, sz, stylesPos = {}) {
   let html = get_waiting_html(sz);
   mStyle(d, { position: 'relative' });
   addKeys({ position: 'absolute' }, stylesPos);
-  let dw = mDiv(d, stylesPos, `dh_${uname}`, html);
+  let dw = mDom(d, stylesPos, {id:`dh_${uname}`, html});
 }
 function show_instruction(msg) { mBy('dSelections0').innerHTML = msg; }
 function show_instruction_different(dParent, wlist, slist, styles) {

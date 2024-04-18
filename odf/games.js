@@ -21,15 +21,23 @@ function setgame() {
 	async function present(table) { await setPresent(table); }
 	async function hybridMove(table) { await setHybridMove(table); } //console.log('activate for',getUname());}
 	async function botMove(table) { await setBotMove(table); } //console.log('activate for',getUname());}
-	async function stepComplete(table, o) {}// await setStepComplete(table, o); }
+	async function stepComplete(table, o) { }// await setStepComplete(table, o); }
 	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
 async function setActivate() {
 	T.sets = setFindAllSets(T.items);
-	setShowButtons();
+	T.bHint = setShowButtons();
 	setActivateCards();
+	let [table,fen,pl]=[Clientdata.table,Clientdata.table.fen,Clientdata.table.fen.players[getUname()]];
+	let level = pl.level;
+	console.log('level is',level);
+	if (level>=4) T.bHint.remove();
+	else if (level == 1) T.bHint.click();
+	else if (level == 2) TO.autohint=setTimeout(()=>T.bHint.click(),10000);
+	//else if (level == 3) TO.autohint=setTimeout(()=>T.bHint.click(),10000);
+
 }
-function setActivateCards(){
+function setActivateCards() {
 	for (const item of T.items) {
 		let d = iDiv(item);
 		d.onclick = () => setOnclickCard(item, T.items);
@@ -154,10 +162,10 @@ async function setPresent(table) {
 	setStats(table.fen, dOben, 'rowflex', false)
 
 }
-function setShowButtons(){
+function setShowButtons() {
 	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
 	mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
-	T.bHint = mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
+	return mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
 
 }
 function setStats(fen, dParent, layout, showTurn = true) {
@@ -165,16 +173,21 @@ function setStats(fen, dParent, layout, showTurn = true) {
 	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
 	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
 	for (const plname in fen.players) {
-		let pl1 = fen.players[plname]; //console.log('player',pl1)
+		let pl = fen.players[plname]; //console.log('player',pl1)
 		let item = player_stat_items[plname];
-		let d = iDiv(item); mCenterFlex(d); mLinebreak(d);
-		playerStatCount('star', pl1.score, d);
-		playerStatCount('stairs', pl1.score, d);
-		mDom(d, { h: 6, w: '100%' });
-		if (showTurn && fen.turn.includes(plname)) {
-			show_hourglass(plname, d, 30, { left: -3, top: 0 }); //'calc( 50% - 36px )' });
-		}
-		// mDom(d, { position: 'absolute', top: 0 }, { html: pl1.level })
+		let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+		playerStatCount('star', pl.score, d);
+		// playerStatCount('stairs', pl1.level, d);
+		// mDom(d, { h: 6, w: '100%' });
+		// if (showTurn && fen.turn.includes(plname)) { show_hourglass(plname, d, 30, { left: -3, top: 0 }); }
+		// show_hourglass(plname, d, 30, { left: -3, top: 0 });
+		mDom(d, { fz:11,round:true,hpadding:3,fg:'contrast',bg:getLevelColor(pl.level), position: 'absolute', top: 1,right:2 }, { html: pl.level })
 	}
 }
+function getLevelColor(n){
+	const levelColors = [LIGHTGREEN, LIGHTBLUE, YELLOW, 'orange', RED,
+	GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue', 'deeppink', //** MAXLEVEL 10 */
+	TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE, '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'palegreen', '#e6194B'];
 
+	return levelColors[n-1]; //['skyblue','lime','gold','orange','red'][n-1];
+}

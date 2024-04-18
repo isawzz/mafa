@@ -162,7 +162,7 @@ function mStyle(elem, styles={}, unit = 'px') {
 //#endregion
 
 //#region interrupt zeug
-//#endregion
+//_#endregion
 
 //#region game menu
 async function showGameMenu(gamename) {
