@@ -93,7 +93,6 @@ function setFindAllSets(items) {
 			}
 		}
 	}
-	//if (TESTING) console.log('sets',result.map(x=>x.map(y=>y.key)));
 	return result;
 }
 function setGameover(table) {

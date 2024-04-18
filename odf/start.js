@@ -4,35 +4,11 @@ async function start() { TESTING = false; await prelims(); await switchToMenu(UI
 async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
-	await prelims(); 
-	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
-	testShowTestButtons(table);
-	await switchToTables();
-	await clickOnGame('setgame'); //how do I click on the div with attr gamename setgame
-}
-
-async function test50() {
+	TESTING = 'felixAmanda';
 	await prelims();
-	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
-	testShowTestButtons(table);
-
-	console.log('game',Serverdata.config.games[table.game]);
-}
-async function test49() {
-	await prelims();
-	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
-	testShowTestButtons(table);
-}
-
-async function test48() {
-	await prelims();
-	await testShowFirstTableFelixAmanda();
-	testShowTestButtons();
-
-		// table.fen.deck = []; await sendMergeTable();
-	// let tnew = jsCopy(table); tnew.status = 'over'; await mPostRoute('mergeTable', tnew);
-	// let x = mergeCombine(table, tnew); console.log(x.status, x.turn)
-
+	await switchToOtherUser('amanda', 'felix');
+	await switchToMenu(UI.nav, 'play');
+	await clickOnGame('setgame'); 
 }
 
 async function prelims() {
@@ -92,76 +68,71 @@ function defaultGameFunc() {
 	async function stepComplete(table, o) { console.log(`integrate if step complete for ${table.friendly}`); }
 	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
-async function testOnclickDeck0(){
+async function testOnclickDeck0() {
 	let tnew = jsCopy(Clientdata.table);
-	tnew.fen.deck=[]; 
+	tnew.fen.deck = [];
 
 	//let x=deepmergeOverride(Clientdata.table,tnew); console.log(x.fen.deck); return;
 	let res = await sendMergeTable(tnew);
-	console.log('res',res.fen.deck)
+	console.log('res', res.fen.deck)
 }
-function testShowTestButtons(table) {
-	let dExtra = mDom('dExtra', { display: 'flex', gap: 10 });
-	UI.bTestBot=mButton('bot', testOnclickBot, dExtra);
-	//mButton('hybrid', onclickHybrid, dExtra);
-	UI.bTestHuman=mButton('human', testOnclickHuman, dExtra);
-	UI.bTestFelix=mButton('felix', testOnclickFelix, dExtra);
-	UI.bTestAmanda=mButton('amanda', () => switchToUser('amanda'), dExtra);
+function testUpdateTestButtons() {
+	let table = Clientdata.table;
+	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
 
-	let [name,playmode]=[getUname(),getPlaymode(table)];
-	if (name == 'felix')	mStyle(UI.bTestFelix,{bg:'red',fg:'white'});
-	else if (name == 'amanda')	mStyle(UI.bTestAmanda,{bg:'red',fg:'white'});
+	UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
+	UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
+	let me = getUname();
+	if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
+	else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
 
-	if (playmode == 'bot')	mStyle(UI.bTestBot,{bg:'red',fg:'white'});
-	else if (playmode == 'human')	mStyle(UI.bTestHuman,{bg:'red',fg:'white'});
-	//else if (playmode == 'hybrid')	mStyle(UI.bTestHybrid,{bg:'red',fg:'white'});
-	//mButton('deck 0', testOnclickDeck0, dExtra);
+	if (nundef(table)) return;
+	let playmode = getPlaymode(table,me);
+	if (nundef(playmode)) return;
+
+	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
+	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
+	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
+	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
 }
-async function testShowFirstTableFelixAmanda() {
-	await switchToOtherUser('amanda', 'felix');
-	await switchToMenu(UI.nav, 'play');
-	let table = lookup(Serverdata.tables, [0]); //console.log('table',table); return;
-	if (table && table.status != 'open') {await onclickTable(table.id);	return Clientdata.table;}
-
-}
-async function testOnclickBot(ev){
+async function testOnclickBot(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
-	for(const b of [UI.bTestBot,UI.bTestHuman,UI.bTestHybrid]){
-		if (isdef(b)) mStyle(b,{bg:'silver',fg:'black'});
+	for (const b of [UI.bTestBot, UI.bTestHuman, UI.bTestHybrid]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
 	}
-	mStyle(UI.bTestBot,{bg:'red',fg:'white'});
+	mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
 	await onclickBot();
 }
-async function testOnclickHybrid(ev){
+async function testOnclickHybrid(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
-	for(const b of [UI.bTestBot,UI.bTestHuman,UI.bTestHybrid]){
-		if (isdef(b)) mStyle(b,{bg:'silver',fg:'black'});
+	for (const b of [UI.bTestBot, UI.bTestHuman, UI.bTestHybrid]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
 	}
-	mStyle(UI.bTestHybrid,{bg:'red',fg:'white'});
+	mStyle(UI.bTestHybrid, { bg: 'red', fg: 'white' });
 	await onclickHybrid();
 }
-async function testOnclickHuman(ev){
+async function testOnclickHuman(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
-	for(const b of [UI.bTestBot,UI.bTestHuman,UI.bTestHybrid]){
-		if (isdef(b)) mStyle(b,{bg:'silver',fg:'black'});
+	for (const b of [UI.bTestBot, UI.bTestHuman, UI.bTestHybrid]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
 	}
-	mStyle(UI.bTestHuman,{bg:'red',fg:'white'});
+	mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
 	await onclickHuman();
 }
-async function testOnclickFelix(ev){
+async function testOnclickFelix(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
-	for(const b of [UI.bTestFelix,UI.bTestAmanda,UI.bTestMimi]){
-		if (isdef(b)) mStyle(b,{bg:'silver',fg:'black'});
+	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
 	}
-	mStyle(UI.bTestFelix,{bg:'red',fg:'white'});
+	mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
 	await switchToUser('felix');
 }
-async function testOnclickAmanda(ev){
+async function testOnclickAmanda(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
-	for(const b of [UI.bTestFelix,UI.bTestAmanda,UI.bTestMimi]){
-		if (isdef(b)) mStyle(b,{bg:'silver',fg:'black'});
+	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
 	}
-	mStyle(UI.bTestAmanda,{bg:'red',fg:'white'});
+	mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
 	await switchToUser('amanda');
 }
 

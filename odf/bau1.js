@@ -1,89 +1,101 @@
-async function onclickOpenToJoinGame() {
-	let options = collectOptions();
-	let players = collectPlayers(options);
-	console.log('onclickOpenToJoinGame: players', players)
-	let t = createOpenTable(DA.gamename, players, options);
-	let res = await mPostRoute('postTable', t);
+
+function checkInterrupt() { return DA.counterBot > DA.counter + 1; }
+function INTERRUPT(){if (isdef(TO.SLEEPTIMEOUT)) {clearTimeout(TO.SLEEPTIMEOUT);TO.SLEEPTIMEOUT=null;}}
+async function mSleep(ms = 1000) {
+	return new Promise(
+		(res, rej) => {
+			if (ms <= 5000) {
+				if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
+				TO.SLEEPTIMEOUT = setTimeout(res, ms);
+			} else {
+				console.log('param should be less than 3001');
+			}
+		});
 }
-async function onclickJoinTable(id) {
-	//console.log(getUname(),'clicked join',id);
-	let table = Serverdata.tables.find(x => x.id == id);
-	let me = getUname();
-	assertion(table.status == 'open', 'too late to join! game has already started!')
-	assertion(!table.playerNames.includes(me), `${me} already joined!!!`);
-	table.players[me] = createGamePlayer(me, table.game);
-	console.log('created', jsCopy(table.players[me]));
-	table.playerNames.push(me);
-	let res = await mPostRoute('postTable', { id, players: table.players, playerNames: table.playerNames });
-	console.log('table', table.players)
-	console.log('res', res);
+async function setAutoMove(table) {
+	//if (DA.inAutomove) {DA.inAutomove = false; return;}
+	while (DA.inAutomove) { await mSleep(10); }
+	DA.inAutomove = true;
+	DA.counterBot += 1; //=DA.counter; console.log('==>',DA.counter,DA.counterBot);
+	await mSleep(2000); if (checkInterrupt()) { console.log('!sleep 1');DA.inAutomove = false; return; }
+	T.sets = setFindAllSets(T.items);
+	if (isEmpty(T.sets)) await setOnclickNoSet();
+	else {
+		let list = rChoose(T.sets); //console.log('set', list);
+		await setOnclickCard(list[0], T.items);
+
+		await mSleep(2000); if (checkInterrupt()) { console.log('!!sleep 2');DA.inAutomove = false; return; }
+		await setOnclickCard(list[1], T.items);
+		await mSleep(2000); if (checkInterrupt()) { console.log('!!!sleep 3');DA.inAutomove = false; return; }
+		await setOnclickCard(list[2], T.items);
+
+	}
+	console.log('* END OF AUTOMOVE *');
+	DA.inAutomove = false;
 }
-function collectPlayers(options) {
-	let players = {};
-	if (isList(DA.playerList)) {
-		for (const name of DA.playerList) {
-			players[name] = DA.allPlayers[name];
+async function setBotMove(table) {
+	//console.log('bot move:', DA.counterBot, DA.inAutomove);
+	if (isNaN(DA.counterBot) || nundef(DA.counterBot)) DA.counterBot = DA.counter;
+	if (DA.counterBot < DA.counter) { DA.counterBot = DA.counter; DA.inAutomove = false; }
+
+	setShowButtons();
+	mShield(dOpenTable, { bg: '#00000010' });
+	await setAutoMove(table);
+}
+async function setHybridMove(table) {
+	setShowButtons();
+	setActivateCards();
+	await setAutoMove(table);
+}
+async function setGhostMove(table) {
+	T.sets = setFindAllSets(T.items);
+
+}
+async function setOnclickCard(item, items) {
+	//console.log('click', item.key)
+	toggleItemSelection(item);
+	let selitems = items.filter(x => x.isSelected);
+	let [keys, m] = [selitems.map(x => x.key), selitems.length];
+	if (m == 3) {
+		clearEvents();
+		mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+		let [me, table] = [getUname(), Clientdata.table];
+		let [fen, pl] = [table.fen, table.fen.players[me]];
+		let isSet = setCheckIfSet(keys); //console.log('isSet', isSet); //check if set condition is met
+		if (isSet) { //if yes, increase score, remove items, add 3 new items
+			// <12:0 (deck should be Empty), 12:3, 13:2, 14:1, ab 15:0
+			assertion(fen.cards.length >= 12 || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
+			let toomany = Math.max(0, fen.cards.length - 12); // replenish cards
+			let need = Math.max(0, 3 - toomany); //wenn 16 cards, soll trotzdem nur 3 replacen!
+			let newCards = deckDeal(fen.deck, need); //returns [] if deck empty!
+			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
+			pl.score++;
+		} else {
+			pl.score--;
 		}
+		let res = await sendMergeTable(table); // console.log('res', res)
 	}
-	return players;
+	else if (m >= 1) disableButton(T.bHint); else enableButton(T.bHint);
 }
-function createGamePlayer(name, gamename, opts={}) {
-	let pl = jsCopy(Serverdata.users[name]);
+async function setOnclickNoSet() {
+	clearEvents();
+	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+	let [me, table] = [getUname(), Clientdata.table];
+	let [fen, pl] = [table.fen, table.fen.players[me]];
 
-	let plopts = valf(pl[gamename],{});	delete pl[gamename];
-
-	copyKeys(opts,plopts);
-
-	let defopts = Serverdata.config.games[gamename].ploptions;
-	for (const k in defopts) {
-		let val = plopts[k];
-		if (nundef(val)) {
-			let vals = defopts[k].split(',').map(x => x.trim());
-			val = arrLast(vals);
-			if (isNumeric(val)) val = Number(val);
-			plopts[k] = val;
+	if (isEmpty(T.sets)) { //if there is no set, increase score, add 1 card
+		pl.score++;
+		let newCards = deckDeal(fen.deck, 1); //add 1 cards!
+		if (!isEmpty(newCards)) fen.cards.push(newCards[0]);
+		else {
+			setGameover(table);
+			console.log(`table status is now ${table.status}`);
+			assertion(table.status == 'over', "HAAAAAAAAALLLLLLLO")
 		}
+	} else {
+		pl.score--;
 	}
-	copyKeys(plopts, pl);
-	return pl;
-}
-function createOpenTable(gamename, players, options) {
-	let me = getUname();
-	let playerNames = [me];
-	assertion(me in players, "createOpenTable without owner!!!!!")
-
-	for (const name in players) {
-		addIf(playerNames, name);
-	}
-	//console.log('players',players)
-
-	let pdict = {};
-	for (const name of playerNames) {
-		let o = pdict[name] = {};
-		let pl = players[name];
-		for (const k in pl) {
-			if (k == gamename) { addKeys(pl[gamename], o); }
-			else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
-		}
-		pdict[name] = o;
-	}
-
-	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
-	console.log('pdict', pdict)
-
-	let t = {
-		status: 'open',
-		id: generateTableId(),
-		fen: null,
-		game: gamename,
-		owner: playerNames[0],
-		friendly: generateTableName(),
-		players: pdict,
-		playerNames: playerNames,
-		options
-	};
-	return t;
-
+	let res = await sendMergeTable(table); // console.log('res', res)
 }
 
 

@@ -1283,6 +1283,7 @@ function showEventOpen(id) {
 }
 function mRemoveIfExists(d){ d=toElem(d);if (isdef(d)) d.remove();}
 
+async function sendMergeTable(table) { return await mPostRoute('mergeTable', valf(table, Clientdata.table)); }
 
 async function showGameOptions(dParent, game) {
 	let poss = Serverdata.config.games[game].options;
@@ -1425,12 +1426,14 @@ function showNavbar() {
 	// console.log(commands)
 	return nav;
 }
-async function showTables() {
+async function showTables(from) {
 	Clientdata.table = null;
+	if (TESTING) testUpdateTestButtons();
+
 	let me = getUname();
 	// let tables=Serverdata.tables;
 	let tables = Serverdata.tables = await mGetRoute('tables');
-	//console.log('tables', tables);
+	//console.log(from,'tables', me,tables);
 	//return;
 	tables.map(x => x.prior = x.status == 'open' ? 0 : x.turn.includes(me) ? 1 : x.playerNames.includes(me) ? 2 : 3);
 	sortBy(tables, 'prior');
@@ -1539,6 +1542,7 @@ function startPanning(ev) {
 	}
 	panStart(ev);
 }
+async function switchToMainMenu(name){return await switchToMenu(UI.nav,name);}
 async function switchToMenu(menu, key) {
 	menuCloseCurrent(menu);
 	Clientdata.curMenu = key; //console.log('switchToMenu',Clientdata)
@@ -1571,6 +1575,7 @@ async function switchToUser(uname) {
 		else await switchToMenu(UI.nav, valf(cur, 'home'));
 	}
 }
+async function switchToTables(){return await switchToMainMenu('play');}
 function toggle_select(item, funcs) {
 	let params = [...arguments];
 	let ifunc = (valf(item.ifunc, 0) + 1) % funcs.length; let f = funcs[ifunc]; f(item, ...params.slice(2));

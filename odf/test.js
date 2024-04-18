@@ -1,3 +1,25 @@
+async function test50() {
+	await prelims();
+	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
+	testShowTestButtons(table);
+
+	console.log('game', Serverdata.config.games[table.game]);
+}
+async function test49() {
+	await prelims();
+	let table = await testShowFirstTableFelixAmanda(); if (nundef(table)) return;
+	testShowTestButtons(table);
+}
+async function test48() {
+	await prelims();
+	await testShowFirstTableFelixAmanda();
+	testShowTestButtons();
+
+	// table.fen.deck = []; await sendMergeTable();
+	// let tnew = jsCopy(table); tnew.status = 'over'; await mPostRoute('mergeTable', tnew);
+	// let x = mergeCombine(table, tnew); console.log(x.status, x.turn)
+
+}
 async function test47_olist() {
 	let o = {
 		"amanda": {
@@ -384,7 +406,6 @@ async function test25() {
 	//await natCreateGame();
 	await switchToMenu(UI.nav, 'play');
 	showGameMenu('bluff')
-  //await showTables(); 
 
 	//console.log('events',Serverdata.events,Serverdata)
 	//await onclickNewCollection('critters');
@@ -1047,7 +1068,7 @@ async function test77_showTables(){
   await prelims();
   await natLoadAssets(); 
   await natCreateGame();
-  await showTables(); return;
+  await showTables('test77_showTables'); return;
 }
 async function test78_allcommands(){
   await prelims();

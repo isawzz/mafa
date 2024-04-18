@@ -460,7 +460,7 @@ async function onclickGameMenuItem(ev) {
 	await showGameMenu(gamename);
 }
 async function onclickPlay() {
-	await showTables();
+	await showTables('onclickPlay');
 	showGames();
 }
 

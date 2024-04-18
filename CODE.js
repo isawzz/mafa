@@ -1,5 +1,69 @@
 
+async function ___testShowFirstTableFelixAmanda() {
+	await switchToOtherUser('amanda', 'felix');
+	await switchToMenu(UI.nav, 'play');
+	let table = lookup(Serverdata.tables, [0]); //console.log('table',table); return;
+	if (table && table.status != 'open') {await onclickTable(table.id);	return Clientdata.table;}
 
+}
+//#region mergeNew
+function deepmergeOverride(base, drueber) { return mergeOverrideArrays(base, drueber); }
+function mergeOverrideArrays(base, drueber) {
+  return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
+}
+function overwriteMerge(destinationArray, sourceArray, options) { return sourceArray }
+function deepmerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+  } else {
+    return mergeObject(target, source, optionsArgument)
+  }
+}
+function defaultArrayMerge(target, source, optionsArgument) {
+  var destination = target.slice()
+  source.forEach(function (e, i) {
+    if (typeof destination[i] === 'undefined') {
+      destination[i] = cloneIfNecessary(e, optionsArgument)
+    } else if (isMergeableObject(e)) {
+      destination[i] = deepmerge(target[i], e, optionsArgument)
+    } else if (target.indexOf(e) === -1) {
+      destination.push(cloneIfNecessary(e, optionsArgument))
+    }
+  })
+  return destination
+}
+function cloneIfNecessary(value, optionsArgument) {
+  var clone = optionsArgument && optionsArgument.clone === true
+  return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+function isMergeableObject(val) {
+  var nonNullObject = val && typeof val === 'object'
+  return nonNullObject
+    && Object.prototype.toString.call(val) !== '[object RegExp]'
+    && Object.prototype.toString.call(val) !== '[object Date]'
+}
+function mergeObject(target, source, optionsArgument) {
+  var destination = {}
+  if (isMergeableObject(target)) {
+    Object.keys(target).forEach(function (key) {
+      destination[key] = cloneIfNecessary(target[key], optionsArgument)
+    })
+  }
+  Object.keys(source).forEach(function (key) {
+    if (!isMergeableObject(source[key]) || !target[key]) {
+      destination[key] = cloneIfNecessary(source[key], optionsArgument)
+    } else {
+      destination[key] = deepmerge(target[key], source[key], optionsArgument)
+    }
+  })
+  return destination;
+}
+
+
+//#endregion
 
 //#region showGamePlayers
 async function showGameMenuPlayerDialog__(name,shift=false){

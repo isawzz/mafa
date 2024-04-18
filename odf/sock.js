@@ -34,19 +34,19 @@ async function onsockTable(x) {
 
   if (Clientdata.curMenu != 'play') return; //wenn ich nicht in menu play bin mach garnichts
 
-  //not in turn and no spacific table open: showTables
+  //not in turn and no spacific table open: _showTables
   let me = getUname();
   let isSameTableOpen = lookup(Clientdata, ['table', 'id']) == id;
-  console.log('isSameTableOpen',isSameTableOpen,lookup(Clientdata,['table','id']),id,isNew,turn.includes(me))
+  //console.log('isSameTableOpen',isSameTableOpen,'\nid',id,'\ntable?',isdef(Clientdata.table),'\nisNew',isNew,'\nturn',turn,'\nme',me)
 
   if (isSameTableOpen || isNew && turn.includes(me) && !Clientdata.table) return await showTable(id);
 
-  if (!Clientdata.table) return await showTables();
+  if (!Clientdata.table) return await showTables('onsockTable');
 }
 async function onsockTables(x) {
   //console.log('::SOCK tables:', x, Clientdata.table); //return;
 
-  if (Clientdata.curMenu == 'play' && !Clientdata.table) showTables();
+  if (Clientdata.curMenu == 'play' && !Clientdata.table) await showTables('onsockTables');
   else if (Clientdata.curMenu == 'play') {
     let id = Clientdata.table.id;
     let exists = x.find(t => t.id == id);
