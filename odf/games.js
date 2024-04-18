@@ -28,14 +28,17 @@ async function setActivate() {
 	T.sets = setFindAllSets(T.items);
 	T.bHint = setShowButtons();
 	setActivateCards();
-	let [table,fen,pl]=[Clientdata.table,Clientdata.table.fen,Clientdata.table.fen.players[getUname()]];
-	let level = pl.level;
-	console.log('level is',level);
-	if (level>=4) T.bHint.remove();
-	else if (level == 1) T.bHint.click();
-	else if (level == 2) TO.autohint=setTimeout(()=>T.bHint.click(),10000);
-	//else if (level == 3) TO.autohint=setTimeout(()=>T.bHint.click(),10000);
-
+	//default level is 5
+	let uselevel = getGameProp('use_level');
+	if (uselevel == 'no') return;
+	let level = getPlayerProp('level');
+	if (level == 1) {await T.bHint.click();await T.bHint.click();}
+	else if (level == 2) {await T.bHint.click();TO.autohint=setTimeout(()=>T.bHint.click(),6000);}
+	else if (level == 3) {await T.bHint.click();}
+	else if (level == 4) {TO.autohint=setTimeout(()=>T.bHint.click(),5000);}
+	else if (level == 5) {TO.autohint=setTimeout(()=>T.bHint.click(),10000);}
+	else if (level == 6) {}
+	else if (level == 7) {T.bHint.remove();}
 }
 function setActivateCards() {
 	for (const item of T.items) {
@@ -130,15 +133,13 @@ function setLoadPatterns(dParent, colors) {
 }
 async function setOnclickHint() {
 	if (isEmpty(T.sets)) { console.log('no set'); return; }
-	//this should only work if no card is clicked?
-	let set = rChoose(T.sets);
-	await setOnclickCard(set[0], T.items)
-
+	else if (nundef(T.hintSet)) T.hintSet = rChoose(T.sets);
+	let item = T.hintSet.find(x=>!x.isSelected);
+	await setOnclickCard(item, T.items)
 }
 async function setPresent(table) {
 	T = {};
 	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
-
 	setLoadPatterns('dPage', colors);
 	mClear('dMain');
 	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
@@ -172,6 +173,8 @@ function setStats(fen, dParent, layout, showTurn = true) {
 	let me = getUname();
 	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
 	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
+	//console.log(Clientdata.table)
+	let uselevel =  getGameOption('use_level');
 	for (const plname in fen.players) {
 		let pl = fen.players[plname]; //console.log('player',pl1)
 		let item = player_stat_items[plname];
@@ -181,6 +184,9 @@ function setStats(fen, dParent, layout, showTurn = true) {
 		// mDom(d, { h: 6, w: '100%' });
 		// if (showTurn && fen.turn.includes(plname)) { show_hourglass(plname, d, 30, { left: -3, top: 0 }); }
 		// show_hourglass(plname, d, 30, { left: -3, top: 0 });
+		//console.log('setStats',Clientdata.table)
+		if (uselevel != 'yes') continue;
+	
 		mDom(d, { fz:11,round:true,hpadding:3,fg:'contrast',bg:getLevelColor(pl.level), position: 'absolute', top: 1,right:2 }, { html: pl.level })
 	}
 }

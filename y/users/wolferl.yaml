@@ -1,3 +1,6 @@
 name: wolferl
 color: '#4d0085'
 key: cat38
+setgame:
+  level: 5
+  playmode: human

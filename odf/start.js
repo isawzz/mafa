@@ -1,17 +1,23 @@
 onload = start;
 
 async function start() { TESTING = false; await prelims(); await switchToMenu(UI.nav, 'play'); }
-//async function start() { TESTING = true; test51(); }//test47_olist(); }
+async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
 	//TESTING = 'felixAmanda';
 	await prelims();
-	await switchToOtherUser('mitra', 'mimi');
+	await switchToOtherUser('gul', 'mimi');
 	await switchToMenu(UI.nav, 'play');
-	//await clickOnGame('setgame'); 
-	await onclickTable('Paris');
+	await clickOnGame('setgame'); 
+	//await clickFirstTable();
+	//await onclickTable('Paris');
 }
-
+async function clickFirstTable(){
+	let table = Serverdata.tables.find(x=>x.status == 'started' && x.playerNames.includes(getUname()));
+	//console.log('table',table)
+	if (table) {await onclickTable(table.id);	return Clientdata.table;}
+	//else console.log('no table!',Serverdata.tables)
+}
 async function prelims() {
 	let t1 = performance.now();
 

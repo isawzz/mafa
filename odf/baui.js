@@ -46,117 +46,117 @@ const _STYLE_PARAMS = {
 	z: 'z-index'
 };
 
-function mStyle(elem, styles={}, unit = 'px') {
+function mStyle(elem, styles = {}, unit = 'px') {
 	//remove: rest,wrest,hrest,whrest
-  elem = toElem(elem);
+	elem = toElem(elem);
 
 	let style = styles = jsCopy(styles);
-  if (isdef(styles.w100)) style.w = '100%'; 
-  if (isdef(styles.h100)) style.h = '100%'; 
+	if (isdef(styles.w100)) style.w = '100%';
+	if (isdef(styles.h100)) style.h = '100%';
 
 	let bg, fg;
-  if (isdef(styles.bg) || isdef(styles.fg)) {
-    [bg, fg] = colorsFromBFA(styles.bg, styles.fg, styles.alpha);
-  }
+	if (isdef(styles.bg) || isdef(styles.fg)) {
+		[bg, fg] = colorsFromBFA(styles.bg, styles.fg, styles.alpha);
+	}
 
 
 	if (isdef(styles.vpadding) || isdef(styles.hpadding)) {
-    styles.padding = valf(styles.vpadding, 0) + unit + ' ' + valf(styles.hpadding, 0) + unit;
-  }
-  if (isdef(styles.vmargin) || isdef(styles.hmargin)) {
-    styles.margin = valf(styles.vmargin, 0) + unit + ' ' + valf(styles.hmargin, 0) + unit;
-    //console.log('margin should be',styles.margin)
-  }
-  if (isdef(styles.upperRounding) || isdef(styles.lowerRounding)) {
-    let rtop = '' + valf(styles.upperRounding, 0) + unit;
-    let rbot = '' + valf(styles.lowerRounding, 0) + unit;
-    styles['border-radius'] = rtop + ' ' + rtop + ' ' + rbot + ' ' + rbot;
-  }
-  if (isdef(styles.box)) styles['box-sizing'] = 'border-box';
-  if (isdef(styles.round)) { elem.style.setProperty('border-radius', '50%'); }
-  for (const k in styles) {
-    if (['round','box'].includes(k)) continue;
-    let val = styles[k];
-    let key = k;
-    if (isdef(_STYLE_PARAMS[k])) key = _STYLE_PARAMS[k];
-    else if (k == 'font' && !isString(val)) {
-      let fz = f.size; if (isNumber(fz)) fz = '' + fz + 'px';
-      let ff = f.family;
-      let fv = f.variant;
-      let fw = isdef(f.bold) ? 'bold' : isdef(f.light) ? 'light' : f.weight;
-      let fs = isdef(f.italic) ? 'italic' : f.style;
-      if (nundef(fz) || nundef(ff)) return null;
-      let s = fz + ' ' + ff;
-      if (isdef(fw)) s = fw + ' ' + s;
-      if (isdef(fv)) s = fv + ' ' + s;
-      if (isdef(fs)) s = fs + ' ' + s;
-      elem.style.setProperty(k, s);
-      continue;
-    } else if (k.includes('class')) {
-      mClass(elem, styles[k]);
-    } else if (k == 'border') {
-      if (isNumber(val)) val = `solid ${val}px ${isdef(styles.fg) ? styles.fg : '#ffffff80'}`;
-      if (val.indexOf(' ') < 0) val = 'solid 1px ' + val;
-    } else if (k == 'ajcenter') {
-      elem.style.setProperty('justify-content', 'center');
-      elem.style.setProperty('align-items', 'center');
-    } else if (k == 'layout') {
-      if (val[0] == 'f') {
-        val = val.slice(1);
-        elem.style.setProperty('display', 'flex');
-        elem.style.setProperty('flex-wrap', 'wrap');
-        let hor, vert;
-        if (val.length == 1) hor = vert = 'center';
-        else {
-          let di = { c: 'center', s: 'start', e: 'end' };
-          hor = di[val[1]];
-          vert = di[val[2]];
-        }
-        let justStyle = val[0] == 'v' ? vert : hor;
-        let alignStyle = val[0] == 'v' ? hor : vert;
-        elem.style.setProperty('justify-content', justStyle);
-        elem.style.setProperty('align-items', alignStyle);
-        switch (val[0]) {
-          case 'v': elem.style.setProperty('flex-direction', 'column'); break;
-          case 'h': elem.style.setProperty('flex-direction', 'row'); break;
-        }
-      } else if (val[0] == 'g') {
-        val = val.slice(1);
-        elem.style.setProperty('display', 'grid');
-        let n = allNumbers(val);
-        let cols = n[0];
-        let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
-        elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
-        elem.style.setProperty('place-content', 'center');
-      }
-    } else if (k == 'layflex') {
-      elem.style.setProperty('display', 'flex');
-      elem.style.setProperty('flex', '0 1 auto');
-      elem.style.setProperty('flex-wrap', 'wrap');
-      if (val == 'v') { elem.style.setProperty('writing-mode', 'vertical-lr'); }
-    } else if (k == 'laygrid') {
-      elem.style.setProperty('display', 'grid');
-      let n = allNumbers(val);
-      let cols = n[0];
-      let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
-      elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
-      elem.style.setProperty('place-content', 'center');
-    }
-    if (key == 'font-weight') { elem.style.setProperty(key, val); continue; }
-    else if (key == 'background-color') elem.style.background = bg;
-    else if (key == 'color') elem.style.color = fg;
-    else if (key == 'opacity') elem.style.opacity = val;
-    else if (key == 'wrap') { if (val == 'hard') elem.setAttribute('wrap', 'hard'); else elem.style.flexWrap = 'wrap'; }
-    else if (k.startsWith('dir')) {
-      isCol = val[0] == 'c';
-      elem.style.setProperty('flex-direction', 'column');
-    } else if (key == 'flex') {
-      if (isNumber(val)) val = '' + val + ' 1 0%';
-      elem.style.setProperty(key, makeUnitString(val, unit));
-    } else {
-      elem.style.setProperty(key, makeUnitString(val, unit));
-    }
-  }
+		styles.padding = valf(styles.vpadding, 0) + unit + ' ' + valf(styles.hpadding, 0) + unit;
+	}
+	if (isdef(styles.vmargin) || isdef(styles.hmargin)) {
+		styles.margin = valf(styles.vmargin, 0) + unit + ' ' + valf(styles.hmargin, 0) + unit;
+		//console.log('margin should be',styles.margin)
+	}
+	if (isdef(styles.upperRounding) || isdef(styles.lowerRounding)) {
+		let rtop = '' + valf(styles.upperRounding, 0) + unit;
+		let rbot = '' + valf(styles.lowerRounding, 0) + unit;
+		styles['border-radius'] = rtop + ' ' + rtop + ' ' + rbot + ' ' + rbot;
+	}
+	if (isdef(styles.box)) styles['box-sizing'] = 'border-box';
+	if (isdef(styles.round)) { elem.style.setProperty('border-radius', '50%'); }
+	for (const k in styles) {
+		if (['round', 'box'].includes(k)) continue;
+		let val = styles[k];
+		let key = k;
+		if (isdef(_STYLE_PARAMS[k])) key = _STYLE_PARAMS[k];
+		else if (k == 'font' && !isString(val)) {
+			let fz = f.size; if (isNumber(fz)) fz = '' + fz + 'px';
+			let ff = f.family;
+			let fv = f.variant;
+			let fw = isdef(f.bold) ? 'bold' : isdef(f.light) ? 'light' : f.weight;
+			let fs = isdef(f.italic) ? 'italic' : f.style;
+			if (nundef(fz) || nundef(ff)) return null;
+			let s = fz + ' ' + ff;
+			if (isdef(fw)) s = fw + ' ' + s;
+			if (isdef(fv)) s = fv + ' ' + s;
+			if (isdef(fs)) s = fs + ' ' + s;
+			elem.style.setProperty(k, s);
+			continue;
+		} else if (k.includes('class')) {
+			mClass(elem, styles[k]);
+		} else if (k == 'border') {
+			if (isNumber(val)) val = `solid ${val}px ${isdef(styles.fg) ? styles.fg : '#ffffff80'}`;
+			if (val.indexOf(' ') < 0) val = 'solid 1px ' + val;
+		} else if (k == 'ajcenter') {
+			elem.style.setProperty('justify-content', 'center');
+			elem.style.setProperty('align-items', 'center');
+		} else if (k == 'layout') {
+			if (val[0] == 'f') {
+				val = val.slice(1);
+				elem.style.setProperty('display', 'flex');
+				elem.style.setProperty('flex-wrap', 'wrap');
+				let hor, vert;
+				if (val.length == 1) hor = vert = 'center';
+				else {
+					let di = { c: 'center', s: 'start', e: 'end' };
+					hor = di[val[1]];
+					vert = di[val[2]];
+				}
+				let justStyle = val[0] == 'v' ? vert : hor;
+				let alignStyle = val[0] == 'v' ? hor : vert;
+				elem.style.setProperty('justify-content', justStyle);
+				elem.style.setProperty('align-items', alignStyle);
+				switch (val[0]) {
+					case 'v': elem.style.setProperty('flex-direction', 'column'); break;
+					case 'h': elem.style.setProperty('flex-direction', 'row'); break;
+				}
+			} else if (val[0] == 'g') {
+				val = val.slice(1);
+				elem.style.setProperty('display', 'grid');
+				let n = allNumbers(val);
+				let cols = n[0];
+				let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
+				elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
+				elem.style.setProperty('place-content', 'center');
+			}
+		} else if (k == 'layflex') {
+			elem.style.setProperty('display', 'flex');
+			elem.style.setProperty('flex', '0 1 auto');
+			elem.style.setProperty('flex-wrap', 'wrap');
+			if (val == 'v') { elem.style.setProperty('writing-mode', 'vertical-lr'); }
+		} else if (k == 'laygrid') {
+			elem.style.setProperty('display', 'grid');
+			let n = allNumbers(val);
+			let cols = n[0];
+			let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
+			elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
+			elem.style.setProperty('place-content', 'center');
+		}
+		if (key == 'font-weight') { elem.style.setProperty(key, val); continue; }
+		else if (key == 'background-color') elem.style.background = bg;
+		else if (key == 'color') elem.style.color = fg;
+		else if (key == 'opacity') elem.style.opacity = val;
+		else if (key == 'wrap') { if (val == 'hard') elem.setAttribute('wrap', 'hard'); else elem.style.flexWrap = 'wrap'; }
+		else if (k.startsWith('dir')) {
+			isCol = val[0] == 'c';
+			elem.style.setProperty('flex-direction', 'column');
+		} else if (key == 'flex') {
+			if (isNumber(val)) val = '' + val + ' 1 0%';
+			elem.style.setProperty(key, makeUnitString(val, unit));
+		} else {
+			elem.style.setProperty(key, makeUnitString(val, unit));
+		}
+	}
 }
 
 //#endregion
@@ -169,8 +169,8 @@ async function showGameMenu(gamename) {
 	let users = Serverdata.users = await mGetRoute('users');//console.log('users',users);
 	//for(const name in users){		console.log('',name,users[name][gamename]);	}
 	mRemoveIfExists('dGameMenu');
-	let dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' }); 
-	mDom(dMenu,{maleft:12},{ html:`<h2>game options</h2>`});
+	let dMenu = mDom('dMain', {}, { className: 'section', id: 'dGameMenu' });
+	mDom(dMenu, { maleft: 12 }, { html: `<h2>game options</h2>` });
 	let style = { display: 'flex', justify: 'center', w: '100%', gap: 10, matop: 6 };
 	let dPlayers = mDiv(dMenu, style, 'dMenuPlayers'); //mCenterFlex(dPlayers);
 	let dOptions = mDiv(dMenu, style, 'dMenuOptions'); //mCenterFlex(dOptions);
@@ -223,22 +223,22 @@ async function showGameMenuPlayerDialog(name, shift = false) {
 	let item = DA.allPlayers[name];
 	let gamename = DA.gamename;
 	let da = iDiv(item);
-	if (!DA.playerList.includes(name)) await setPlayerPlaying(item,gamename);
-	else await setPlayerNotPlaying(item,gamename);
+	if (!DA.playerList.includes(name)) await setPlayerPlaying(item, gamename);
+	else await setPlayerNotPlaying(item, gamename);
 	//console.log(DA.playerList);
 }
-function getGamePlayerOptions(gamename){return Serverdata.config.games[gamename].ploptions;}
+function getGamePlayerOptions(gamename) { return Serverdata.config.games[gamename].ploptions; }
 
 async function setPlayerPlaying(item, gamename) {
-	let [name,da] =[item.name,item.div]; //console.log('da',da)
+	let [name, da] = [item.name, item.div]; //console.log('da',da)
 	addIf(DA.playerList, name);
 	selectPlayerItem(item);
-	let id = 'dPlayerOptions'; 	
+	let id = 'dPlayerOptions';
 	let lastpl = DA.lastPlayerItem;
 	DA.lastPlayerItem = item;
-	let dold = mBy(id); 
-	if (isdef(dold)){ await collectPlayerOptions(lastpl,gamename); dold.remove();}
-	
+	let dold = mBy(id);
+	if (isdef(dold)) { await collectPlayerOptions(lastpl, gamename); dold.remove(); }
+
 	//if player options window is open collect
 
 	let poss = getGamePlayerOptions(gamename);
@@ -246,8 +246,8 @@ async function setPlayerPlaying(item, gamename) {
 	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
 	let bg = getUserColor(name);
 	let rounding = 6;
-	let d1 = mDom(dParent, { bg:colorLight(bg,50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding:3, rounding }, { id });
-	mDom(d1,{},{html:`${name}`}); //title
+	let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
+	mDom(d1, {}, { html: `${name}` }); //title
 	d = mDom(d1, {}); mCenterFlex(d);
 	mCenterCenter(d);
 
@@ -256,20 +256,21 @@ async function setPlayerPlaying(item, gamename) {
 		let val = poss[p];
 		if (isString(val)) {
 			let list = val.split(',');
-			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
+			let legend = formatLegend(key);
+			//console.log('key',key,'to',legend)
 			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
 			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
 
 			//set radio elem with value of this player to true
 			//let is_on = lookup(DA.allPlayers,[name,gamename,p]); is_on = is_on?true:false;
-			let userval = lookup(DA.allPlayers,[name,gamename,p]);
+			let userval = lookup(DA.allPlayers, [name, gamename, p]);
 			let radio;
-			let chi=fs.children;
-			for(const ch of chi){
+			let chi = fs.children;
+			for (const ch of chi) {
 				//console.log(ch);
 				let id = ch.id;
 				if (nundef(id)) continue;
-				let radioval = stringAfterLast(id,'_');
+				let radioval = stringAfterLast(id, '_');
 				if (isNumber(radioval)) radioval = Number(radioval);
 				//console.log('val',radioval);
 				if (userval == radioval) ch.firstChild.checked = true;
@@ -280,21 +281,21 @@ async function setPlayerPlaying(item, gamename) {
 		}
 	}
 
-	let r = getRectInt(da,mBy('dGameMenu')); 
-	let rp = getRectInt(d1); 
-	let [y,w,h]=[r.y-rp.h-4,rp.w,rp.h];
-	let x=r.x-rp.w/2+r.w/2;
-	if (x<0) x=r.x-22;
-	if (x>window.innerWidth-w-100) x=r.x-w+r.w+14; 
+	let r = getRectInt(da, mBy('dGameMenu'));
+	let rp = getRectInt(d1);
+	let [y, w, h] = [r.y - rp.h - 4, rp.w, rp.h];
+	let x = r.x - rp.w / 2 + r.w / 2;
+	if (x < 0) x = r.x - 22;
+	if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
 	//console.log('pos',x,y,w,h);
 	mIfNotRelative(dParent);
-	mPos(d1,x,y); 
+	mPos(d1, x, y);
 	mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
 }
 async function collectPlayerOptions(item, gamename) {
 	let name = item.name;
-	let options = valf(item[gamename],{});
-	console.log('___collect\nitem',name,options); //return;
+	let options = valf(item[gamename], {});
+	console.log('___collect\nitem', name, options); //return;
 	//if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
 	let poss = Serverdata.config.games[gamename].ploptions;
 	if (nundef(poss)) return options;
@@ -303,34 +304,34 @@ async function collectPlayerOptions(item, gamename) {
 		let val = get_checked_radios(fs)[0]; //console.log(p,val)
 		options[p] = isNumber(val) ? Number(val) : val;
 	}
-	item[gamename]=options;
+	item[gamename] = options;
 	let id = 'dPlayerOptions'; mRemoveIfExists(id);//mRemove(d);
 	//console.log('collected',DA.playerList.map(x=>DA.allPlayers[x]));
 	//options with org user options compare 
 	let uold = Serverdata.users[item.name];
-	let unew = {}; 
-	for(const k in item){
-		if (['div','isSelected'].includes(k)) continue;
-		unew[k]=jsCopy(item[k]);
+	let unew = {};
+	for (const k in item) {
+		if (['div', 'isSelected'].includes(k)) continue;
+		unew[k] = jsCopy(item[k]);
 	}
 	//console.log('item',item)
-	for(const k in unew[gamename]){
-		if (lookup(uold,[gamename,k]) != unew[gamename][k]){
-			console.log(`${k} CHANGED!!!!`,lookup(uold,[gamename,k]),unew[gamename][k]);
+	for (const k in unew[gamename]) {
+		if (lookup(uold, [gamename, k]) != unew[gamename][k]) {
+			console.log(`${k} CHANGED!!!!`, lookup(uold, [gamename, k]), unew[gamename][k]);
 			await postUserChange(unew);
-			console.log('server opts',name,Serverdata.users[name][gamename]);
+			console.log('server opts', name, Serverdata.users[name][gamename]);
 			return;
 		}
 	}
 }
-async function setPlayerNotPlaying(item, gamename){
-	let id = 'dPlayerOptions'; 	
+async function setPlayerNotPlaying(item, gamename) {
+	let id = 'dPlayerOptions';
 	let lastpl = DA.lastPlayerItem;
-	let dold = mBy(id); 
-	if (isdef(dold)){ await collectPlayerOptions(lastpl,gamename); dold.remove();}
+	let dold = mBy(id);
+	if (isdef(dold)) { await collectPlayerOptions(lastpl, gamename); dold.remove(); }
 	removeInPlace(DA.playerList, item.name);
 	mRemoveIfExists('dPlayerOptions');
-	unselectPlayerItem(item);	
+	unselectPlayerItem(item);
 
 }
 function selectPlayerItem(item) { mStyle(iDiv(item), { bg: getUserColor(item.name), fg: 'white', border: `white` }); }
@@ -358,13 +359,13 @@ function arrAllSameOrDifferent(arr) {
 function arrClear(arr) { arr.length = 0; return arr; }
 
 function clearEvents() { for (const k in TO) clearTimeout(TO[k]); }
-function clickOnElemWithAttr(prop,val){
-	let d=document.querySelectorAll(`[${prop}="${val}"]`)[0];
+function clickOnElemWithAttr(prop, val) {
+	let d = document.querySelectorAll(`[${prop}="${val}"]`)[0];
 	if (isdef(d)) d.click();
 	return d;
 }
-async function clickOnGame(gamename){await showGameMenu(gamename);}
-async function clickOnPlayer(name){return await showGameMenuPlayerDialog(name);}
+async function clickOnGame(gamename) { await showGameMenu(gamename); }
+async function clickOnPlayer(name) { return await showGameMenuPlayerDialog(name); }
 function cBlank(dParent, styles = {}, opts = {}) {
 	if (nundef(styles.h)) styles.h = valf(styles.sz, 100);
 	if (nundef(styles.w)) styles.w = styles.h * .7;
@@ -414,8 +415,8 @@ function collectPlayers() {
 	}
 
 	if (TESTING == 'felixAmanda') {
-		if (nundef(players.felix)) players.felix = createGamePlayer('felix',DA.gamename)
-		if (nundef(players.amanda)) players.amanda = createGamePlayer('amanda',DA.gamename)
+		if (nundef(players.felix)) players.felix = createGamePlayer('felix', DA.gamename)
+		if (nundef(players.amanda)) players.amanda = createGamePlayer('amanda', DA.gamename)
 	}
 
 	return players;
@@ -445,12 +446,12 @@ function cRound(dParent, styles = {}, opts = {}) {
 	styles.rounding = '50%';
 	return cBlank(dParent, styles, opts);
 }
-function createGamePlayer(name, gamename, opts={}) {
+function createGamePlayer(name, gamename, opts = {}) {
 	let pl = jsCopy(Serverdata.users[name]);
 
-	let plopts = valf(pl[gamename],{});	delete pl[gamename];
+	let plopts = valf(pl[gamename], {}); delete pl[gamename];
 
-	copyKeys(opts,plopts);
+	copyKeys(opts, plopts);
 
 	let defopts = Serverdata.config.games[gamename].ploptions;
 	for (const k in defopts) {
@@ -472,7 +473,7 @@ function createOpenTable(gamename, players, options) {
 	//console.log('players',players)
 	assertion(me in players, "createOpenTable without owner!!!!!")
 
-	for (const name in players) {		addIf(playerNames, name);	}
+	for (const name in players) { addIf(playerNames, name); }
 	//console.log('players',players)
 
 	let pdict = {};
@@ -526,13 +527,16 @@ function drawShape(key, dParent, styles, classes, sizing) {
 }
 function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
 
+function getGameOption(prop) { return lookup(Clientdata,['table','options',prop]); }
+function getGameProp(prop) { return Serverdata.config.games[Clientdata.table.game][prop]; }
+function getPlayerProp(prop) { let pl = Clientdata.table.fen.players[getUname()]; return pl[prop]; }
 function getPlayersWithMaxScore(fen) {
 	let list = dict2list(fen.players, 'name');
 	list = sortByDescending(list, 'score');
 	maxlist = arrTakeWhile(list, x => x.score == list[0].score);
 	return maxlist.map(x => x.name);
 }
-function getPlaymode(idOrTable,name) {
+function getPlaymode(idOrTable, name) {
 	if (isDict(idOrTable)) {
 		let table = idOrTable;
 		return isdef(table.fen) ? table.fen.players[name].playmode : 'no fen';
@@ -648,7 +652,7 @@ async function onclickLeaveTable(id) {
 	assertion(table.playerNames.includes(me), `${me} NOT in joined players!!!!`);
 	//console.log('players',table.players);
 	delete table.players[me];
-	removeInPlace(table.playerNames,me);
+	removeInPlace(table.playerNames, me);
 	let res = await mPostRoute('postTable', { id, players: table.players, playerNames: table.playerNames });
 	//console.log('res', res);
 }
@@ -677,7 +681,7 @@ async function onclickTable(id) {
 	//console.log('_____ onclickTable')
 	await showTable(id)
 }
-function openGameMenuFor(gamename){clickOnElemWithAttr('gamename',gamename);}
+function openGameMenuFor(gamename) { clickOnElemWithAttr('gamename', gamename); }
 function showGameover(table) {
 	let winners = table.winners;
 	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;

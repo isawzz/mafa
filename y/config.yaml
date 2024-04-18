@@ -140,10 +140,11 @@ games:
     color: pink
     game_type: race
     ploptions:
-      level: 1,2,3,4,5
+      level: 1,2,3,4,5,6,7
       playmode: bot,human
     options:
-      mode: 'training,solo,multi'
+      use_level: 'yes,hidden,no'
+      # mode: 'training,solo,multi'
       # winning_score: '5,10,20,25'
   sheriff:
     friendly: Sheriff

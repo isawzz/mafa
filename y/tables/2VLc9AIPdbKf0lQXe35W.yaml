@@ -1,0 +1,90 @@
+status: started
+id: 2VLc9AIPdbKf0lQXe35W
+fen:
+  players:
+    mimi:
+      name: mimi
+      color: '#f28cb2'
+      key: mimi
+      level: 2
+      playmode: human
+      score: 2
+    gul:
+      name: gul
+      color: '#2662d9'
+      key: gul
+      level: 1
+      playmode: human
+      score: 6
+  deck:
+    - red_oval_3_solid
+    - green_squiggle_1_striped
+    - red_diamond_2_solid
+    - red_oval_2_open
+    - purple_oval_1_striped
+    - red_oval_3_open
+    - purple_diamond_1_open
+    - purple_squiggle_1_open
+    - green_diamond_1_solid
+    - green_oval_3_solid
+    - purple_oval_3_striped
+    - purple_diamond_3_open
+    - green_oval_3_open
+    - red_squiggle_2_open
+    - green_diamond_1_open
+    - green_squiggle_3_striped
+    - purple_squiggle_1_solid
+    - red_squiggle_2_solid
+    - green_squiggle_3_open
+    - red_diamond_3_striped
+    - purple_oval_2_open
+    - purple_squiggle_2_solid
+    - green_oval_3_striped
+    - red_diamond_2_striped
+    - red_oval_1_striped
+    - red_diamond_2_open
+    - red_squiggle_3_open
+    - purple_squiggle_3_open
+    - purple_squiggle_2_striped
+    - green_oval_1_open
+    - purple_oval_3_open
+    - green_diamond_2_open
+    - green_squiggle_2_striped
+    - red_oval_3_striped
+    - green_oval_1_solid
+    - green_diamond_3_open
+    - purple_squiggle_3_solid
+    - red_diamond_1_striped
+    - purple_oval_1_open
+    - purple_oval_3_solid
+    - purple_diamond_2_striped
+    - green_squiggle_1_solid
+  cards:
+    - red_oval_1_open
+    - green_diamond_3_striped
+    - green_diamond_3_solid
+    - red_diamond_3_open
+    - green_diamond_2_striped
+    - green_diamond_2_solid
+    - purple_squiggle_3_striped
+    - purple_diamond_2_solid
+    - purple_oval_1_solid
+    - purple_oval_2_striped
+    - green_squiggle_3_solid
+    - red_diamond_1_solid
+  plorder:
+    - mimi
+    - gul
+  turn:
+    - mimi
+    - gul
+game: setgame
+owner: mimi
+friendly: tournament of Reykjavík
+playerNames:
+  - mimi
+  - gul
+options:
+  use_level: 'no'
+step: 0
+clientid: sS9HiuNfgiXNJO1sAAAH

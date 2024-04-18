@@ -789,6 +789,10 @@ function extractWords(s, allowed) {
 	let parts = splitAtAnyOf(s, specialChars.join('')).map(x => x.trim());
 	return parts.filter(x => !isEmpty(x));
 }
+function formatLegend(key){
+	return key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') 
+	: key.includes('_')? replaceAll(key,'_',' '): key;
+}
 function generateRandomWords(n, unique = false) {
 	// Sample words to pick from
 	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
@@ -1293,7 +1297,7 @@ async function showGameOptions(dParent, game) {
 		let val = poss[p];
 		if (isString(val)) {
 			let list = val.split(',');
-			let legend = key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') : key;
+			let legend = formatLegend(key);
 			let fs = mRadioGroup(dParent, {}, `d_${key}`, legend);
 			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
 			measure_fieldset(fs);
