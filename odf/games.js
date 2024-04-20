@@ -33,18 +33,19 @@ async function setActivate() {
 	if (use_level == 'no') {setHintHide();return;}
 	let level = getPlayerProp('level');
 	T.numHints = level<=4?2:1;
-	if (level == 1) {await mSleep(2000);await T.bHint.click();await mSleep(3000);await T.bHint.click();}
-	else if (level == 2) {await mSleep(3000); await T.bHint.click();await mSleep(10000); await T.bHint.click();}
+	if (level == 1) {await mSleep(2000);await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000);await T.bHint.click();}
+	else if (level == 2) {await mSleep(3000); await T.bHint.click();if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click();}
 	else if (level == 3) {await mSleep(5000); await T.bHint.click();}
 	else if (level == 4) {await mSleep(7000); await T.bHint.click();}
 	else if (level == 5) {await mSleep(10000); await T.bHint.click();}
 	else if (level == 6) {}
 	else if (level == 7) {setHintHide();}
 }
+function setStopAutoHints(){T.noMoreHints = true;}
 function setActivateCards() {
 	for (const item of T.items) {
 		let d = iDiv(item);
-		d.onclick = () => setOnclickCard(item, T.items);
+		d.onclick = () => setOnclickCard(item, T.items, true);
 		mStyle(d, { cursor: 'pointer' })
 
 	}

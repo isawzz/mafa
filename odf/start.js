@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = false; await prelims(); await switchToMenu(UI.nav, 'play'); }
-async function start() { TESTING = true; test51(); }//test47_olist(); }
+//async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
 	//TESTING = 'felixAmanda';

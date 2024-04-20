@@ -51,8 +51,9 @@ async function setGhostMove(table) {
 	T.sets = setFindAllSets(T.items);
 
 }
-async function setOnclickCard(item, items) {
+async function setOnclickCard(item, items, direct=false) {
 	//console.log('click', item.key)
+	if (direct) setStopAutoHints();
 	toggleItemSelection(item);
 	let selitems = items.filter(x => x.isSelected);
 	let [keys, m] = [selitems.map(x => x.key), selitems.length];
