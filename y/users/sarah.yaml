@@ -2,5 +2,5 @@ name: sarah
 color: '#f28cb2'
 key: sarah
 setgame:
-  level: 4
+  level: 7
   playmode: human

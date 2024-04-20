@@ -394,23 +394,6 @@ fieldset .disabled {
 	/* outline: solid 8px #ffff0080;
 	outline-offset: -6px; */
 }
-.slow_gradient_blink {
-	background: linear-gradient(270deg, #fffffd, #00000080);
-	background-size: 400% 400%;
-	-webkit-animation: AnimationName 5s linear infinite;
-	animation: AnimationName 5s linear infinite;
-}
-@keyframes AnimationName {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
 .subtitle{
 	color: var(--fgSubtitle);
 }

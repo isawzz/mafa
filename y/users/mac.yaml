@@ -2,5 +2,5 @@ name: mac
 color: '#00008a'
 key: mac
 setgame:
-  level: 3
+  level: 6
   playmode: human

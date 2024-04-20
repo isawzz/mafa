@@ -8,14 +8,14 @@ async function test51() {
 	await prelims();
 	await switchToOtherUser('gul', 'mimi');
 	await switchToMenu(UI.nav, 'play');
-	await clickOnGame('setgame'); 
+	await clickOnGame('setgame');
 	//await clickFirstTable();
 	//await onclickTable('Paris');
 }
-async function clickFirstTable(){
-	let table = Serverdata.tables.find(x=>x.status == 'started' && x.playerNames.includes(getUname()));
+async function clickFirstTable() {
+	let table = Serverdata.tables.find(x => x.status == 'started' && x.playerNames.includes(getUname()));
 	//console.log('table',table)
-	if (table) {await onclickTable(table.id);	return Clientdata.table;}
+	if (table) { await onclickTable(table.id); return Clientdata.table; }
 	//else console.log('no table!',Serverdata.tables)
 }
 async function prelims() {
@@ -83,7 +83,7 @@ async function testOnclickDeck0() {
 	let res = await sendMergeTable(tnew);
 	console.log('res', res.fen.deck)
 }
-function testUpdateTestButtons() {
+function _testUpdateTestButtons() {
 	let table = Clientdata.table;
 	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
 
@@ -96,7 +96,35 @@ function testUpdateTestButtons() {
 	else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
 
 	if (nundef(table)) return;
-	let playmode = getPlaymode(table,me);
+	let playmode = getPlaymode(table, me);
+	if (nundef(playmode)) return;
+
+	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
+	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
+	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
+	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
+}
+function getButtonCaptionName(name){ return `bTest${name}`;}
+function getButtonCaptionNames(table){	return isdef(table) ? table.playerNames : ['felix', 'amanda', 'mimi', 'gul'];}
+function testUpdateTestButtons() {
+	let table = Clientdata.table;
+	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
+	let me = getUname();
+	let names = getButtonCaptionNames(table);
+	for (const name of names) {
+		let idname = getButtonCaptionName(name);
+		let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
+		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
+	}
+	// UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
+	// UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
+	// UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
+	// if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
+	// else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
+	// else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
+
+	if (nundef(table)) return;
+	let playmode = getPlaymode(table, me);
 	if (nundef(playmode)) return;
 
 	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
@@ -128,29 +156,15 @@ async function testOnclickHuman(ev) {
 	mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
 	await onclickHuman();
 }
-async function testOnclickFelix(ev) {
-	//unselect bot and human buttons (TODO: hybrid)
-	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+async function testOnclickCaption(ev) {
+	let x = ev.target.innerHTML; //console.log(ev.target,'clicked on',x)
+	let b = UI[getButtonCaptionName(name)];
+	for (const name of getButtonCaptionNames(Clientdata.table)){
+		let b=UI[getButtonCaptionName(name)];
 		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
 	}
-	mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
-	await switchToUser('felix');
-}
-async function testOnclickAmanda(ev) {
-	//unselect bot and human buttons (TODO: hybrid)
-	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
-		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
-	}
-	mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
-	await switchToUser('amanda');
-}
-async function testOnclickMimi(ev) {
-	//unselect bot and human buttons (TODO: hybrid)
-	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
-		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
-	}
-	mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
-	await switchToUser('mimi');
+	mStyle(UI[getButtonCaptionName(x)], { bg: 'red', fg: 'white' });
+	await switchToUser(x);
 }
 
 

@@ -1,4 +1,28 @@
 
+async function testOnclickFelix(ev) {
+	//unselect bot and human buttons (TODO: hybrid)
+	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
+	}
+	mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
+	await switchToUser('felix');
+}
+async function testOnclickAmanda(ev) {
+	//unselect bot and human buttons (TODO: hybrid)
+	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
+	}
+	mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
+	await switchToUser('amanda');
+}
+async function testOnclickMimi(ev) {
+	//unselect bot and human buttons (TODO: hybrid)
+	for (const b of [UI.bTestFelix, UI.bTestAmanda, UI.bTestMimi]) {
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
+	}
+	mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
+	await switchToUser('mimi');
+}
 async function ___testShowFirstTableFelixAmanda() {
 	await switchToOtherUser('amanda', 'felix');
 	await switchToMenu(UI.nav, 'play');

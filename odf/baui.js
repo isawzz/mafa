@@ -295,7 +295,7 @@ async function setPlayerPlaying(item, gamename) {
 async function collectPlayerOptions(item, gamename) {
 	let name = item.name;
 	let options = valf(item[gamename], {});
-	console.log('___collect\nitem', name, options); //return;
+	//console.log('___collect\nitem', name, options); //return;
 	//if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
 	let poss = Serverdata.config.games[gamename].ploptions;
 	if (nundef(poss)) return options;
@@ -317,9 +317,9 @@ async function collectPlayerOptions(item, gamename) {
 	//console.log('item',item)
 	for (const k in unew[gamename]) {
 		if (lookup(uold, [gamename, k]) != unew[gamename][k]) {
-			console.log(`${k} CHANGED!!!!`, lookup(uold, [gamename, k]), unew[gamename][k]);
+			//console.log(`${k} CHANGED!!!!`, lookup(uold, [gamename, k]), unew[gamename][k]);
 			await postUserChange(unew);
-			console.log('server opts', name, Serverdata.users[name][gamename]);
+			//console.log('server opts', name, Serverdata.users[name][gamename]);
 			return;
 		}
 	}
@@ -358,7 +358,7 @@ function arrAllSameOrDifferent(arr) {
 }
 function arrClear(arr) { arr.length = 0; return arr; }
 
-function clearEvents() { for (const k in TO) clearTimeout(TO[k]); }
+function clearEvents() { for (const k in TO) clearTimeout(TO[k]);for (const k in ANIM) ANIM[k].cancel(); }
 function clickOnElemWithAttr(prop, val) {
 	let d = document.querySelectorAll(`[${prop}="${val}"]`)[0];
 	if (isdef(d)) d.click();

@@ -1610,7 +1610,7 @@ function uiTypeExtraWorker(w) {
   return { itemtype: 'worker', a: s, key: `worker_${res}`, o: { res: res, n: n }, friendly: s, present, select }
 }
 function uiTypePlayerStats(fen, me, dParent, layout, styles = {}) {
-  let dOuter = mDom(dParent);
+  let dOuter = mDom(dParent); dOuter.setAttribute('inert',true); //console.log(dOuter)
   if (layout == 'rowflex') mStyle(dOuter,{display:'flex',justify:'center'});
   else if (layout == 'col') mStyle(dOuter,{display:'flex',dir:'column'});
   //let styles = jsCopy(styles);

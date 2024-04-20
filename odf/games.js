@@ -8,7 +8,7 @@ function setgame() {
 			pl.score = 0;
 		}
 		fen.deck = setCreateDeck();
-		fen.cards = deckDeal(fen.deck, 12);
+		fen.cards = deckDeal(fen.deck, table.options.numCards);
 		fen.plorder = jsCopy(table.playerNames);
 		fen.turn = jsCopy(table.playerNames); // alle zugleich dran
 		delete table.players;
@@ -26,19 +26,20 @@ function setgame() {
 }
 async function setActivate() {
 	T.sets = setFindAllSets(T.items);
-	T.bHint = setShowButtons();
+	[T.bNoSet,T.bHint] = setShowButtons();
 	setActivateCards();
 	//default level is 5
-	let uselevel = getGameProp('use_level');
-	if (uselevel == 'no') return;
+	let use_level = getGameOption('use_level'); console.log('use_level',use_level)
+	if (use_level == 'no') {setHintHide();return;}
 	let level = getPlayerProp('level');
-	if (level == 1) {await T.bHint.click();await T.bHint.click();}
-	else if (level == 2) {await T.bHint.click();TO.autohint=setTimeout(()=>T.bHint.click(),6000);}
-	else if (level == 3) {await T.bHint.click();}
-	else if (level == 4) {TO.autohint=setTimeout(()=>T.bHint.click(),5000);}
-	else if (level == 5) {TO.autohint=setTimeout(()=>T.bHint.click(),10000);}
+	T.numHints = level<=4?2:1;
+	if (level == 1) {await mSleep(2000);await T.bHint.click();await mSleep(3000);await T.bHint.click();}
+	else if (level == 2) {await mSleep(3000); await T.bHint.click();await mSleep(10000); await T.bHint.click();}
+	else if (level == 3) {await mSleep(5000); await T.bHint.click();}
+	else if (level == 4) {await mSleep(7000); await T.bHint.click();}
+	else if (level == 5) {await mSleep(10000); await T.bHint.click();}
 	else if (level == 6) {}
-	else if (level == 7) {T.bHint.remove();}
+	else if (level == 7) {setHintHide();}
 }
 function setActivateCards() {
 	for (const item of T.items) {
@@ -110,6 +111,7 @@ function setGameover(table) {
 	table.status = 'over';
 	table.winners = getPlayersWithMaxScore(table.fen);
 }
+function setHintHide(){mClass(T.bHint,'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
 function setLoadPatterns(dParent, colors) {
 	dParent = toElem(dParent);
 	let id = "setpatterns";
@@ -131,10 +133,34 @@ function setLoadPatterns(dParent, colors) {
 	let el = mCreateFrom(html);
 	mAppend(dParent, el)
 }
+function scaleAnimation(element) {
+	let ani=element.animate([
+			{ transform: 'scale(1)' },
+			{ transform: 'scale(1.3)' },
+	], {
+			duration: 1000,
+			easing: 'ease-in-out',
+			iterations: 2,
+			direction: 'alternate'
+
+	});
+	return ani;
+}
 async function setOnclickHint() {
-	if (isEmpty(T.sets)) { console.log('no set'); return; }
-	else if (nundef(T.hintSet)) T.hintSet = rChoose(T.sets);
+	T.numHints -= 1; 
+	if (isEmpty(T.sets)) { 
+		//console.log('no set'); 
+		//await mSleep(2000); 
+		let elem = T.bNoSet;
+		T.numHints = 0; 
+
+		ANIM.button=scaleAnimation(elem);
+		//mStyle(elem,{animation:`pulse_animation 800ms ease-in-out 0s 2 alternate`})
+		//mClass(T.bNoSet,'pulse1');
+		return; 
+	}	else if (nundef(T.hintSet)) T.hintSet = rChoose(T.sets);
 	let item = T.hintSet.find(x=>!x.isSelected);
+	if (!T.numHints) setHintHide();
 	await setOnclickCard(item, T.items)
 }
 async function setPresent(table) {
@@ -165,8 +191,9 @@ async function setPresent(table) {
 }
 function setShowButtons() {
 	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
-	mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
-	return mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
+	let bno=mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
+	let bhint =mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
+	return [bno,bhint]
 
 }
 function setStats(fen, dParent, layout, showTurn = true) {

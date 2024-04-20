@@ -4,11 +4,11 @@ function INTERRUPT(){if (isdef(TO.SLEEPTIMEOUT)) {clearTimeout(TO.SLEEPTIMEOUT);
 async function mSleep(ms = 1000) {
 	return new Promise(
 		(res, rej) => {
-			if (ms <= 5000) {
+			if (ms <= 10000) {
 				if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
 				TO.SLEEPTIMEOUT = setTimeout(res, ms);
 			} else {
-				console.log('param should be less than 3001');
+				console.log('param should be less than 10000');
 			}
 		});
 }
@@ -64,8 +64,8 @@ async function setOnclickCard(item, items) {
 		let isSet = setCheckIfSet(keys); //console.log('isSet', isSet); //check if set condition is met
 		if (isSet) { //if yes, increase score, remove items, add 3 new items
 			// <12:0 (deck should be Empty), 12:3, 13:2, 14:1, ab 15:0
-			assertion(fen.cards.length >= 12 || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
-			let toomany = Math.max(0, fen.cards.length - 12); // replenish cards
+			assertion(fen.cards.length >= table.options.numCards || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
+			let toomany = Math.max(0, fen.cards.length - table.options.numCards); // replenish cards
 			let need = Math.max(0, 3 - toomany); //wenn 16 cards, soll trotzdem nur 3 replacen!
 			let newCards = deckDeal(fen.deck, need); //returns [] if deck empty!
 			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
@@ -74,8 +74,7 @@ async function setOnclickCard(item, items) {
 			pl.score--;
 		}
 		let res = await sendMergeTable(table); // console.log('res', res)
-	}
-	else if (m >= 1) disableButton(T.bHint); else enableButton(T.bHint);
+	}	
 }
 async function setOnclickNoSet() {
 	clearEvents();

@@ -1,3 +1,4 @@
+const ANIM={};
 var dNav,dOpenTable;
 var Session = {};
 var Clientdata = {};
