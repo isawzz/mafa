@@ -50,7 +50,7 @@ async function setBotMove(table) {
 }
 
 
-async function setOnclickHint(x) {
+async function setOnclickHint(items,direct=false) {
 	console.log('clickedHint',x);//pointerevent
 	if (!T.numHints) setHintHide();
 	T.numHints -= 1;
@@ -125,7 +125,7 @@ async function setOnclickCard(item, items, direct = false) {
 		let res = await sendMergeTable({ id: table.id, name: me, overrideList }); // console.log('res', res)
 	}
 }
-async function setOnclickNoSet(items,direct=true) {
+async function setOnclickNoSet(items,direct=false) {
 	//clearEvents();
 	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
 	let b=T.bNoSet; mClass(b,'framedPicture')
