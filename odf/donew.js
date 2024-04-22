@@ -1287,7 +1287,23 @@ function showEventOpen(id) {
 }
 function mRemoveIfExists(d){ d=toElem(d);if (isdef(d)) d.remove();}
 
-async function sendMergeTable(table) { return await mPostRoute('mergeTable', valf(table, Clientdata.table)); }
+async function sendMergeTable(o) { 
+	if (nundef(o)) {
+		let table = Cliendata.table;
+		let name = getUname();
+		let id = table.id;
+		o={name,id,table};
+	}else if (nundef(o.name)){
+		//o interpreted as table object!
+		let table = o;
+		let name = getUname();
+		let id = table.id;
+		o={name,id,table};
+	}
+	let table =  await mPostRoute('mergeTable', o); 
+  await showTable(table);
+
+}
 
 async function showGameOptions(dParent, game) {
 	let poss = Serverdata.config.games[game].options;

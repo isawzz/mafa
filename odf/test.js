@@ -15,7 +15,6 @@ async function test48() {
 	await testShowFirstTableFelixAmanda();
 	testShowTestButtons();
 
-	// table.fen.deck = []; await sendMergeTable();
 	// let tnew = jsCopy(table); tnew.status = 'over'; await mPostRoute('mergeTable', tnew);
 	// let x = mergeCombine(table, tnew); console.log(x.status, x.turn)
 

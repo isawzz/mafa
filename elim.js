@@ -1,3 +1,136 @@
+//#region 21.4.24 bot move trial 1
+function checkInterrupt(items) { return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0]; } //DA.counterBot > DA.counter + 1; }
+function INTERRUPT() {
+	DA.merged = get_now(); //console.log('ts', DA.merged);
+	if (isdef(TO.SLEEPTIMEOUT)) { clearTimeout(TO.SLEEPTIMEOUT); TO.SLEEPTIMEOUT = null; }
+	DA.Tprev = T; T = null;
+}
+async function setBotMove(table) {
+	try {
+		let items=T.items;
+		//console.log('bot move:', DA.counterBot, DA.inAutomove);
+		if (isNaN(DA.counterBot) || nundef(DA.counterBot)) DA.counterBot = DA.counter;
+		if (DA.counterBot < DA.counter) { DA.counterBot = DA.counter; DA.inAutomove = false; }
+
+		[T.bNoSet, T.bHint] = setShowButtons();
+		mShield(dOpenTable, { bg: '#00000010' });
+		// await setAutoMove(table);
+		//if (DA.inAutomove) {DA.inAutomove = false; return;}
+		while (DA.inAutomove) { await mSleep(10); }
+		DA.inAutomove = true;
+		DA.counterBot += 1; //=DA.counter; console.log('==>',DA.counter,DA.counterBot);
+		await mSleep(2000); if (checkInterrupt(items)) { console.log('!sleep 1'); DA.inAutomove = false; return; }
+		T.sets = setFindAllSets(items);
+		if (isEmpty(T.sets)) await setOnclickNoSet();
+		else {
+			let list = rChoose(T.sets); //console.log('set', list);
+			await setOnclickCard(list[0], items);
+			await mSleep(2000); if (checkInterrupt(items)) { console.log('!!sleep 2'); DA.inAutomove = false; return; }
+			await setOnclickCard(list[1], items);
+			await mSleep(2000); if (checkInterrupt(items)) { console.log('!!!sleep 3'); DA.inAutomove = false; return; }
+			await setOnclickCard(list[2], items);
+
+		}
+		console.log('* END OF AUTOMOVE *');
+		DA.inAutomove = false;
+	} catch { console.log('please reload!') }
+
+}
+//#endregion
+//#region 21.4.24 bot move trial 0
+function checkInterrupt() { return DA.counterBot > DA.counter + 1; }
+async function setAutoMove(table) {
+	//if (DA.inAutomove) {DA.inAutomove = false; return;}
+	while (DA.inAutomove) { await mSleep(10); }
+	DA.inAutomove = true;
+	DA.counterBot += 1; //=DA.counter; console.log('==>',DA.counter,DA.counterBot);
+	await mSleep(2000); if (checkInterrupt()) { console.log('!sleep 1');DA.inAutomove = false; return; }
+	T.sets = setFindAllSets(T.items);
+	if (isEmpty(T.sets)) await setOnclickNoSet();
+	else {
+		let list = rChoose(T.sets); //console.log('set', list);
+		await setOnclickCard(list[0], T.items);
+
+		await mSleep(2000); if (checkInterrupt()) { console.log('!!sleep 2');DA.inAutomove = false; return; }
+		await setOnclickCard(list[1], T.items);
+		await mSleep(2000); if (checkInterrupt()) { console.log('!!!sleep 3');DA.inAutomove = false; return; }
+		await setOnclickCard(list[2], T.items);
+
+	}
+	console.log('* END OF AUTOMOVE *');
+	DA.inAutomove = false;
+}
+async function _setBotMove(table) {
+	//console.log('bot move:', DA.counterBot, DA.inAutomove);
+	if (isNaN(DA.counterBot) || nundef(DA.counterBot)) DA.counterBot = DA.counter;
+	if (DA.counterBot < DA.counter) { DA.counterBot = DA.counter; DA.inAutomove = false; }
+
+	[T.bNoSet,T.bHint] = setShowButtons();
+	mShield(dOpenTable, { bg: '#00000010' });
+	await setAutoMove(table);
+}
+async function setHybridMove(table) {
+	[T.bNoSet,T.bHint] = setShowButtons();
+	setActivateCards();
+	await setAutoMove(table);
+}
+async function setGhostMove(table) {
+	T.sets = setFindAllSets(T.items);
+
+}
+function setStopAutoHints(){
+	//remove T.set
+	T.noMoreHints = true;
+}
+//**************************** */
+async function sendMyMove(move, type) {
+  let name = getUname();
+  let table = Clientdata.table;
+  let id = table.id;
+  let friendly = table.friendly;
+  let step = table.step;
+  let turn = table.fen.turn;
+  //console.log('___sendMyMove',step,name); //type,move,turn)
+  let res = await mPostRoute('move', { id, friendly, name, move, type, step, turn });
+  //console.log('result',res)
+  // sockPostMove(table, me, o);
+}
+async function sendMoveComplete(fen) {
+  let name = getUname();
+  let table = Clientdata.table;
+  let id = table.id;
+  let friendly = table.friendly;
+  let step = table.step;
+  let turn = fen.turn;
+  //console.log('___sendMoveComplete',step,name); //type,move,turn)
+  let res = await mPostRoute('moveComplete', { id, friendly, name, fen, step, turn });
+  //console.log('result',res)
+  // sockPostMove(table, me, o);
+}
+Socket.on('move', onsockReceiveMove);
+async function onsockReceiveMove(o) {
+  let [e, mlist] = [o.event, o.moves];
+  console.log('___ onsockReceiveMove', e.step, e.name, e.ts, mlist); return;
+  let [id, friendly, name, move, type, step, turn, ts] = [e.id, e.friendly, e.name, e.move, e.type, e.step, e.turn, e.ts];
+  let table = Clientdata.table;
+  if (!table || table.id != id) { console.log(`not playing at table ${id}`); return; }
+
+  let func = DA.funcs[table.game];
+  //console.log('...process',type,turn,friendly);
+  //somebody moved but fen has not changed
+
+  //checkIfStepComplete
+  // if (type == 'r1'){
+
+  // 	table.step=step;
+  // 	//stepComplete
+  // 	//console.log('game',table.game)
+  // 	func.stepComplete(table,o)
+  // }
+
+}
+
+//#endregion
 //#region set timer
 function formatDate3(d) { 
 	if (nundef(d)) d = new Date(); 

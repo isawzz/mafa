@@ -229,15 +229,20 @@ async function showGameMenuPlayerDialog(name, shift = false) {
 }
 function getGamePlayerOptions(gamename) { return Serverdata.config.games[gamename].ploptions; }
 
+async function collectFromPrevious(gamename){
+	let id = 'dPlayerOptions';
+	let lastpl = DA.lastPlayerItem;
+	let dold = mBy(id);
+	if (isdef(dold)) { await collectPlayerOptions(lastpl, gamename); dold.remove(); }
+
+}
 async function setPlayerPlaying(item, gamename) {
 	let [name, da] = [item.name, item.div]; //console.log('da',da)
 	addIf(DA.playerList, name);
 	selectPlayerItem(item);
+	await collectFromPrevious(gamename);
 	let id = 'dPlayerOptions';
-	let lastpl = DA.lastPlayerItem;
 	DA.lastPlayerItem = item;
-	let dold = mBy(id);
-	if (isdef(dold)) { await collectPlayerOptions(lastpl, gamename); dold.remove(); }
 
 	//if player options window is open collect
 
@@ -263,7 +268,7 @@ async function setPlayerPlaying(item, gamename) {
 
 			//set radio elem with value of this player to true
 			//let is_on = lookup(DA.allPlayers,[name,gamename,p]); is_on = is_on?true:false;
-			let userval = lookup(DA.allPlayers, [name, gamename, p]);
+			let userval = p == 'playmode'?'human':lookup(DA.allPlayers, [name, gamename, p]);
 			let radio;
 			let chi = fs.children;
 			for (const ch of chi) {
@@ -292,43 +297,9 @@ async function setPlayerPlaying(item, gamename) {
 	mPos(d1, x, y);
 	mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
 }
-async function collectPlayerOptions(item, gamename) {
-	let name = item.name;
-	let options = valf(item[gamename], {});
-	//console.log('___collect\nitem', name, options); //return;
-	//if (!mExists('dPlayerOptions')) { console.log('opts', name, DA.playerOptions[name]); return; }
-	let poss = Serverdata.config.games[gamename].ploptions;
-	if (nundef(poss)) return options;
-	for (const p in poss) {
-		let fs = mBy(`d_${p}`);
-		let val = get_checked_radios(fs)[0]; //console.log(p,val)
-		options[p] = isNumber(val) ? Number(val) : val;
-	}
-	item[gamename] = options;
-	let id = 'dPlayerOptions'; mRemoveIfExists(id);//mRemove(d);
-	//console.log('collected',DA.playerList.map(x=>DA.allPlayers[x]));
-	//options with org user options compare 
-	let uold = Serverdata.users[item.name];
-	let unew = {};
-	for (const k in item) {
-		if (['div', 'isSelected'].includes(k)) continue;
-		unew[k] = jsCopy(item[k]);
-	}
-	//console.log('item',item)
-	for (const k in unew[gamename]) {
-		if (lookup(uold, [gamename, k]) != unew[gamename][k]) {
-			//console.log(`${k} CHANGED!!!!`, lookup(uold, [gamename, k]), unew[gamename][k]);
-			await postUserChange(unew);
-			//console.log('server opts', name, Serverdata.users[name][gamename]);
-			return;
-		}
-	}
-}
+
 async function setPlayerNotPlaying(item, gamename) {
-	let id = 'dPlayerOptions';
-	let lastpl = DA.lastPlayerItem;
-	let dold = mBy(id);
-	if (isdef(dold)) { await collectPlayerOptions(lastpl, gamename); dold.remove(); }
+	await collectFromPrevious(gamename);
 	removeInPlace(DA.playerList, item.name);
 	mRemoveIfExists('dPlayerOptions');
 	unselectPlayerItem(item);
@@ -358,7 +329,7 @@ function arrAllSameOrDifferent(arr) {
 }
 function arrClear(arr) { arr.length = 0; return arr; }
 
-function clearEvents() { for (const k in TO) clearTimeout(TO[k]);for (const k in ANIM) ANIM[k].cancel(); }
+function clearEvents() { for (const k in TO) {clearTimeout(TO[k]);TO[k]=null;} for (const k in ANIM) {ANIM[k].cancel();ANIM[k]=null;} }
 function clickOnElemWithAttr(prop, val) {
 	let d = document.querySelectorAll(`[${prop}="${val}"]`)[0];
 	if (isdef(d)) d.click();
@@ -478,17 +449,25 @@ function createOpenTable(gamename, players, options) {
 
 	let pdict = {};
 	for (const name of playerNames) {
-		let o = pdict[name] = {};
+		let o = {};
 		let pl = players[name];
 		for (const k in pl) {
 			if (k == gamename) { addKeys(pl[gamename], o); }
 			else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
 		}
-		pdict[name] = o;
+
+		if (TESTING && gamename == 'setgame') {
+			let keys = ['playmode','score','level','name','color','key'];
+			let osorted={};
+			for (const k of keys) {osorted[k]=o[k];			}
+			pdict[name]=osorted;
+		}else	pdict[name] = o;
 	}
 
 	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
 	//console.log('pdict', pdict)
+
+	console.log('creating table with',pdict); //das geht
 
 	let t = {
 		status: 'open',
@@ -527,7 +506,7 @@ function drawShape(key, dParent, styles, classes, sizing) {
 }
 function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
 
-function getGameOption(prop) { return lookup(Clientdata,['table','options',prop]); }
+function getGameOption(prop) { return lookup(Clientdata, ['table', 'options', prop]); }
 function getGameProp(prop) { return Serverdata.config.games[Clientdata.table.game][prop]; }
 function getPlayerProp(prop) { let pl = Clientdata.table.fen.players[getUname()]; return pl[prop]; }
 function getPlayersWithMaxScore(fen) {
@@ -607,21 +586,24 @@ function mPlace(elem, pos, offx, offy) {
 	elem.style.position = 'absolute';
 	elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
 }
+async function mSleep(ms = 1000) {
+	return new Promise(
+		(res, rej) => {
+			if (ms > 10000) { ms = 10000; }
+			if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
+			TO.SLEEPTIMEOUT = setTimeout(res, ms);
+		});
+}
 async function onclickBot() {
 	let name = getUname();
 	let table = Clientdata.table;
 	let plmode = table.fen.players[name].playmode;
 	if (plmode == 'bot') return;
 	let id = table.id;
-	await mPostRoute('postPlayer', { id, name, playmode: 'bot' });
-}
-async function onclickHybrid() {
-	let name = getUname();
-	let table = Clientdata.table;
-	let plmode = table.fen.players[name].playmode;
-	if (plmode == 'hybrid') return;
-	let id = table.id;
-	await mPostRoute('postPlayer', { id, name, playmode: 'hybrid' });
+	let overrideList = [];
+	overrideList.push({ keys: ['fen', 'players', name, 'playmode'], val: 'bot' });
+	let res = await sendMergeTable({ id, name, overrideList });
+	//await mPostRoute('postPlayer', { id, name, playmode: 'bot' });
 }
 async function onclickHuman() {
 	let name = getUname();
@@ -629,7 +611,9 @@ async function onclickHuman() {
 	let plmode = table.fen.players[name].playmode;
 	if (plmode == 'human') return;
 	let id = table.id;
-	await mPostRoute('postPlayer', { id, name, playmode: 'human' });
+	let overrideList = [];
+	overrideList.push({ keys: ['fen', 'players', name, 'playmode'], val: 'human' });
+	let res = await sendMergeTable({ id, name, overrideList });
 }
 async function onclickJoinTable(id) {
 	//console.log(getUname(),'clicked join',id);
@@ -659,12 +643,14 @@ async function onclickLeaveTable(id) {
 async function onclickOpenToJoinGame() {
 	let options = collectOptions();
 	let players = collectPlayers();
+	mRemove('dGameMenu');
 	//console.log('onclickOpenToJoinGame: players', players)
 	let t = createOpenTable(DA.gamename, players, options);
 	let res = await mPostRoute('postTable', t);
 }
 async function onclickStartGame() {
 	//console.log('_____ onclickStartGame')
+	await collectFromPrevious(DA.gamename);
 	let options = collectOptions(); //console.log(options)
 	let players = collectPlayers();
 
@@ -693,6 +679,7 @@ function showGameover(table) {
 async function startGame(gamename, players, options) {
 	//console.log('startGame: players',players)
 	let table = createOpenTable(gamename, players, options);
+
 	table = setTableToStarted(table); //fen is created here!!!!
 	let res = await mPostRoute('postTable', table);
 

@@ -9289,7 +9289,7 @@ function arrMinMax(arr, func) {
   }
   return { min: min, imin: imin, max: max, imax: imax, elmin: arr[imin], elmax: arr[imax] };
 }
-function arrMinus(a, b) { if (isList(b)) return a.filter(x => !b.includes(x)); else return a.filter(x => x != b); }
+function arrMinus(arr, b) { if (isList(b)) return arr.filter(x => !b.includes(x)); else return arr.filter(x => x != b); }
 function arrNext(list, el) {
   let iturn = list.indexOf(el);
   let nextplayer = list[(iturn + 1) % list.length];
@@ -25635,9 +25635,7 @@ function get_non_admin_reload() { to_server(Session.cur_user, 'non_admin_reload'
 function get_normal_cdf(mean, stdev) { }
 function get_normal_pdf(mean, stdev) { }
 function get_now() { return Date.now(); }
-function get_now_milliseconds() {
-  return Date.now();
-}
+function get_now_milliseconds() { return Date.now();}
 function get_num_players(otree) { return otree.player_names.length; }
 function get_pay_history(payment, uplayer) { return [`${uplayer} pays with ${payment}`]; }
 function get_play(e) {

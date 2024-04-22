@@ -32,6 +32,8 @@ app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 //#region functions
 function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
 function arrClear(arr) { arr.length = 0; return arr; }
+function arrLast(arr) { return arr.length > 0 ? arr[arr.length - 1] : null; }
+function arrMinus(arr, b) { if (isList(b)) return arr.filter(x => !b.includes(x)); else return arr.filter(x => x != b); }
 function copyKeys(ofrom, oto, except = {}, only = null) {
 	let keys = isdef(only) ? only : Object.keys(ofrom);
 	for (const k of keys) {
@@ -79,6 +81,8 @@ function isEmpty(arr) {
 		|| Object.entries(arr).length === 0;
 }
 function isList(arr) { return Array.isArray(arr); }
+function isLiteral(x) { return isString(x) || isNumber(x); }
+function isNumber(x) { return x !== ' ' && x !== true && x !== false && isdef(x) && (x == 0 || !isNaN(+x)); }
 function isObject(item) { return (item && typeof item === 'object' && !Array.isArray(item)); }
 function isString(param) { return typeof param == 'string'; }
 function jsCopy(o) { return JSON.parse(JSON.stringify(o)); }
@@ -423,22 +427,6 @@ app.post('/postTable', (req, res) => {
 	io.emit('table', { msg, id, turn, isNew })
 	res.json(msg);
 });
-app.post('/postPlayer', (req, res) => {
-	//id=tableId, name=playerName, andere props sind player attributes
-	let id = req.body.id;
-	let name = req.body.name;
-	let o = jsCopy(req.body); delete o.id;
-	let table = lookup(Session, ['tables', id]);
-	if (!table) res.json('CANNOT postPlayer OUTSIDE OF TABLE!!!')
-	let fen = table.fen;
-	if (nundef(fen)) res.json('CANNOT postPlayer wthout a fen!!!')
-	copyKeys(o, fen.players[name])
-	saveTable(id, table);
-	let msg = `${name} posted: ${Object.keys(o).join(',')}`;
-	console.log(msg)
-	emitToPlayers(table.playerNames, 'table', table);
-	res.json(msg);
-});
 
 //app.get('/lastUser', (req, res) => { res.json(Session.lastUser); });
 
@@ -620,15 +608,29 @@ function mergeObject(target, source, optionsArgument) {
 }
 //#endregion
 
-var StepCounter=0;
 app.post('/mergeTable', (req, res) => {
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for mergeTable!")
 	let id = req.body.id;
-	console.log('::merge',++StepCounter); //Object.keys(req.body),req.body.status)
-	let table = lookup(Session, ['tables', id]);
-	table = deepmergeOverride(table,req.body);
+	if (nundef(id)) return res.json("ERRROR! no id provided for mergeTable!")
+	let tnew = req.body.table;
+	let data = req.body.overrideList;
+	let table =  lookup(Session, ['tables', id]);
+	console.log('__merge by:',name);
+	if (isdef(data)){
+		//partial merge!
+		for(const o of data){
+			let score = lookupSetOverride(table,o.keys,o.val);
+			let last = arrLast(o.keys);
+			console.log('override',last,isLiteral(o.val)?o.val:typeof o.val)
+		}
+	}else if (isdef(tnew)){
+		console.log(Object.keys(tnew))
+		table = deepmergeOverride(table,tnew);
+	}
 	saveTable(id, table);
 	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
-	emitToPlayers(table.playerNames, 'merged', table);
+	emitToPlayers(arrMinus(table.playerNames,name), 'merged', table);
 	res.json(table);
 });
 

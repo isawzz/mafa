@@ -1,14 +1,17 @@
 onload = start;
 
 async function start() { TESTING = false; await prelims(); await switchToMenu(UI.nav, 'play'); }
-//async function start() { TESTING = true; test51(); }//test47_olist(); }
+async function start() { TESTING = true; test51(); }//test47_olist(); }
 
 async function test51() {
 	//TESTING = 'felixAmanda';
+	//console.log('T',T)
 	await prelims();
-	await switchToOtherUser('gul', 'mimi');
+	//console.log('T',T)
+	//T wird in setPresent gesetzt auf {}
+	await switchToOtherUser('gul', 'felix');
 	await switchToMenu(UI.nav, 'play');
-	await clickOnGame('setgame');
+	//await clickOnGame('setgame');
 	//await clickFirstTable();
 	//await onclickTable('Paris');
 }
@@ -80,32 +83,11 @@ async function testOnclickDeck0() {
 	tnew.fen.deck = [];
 
 	//let x=deepmergeOverride(Clientdata.table,tnew); console.log(x.fen.deck); return;
-	let res = await sendMergeTable(tnew);
+	let res = await sendMergeTable({name:getUname(),id:tnew.id,table:tnew});
 	console.log('res', res.fen.deck)
 }
-function _testUpdateTestButtons() {
-	let table = Clientdata.table;
-	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
-
-	UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
-	UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
-	UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
-	let me = getUname();
-	if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
-	else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
-	else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
-
-	if (nundef(table)) return;
-	let playmode = getPlaymode(table, me);
-	if (nundef(playmode)) return;
-
-	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
-	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
-	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
-	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
-}
 function getButtonCaptionName(name){ return `bTest${name}`;}
-function getButtonCaptionNames(table){	return isdef(table) ? table.playerNames : ['felix', 'amanda', 'mimi', 'gul'];}
+function getButtonCaptionNames(table){	return isdef(table) ? table.playerNames : ['felix', 'gul', 'amanda', 'lauren', 'mimi'];}
 function testUpdateTestButtons() {
 	let table = Clientdata.table;
 	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
@@ -124,7 +106,7 @@ function testUpdateTestButtons() {
 	// else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
 
 	if (nundef(table)) return;
-	let playmode = getPlaymode(table, me);
+	let playmode = getPlaymode(table, me); console.log("==>I'm a",playmode)
 	if (nundef(playmode)) return;
 
 	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);

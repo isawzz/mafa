@@ -1,3 +1,117 @@
+async function onclickHybrid() {
+	let name = getUname();
+	let table = Clientdata.table;
+	let plmode = table.fen.players[name].playmode;
+	if (plmode == 'hybrid') return;
+	let id = table.id;
+	await mPostRoute('postPlayer', { id, name, playmode: 'hybrid' });
+}
+
+
+//#region setOnclickCard teil
+function setStopAutoHints(){
+	//remove T.set
+	T.noMoreHints = true;
+}
+
+async function setOnclickHint() {
+	T.numHints -= 1; 
+	if (isEmpty(T.sets)) { 
+		//console.log('no set'); 
+		//await mSleep(2000); 
+		let elem = T.bNoSet;
+		T.numHints = 0; 
+
+		ANIM.button=scaleAnimation(elem);
+		//mStyle(elem,{animation:`pulse_animation 800ms ease-in-out 0s 2 alternate`})
+		//mClass(T.bNoSet,'pulse1');
+		return; 
+	}	else if (nundef(T.hintSet)) T.hintSet = rChoose(T.sets);
+	let item = T.hintSet.find(x=>!x.isSelected);
+	if (!T.numHints) setHintHide();
+	await setOnclickCard(item, T.items)
+}
+
+async function setOnclickCard(item, items, direct=false) {
+	//console.log('click', item.key)
+	if (direct) setStopAutoHints();
+	toggleItemSelection(item);
+	let selitems = items.filter(x => x.isSelected);
+	let [keys, m] = [selitems.map(x => x.key), selitems.length];
+	if (m == 3) {
+		clearEvents();
+		mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+		let [me, table] = [getUname(), Clientdata.table];
+		let [fen, pl] = [table.fen, table.fen.players[me]];
+		let isSet = setCheckIfSet(keys); //console.log('isSet', isSet); //check if set condition is met
+		if (isSet) { //if yes, increase score, remove items, add 3 new items
+			// <12:0 (deck should be Empty), 12:3, 13:2, 14:1, ab 15:0
+			assertion(fen.cards.length >= table.options.numCards || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
+			let toomany = Math.max(0, fen.cards.length - table.options.numCards); // replenish cards
+			let need = Math.max(0, 3 - toomany); //wenn 16 cards, soll trotzdem nur 3 replacen!
+			let newCards = deckDeal(fen.deck, need); //returns [] if deck empty!
+			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
+			pl.score++;
+		} else {
+			pl.score--;
+		}
+		let res = await sendMergeTable(table); // console.log('res', res)
+	}	
+}
+async function setOnclickNoSet() {
+	clearEvents();
+	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+	let [me, table] = [getUname(), Clientdata.table];
+	let [fen, pl] = [table.fen, table.fen.players[me]];
+
+	if (isEmpty(T.sets)) { //if there is no set, increase score, add 1 card
+		pl.score++;
+		let newCards = deckDeal(fen.deck, 1); //add 1 cards!
+		if (!isEmpty(newCards)) fen.cards.push(newCards[0]);
+		else {
+			setGameover(table);
+			console.log(`table status is now ${table.status}`);
+			assertion(table.status == 'over', "HAAAAAAAAALLLLLLLO")
+		}
+	} else {
+		pl.score--;
+	}
+	let res = await sendMergeTable(table); // console.log('res', res)
+}
+
+//#endregion
+async function mSleep(ms = 1000) {
+	return new Promise(
+		(res, rej) => {
+			if (ms <= 10000) {
+				if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
+				TO.SLEEPTIMEOUT = setTimeout(res, ms);
+			} else {
+				console.log('param should be less than 10000');
+			}
+		});
+}
+function _testUpdateTestButtons() {
+	let table = Clientdata.table;
+	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
+
+	UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
+	UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
+	UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
+	let me = getUname();
+	if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
+	else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
+	else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
+
+	if (nundef(table)) return;
+	let playmode = getPlaymode(table, me);
+	if (nundef(playmode)) return;
+
+	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
+	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
+	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
+	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
+}
 
 async function testOnclickFelix(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
@@ -420,13 +534,13 @@ async function rest() {
 async function setBotMove(table) {
 	await setHybridMove(table); 
 	// T.sets = setFindAllSets(T.items);
-	// setShowButtons();
+	// [T.bNoSet,T.bHint] = setShowButtons();
 	// mShield(dOpenTable, { bg: '#00000010' });
 	// //setActivateBot();
 }
 async function setHybridMove(table) {
 	T.sets = setFindAllSets(T.items);
-	setShowButtons();
+	[T.bNoSet,T.bHint] = setShowButtons();
 	setActivateCards();
 
 	await mSleep(2000);
@@ -479,6 +593,37 @@ async function _setStepComplete(table, o) {
 //#endregion
 
 //#region app.js
+app.post('/postPlayer', (req, res) => {
+	//id=tableId, name=playerName, andere props sind player attributes
+	let id = req.body.id;
+	let name = req.body.name;
+	let o = jsCopy(req.body); delete o.id;
+	let table = lookup(Session, ['tables', id]);
+	if (!table) res.json('CANNOT postPlayer OUTSIDE OF TABLE!!!')
+	let fen = table.fen;
+	if (nundef(fen)) res.json('CANNOT postPlayer wthout a fen!!!')
+	copyKeys(o, fen.players[name])
+	saveTable(id, table);
+	let msg = `${name} posted: ${Object.keys(o).join(',')}`;
+	console.log(msg)
+	emitToPlayers(table.playerNames, 'table', table);
+	res.json(msg);
+});
+
+var StepCounter=0;
+app.post('/mergeTable', (req, res) => {
+	let id = req.body.id;
+	console.log('::merge',++StepCounter); //Object.keys(req.body),req.body.status)
+	let table = lookup(Session, ['tables', id]);
+	table = deepmergeOverride(table,req.body);
+	saveTable(id, table);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(table.playerNames, 'merged', table);
+	res.json(table);
+});
+
+
+//*************** */
 app.post('/mergeTable', (req, res) => {
 	let id = req.body.id;
 	console.log('::merge',++StepCounter); //Object.keys(req.body),req.body.status)

@@ -25,23 +25,23 @@ function setgame() {
 	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
 async function setActivate() {
-	T.sets = setFindAllSets(T.items);
-	[T.bNoSet,T.bHint] = setShowButtons();
-	setActivateCards();
-	//default level is 5
-	let use_level = getGameOption('use_level'); console.log('use_level',use_level)
-	if (use_level == 'no') {setHintHide();return;}
-	let level = getPlayerProp('level');
-	T.numHints = level<=4?2:1;
-	if (level == 1) {await mSleep(2000);await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000);await T.bHint.click();}
-	else if (level == 2) {await mSleep(3000); await T.bHint.click();if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click();}
-	else if (level == 3) {await mSleep(5000); await T.bHint.click();}
-	else if (level == 4) {await mSleep(7000); await T.bHint.click();}
-	else if (level == 5) {await mSleep(10000); await T.bHint.click();}
-	else if (level == 6) {}
-	else if (level == 7) {setHintHide();}
+	try {
+		T.sets = setFindAllSets(T.items);
+		[T.bNoSet, T.bHint] = setShowButtons();
+		setActivateCards();
+		let use_level = getGameOption('use_level'); //console.log('use_level',use_level)
+		if (use_level == 'no') { setHintHide(); return; }
+		let level = getPlayerProp('level');
+		T.numHints = level <= 4 ? 2 : 1;
+		if (level == 1) { await mSleep(2000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000); await T.bHint.click(); }
+		else if (level == 2) { await mSleep(3000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click(); }
+		else if (level == 3) { await mSleep(7000); await T.bHint.click(); }
+		else if (level == 4) { await mSleep(10000); await T.bHint.click(); }
+		else if (level == 5) {  }
+		//else if (level == 6) { }
+		else { setHintHide(); }
+	} catch { console.log('human: please reload!') }
 }
-function setStopAutoHints(){T.noMoreHints = true;}
 function setActivateCards() {
 	for (const item of T.items) {
 		let d = iDiv(item);
@@ -112,7 +112,7 @@ function setGameover(table) {
 	table.status = 'over';
 	table.winners = getPlayersWithMaxScore(table.fen);
 }
-function setHintHide(){mClass(T.bHint,'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
+function setHintHide() { mClass(T.bHint, 'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
 function setLoadPatterns(dParent, colors) {
 	dParent = toElem(dParent);
 	let id = "setpatterns";
@@ -135,34 +135,17 @@ function setLoadPatterns(dParent, colors) {
 	mAppend(dParent, el)
 }
 function scaleAnimation(element) {
-	let ani=element.animate([
-			{ transform: 'scale(1)' },
-			{ transform: 'scale(1.3)' },
+	let ani = element.animate([
+		{ transform: 'scale(1)' },
+		{ transform: 'scale(1.3)' },
 	], {
-			duration: 1000,
-			easing: 'ease-in-out',
-			iterations: 2,
-			direction: 'alternate'
+		duration: 1000,
+		easing: 'ease-in-out',
+		iterations: 2,
+		direction: 'alternate'
 
 	});
 	return ani;
-}
-async function setOnclickHint() {
-	T.numHints -= 1; 
-	if (isEmpty(T.sets)) { 
-		//console.log('no set'); 
-		//await mSleep(2000); 
-		let elem = T.bNoSet;
-		T.numHints = 0; 
-
-		ANIM.button=scaleAnimation(elem);
-		//mStyle(elem,{animation:`pulse_animation 800ms ease-in-out 0s 2 alternate`})
-		//mClass(T.bNoSet,'pulse1');
-		return; 
-	}	else if (nundef(T.hintSet)) T.hintSet = rChoose(T.sets);
-	let item = T.hintSet.find(x=>!x.isSelected);
-	if (!T.numHints) setHintHide();
-	await setOnclickCard(item, T.items)
 }
 async function setPresent(table) {
 	T = {};
@@ -192,9 +175,9 @@ async function setPresent(table) {
 }
 function setShowButtons() {
 	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
-	let bno=mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
-	let bhint =mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
-	return [bno,bhint]
+	let bno = mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
+	let bhint = mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
+	return [bno, bhint]
 
 }
 function setStats(fen, dParent, layout, showTurn = true) {
@@ -202,7 +185,7 @@ function setStats(fen, dParent, layout, showTurn = true) {
 	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
 	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
 	//console.log(Clientdata.table)
-	let uselevel =  getGameOption('use_level');
+	let uselevel = getGameOption('use_level');
 	for (const plname in fen.players) {
 		let pl = fen.players[plname]; //console.log('player',pl1)
 		let item = player_stat_items[plname];
@@ -214,14 +197,14 @@ function setStats(fen, dParent, layout, showTurn = true) {
 		// show_hourglass(plname, d, 30, { left: -3, top: 0 });
 		//console.log('setStats',Clientdata.table)
 		if (uselevel != 'yes') continue;
-	
-		mDom(d, { fz:11,round:true,hpadding:3,fg:'contrast',bg:getLevelColor(pl.level), position: 'absolute', top: 1,right:2 }, { html: pl.level })
+
+		mDom(d, { fz: 11, round: true, hpadding: 3, fg: 'contrast', bg: getLevelColor(pl.level), position: 'absolute', top: 1, right: 2 }, { html: pl.level })
 	}
 }
-function getLevelColor(n){
+function getLevelColor(n) {
 	const levelColors = [LIGHTGREEN, LIGHTBLUE, YELLOW, 'orange', RED,
-	GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue', 'deeppink', //** MAXLEVEL 10 */
-	TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE, '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'palegreen', '#e6194B'];
+		GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue', 'deeppink', //** MAXLEVEL 10 */
+		TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE, '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'palegreen', '#e6194B'];
 
-	return levelColors[n-1]; //['skyblue','lime','gold','orange','red'][n-1];
+	return levelColors[n - 1]; //['skyblue','lime','gold','orange','red'][n-1];
 }

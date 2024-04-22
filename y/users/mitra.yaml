@@ -2,5 +2,5 @@ name: mitra
 color: '#3cb472'
 key: mitra
 setgame:
-  level: 3
+  level: 2
   playmode: human

@@ -2,5 +2,5 @@ name: felix
 color: '#1f8fff'
 key: felix
 setgame:
-  level: 7
+  level: 6
   playmode: human
