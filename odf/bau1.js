@@ -18,13 +18,14 @@ function calcBotSpeed(table) {
 async function setBotMove(table) {
 	try {
 		let items = T.items;
-		//[T.bNoSet, T.bHint] = setShowButtons();
+		[T.bNoSet, T.bHint] = setShowButtons(); T.bHint.remove();
 		mShield(dOpenTable, { bg: '#00000010' });
-		let speed = calcBotSpeed(table); console.log('speed',speed)
+		let speed = calcBotSpeed(table); console.log('speed',speed);
 		T.sets = setFindAllSets(items);
 		if (isEmpty(T.sets)) {
-			await mSleep(speed*3); if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
-			await setOnclickNoSet();
+			speed*=3; //speed=1000; 
+			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
+			await setOnclickNoSet(items);
 		}	else {
 			let list = rChoose(T.sets); //console.log('set', list);
 			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep 1'); return; }
@@ -104,12 +105,17 @@ async function setOnclickCard(item, items, direct = false) {
 		}
 		//just override my score at server! NOTHING else!!!
 		overrideList.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
+		if (pl.playmode == 'bot') {
+			await mSleep(500);
+			if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
+		}
 		let res = await sendMergeTable({ id: table.id, name: me, overrideList }); // console.log('res', res)
 	}
 }
-async function setOnclickNoSet() {
+async function setOnclickNoSet(items) {
 	//clearEvents();
 	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+	let b=T.bNoSet; mClass(b,'framedPicture')
 	let [me, table] = [getUname(), Clientdata.table];
 	let [fen, pl] = [table.fen, table.fen.players[me]];
 	let overrideList = [];
@@ -133,6 +139,10 @@ async function setOnclickNoSet() {
 		pl.incScore=-1;
 	}
 	overrideList.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
+	if (pl.playmode == 'bot') {
+		await mSleep(500);
+		if (checkInterrupt(items)) { console.log('!!!onclick noset!!!'); return; }
+	}
 	let res = await sendMergeTable({ id: table.id, name: me, overrideList });
 }
 

@@ -185,17 +185,6 @@ fieldset .disabled {
 	color: var(--fgButtonActive) !important;
 	background: var(--bgButtonActive) !important;
 } 
-.blink {
-  animation: blinking 0.5s ease-in-out infinite alternate;
-}
-@keyframes blinking {
-  from {
-    opacity: 0.1;
-  }
-  to {
-    opacity: 1;
-  }
-}
 .darker{
 	background: var(--bgDarker);
 }

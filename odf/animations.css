@@ -80,6 +80,9 @@
 .blink {
   animation: blinking 0.5s ease-in-out infinite alternate;
 }
+.blink1 {
+  animation: blinking 0.5s ease-in-out;
+}
 .blinkFast {
   animation: blinking 0.2s ease-in-out infinite alternate;
 }
