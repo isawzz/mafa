@@ -3,4 +3,4 @@ color: '#00008a'
 key: mac
 setgame:
   level: 4
-  playmode: bot
+  playmode: human

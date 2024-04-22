@@ -1630,10 +1630,10 @@ function uiTypePlayerStats(fen, me, dParent, layout, styles = {}) {
     // } else {
     //   copyKeys({ rounding: '50%', border: `solid 2px ${ucolor}` }, picstyle);
     // }
-    let img = showUserImage(name, d, 40);
+    let img = showUserImage(name, d, 40);mStyle(img,{box:true})
     //mStyle(img,picstyle)
     //let img = mImage(imgPath, d, picstyle, 'img_person');
-    items[name] = { div: d, name: name };
+    items[name] = { div: d, img, name };
   }
   return items;
 }

@@ -26,20 +26,21 @@ function setgame() {
 }
 async function setActivate() {
 	try {
-		T.sets = setFindAllSets(T.items);
+		T.sets = setFindAllSets(T.items); 
 		[T.bNoSet, T.bHint] = setShowButtons();
 		setActivateCards();
 		let use_level = getGameOption('use_level'); //console.log('use_level',use_level)
-		if (use_level == 'no') { setHintHide(); return; }
+		if (use_level == 'no') { T.bHint.remove(); return; }
 		let level = getPlayerProp('level');
 		T.numHints = level <= 4 ? 2 : 1;
-		if (level == 1) { await mSleep(2000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000); await T.bHint.click(); }
+		if (isEmpty(T.sets) && level<5){await mSleep(10000); await T.bHint.click(); }
+		else if (level == 1) { await mSleep(2000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000); await T.bHint.click(); }
 		else if (level == 2) { await mSleep(3000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click(); }
 		else if (level == 3) { await mSleep(7000); await T.bHint.click(); }
 		else if (level == 4) { await mSleep(10000); await T.bHint.click(); }
 		else if (level == 5) {  }
 		//else if (level == 6) { }
-		else { setHintHide(); }
+		else { T.bHint.remove(); } //setHintHide(); }
 	} catch { console.log('human: please reload!') }
 }
 function setActivateCards() {
@@ -106,6 +107,7 @@ function setFindAllSets(items) {
 			}
 		}
 	}
+	if (isEmpty(result)) console.log('no set!')
 	return result;
 }
 function setGameover(table) {
@@ -170,7 +172,7 @@ async function setPresent(table) {
 	}
 
 	//setStats(table.fen, dRechts,'col');
-	setStats(table.fen, dOben, 'rowflex', false)
+	setStats(table, dOben, 'rowflex', false)
 
 }
 function setShowButtons() {
@@ -180,15 +182,24 @@ function setShowButtons() {
 	return [bno, bhint]
 
 }
-function setStats(fen, dParent, layout, showTurn = true) {
-	let me = getUname();
+function setStats(table, dParent, layout, showTurn = true) {
+	let [fen,me] = [table.fen,getUname()];
 	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
 	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
 	//console.log(Clientdata.table)
 	let uselevel = getGameOption('use_level');
+	let botLevel = Math.floor(calcBotLevel(table)); //console.log('botLevel',botLevel);
 	for (const plname in fen.players) {
 		let pl = fen.players[plname]; //console.log('player',pl1)
 		let item = player_stat_items[plname];
+
+		//console.log('item',item)
+		if (pl.playmode == 'bot') {
+			let c=getLevelColor(botLevel);
+			mStyle(item.img,{rounding:0,border:`${c} ${botLevel}px solid`});
+			//mStyle(iDiv(item),{bg:getLevelColor(botLevel)}); 
+		}
+
 		let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
 		playerStatCount('star', pl.score, d);
 		// playerStatCount('stairs', pl1.level, d);
@@ -202,7 +213,7 @@ function setStats(fen, dParent, layout, showTurn = true) {
 	}
 }
 function getLevelColor(n) {
-	const levelColors = [LIGHTGREEN, LIGHTBLUE, YELLOW, 'orange', RED,
+	const levelColors = [LIGHTBLUE, BLUE, GREEN, YELLOW, 'orange', RED, '#222',
 		GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue', 'deeppink', //** MAXLEVEL 10 */
 		TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE, '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'palegreen', '#e6194B'];
 

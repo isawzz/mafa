@@ -1,4 +1,14 @@
 
+function setScoresSameOrHigher(told,tnew){
+	if (nundef(told)) return true;
+	let [plold,plnew]=[told.fen.players,tnew.fen.players];
+	for(const name in plnew){
+		if (plold[name].score+plold[name].incScore != plnew[name].score) return false;
+		plnew[name].incScore = 0;//loesche check val
+	}
+	return true;
+}
+
 async function collectPlayerOptions(pl, gamename) {
 	let name = pl.name;
 	let options = valf(pl[gamename], {});

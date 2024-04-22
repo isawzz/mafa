@@ -3,4 +3,4 @@ color: '#f28cb2'
 key: mimi
 setgame:
   level: 3
-  playmode: bot
+  playmode: human

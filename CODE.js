@@ -1,3 +1,29 @@
+function testUpdateTestButtons() {
+	let table = Clientdata.table;
+	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
+	let me = getUname();
+	let names = getButtonCaptionNames(table);
+	for (const name of names) {
+		let idname = getButtonCaptionName(name);
+		let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
+		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
+	}
+	// UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
+	// UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
+	// UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
+	// if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
+	// else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
+	// else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
+
+	if (nundef(table)) return;
+	let playmode = getPlaymode(table, me); //console.log("==>I'm a",playmode)
+	if (nundef(playmode)) return;
+
+	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
+	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
+	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
+	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
+}
 async function onclickHybrid() {
 	let name = getUname();
 	let table = Clientdata.table;

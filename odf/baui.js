@@ -329,7 +329,10 @@ function arrAllSameOrDifferent(arr) {
 }
 function arrClear(arr) { arr.length = 0; return arr; }
 
-function clearEvents() { for (const k in TO) {clearTimeout(TO[k]);TO[k]=null;} for (const k in ANIM) {ANIM[k].cancel();ANIM[k]=null;} }
+function clearEvents() { 
+	for (const k in TO) {clearTimeout(TO[k]);TO[k]=null;} 
+	for (const k in ANIM) {if (isdef(ANIM[k])) ANIM[k].cancel();ANIM[k]=null;} 
+}
 function clickOnElemWithAttr(prop, val) {
 	let d = document.querySelectorAll(`[${prop}="${val}"]`)[0];
 	if (isdef(d)) d.click();

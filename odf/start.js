@@ -9,7 +9,7 @@ async function test51() {
 	await prelims();
 	//console.log('T',T)
 	//T wird in setPresent gesetzt auf {}
-	await switchToOtherUser('gul', 'felix');
+	await switchToOtherUser('mimi', 'amanda');
 	await switchToMenu(UI.nav, 'play');
 	//await clickOnGame('setgame');
 	//await clickFirstTable();
@@ -88,32 +88,6 @@ async function testOnclickDeck0() {
 }
 function getButtonCaptionName(name){ return `bTest${name}`;}
 function getButtonCaptionNames(table){	return isdef(table) ? table.playerNames : ['felix', 'gul', 'amanda', 'lauren', 'mimi'];}
-function testUpdateTestButtons() {
-	let table = Clientdata.table;
-	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
-	let me = getUname();
-	let names = getButtonCaptionNames(table);
-	for (const name of names) {
-		let idname = getButtonCaptionName(name);
-		let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
-		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
-	}
-	// UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
-	// UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
-	// UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
-	// if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
-	// else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
-	// else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
-
-	if (nundef(table)) return;
-	let playmode = getPlaymode(table, me); console.log("==>I'm a",playmode)
-	if (nundef(playmode)) return;
-
-	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
-	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
-	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
-	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
-}
 async function testOnclickBot(ev) {
 	//unselect bot and human buttons (TODO: hybrid)
 	for (const b of [UI.bTestBot, UI.bTestHuman, UI.bTestHybrid]) {
@@ -147,6 +121,58 @@ async function testOnclickCaption(ev) {
 	}
 	mStyle(UI[getButtonCaptionName(x)], { bg: 'red', fg: 'white' });
 	await switchToUser(x);
+}
+function testUpdateTestButtons_() {
+	//nur den playmode fuer diesen player kann man aendern
+	let table = Clientdata.table;
+	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
+	let me = getUname();
+	let names = getButtonCaptionNames(table);
+	for (const name of names) {
+		let idname = getButtonCaptionName(name);
+		let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
+		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
+	}
+	// UI.bTestFelix = mButton('felix', testOnclickFelix, dExtra);
+	// UI.bTestAmanda = mButton('amanda', testOnclickAmanda, dExtra);
+	// UI.bTestMimi = mButton('mimi', testOnclickMimi, dExtra);
+	// if (me == 'felix') mStyle(UI.bTestFelix, { bg: 'red', fg: 'white' });
+	// else if (me == 'amanda') mStyle(UI.bTestAmanda, { bg: 'red', fg: 'white' });
+	// else if (me == 'mimi') mStyle(UI.bTestMimi, { bg: 'red', fg: 'white' });
+
+	if (nundef(table)) return;
+	let playmode = getPlaymode(table, me); //console.log("==>I'm a",playmode)
+	if (nundef(playmode)) return;
+
+	UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
+	UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
+	if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
+	else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
+}
+function testUpdateTestButtons() {
+	let table = Clientdata.table;
+	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
+	let me = getUname();
+	let names = isdef(table)? []:['amanda', 'felix', 'lauren', 'mimi', 'gul'];
+	for (const name of names) {
+		let idname = getButtonCaptionName(name);
+		let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
+		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
+	}
+	if (nundef(table)) return;
+
+	let playmode = getPlaymode(table, me); 
+	if (nundef(playmode)) return;
+	mDom(dExtra,{},{html:`I'm a ${playmode}`});
+	let caption = `Make me ${playmode == 'bot'?'human':'bot'}`;
+	UI.bPlaymode = mButton(caption, testOnclickPlaymode, dExtra); 
+}
+async function testOnclickPlaymode(ev) {
+	let b=UI.bPlaymode;
+	let caption = b.innerHTML;
+	//console.log('caption',caption,caption.includes('human'))
+	if (caption.includes('human')) await onclickHuman(); 
+	else await onclickBot(); 
 }
 
 
