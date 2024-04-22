@@ -27,7 +27,7 @@ function calcBotSpeed(table) {
 async function setBotMove(table) {
 	try {
 		let items = T.items;
-		[T.bNoSet, T.bHint] = setShowButtons(); T.bHint.remove();
+		[T.bNoSet, T.bHint] = setShowButtons(items); T.bHint.remove();
 		mShield(dOpenTable, { bg: '#00000010' });
 		let speed = calcBotSpeed(table); console.log('speed',speed);
 		T.sets = setFindAllSets(items);
@@ -51,7 +51,7 @@ async function setBotMove(table) {
 
 
 async function setOnclickHint(items,direct=false) {
-	console.log('clickedHint',x);//pointerevent
+	console.log('clickedHint',direct);//pointerevent
 	if (!T.numHints) setHintHide();
 	T.numHints -= 1;
 	if (isEmpty(T.sets)) {

@@ -28,21 +28,36 @@ async function setActivate() {
 	try {
 		let items = T.items;
 		T.sets = setFindAllSets(items); 
-		[T.bNoSet, T.bHint] = setShowButtons();
-		setActivateCards();
+		[T.bNoSet, T.bHint] = setShowButtons(items);
+		setActivateCards(items);
 		let use_level = getGameOption('use_level'); if (use_level == 'no') { T.bHint.remove(); return; }
 
 		let level = getPlayerProp('level');
-		T.numHints = level <= 4 ? 2 : 1;
+		let noset=isEmpty(T.sets);
+		T.numHints = level <= 3 ? noset?1:2 : level <= 5 ? 1 : 0;
+	
+		if (level > 5){T.bHint.remove();}
+		else if (level == 1){	T.autoHints = noset?1: 2; T.hintTimes = [2000,3000]; }
+		else if (level == 2){	T.autoHints = noset?1:2; T.hintTimes = [3000,8000]; }
+		else if (level == 3){	T.autoHints = 1; T.hintTimes = [4000]; }
+		else if (level == 4){	T.autoHints = 1; T.hintTimes = [8000]; }
 
+		let i=0;
+		while(i<T.autoHints){
+			await mSleep(T.hintTimes[i]); 
+			if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
+			if (noset) await setOnclickNoSet(items);
+			else 
+		}
 		if (isEmpty(T.sets) && level<5){
 			await mSleep(10000); 
-			if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
-			await setOnclickNoSet(items);
-
-			if (level<5){await mSleep(10000); await T.bHint.click(); }
-		} 
-		else if (level == 1) { await mSleep(2000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000); await T.bHint.click(); }
+		} else if (level == 1) { 
+			await mSleep(2000); 
+			await T.bHint.click(); 
+			if (isEmpty(T.sets)) return; 
+			await mSleep(3000); 
+			await T.bHint.click(); 
+		}
 		else if (level == 2) { await mSleep(3000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click(); }
 		else if (level == 3) { await mSleep(7000); await T.bHint.click(); }
 		else if (level == 4) { await mSleep(10000); await T.bHint.click(); }
@@ -51,10 +66,10 @@ async function setActivate() {
 		else { T.bHint.remove(); } //setHintHide(); }
 	} catch { console.log('human: please reload!') }
 }
-function setActivateCards() {
-	for (const item of T.items) {
+function setActivateCards(items) {
+	for (const item of items) {
 		let d = iDiv(item);
-		d.onclick = () => setOnclickCard(item, T.items, true);
+		d.onclick = () => setOnclickCard(item, items, true);
 		mStyle(d, { cursor: 'pointer' })
 
 	}
@@ -183,12 +198,11 @@ async function setPresent(table) {
 	setStats(table, dOben, 'rowflex', false)
 
 }
-function setShowButtons() {
+function setShowButtons(items) {
 	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
-	let bno = mButton('NO Set', setOnclickNoSet, buttons, { w: 80 }, 'input');
-	let bhint = mButton('Hint', setOnclickHint, buttons, { w: 80 }, 'input');
-	return [bno, bhint]
-
+	let bno = mButton('NO Set', ()=>setOnclickNoSet(items,true), buttons, { w: 80 }, 'input');
+	let bhint = mButton('Hint', ()=>setOnclickHint(items,true), buttons, { w: 80 }, 'input');
+	return [bno, bhint];
 }
 function setStats(table, dParent, layout, showTurn = true) {
 	let [fen,me] = [table.fen,getUname()];
