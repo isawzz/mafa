@@ -1,3 +1,24 @@
+
+async function setActivate() {
+	try {
+		T.sets = setFindAllSets(T.items); 
+		[T.bNoSet, T.bHint] = setShowButtons();
+		setActivateCards();
+		let use_level = getGameOption('use_level'); //console.log('use_level',use_level)
+		if (use_level == 'no') { T.bHint.remove(); return; }
+		let level = getPlayerProp('level');
+		T.numHints = level <= 4 ? 2 : 1;
+		if (isEmpty(T.sets) && level<5){await mSleep(10000); await T.bHint.click(); }
+		else if (level == 1) { await mSleep(2000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000); await T.bHint.click(); }
+		else if (level == 2) { await mSleep(3000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click(); }
+		else if (level == 3) { await mSleep(7000); await T.bHint.click(); }
+		else if (level == 4) { await mSleep(10000); await T.bHint.click(); }
+		else if (level == 5) {  }
+		//else if (level == 6) { }
+		else { T.bHint.remove(); } //setHintHide(); }
+	} catch { console.log('human: please reload!') }
+}
+
 function testUpdateTestButtons() {
 	let table = Clientdata.table;
 	let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });

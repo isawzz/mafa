@@ -26,14 +26,22 @@ function setgame() {
 }
 async function setActivate() {
 	try {
-		T.sets = setFindAllSets(T.items); 
+		let items = T.items;
+		T.sets = setFindAllSets(items); 
 		[T.bNoSet, T.bHint] = setShowButtons();
 		setActivateCards();
-		let use_level = getGameOption('use_level'); //console.log('use_level',use_level)
-		if (use_level == 'no') { T.bHint.remove(); return; }
+		let use_level = getGameOption('use_level'); if (use_level == 'no') { T.bHint.remove(); return; }
+
 		let level = getPlayerProp('level');
 		T.numHints = level <= 4 ? 2 : 1;
-		if (isEmpty(T.sets) && level<5){await mSleep(10000); await T.bHint.click(); }
+
+		if (isEmpty(T.sets) && level<5){
+			await mSleep(10000); 
+			if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
+			await setOnclickNoSet(items);
+
+			if (level<5){await mSleep(10000); await T.bHint.click(); }
+		} 
 		else if (level == 1) { await mSleep(2000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(3000); await T.bHint.click(); }
 		else if (level == 2) { await mSleep(3000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click(); }
 		else if (level == 3) { await mSleep(7000); await T.bHint.click(); }

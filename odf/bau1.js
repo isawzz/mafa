@@ -1,8 +1,17 @@
-function checkInterrupt(items) { return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0]; } //DA.counterBot > DA.counter + 1; }
+
+function checkInterrupt(items) { 
+	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0]; 
+} 
+function stopAutobot(){
+	if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
+	DA.stopAutobot = true;
+	T.numHints = 0; 
+}
 function INTERRUPT() {
 	DA.merged = get_now(); //console.log('ts', DA.merged);
 	if (isdef(TO.SLEEPTIMEOUT)) { clearEvents(); } //Timeout(TO.SLEEPTIMEOUT); TO.SLEEPTIMEOUT = null; }
 	DA.Tprev = T; T = null;
+	delete DA.stopAutobot;
 }
 function calcBotLevel(table){
 	let humanPlayers = dict2list(table.fen.players).filter(x => x.playmode == 'human');
@@ -41,7 +50,9 @@ async function setBotMove(table) {
 }
 
 
-async function setOnclickHint() {
+async function setOnclickHint(x) {
+	console.log('clickedHint',x);//pointerevent
+	if (!T.numHints) setHintHide();
 	T.numHints -= 1;
 	if (isEmpty(T.sets)) {
 		//console.log('no set'); 
@@ -75,8 +86,10 @@ async function setOnclickCard(item, items, direct = false) {
 	//console.log('click', item.key)
 	//if (direct) setStopAutoHints();
 	if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
-	if (!direct && item.isSelected) { console.log('already clicked!'); return; }
-	else if (direct) {T.numHints--;if (!T.numHints) setHintHide();}
+	else if (direct) stopAutobot();
+	else if (!direct && item.isSelected) { console.log('already clicked!'); return; }
+	else if (DA.stopAutobot==true) return;
+	//else if (direct) {T.numHints--;if (!T.numHints) setHintHide();}
 	toggleItemSelection(item);
 	let selitems = items.filter(x => x.isSelected);
 	let [keys, m] = [selitems.map(x => x.key), selitems.length];
@@ -112,7 +125,7 @@ async function setOnclickCard(item, items, direct = false) {
 		let res = await sendMergeTable({ id: table.id, name: me, overrideList }); // console.log('res', res)
 	}
 }
-async function setOnclickNoSet(items) {
+async function setOnclickNoSet(items,direct=true) {
 	//clearEvents();
 	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
 	let b=T.bNoSet; mClass(b,'framedPicture')

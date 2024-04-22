@@ -3,4 +3,4 @@ color: '#008a8a'
 key: amanda
 setgame:
   level: 6
-  playmode: bot
+  playmode: human
