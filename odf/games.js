@@ -37,33 +37,19 @@ async function setActivate() {
 		T.numHints = level <= 3 ? noset?1:2 : level <= 5 ? 1 : 0;
 	
 		if (level > 5){T.bHint.remove();}
-		else if (level == 1){	T.autoHints = noset?1: 2; T.hintTimes = [2000,3000]; }
-		else if (level == 2){	T.autoHints = noset?1:2; T.hintTimes = [3000,8000]; }
-		else if (level == 3){	T.autoHints = 1; T.hintTimes = [4000]; }
-		else if (level == 4){	T.autoHints = 1; T.hintTimes = [8000]; }
+		else if (level == 1){	T.autoHints = noset?1: 2; T.hintTimes = [noset?10000:2000,5000]; }
+		else if (level == 2){	T.autoHints = noset?1:2; T.hintTimes = [noset?10000:3000,8000]; }
+		else if (level == 3){	T.autoHints = 1; T.hintTimes = [noset?10000:4000]; }
+		else if (level == 4){	T.autoHints = 1; T.hintTimes = [noset?10000:8000]; }
 
 		let i=0;
 		while(i<T.autoHints){
 			await mSleep(T.hintTimes[i]); 
 			if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
-			if (noset) await setOnclickNoSet(items);
-			else 
+			if (DA.stopAutobot == true) { console.log(`autoHint ${i}`); return; }
+			await setOnclickHint(items);
+			i++;
 		}
-		if (isEmpty(T.sets) && level<5){
-			await mSleep(10000); 
-		} else if (level == 1) { 
-			await mSleep(2000); 
-			await T.bHint.click(); 
-			if (isEmpty(T.sets)) return; 
-			await mSleep(3000); 
-			await T.bHint.click(); 
-		}
-		else if (level == 2) { await mSleep(3000); await T.bHint.click(); if (isEmpty(T.sets)) return; await mSleep(10000); await T.bHint.click(); }
-		else if (level == 3) { await mSleep(7000); await T.bHint.click(); }
-		else if (level == 4) { await mSleep(10000); await T.bHint.click(); }
-		else if (level == 5) {  }
-		//else if (level == 6) { }
-		else { T.bHint.remove(); } //setHintHide(); }
 	} catch { console.log('human: please reload!') }
 }
 function setActivateCards(items) {

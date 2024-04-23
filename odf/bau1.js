@@ -1,11 +1,10 @@
 
-function checkInterrupt(items) { 
-	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0]; 
-} 
-function stopAutobot(){
+function checkInterrupt(items) {
+	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0];
+}
+function stopAutobot() {
 	if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
 	DA.stopAutobot = true;
-	T.numHints = 0; 
 }
 function INTERRUPT() {
 	DA.merged = get_now(); //console.log('ts', DA.merged);
@@ -13,29 +12,29 @@ function INTERRUPT() {
 	DA.Tprev = T; T = null;
 	delete DA.stopAutobot;
 }
-function calcBotLevel(table){
+function calcBotLevel(table) {
 	let humanPlayers = dict2list(table.fen.players).filter(x => x.playmode == 'human');
 	if (isEmpty(humanPlayers) || getGameOption('use_level') == 'no') return null;
-	let level = arrAverage(humanPlayers, 'level'); 
+	let level = arrAverage(humanPlayers, 'level');
 	return level;
 }
 function calcBotSpeed(table) {
 	let speed = 2000 + Math.round(Math.random() * 2000); //console.log('speed', speed);
 	let botLevel = calcBotLevel(table);
-	return botLevel?speed * 4 / botLevel:speed;
+	return botLevel ? botLevel == 1 ? speed : speed * 4 / botLevel : speed;
 }
 async function setBotMove(table) {
 	try {
 		let items = T.items;
 		[T.bNoSet, T.bHint] = setShowButtons(items); T.bHint.remove();
 		mShield(dOpenTable, { bg: '#00000010' });
-		let speed = calcBotSpeed(table); console.log('speed',speed);
+		let speed = calcBotSpeed(table); console.log('speed', speed);
 		T.sets = setFindAllSets(items);
 		if (isEmpty(T.sets)) {
-			speed*=3; //speed=1000; 
+			speed *= 3; //speed=1000; 
 			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
 			await setOnclickNoSet(items);
-		}	else {
+		} else {
 			let list = rChoose(T.sets); //console.log('set', list);
 			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep 1'); return; }
 			await setOnclickCard(list[0], items);
@@ -50,19 +49,15 @@ async function setBotMove(table) {
 }
 
 
-async function setOnclickHint(items,direct=false) {
-	console.log('clickedHint',direct);//pointerevent
-	if (!T.numHints) setHintHide();
+async function setOnclickHint(items, direct = false) {
+	//console.log('clickedHint',direct, T.numHints);//pointerevent
+	assertion(T.numHints > 0, 'NO Hints left!!!!');
+	if (direct) stopAutobot();
 	T.numHints -= 1;
 	if (isEmpty(T.sets)) {
-		//console.log('no set'); 
-		//await mSleep(2000); 
 		let elem = T.bNoSet;
-		T.numHints = 0;
-
+		T.numHints = 0; setHintHide();
 		ANIM.button = scaleAnimation(elem);
-		//mStyle(elem,{animation:`pulse_animation 800ms ease-in-out 0s 2 alternate`})
-		//mClass(T.bNoSet,'pulse1');
 		return;
 	} else if (nundef(T.hintSet)) {
 		T.hintSet = rChoose(T.sets);
@@ -74,25 +69,29 @@ async function setOnclickHint(items,direct=false) {
 			//pick a new hintSet
 			//at least stop autohints!
 			//setHintHide();
+			//console.log('2 items selected',sofar);
 			return;
 		}
 	}
 
 	let item = T.hintSet.find(x => !x.isSelected);
 	if (!T.numHints) setHintHide();
-	await setOnclickCard(item, T.items);
+	await setOnclickCard(item, T.items, direct);
 }
 async function setOnclickCard(item, items, direct = false) {
-	//console.log('click', item.key)
+	//console.log('click', item.key, direct)
 	//if (direct) setStopAutoHints();
 	if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
 	else if (direct) stopAutobot();
 	else if (!direct && item.isSelected) { console.log('already clicked!'); return; }
-	else if (DA.stopAutobot==true) return;
+	else if (DA.stopAutobot == true) { assertion(!direct, 'direct and autobot true'); return; }
 	//else if (direct) {T.numHints--;if (!T.numHints) setHintHide();}
+	//console.log('NOW!')
 	toggleItemSelection(item);
 	let selitems = items.filter(x => x.isSelected);
+
 	let [keys, m] = [selitems.map(x => x.key), selitems.length];
+	//console.log('keys',keys)
 	let overrideList = [];
 
 	if (m == 3) {
@@ -111,10 +110,10 @@ async function setOnclickCard(item, items, direct = false) {
 			overrideList.push({ keys: ['fen', 'cards'], val: table.fen.cards });
 			overrideList.push({ keys: ['fen', 'deck'], val: table.fen.deck });
 			pl.score++;
-			pl.incScore=1;
+			pl.incScore = 1;
 		} else {
 			pl.score--;
-			pl.incScore=-1;
+			pl.incScore = -1;
 		}
 		//just override my score at server! NOTHING else!!!
 		overrideList.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
@@ -125,16 +124,17 @@ async function setOnclickCard(item, items, direct = false) {
 		let res = await sendMergeTable({ id: table.id, name: me, overrideList }); // console.log('res', res)
 	}
 }
-async function setOnclickNoSet(items,direct=false) {
+async function setOnclickNoSet(items, direct = false) {
 	//clearEvents();
+	if (direct) stopAutobot();
 	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
-	let b=T.bNoSet; mClass(b,'framedPicture')
+	let b = T.bNoSet; mClass(b, 'framedPicture')
 	let [me, table] = [getUname(), Clientdata.table];
 	let [fen, pl] = [table.fen, table.fen.players[me]];
 	let overrideList = [];
 	if (isEmpty(T.sets)) { //if there is no set, increase score, add 1 card
 		pl.score++;
-		pl.incScore=1;
+		pl.incScore = 1;
 		let newCards = deckDeal(fen.deck, 1); //add 1 cards!
 		if (!isEmpty(newCards)) {
 			fen.cards.push(newCards[0]);
@@ -149,7 +149,7 @@ async function setOnclickNoSet(items,direct=false) {
 		}
 	} else {
 		pl.score--;
-		pl.incScore=-1;
+		pl.incScore = -1;
 	}
 	overrideList.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
 	if (pl.playmode == 'bot') {
