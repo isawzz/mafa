@@ -200,8 +200,14 @@ app.get('/user', (req, res) => {
 });
 app.get('/otherUser', (req, res) => {
 	let params = req.query;
-	let [name1, name2] = [params.name1, params.name2];
-	let name = Session.lastUser = (Session.lastUser == name1 ? name2 : name1);
+	// console.log('params',params,Object.values(params));
+	let list = Array.from(Object.values(params));
+	//console.log(list)
+	let i = list.indexOf(Session.lastUser);
+	//console.log(i)
+	let name = Session.lastUser = i<0?list[0]:list[(i+1)%list.length];
+	// let [name1, name2] = [params.name1, params.name2];
+	// let name = Session.lastUser = (Session.lastUser == name1 ? name2 : name1);
 	res.json(name);
 });
 app.get('/users', (req, res) => {

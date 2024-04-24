@@ -47,8 +47,6 @@ async function setBotMove(table) {
 	} catch { console.log('please reload!') }
 
 }
-
-
 async function setOnclickHint(items, direct = false) {
 	//console.log('clickedHint',direct, T.numHints);//pointerevent
 	assertion(T.numHints > 0, 'NO Hints left!!!!');

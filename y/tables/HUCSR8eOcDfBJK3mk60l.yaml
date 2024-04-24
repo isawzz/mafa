@@ -1,0 +1,59 @@
+status: started
+id: HUCSR8eOcDfBJK3mk60l
+fen:
+  players:
+    mimi:
+      playmode: human
+      score: 0
+      level: 3
+      name: mimi
+      color: '#f28cb2'
+      key: mimi
+    gul:
+      playmode: human
+      score: 0
+      level: 1
+      name: gul
+      color: '#2662d9'
+      key: gul
+    amanda:
+      playmode: bot
+      score: 28
+      level: 6
+      name: amanda
+      color: '#008a8a'
+      key: amanda
+  deck: []
+  cards:
+    - green_oval_1_solid
+    - red_squiggle_2_solid
+    - red_squiggle_1_solid
+    - red_diamond_3_striped
+    - green_diamond_1_solid
+    - green_squiggle_2_striped
+    - purple_squiggle_1_solid
+    - green_squiggle_3_striped
+    - purple_diamond_3_striped
+    - purple_oval_2_striped
+    - purple_squiggle_1_striped
+    - red_oval_1_solid
+  plorder:
+    - mimi
+    - gul
+    - amanda
+  turn:
+    - mimi
+    - gul
+    - amanda
+game: setgame
+owner: mimi
+friendly: tournament of Tiraspol
+playerNames:
+  - mimi
+  - gul
+  - amanda
+options:
+  use_level: hidden
+  numCards: 12
+step: 0
+clientid: l6D3jtiVH7xId7hoAAAL

@@ -1569,8 +1569,13 @@ async function switchToMenu(menu, key) {
 	Clientdata.curMenu = key; //console.log('switchToMenu',Clientdata)
 	await menuOpen(menu, key);
 }
-async function switchToOtherUser(name1,name2) {
+async function _switchToOtherUser(name1,name2) {
 	let uname = await mGetRoute('otherUser',{name1,name2});
+	await switchToUser(uname);
+}
+async function switchToOtherUser() {
+	let uname = await mGetRoute('otherUser',arguments);
+	console.log('uname',uname)
 	await switchToUser(uname);
 }
 async function switchToUser(uname) {
