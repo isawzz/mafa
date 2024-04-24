@@ -10,7 +10,8 @@ async function showTable(table) {
 	clearEvents();
 	showTitle(`${table.friendly}`);
 	let func = DA.funcs[table.game];
-	await func.present(table);
+	T = {};
+	let items = T.items = await func.present('dMain',table);
 	mRise('dMain');
 
 	let playmode = getPlaymode(table,me);
@@ -20,8 +21,8 @@ async function showTable(table) {
 
 	if (!table.fen.turn.includes(me)) return;
 
-	if (playmode == 'bot') return await func.botMove(table, me);
-	else return await func.activate(table);
+	if (playmode == 'bot') return await func.botMove(table, items, me);
+	else return await func.activate(table, items);
 
 }
 

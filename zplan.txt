@@ -1,3 +1,16 @@
+_____ mi 24.4.24 airport 220
+5:25 AM 4/24/2024 220
+6:05 AM 4/24/2024 260
+6:32 AM 4/24/2024 285
+- simplest way to make a bot!
+
+- wie mach ich einen user im minimode?
+- wie mach ich einen passiven bot user den man NICHT sieht?
+- ich moecht einen solo mode machen!!!
+- kann ich ein pic in pic machen????
+- der bot soll seine geschwindigkeit anpassen!
+
+
 _____ mi 17.4.24 airport 400
 5:03 AM 4/17/2024 400
 ok - nach collect options passiert was?

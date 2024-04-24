@@ -1,0 +1,55 @@
+status: over
+id: eB19GbgA_h8V4CZKpW2T
+fen:
+  players:
+    gul:
+      playmode: bot
+      score: 8
+      level: 1
+      name: gul
+      color: '#2662d9'
+      key: gul
+    mimi:
+      playmode: bot
+      score: 6
+      level: 3
+      name: mimi
+      color: '#f28cb2'
+      key: mimi
+    amanda:
+      playmode: bot
+      score: 12
+      level: 6
+      name: amanda
+      color: '#008a8a'
+      key: amanda
+  deck: []
+  cards:
+    - purple_diamond_2_solid
+    - purple_squiggle_3_open
+    - red_diamond_1_striped
+    - red_squiggle_2_striped
+    - red_oval_1_solid
+    - purple_oval_3_open
+  plorder:
+    - gul
+    - mimi
+    - amanda
+  turn:
+    - gul
+    - mimi
+    - amanda
+game: setgame
+owner: gul
+friendly: rally of Praia
+playerNames:
+  - gul
+  - mimi
+  - amanda
+options:
+  use_level: hidden
+  numCards: 12
+step: 0
+clientid: Hq64LfjsK0JGmfLrAAAh
+winners:
+  - amanda

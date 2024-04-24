@@ -14,19 +14,18 @@ function setgame() {
 		delete table.players;
 		return fen;
 	}
-	async function activate(table) { await setActivate(); } //console.log('activate for',getUname());}
+	async function activate(table,items) { await setActivate(items); } //console.log('activate for',getUname());}
 	function checkGameover(table) {
 		return table.playerNames.some(x => x.score == table.options.winning_score);
 	}
-	async function present(table) { await setPresent(table); }
+	async function present(dParent,table) { return await setPresent(dParent,table); }
 	async function hybridMove(table) { await setHybridMove(table); } //console.log('activate for',getUname());}
-	async function botMove(table) { await setBotMove(table); } //console.log('activate for',getUname());}
+	async function botMove(table,items,name) { await setBotMove(table,items,name); } //console.log('activate for',getUname());}
 	async function stepComplete(table, o) { }// await setStepComplete(table, o); }
 	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
-async function setActivate() {
+async function setActivate(items) {
 	try {
-		let items = T.items;
 		T.sets = setFindAllSets(items); 
 		[T.bNoSet, T.bHint] = setShowButtons(items);
 		setActivateCards(items);
@@ -127,7 +126,7 @@ function setHintHide() { mClass(T.bHint, 'disabled'); } //mStyle(T.bHint,{displa
 function setLoadPatterns(dParent, colors) {
 	dParent = toElem(dParent);
 	let id = "setpatterns";
-	if (isdef(mBy(id))) { return; }
+	if (isdef(mBy(id))) { return; } //prevent multiple loading!
 	let html = `
 		<svg id="setpatterns" width="0" height="0">
 			<!--  Define the patterns for the different fill colors  -->
@@ -158,12 +157,11 @@ function scaleAnimation(element) {
 	});
 	return ani;
 }
-async function setPresent(table) {
-	T = {};
+async function setPresent(dParent,table) {
 	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
 	setLoadPatterns('dPage', colors);
-	mClear('dMain');
-	let d = mDom('dMain', { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
+	mClear(dParent);
+	let d = mDom(dParent, { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
 	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
 	// mCenterCenterFlex(dOben);
 	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
@@ -172,7 +170,7 @@ async function setPresent(table) {
 	let cards = fen.cards;
 	let dp = mDom(dOpenTable, { w100: true }); mCenterFlex(dp);
 	let dBoard = T.dBoard = mGrid(cards.length / 3, 3, dp, { gap: 14 });
-	let items = T.items = [];
+	let items = [];
 	for (const c of cards) {
 		//mDom(dBoard,{},{html:c})
 		let d = setDrawCard(c, dBoard, colors, TESTING ? 80 : 100);
@@ -181,8 +179,8 @@ async function setPresent(table) {
 	}
 
 	//setStats(table.fen, dRechts,'col');
-	setStats(table, dOben, 'rowflex', false)
-
+	setStats(table, dOben, 'rowflex', false);
+	return items;
 }
 function setShowButtons(items) {
 	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
