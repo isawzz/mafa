@@ -9,10 +9,10 @@ async function test51() {
 	await prelims();
 	//console.log('T',T)
 	//T wird in setPresent gesetzt auf {}
-	await switchToOtherUser('mimi', 'amanda','gul');
+	await switchToOtherUser('mimi', 'gul');
 	await switchToMenu(UI.nav, 'play');
 	//await clickOnGame('setgame');
-	//await clickFirstTable();
+	await clickFirstTable();
 	//await onclickTable('Paris');
 }
 async function clickFirstTable() {

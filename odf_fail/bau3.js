@@ -17,9 +17,7 @@ async function collectPlayerOptions(pl, gamename) {
 	let poss = Serverdata.config.games[gamename].ploptions;
 	if (nundef(poss)) return options;
 	for (const p in poss) {
-		let fs = mBy(`d_${p}`);
-		let val = get_checked_radios(fs)[0]; //console.log(p,val)
-		options[p] = isNumber(val) ? Number(val) : val;
+		options[p] = getRadioValue(p);
 		//console.log('change',p,options[p])
 	}
 	pl[gamename] = options;
