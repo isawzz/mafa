@@ -1321,7 +1321,7 @@ async function showGameOptions(dParent, game) {
 	}
 
 	//if there is a gamemode radiogroup have to do something when user clicks 'bot' value or when user clicks 'human' value
-	let inpsolo=mBy(`i_gamemode_solo`);console.log('HALLO',inpsolo)
+	let inpsolo=mBy(`i_gamemode_solo`);//console.log('HALLO',inpsolo)
 	let inpmulti=mBy(`i_gamemode_multi`);
 	if (isdef(inpsolo)) inpsolo.onclick = setPlayersToSolo;
 	if (isdef(inpmulti)) inpmulti.onclick = setPlayersToMulti;
@@ -1582,7 +1582,7 @@ async function _switchToOtherUser(name1,name2) {
 }
 async function switchToOtherUser() {
 	let uname = await mGetRoute('otherUser',arguments);
-	console.log('uname',uname)
+	//console.log('uname',uname)
 	await switchToUser(uname);
 }
 async function switchToUser(uname) {

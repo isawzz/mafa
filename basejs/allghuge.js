@@ -1,3 +1,4 @@
+H=[];
 const ANIM={};
 var dNav,dOpenTable;
 var Session = {};

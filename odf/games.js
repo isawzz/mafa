@@ -16,17 +16,17 @@ function setgame() {
 	}
 	function checkGameover(table) { return table.playerNames.some(x => x.score == table.options.winning_score); }
 
-	async function activate(vid) { await setActivate(vid); } //console.log('activate for',getUname());}
-	async function botMove(vid) { await setBotMove(vid); } //console.log('activate for',getUname());}
+	async function activate(vid) { await setActivate(vid); } 
+	async function botMove(vid) { await setBotMove(vid); } 
 	async function presentTable(dParent, table, name, sz) { return await setPresentTable(dParent, table, name, sz); }
 	async function presentPlayer(vid) { return await setPresentPlayer(vid); }
 	async function presentStats(dParent,vid) { return await setPresentStats(dParent,vid); }
 	return { setup, checkGameover, activate, botMove, presentTable, presentPlayer, presentStats };
 }
 async function setActivate(vid) {
-	let view = V[vid];
+	let view = V[vid]; //console.log('view',view)
 	let items = view.items;
-	try {
+	//try {
 		view.sets = setFindAllSets(items);
 		[view.bNoSet, view.bHint] = setShowButtons(items);
 		setActivateCards(items);
@@ -45,12 +45,12 @@ async function setActivate(vid) {
 		let i = 0;
 		while (i < view.autoHints) {
 			await mSleep(view.hintTimes[i]);
-			if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
+			//if (checkInterrupt(vid)) { console.log(`autoHint ${i}`); return; }
 			if (DA.stopAutobot == true) { console.log(`autoHint ${i}`); return; }
 			await setOnclickHint(items);
 			i++;
 		}
-	} catch { console.log('human: please reload!') }
+	//} catch { console.log('human: please reload!') }
 }
 function setActivateCards(items) {
 	for (const item of items) {
@@ -157,28 +157,6 @@ function scaleAnimation(element) {
 
 	});
 	return ani;
-}
-async function setPresentTable(dParent, table, name, sz) {
-	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
-	setLoadPatterns('dPage', colors);
-
-	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.fen.players, table.fen.turn];
-	let cards = fen.cards;
-	let dp = mDom(dParent, { w100: true }); mCenterFlex(dp);
-	let dBoard = mGrid(cards.length / 3, 3, dp, { gap: isdef(sz) ? sz / 8 : 14 });
-	let items = [];
-	for (const c of cards) {
-		//mDom(dBoard,{},{html:c})
-		let d = setDrawCard(c, dBoard, colors, isdef(sz) ? sz : TESTING ? 80 : 100);
-		let item = mItem({ div: d }, { key: c });
-		items.push(item);
-	}
-	return { dBoard, items, div:dParent, table, name, sz };
-	return;
-	// mCenterCenterFlex(dOben);
-	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
-
-	
 }
 async function setPresentPlayer(vid){
 	let view = V[vid];

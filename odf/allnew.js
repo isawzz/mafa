@@ -1613,26 +1613,15 @@ function uiTypePlayerStats(fen, me, dParent, layout, styles = {}) {
   let dOuter = mDom(dParent); dOuter.setAttribute('inert',true); //console.log(dOuter)
   if (layout == 'rowflex') mStyle(dOuter,{display:'flex',justify:'center'});
   else if (layout == 'col') mStyle(dOuter,{display:'flex',dir:'column'});
-  //let styles = jsCopy(styles);
-  // addKeys({ rounding: 10, bg: '#00000050', margin: 4, padding: 4, patop: 12, box: true, 'border-style': 'solid', 'border-width': 6 }, styles);
   addKeys({ rounding: 10, bg: '#00000050', margin: 4, box: true, 'border-style': 'solid', 'border-width': 4 }, styles);
-  let show_first = me;
-  let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
+  let n = fen.plorder.indexOf(me);
+  let order = arrCycle(fen.plorder, n<0?0:n );
   let items = {};
   for (const name of order) {
     let pl = fen.players[name];
-    styles['border-color'] = name == me?colorLighter(pl.color):pl.color;
+    styles['border-color'] = name == me?colorDarker(pl.color):pl.color;
     let d = mDom(dOuter, styles, { id: name2id(name) })
-    //let picstyle = { w: 50, h: 50, box: true };
-    // let ucolor = pl.color;
-    // if (pl.playmode == 'bot') {
-    //   copyKeys({ rounding: 0, border: `double 6px ${ucolor}` }, picstyle);
-    // } else {
-    //   copyKeys({ rounding: '50%', border: `solid 2px ${ucolor}` }, picstyle);
-    // }
     let img = showUserImage(name, d, 40);mStyle(img,{box:true})
-    //mStyle(img,picstyle)
-    //let img = mImage(imgPath, d, picstyle, 'img_person');
     items[name] = { div: d, img, name };
   }
   return items;

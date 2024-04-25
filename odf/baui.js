@@ -162,8 +162,13 @@ function mStyle(elem, styles = {}, unit = 'px') {
 //#endregion
 
 //#region interrupt zeug
-function checkInterrupt(items) {
-	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0];
+function checkInterrupt() {
+	return TO.SLEEPTIMEOUT;
+	return V[vid] 
+	let vmain = V.main;
+	let old=DA.vmain;
+	return isdef(old) && (nundef(vmain) || vmain.items[0]!=old.items[0]);
+	//return isdef(V.vmain) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0];
 }
 function stopAutobot() {
 	if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
@@ -187,7 +192,7 @@ function calcBotSpeed(table) {
 	return botLevel ? botLevel == 1 ? speed : speed * 4 / botLevel : speed;
 }
 async function setBotMove(table) {
-	try {
+	//try {
 		let items = T.items;
 		[T.bNoSet, T.bHint] = setShowButtons(items); T.bHint.remove();
 		mShield(dOpenTable, { bg: '#00000010' });
@@ -207,7 +212,7 @@ async function setBotMove(table) {
 			await setOnclickCard(list[2], items);
 		}
 		console.log('* END OF AUTOMOVE *');
-	} catch { console.log('please reload!') }
+	//} catch { console.log('please reload!') }
 
 }
 async function setOnclickHint(items, direct = false) {
@@ -678,7 +683,7 @@ function getPlayersWithMaxScore(fen) {
 }
 function getPlaymode(idOrTable, name) {
 	if (isDict(idOrTable)) {
-		let table = idOrTable;
+		let table = idOrTable; //console.log(table)
 		return isdef(table.fen) ? table.fen.players[name].playmode : 'no fen';
 	} else if (Clientdata.table) {
 		return Clientdata.table.id == idOrTable ? Clientdata.table.fen.players[name].playmode : 'wrong table';
@@ -824,10 +829,7 @@ async function onclickStartTable(id) {
 	let res = await mPostRoute('postTable', table);
 	//console.log('res', res);
 }
-async function onclickTable(id) {
-	//console.log('_____ onclickTable')
-	await showTable(id)
-}
+async function onclickTable(id) {	await showTable(id); }
 function openGameMenuFor(gamename) { clickOnElemWithAttr('gamename', gamename); }
 function showGameover(table) {
 	let winners = table.winners;
@@ -844,6 +846,17 @@ async function startGame(gamename, players, options) {
 	table = setTableToStarted(table); //fen is created here!!!!
 	let res = await mPostRoute('postTable', table);
 
+}
+function tableLayoutMR(dParent) {
+  clearElement(dParent);
+	let d=mGrid(1,2,dParent);
+	//let d=mDom(dParent,{w100:true,display:'grid'});
+  //d.style.gridTemplateColumns = 2;
+  let [dMiddle, dRechts] = [mDom(d),mDom(d)]; 
+  //mCenterFlex(dMiddle, false);
+  let dOben = mDom(dMiddle, {mabottom:10}, {id:'dOben'});
+  let dOpenTable = mDom(dMiddle, {}, {id:'dOpenTable'});
+	return [dOben,dOpenTable,dRechts];
 }
 
 

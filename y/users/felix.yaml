@@ -3,4 +3,5 @@ color: '#1f8fff'
 key: felix
 setgame:
   level: 6
-  playmode: human
+  playmode: bot
+playmode: bot
