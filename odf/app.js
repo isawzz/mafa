@@ -28,7 +28,6 @@ const cors = require('cors'); app.use(cors());
 app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 //#endregion
 
-
 //#region functions
 function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
 function arrClear(arr) { arr.length = 0; return arr; }

@@ -18,7 +18,7 @@ async function start() {
 	let text,css,project;
 	let glitches = ['startsWith', 'endsWith'];
 	text = '<please call closureFromProject>', css='';
-	text = await combineFromProject('../combu');
+	text = await combineFromProject('../odf');
 
 	let globlist = await codeParseFile('../basejs/allghuge.js');
 	console.log('globlist',globlist);
