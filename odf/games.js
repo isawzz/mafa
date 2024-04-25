@@ -14,36 +14,37 @@ function setgame() {
 		delete table.players;
 		return fen;
 	}
-	async function activate(table,items) { await setActivate(items); } //console.log('activate for',getUname());}
-	function checkGameover(table) {
-		return table.playerNames.some(x => x.score == table.options.winning_score);
-	}
-	async function present(dParent,table) { return await setPresent(dParent,table); }
-	async function hybridMove(table) { await setHybridMove(table); } //console.log('activate for',getUname());}
-	async function botMove(table,items,name) { await setBotMove(table,items,name); } //console.log('activate for',getUname());}
-	async function stepComplete(table, o) { }// await setStepComplete(table, o); }
-	return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
+	function checkGameover(table) { return table.playerNames.some(x => x.score == table.options.winning_score); }
+
+	async function activate(vid) { await setActivate(vid); } //console.log('activate for',getUname());}
+	async function botMove(vid) { await setBotMove(vid); } //console.log('activate for',getUname());}
+	async function presentTable(dParent, table, name, sz) { return await setPresentTable(dParent, table, name, sz); }
+	async function presentPlayer(vid) { return await setPresentPlayer(vid); }
+	async function presentStats(dParent,vid) { return await setPresentStats(dParent,vid); }
+	return { setup, checkGameover, activate, botMove, presentTable, presentPlayer, presentStats };
 }
-async function setActivate(items) {
+async function setActivate(vid) {
+	let view = V[vid];
+	let items = view.items;
 	try {
-		T.sets = setFindAllSets(items); 
-		[T.bNoSet, T.bHint] = setShowButtons(items);
+		view.sets = setFindAllSets(items);
+		[view.bNoSet, view.bHint] = setShowButtons(items);
 		setActivateCards(items);
-		let use_level = getGameOption('use_level'); if (use_level == 'no') { T.bHint.remove(); return; }
+		let use_level = getGameOption('use_level'); if (use_level == 'no') { view.bHint.remove(); return; }
 
-		let level = getPlayerProp('level');
-		let noset=isEmpty(T.sets);
-		T.numHints = level <= 3 ? noset?1:2 : level <= 5 ? 1 : 0;
-	
-		if (level > 5){T.bHint.remove();}
-		else if (level == 1){	T.autoHints = noset?1: 2; T.hintTimes = [noset?10000:2000,5000]; }
-		else if (level == 2){	T.autoHints = noset?1:2; T.hintTimes = [noset?10000:3000,8000]; }
-		else if (level == 3){	T.autoHints = 1; T.hintTimes = [noset?10000:4000]; }
-		else if (level == 4){	T.autoHints = 1; T.hintTimes = [noset?10000:8000]; }
+		let level = getPlayerProp('level',view.name);
+		let noset = isEmpty(view.sets);
+		view.numHints = level <= 3 ? noset ? 1 : 2 : level <= 5 ? 1 : 0;
 
-		let i=0;
-		while(i<T.autoHints){
-			await mSleep(T.hintTimes[i]); 
+		if (level > 5) { view.bHint.remove(); }
+		else if (level == 1) { view.autoHints = noset ? 1 : 2; view.hintTimes = [noset ? 10000 : 2000, 5000]; }
+		else if (level == 2) { view.autoHints = noset ? 1 : 2; view.hintTimes = [noset ? 10000 : 3000, 8000]; }
+		else if (level == 3) { view.autoHints = 1; view.hintTimes = [noset ? 10000 : 4000]; }
+		else if (level == 4) { view.autoHints = 1; view.hintTimes = [noset ? 10000 : 8000]; }
+
+		let i = 0;
+		while (i < view.autoHints) {
+			await mSleep(view.hintTimes[i]);
 			if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
 			if (DA.stopAutobot == true) { console.log(`autoHint ${i}`); return; }
 			await setOnclickHint(items);
@@ -122,7 +123,7 @@ function setGameover(table) {
 	table.status = 'over';
 	table.winners = getPlayersWithMaxScore(table.fen);
 }
-function setHintHide() { mClass(T.bHint, 'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
+function setHintHide(vid) { let view = V[vid]; mClass(view.bHint, 'disabled'); } //mStyle(view.bHint,{display:'hidden'}); } //view.bHint.remove();}
 function setLoadPatterns(dParent, colors) {
 	dParent = toElem(dParent);
 	let id = "setpatterns";
@@ -157,39 +158,47 @@ function scaleAnimation(element) {
 	});
 	return ani;
 }
-async function setPresent(dParent,table) {
+async function setPresentTable(dParent, table, name, sz) {
 	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
 	setLoadPatterns('dPage', colors);
-	mClear(dParent);
-	let d = mDom(dParent, { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
-	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
-	// mCenterCenterFlex(dOben);
-	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
 
 	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.fen.players, table.fen.turn];
 	let cards = fen.cards;
-	let dp = mDom(dOpenTable, { w100: true }); mCenterFlex(dp);
-	let dBoard = T.dBoard = mGrid(cards.length / 3, 3, dp, { gap: 14 });
+	let dp = mDom(dParent, { w100: true }); mCenterFlex(dp);
+	let dBoard = mGrid(cards.length / 3, 3, dp, { gap: isdef(sz) ? sz / 8 : 14 });
 	let items = [];
 	for (const c of cards) {
 		//mDom(dBoard,{},{html:c})
-		let d = setDrawCard(c, dBoard, colors, TESTING ? 80 : 100);
+		let d = setDrawCard(c, dBoard, colors, isdef(sz) ? sz : TESTING ? 80 : 100);
 		let item = mItem({ div: d }, { key: c });
 		items.push(item);
 	}
+	return { dBoard, items, div:dParent, table, name, sz };
+	return;
+	// mCenterCenterFlex(dOben);
+	//mDom(d, { fz: 100, fg: 'white' }, { html: `we are playing ${getGameFriendly(table.game)}!!!!` })
 
+	
+}
+async function setPresentPlayer(vid){
+	let view = V[vid];
+	let [table, name, dOben]=[view.table,view.name,view.dOben];
+	mDom(dOben,{},{html:name});
+}
+async function setPresentStats(dParent,vid){
+	let view = V[vid];
+	view.dStats=dParent;
+	setStats(view.table, view.name, dParent, 'rowflex', false);
 	//setStats(table.fen, dRechts,'col');
-	setStats(table, dOben, 'rowflex', false);
-	return items;
 }
 function setShowButtons(items) {
 	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
-	let bno = mButton('NO Set', ()=>setOnclickNoSet(items,true), buttons, { w: 80 }, 'input');
-	let bhint = mButton('Hint', ()=>setOnclickHint(items,true), buttons, { w: 80 }, 'input');
+	let bno = mButton('NO Set', () => setOnclickNoSet(items, true), buttons, { w: 80 }, 'input');
+	let bhint = mButton('Hint', () => setOnclickHint(items, true), buttons, { w: 80 }, 'input');
 	return [bno, bhint];
 }
-function setStats(table, dParent, layout, showTurn = true) {
-	let [fen,me] = [table.fen,getUname()];
+function setStats(table, name, dParent, layout, showTurn = true) {
+	let [fen, me] = [table.fen, name];
 	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
 	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
 	//console.log(Clientdata.table)
@@ -201,8 +210,8 @@ function setStats(table, dParent, layout, showTurn = true) {
 
 		//console.log('item',item)
 		if (pl.playmode == 'bot') {
-			let c=getLevelColor(botLevel);
-			mStyle(item.img,{rounding:0,border:`${c} ${botLevel}px solid`});
+			let c = getLevelColor(botLevel);
+			mStyle(item.img, { rounding: 0, border: `${c} ${botLevel}px solid` });
 			//mStyle(iDiv(item),{bg:getLevelColor(botLevel)}); 
 		}
 

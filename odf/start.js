@@ -12,7 +12,7 @@ async function test51() {
 	await switchToOtherUser('mimi', 'amanda','gul');
 	await switchToMenu(UI.nav, 'play');
 	//await clickOnGame('setgame');
-	//await clickFirstTable();
+	await clickFirstTable();
 	//await onclickTable('Paris');
 }
 async function clickFirstTable() {

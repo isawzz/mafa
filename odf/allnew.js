@@ -849,7 +849,7 @@ function loadPlayerColors() {
     let uc = userColors[plname];
     uc = colorHex(uc);
     let already = firstCond(all, x => x.c.toLowerCase() == uc.substring(0, 7).toLowerCase());
-    if (already) console.log('present', uc);
+    if (already) console.log('_present', uc);
   }
   ensureColorDict();
   ensureColorNames();

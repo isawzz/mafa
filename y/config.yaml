@@ -145,7 +145,7 @@ games:
     options:
       use_level: 'yes,no,hidden'
       numCards: 6,9,15,12
-      # mode: 'training,solo,multi'
+      gamemode: 'solo,multi' #training?
       # winning_score: '5,10,20,25'
   sheriff:
     friendly: Sheriff

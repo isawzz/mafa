@@ -1,3 +1,55 @@
+function mGridFromAreas(d, m, cols, rows, cellstyles = {}) {
+  //m is a matrix, eg. ['A B C','A D E']
+  let gta = '';
+  let words = [];
+  for (const line of m) {
+    gta = gta + `'${line}' `;
+    let warr = toWords(line);
+    for (const w of warr) if (!words.includes(w)) words.push(w);
+  }
+  let dParent = mDom100(d, { display: 'grid', 'grid-template-areas': gta });
+  dParent.style.gridTemplateColumns = cols;
+  dParent.style.gridTemplateRows = rows;
+  for (const w of words) {
+    let style = copyKeys({ 'grid-area': w, bg: rColor(50) }, cellstyles);
+    let cell = window[w] = mDom(dParent, style, { id: w });
+  }
+  return dParent;
+}
+
+//#region 25.4.24 V
+async function showTable(table) {
+	INTERRUPT(); //reentrance?!?!?
+	DA.counter += 1; let me = getUname();
+	if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); } 
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+
+	Clientdata.table = table; DA.tsTable=DA.merged;
+
+	clearEvents();
+	showTitle(`${table.friendly}`);
+	let func = DA.funcs[table.game];
+	T = {};
+	let items = T.items = await func.present('dMain',table);
+	mRise('dMain');
+
+	let playmode = getPlaymode(table,me);
+	if (TESTING) testUpdateTestButtons();
+
+	if (table.status == 'over') return showGameover(table);
+
+	if (!table.fen.turn.includes(me)) return;
+
+	if (playmode == 'bot') return await func.botMove(table, items, me);
+	else return await func.activate(table, items);
+
+}
+
+
+
+
+
 //#region 21.4.24 bot move trial 1
 function checkInterrupt(items) { return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0]; } //DA.counterBot > DA.counter + 1; }
 function INTERRUPT() {
