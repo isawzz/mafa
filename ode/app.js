@@ -232,6 +232,19 @@ function handle_userChange(x, id) {
 }
 //#endregion
 
+app.get('/filenames', async (req, res) => {
+	const { directory: dir } = req.query;
+	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
+	try {
+		const directoryPath = dir.startsWith('C:') ? dir : path.join(assetsDirectory, dir);
+		//console.log('dirpath', directoryPath)
+		const files = await fsp.readdir(directoryPath);
+		//console.log('files',files)
+		res.json({ files });
+	} catch (err) {
+		res.status(500).json({ error: 'Error reading directory', details: err.message });
+	}
+});
 
 app.get('/session', (req, res) => {
 	console.log('==> get session')
