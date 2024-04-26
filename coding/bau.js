@@ -432,6 +432,7 @@ function createListsFromSeed(bykey,list,seed){
 
 	//mach die closure von seed
 	let nogos = ['uiGetContact', 'grid']; // { codingfull: ['uiGetContact'], coding: ['uiGetContact', 'grid'] };
+	nogos = nogos.concat(['accuse', 'aristo', 'bluff', 'ferro', 'nations', 'spotit' ,'wise','a_game'])
 	// if (project == 'nature') seed = seed.concat(['branch_draw', 'leaf_draw', 'lsys_init', 'tree_init', 'lsys_add', 'tree_add', 'lsys_draw', 'tree_draw']);
 	// let nogos = valf(knownNogos[project], [])
 

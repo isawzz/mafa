@@ -1,5 +1,31 @@
 
-async function start() { await test1_ode(); }
+async function start() { await test2_ode(); }
+async function test2_ode() {
+	S.type = detectSessionType();
+	initCodingUI();
+	let bykey = await getCodeDictByKey('../basejs/allfhuge.js');
+	addKeys(await getCodeDictByKey('../basejs/allghuge.js'),bykey);
+	copyKeys(await getCodeDictByKey(`../ode/code.js`),bykey);
+	DA.diglobal = bykey;
+	let list = DA.listglobal = dict2list(bykey); 
+
+	let bytype = {};
+	for (const k in bykey) { let o = bykey[k]; lookupAddIfToList(bytype, [o.type], o); }
+
+	let seed = await getCodeKeys(`../ode/code.js`); //console.log('seed', seed);
+
+	let [globs, funcs, byKeyMinimized] = createListsFromSeed(bykey, list, seed);
+	//let byKeyMinimized = _minimizeCode(bykey, seed, []);
+	//console.log('res',byKeyMinimized); return;
+
+
+	//console.log('funcs',funcs); return;
+
+	let text = generateCodeText(globs, funcs, byKeyMinimized);
+
+	AU.ta.value = text;
+
+}
 async function test1_ode() {
 	S.type = detectSessionType();
 	initCodingUI();
