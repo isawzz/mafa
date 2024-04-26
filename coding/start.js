@@ -96,11 +96,13 @@ function minimizeCode(di, symlist = ['start'], nogo = []) {
 		visited[sym] = true;
 		let o = di[sym]; //console.log('o',o)
 		if (nundef(o)) { tbd.shift(); continue; }
+		if (sym.length <= 2 && o.type != 'var' && o.type != 'const') {tbd.shift(); console.log('discard',o); continue;}
+		if (sym.includes('_') && o.type == 'function') {tbd.shift(); console.log('discard',o); continue;}
 		let text = o.code;
 		let words = toWords(text, true);
 		for (const w of words) {
 			if (nogo.some(x => w.startsWith(x))) continue;
-			if (w.startsWith('d') && w[1]==w[1].toUpperCase()) continue;
+			if (w.length>2  && w.startsWith('d') && w[1]==w[1].toUpperCase()) continue;
 
 			//remove words within quotes that are functions
 			let idx = text.indexOf(w);

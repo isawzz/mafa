@@ -2,5 +2,5 @@ name: mimi
 color: '#f28cb2'
 key: mimi
 setgame:
-  level: 7
+  level: 1
   playmode: human
