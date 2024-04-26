@@ -1,297 +1,3 @@
-const ANIM={};
-var Session = {};
-var Clientdata = {};
-const allPeeps = []
-const availablePeeps = []
-const BLUE = '#4363d8';
-const BROWN = '#96613d';
-const ColorList = ['lightgreen', 'lightblue', 'yellow', 'red', 'green', 'blue', 'purple', 'violet', 'lightyellow', 'teal', 'orange', 'brown', 'olive', 'deepskyblue', 'deeppink', 'gold', 'black', 'white', 'grey'];
-const crowd = []
-const DEF_ORIENTATION = 'v';
-const DEF_SPLIT = 0.5;
-const FIREBRICK = '#800000';
-const GREEN = '#3cb44b';
-const BLUEGREEN = '#004054';
-const img = document.createElement('img')
-const LIGHTBLUE = '#42d4f4';
-const LIGHTGREEN = '#afff45';
-const names = ['felix', 'amanda', 'sabine', 'tom', 'taka', 'microbe', 'dwight', 'jim', 'michael', 'pam', 'kevin', 'darryl', 'lauren', 'anuj', 'david', 'holly'];
-const OLIVE = '#808000';
-const ORANGE = '#f58231';
-const NEONORANGE = '#ff6700';
-const playerColors = {
-  red: '#D01013',
-  blue: '#003399',
-  green: '#58A813',
-  orange: '#FF6600',
-  yellow: '#FAD302',
-  violet: '#55038C',
-  pink: '#ED527A',
-  beige: '#D99559',
-  sky: '#049DD9',
-  brown: '#A65F46',
-  white: '#FFFFFF',
-};
-const PURPLE = '#911eb4';
-const RED = '#e6194B';
-const stage = {
-  width: 0,
-  height: 0,
-}
-const STYLE_PARAMS = {
-  acontent: 'align-content',
-  aitems: 'align-items',
-  align: 'text-align',
-  aspectRatio: 'aspect-ratio',
-  bg: 'background-color',
-  dir: 'flex-direction',
-  family: 'font-family',
-  fg: 'color',
-  fontSize: 'font-size',
-  fz: 'font-size',
-  gridCols: 'grid-template-columns',
-  gridRows: 'grid-template-rows',
-  h: 'height',
-  hgap: 'column-gap',
-  hmin: 'min-height',
-  hmax: 'max-height',
-  hline: 'line-height',
-  jcontent: 'justify-content',
-  jitems: 'justify-items',
-  justify: 'justify-content',
-  matop: 'margin-top',
-  maleft: 'margin-left',
-  mabottom: 'margin-bottom',
-  maright: 'margin-right',
-  origin: 'transform-origin',
-  overx: 'overflow-x',
-  overy: 'overflow-y',
-  patop: 'padding-top',
-  paleft: 'padding-left',
-  pabottom: 'padding-bottom',
-  paright: 'padding-right',
-  place: 'place-items',
-  rounding: 'border-radius',
-  valign: 'align-items',
-  vgap: 'row-gap',
-  w: 'width',
-  wmin: 'min-width',
-  wmax: 'max-width',
-  weight: 'font-weight',
-  x: 'left',
-  xover: 'overflow-x',
-  y: 'top',
-  yover: 'overflow-y',
-  z: 'z-index'
-};
-const TEAL = '#469990';
-const walks = ['normalWalk']
-const YELLOW = '#ffe119';
-const NEONYELLOW = '#efff04';
-const YELLOW2 = '#fff620';
-const levelColors = [LIGHTGREEN, LIGHTBLUE, YELLOW, 'orange', RED, GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue',
-  'deeppink', TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE,
-  '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'deeppink',
-  'palegreen', '#e6194B'];
-var A;
-var activatedTests = [];
-var AD;
-var ADS;
-var aiActivated;
-var Animation1;
-var AREAS = {};
-var AU = {};
-var auxOpen;
-var Categories;
-var ColorDi;
-var ColorNames;
-var coorsField = {
-  "type": "Feature",
-  "properties": {
-    "popupContent": "Coors Field"
-  },
-  "geometry": {
-    "type": "Point",
-    "coordinates": [-104.99404191970824, 39.756213909328125]
-  }
-};
-var currentGame = IS_TESTING ? 'gTouchPic' : 'sequence';
-var currentLanguage = 'E';
-var currentLevel;
-var DA = {};
-var DB;
-var draggedElement;
-var dragStartOffset;
-var dropPosition = 'none';
-var dynSpec;
-var freeBus = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [-105.00341892242432, 39.75383843460583],
-          [-105.0008225440979, 39.751891803969535]
-        ]
-      },
-      "properties": {
-        "popupContent": "This is a free bus line that will take you across downtown.",
-        "underConstruction": false
-      },
-      "id": 1
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [-105.0008225440979, 39.751891803969535],
-          [-104.99820470809937, 39.74979664004068]
-        ]
-      },
-      "properties": {
-        "popupContent": "This is a free bus line that will take you across downtown.",
-        "underConstruction": true
-      },
-      "id": 2
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [-104.99820470809937, 39.74979664004068],
-          [-104.98689651489258, 39.741052354709055]
-        ]
-      },
-      "properties": {
-        "popupContent": "This is a free bus line that will take you across downtown.",
-        "underConstruction": false
-      },
-      "id": 3
-    }
-  ]
-};
-var FUNCTIONS = {
-  instanceof: 'instanceOf',
-  prop: (o, v) => isdef(o[v]),
-  no_prop: (o, v) => nundef(o[v]),
-  no_spec: (o, v) => false,
-}
-var G = null;
-var gameSequence = IS_TESTING ? ['gSayPicAuto', 'gTouchPic', 'gTouchColors', 'gWritePic', 'gMissingLetter', 'gSayPic'] : ['gSayPic', 'gTouchColors', 'gWritePic'];
-var Goal;
-var I;
-var INFO = {};
-var IS_TESTING = true;
-var IsAnswerCorrect;
-var IsControlKeyDown = false;
-var Items = {};
-var KeySets;
-var lastPosition = 0;
-var LevelChange = true;
-var M = {};
-var MAGNIFIER_IMAGE;
-var MAXLEVEL = 10;
-var nMissing;
-var P;
-var Pictures = [];
-var Players;
-var PolyClips = {
-  hex: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-  test1: 'inset(50% 0% 100% 25% 100% 75% 50% 100% 0% 75% 0% 25% round 10px)',
-  test0: 'inset(45% 0% 33% 10% round 10px)',
-  hexagon: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-  hexF: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-  hexFlat: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-  hexflat: 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)',
-  rect: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-  sq: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-  square: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-  tri: 'polygon(50% 0%, 100% 100%, 0% 100%)',
-  triangle: 'polygon(50% 0%, 100% 100%, 0% 100%)',
-  triUp: 'polygon(50% 0%, 100% 100%, 0% 100%)',
-  triup: 'polygon(50% 0%, 100% 100%, 0% 100%)',
-  triDown: 'polygon(0% 0%, 100% 0%, 50% 100%)',
-  tridown: 'polygon(0% 0%, 100% 0%, 50% 100%)',
-  triright: 'polygon(0% 0%, 100% 50%, 0% 100%)',
-  triRight: 'polygon(0% 0%, 100% 50%, 0% 100%)',
-  trileft: 'polygon(0% 50%, 100% 0%, 100% 100%)',
-  triLeft: 'polygon(0% 50%, 100% 0%, 100% 100%)',
-  splayup: 'polygon(0% 70%, 100% 70%, 100% 100%, 0% 100%)',
-}
-var POOLS = {};
-var PROTO;
-var R;
-var S = {};
-var sData;
-var Selected;
-var Serverdata = {};
-var Settings;
-var SHAPEFUNCS = { 'circle': 'agCircle', 'hex': 'agHex', 'rect': 'agRect', };
-var Socket = null;
-var SPEC = null;
-var Speech;
-var symbolDict;
-var Syms;
-var T;
-var TESTING = false;
-var TO = {};
-var TOFleetingMessage;
-var TOList;
-var TOMain;
-var TOMan;
-var TOTrial;
-var U = null;
-var UI = {};
-var uiActivated = false;
-var UID = 0;
-var UIDCounter = 0;
-var UIROOT;
-var Username;
-var Z;
-var Zones = {};
-class RSG {
-  constructor() {
-    this.nodes = {};
-    this.uiNodes = {};
-    this.isUiActive = false;
-    this.uid2oids = {};
-    this.oid2uids = {};
-    this.path2oid = {};
-  }
-  add_node(n, oid) {
-    this.nodes[oid] = n;
-    if (isEmpty(n.path)) this.root = n;
-    if (isList(n.content) && n.content.length == 0) {
-      n.type = 'empty_list';
-    }
-    this.path2oid[n.path] = n.oid;
-    console.assert(nundef(Items[n.path]), 'duplicate path in Items!!! ' + n.path);
-    console.assert(nundef(Items[oid]), 'duplicate oid in Items!!! ' + oid);
-    Items[n.oid] = Items[n.path] = n;
-  }
-  add_ui_node(ui, uid, oid) {
-    this.uiNodes[uid] = ui;
-    lookupAddIfToList(this.uid2oids, [uid], oid);
-    lookupAddIfToList(this.oid2uids, [oid], uid);
-    if (Items[oid].type != 'card') console.assert(nundef(Items[uid]), 'duplicate uid in Items!!! ' + uid);
-    Items[uid] = ui;
-    let o = Items[oid];
-    ui.setAttribute('oid', oid);
-    iAdd(o, { div: ui });
-  }
-  getUI(uid) { return this.uiNodes[uid]; }
-  get_item_from_path(path) { return Items[path]; }
-  get_item(id) {
-    if (id[0] == '_') {
-      let oid = Items[id].getAttribute('oid');
-      return Items[oid];
-    } else return Items[id];
-  }
-}
 function addAREA(id, o) {
   if (AREAS[id]) {
     error('AREAS ' + id + ' exists already!!! ');
@@ -1605,7 +1311,6 @@ function createOpenTable(gamename, players, options) {
     }else  pdict[name] = o;
   }
   assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
-  console.log('creating table with',pdict); //das geht
   let t = {
     status: 'open',
     id: generateTableId(),
@@ -2523,6 +2228,14 @@ function getCheckedNames(dParent) {
   }
   return res;
 }
+function getCheckedRadios(rg) {
+  let inputs = rg.getElementsByTagName('INPUT');
+  let list = [];
+  for (const ch of inputs) {
+    if (ch.checked) list.push(ch.value);
+  }
+  return list;
+}
 function getCivSpot(civ, row, col, fact = 1) {
   let rAdvisor = { x: 11, y: 27, w: 87, h: 136 }; //von persia
   let rColony1 = { x: 10, y: 193, w: 87, h: 137 }; //von japan
@@ -2969,6 +2682,7 @@ function getMouseCoordinatesRelativeToElement(ev, elem) {
   const y = ev.clientY - rect.top;
   return { x, y };
 }
+function getNow() { return Date.now(); }
 function getO(n, R) { let oid = n.oid; if (isdef(oid)) return R.getO(oid); else return null; }
 function getParams(areaName, oSpec, oid) {
   let params = oSpec.params ? oSpec.params : {};
@@ -3067,6 +2781,7 @@ function getStyleProp(elem, prop) { return getComputedStyle(elem).getPropertyVal
 function getThemeBg() { let style = window.getComputedStyle(document.body); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
 function getThemeDark() { return getCSSVariable('--bgNav'); } //  let bg=getThemeBg();return colorIdealText(bg);}
 function getThemeFg() { return getCSSVariable('--fgButtonHover'); } //  let bg=getThemeBg();return colorIdealText(bg);}
+function getTimestamp() { return Date.now(); }
 function getTurnPlayers(fen) {
   return fen.turn.join(', ');
 }
@@ -3100,6 +2815,7 @@ async function getUser(name, cachedOk = false) {
   return res;
 }
 function getUserColor(uname) { return Serverdata.users[uname].color; }
+function getWaitingHtml(sz = 30) { return `<img src="../assets/icons/active_player.gif" height="${sz}" style="margin:0px ${sz / 3}px" />`; }
 function gFg(g, color, thickness) { g.setAttribute('stroke', color); if (thickness) g.setAttribute('stroke-width', thickness); }
 function gHex(w, h) { let pts = size2hex(w, h); return gPoly(pts); }
 function gLine(x1, y1, x2, y2) { let r = gCreate('line'); r.setAttribute('x1', x1); r.setAttribute('y1', y1); r.setAttribute('x2', x2); r.setAttribute('y2', y2); return r; }
@@ -4433,6 +4149,25 @@ function mDummyFocus() {
 function measureElement(el) {
   let info = window.getComputedStyle(el, null);
   return { w: info.width, h: info.height };
+}
+function measureFieldset(fs) {
+  let legend = fs.firstChild;
+  let r = getRect(legend);
+  let labels = fs.getElementsByTagName('label');
+  let wmax = 0;
+  for (const l of labels) {
+    let r1 = getRect(l);
+    wmax = Math.max(wmax, r1.w);
+  }
+  let wt = r.w;
+  let wo = wmax + 24;
+  let diff = wt - wo;
+  if (diff >= 10) {
+    for (const l of labels) { let d = l.parentNode; mStyle(d, { maleft: diff / 2 }); }
+  }
+  let wneeded = Math.max(wt, wo) + 10;
+  mStyle(fs, { wmin: wneeded });
+  for (const l of labels) { let d = l.parentNode; mStyle(l, { display: 'inline-block', wmin: 50 }); mStyle(d, { wmin: wneeded - 40 }); }
 }
 function measureHeight(elem) { return mGetStyle(elem, 'h') }
 function measureHeightOfTextStyle(dParent, styles = {}) {
@@ -6718,54 +6453,6 @@ async function setPlayerNotPlaying(item, gamename) {
   mRemoveIfExists('dPlayerOptions');
   unselectPlayerItem(item);
 }
-async function setPlayerPlaying(item, gamename) {
-  let [name, da] = [item.name, item.div]; 
-  addIf(DA.playerList, name);
-  selectPlayerItem(item);
-  await collectFromPrevious(gamename);
-  let id = 'dPlayerOptions';
-  DA.lastPlayerItem = item;
-  let poss = getGamePlayerOptions(gamename);
-  if (nundef(poss)) return;
-  let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
-  let bg = getUserColor(name);
-  let rounding = 6;
-  let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
-  mDom(d1, {}, { html: `${name}` }); //title
-  d = mDom(d1, {}); mCenterFlex(d);
-  mCenterCenter(d);
-  for (const p in poss) {
-    let key = p; 
-    let val = poss[p];
-    if (isString(val)) {
-      let list = val.split(',');
-      let legend = formatLegend(key);
-      let fs = mRadioGroup(d, {}, `d_${key}`, legend);
-      for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
-      let userval = p == 'playmode'?'human':lookup(DA.allPlayers, [name, gamename, p]);
-      let radio;
-      let chi = fs.children;
-      for (const ch of chi) {
-        let id = ch.id;
-        if (nundef(id)) continue;
-        let radioval = stringAfterLast(id, '_');
-        if (isNumber(radioval)) radioval = Number(radioval);
-        if (userval == radioval) ch.firstChild.checked = true;
-        else if (nundef(userval) && `${radioval}` == arrLast(list)) ch.firstChild.checked = true;
-      }
-      measureFieldset(fs);
-    }
-  }
-  let r = getRectInt(da, mBy('dGameMenu'));
-  let rp = getRectInt(d1);
-  let [y, w, h] = [r.y - rp.h - 4, rp.w, rp.h];
-  let x = r.x - rp.w / 2 + r.w / 2;
-  if (x < 0) x = r.x - 22;
-  if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
-  mIfNotRelative(dParent);
-  mPos(d1, x, y);
-  mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
-}
 async function setPresent(dParent,table) {
   const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
   setLoadPatterns('dPage', colors);
@@ -7010,6 +6697,10 @@ async function showGameOptions(dParent, game) {
       measureFieldset(fs);
     }
   }
+  let inpsolo=mBy(`i_gamemode_solo`);//console.log('HALLO',inpsolo)
+  let inpmulti=mBy(`i_gamemode_multi`);
+  if (isdef(inpsolo)) inpsolo.onclick = setPlayersToSolo;
+  if (isdef(inpmulti)) inpmulti.onclick = setPlayersToMulti;
 }
 function showGameover(table) {
   let winners = table.winners;
@@ -7480,7 +7171,6 @@ async function switchToMenu(menu, key) {
 }
 async function switchToOtherUser() {
   let uname = await mGetRoute('otherUser',arguments);
-  //console.log('uname',uname)
   await switchToUser(uname);
 }
 async function switchToTables(){return await switchToMainMenu('play');}

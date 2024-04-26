@@ -3,4 +3,5 @@ color: '#2662d9'
 key: gul
 setgame:
   level: 1
-  playmode: human
+  playmode: bot
+playmode: bot

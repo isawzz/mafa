@@ -3,4 +3,4 @@ color: '#4d0085'
 key: bird15
 setgame:
   level: 3
-  playmode: human
+  playmode: bot

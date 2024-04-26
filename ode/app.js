@@ -232,6 +232,46 @@ function handle_userChange(x, id) {
 }
 //#endregion
 
+app.get('/user', (req, res) => {
+	let name = req.query.name;
+	//console.log('==> get user:', name)
+	let data = lookup(Session, ['users', name]);
+	//console.log(data)
+	res.json(data);
+});
+app.get('/otherUser', (req, res) => {
+	let params = req.query;
+	// console.log('params',params,Object.values(params));
+	let list = Array.from(Object.values(params));
+	//console.log(list)
+	let i = list.indexOf(Session.lastUser);
+	//console.log(i)
+	let name = Session.lastUser = i<0?list[0]:list[(i+1)%list.length];
+	// let [name1, name2] = [params.name1, params.name2];
+	// let name = Session.lastUser = (Session.lastUser == name1 ? name2 : name1);
+	res.json(name);
+});
+app.get('/users', (req, res) => {
+	let users = lookup(Session, ['users']);
+	let di = {};
+	for (const k in users) {
+		if (k.includes('_') || k.includes('unsafe') || k == 'guest') continue;
+		di[k] = users[k];
+	}
+	return res.json(di);
+});
+app.get('/config', (req, res) => {
+	console.log('==> get config')
+	res.json(Session.config);
+});
+app.get('/event', (req, res) => {
+	let params = req.query;
+	console.log('==> get event:\n params', Object.keys(params))
+	let data = lookup(Session, ['events', params.id]);
+	//console.log(data)
+	res.json(data);
+});
+app.get('/events', (req, res) => { return res.json(lookup(Session, ['events'])); });
 app.get('/filenames', async (req, res) => {
 	const { directory: dir } = req.query;
 	if (!dir) { return res.status(400).json({ error: 'Directory parameter is missing' }); }
@@ -250,7 +290,220 @@ app.get('/session', (req, res) => {
 	console.log('==> get session')
 	res.json({ users: Session.users, config: Session.config, tables: getTablesInfo() }); 
 });
+app.get('/table', (req, res) => {
+	let params = req.query;
+	//console.log('==> get table:\n params', params); //Object.keys(params))
+	//can also get a table by friendly name
+	let data = lookup(Session, ['tables', params.id]);
+	if (!data) {
+		//search tables by friendly name contains id
+		for (const id in Session.tables) {
+			let t = Session.tables[id];
+			if (t.friendly.toLowerCase().includes(params.id.toLowerCase())) { data = t; break; }
+		}
+	}
+	//console.log(data)
+	res.json(data);
+});
+app.get('/tables', (req, res) => { return res.json(getTablesInfo()); });
 
+//#region post routes (uses emit)
+app.post('/mergeTable', (req, res) => {
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for mergeTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for mergeTable!")
+	let tnew = req.body.table;
+	let data = req.body.overrideList;
+	let table =  lookup(Session, ['tables', id]);
+	console.log('__merge by:',name);
+	if (isdef(data)){
+		//partial merge!
+		for(const o of data){
+			let score = lookupSetOverride(table,o.keys,o.val);
+			let last = arrLast(o.keys);
+			console.log('override',last,isLiteral(o.val)?o.val:typeof o.val)
+		}
+	}else if (isdef(tnew)){
+		console.log(Object.keys(tnew))
+		table = deepmergeOverride(table,tnew);
+	}
+	saveTable(id, table);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(arrMinus(table.playerNames,name), 'merged', table);
+	res.json(table);
+});
+app.post('/postTable', (req, res) => {
+	let id = req.body.id;
+	let newTable = req.body;
+	let table = lookup(Session, ['tables', id]);
+	let isNew = !table || table.status == 'open' && newTable.status == 'started';
+	if (isNew) table = newTable; else copyKeys(newTable, table);
+	console.log(newTable.status);
+	let isStarted = table.status == 'started';
+	saveTable(id, table);
+	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
+	console.log(msg)
+	let turn = isStarted ? table.fen.turn : [];
+	io.emit('table', { msg, id, turn, isNew })
+	res.json(msg);
+});
+
+app.post('/deleteImage', (req, res) => {
+	let path1 = path.join(__dirname, req.body.path);
+	console.log('!!!deleting', path1);
+	if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO', path1)
+	res.json(`image deleted ${req.body.path}`);
+});
+app.post('/deleteItem', (req, res) => {
+	let key = req.body.key;
+	if (nundef(M.superdi[key])) {
+		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
+	} else {
+		delete M.superdi[key];
+		let y = yaml.dump(M);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		io.emit('superdi', key);
+		res.json(`item ${key} deleted successfully!`);
+	}
+});
+app.post('/deleteTable', (req, res) => {
+	let id = req.body.id;
+	console.log('<== delete table', id);
+	let t = lookup(Session, ['tables', id]);
+	if (t) {
+		deleteTable(id);
+		io.emit('tables', getTablesInfo());
+		//io.emit('deleteTable', getTablesInfo());
+	}
+	res.json(getTablesInfo());
+});
+app.post('/moveImage', (req, res) => {
+	let [olddir, newdir, filename] = [req.body.olddir, req.body.newdir, req.body.filename];
+	console.log('...move', olddir, newdir, filename);
+	let oldpath = path.join(assetsDirectory, 'img', olddir, filename);
+	let newpath = path.join(assetsDirectory, 'img', newdir, filename);
+	if (fs.existsSync(newpath)) {
+		console.log('@@@@@@@ NOT UNIQUE:', filename)
+		filename = `i${Date.now()}_${filename}`;
+		newpath = path.join(assetsDirectory, 'img', newdir, filename);
+	}
+	let dir = path.join(assetsDirectory, 'img', newdir);
+	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+	else console.log('dir', dir, 'already exists');
+	console.log('move', oldpath, newpath);
+	if (fs.existsSync(oldpath)) {
+		fs.renameSync(oldpath, newpath);
+		res.json({ newpath: `../assets/img/${newdir}/${filename}`, msg: `image renamed to ${filename} in ${newdir}` });
+	} else {
+		console.log('!!!NO', oldpath);
+		res.json(`did NOT find ${oldpath}`);
+	}
+});
+app.post('/postConfig', (req, res) => {
+	console.log('<== post config')
+	let newConfig = req.body;
+	let oldConfig = Session.config;
+	Session.config = deepMerge(oldConfig, newConfig);
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	res.json(Session.config);
+});
+app.post('/postEvent', (req, res) => {
+	let id = req.body.id;
+	let data = req.body;
+	console.log('<== post event')
+	console.log('data', data)
+
+	if (isEmpty(data.text)) delete Session.events[id]; else lookupSetOverride(Session, ['events', id], data);
+	let y = yaml.dump(Session.events);
+	let fname = path.join(dbDirectory, 'events.yaml');
+	fs.writeFileSync(fname, y, 'utf8');
+	res.json(data);
+});
+app.post('/postImage', (req, res) => {
+	console.log('<== post image')
+	const data = req.body;
+	let p = data.path;
+	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
+	let fname;
+	if (isdef(data.coll)) {
+		let dir = path.join(assetsDirectory, 'img', data.coll);
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+		fname = path.join(dir, p);
+	} else {
+		fname = path.join(__dirname, p);
+	}
+	console.log('fname', fname);
+	fs.writeFileSync(fname, base64Data, 'base64');
+	res.json({
+		message: 'File uploaded successfully',
+		fileName: fname,
+	});
+});
+app.post('/postNewItem', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key])) {
+		M.superdi[key] = item;
+		let y = yaml.dump(M);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key = key;
+		io.emit('superdi', item);
+		res.json(`item ${key} posted successfully!`);
+	} else {
+		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
+	}
+});
+app.post('/postUpdateEvent', (req, res) => {
+	let id = req.body.id;
+	let data = req.body;
+	console.log('<== post update event')
+	console.log('data', data)
+
+	if (isEmpty(data.text)) delete Session.events[id]; else lookupSetOverride(Session, ['events', id], data);
+	let y = yaml.dump(Session.events);
+	let fname = path.join(dbDirectory, 'events.yaml');
+	fs.writeFileSync(fname, y, 'utf8');
+	io.emit('event', data);
+	res.json(`events updated successfully!`);
+	//res.json(data);
+});
+app.post('/postUpdateItem', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key])) {
+		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
+	} else {
+		M.superdi[key] = item;
+		let y = yaml.dump(M);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key = key;
+		io.emit('superdi', item);
+		res.json(`item ${key} updated successfully!`);
+	}
+});
+app.post('/postUser', (req, res) => {
+	let name = req.body.name;
+	let userdata = req.body;
+	console.log('<== post user', userdata)
+	if (nundef(userdata.key) || nundef(M.superdi[userdata.key])) userdata.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';
+	let user = lookup(Session, ['users', name]);
+	let isNew = !user;
+	if (isNew) user = userdata; else copyKeys(userdata, user);
+	delete user.div;
+	delete user.isSelected;
+	saveUser(name, user);
+	let msg = `user posted: ${user.name} new:${isNew}`;
+	console.log(msg)
+	res.json(user);
+});
+app.post('/renameImgDir', (req, res) => {
+	let oldname = req.body.oldname;
+	let newname = req.body.newname;
+	fs.renameSync(path.join(assetsDirectory, `img/${oldname}`), path.join(assetsDirectory, `img/${newname}`));
+	res.json(`dir ${oldname} renamed successfully!`);
+});
 
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');

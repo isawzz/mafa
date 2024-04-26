@@ -1,18 +1,38 @@
 
 async function start() { await test2_ode(); }
+async function test4_intode(){
+	test3_integrate(`../ode/clo6.js`,'../ode/bau3.js');
+}
+async function test3_integrate(pathLarge,pathNew){
+	S.type = detectSessionType();
+	initCodingUI();
+	let bykey = await getCodeDictByKey(pathLarge);
+	copyKeys(await getCodeDictByKey(pathNew),bykey);
+
+	let list = Object.keys(bykey);
+	list = sortCaseInsensitive(list);
+	
+	let text = '';
+	for (const k of list) { 
+		text += bykey[k].code + '\r\n'; 
+	}
+	AU.ta.value = text;
+
+}
 async function test2_ode() {
 	S.type = detectSessionType();
 	initCodingUI();
 	let bykey = await getCodeDictByKey('../basejs/allfhuge.js');
 	addKeys(await getCodeDictByKey('../basejs/allghuge.js'),bykey);
-	copyKeys(await getCodeDictByKey(`../ode/code.js`),bykey);
+	copyKeys(await getCodeDictByKey(`../ode/globals.js`),bykey);
+	copyKeys(await getCodeDictByKey(`../ode/closure.js`),bykey);
 	DA.diglobal = bykey;
 	let list = DA.listglobal = dict2list(bykey); 
 
 	let bytype = {};
 	for (const k in bykey) { let o = bykey[k]; lookupAddIfToList(bytype, [o.type], o); }
 
-	let seed = await getCodeKeys(`../ode/code.js`); //console.log('seed', seed);
+	let seed = await getCodeKeys(`../ode/closure.js`); //console.log('seed', seed);
 
 	let [globs, funcs, byKeyMinimized] = createListsFromSeed(bykey, list, seed);
 	//let byKeyMinimized = _minimizeCode(bykey, seed, []);
@@ -23,9 +43,11 @@ async function test2_ode() {
 
 	let text = generateCodeText(globs, funcs, byKeyMinimized);
 
+
 	AU.ta.value = text;
 
 }
+
 async function test1_ode() {
 	S.type = detectSessionType();
 	initCodingUI();
@@ -55,7 +77,7 @@ async function test1_ode() {
 function createListsFromSeed(bykey,list,seed){
 
 	//mach die closure von seed
-	let nogos = ['uiGetContact', 'grid']; // { codingfull: ['uiGetContact'], coding: ['uiGetContact', 'grid'] };
+	let nogos = ['RSG','annotate','geht','uiGetContact', 'grid']; // { codingfull: ['uiGetContact'], coding: ['uiGetContact', 'grid'] };
 	nogos = nogos.concat(['accuse', 'aristo', 'bluff', 'ferro', 'nations', 'spotit' ,'wise','a_game'])
 	// if (project == 'nature') seed = seed.concat(['branch_draw', 'leaf_draw', 'lsys_init', 'tree_init', 'lsys_add', 'tree_add', 'lsys_draw', 'tree_draw']);
 	// let nogos = valf(knownNogos[project], [])
@@ -135,7 +157,7 @@ async function test01_try() {
 		bytype.function[k]
 	}
 }
-async function test0() {
+async function test0(dir='odf') {
 	S.type = detectSessionType();
 	initCodingUI();
 
@@ -154,10 +176,10 @@ async function test0() {
 	let text, css, project;
 	let glitches = ['startsWith', 'endsWith'];
 	text = '<please call closureFromProject>', css = '';
-	//text = await combineFromProject('../odf');
+	text = await combineFromProject(`../${dir}`);
 
 	let globlist = await codeParseFile('../basejs/allghuge.js');
-	console.log('globlist', globlist); return;
+	console.log('globlist', globlist); //return;
 	let globsused = [];
 	for (const o of globlist) {
 		let k = o.key;

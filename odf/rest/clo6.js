@@ -1,6 +1,15 @@
-async function _switchToOtherUser(name1,name2) {
-  let uname = await mGetRoute('otherUser',{name1,name2});
-  await switchToUser(uname);
+function addAREA(id, o) {
+  if (AREAS[id]) {
+    error('AREAS ' + id + ' exists already!!! ');
+    error(o);
+    return;
+  }
+  AREAS[id] = o;
+}
+function addDummy(dParent, place) {
+  let b = mButton('', null, dParent, { opacity: 0, h: 0, w: 0, padding: 0, margin: 0, outline: 'none', border: 'none', bg: 'transparent' });
+  if (isdef(place)) mPlace(b, place);
+  b.id = 'dummy';
 }
 function addEditable(dParent, styles = {}, opts = {}) {
   addKeys({ tag: 'input', classes: 'plain' }, opts)
@@ -14,6 +23,25 @@ function addEditable(dParent, styles = {}, opts = {}) {
     }
   });
   return x;
+}
+function addIf(arr, el) { if (!arr.includes(el)) arr.push(el); }
+function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
+function addPeepToCrowd() {
+  const peep = removeRandomFromArray(availablePeeps)
+  const walk = getRandomFromArray(walks)({
+    peep,
+    props: resetPeep({
+      peep,
+      stage,
+    })
+  }).eventCallback('onComplete', () => {
+    removePeepFromCrowd(peep)
+    addPeepToCrowd()
+  })
+  peep.walk = walk
+  crowd.push(peep)
+  crowd.sort((a, b) => a.anchorY - b.anchorY)
+  return peep
 }
 function addToolX(cropper, d) {
   let img = cropper.img;
@@ -95,6 +123,48 @@ function adjustCropperBy(dc, x, y, dx, dy, wImg, hImg, szIdeal) {
   mStyle(dc, { left: xNew, top: yNew, w: wNew, h: hNew }); //,w:sz,h:sz});
 }
 function adjustCropperBySimple(dc, x, y, dx, dy) { mStyle(dc, { left: x + dx, top: y + dy }); }
+function agColoredShape(g, shape, w, h, color) {
+  SHAPEFUNCS[shape](g, w, h);
+  gBg(g, color);
+}
+function allCondDict(d, func) {
+  let res = [];
+  for (const k in d) { if (func(d[k])) res.push(k); }
+  return res;
+}
+function allNumbers(s) {
+  let m = s.match(/\-.\d+|\-\d+|\.\d+|\d+\.\d+|\d+\b|\d+(?=\w)/g);
+  if (m) return m.map(v => +v); else return null;
+}
+function alphaToHex(zero1) {
+  zero1 = Math.round(zero1 * 100) / 100;
+  var alpha = Math.round(zero1 * 255);
+  var hex = (alpha + 0x10000)
+    .toString(16)
+    .slice(-2)
+    .toUpperCase();
+  var perc = Math.round(zero1 * 100);
+  return hex;
+}
+function animate(elem, aniclass, timeoutms) {
+  mClass(elem, aniclass);
+  TOMan.TO.anim = setTimeout(() => mRemoveClass(elem, aniclass), timeoutms);
+}
+function annotate(sp) {
+  for (const k in sp) {
+    let node = sp[k];
+    node.pool = [];
+    let pool = makePool(node);
+    for (const oid in pool) {
+      let o = pool[oid];
+      if (!evalCond(o, node)) continue;
+      if (nundef(o.RSG)) o.RSG = {};
+      let rsg = o.RSG;
+      rsg[k] = true;
+      node.pool.push(oid);
+    }
+  }
+}
 function arrAllSameOrDifferent(arr) {
   if (arr.length === 0) {
     return true; 
@@ -107,8 +177,94 @@ function arrAllSameOrDifferent(arr) {
   const allDifferent = uniqueElements.size === arr.length;
   return allDifferent;
 }
+function arrAverage(arr, prop) {
+  let n = arr.length; if (!n) return 0;
+  let sum = arrSum(arr, prop);
+  return sum / n;
+}
+function arrChildren(elem) { return [...toElem(elem).children]; }
 function arrClear(arr) { arr.length = 0; return arr; }
+function arrCycle(arr, count) { return arrRotate(arr, count); }
+function arrLast(arr) { return arr.length > 0 ? arr[arr.length - 1] : null; }
+function arrMax(arr, f) { return arrMinMax(arr, f).max; }
+function arrMinMax(arr, func) {
+  if (nundef(func)) func = x => x;
+  else if (isString(func)) { let val = func; func = x => x[val]; }
+  let min = func(arr[0]), max = func(arr[0]), imin = 0, imax = 0;
+  for (let i = 1, len = arr.length; i < len; i++) {
+    let v = func(arr[i]);
+    if (v < min) {
+      min = v; imin = i;
+    } else if (v > max) {
+      max = v; imax = i;
+    }
+  }
+  return { min: min, imin: imin, max: max, imax: imax, elmin: arr[imin], elmax: arr[imax] };
+}
+function arrMinus(arr, b) { if (isList(b)) return arr.filter(x => !b.includes(x)); else return arr.filter(x => x != b); }
+function arrRange(from = 1, to = 10, step = 1) { let res = []; for (let i = from; i <= to; i += step)res.push(i); return res; }
 function arrRemoveDuplicates(arr) { return Array.from(new Set(arr)); }
+function arrRemovip(arr, el) {
+  let i = arr.indexOf(el);
+  if (i > -1) arr.splice(i, 1);
+  return i;
+}
+function arrReplace1(arr, elweg, eldazu) {
+  let i = arr.indexOf(elweg);
+  arr[i] = eldazu;
+  return arr;
+}
+function arrRotate(arr, count) {
+  var unshift = Array.prototype.unshift,
+    splice = Array.prototype.splice;
+  var len = arr.length >>> 0, count = count >> 0;
+  let arr1 = jsCopy(arr);
+  unshift.apply(arr1, splice.call(arr1, count % len, len));
+  return arr1;
+}
+function arrShuffle(arr) { if (isEmpty(arr)) return []; else return fisherYates(arr); }
+function arrSum(arr, props) {
+  if (nundef(props)) return arr.reduce((a, b) => a + b);
+  if (!isList(props)) props = [props];
+  return arr.reduce((a, b) => a + (lookup(b, props) || 0), 0);
+}
+function arrTake(arr, n = 0, from = 0) {
+  if (isDict(arr)) {
+    let keys = Object.keys(arr);
+    return n > 0 ? keys.slice(from, from + n).map(x => (arr[x])) : keys.slice(from).map(x => (arr[x]));
+  } else return n > 0 ? arr.slice(from, from + n) : arr.slice(from);
+}
+function arrTakeFromTo(arr, a, b) { return takeFromTo(arr, a, b); }
+function arrTakeWhile(arr, func) {
+  let res = [];
+  for (const a of arr) {
+    if (func(a)) res.push(a); else break;
+  }
+  return res;
+}
+function arrWithout(arr, b) { return arrMinus(arr, b); }
+function assertion(cond) {
+  if (!cond) {
+    let args = [...arguments];
+    for (const a of args) {
+      console.log('\n', a);
+    }
+    throw new Error('TERMINATING!!!')
+  }
+}
+function bestContrastingColor(color, colorlist = ['white', 'black']) {
+  let contrast = 0;
+  let result = null;
+  let rgb = colorRGB(color, true);
+  rgb = [rgb.r, rgb.g, rgb.b];
+  for (c1 of colorlist) {
+    let x = colorRGB(c1, true)
+    x = [x.r, x.g, x.b];
+    let c = getContrast(rgb, x);
+    if (c > contrast) { contrast = c; result = c1; }
+  }
+  return result;
+}
 function buyProgressCard(ev) {
   let o = evToAttrElem(ev, 'key');
   console.log('player buys', o.val);
@@ -134,6 +290,11 @@ function calcBotSpeed(table) {
   let speed = 2000 + Math.round(Math.random() * 2000); 
   let botLevel = calcBotLevel(table);
   return botLevel ? botLevel == 1 ? speed : speed * 4 / botLevel : speed;
+}
+function canAct() { return (aiActivated || uiActivated) && !auxOpen; }
+function capitalize(s) {
+  if (typeof s !== 'string') return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 function cardRect(ctx, x, y, color) {
   let dark = '#635651';
@@ -186,6 +347,9 @@ function checkToInput(ev, inp, grid) {
   names.sort();
   inp.value = names.join(', ') + ', ';
 }
+function choose(arr, n, excepti) { return rChoose(arr, n, null, excepti); }
+function chooseRandom(arr) { return rChoose(arr); }
+function clamp(x, min, max) { return Math.min(Math.max(x, min), max); }
 function cLandscape(dParent, styles = {}, opts = {}) {
   if (nundef(styles.w)) styles.w = 100;
   if (nundef(styles.h)) styles.h = styles.w * .65;
@@ -193,12 +357,38 @@ function cLandscape(dParent, styles = {}, opts = {}) {
 }
 function clearBodyDiv(styles = {}, opts = {}) { document.body.innerHTML = ''; return mDom(document.body, styles, opts) }
 function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
+function clearElement(elem) {
+  if (isString(elem)) elem = document.getElementById(elem);
+  if (window.jQuery == undefined) { elem.innerHTML = ''; return elem; }
+  while (elem.firstChild) {
+    $(elem.firstChild).remove();
+  }
+  return elem;
+}
 function clearEvents() { 
   for (const k in TO) {clearTimeout(TO[k]);TO[k]=null;} 
   for (const k in ANIM) {if (isdef(ANIM[k])) ANIM[k].cancel();ANIM[k]=null;} 
 }
+function clearFleetingMessage() {
+  if (isdef(dFleetingMessage)) {
+    dFleetingMessage.remove();
+    dFleetingMessage = null;
+  }
+}
 function clearMain() { DA.counter = 0; clearEvents(); mClear('dMain'); mClear('dTitle'); }
 function clearParent(ev) { mClear(ev.target.parentNode); }
+function clearTimeouts() {
+  onclick = null;
+  clearTimeout(TOMain);
+  clearTimeout(TOFleetingMessage);
+  clearTimeout(TOTrial);
+  if (isdef(TOList)) { for (const k in TOList) { TOList[k].map(x => clearTimeout(x)); } }
+}
+function clearZones() {
+  for (const k in Zones) {
+    clearElement(Zones[k].dData);
+  }
+}
 async function clickFirstTable() {
   let table = Serverdata.tables.find(x => x.status == 'started' && x.playerNames.includes(getUname()));
   if (table) { await onclickTable(table.id); return Clientdata.table; }
@@ -252,6 +442,92 @@ function cNumber(ckey, styles = {}, opts = {}) {
   cPrintSym(c, sym, styleBig, 'cc')
   return c;
 }
+async function codebaseExtendFromProject(project) {
+  let globlist = await codeParseFile('../basejs/allghuge.js');
+  let funclist = await codeParseFile('../basejs/allfhuge.js');
+  let list = globlist.concat(funclist);
+  let bykey = list2dict(list, 'key');
+  let bytype = {};
+  for (const k in bykey) { let o = bykey[k]; lookupAddIfToList(bytype, [o.type], o); }
+  let htmlFile = `../${project}/index.html`;
+  let html = await route_path_text(htmlFile);
+  html = removeCommentLines(html, '<!--', '-->');
+  let dirhtml = `../${project}`;
+  let files = extractFilesFromHtml(html, htmlFile);
+  files = files.filter(x => !x.includes('../all'));
+  console.log('files', files)
+  let [globtext, functext, functextold] = await codebaseFromFiles(files, bykey, bytype, list);
+  return [globtext, functext, functextold];
+}
+async function codebaseFromFiles(files, bykey, bytype, list) {
+  let olist = [];
+  for (const path of files) {
+    let opath = await codeParseFile(path);
+    olist = olist.concat(opath);
+  }
+  let mytype = {}, mykey = {};
+  for (const o of olist) { mykey[o.key] = o; }
+  for (const k in mykey) { let o = mykey[k]; lookupAddIfToList(mytype, [o.type], o); }
+  let dupltext = '';
+  for (const k in mykey) {
+    let onew = mykey[k];
+    let oold = bykey[k];
+    if (isdef(oold) && onew.code == oold.code) {
+      console.log('override w/ SAME code', k);
+    } else if (isdef(oold)) {
+      console.log('override w/ DIFFERENT code', k);
+      oold.oldcode = oold.code;
+      oold.code = onew.code;
+      dupltext += oold.oldcode + '\n' + oold.code + '\n';
+    } else {
+      bykey[k] = onew;
+      lookupAddIfToList(bytype, [onew.type], onew);
+      list.push(onew);
+    }
+  }
+  let globtext = '', functext = '', functextold = '';
+  for (const type of ['const', 'var', 'class']) {
+    if (nundef(bytype[type])) continue;
+    for (const o of bytype[type]) { if (!isEmptyOrWhiteSpace(o.code)) globtext += o.code + '\n'; }
+  }
+  let sortedFuncKeys = sortCaseInsensitive(bytype.function.map(x => x.key)).filter(x => !['step', 'Number'].includes(x));
+  sortedFuncKeys.map(x => functext += isEmptyOrWhiteSpace(bykey[x].code) ? '' : (bykey[x].code + '\n'));
+  sortedFuncKeys.map(x => functextold += (isdef(bykey[x].oldcode) ? bykey[x].oldcode : bykey[x].code) + '\n');
+  return [globtext, functext, functextold]
+}
+function codeParseBlock(lines, i) {
+  let l = lines[i];
+  let type = l[0] == 'a' ? ithWord(l, 1) : ithWord(l, 0);
+  let key = l[0] == 'a' ? ithWord(l, 2, true) : ithWord(l, 1, true);
+  let code = l + '\n'; i++; l = lines[i];
+  while (i < lines.length && !(['var', 'const', 'cla', 'func', 'async'].some(x => l.startsWith(x)) && !l.startsWith('}'))) {
+    if (!(l.trim().startsWith('//') || isEmptyOrWhiteSpace(l))) code += l + '\n';
+    i++; l = lines[i];
+  }
+  code = replaceAllSpecialChars(code, '\t', '  ');
+  code = code.trim();
+  return [{ key: key, type: type, code: code }, i];
+}
+function codeParseBlocks(text) {
+  let lines = text.split('\r\n');
+  lines = lines.map(x => removeTrailingComments(x));
+  let i = 0, o = null, res = [];
+  while (i < lines.length) {
+    let l = lines[i];
+    if (['var', 'const', 'cla', 'func', 'async'].some(x => l.startsWith(x))) {
+      [o, iLineAfterBlock] = codeParseBlock(lines, i);
+      i = iLineAfterBlock;
+      res.push(o)
+    } else i++;
+  }
+  return res;
+}
+async function codeParseFile(path) {
+  let text = await route_path_text(path);
+  let olist = codeParseBlocks(text);
+  return olist;
+}
+function coin(percent = 50) { return Math.random() * 100 < percent; }
 async function collAddItem(coll, key, item) {
   if (nundef(M.superdi[key])) {
     M.superdi[key] = item;
@@ -659,6 +935,127 @@ function collUnselect(elem) { mClassRemove(elem, 'framedPicture'); }
 function colorContrast(dDrop, list = ['white', 'black']) {
   let bg = mGetStyle(dDrop, 'bg'); return bestContrastingColor(bg, list);
 }
+function colorFrom(cAny, a, allowHsl = false) {
+  if (isString(cAny)) {
+    if (cAny[0] == '#') {
+      if (a == undefined) return cAny;
+      cAny = cAny.substring(0, 7);
+      return cAny + (a == 1 ? '' : alphaToHex(a));
+    } else if (isdef(ColorDi) && lookup(ColorDi, [cAny])) {
+      let c = ColorDi[cAny].c;
+      if (a == undefined) return c;
+      c = c.substring(0, 7);
+      return c + (a == 1 ? '' : alphaToHex(a));
+    } else if (cAny.startsWith('rand')) {
+      let spec = capitalize(cAny.substring(4));
+      if (isdef(window['color' + spec])) {
+        c = window['color' + spec]();
+      } else c = rColor();
+      if (a == undefined) return c;
+      return c + (a == 1 ? '' : alphaToHex(a));
+    } else if (cAny.startsWith('linear')) {
+      return cAny;
+    } else if (cAny[0] == 'r' && cAny[1] == 'g') {
+      if (a == undefined) return cAny;
+      if (cAny[3] == 'a') {
+        if (a < 1) {
+          return stringBeforeLast(cAny, ',') + ',' + a + ')';
+        } else {
+          let parts = cAny.split(',');
+          let r = firstNumber(parts[0]);
+          return 'rgb(' + r + ',' + parts[1] + ',' + parts[2] + ')';
+        }
+      } else {
+        if (a < 1) {
+          return 'rgba' + cAny.substring(3, cAny.length - 1) + ',' + a + ')';
+        } else {
+          return cAny;
+        }
+      }
+    } else if (cAny[0] == 'h' && cAny[1] == 's') {
+      if (allowHsl) {
+        if (a == undefined) return cAny;
+        if (cAny[3] == 'a') {
+          if (a < 1) {
+            return stringBeforeLast(cAny, ',') + ',' + a + ')';
+          } else {
+            let parts = cAny.split(',');
+            let r = firstNumber(parts[0]);
+            return 'hsl(' + r + ',' + parts[1] + ',' + parts[2] + ')';
+          }
+        } else {
+          return a == 1 ? cAny : 'hsla' + cAny.substring(3, cAny.length - 1) + ',' + a + ')';
+        }
+      } else {
+        if (cAny[3] == 'a') {
+          cAny = HSLAToRGBA(cAny);
+        } else {
+          cAny = HSLToRGB(cAny);
+        }
+        return colorFrom(cAny, a, false);
+      }
+    } else {
+      ensureColorDict();
+      let c = ColorDi[cAny];
+      if (nundef(c)) {
+        if (cAny.startsWith('rand')) {
+          let spec = cAny.substring(4);
+          if (isdef(window['color' + spec])) {
+            c = window['color' + spec](res);
+          } else c = rColor();
+        } else {
+          console.log('color not available:', cAny);
+          throw new Error('color not found: ' + cAny)
+          return '#00000000';
+        }
+      } else c = c.c;
+      if (a == undefined) return c;
+      c = c.substring(0, 7);
+      return c + (a == 1 ? '' : alphaToHex(a));
+    }
+  } else if (Array.isArray(cAny)) {
+    if (cAny.length == 3 && isNumber(cAny[0])) {
+      let r = cAny[0];
+      let g = cAny[1];
+      let b = cAny[2];
+      return a == undefined || a == 1 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
+    } else {
+      return rChoose(cAny);
+    }
+  } else if (typeof cAny == 'object') {
+    if ('h' in cAny) {
+      let hslString = '';
+      if (a == undefined || a == 1) {
+        hslString = `hsl(${cAny.h},${Math.round(cAny.s <= 1.0 ? cAny.s * 100 : cAny.s)}%,${Math.round(cAny.l <= 1.0 ? cAny.l * 100 : cAny.l)}%)`;
+      } else {
+        hslString = `hsla(${cAny.h},${Math.round(cAny.s <= 1.0 ? cAny.s * 100 : cAny.s)}%,${Math.round(cAny.l <= 1.0 ? cAny.l * 100 : cAny.l)}%,${a})`;
+      }
+      if (allowHsl) {
+        return hslString;
+      } else {
+        return colorFrom(hslString, a, allowHsl);
+      }
+    } else if ('r' in cAny) {
+      if (a !== undefined && a < 1) {
+        return `rgba(${cAny.r},${cAny.g},${cAny.b},${a})`;
+      } else {
+        return `rgb(${cAny.r},${cAny.g},${cAny.b})`;
+      }
+    }
+  }
+}
+function colorFromHSL(hue, sat = 100, lum = 50) {
+  return hslToHex(valf(hue, rHue()), sat, lum);
+}
+function colorHex(cAny) {
+  let c = colorFrom(cAny);
+  if (c[0] == '#') {
+    return c;
+  } else {
+    let res = pSBC(0, c, 'c');
+    return res;
+  }
+}
 function colorHexToRgb(hex) {
   hex = hex.replace(/^#/, '');
   const bigint = parseInt(hex, 16);
@@ -667,7 +1064,121 @@ function colorHexToRgb(hex) {
   const b = bigint & 255;
   return { r, g, b };
 }
+function colorHSL(cAny, asObject = false) {
+  let res = colorFrom(cAny, undefined, true);
+  let shsl = res;
+  if (res[0] == '#') {
+    if (res.length == 9) {
+      shsl = hexAToHSLA(res);
+    } else if (res.length == 7) {
+      shsl = hexToHSL(res);
+    }
+  } else if (res[0] == 'r') {
+    if (res[3] == 'a') {
+      shsl = RGBAToHSLA(res);
+    } else {
+      shsl = RGBToHSL(res);
+    }
+  }
+  let n = allNumbers(shsl);
+  if (asObject) {
+    return { h: n[0], s: n[1] / 100, l: n[2] / 100, a: n.length > 3 ? n[3] : 1 };
+  } else {
+    return shsl;
+  }
+}
+function colorHSLBuild(hue, sat = 100, lum = 50) { let result = "hsl(" + hue + ',' + sat + '%,' + lum + '%)'; return result; }
+function colorIdealText(bg, grayPreferred = false) {
+  let rgb = colorRGB(bg, true);
+  const nThreshold = 105;
+  let r = rgb.r;
+  let g = rgb.g;
+  let b = rgb.b;
+  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+  return foreColor;
+}
+function colorLight(c, percent = 20, log = true) {
+  if (nundef(c)) {
+    return colorFromHSL(rHue(), 100, 85);
+  } else c = colorFrom(c);
+  let zero1 = percent / 100;
+  return pSBC(zero1, c, undefined, !log);
+}
+function colorLighter(c, zero1 = .2, log = true) {
+  c = colorFrom(c);
+  return pSBC(zero1, c, undefined, !log);
+}
+function colorLum(cAny, percent = false) {
+  let hsl = colorHSL(cAny, true);
+  return percent ? hsl.l * 100 : hsl.l;
+}
+function colorNameToHexString(str) {
+  var ctx = document.createElement('canvas').getContext('2d');
+  ctx.fillStyle = str;
+  return ctx.fillStyle;
+}
+function colorPalette(color, type = 'shade') {
+  color = colorFrom(color);
+  return colorShades(color);
+}
+function colorRGB(cAny, asObject = false) {
+  let res = colorFrom(cAny);
+  let srgb = res;
+  if (res[0] == '#') {
+    srgb = pSBC(0, res, 'c');
+  }
+  let n = allNumbers(srgb);
+  if (asObject) {
+    return { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 };
+  } else {
+    return srgb;
+  }
+}
+function colorsFromBFA(bg, fg, alpha) {
+  if (fg == 'contrast') {
+    if (bg != 'inherit') bg = colorFrom(bg, alpha);
+    fg = colorIdealText(bg);
+  } else if (bg == 'contrast') {
+    fg = colorFrom(fg);
+    bg = colorIdealText(fg);
+  } else {
+    if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
+    if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
+  }
+  return [bg, fg];
+}
+function colorShades(color) {
+  let res = [];
+  for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
+    let c = pSBC(frac, color, undefined, true);
+    res.push(c);
+  }
+  return res;
+}
+function colorTrans(cAny, alpha = 0.5) {
+  return colorFrom(cAny, alpha);
+}
+function computeColor(c) { return (c == 'random') ? randomColor() : c; }
 function conslog(s){console.log(s,window[s])}
+function contains(s, sSub) { return s.toLowerCase().includes(sSub.toLowerCase()); }
+function copyKeys(ofrom, oto, except = {}, only = null) {
+  let keys = isdef(only) ? only : Object.keys(ofrom);
+  for (const k of keys) {
+    if (isdef(except[k])) continue;
+    oto[k] = ofrom[k];
+  }
+  return oto;
+}
+function correctFuncName(specType) {
+  switch (specType) {
+    case 'list': specType = 'liste'; break;
+    case 'dict': specType = 'dicti'; break;
+    case undefined: specType = 'panel'; break;
+  }
+  return specType;
+}
 function cPortrait(dParent, styles = {}, opts = {}) {
   if (nundef(styles.h)) styles.h = 100;
   if (nundef(styles.w)) styles.w = styles.h * .7;
@@ -684,14 +1195,6 @@ function cPrintSym(card, sym, styles, pos) {
   }
   let d1 = mDom(d, styles, opts);
   mPlace(d1, pos, pos[0] == 'c' ? 0 : 2, pos[1] == 'c' ? 0 : 2);
-}
-function create_set_card(fen, dParent, card_styles) {
-  let myinfo = info_from_fen(fen);
-  let info = { shape: 'circle', color: BLUE, num: 1, shading: 'solid', background: 'white', text: 'none' };
-  copyKeys(myinfo, info);
-  let card = draw_set_card(dParent, info, card_styles);
-  card.fen = fen;
-  return card;
 }
 function createConfirmationModal(dParent,question) {
   const modal = document.createElement("div");
@@ -808,7 +1311,7 @@ function createOpenTable(gamename, players, options) {
     }else  pdict[name] = o;
   }
   assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
-  console.log('creating table with',pdict); //das geht
+  //console.log('creating table with',pdict); //das geht
   let t = {
     status: 'open',
     id: generateTableId(),
@@ -862,28 +1365,6 @@ async function cropOrExpandImageAndGetDataUrl(imageSrc, x, y) {
     img.src = imageSrc;
   });
 }
-async function cropOrExpandImageAndGetDataUrl_trial1_W(imageSrc) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = 300;
-      canvas.height = 300;
-      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-      const scaledWidth = img.width * scale;
-      const scaledHeight = img.height * scale;
-      const dx = (canvas.width - scaledWidth) / 2;
-      const dy = (canvas.height - scaledHeight) / 2;
-      ctx.drawImage(img, dx, dy, scaledWidth, scaledHeight);
-      const dataUrl = canvas.toDataURL();
-      resolve(dataUrl);
-    };
-    img.onerror = (error) => reject(error);
-    img.src = imageSrc;
-  });
-}
 function cropTo(tool, wnew, hnew) {
   let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
   let [x, y, w, h] = ['left', 'top', 'width', 'height'].map(x => parseInt(cropBox.style[x]));
@@ -898,6 +1379,16 @@ function cRound(dParent, styles = {}, opts = {}) {
   return cBlank(dParent, styles, opts);
 }
 function deckDeal(deck, n) { return deck.splice(0, n); }
+function deepmerge(target, source, optionsArgument) {
+  var array = Array.isArray(source);
+  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
+  var arrayMerge = options.arrayMerge || defaultArrayMerge
+  if (array) {
+    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+  } else {
+    return mergeObject(target, source, optionsArgument)
+  }
+}
 function deepMerge(target, source) {
   if (Array.isArray(target) && Array.isArray(source)) {
     return mergeArrays(target, source);
@@ -917,16 +1408,6 @@ function deepMerge(target, source) {
     return output;
   }
   return source;
-}
-function deepmerge(target, source, optionsArgument) {
-  var array = Array.isArray(source);
-  var options = optionsArgument || { arrayMerge: defaultArrayMerge }
-  var arrayMerge = options.arrayMerge || defaultArrayMerge
-  if (array) {
-    return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
-  } else {
-    return mergeObject(target, source, optionsArgument)
-  }
 }
 function deepMergeConcatLists(target, source) {
   if (Array.isArray(target) && Array.isArray(source)) {
@@ -1024,6 +1505,26 @@ function deleteKeyFromLocalSuperdi(k) {
     removeInPlace(lst, k); if (isEmpty(lst)) { delete M.byCat[cat]; removeInPlace(M.categories, cat); }
   }
 }
+function detectSessionType() {
+  let loc = window.location.href;
+  DA.sessionType =
+    loc.includes('vidulus') ? 'vps' :
+      loc.includes('telecave') ? 'telecave' : loc.includes('8080') ? 'php'
+        : loc.includes(':40') ? 'nodejs'
+          : loc.includes(':60') ? 'flask' : 'live';
+  return DA.sessionType;
+}
+function dict2list(d, keyName = 'id') {
+  let res = [];
+  for (const key in d) {
+    let val = d[key];
+    let o;
+    if (isDict(val)) { o = jsCopy(val); } else { o = { value: val }; }
+    o[keyName] = key;
+    res.push(o);
+  }
+  return res;
+}
 function doYourThing(inp, grid) {
   let words = extractWords(inp.value, ' ').map(x => x.toLowerCase());
   let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
@@ -1051,49 +1552,24 @@ function doYourThing(inp, grid) {
   words.sort();
   inp.value = words.join(', ') + ', ';
 }
-function draw_set_card(dParent, info, card_styles) {
-  let card = cLandscape(dParent, card_styles);
-  card.info = info;
-  let d = iDiv(card);
-  mCenterCenterFlex(d);
-  let sz = card.sz / 2.8;
-  let bg, shape = info.shape, text;
-  switch (info.shading) {
-    case 'solid': bg = info.color; break;
-    case 'gradient': bg = `linear-gradient(${info.color}, silver)`; break;
-    case 'empty': bg = `repeating-linear-gradient(
-      45deg,
-      ${info.color},
-      ${info.color} 10px,
-      silver 10px,
-      silver 20px
-    )`; break;
-  }
-  mStyle(d, { bg: info.background });
-  switch (info.text) {
-    case 'none': text = null; break;
-    case 'letter': text = randomLetter(); break;
-    case 'number': text = '' + randomDigit(); break;
-  }
-  let styles = { w: sz, h: sz, margin: sz / 10 };
-  for (let i = 0; i < info.num; i++) {
-    let d1 = drawShape(shape, d, styles);
-    if (info.shading == 'gradient') { d1.style.backgroundColor = info.color; mClass(d1, 'polka-dot'); } else mStyle(d1, { bg: bg });
-    if (shape == 'circle') console.log('circle', d1);
-    if (isdef(text)) { mCenterCenterFlex(d1); mText(text, d1, { fz: sz / 1.75, fg: 'black', family: 'impact' }); }
-  }
-  return card;
+function drag(ev) {
+  let elem = ev.target;
+  dragStartOffset = getRelCoords(ev, $(elem));
+  draggedElement = elem;
 }
-function draw_set_card_test(dParent) {
-  let card = cLandscape(dParent, { w: 120 });
-  let d = iDiv(card, { h: '100%' });
-  mCenterCenterFlex(d);
-  let sz = card.sz / 4;
-  let bg = 'indigo'; //`linear-gradient(${RED},black`
-  let styles = { w: sz, h: sz, bg, margin: 4 }; // sz / 10, border: `solid 3px ${GREEN}` };
-  let d1 = drawShape('circle', d, styles); //mCenterCenterFlex(d1); mText('A', d1, { fz: sz / 4, fg: 'white' });
-  drawShape('circle', d, styles);
-  drawShape('circle', d, styles);
+function draw() {
+  background(51);
+  for (let i = 0; i < tree.length; i++) {
+    tree[i].show();
+    if (jittering) tree[i].jitter();
+  }
+  for (let i = 0; i < leaves.length; i++) {
+    let l = leaves[i].current;
+    noStroke();
+    fill(0, 255, 100, 100);
+    ellipse(l.x, l.y, 8, 8);
+    if (jittering) leaves[i].current.y += random(0, 2);
+  }
 }
 function drawPix(ctx, x, y, color = 'red', sz = 5) {
   ctx.fillStyle = color;
@@ -1110,6 +1586,24 @@ function drawShape(key, dParent, styles, classes, sizing) {
   if (key == 'circle' || key == 'ellipse') mStyle(d, { rounding: '50%' });
   else mStyle(d, { 'clip-path': PolyClips[key] });
   return d;
+}
+function drop(ev) {
+  ev.preventDefault();
+  let targetElem = findDragTarget(ev);
+  targetElem.appendChild(draggedElement);
+  setDropPosition(ev, draggedElement, targetElem, isdef(draggedElement.dropPosition) ? draggedElement.dropPosition : dropPosition);
+}
+function empty(arr) {
+  let result = arr === undefined || !arr || (isString(arr) && (arr == 'undefined' || arr == '')) || (Array.isArray(arr) && arr.length == 0) || emptyDict(arr);
+  testHelpers(typeof arr, result ? 'EMPTY' : arr);
+  return result;
+}
+function emptyDict(obj) {
+  let test = Object.entries(obj).length === 0 && obj.constructor === Object;
+  return test;
+}
+function emptyTarget(val) {
+  return Array.isArray(val) ? [] : {}
 }
 function enableImageDrop(element, onDropCallback) {
   const originalBorderStyle = element.style.border;
@@ -1132,23 +1626,6 @@ function enableImageDrop(element, onDropCallback) {
   });
   element.addEventListener('dragleave', function(event) {
     element.style.border = originalBorderStyle;
-  });
-}
-function enableImageDrop_trial1_W(elem, onDropCallback) {
-  const originalBorderStyle = elem.style.border; 
-  elem.addEventListener('dragover', function (event) { event.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
-  elem.addEventListener('dragenter', function (event) { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
-  elem.addEventListener('dragleave', function (event) { elem.style.border = originalBorderStyle; }); // Restore the original border if the item is dragged out without dropping
-  elem.addEventListener('drop', function (event) {
-    event.preventDefault(); 
-    elem.style.border = originalBorderStyle; 
-    const files = event.dataTransfer.files; 
-    if (files.length > 0) {
-      const file = files[0];
-      if (file.type.startsWith('image/')) { // Check if the dropped file is an image
-        onDropCallback(file); 
-      }
-    }
   });
 }
 function enableImageOrItemDrop(elem, onDropCallback) {
@@ -1190,6 +1667,157 @@ async function encryptData(data) {
   );
   return new Uint8Array(encryptedBuffer).toString();
 }
+function endsWith(s, sSub) { let i = s.indexOf(sSub); return i >= 0 && i == s.length - sSub.length; }
+function ensureColorDict() {
+  if (isdef(ColorDi)) return;
+  ColorDi = {};
+  let names = getColorNames();
+  let hexes = getColorHexes();
+  for (let i = 0; i < names.length; i++) {
+    ColorDi[names[i].toLowerCase()] = { c: '#' + hexes[i] };
+  }
+  const newcolors = {
+    black: { c: '#000000', D: 'schwarz' },
+    blue: { c: '#0000ff', D: 'blau' },
+    BLUE: { c: '#4363d8', E: 'blue', D: 'blau' },
+    BLUEGREEN: { c: '#004054', E: 'bluegreen', D: 'blaugrün' },
+    BROWN: { c: '#96613d', E: 'brown', D: 'braun' },
+    deepyellow: { c: '#ffed01', E: 'yellow', D: 'gelb' },
+    FIREBRICK: { c: '#800000', E: 'darkred', D: 'rotbraun' },
+    gold: { c: 'gold', D: 'golden' },
+    green: { c: 'green', D: 'grün' },
+    GREEN: { c: '#3cb44b', E: 'green', D: 'grün' },
+    grey: { c: 'grey', D: 'grau' },
+    lightblue: { c: 'lightblue', D: 'hellblau' },
+    LIGHTBLUE: { c: '#42d4f4', E: 'lightblue', D: 'hellblau' },
+    lightgreen: { c: 'lightgreen', D: 'hellgrün' },
+    LIGHTGREEN: { c: '#afff45', E: 'lightgreen', D: 'hellgrün' },
+    lightyellow: { c: '#fff620', E: 'lightyellow', D: 'gelb' },
+    NEONORANGE: { c: '#ff6700', E: 'neonorange', D: 'neonorange' },
+    NEONYELLOW: { c: '#efff04', E: 'neonyellow', D: 'neongelb' },
+    olive: { c: 'olive', D: 'oliv' },
+    OLIVE: { c: '#808000', E: 'olive', D: 'oliv' },
+    orange: { c: 'orange', D: 'orange' },
+    ORANGE: { c: '#f58231', E: 'orange', D: 'orange' },
+    PINK: { c: 'deeppink', D: 'rosa' },
+    pink: { c: 'pink', D: 'rosa' },
+    purple: { c: 'purple', D: 'lila' },
+    PURPLE: { c: '#911eb4', E: 'purple', D: 'lila' },
+    red: { c: 'red', D: 'rot' },
+    RED: { c: '#e6194B', E: 'red', D: 'rot' },
+    skyblue: { c: 'skyblue', D: 'himmelblau' },
+    SKYBLUE: { c: 'deepskyblue', D: 'himmelblau' },
+    teal: { c: '#469990', D: 'blaugrün' },
+    TEAL: { c: '#469990', E: 'teal', D: 'blaugrün' },
+    transparent: { c: '#00000000', E: 'transparent', D: 'transparent' },
+    violet: { c: 'violet', E: 'violet', D: 'violett' },
+    VIOLET: { c: 'indigo', E: 'violet', D: 'violett' },
+    white: { c: 'white', D: 'weiss' },
+    yellow: { c: 'yellow', D: 'gelb' },
+    yelloworange: { c: '#ffc300', E: 'yellow', D: 'gelb' },
+    YELLOW: { c: '#ffe119', E: 'yellow', D: 'gelb' },
+  };
+  for (const k in newcolors) {
+    let cnew = newcolors[k];
+    if (cnew.c[0] != '#' && isdef(ColorDi[cnew.c])) cnew.c = ColorDi[cnew.c].c;
+    ColorDi[k] = cnew;
+  }
+}
+function ensureColorNames() {
+  if (isdef(ColorNames)) return;
+  ColorNames = {};
+  let names = getColorNames();
+  let hexes = getColorHexes();
+  for (let i = 0; i < names.length; i++) {
+    ColorNames[names[i].toLowerCase()] = '#' + hexes[i];
+  }
+}
+function enterInterruptState() {
+  clearTimeouts();
+  if (isdef(G.instance)) G.instance.clear();
+  auxOpen = true;
+}
+function error(msg) {
+  let fname = getFunctionsNameThatCalledThisFunction();
+  console.log(fname, 'ERROR!!!!! ', msg);
+}
+function evalCond(o, condKey, condVal) {
+  let func = FUNCTIONS[condKey];
+  if (isString(func)) func = window[func];
+  if (nundef(func)) {
+    if (nundef(o[condKey])) return null;
+    if (isList(condVal)) {
+      for (const v of condVal) if (o[condKey] == v) return true;
+      return null;
+    } else {
+      return isdef(o[condKey]) ? o[condKey] == condVal : null;
+    }
+  }
+  return func(o, condVal);
+}
+function evalConds(o, conds) {
+  for (const [f, v] of Object.entries(conds)) {
+    if (!evalCond(o, f, v)) return false;
+  }
+  return true;
+}
+function evNoBubble(ev) { ev.preventDefault(); ev.cancelBubble = true; }
+function evToAttr(ev, attr) {
+  let elem = ev.target;
+  let val = null;
+  while (nundef(val) && isdef(elem)) {
+    val = elem.getAttribute(attr);
+    if (isdef(val)) return val;
+    elem = elem.parentNode;
+  }
+  return null;
+}
+function evToAttrElem(ev, attr) {
+  let elem = ev.target;
+  let val = null;
+  while (nundef(val) && isdef(elem)) {
+    val = elem.getAttribute(attr);
+    if (isdef(val)) return { val, elem };
+    elem = elem.parentNode;
+  }
+  return null;
+}
+function evToClass(ev, className) {
+  let elem = findParentWithClass(ev.target, className);
+  return elem;
+}
+function evToId(ev) {
+  let elem = findParentWithId(ev.target);
+  return elem.id;
+}
+function exitToAddon(callback) {
+  AD.callback = callback;
+  enterInterruptState(); auxOpen = false;
+  AD.run();
+}
+function extendRect(r4) { r4.l = r4.x; r4.t = r4.y; r4.r = r4.x + r4.w; r4.b = r4.t + r4.h; }
+function extractFilesFromHtml(html, htmlfile, ext = 'js') {
+  let prefix = ext == 'js' ? 'script src="' : 'link rel="stylesheet" href="';
+  let dirhtml = stringBeforeLast(htmlfile, '/');
+  let project = stringAfter(dirhtml, '/'); if (project.includes('/')) project = stringBefore(project, '/');
+  let parts = html.split(prefix);
+  parts.shift();
+  let files = parts.map(x => stringBefore(x, '"'));
+  files = files.filter(x => !x.includes('alibs/') && !x.includes('assets/'));
+  let files2 = [];
+  for (const f of files) {
+    if (f.startsWith(dirhtml)) { files2.push(f); continue; }
+    if (f.startsWith('./')) { files2.push(dirhtml + f.substring(1)); continue; }
+    if (f.startsWith('../') && stringCount(dirhtml, '../') == 1) {
+      files2.push(f); continue;
+    }
+    if (!f.includes('/')) { files2.push(dirhtml + '/' + f); continue; }
+    if (isLetter(f[0])) { files2.push(dirhtml + '/' + f); continue; }
+    console.log('PROBLEM!', f)
+  }
+  files = files2;
+  return files;
+}
 function extractTime(input) {
   const regex = /\b([0-9]|1[0-9]|2[0-3])[h:]*\S*\b/g;
   const match = input.match(regex);
@@ -1206,6 +1834,11 @@ function extractWords(s, allowed) {
   if (isdef(allowed)) specialChars = arrMinus(specialChars, toLetters(allowed));
   let parts = splitAtAnyOf(s, specialChars.join('')).map(x => x.trim());
   return parts.filter(x => !isEmpty(x));
+}
+function findAttributeInAncestors(elem, attr) {
+  let val;
+  while (elem && nundef(val = elem.getAttribute(attr))) { elem = elem.parentNode; }
+  return val;
 }
 function findBottomLine(ct, w, h, cgoal) {
   let [_, restlist] = findPointsBoth(ct, 0, w, h - 30, h, cgoal, 20);
@@ -1269,6 +1902,11 @@ function findDarkLines(ctx, w, h, cgoal) {
   }
   let [ytop, ybottom] = [nundef(topmost) ? 0 : topmost.val, nundef(bottommost) ? h : bottommost.val]
   return [ytop, kleinere.val, groessere.val, ybottom, topmost, kleinere, groessere, bottommost];
+}
+function findDragTarget(ev) {
+  let targetElem = ev.target;
+  while (!targetElem.ondragover) targetElem = targetElem.parentNode;
+  return targetElem;
 }
 function findEdgeHor(ctx, x1, x2, h, cgoal, lighting = true) {
   let [list, _] = findPoints(ctx, x1, x2, 0, h, cgoal, 20);
@@ -1366,6 +2004,8 @@ function findNextLine(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
     }
   }
 }
+function findParentWithClass(elem, className) { while (elem && !mHasClass(elem, className)) { elem = elem.parentNode; } return elem; }
+function findParentWithId(elem) { while (elem && !(elem.id)) { elem = elem.parentNode; } return elem; }
 function findPointAtDistance(pt, dx, dy, list, delta = 0) {
   for (const p1 of list) {
     if (isWithinDelta(Math.abs(pt.x - p1.x), dx, delta) && isWithinDelta(Math.abs(pt.y - p1.y), dy, delta)) return p1;
@@ -1439,6 +2079,52 @@ function findTopLine(ct, w, h, cgoal) {
   let o = nextLine(ct, restlist, 'blue');
   return o.val;
 }
+function first(arr) {
+  return arr.length > 0 ? arr[0] : null;
+}
+function firstCond(arr, func) {
+  if (nundef(arr)) return null;
+  for (const a of arr) {
+    if (func(a)) return a;
+  }
+  return null;
+}
+function firstCondDictKeys(dict, func) {
+  for (const k in dict) { if (func(k)) return k; }
+  return null;
+}
+function firstNumber(s) {
+  if (s) {
+    let m = s.match(/-?\d+/);
+    if (m) {
+      let sh = m.shift();
+      if (sh) { return Number(sh); }
+    }
+  }
+  return null;
+}
+function fisherYates(arr) {
+  if (arr.length == 2 && coin()) { return arr; }
+  var rnd, temp;
+  let last = arr[0];
+  for (var i = arr.length - 1; i; i--) {
+    rnd = Math.random() * i | 0;
+    temp = arr[i];
+    arr[i] = arr[rnd];
+    arr[rnd] = temp;
+  }
+  return arr;
+}
+function fleetingMessage(msg, d, styles, ms, fade) {
+  if (isString(msg)) {
+    dFleetingMessage.innerHTML = msg;
+    mStyle(dFleetingMessage, styles);
+  } else {
+    mAppend(dFleetingMessage, msg);
+  }
+  if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
+  return dFleetingMessage;
+}
 function formatLegend(key){
   return key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') 
   : key.includes('_')? replaceAll(key,'_',' '): key;
@@ -1460,6 +2146,18 @@ function gCanvas(area, w, h, color, originInCenter = true) {
   return g;
 }
 function gCreate(tag) { return document.createElementNS('http:/' + '/www.w3.org/2000/svg', tag); }
+function geht(sp) {
+  POOLS.augData = makeDefaultPool(sData);
+  annotate(sp);
+  dynSpec = sp;
+  let pool = POOLS.augData;
+  for (const oid in pool) {
+    let o = pool[oid];
+    if (nundef(o.RSG)) continue;
+    let info = mergeIncludingPrototype(oid, o);
+    INFO[oid] = info;
+  }
+}
 function gEllipse(w, h) { let r = gCreate('ellipse'); r.setAttribute('rx', w / 2); r.setAttribute('ry', h / 2); return r; }
 function generateArrayColors(startColor, endColor, numSteps) {
   const colors = [];
@@ -1493,36 +2191,6 @@ function generateTableName(n) {
     let s = (n == 2 ? 'duel of ' : rChoose(arr)) + cap;
     if (!existing.includes(s)) return s;
   }
-}
-function get_number_card(ckey, h = 100, w = null, backcolor = BLUE, ov = .3) {
-  let info = {};
-  let color = stringAfter(ckey, '_');
-  let num = stringBefore(ckey, '_');
-  info.key = ckey;
-  info.cardtype = 'num';
-  let [r, s] = [info.rank, info.suit] = [Number(num), color];
-  info.val = r; 
-  info.color = backcolor;
-  let sz = info.sz = info.h = h;
-  w = info.w = valf(w, sz * .7);
-  let d = mDom(null, { h: h, w: w, rounding: 4, bg: 'white', border: 'silver' }, { className: 'card' });
-  let [sm, lg] = [sz / 8, sz / 4]
-  let styles = { fg: color, h: sm, fz: sm, hline: sm, weight: 'bold' };
-  for (const pos of ['tl', 'tr']) {
-    let d1 = mDiv(d, styles, null, num);
-    mPlace(d1, pos, 2, 2);
-  }
-  for (const pos of ['bl', 'br']) {
-    let d1 = mDiv(d, styles, null, num);
-    d1.style.transform = 'rotate(180deg)';
-    mPlace(d1, pos, 2, 2);
-  }
-  let dbig = mDiv(d, { matop: (h - lg) / 2, family: 'algerian', fg: color, fz: lg, h: lg, w: w, hline: lg, align: 'center' }, null, num);
-  let res = {};
-  copyKeys(info, res);
-  copyKeys({ w: info.w, h: info.h, faceUp: true, div: d }, res);
-  if (isdef(ov)) res.ov = ov;
-  return res;
 }
 function getBar(ctx, list, val) {
   let res = list.filter(p => isWithinDelta(p.x, val, 2) && (isLightBefore(ctx, p.x, p.y) || isLightAfter(ctx, p.x, p.y)));
@@ -1561,6 +2229,14 @@ function getCheckedNames(dParent) {
   }
   return res;
 }
+function getCheckedRadios(rg) {
+  let inputs = rg.getElementsByTagName('INPUT');
+  let list = [];
+  for (const ch of inputs) {
+    if (ch.checked) list.push(ch.value);
+  }
+  return list;
+}
 function getCivSpot(civ, row, col, fact = 1) {
   let rAdvisor = { x: 11, y: 27, w: 87, h: 136 }; //von persia
   let rColony1 = { x: 10, y: 193, w: 87, h: 137 }; //von japan
@@ -1598,7 +2274,322 @@ function getCivSpot(civ, row, col, fact = 1) {
   dist = dxWonders + r.w;
   return { x: r.x - dist * (6 - col), y: r.y, w: r.w, h: r.h };
 }
+function getColorHexes(x) {
+  return [
+    'f0f8ff',
+    'faebd7',
+    '00ffff',
+    '7fffd4',
+    'f0ffff',
+    'f5f5dc',
+    'ffe4c4',
+    '000000',
+    'ffebcd',
+    '0000ff',
+    '8a2be2',
+    'a52a2a',
+    'deb887',
+    '5f9ea0',
+    '7fff00',
+    'd2691e',
+    'ff7f50',
+    '6495ed',
+    'fff8dc',
+    'dc143c',
+    '00ffff',
+    '00008b',
+    '008b8b',
+    'b8860b',
+    'a9a9a9',
+    'a9a9a9',
+    '006400',
+    'bdb76b',
+    '8b008b',
+    '556b2f',
+    'ff8c00',
+    '9932cc',
+    '8b0000',
+    'e9967a',
+    '8fbc8f',
+    '483d8b',
+    '2f4f4f',
+    '2f4f4f',
+    '00ced1',
+    '9400d3',
+    'ff1493',
+    '00bfff',
+    '696969',
+    '696969',
+    '1e90ff',
+    'b22222',
+    'fffaf0',
+    '228b22',
+    'ff00ff',
+    'dcdcdc',
+    'f8f8ff',
+    'ffd700',
+    'daa520',
+    '808080',
+    '808080',
+    '008000',
+    'adff2f',
+    'f0fff0',
+    'ff69b4',
+    'cd5c5c',
+    '4b0082',
+    'fffff0',
+    'f0e68c',
+    'e6e6fa',
+    'fff0f5',
+    '7cfc00',
+    'fffacd',
+    'add8e6',
+    'f08080',
+    'e0ffff',
+    'fafad2',
+    'd3d3d3',
+    'd3d3d3',
+    '90ee90',
+    'ffb6c1',
+    'ffa07a',
+    '20b2aa',
+    '87cefa',
+    '778899',
+    '778899',
+    'b0c4de',
+    'ffffe0',
+    '00ff00',
+    '32cd32',
+    'faf0e6',
+    'ff00ff',
+    '800000',
+    '66cdaa',
+    '0000cd',
+    'ba55d3',
+    '9370db',
+    '3cb371',
+    '7b68ee',
+    '00fa9a',
+    '48d1cc',
+    'c71585',
+    '191970',
+    'f5fffa',
+    'ffe4e1',
+    'ffe4b5',
+    'ffdead',
+    '000080',
+    'fdf5e6',
+    '808000',
+    '6b8e23',
+    'ffa500',
+    'ff4500',
+    'da70d6',
+    'eee8aa',
+    '98fb98',
+    'afeeee',
+    'db7093',
+    'ffefd5',
+    'ffdab9',
+    'cd853f',
+    'ffc0cb',
+    'dda0dd',
+    'b0e0e6',
+    '800080',
+    '663399',
+    'ff0000',
+    'bc8f8f',
+    '4169e1',
+    '8b4513',
+    'fa8072',
+    'f4a460',
+    '2e8b57',
+    'fff5ee',
+    'a0522d',
+    'c0c0c0',
+    '87ceeb',
+    '6a5acd',
+    '708090',
+    '708090',
+    'fffafa',
+    '00ff7f',
+    '4682b4',
+    'd2b48c',
+    '008080',
+    'd8bfd8',
+    'ff6347',
+    '40e0d0',
+    'ee82ee',
+    'f5deb3',
+    'ffffff',
+    'f5f5f5',
+    'ffff00',
+    '9acd32'
+  ];
+}
+function getColorNames() {
+  return [
+    'AliceBlue',
+    'AntiqueWhite',
+    'Aqua',
+    'Aquamarine',
+    'Azure',
+    'Beige',
+    'Bisque',
+    'Black',
+    'BlanchedAlmond',
+    'Blue',
+    'BlueViolet',
+    'Brown',
+    'BurlyWood',
+    'CadetBlue',
+    'Chartreuse',
+    'Chocolate',
+    'Coral',
+    'CornflowerBlue',
+    'Cornsilk',
+    'Crimson',
+    'Cyan',
+    'DarkBlue',
+    'DarkCyan',
+    'DarkGoldenRod',
+    'DarkGray',
+    'DarkGrey',
+    'DarkGreen',
+    'DarkKhaki',
+    'DarkMagenta',
+    'DarkOliveGreen',
+    'DarkOrange',
+    'DarkOrchid',
+    'DarkRed',
+    'DarkSalmon',
+    'DarkSeaGreen',
+    'DarkSlateBlue',
+    'DarkSlateGray',
+    'DarkSlateGrey',
+    'DarkTurquoise',
+    'DarkViolet',
+    'DeepPink',
+    'DeepSkyBlue',
+    'DimGray',
+    'DimGrey',
+    'DodgerBlue',
+    'FireBrick',
+    'FloralWhite',
+    'ForestGreen',
+    'Fuchsia',
+    'Gainsboro',
+    'GhostWhite',
+    'Gold',
+    'GoldenRod',
+    'Gray',
+    'Grey',
+    'Green',
+    'GreenYellow',
+    'HoneyDew',
+    'HotPink',
+    'IndianRed',
+    'Indigo',
+    'Ivory',
+    'Khaki',
+    'Lavender',
+    'LavenderBlush',
+    'LawnGreen',
+    'LemonChiffon',
+    'LightBlue',
+    'LightCoral',
+    'LightCyan',
+    'LightGoldenRodYellow',
+    'LightGray',
+    'LightGrey',
+    'LightGreen',
+    'LightPink',
+    'LightSalmon',
+    'LightSeaGreen',
+    'LightSkyBlue',
+    'LightSlateGray',
+    'LightSlateGrey',
+    'LightSteelBlue',
+    'LightYellow',
+    'Lime',
+    'LimeGreen',
+    'Linen',
+    'Magenta',
+    'Maroon',
+    'MediumAquaMarine',
+    'MediumBlue',
+    'MediumOrchid',
+    'MediumPurple',
+    'MediumSeaGreen',
+    'MediumSlateBlue',
+    'MediumSpringGreen',
+    'MediumTurquoise',
+    'MediumVioletRed',
+    'MidnightBlue',
+    'MintCream',
+    'MistyRose',
+    'Moccasin',
+    'NavajoWhite',
+    'Navy',
+    'OldLace',
+    'Olive',
+    'OliveDrab',
+    'Orange',
+    'OrangeRed',
+    'Orchid',
+    'PaleGoldenRod',
+    'PaleGreen',
+    'PaleTurquoise',
+    'PaleVioletRed',
+    'PapayaWhip',
+    'PeachPuff',
+    'Peru',
+    'Pink',
+    'Plum',
+    'PowderBlue',
+    'Purple',
+    'RebeccaPurple',
+    'Red',
+    'RosyBrown',
+    'RoyalBlue',
+    'SaddleBrown',
+    'Salmon',
+    'SandyBrown',
+    'SeaGreen',
+    'SeaShell',
+    'Sienna',
+    'Silver',
+    'SkyBlue',
+    'SlateBlue',
+    'SlateGray',
+    'SlateGrey',
+    'Snow',
+    'SpringGreen',
+    'SteelBlue',
+    'Tan',
+    'Teal',
+    'Thistle',
+    'Tomato',
+    'Turquoise',
+    'Violet',
+    'Wheat',
+    'White',
+    'WhiteSmoke',
+    'Yellow',
+    'YellowGreen'
+  ];
+}
+function getContrast(rgb1, rgb2) {
+  var lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
+  var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
+  var brightest = Math.max(lum1, lum2);
+  var darkest = Math.min(lum1, lum2);
+  return (brightest + 0.05)
+    / (darkest + 0.05);
+}
+function getCssVar(varname) { return getComputedStyle(document.body).getPropertyValue(varname); }
+function getCSSVariable(varname) { return getCssVar(varname); }
 function getDivId(key) { return 'd' + capitalize(key); }
+function getDynId(loc, oid) { return loc + '@' + oid; }
 async function getEvent(id, cachedOk = true) {
   let res = lookup(Serverdata, ['events', id]);
   if (!cachedOk) Serverdata.events[id] = await mGetRoute('event', { id });
@@ -1612,12 +2603,44 @@ function getEventValue(o) {
   if (isEmpty(o.time)) return o.text;
   return o.time + ' ' + stringBefore(o.text, '\n');
 }
+function getExtendedColors(bg, fg) {
+  bg = computeColor(bg);
+  fg = computeColor(fg);
+  if (bg == 'inherit' && (nundef(fg) || fg == 'contrast')) {
+    fg = 'inherit';
+  } else if (fg == 'contrast' && isdef(bg) && bg != 'inherit') fg = colorIdealText(bg);
+  else if (bg == 'contrast' && isdef(fg) && fg != 'inherit') { bg = colorIdealText(fg); }
+  return [bg, fg];
+}
+function getFunctionsNameThatCalledThisFunction() {
+  let c1 = getFunctionsNameThatCalledThisFunction.caller;
+  if (nundef(c1)) return 'no caller!';
+  let c2 = c1.caller;
+  if (nundef(c2)) return 'no caller!';
+  return c2.name;
+}
 function getGameColor(gamename) { return Serverdata.config.games[gamename].color; }
 function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
 function getGameOption(prop) { return lookup(Clientdata, ['table', 'options', prop]); }
 function getGamePlayerOptions(gamename) { return Serverdata.config.games[gamename].ploptions; }
 function getGameProp(prop) { return Serverdata.config.games[Clientdata.table.game][prop]; }
+function getGameValues() {
+  let user = U.id;
+  let game = G.id;
+  let level = G.level;
+  let settings = { numColors: 1, numRepeat: 1, numPics: 1, numSteps: 1, colors: ColorList };
+  settings = mergeOverride(settings, DB.settings);
+  if (isdef(U.settings)) settings = mergeOverride(settings, U.settings);
+  if (isdef(DB.games[game])) settings = mergeOverride(settings, DB.games[game]);
+  let next = lookup(DB.games, [game, 'levels', level]); if (next) settings = mergeOverride(settings, next);
+  next = lookup(U, ['games', game]); if (next) settings = mergeOverride(settings, next);
+  next = lookup(U, ['games', game, 'levels', level]); if (next) settings = mergeOverride(settings, next);
+  delete settings.levels;
+  Speech.setLanguage(settings.language);
+  return settings;
+}
 function getIdKey(elem) { let id = mBy(elem).id; return id.substring(1).toLowerCase(); }
+function getItem(k) { return infoToItem(Syms[k]); }
 function getLevelColor(n) {
   const levelColors = [LIGHTBLUE, BLUE, GREEN, YELLOW, 'orange', RED, '#222',
     GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue', 'deeppink', //** MAXLEVEL 10 */
@@ -1660,6 +2683,28 @@ function getMouseCoordinatesRelativeToElement(ev, elem) {
   const y = ev.clientY - rect.top;
   return { x, y };
 }
+function getNow() { return Date.now(); }
+function getO(n, R) { let oid = n.oid; if (isdef(oid)) return R.getO(oid); else return null; }
+function getParams(areaName, oSpec, oid) {
+  let params = oSpec.params ? oSpec.params : {};
+  let panels = oSpec.panels ? oSpec.panels : [];
+  let num = panels.length;
+  let or = params.orientation ? params.orientation == 'h' ? 'rows'
+    : 'columns' : DEF_ORIENTATION;
+  let split = params.split ? params.split : DEF_SPLIT;
+  let bg = oSpec.color ? oSpec.color : randomColor();
+  let fg = bg ? colorIdealText(bg) : null;
+  let id = oSpec.id ? oSpec.id : areaName;
+  if (oid) { id = getDynId(id, oid); }
+  let parent = mBy(areaName);
+  if (oSpec.id) {
+    parent.id = id;
+    addAREA(id, oSpec);
+    parent.innerHTML = id;
+  }
+  if (bg) { mColor(parent, bg, fg); }
+  return [num, or, split, bg, fg, id, panels, parent];
+}
 function getPixRgb(ctx, x, y) {
   var pix = ctx.getImageData(x, y, 1, 1).data;
   var red = pix[0]; var green = pix[1]; var blue = pix[2];
@@ -1680,16 +2725,84 @@ function getPlaymode(idOrTable, name) {
     return Clientdata.table.id == idOrTable ? Clientdata.table.fen.players[name].playmode : 'wrong table';
   } else return 'NO table!';
 }
+function getRandomFromArray(array) { return (array[randomIndex(array) | 0]) }
+function getRect(elem, relto) {
+  if (isString(elem)) elem = document.getElementById(elem);
+  let res = elem.getBoundingClientRect();
+  if (isdef(relto)) {
+    let b2 = relto.getBoundingClientRect();
+    let b1 = res;
+    res = {
+      x: b1.x - b2.x,
+      y: b1.y - b2.y,
+      left: b1.left - b2.left,
+      top: b1.top - b2.top,
+      right: b1.right - b2.right,
+      bottom: b1.bottom - b2.bottom,
+      width: b1.width,
+      height: b1.height
+    };
+  }
+  let r = { x: res.left, y: res.top, w: res.width, h: res.height };
+  addKeys({ l: r.x, t: r.y, r: r.x + r.w, b: r.y + r.h }, r);
+  return r;
+}
+function getRectInt(elem, relto) {
+  if (isString(elem)) elem = document.getElementById(elem);
+  let res = elem.getBoundingClientRect();
+  if (isdef(relto)) {
+    let b2 = relto.getBoundingClientRect();
+    let b1 = res;
+    res = {
+      x: b1.x - b2.x,
+      y: b1.y - b2.y,
+      left: b1.left - b2.left,
+      top: b1.top - b2.top,
+      right: b1.right - b2.right,
+      bottom: b1.bottom - b2.bottom,
+      width: b1.width,
+      height: b1.height
+    };
+  }
+  let r4 = { x: Math.round(res.left), y: Math.round(res.top), w: Math.round(res.width), h: Math.round(res.height) };
+  extendRect(r4);
+  return r4;
+}
+function getRelCoords(ev, elem) {
+  let x = ev.pageX - elem.offset().left;
+  let y = ev.pageY - elem.offset().top;
+  return { x: x, y: y };
+}
 function getServerurl() {
   let type = detectSessionType();
   let server = type == 'vps' ? 'https://server.vidulusludorum.com' : 'http://localhost:3000';
   return server;
 }
+function getStyleProp(elem, prop) { return getComputedStyle(elem).getPropertyValue(prop); }
 function getThemeBg() { let style = window.getComputedStyle(document.body); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
 function getThemeDark() { return getCSSVariable('--bgNav'); } //  let bg=getThemeBg();return colorIdealText(bg);}
 function getThemeFg() { return getCSSVariable('--fgButtonHover'); } //  let bg=getThemeBg();return colorIdealText(bg);}
+function getTimestamp() { return Date.now(); }
 function getTurnPlayers(fen) {
   return fen.turn.join(', ');
+}
+function getTypeOf(param) {
+  let type = typeof param;
+  if (type == 'string') {
+    return 'string';
+  }
+  if (type == 'object') {
+    type = param.constructor.name;
+    if (startsWith(type, 'SVG')) type = stringBefore(stringAfter(type, 'SVG'), 'Element').toLowerCase();
+    else if (startsWith(type, 'HTML')) type = stringBefore(stringAfter(type, 'HTML'), 'Element').toLowerCase();
+  }
+  let lType = type.toLowerCase();
+  if (lType.includes('event')) type = 'event';
+  return type;
+}
+function getUID(pref = '') {
+  UIDCounter += 1;
+  return pref + '_' + UIDCounter;
 }
 function getUname() { assertion(Clientdata.curUser == U.name, `getUname!!!!!!!${Clientdata.curUser} != ${U.name}`); return Clientdata.curUser; }
 async function getUser(name, cachedOk = false) {
@@ -1703,13 +2816,17 @@ async function getUser(name, cachedOk = false) {
   return res;
 }
 function getUserColor(uname) { return Serverdata.users[uname].color; }
+function getWaitingHtml(sz = 30) { return `<img src="../assets/icons/active_player.gif" height="${sz}" style="margin:0px ${sz / 3}px" />`; }
 function gFg(g, color, thickness) { g.setAttribute('stroke', color); if (thickness) g.setAttribute('stroke-width', thickness); }
-function gG() { return gCreate('g'); }
 function gHex(w, h) { let pts = size2hex(w, h); return gPoly(pts); }
 function gLine(x1, y1, x2, y2) { let r = gCreate('line'); r.setAttribute('x1', x1); r.setAttribute('y1', y1); r.setAttribute('x2', x2); r.setAttribute('y2', y2); return r; }
 function gPoly(pts) { let r = gCreate('polygon'); if (pts) r.setAttribute('points', pts); return r; }
 function gPos(g, x, y) { g.style.transform = `translate(${x}px, ${y}px)`; }
 function gRect(w, h) { let r = gCreate('rect'); r.setAttribute('width', w); r.setAttribute('height', h); r.setAttribute('x', -w / 2); r.setAttribute('y', -h / 2); return r; }
+function gRounding(r, rounding) {
+  r.setAttribute('rx', rounding);
+  r.setAttribute('ry', rounding);
+}
 function gSet() {
   function set_fen() {
     let items = Session.items;
@@ -1778,17 +2895,6 @@ function gSet() {
     fen: set_fen,
   }
 }
-function gSet_attributes() {
-  const all_attrs = {
-    shape: ['circle', 'triangle', 'square'],
-    color: [RED, BLUE, GREEN],
-    num: [1, 2, 3],
-    shading: ['solid', 'empty', 'gradient'],
-    background: ['white', 'grey', 'black'],
-    text: ['none', 'letter', 'number'],
-  };
-  return all_attrs;
-}
 function gShape(shape, w = 20, h = 20, color = 'green', rounding) {
   let el = gG();
   if (nundef(shape)) shape = 'rect';
@@ -1817,8 +2923,302 @@ function gSize(g, w, h, shape = null, iChild = 0) {
 }
 function gStroke(g, color, thickness) { g.setAttribute('stroke', color); if (thickness) g.setAttribute('stroke-width', thickness); }
 function gSvg() { return gCreate('svg'); }
+function hexAToHSLA(H) {
+  let ex = /^#([\da-f]{4}){1,2}$/i;
+  if (ex.test(H)) {
+    let r = 0,
+      g = 0,
+      b = 0,
+      a = 1;
+    if (H.length == 5) {
+      r = '0x' + H[1] + H[1];
+      g = '0x' + H[2] + H[2];
+      b = '0x' + H[3] + H[3];
+      a = '0x' + H[4] + H[4];
+    } else if (H.length == 9) {
+      r = '0x' + H[1] + H[2];
+      g = '0x' + H[3] + H[4];
+      b = '0x' + H[5] + H[6];
+      a = '0x' + H[7] + H[8];
+    }
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    a = (a / 255).toFixed(3);
+    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hexToHSL(H) {
+  let ex = /^#([\da-f]{3}){1,2}$/i;
+  if (ex.test(H)) {
+    let r = 0,
+      g = 0,
+      b = 0;
+    if (H.length == 4) {
+      r = '0x' + H[1] + H[1];
+      g = '0x' + H[2] + H[2];
+      b = '0x' + H[3] + H[3];
+    } else if (H.length == 7) {
+      r = '0x' + H[1] + H[2];
+      g = '0x' + H[3] + H[4];
+      b = '0x' + H[5] + H[6];
+    }
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    }
+    : null;
+}
+function hFunc(content, funcname, arg1, arg2, arg3) {
+  let html = `<a style='color:blue' href="javascript:${funcname}('${arg1}','${arg2}','${arg3}');">${content}</a>`;
+  return html;
+}
+function hide(elem) {
+  if (isString(elem)) elem = document.getElementById(elem);
+  if (nundef(elem)) return;
+  if (isSvg(elem)) {
+    elem.setAttribute('style', 'visibility:hidden;display:none');
+  } else {
+    elem.style.display = 'none';
+  }
+}
 function hourglassUpdate() {
 }
+function HSLAToRGBA(hsla, isPct) {
+  let ex = /^hsla\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)(((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2},\s?)|((\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}\s\/\s))((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+  if (ex.test(hsla)) {
+    let sep = hsla.indexOf(',') > -1 ? ',' : ' ';
+    hsla = hsla
+      .substr(5)
+      .split(')')[0]
+      .split(sep);
+    if (hsla.indexOf('/') > -1) hsla.splice(3, 1);
+    isPct = isPct === true;
+    let h = hsla[0],
+      s = hsla[1].substr(0, hsla[1].length - 1) / 100,
+      l = hsla[2].substr(0, hsla[2].length - 1) / 100,
+      a = hsla[3];
+    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
+    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
+    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
+    if (h >= 360) h %= 360;
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+      m = l - c / 2,
+      r = 0,
+      g = 0,
+      b = 0;
+    if (0 <= h && h < 60) {
+      r = c;
+      g = x;
+      b = 0;
+    } else if (60 <= h && h < 120) {
+      r = x;
+      g = c;
+      b = 0;
+    } else if (120 <= h && h < 180) {
+      r = 0;
+      g = c;
+      b = x;
+    } else if (180 <= h && h < 240) {
+      r = 0;
+      g = x;
+      b = c;
+    } else if (240 <= h && h < 300) {
+      r = x;
+      g = 0;
+      b = c;
+    } else if (300 <= h && h < 360) {
+      r = c;
+      g = 0;
+      b = x;
+    }
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    let pctFound = a.indexOf('%') > -1;
+    if (isPct) {
+      r = +((r / 255) * 100).toFixed(1);
+      g = +((g / 255) * 100).toFixed(1);
+      b = +((b / 255) * 100).toFixed(1);
+      if (!pctFound) {
+        a *= 100;
+      } else {
+        a = a.substr(0, a.length - 1);
+      }
+    } else if (pctFound) {
+      a = a.substr(0, a.length - 1) / 100;
+    }
+    return 'rgba(' + (isPct ? r + '%,' + g + '%,' + b + '%,' + a + '%' : +r + ',' + +g + ',' + +b + ',' + +a) + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hslToHex(h, s, l) {
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+function hslToHexCOOL(hslColor) {
+  const hslColorCopy = { ...hslColor };
+  hslColorCopy.l /= 100;
+  const a =
+    (hslColorCopy.s * Math.min(hslColorCopy.l, 1 - hslColorCopy.l)) / 100;
+  const f = (n) => {
+    const k = (n + hslColorCopy.h / 30) % 12;
+    const color = hslColorCopy.l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+}
+function HSLToRGB(hsl, isPct) {
+  let ex = /^hsl\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}|(\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2})\)$/i;
+  if (ex.test(hsl)) {
+    let sep = hsl.indexOf(',') > -1 ? ',' : ' ';
+    hsl = hsl
+      .substr(4)
+      .split(')')[0]
+      .split(sep);
+    isPct = isPct === true;
+    let h = hsl[0],
+      s = hsl[1].substr(0, hsl[1].length - 1) / 100,
+      l = hsl[2].substr(0, hsl[2].length - 1) / 100;
+    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
+    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
+    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
+    if (h >= 360) h %= 360;
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+      m = l - c / 2,
+      r = 0,
+      g = 0,
+      b = 0;
+    if (0 <= h && h < 60) {
+      r = c;
+      g = x;
+      b = 0;
+    } else if (60 <= h && h < 120) {
+      r = x;
+      g = c;
+      b = 0;
+    } else if (120 <= h && h < 180) {
+      r = 0;
+      g = c;
+      b = x;
+    } else if (180 <= h && h < 240) {
+      r = 0;
+      g = x;
+      b = c;
+    } else if (240 <= h && h < 300) {
+      r = x;
+      g = 0;
+      b = c;
+    } else if (300 <= h && h < 360) {
+      r = c;
+      g = 0;
+      b = x;
+    }
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    if (isPct) {
+      r = +((r / 255) * 100).toFixed(1);
+      g = +((g / 255) * 100).toFixed(1);
+      b = +((b / 255) * 100).toFixed(1);
+    }
+    return 'rgb(' + (isPct ? r + '%,' + g + '%,' + b + '%' : +r + ',' + +g + ',' + +b) + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hue(h) {
+  var r = Math.abs(h * 6 - 3) - 1;
+  var g = 2 - Math.abs(h * 6 - 2);
+  var b = 2 - Math.abs(h * 6 - 4);
+  return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+}
+function iAdd(item, liveprops={}, addprops={}) {
+  let id, l;
+  if (isString(item)) { id = item; item = valf(Items[id], {}); }
+  let el = valf(liveprops.div, liveprops.ui, iDiv(item), null);
+  id = valnwhite(addprops.id, item.id, (el ? el.id : getUID()), getUID());
+  item.id = id; if (nundef(Items[id])) Items[id] = item; if (el) el.id = id;
+  if (nundef(item.live)) item.live = {};
+  l = item.live;
+  for (const k in liveprops) {
+    let val = liveprops[k];
+    if (nundef(val)) { continue; }
+    l[k] = val;
+    if (isdef(val.id) && val.id != id) { lookupAddIfToList(val, ['memberOf'], id); }
+  }
+  if (isdef(addprops)) copyKeys(addprops, item);
+  return item;
+}
+function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
+  if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
+  rgb = hexToRgb(bg);
+  r = rgb.r;
+  g = rgb.g;
+  b = rgb.b;
+  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114; 
+  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+  return foreColor;
+}
+function iDiv(i) { return isdef(i.live) ? i.live.div : valf(i.div, i.ui, i); } //isdef(i.div) ? i.div : i; }
 async function imgAsIsInDiv(url, dParent) {
   let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
   let sz = 300;
@@ -1898,6 +3298,19 @@ async function imgToServer(canvas, path) {
   let resp = await mPostRoute('postImage', o);
   return resp;
 }
+function infoToItem(x) { let item = { info: x, key: x.key }; item.id = iRegister(item); return item; }
+function initCodingUI() {
+  mStyle('dMain', { bg: 'silver' });
+  [dTable, dSidebar] = mCols100('dMain', '1fr auto', 0);
+  let [dtitle, dta] = mRows100(dTable, 'auto 1fr', 2);
+  mDiv(dtitle, { padding: 10, fg: 'white', fz: 24 }, null, 'OUTPUT:');
+  AU.ta = mTextArea100(dta, { fz: 20, padding: 10, family: 'opensans' });
+}
+function initCrowd() {
+  while (availablePeeps.length) {
+    addPeepToCrowd().walk.progress(Math.random())
+  }
+}
 function inpToChecklist(ev, grid) {
   let key = ev.key;
   let inp = ev.target;
@@ -1922,18 +3335,40 @@ function INTERRUPT() {
   DA.Tprev = T; T = null;
   delete DA.stopAutobot;
 }
+function intersection(arr1, arr2) {
+  let res = [];
+  for (const a of arr1) {
+    if (arr2.includes(a)) {
+      addIf(res, a);
+    }
+  }
+  return res;
+}
 function intersectionOfArrays() {
   let arrs = arguments[0]; console.log('arrs', arrs);
   if (!arrs.every(Array.isArray)) arrs = Array.from(arguments);
   return arrs.reduce((acc, array) => acc.filter(element => array.includes(element)));
 }
+function iRegister(item, id) { let uid = isdef(id) ? id : getUID(); Items[uid] = item; return uid; }
+function isAlphaNum(s) { query = /^[a-zA-Z0-9]+$/; return query.test(s); }
 function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; } return isLetter(s[0]); }
 function isBetween(n, a, b) { return n >= a && n <= b }
+function isdef(x) { return x !== null && x !== undefined; }
+function isDict(d) { let res = (d !== null) && (typeof (d) == 'object') && !isList(d); return res; }
+function isDigit(s) { return /^[0-9]$/i.test(s); }
+function isEmpty(arr) {
+  return arr === undefined || !arr
+    || (isString(arr) && (arr == 'undefined' || arr == ''))
+    || (Array.isArray(arr) && arr.length == 0)
+    || Object.entries(arr).length === 0;
+}
+function isEmptyOrWhiteSpace(s) { return isEmpty(s.trim()); }
 function isExpressionSeparator(ch) { return ',-.!?;:'.includes(ch); }
 function isGrayColor(color, diff = 60) {
   const rgb = colorHexToRgb(color);
   return Math.abs(rgb.r - rgb.g) + Math.abs(rgb.r - rgb.b) + Math.abs(rgb.g - rgb.b) < 3 * diff;
 }
+function isLetter(s) { return /^[a-zA-Z]$/i.test(s); }
 function isLightAfter(ctx, x, y) {
   for (let p = x + 1; p < x + 4; p++) if (isPixLight(ctx, p, y)) return true;
   return false;
@@ -1950,6 +3385,7 @@ function isLightBeforeV(ctx, x, y) {
   for (let p = y - 4; p < y - 1; p++) if (isPixLight(ctx, x, p)) return true;
   return false;
 }
+function isList(arr) { return Array.isArray(arr); }
 function isMergeableObject(val) {
   var nonNullObject = val && typeof val === 'object'
   return nonNullObject
@@ -1957,6 +3393,8 @@ function isMergeableObject(val) {
     && Object.prototype.toString.call(val) !== '[object Date]'
 }
 function isMyTurn(fen) {  return fen.turn.includes(getUname())}
+function isNumber(x) { return x !== ' ' && x !== true && x !== false && isdef(x) && (x == 0 || !isNaN(+x)); }
+function isNumeric(x) { return !isNaN(+x); }
 function isObject(item) { return item && typeof item === 'object' && !Array.isArray(item); }
 function isPix(ctx, x, y, color, delta = 10) {
   let rgb = isString(color) ? colorRGB(color, true) : color;
@@ -1980,8 +3418,41 @@ function isSameDate(date1, date2) {
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate();
 }
+function isSet(x) { return (isDict(x) && (x.set || x._set)); }
+function isString(param) { return typeof param == 'string'; }
+function isSvg(elem) { return startsWith(elem.constructor.name, 'SVG'); }
+function isTimeForAddon() {
+  if (nundef(ADS)) return false;
+  if (isEmpty(U.avAddons)) return false;
+  if (isdef(AD) && AD.running && AD.checkEndCondition()) {
+    console.log('END!')
+    AD.die();
+    U.addons[AD.key].open = false;
+    AD = null;
+  }
+  if (isdef(AD)) return AD.isTimeForAddon();
+  let open = allCondDict(U.addons, x => x.open == true);
+  if (isEmpty(open)) {
+    console.log('open is empty! choosing a random addon!')
+    let k = chooseRandom(U.avAddons);
+    AD = new ADS[k].cl(k, ADS[k], {});
+  } else if (open.length == 1) {
+    let k = open[0];
+    AD = new ADS[k].cl(k, ADS[k], U.addons[k]);
+  } else {
+    let k = chooseRandom(open);
+    AD = new ADS[k].cl(k, ADS[k], U.addons[k]);
+  }
+  return AD.isTimeForAddon();
+}
+function isWhiteSpace(s) { let white = new RegExp(/^\s$/); return white.test(s.charAt(0)); }
 function isWithinDelta(n, goal, delta) { return isBetween(n, goal - delta, goal + delta) }
 function isWordSeparator(ch) { return ' ,-.!?;:'.includes(ch); }
+function ithWord(s, n, allow_) {
+  let ws = toWords(s, allow_);
+  return ws[Math.min(n, ws.length - 1)];
+}
+function jsCopy(o) { return JSON.parse(JSON.stringify(o)); }
 function keyDownHandler(ev) {
   if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
   if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
@@ -1996,6 +3467,29 @@ function keyUpHandler(ev) {
     IsControlKeyDown = false;
     mMagnifyOff();
   }
+}
+function last(arr) {
+  return arr.length > 0 ? arr[arr.length - 1] : null;
+}
+function lastOfLanguage(key, language) {
+  let y = symbolDict[key];
+  let w = y[language];
+  let last = stringAfterLast(w, '|');
+  return last.trim();
+}
+function list2dict(arr, keyprop = 'id', uniqueKeys = true) {
+  let di = {};
+  for (const a of arr) {
+    let key = typeof (a) == 'object' ? a[keyprop] : a;
+    if (uniqueKeys) lookupSet(di, [key], a);
+    else lookupAddToList(di, [key], a);
+  }
+  return di;
+}
+function liste(areaName, oSpec, oid, o) {
+  let [num, or, split, bg, fg, id, panels, parent] = getParams(areaName, oSpec, oid);
+  parent.style.display = 'inline-grid';
+  return parent;
 }
 async function loadAndMakeInteractive(imageUrl) {
   try {
@@ -2104,20 +3598,90 @@ function loadPlayerColors() {
   return list;
 }
 function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
-function make_set_deck(n_or_attr_list) {
-  let all_attrs = gSet_attributes();
-  let keys = get_keys(all_attrs);
-  let n = isNumber(n_or_attr_list) ? n_or_attr_list : n_or_attr_list.length;
-  let attrs = isNumber(n_or_attr_list) ? arrTake(keys, n) : n_or_attr_list;
-  let list = ['0', '1', '2'];
-  let i = 1;
-  while (i < n) {
-    let [l1, l2, l3] = [jsCopy(list), jsCopy(list), jsCopy(list)];
-    l1 = l1.map(x => '0' + x); l2 = l2.map(x => '1' + x); l3 = l3.map(x => '2' + x);
-    list = l1.concat(l2).concat(l3);
-    i++;
+function lookup(dict, keys) {
+  let d = dict;
+  let ilast = keys.length - 1;
+  let i = 0;
+  for (const k of keys) {
+    if (k === undefined) break;
+    let e = d[k];
+    if (e === undefined || e === null) return null;
+    d = d[k];
+    if (i == ilast) return d;
+    i += 1;
   }
-  return list;
+  return d;
+}
+function lookupAddIfToList(dict, keys, val) {
+  let lst = lookup(dict, keys);
+  if (isList(lst) && lst.includes(val)) return;
+  lookupAddToList(dict, keys, val);
+}
+function lookupAddToList(dict, keys, val) {
+  let d = dict;
+  let ilast = keys.length - 1;
+  let i = 0;
+  for (const k of keys) {
+    if (i == ilast) {
+      if (nundef(k)) {
+        console.assert(false, 'lookupAddToList: last key indefined!' + keys.join(' '));
+        return null;
+      } else if (isList(d[k])) {
+        d[k].push(val);
+      } else {
+        d[k] = [val];
+      }
+      return d[k];
+    }
+    if (nundef(k)) continue;
+    if (d[k] === undefined) d[k] = {};
+    d = d[k];
+    i += 1;
+  }
+  return d;
+}
+function lookupSet(dict, keys, val) {
+  let d = dict;
+  let ilast = keys.length - 1;
+  let i = 0;
+  for (const k of keys) {
+    if (nundef(k)) continue;
+    if (d[k] === undefined) d[k] = (i == ilast ? val : {});
+    if (nundef(d[k])) d[k] = (i == ilast ? val : {});
+    d = d[k];
+    if (i == ilast) return d;
+    i += 1;
+  }
+  return d;
+}
+function lookupSetOverride(dict, keys, val) {
+  let d = dict;
+  let ilast = keys.length - 1;
+  let i = 0;
+  for (const k of keys) {
+    if (i == ilast) {
+      if (nundef(k)) {
+        return null;
+      } else {
+        d[k] = val;
+      }
+      return d[k];
+    }
+    if (nundef(k)) continue;
+    if (nundef(d[k])) d[k] = {};
+    d = d[k];
+    i += 1;
+  }
+  return d;
+}
+function luminance(r, g, b) {
+  var a = [r, g, b].map(function (v) {
+    v /= 255;
+    return v <= 0.03928
+      ? v / 12.92
+      : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 function makeArrayWithParts(keys) {
   let arr = []; keys[0].split('_').map(x => arr.push([]));
@@ -2127,11 +3691,60 @@ function makeArrayWithParts(keys) {
   }
   return arr;
 }
+function makeDefaultPool(fromData) {
+  if (nundef(fromData) || isEmpty(fromData.table) && isEmpty(fromData.players)) return {};
+  if (nundef(fromData.table)) fromData.table = {};
+  let data = jsCopy(fromData.table);
+  for (const k in fromData.players) {
+    data[k] = jsCopy(fromData.players[k]);
+  }
+  return data;
+}
+function makePool(cond, source, R) {
+  if (nundef(cond)) return [];
+  else if (cond == 'all') return source;
+  let pool = [];
+  for (const oid of source) {
+    let o = R.getO(oid);
+    if (!evalConds(o, cond)) continue;
+    pool.push(oid);
+  }
+  return pool;
+}
 function makeSVG(tag, attrs) {
   var el = "<" + tag;
   for (var k in attrs)
     el += " " + k + "=\"" + attrs[k] + "\"";
   return el + "/>";
+}
+function makeUnitString(nOrString, unit = 'px', defaultVal = '100%') {
+  if (nundef(nOrString)) return defaultVal;
+  if (isNumber(nOrString)) nOrString = '' + nOrString + unit;
+  return nOrString;
+}
+function mAnimate(elem, prop, valist, callback, msDuration = 1000, easing = 'cubic-bezier(1,-0.03,.86,.68)', delay = 0, forwards = 'none') {
+  let kflist = [];
+  for (const perc in valist) {
+    let o = {};
+    let val = valist[perc];
+    o[prop] = isString(val) || prop == 'opacity' ? val : '' + val + 'px';
+    kflist.push(o);
+  }
+  let opts = { duration: msDuration, fill: forwards, easing: easing, delay: delay };
+  let a = toElem(elem).animate(kflist, opts);
+  if (isdef(callback)) { a.onfinish = callback; }
+  return a;
+}
+function mAppend(d, child) { toElem(d).appendChild(child); return child; }
+function mButton(caption, handler, dParent, styles, classes, id) {
+  let x = mCreate('button');
+  x.innerHTML = caption;
+  if (isdef(handler)) x.onclick = handler;
+  if (isdef(dParent)) toElem(dParent).appendChild(x);
+  if (isdef(styles)) mStyle(x, styles);
+  if (isdef(classes)) mClass(x, classes);
+  if (isdef(id)) x.id = id;
+  return x;
 }
 function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
   mIfNotRelative(dParent);
@@ -2140,12 +3753,62 @@ function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
   let o = M.superdi.xmark;
   el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: color, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
+function mBy(id) { return document.getElementById(id); }
+function mCenterCenter(d, gap) { mCenterCenterFlex(d, gap); }
+function mCenterCenterFlex(d, gap) { mCenterFlex(d, true, true, true, gap); }
+function mCenterFlex(d, hCenter = true, vCenter = false, wrap = true, gap = null) {
+  let styles = { display: 'flex' };
+  if (hCenter) styles['justify-content'] = 'center';
+  styles['align-content'] = vCenter ? 'center' : 'flex-start';
+  if (wrap) styles['flex-wrap'] = 'wrap';
+  if (gap) styles.gap = gap;
+  mStyle(d, styles);
+}
 function mCheckbox(dg, name, value) {
   let di = mDom(dg, { display: 'inline-block' });
   let chk = mDom(di, {}, { tag: 'input', type: 'checkbox', id: getUID('c'), name: name });
   if (isdef(value)) chk.checked = value;
   let label = mDom(di, {}, { tag: 'label', html: name, for: chk.id });
   return di;
+}
+function mClass(d) {
+  d = toElem(d);
+  if (arguments.length == 2) {
+    let arg = arguments[1];
+    if (isString(arg) && arg.indexOf(' ') > 0) { arg = [toWords(arg)]; }
+    else if (isString(arg)) arg = [arg];
+    if (isList(arg)) {
+      for (let i = 0; i < arg.length; i++) {
+        d.classList.add(arg[i]);
+      }
+    }
+  } else for (let i = 1; i < arguments.length; i++) d.classList.add(arguments[i]);
+}
+function mClassRemove(d) { d = toElem(d); for (let i = 1; i < arguments.length; i++) d.classList.remove(arguments[i]); }
+function mClear(d) {
+  toElem(d).innerHTML = '';
+}
+function mColFlex(dParent, chflex = [1, 5, 1], bgs) {
+  let styles = { opacity: 1, display: 'flex', aitems: 'stretch', 'flex-flow': 'nowrap' };
+  mStyle(dParent, styles);
+  let res = [];
+  for (let i = 0; i < chflex.length; i++) {
+    let bg = isdef(bgs) ? bgs[i] : null;
+    let d1 = mDiv(dParent, { flex: chflex[i], bg: bg });
+    res.push(d1);
+  }
+  return res;
+}
+function mColor(d, bg, fg) { return mStyle(d, { 'background-color': bg, 'color': fg }); }
+function mCols100(dParent, spec, gap = 4) {
+  let grid = mDiv(dParent, { padding: gap, gap: gap, box: true, display: 'grid', h: '100%', w: '100%' })
+  grid.style.gridTemplateColumns = spec;
+  let res = [];
+  for (const i of range(stringCount(spec, ' ') + 1)) {
+    let d = mDiv(grid, { h: '100%', w: '100%', box: true })
+    res.push(d);
+  }
+  return res;
 }
 function mCommand(dParent, key, html, open, close) {
   if (nundef(html)) html = capitalize(key);
@@ -2154,6 +3817,12 @@ function mCommand(dParent, key, html, open, close) {
   let d = mDom(dParent, { display: 'inline-block' }, { key: key });
   let a = mDom(d, {}, { key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
   return { dParent, elem: d, div: a, key, open, close };
+}
+function mCreate(tag, styles, id) { let d = document.createElement(tag); if (isdef(id)) d.id = id; if (isdef(styles)) mStyle(d, styles); return d; }
+function mCreateFrom(htmlString) {
+  var div = document.createElement('div');
+  div.innerHTML = htmlString.trim();
+  return div.firstChild;
 }
 function mCropResizePan(dParent, img, dButtons) {
   let [worig, horig] = [img.offsetWidth, img.offsetHeight];
@@ -2381,6 +4050,52 @@ function mDatalist(dParent, list, opts = {}) {
     opts: opts,
   }
 }
+function mDataTable(reclist, dParent, rowstylefunc, headers, id, showheaders = true) {
+  if (nundef(headers)) headers = get_keys(reclist[0]);
+  let t = mTable(dParent, headers, showheaders);
+  if (isdef(id)) t.id = `t${id}`;
+  let rowitems = [];
+  let i = 0;
+  for (const u of reclist) {
+    let rid = isdef(id) ? `r${id}_${i}` : null;
+    r = mTableRow(t, u, headers, rid);
+    if (isdef(rowstylefunc)) mStyle(r.div, rowstylefunc(u));
+    rowitems.push({ div: r.div, colitems: r.colitems, o: u, id: rid, index: i });
+    i++;
+  }
+  return { div: t, rowitems: rowitems };
+}
+function mDiv(dParent, styles, id, inner, classes, sizing) {
+  dParent = toElem(dParent);
+  let d = mCreate('div');
+  if (dParent) mAppend(dParent, d);
+  if (isdef(styles)) mStyle(d, styles);
+  if (isdef(classes)) mClass(d, classes);
+  if (isdef(id)) d.id = id;
+  if (isdef(inner)) d.innerHTML = inner;
+  if (isdef(sizing)) { setRect(d, sizing); }
+  return d;
+}
+function mDom(dParent, styles = {}, opts = {}) {
+  let tag = valf(opts.tag, 'div');
+  let d = document.createElement(tag);
+  if (isdef(dParent)) mAppend(dParent, d);
+  if (tag == 'textarea') styles.wrap = 'hard';
+  const aliases = {
+    classes: 'className',
+    inner: 'innerHTML',
+    html: 'innerHTML',
+    w: 'width',
+    h: 'height',
+  };
+  for (const opt in opts) {
+    let name = valf(aliases[opt], opt), val = opts[opt];
+    if (['style', 'tag', 'innerHTML', 'className', 'checked', 'value'].includes(name) || name.startsWith('on')) d[name] = val;
+    else d.setAttribute(name, val);
+  }
+  mStyle(d, styles);
+  return d;
+}
 function mDropZone(dropZone, onDrop) {
   dropZone.setAttribute('allowDrop', true)
   dropZone.addEventListener('dragover', function (event) {
@@ -2436,6 +4151,25 @@ function measureElement(el) {
   let info = window.getComputedStyle(el, null);
   return { w: info.width, h: info.height };
 }
+function measureFieldset(fs) {
+  let legend = fs.firstChild;
+  let r = getRect(legend);
+  let labels = fs.getElementsByTagName('label');
+  let wmax = 0;
+  for (const l of labels) {
+    let r1 = getRect(l);
+    wmax = Math.max(wmax, r1.w);
+  }
+  let wt = r.w;
+  let wo = wmax + 24;
+  let diff = wt - wo;
+  if (diff >= 10) {
+    for (const l of labels) { let d = l.parentNode; mStyle(d, { maleft: diff / 2 }); }
+  }
+  let wneeded = Math.max(wt, wo) + 10;
+  mStyle(fs, { wmin: wneeded });
+  for (const l of labels) { let d = l.parentNode; mStyle(l, { display: 'inline-block', wmin: 50 }); mStyle(d, { wmin: wneeded - 40 }); }
+}
 function measureHeight(elem) { return mGetStyle(elem, 'h') }
 function measureHeightOfTextStyle(dParent, styles = {}) {
   let d = mDom(dParent, styles, { html: 'Hql' });
@@ -2486,6 +4220,31 @@ function mergeArrays(target, source) {
   });
   return merged;
 }
+function mergeDynSetNodes(o) {
+  let merged = {};
+  let interpool = null;
+  for (const nodeId in o.RSG) {
+    let node = jsCopy(dynSpec[nodeId]);
+    let pool = node.pool;
+    if (pool) {
+      if (!interpool) interpool = pool;
+      else interpool = intersection(interpool, pool);
+    }
+    merged = deepmerge(merged, node);
+  }
+  merged.pool = interpool;
+  return merged;
+}
+function mergeIncludingPrototype(oid, o) {
+  let merged = mergeDynSetNodes(o);
+  merged.oid = oid;
+  let t = merged.type;
+  let info;
+  if (t && PROTO[t]) {
+    info = deepmerge(merged, jsCopy(PROTO[t]));
+  } else info = merged;
+  return info;
+}
 function mergeObject(target, source, optionsArgument) {
   var destination = {}
   if (isMergeableObject(target)) {
@@ -2502,10 +4261,19 @@ function mergeObject(target, source, optionsArgument) {
   })
   return destination;
 }
+function mergeOverride(base, drueber) { return _deepMerge(base, drueber, { arrayMerge: _overwriteMerge }); }
 function mergeOverrideArrays(base, drueber) {
   return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
 }
 function mExists(d) { return isdef(toElem(d)); }
+function mFlex(d, or = 'h') {
+  d = toElem(d);
+  d.style.display = 'flex';
+  d.style.flexFlow = (or == 'v' ? 'column' : 'row') + ' ' + (or == 'w' ? 'wrap' : 'nowrap');
+}
+function mFlexV(d) { mStyle(d, { display: 'flex', 'align-items': 'center' }); }
+function mFlexVWrap(d) { mStyle(d, { display: 'flex', 'align-items': 'center', 'flex-flow': 'row wrap' }); }
+function mFlexWrap(d) { mFlex(d, 'w'); }
 function mGadget(name, styles = {}, opts = {}) {
   let d = document.body;
   let dialog = mDom(d, { w100: true, h100: true }, { className: 'reset', tag: 'dialog', id: `modal_${name}` });
@@ -2594,13 +4362,16 @@ function mGetStyle(elem, prop) {
   if (nundef(val)) val = getStyleProp(elem, prop);
   if (val.endsWith('px')) return firstNumber(val); else return val;
 }
+function mGetStyles(elem, proplist) {
+  let res = {};
+  for (const p of proplist) { res[p] = mGetStyle(elem, p) }
+  return res;
+}
 async function mGetYaml(path = '../base/assets/m.txt') {
   let res = await fetch(path);
   let text = await res.text();
   let di = jsyaml.load(text);
-  //console.log('di',di);
   return di;
-
 }
 function mGrid(rows, cols, dParent, styles = {}) {
   addKeys({ display: 'inline-grid', gridCols: 'repeat(' + cols + ',1fr)' }, styles);
@@ -2617,6 +4388,14 @@ function mGridFromElements(dParent, elems, maxHeight, numColumns) {
   return grid;
 }
 function mGridFromItems(dParent, items, maxHeight, numColumns) { return mGridFromElements(dParent, items.map(x => iDiv(x)), maxHeight, numColumns); }
+function mHasClass(el, className) {
+  if (el.classList) return el.classList.contains(className);
+  else {
+    let x = !!el.className; 
+    return isString(x) && !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+  }
+}
+function mIfNotRelative(d) { if (isEmpty(d.style.position)) d.style.position = 'relative'; }
 function mimali(c, n) {
   function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
   function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
@@ -2629,6 +4408,12 @@ function mimali(c, n) {
   let diff = Math.round(360 / n)
   wheel = arrd(c, diff, 0, 0, n);
   return wheel;
+}
+function mInput(dParent, styles, id, placeholder, classtr = 'input', tabindex = null, value = '', selectOnClick = false, type = "text") {
+  let html = `<input type="${type}" autocomplete="off" ${selectOnClick ? 'onclick="this.select();"' : ''} id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">`;
+  let d = mAppend(dParent, mCreateFrom(html));
+  if (isdef(styles)) mStyle(d, styles);
+  return d;
 }
 function mItem(liveprops = {}, opts = {}) {
   let id = valf(opts.id, getUID());
@@ -2653,6 +4438,18 @@ function mixColors(color1, color2, weight) {
   const b = Math.floor(b1 * (1 - weight) + b2 * weight);
   const hex = colorHex({ r: r, g: g, b: b }); // '#' + r.toString(16) + g.toString(16) + b.toString(16);
   return hex;
+}
+function mLinebreak(dParent, gap) {
+  dParent = toElem(dParent);
+  let d;
+  let display = getComputedStyle(dParent).display;
+  if (display == 'flex') {
+    d = mDiv(dParent, { fz: 2, 'flex-basis': '100%', h: 0, w: '100%' }, null, ' &nbsp; ');
+  } else {
+    d = mDiv(dParent, {}, null, '<br>');
+  }
+  if (isdef(gap)) { d.style.minHeight = gap + 'px'; d.innerHTML = ' &nbsp; '; d.style.opacity = .2; }
+  return d;
 }
 function mLMR(dParent) {
   dParent = toElem(dParent);
@@ -2728,6 +4525,7 @@ function mPlace(elem, pos, offx, offy) {
   elem.style.position = 'absolute';
   elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
 }
+function mPos(d, x, y, unit = 'px') { mStyle(d, { left: x, top: y, position: 'absolute' }, unit); }
 async function mPostRoute(route, o = {}) {
   let server = getServerurl();
   server += `/${route}`;
@@ -2755,7 +4553,88 @@ async function mPrompt(gadget) {
     };
   });
 }
+function mRadio(label, val, name, dParent, styles = {}, handler, group_id, is_on) {
+  let cursor = styles.cursor; delete styles.cursor;
+  let d = mDiv(dParent, styles, group_id + '_' + val);
+  let id = isdef(group_id) ? `i_${group_id}_${val}` : getUID();
+  let type = isdef(group_id) ? 'radio' : 'checkbox';
+  let checked = isdef(is_on) ? is_on : false;
+  let inp = mCreateFrom(`<input class='radio' id='${id}' type="${type}" name="${name}" value="${val}">`);
+  if (checked) inp.checked = true;
+  let text = mCreateFrom(`<label for='${inp.id}'>${label}</label>`);
+  if (isdef(cursor)) { inp.style.cursor = text.style.cursor = cursor; }
+  mAppend(d, inp);
+  mAppend(d, text);
+  if (isdef(handler)) {
+    inp.onclick = ev => {
+      ev.cancelBubble = true;
+      if (handler == 'toggle') {
+      } else if (isdef(handler)) {
+        handler(val);
+      }
+    };
+  }
+  return d;
+}
+function mRadioGroup(dParent, styles, id, legend, legendstyles) {
+  let f = mCreate('fieldset');
+  f.id = id;
+  if (isdef(styles)) mStyle(f, styles);
+  if (isdef(legend)) {
+    let l = mCreate('legend');
+    l.innerHTML = legend;
+    mAppend(f, l);
+    if (isdef(legendstyles)) { mStyle(l, legendstyles); }
+  }
+  mAppend(dParent, f);
+  return f;
+}
+function mRemove(elem) {
+  elem = toElem(elem); if (nundef(elem)) return;
+  var a = elem.attributes, i, l, n;
+  if (a) {
+    for (i = a.length - 1; i >= 0; i -= 1) {
+      n = a[i].name;
+      if (typeof elem[n] === 'function') {
+        elem[n] = null;
+      }
+    }
+  }
+  a = elem.childNodes;
+  if (a) {
+    l = a.length;
+    for (i = a.length - 1; i >= 0; i -= 1) {
+      mRemove(elem.childNodes[i]);
+    }
+  }
+  elem.remove();
+}
+function mRemoveClass(d) { for (let i = 1; i < arguments.length; i++) d.classList.remove(arguments[i]); }
 function mRemoveIfExists(d){ d=toElem(d);if (isdef(d)) d.remove();}
+function mRise(d, ms = 800) {
+  toElem(d).animate([{ opacity: 0, transform: 'translateY(50px)' }, { opacity: 1, transform: 'translateY(0px)' },], { fill: 'both', duration: ms, easing: 'ease' });
+}
+function mRows100(dParent, spec, gap = 4) {
+  let grid = mDiv(dParent, { padding: gap, gap: gap, box: true, display: 'grid', h: '100%', w: '100%' })
+  grid.style.gridTemplateRows = spec;
+  let res = [];
+  for (const i of range(stringCount(spec, ' ') + 1)) {
+    let d = mDiv(grid, { h: '100%', w: '100%', box: true })
+    res.push(d);
+  }
+  return res;
+}
+function mShield(dParent, styles = { bg: '#00000020' }, id = null, classnames = null, hideonclick = false) {
+  dParent = toElem(dParent);
+  let d = mDiv(dParent, styles, id, classnames);
+  lookupAddIfToList(DA, ['shields'], d);
+  mIfNotRelative(dParent);
+  mStyle(d, { position: 'absolute', left: 0, top: 0, w: '100%', h: '100%' });
+  if (hideonclick) d.onclick = ev => { evNoBubble(ev); d.remove(); };
+  else d.onclick = ev => { evNoBubble(ev); };
+  mClass(d, 'topmost');
+  return d;
+}
 async function mSleep(ms = 1000) {
   return new Promise(
     (res, rej) => {
@@ -2870,6 +4749,163 @@ function mStyle(elem, styles = {}, unit = 'px') {
     }
   }
 }
+function mStyleX(elem, styles, unit = 'px') {
+  const paramDict = {
+    bg: 'background-color',
+    fg: 'color',
+    align: 'text-align',
+    matop: 'margin-top',
+    maleft: 'margin-left',
+    mabottom: 'margin-bottom',
+    maright: 'margin-right',
+    patop: 'padding-top',
+    paleft: 'padding-left',
+    pabottom: 'padding-bottom',
+    paright: 'padding-right',
+    rounding: 'border-radius',
+    w: 'width',
+    h: 'height',
+    fontSize: 'font-size',
+    fz: 'font-size',
+    family: 'font-family',
+    weight: 'font-weight',
+  };
+  let bg, fg;
+  if (isdef(styles.bg) || isdef(styles.fg)) {
+    [bg, fg] = getExtendedColors(styles.bg, styles.fg);
+  }
+  if (isdef(styles.vmargin) && isdef(styles.hmargin)) {
+    styles.margin = vmargin + unit + ' ' + hmargin + unit;
+  }
+  if (isdef(styles.vpadding) && isdef(styles.hpadding)) {
+    styles.padding = vpadding + unit + ' ' + hpadding + unit;
+  }
+  for (const k in styles) {
+    let val = styles[k];
+    let key = k;
+    if (isdef(paramDict[k])) key = paramDict[k];
+    else if (k == 'font' && !isString(val)) {
+      let fz = f.size; if (isNumber(fz)) fz = '' + fz + 'px';
+      let ff = f.family;
+      let fv = f.variant;
+      let fw = isdef(f.bold) ? 'bold' : isdef(f.light) ? 'light' : f.weight;
+      let fs = isdef(f.italic) ? 'italic' : f.style;
+      if (nundef(fz) || nundef(ff)) return null;
+      let s = fz + ' ' + ff;
+      if (isdef(fw)) s = fw + ' ' + s;
+      if (isdef(fv)) s = fv + ' ' + s;
+      if (isdef(fs)) s = fs + ' ' + s;
+      elem.style.setProperty(k, s);
+      continue;
+    } else if (k == 'border') {
+      if (val.indexOf(' ') < 0) val = 'solid 1px ' + val;
+    }
+    if (key == 'font-weight') { elem.style.setProperty(key, val); continue; }
+    else if (key == 'background-color') elem.style.background = bg;
+    else if (key == 'color') elem.style.color = fg;
+    else {
+      elem.style.setProperty(key, makeUnitString(val, unit));
+    }
+  }
+}
+function mSym(key, dParent, styles = {}, pos, classes) {
+  let info = Syms[key];
+  styles.display = 'inline-block';
+  let family = info.family;
+  styles.family = family;
+  let sizes;
+  if (isdef(styles.sz)) { sizes = mSymSizeToBox(info, styles.sz, styles.sz); }
+  else if (isdef(styles.w) && isdef(styles.h)) { sizes = mSymSizeToBox(info, styles.w, styles.h); }
+  else if (isdef(styles.fz)) { sizes = mSymSizeToFz(info, styles.fz); }
+  else if (isdef(styles.h)) { sizes = mSymSizeToH(info, styles.h); }
+  else if (isdef(styles.w)) { sizes = mSymSizeToW(info, styles.w); }
+  else { sizes = mSymSizeToFz(info, 25); }
+  styles.fz = sizes.fz;
+  styles.w = sizes.w;
+  styles.h = sizes.h;
+  styles.align = 'center';
+  if (isdef(styles.bg) && info.family != 'emoNoto') { styles.fg = styles.bg; delete styles.bg; }
+  let x = mDiv(dParent, styles, null, info.text);
+  if (isdef(classes)) mClass(x, classes);
+  if (isdef(pos)) { mPlace(x, pos); }
+  return x;
+}
+function mSymSizeToBox(info, w, h) {
+  let fw = w / info.w;
+  let fh = h / info.h;
+  let f = Math.min(fw, fh);
+  return { fz: 100 * f, w: info.w * f, h: info.h * f };
+}
+function mSymSizeToFz(info, fz) { let f = fz / 100; return { fz: fz, w: info.w * f, h: info.h * f }; }
+function mSymSizeToH(info, h) { let f = h / info.h; return { fz: 100 * f, w: info.w * f, h: h }; }
+function mSymSizeToW(info, w) { let f = w / info.w; return { fz: 100 * f, w: w, h: info.h * f }; }
+function mTable(dParent, headers, showheaders, styles = { mabottom: 0 }, className = 'table') {
+  let d = mDiv(dParent);
+  let t = mCreate('table');
+  mAppend(d, t);
+  if (isdef(className)) mClass(t, className);
+  if (isdef(styles)) mStyle(t, styles);
+  if (showheaders) {
+    let code = `<tr>`;
+    for (const h of headers) {
+      code += `<th>${h}</th>`
+    }
+    code += `</tr>`;
+    t.innerHTML = code;
+  }
+  return t;
+}
+function mTableCol(r, val) {
+  let col = mCreate('td');
+  mAppend(r, col);
+  if (isdef(val)) col.innerHTML = val;
+  return col;
+}
+function mTableCommandify(rowitems, di) {
+  for (const item of rowitems) {
+    for (const index in di) {
+      let colitem = item.colitems[index];
+      colitem.div.innerHTML = di[index](item, colitem.val);
+    }
+  }
+}
+function mTableRow(t, o, headers, id) {
+  let elem = mCreate('tr');
+  if (isdef(id)) elem.id = id;
+  mAppend(t, elem);
+  let colitems = [];
+  for (const k of headers) {
+    let val = isdef(o[k]) ? isDict(o[k]) ? JSON.stringify(o[k]) : isList(o[k]) ? o[k].join(', ') : o[k] : '';
+    let col = mTableCol(elem, val);
+    colitems.push({ div: col, key: k, val: val });
+  }
+  return { div: elem, colitems: colitems };
+}
+function mTableStylify(rowitems, di) {
+  for (const item of rowitems) {
+    for (const index in di) {
+      let colitem = item.colitems[index];
+      mStyle(colitem.div,di[index]);
+    }
+  }
+}
+function mText(text, dParent, styles, classes) {
+  if (!isString(text)) text = text.toString();
+  let d = mDiv(dParent);
+  if (!isEmpty(text)) { d.innerHTML = text; }
+  if (isdef(styles)) mStyle(d, styles);
+  if (isdef(classes)) mClass(d, classes);
+  return d;
+}
+function mTextArea100(dParent, styles = {}) {
+  mCenterCenterFlex(dParent)
+  let html = `<textarea style="width:100%;height:100%;box-sizing:border-box" wrap="hard"></textarea>`;
+  let t = mCreateFrom(html);
+  mStyle(t, styles);
+  mAppend(dParent, t);
+  return t;
+}
+function name2id(name) { return 'd_' + name.split(' ').join('_'); }
 function nextBar(ctx, rest, color) {
   list = rest;
   let val = findMostFrequentVal(list, 'x');
@@ -2886,6 +4922,13 @@ function nextLine(ctx, rest, color) {
   if (line) line.map(p => drawPix(ctx, p.x, p.y, color));
   return { val, line, rest, color };
 }
+function normalizeString(s, sep = '_') {
+  s = s.toLowerCase().trim();
+  let res = '';
+  for (let i = 0; i < s.length; i++) { if (isAlphaNum(s[i])) res += s[i]; else res += sep; }
+  return res;
+}
+function nundef(x) { return x === null || x === undefined; }
 async function onclickAddCategory() {
   let selist = UI.selectedImages; 
   let keys = selist.map(x => stringBefore(x, '@'));
@@ -3530,6 +5573,19 @@ function playerStatCount(key, n, dParent, styles = {}) {
   d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
   return d;
 }
+function polyPointsFrom(w, h, x, y, pointArr) {
+  x -= w / 2;
+  y -= h / 2;
+  let pts = pointArr.map(p => [p.X * w + x, p.Y * h + y]);
+  let newpts = [];
+  for (const p of pts) {
+    newp = { X: p[0], Y: Math.round(p[1]) };
+    newpts.push(newp);
+  }
+  pts = newpts;
+  let sPoints = pts.map(p => '' + p.X + ',' + p.Y).join(' ');
+  return sPoints;
+}
 async function postEventChange(data) {
   return Serverdata.events[data.id] = await mPostRoute('postEvent', data);
 }
@@ -3542,6 +5598,13 @@ async function postImage(img, path) {
 async function postUserChange(data) {
   data = valf(data, U)
   return Serverdata.users[data.name] = await mPostRoute('postUser', data);
+}
+function posXY(d1, dParent, x, y, unit = 'px', position = 'absolute') {
+  if (nundef(position)) position = 'absolute';
+  if (dParent && !dParent.style.position) dParent.style.setProperty('position', 'relative');
+  d1.style.setProperty('position', position);
+  if (isdef(x)) d1.style.setProperty('left', makeUnitString(x, unit));
+  if (isdef(y)) d1.style.setProperty('top', makeUnitString(y, unit));
 }
 async function prelims() {
   let t1 = performance.now();
@@ -3564,6 +5627,18 @@ async function prelims() {
   }
   DA.counter = 0;
 }
+function present() {
+  if (Settings.perspective == 'me') presentFor(me);
+  else presentAll();
+}
+function presentAll() {
+  clearZones();
+  for (const pl of T.players) {
+    let zone = Zones[pl.id];
+    pl.hand.showDeck(zone.dData, 'right', 0, false);
+  }
+  showTrick();
+}
 function presentExtraWorker(item, dParent, styles = {}) {
   let sz = styles.sz;
   addKeys({ paright: 10, bg: 'white', rounding: '50%', hmargin: 8, h: 30, position: 'relative' }, styles)
@@ -3572,9 +5647,119 @@ function presentExtraWorker(item, dParent, styles = {}) {
   let img2 = mDom(d, { h: sz * 2 / 3, w: sz * 2 / 3, position: 'absolute', top: '17%', left: '40%' }, { tag: 'img', src: `../assets/games/nations/templates/${item.o.res}.png` });
   return d;
 }
+function presentFor(me) {
+  clearElement(dTable);
+  let others = arrWithout(T.players, [me]);
+  for (const pl of others) {
+    pl.hand.showDeck(dTable, 'right', 0, false);
+  }
+  mLinebreak(dTable);
+  T.trick.showDeck(dTable, 'right', 20, true);
+  mLinebreak(dTable);
+  me.hand.showDeck(dTable, 'right', 0, false);
+  showFleetingMessage('click to play a card!');
+}
 function presentImageCropper(url) {
   let d = mDom('dMain', { position: 'absolute', h: 500, w: 500, bg: 'navy' });
   let img = mDom(d, { w: 300, h: 300, 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: url });
+}
+function proceed(nextLevel) {
+  if (nundef(nextLevel)) nextLevel = currentLevel;
+  if (nextLevel > MAXLEVEL) {
+    let iGame = gameSequence.indexOf(currentGame) + 1;
+    if (iGame == gameSequence.length) {
+      soundGoodBye();
+      mClass(document.body, 'aniSlowlyDisappear');
+      show(dLevelComplete);
+      dLevelComplete.innerHTML = 'CONGRATULATIONS! You are done!';
+    } else {
+      let nextGame = gameSequence[iGame];
+      setGoal(nextGame);
+    }
+  } else if (LevelChange) startLevel(nextLevel);
+  else startRound();
+}
+function pSBC(p, c0, c1, l) {
+  let r, g, b, P, f, t, h, i = parseInt, m = Math.round, a = typeof c1 == 'string';
+  if (typeof p != 'number' || p < -1 || p > 1 || typeof c0 != 'string' || (c0[0] != 'r' && c0[0] != '#') || (c1 && !a)) return null;
+  h = c0.length > 9;
+  h = a ? (c1.length > 9 ? true : c1 == 'c' ? !h : false) : h;
+  f = pSBCr(c0);
+  P = p < 0;
+  t = c1 && c1 != 'c' ? pSBCr(c1) : P ? { r: 0, g: 0, b: 0, a: -1 } : { r: 255, g: 255, b: 255, a: -1 };
+  p = P ? p * -1 : p;
+  P = 1 - p;
+  if (!f || !t) return null;
+  if (l) { r = m(P * f.r + p * t.r); g = m(P * f.g + p * t.g); b = m(P * f.b + p * t.b); }
+  else { r = m((P * f.r ** 2 + p * t.r ** 2) ** 0.5); g = m((P * f.g ** 2 + p * t.g ** 2) ** 0.5); b = m((P * f.b ** 2 + p * t.b ** 2) ** 0.5); }
+  a = f.a;
+  t = t.a;
+  f = a >= 0 || t >= 0;
+  a = f ? (a < 0 ? t : t < 0 ? a : a * P + t * p) : 0;
+  if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
+  else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
+}
+function pSBCr(d) {
+  let i = parseInt, m = Math.round, a = typeof c1 == 'string';
+  let n = d.length,
+    x = {};
+  if (n > 9) {
+    ([r, g, b, a] = d = d.split(',')), (n = d.length);
+    if (n < 3 || n > 4) return null;
+    (x.r = parseInt(r[3] == 'a' ? r.slice(5) : r.slice(4))), (x.g = parseInt(g)), (x.b = parseInt(b)), (x.a = a ? parseFloat(a) : -1);
+  } else {
+    if (n == 8 || n == 6 || n < 4) return null;
+    if (n < 6) d = '#' + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : '');
+    d = parseInt(d.slice(1), 16);
+    if (n == 9 || n == 5) (x.r = (d >> 24) & 255), (x.g = (d >> 16) & 255), (x.b = (d >> 8) & 255), (x.a = m((d & 255) / 0.255) / 1000);
+    else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
+  }
+  return x;
+}
+function randomColor() { return rColor(); }
+function randomIndex(array) { return randomRange(0, array.length) | 0 }
+function randomNumber(min = 0, max = 100) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function randomRange(min, max) { return min + Math.random() * (max - min) }
+function range(f, t, st = 1) {
+  if (nundef(t)) {
+    t = f - 1;
+    f = 0;
+  }
+  let arr = [];
+  for (let i = f; i <= t; i += st) {
+    arr.push(i);
+  }
+  return arr;
+}
+function rChoose(arr, n = 1, func = null, exceptIndices = null) {
+  if (isDict(arr)) arr = dict2list(arr, 'key');
+  let indices = arrRange(0, arr.length - 1);
+  if (isdef(exceptIndices)) {
+    for (const i of exceptIndices) removeInPlace(indices, i);
+  }
+  if (isdef(func)) indices = indices.filter(x => func(arr[x]));
+  if (n == 1) {
+    let idx = Math.floor(Math.random() * indices.length);
+    return arr[indices[idx]];
+  }
+  arrShuffle(indices);
+  return indices.slice(0, n).map(x => arr[x]);
+}
+function rColor(brightPerOrAlpha01 = 1, alpha01 = 1, hueVari = 60) {
+  let c;
+  if (brightPerOrAlpha01 <= 1) {
+    c = '#';
+    for (let i = 0; i < 6; i++) { c += rChoose(['f', 'c', '9', '6', '3', '0']); }
+    alpha01 = brightPerOrAlpha01;
+  } else {
+    let hue = rHue(hueVari);
+    let sat = 100;
+    let b = isNumber(brightPerOrAlpha01) ? brightPerOrAlpha01 : brightPerOrAlpha01 == 'dark' ? 25 : brightPerOrAlpha01 == 'light' ? 75 : 50;
+    c = colorFromHSL(hue, sat, b);
+  }
+  return alpha01 < 1 ? colorTrans(c, alpha01) : c;
 }
 function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
   let canvas = mDom(null, {}, { tag: 'canvas', width: w, height: h });
@@ -3592,6 +5777,100 @@ function redrawImage(img, dParent, x, y, wold, hold, w, h, callback) {
   img.src = imgDataUrl;
   return imgDataUrl;
 }
+function reload() {
+  console.log('reload!!!')
+  if (radio_contacts.checked == true) get_contacts();
+  else if (radio_chat.checked == true) get_chats();
+  else if (radio_games.checked == true) get_games();
+  else if (radio_play.checked == true) get_play();
+}
+function removeCommentLines(text, cstart, cend) {
+  let lines = text.split('\n');
+  let inComment = false, res = '';
+  for (const line of lines) {
+    let lt = line.trim();
+    if (lt.startsWith(cstart) && lt.endsWith(cend)) { continue; }
+    if (lt.startsWith(cstart)) { inComment = true; continue; }
+    if (lt.endsWith(cend)) { inComment = false; continue; }
+    res += line + '\n';
+  }
+  return res;
+}
+function removeDuplicates(keys, prop) {
+  let di = {};
+  let res = [];
+  let items = keys.map(x => Syms[x]);
+  for (const item of items) {
+    if (isdef(di[item.best])) { continue; }
+    res.push(item);
+    di[item.key] = true;
+  }
+  return res.map(x => x.key);
+}
+function removeFromArray(array, i) { return array.splice(i, 1)[0] }
+function removeInPlace(arr, el) {
+  arrRemovip(arr, el);
+}
+function removeItemFromArray(array, item) { return removeFromArray(array, array.indexOf(item)) }
+function removePeepFromCrowd(peep) {
+  removeItemFromArray(crowd, peep)
+  availablePeeps.push(peep)
+}
+function removeRandomFromArray(array) { return removeFromArray(array, randomIndex(array)) }
+function removeTrailingComments(line) {
+  let icomm = line.indexOf('//');
+  let ch = line[icomm - 1];
+  if (icomm <= 0 || ch == "'" || ':"`'.includes(ch)) return line;
+  if ([':', '"', "'", '`'].some(x => line.indexOf(x) >= 0 && line.indexOf(x) < icomm)) return line;
+  return line.substring(0, icomm);
+}
+function replaceAll(str, sSub, sBy) {
+  let regex = new RegExp(sSub, 'g');
+  return str.replace(regex, sBy);
+}
+function replaceAllSpecialChars(str, sSub, sBy) { return str.split(sSub).join(sBy); }
+function resetPeep({ stage, peep }) {
+  const direction = Math.random() > 0.5 ? 1 : -1
+  const offsetY = 100 - 250 * gsap.parseEase('power2.in')(Math.random())
+  const startY = stage.height - peep.height + offsetY
+  let startX
+  let endX
+  if (direction === 1) {
+    startX = -peep.width
+    endX = stage.width
+    peep.scaleX = 1
+  } else {
+    startX = stage.width + peep.width
+    endX = 0
+    peep.scaleX = -1
+  }
+  peep.x = startX
+  peep.y = startY
+  peep.anchorY = startY
+  return {
+    startX,
+    startY,
+    endX
+  }
+}
+function resetRound() {
+  clearTimeouts();
+  clearFleetingMessage();
+  clearEvents();
+}
+function resize() {
+  stage.width = Canvas.clientWidth
+  stage.height = Canvas.clientHeight
+  Canvas.width = stage.width * devicePixelRatio
+  Canvas.height = stage.height * devicePixelRatio
+  crowd.forEach((peep) => {
+    peep.walk.kill()
+  })
+  crowd.length = 0
+  availablePeeps.length = 0
+  availablePeeps.push(...allPeeps)
+  initCrowd()
+}
 function resizeTo(tool, wnew, hnew) {
   let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
   if (hnew == 0) hnew = img.height;
@@ -3600,6 +5879,104 @@ function resizeTo(tool, wnew, hnew) {
     wnew = aspectRatio * hnew;
   }
   redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
+}
+function RGBAToHSLA(rgba) {
+  let ex = /^rgba\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){3}))|(((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){3}))\/\s)((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+  if (ex.test(rgba)) {
+    let sep = rgba.indexOf(',') > -1 ? ',' : ' ';
+    rgba = rgba
+      .substr(5)
+      .split(')')[0]
+      .split(sep);
+    if (rgba.indexOf('/') > -1) rgba.splice(3, 1);
+    for (let R in rgba) {
+      let r = rgba[R];
+      if (r.indexOf('%') > -1) {
+        let p = r.substr(0, r.length - 1) / 100;
+        if (R < 3) {
+          rgba[R] = Math.round(p * 255);
+        }
+      }
+    }
+    let r = rgba[0] / 255,
+      g = rgba[1] / 255,
+      b = rgba[2] / 255,
+      a = rgba[3],
+      cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function RGBToHSL(rgb) {
+  let ex = /^rgb\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){2}|((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s)){2})((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]))|((((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){2}|((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){2})(([1-9]?\d(\.\d+)?)|100|(\.\d+))%))\)$/i;
+  if (ex.test(rgb)) {
+    let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
+    rgb = rgb
+      .substr(4)
+      .split(')')[0]
+      .split(sep);
+    for (let R in rgb) {
+      let r = rgb[R];
+      if (r.indexOf('%') > -1) rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
+    }
+    let r = rgb[0] / 255,
+      g = rgb[1] / 255,
+      b = rgb[2] / 255,
+      cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function rHue(vari = 36) { return (rNumber(0, vari) * Math.round(360 / vari)) % 360; }
+function rLetter(except) { return rLetters(1, except)[0]; }
+function rLetters(n, except = []) {
+  let all = 'abcdefghijklmnopqrstuvwxyz';
+  for (const l of except) all = all.replace(l, '');
+  return rChoose(toLetters(all), n);
+}
+function rNumber(min = 0, max = 100) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+function root(areaName) {
+  setTableSize(areaName, 400, 300);
+  UIROOT = jsCopy(SPEC.staticSpec.root);
+  for (const k in AREAS) delete AREAS[k];
+  PROTO = {};
+  INFO = {};
+  staticArea(areaName, UIROOT);
+  addAREA('root', UIROOT);
 }
 async function rotateAndWriteAge(img, card) {
   let diStage = { 0: 'I', 1: 'I', 2: 'II', 3: 'III', 4: 'II II' };
@@ -3623,11 +6000,19 @@ async function rotateAndWriteAge(img, card) {
   ctx3.fillText(text, x, y);
   return cv3;
 }
+function rUniqueId(n = 10) { return rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
 function rWord(n = 6) { return rLetters(n).join(''); }
 function rWords(n = 1) {
   let words = getColorNames().map(x => x.toLowerCase());
   let arr = rChoose(words, n);
   return arr;
+}
+function sameList(l1, l2) {
+  if (l1.length != l2.length) return false;
+  for (const s of l1) {
+    if (!l2.includes(s)) return false;
+  }
+  return true;
 }
 function scaleAnimation(element) {
   let ani = element.animate([
@@ -3675,6 +6060,28 @@ function selectCivSpot(d) {
 function selectExtraWorker(item) {
 }
 function selectPlayerItem(item) { mStyle(iDiv(item), { bg: getUserColor(item.name), fg: 'white', border: `white` }); }
+function selectText(el) {
+  if (el instanceof HTMLTextAreaElement) { el.select(); return; }
+  var sel, range;
+  if (window.getSelection && document.createRange) {
+    sel = window.getSelection();
+    if (sel.toString() == '') {
+      window.setTimeout(function () {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }, 1);
+    }
+  } else if (document.selection) {
+    sel = document.selection.createRange();
+    if (sel.text == '') {
+      range = document.body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
+    }
+  }
+}
 function selPrep(fen, autosubmit = false) {
   Clientdata.A = { level: 0, di: {}, ll: [], items: [], selected: [], tree: null, breadcrumbs: [], sib: [], command: null, autosubmit: autosubmit };
   Clientdata.fen = fen;
@@ -3796,6 +6203,7 @@ function setCreateDeck() {
   arrShuffle(deck);
   return deck;
 }
+function setCssVar(varname, val) { document.body.style.setProperty(varname, val); }
 function setDrawCard(card, dParent, colors, sz = 100) {
   const paths = {
     diamond: "M25 0 L50 50 L25 100 L0 50 Z",
@@ -3819,6 +6227,24 @@ function setDrawCard(card, dParent, colors, sz = 100) {
     let d1 = mDom(d0, { h: hs, w: ws }, { html: shapeSvg });
   }
   return d0;
+}
+function setDropPosition(ev, elem, targetElem, dropPos) {
+  if (dropPos == 'mouse') {
+    var elm = $(targetElem);
+    x = ev.pageX - elm.offset().left - dragStartOffset.x;
+    y = ev.pageY - elm.offset().top - dragStartOffset.y;
+    posXY(elem, targetElem, x, y);
+  } else if (dropPos == 'none') {
+    return;
+  } else if (dropPos == 'center') {
+    elem.style.position = elem.style.left = elem.style.top = '';
+    elem.classList.add('centeredTL');
+  } else if (dropPos == 'centerCentered') {
+    elem.style.position = elem.style.left = elem.style.top = '';
+    elem.classList.add('centerCentered');
+  } else {
+    dropPos(ev, elem, targetElem);
+  }
 }
 function setFindAllSets(items) {
   let result = [];
@@ -3865,7 +6291,51 @@ function setGameover(table) {
   table.status = 'over';
   table.winners = getPlayersWithMaxScore(table.fen);
 }
+function setGoal(index) {
+  if (nundef(index)) {
+    let rnd = G.numPics < 2 ? 0 : randomNumber(0, G.numPics - 2);
+    if (G.numPics >= 2 && rnd == lastPosition && coin(70)) rnd = G.numPics - 1;
+    index = rnd;
+  }
+  lastPosition = index;
+  Goal = Pictures[index];
+}
 function setHintHide() { mClass(T.bHint, 'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
+function setKeys({ allowDuplicates, nMin = 25, lang, key, keySets, filterFunc, param, confidence, sortByFunc } = {}) {
+  let keys = jsCopy(keySets[key]);
+  if (isdef(nMin)) {
+    let diff = nMin - keys.length;
+    let additionalSet = diff > 0 ? nMin > 100 ? firstCondDictKeys(keySets, k => k != key && keySets[k].length > diff) : 'best100' : null;
+    if (additionalSet) KeySets[additionalSet].map(x => addIf(keys, x));
+  }
+  let primary = [];
+  let spare = [];
+  for (const k of keys) {
+    let info = Syms[k];
+    info.best = info[lang];
+    if (nundef(info.best)) {
+      let ersatzLang = (lang == 'D' ? 'D' : 'E');
+      let klang = 'best' + ersatzLang;
+      if (nundef(info[klang])) info[klang] = lastOfLanguage(k, ersatzLang);
+    }
+    let isMatch = true;
+    if (isdef(filterFunc)) isMatch = isMatch && filterFunc(param, k, info.best);
+    if (isdef(confidence)) isMatch = info[klang + 'Conf'] >= confidence;
+    if (isMatch) { primary.push(k); } else { spare.push(k); }
+  }
+  if (isdef(nMin)) {
+    let len = primary.length;
+    let nMissing = nMin - len;
+    if (nMissing > 0) { let list = choose(spare, nMissing); spare = arrMinus(spare, list); primary = primary.concat(list); }
+  }
+  if (isdef(sortByFunc)) { sortBy(primary, sortByFunc); }
+  if (isdef(nMin)) console.assert(primary.length >= nMin);
+  if (nundef(allowDuplicates)) {
+    primary = removeDuplicates(primary);
+  }
+  return primary;
+}
+function setLanguage(x) { currentLanguage = x; startLevel(); }
 function setLoadPatterns(dParent, colors) {
   dParent = toElem(dParent);
   let id = "setpatterns";
@@ -3984,53 +6454,67 @@ async function setPlayerNotPlaying(item, gamename) {
   mRemoveIfExists('dPlayerOptions');
   unselectPlayerItem(item);
 }
-async function setPlayerPlaying(item, gamename) {
-  let [name, da] = [item.name, item.div]; 
-  addIf(DA.playerList, name);
-  selectPlayerItem(item);
-  await collectFromPrevious(gamename);
-  let id = 'dPlayerOptions';
-  DA.lastPlayerItem = item;
-  let poss = getGamePlayerOptions(gamename);
-  if (nundef(poss)) return;
-  let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
-  let bg = getUserColor(name);
-  let rounding = 6;
-  let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
-  mDom(d1, {}, { html: `${name}` }); //title
-  d = mDom(d1, {}); mCenterFlex(d);
-  mCenterCenter(d);
-  for (const p in poss) {
-    let key = p; 
-    let val = poss[p];
-    if (isString(val)) {
-      let list = val.split(',');
-      let legend = formatLegend(key);
-      let fs = mRadioGroup(d, {}, `d_${key}`, legend);
-      for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
-      let userval = p == 'playmode'?'human':lookup(DA.allPlayers, [name, gamename, p]);
-      let radio;
-      let chi = fs.children;
-      for (const ch of chi) {
-        let id = ch.id;
-        if (nundef(id)) continue;
-        let radioval = stringAfterLast(id, '_');
-        if (isNumber(radioval)) radioval = Number(radioval);
-        if (userval == radioval) ch.firstChild.checked = true;
-        else if (nundef(userval) && `${radioval}` == arrLast(list)) ch.firstChild.checked = true;
-      }
-      measureFieldset(fs);
-    }
-  }
-  let r = getRectInt(da, mBy('dGameMenu'));
-  let rp = getRectInt(d1);
-  let [y, w, h] = [r.y - rp.h - 4, rp.w, rp.h];
-  let x = r.x - rp.w / 2 + r.w / 2;
-  if (x < 0) x = r.x - 22;
-  if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
-  mIfNotRelative(dParent);
-  mPos(d1, x, y);
-  mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
+async function _setPlayerPlaying(item, gamename) {
+	let [name, da] = [item.name, item.div]; //console.log('da',da)
+	addIf(DA.playerList, name);
+	selectPlayerItem(item);
+	await collectFromPrevious(gamename);
+	let id = 'dPlayerOptions';
+	DA.lastPlayerItem = item;
+
+	//if player options window is open collect
+
+	let poss = getGamePlayerOptions(gamename);
+	if (nundef(poss)) return;
+	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
+	let bg = getUserColor(name);
+	let rounding = 6;
+	let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
+	mDom(d1, {}, { html: `${name}` }); //title
+	d = mDom(d1, {}); mCenterFlex(d);
+	mCenterCenter(d);
+
+	for (const p in poss) {
+		let key = p; //console.log('key', key)
+		let val = poss[p];
+		if (isString(val)) {
+			let list = val.split(',');
+			let legend = formatLegend(key);
+			//console.log('key',key,'to',legend)
+			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
+
+			//set radio elem with value of this player to true
+			//let is_on = lookup(DA.allPlayers,[name,gamename,p]); is_on = is_on?true:false;
+			// let userval = p == 'playmode'?'human':lookup(DA.allPlayers, [name, gamename, p]);
+			let userval = lookup(DA.allPlayers, [name, gamename, p]);
+			let radio;
+			let chi = fs.children;
+			for (const ch of chi) {
+				//console.log(ch);
+				let id = ch.id;
+				if (nundef(id)) continue;
+				let radioval = stringAfterLast(id, '_');
+				if (isNumber(radioval)) radioval = Number(radioval);
+				//console.log('val',radioval);
+				if (userval == radioval) ch.firstChild.checked = true;
+				else if (nundef(userval) && `${radioval}` == arrLast(list)) ch.firstChild.checked = true;
+			}
+
+			measureFieldset(fs);
+		}
+	}
+
+	let r = getRectInt(da, mBy('dGameMenu'));
+	let rp = getRectInt(d1);
+	let [y, w, h] = [r.y - rp.h - 4, rp.w, rp.h];
+	let x = r.x - rp.w / 2 + r.w / 2;
+	if (x < 0) x = r.x - 22;
+	if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
+	//console.log('pos',x,y,w,h);
+	mIfNotRelative(dParent);
+	mPos(d1, x, y);
+	mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
 }
 async function setPresent(dParent,table) {
   const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
@@ -4050,6 +6534,20 @@ async function setPresent(dParent,table) {
   }
   setStats(table, dOben, 'rowflex', false);
   return items;
+}
+function setRect(elem, options) {
+  let r = getRect(elem);
+  elem.rect = r;
+  elem.setAttribute('rect', `${r.w} ${r.h} ${r.t} ${r.l} ${r.b} ${r.r}`);
+  if (isDict(options)) {
+    if (options.hgrow) mStyle(elem, { hmin: r.h });
+    else if (options.hfix) mStyle(elem, { h: r.h });
+    else if (options.hshrink) mStyle(elem, { hmax: r.h });
+    if (options.wgrow) mStyle(elem, { wmin: r.w });
+    else if (options.wfix) mStyle(elem, { w: r.w });
+    else if (options.wshrink) mStyle(elem, { wmax: r.w });
+  }
+  return r;
 }
 function setScoresSameOrHigher(told,tnew){
   if (nundef(told)) return true;
@@ -4085,11 +6583,37 @@ function setStats(table, dParent, layout, showTurn = true) {
     mDom(d, { fz: 11, round: true, hpadding: 3, fg: 'contrast', bg: getLevelColor(pl.level), position: 'absolute', top: 1, right: 2 }, { html: pl.level })
   }
 }
+function setTableSize(w, h, unit = 'px') {
+  let d = mBy('areaTable');
+  mStyle(d, { 'min-width': w, 'min-height': h }, unit);
+}
 function setTableToStarted(table) {
   table.status = 'started';
   table.step = 0;
   table.fen = DA.funcs[table.game].setup(table); 
   return table;
+}
+function setup() {
+  axiom = system.axiom;
+  rules = system.rules;
+  factor = valf(system.factor, 1);
+  angle = radians(valf(system.angle, 60));
+  sentence = axiom;
+  let button = createButton("generate"); button.mousePressed(generate);
+  button = createButton("animate"); button.mousePressed(() => interval_id = setInterval(generate, 500));
+  createCanvas(400, 400);
+  background(51);
+  createP(axiom);
+  turtle();
+}
+function show(elem, isInline = false) {
+  if (isString(elem)) elem = document.getElementById(elem);
+  if (isSvg(elem)) {
+    elem.setAttribute('style', 'visibility:visible');
+  } else {
+    elem.style.display = isInline ? 'inline-block' : null;
+  }
+  return elem;
 }
 async function showCalendarApp() {
   if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
@@ -4129,6 +6653,28 @@ async function showDashboard() {
   mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${me}! this is your dashboard` });
   if (me == 'guest') mDom('dMain',{align:'center',className:'section'},{html:'click username in upper left corner to log in'})
 }
+function showDeck(keys, dParent, splay, w, h) {
+  let d = mDiv(dParent);
+  mStyleX(d, { display: 'block', position: 'relative', bg: 'green', padding: 25 });
+  let gap = 10;
+  let ovPercent = 20;
+  let overlap = w * ovPercent / 100;
+  let x = y = gap;
+  for (let i = 0; i < keys.length; i++) {
+    let k = keys[i];
+    let c = zInno(k, d);
+    mAppend(d, c.div);
+    mStyleX(c.div, { position: 'absolute', left: x, top: y });
+    c.row = 0;
+    c.col = i;
+    x += overlap;
+    Pictures.push(c);
+  }
+  d.style.width = (x - overlap + w) + 'px';
+  console.log(Pictures[0])
+  console.log(Pictures[0].div)
+  d.style.height = firstNumber(Pictures[0].div.style.height) + 'px';
+}
 async function showDirPics(dir, dParent) {
   let imgs = await mGetFiles(dir);
   for (const fname of imgs) {
@@ -4163,6 +6709,15 @@ function showEventOpen(id) {
   mButton('Delete', () => { deleteEvent(id); closePopup(); }, buttons, { fg: 'red' })
   mDom(line, { fz: '90%', maright: 5, float: 'right', }, { html: `by ${e.user}` });
 }
+function showFleetingMessage(msg, dParent, styles = {}, ms = 3000, msDelay = 0, fade = true) {
+  clearFleetingMessage();
+  dFleetingMessage = mDiv(dParent);
+  if (msDelay) {
+    TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
+  } else {
+    TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
+  }
+}
 async function showGameMenu(gamename) {
   let users = Serverdata.users = await mGetRoute('users');//console.log('users',users);
   mRemoveIfExists('dGameMenu');
@@ -4192,19 +6747,26 @@ async function showGameMenuPlayerDialog(name, shift = false) {
   else await setPlayerNotPlaying(item, gamename);
 }
 async function showGameOptions(dParent, game) {
-  let poss = Serverdata.config.games[game].options;
-  if (nundef(poss)) return;
-  for (const p in poss) {
-    let key = p; 
-    let val = poss[p];
-    if (isString(val)) {
-      let list = val.split(',');
-      let legend = formatLegend(key);
-      let fs = mRadioGroup(dParent, {}, `d_${key}`, legend);
-      for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
-      measureFieldset(fs);
-    }
-  }
+	let poss = Serverdata.config.games[game].options;
+	if (nundef(poss)) return;
+	for (const p in poss) {
+		let key = p; //console.log('key',key)
+		let val = poss[p];
+		if (isString(val)) {
+			let list = val.split(',');
+			let legend = formatLegend(key);
+			let fs = mRadioGroup(dParent, {}, `d_${key}`, legend);
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, true); }
+			measureFieldset(fs);
+		}
+	}
+
+	//if there is a gamemode radiogroup have to do something when user clicks 'bot' value or when user clicks 'human' value
+	let inpsolo=mBy(`i_gamemode_solo`);//console.log('HALLO',inpsolo)
+	let inpmulti=mBy(`i_gamemode_multi`);
+	if (isdef(inpsolo)) inpsolo.onclick = setPlayersToSolo;
+	if (isdef(inpmulti)) inpmulti.onclick = setPlayersToMulti;
+
 }
 function showGameover(table) {
   let winners = table.winners;
@@ -4436,6 +6998,22 @@ function showTitle(title) {
   mClear('dTitle');
   return mDom('dTitle', { maleft: 20 }, { tag: 'h1', html: title, classes: 'title' });
 }
+function showTrick() {
+  let dZone = Zones.table.dData;
+  let d = mDiv(dZone);
+  mStyleX(d, { display: 'flex', position: 'relative' });
+  let zIndex = 1;
+  for (let i = 0; i < T.trick.length; i++) {
+    let c = T.trick[i];
+    let direction = i == 0 ? { x: 0, y: -1 } : { x: 0, y: 1 };
+    let displ = 10;
+    let offset = { x: -35 + direction.x * displ, y: direction.y * displ };
+    let d1 = c.div;
+    mAppend(d, d1);
+    mStyleX(d1, { position: 'absolute', left: offset.x, top: offset.y, z: zIndex });
+    zIndex += 1;
+  }
+}
 function showUser() {
   mClear(dUser);
   mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
@@ -4448,6 +7026,7 @@ function showUserImage(uname, d, sz = 40) {
   let u = Serverdata.users[uname];
   return showim1(u.key, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 2px solid` });
 }
+function shuffle(arr) { if (isEmpty(arr)) return []; else return fisherYates(arr); }
 async function simpleUpload(route, o) {
   let server = getServerurl();
   server += `/${route}`;
@@ -4464,6 +7043,14 @@ async function simpleUpload(route, o) {
     return 'ERROR 1';
   }
 }
+function size2hex(w = 100, h = 0, x = 0, y = 0) {
+  let hexPoints = [{ X: 0.5, Y: 0 }, { X: 1, Y: 0.25 }, { X: 1, Y: 0.75 }, { X: 0.5, Y: 1 }, { X: 0, Y: 0.75 }, { X: 0, Y: 0.25 }];
+  if (h == 0) {
+    h = (2 * w) / 1.73;
+  }
+  return polyPointsFrom(w, h, x, y, hexPoints);
+}
+function sleep() { return new Promise(r => setTimeout(r, m)) }
 function sockInit() {
   let server = getServerurl();
   Socket = io(server);
@@ -4478,6 +7065,9 @@ function sockInit() {
 function sockPostUserChange(oldname, newname) {
   Socket.emit('userChange', { oldname, newname });
 }
+function sortBy(arr, key) { arr.sort((a, b) => (a[key] < b[key] ? -1 : 1)); return arr; }
+function sortByDescending(arr, key) { arr.sort((a, b) => (a[key] > b[key] ? -1 : 1)); return arr; }
+function sortByFunc(arr, func) { arr.sort((a, b) => (func(a) < func(b) ? -1 : 1)); return arr; }
 function sortByMultipleProperties(list) {
   let props = Array.from(arguments).slice(1);
   return list.sort((a, b) => {
@@ -4488,6 +7078,10 @@ function sortByMultipleProperties(list) {
     return 0;
   });
 }
+function sortCaseInsensitive(list) {
+  list.sort((a, b) => { return a.toLowerCase().localeCompare(b.toLowerCase()); });
+  return list;
+}
 function sortCheckboxes(grid) {
   let divs = arrChildren(grid);
   divs.map(x => x.remove());
@@ -4497,6 +7091,20 @@ function sortCheckboxes(grid) {
   chno = sortByFunc(chno, x => x.firstChild.name);
   for (const d of chyes) { mAppend(grid, d) }
   for (const d of chno) { mAppend(grid, d) }
+}
+function splitAtAnyOf(s, sep) {
+  let arr = [], w = '';
+  for (let i = 0; i < s.length; i++) {
+    let ch = s[i];
+    if (sep.includes(ch)) {
+      if (!isEmpty(w)) arr.push(w);
+      w = '';
+    } else {
+      w += ch;
+    }
+  }
+  if (!isEmpty(w)) arr.push(w);
+  return arr;
 }
 function squareTo(tool, sznew = 128) {
   let [img, dParent, cropBox, setRect] = [tool.img, tool.dParent, tool.cropBox, tool.setRect];
@@ -4510,6 +7118,13 @@ async function startGame(gamename, players, options) {
   let table = createOpenTable(gamename, players, options);
   table = setTableToStarted(table); 
   let res = await mPostRoute('postTable', table);
+}
+function startLevel() {
+  Speech.setLanguage(Settings.language);
+  getGameValues(Username, G.id, G.level);
+  G.instance.startLevel();
+  if (G.keys.length < G.numPics) { updateKeySettings(G.numPics + 5); }
+  startRound();
 }
 function startPanning(ev) {
   console.log('_________startPanning!')
@@ -4554,9 +7169,65 @@ function startPanning(ev) {
   }
   panStart(ev);
 }
+function startRound() {
+  if (G.addonActive != true && isTimeForAddon()) {
+    G.addonActive = true;
+    exitToAddon(startRound); return;
+  } else G.addonActive = false;
+  resetRound();
+  uiActivated = false;
+  G.instance.startRound();
+  TOMain = setTimeout(() => prompt(), 300);
+}
+function startsWith(s, sSub) {
+  return s.substring(0, sSub.length) == sSub;
+}
+function staticArea(areaName, oSpec) {
+  func = correctFuncName(oSpec.type);
+  oSpec.ui = window[func](areaName, oSpec);
+}
+function stdRowsColsContainer(dParent, cols, styles = {}) {
+  addKeys({
+    margin: 'auto',
+    padding: 10,
+    gap: 10,
+    display: 'grid',
+    bg: 'green',
+    'grid-template-columns': `repeat(${cols}, 1fr)`
+  }, styles);
+  return mDiv(dParent, styles);
+}
 function stopAutobot() {
   if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
   DA.stopAutobot = true;
+}
+function stringAfter(sFull, sSub) {
+  let idx = sFull.indexOf(sSub);
+  if (idx < 0) return '';
+  return sFull.substring(idx + sSub.length);
+}
+function stringAfterLast(sFull, sSub) {
+  let parts = sFull.split(sSub);
+  return arrLast(parts);
+}
+function stringBefore(sFull, sSub) {
+  let idx = sFull.indexOf(sSub);
+  if (idx < 0) return sFull;
+  return sFull.substring(0, idx);
+}
+function stringBeforeLast(sFull, sSub) {
+  let parts = sFull.split(sSub);
+  return sFull.substring(0, sFull.length - arrLast(parts).length - 1);
+}
+function stringCount(s, sSub, caseInsensitive = true) {
+  let n = 0;
+  for (let i = 0; i < s.length; i++) {
+    if (s.slice(i).startsWith(sSub)) n++;
+  }
+  return n;
+  let m = new RegExp(sSub, 'g' + (caseInsensitive ? 'i' : ''));
+  let s1 = s.match(m);
+  return s1 ? s1.length : 0;
 }
 async function switchToMainMenu(name){return await switchToMenu(UI.nav,name);}
 async function switchToMenu(menu, key) {
@@ -4566,7 +7237,7 @@ async function switchToMenu(menu, key) {
 }
 async function switchToOtherUser() {
   let uname = await mGetRoute('otherUser',arguments);
-  console.log('uname',uname)
+  //console.log('uname',uname)
   await switchToUser(uname);
 }
 async function switchToTables(){return await switchToMainMenu('play');}
@@ -4590,7 +7261,81 @@ async function switchToUser(uname) {
     else await switchToMenu(UI.nav, valf(cur, 'home'));
   }
 }
+function tableLayoutMR(dParent, m = 7, r = 1) {
+  let ui = UI; ui.players = {};
+  clearElement(dParent);
+  let bg = 'transparent';
+  let [dMiddle, dRechts] = [ui.dMiddle, ui.dRechts] = mColFlex(dParent, [m, r], [bg, bg]);
+  mCenterFlex(dMiddle, false);
+  let dOben = ui.dOben = mDiv(dMiddle, { w: '100%', display: 'block' }, 'dOben');
+  let dSelections = ui.dSelections = mDiv(dOben, {}, 'dSelections');
+  for (let i = 0; i <= 5; i++) { ui[`dSelections${i}`] = mDiv(dSelections, {}, `dSelections${i}`); }
+  let dActions = ui.dActions = mDiv(dOben, { w: '100%' });
+  for (let i = 0; i <= 5; i++) { ui[`dActions${i}`] = mDiv(dActions, { w: '100%' }, `dActions${i}`); }
+  ui.dError = mDiv(dOben, { w: '100%', bg: 'red', fg: 'yellow', hpadding: 12, box: true }, 'dError');
+  let dSubmitOrRestart = ui.dSubmitOrRestart = mDiv(dOben, { w: '100%' });
+  let dOpenTable = ui.dOpenTable = mDiv(dMiddle, { w: '100%', padding: 10 }); mFlexWrap(dOpenTable);
+  return [dOben, dOpenTable, dMiddle, dRechts];
+}
 function tabtitleUpdate() {
+}
+function takeFromTo(ad, from, to) {
+  if (isDict(ad)) {
+    let keys = Object.keys(ad);
+    return keys.slice(from, to).map(x => (ad[x]));
+  } else return ad.slice(from, to);
+}
+function test1(map) {
+  var baseballIcon = L.icon({
+    iconUrl: '../leaf94/baseball-marker.png',
+    iconSize: [32, 37],
+    iconAnchor: [16, 37],
+    popupAnchor: [0, -28]
+  });
+  function onEachFeature(feature, layer) {
+    var popupContent = '<p>I started out as a GeoJSON ' +
+      feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
+    if (feature.properties && feature.properties.popupContent) {
+      popupContent += feature.properties.popupContent;
+    }
+    layer.bindPopup(popupContent);
+  }
+  var bicycleRentalLayer = L.geoJSON([bicycleRental, campus], {
+    style: function (feature) {
+      return feature.properties && feature.properties.style;
+    },
+    onEachFeature: onEachFeature,
+    pointToLayer: function (feature, latlng) {
+      return L.circleMarker(latlng, {
+        radius: 8,
+        fillColor: '#ff7800',
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      });
+    }
+  }).addTo(map);
+  var freeBusLayer = L.geoJSON(freeBus, {
+    filter: function (feature, layer) {
+      if (feature.properties) {
+        return feature.properties.underConstruction !== undefined ? !feature.properties.underConstruction : true;
+      }
+      return false;
+    },
+    onEachFeature: onEachFeature
+  }).addTo(map);
+  var coorsLayer = L.geoJSON(coorsField, {
+    pointToLayer: function (feature, latlng) {
+      return L.marker(latlng, { icon: baseballIcon });
+    },
+    onEachFeature: onEachFeature
+  }).addTo(map);
+}
+function testHelpers() {
+  if (activatedTests.includes('helpers')) {
+    console.log(...arguments);
+  }
 }
 async function testOnclickBot(ev) {
   for (const b of [UI.bTestBot, UI.bTestHuman, UI.bTestHybrid]) {
@@ -4652,27 +7397,20 @@ function testUpdateTestButtons() {
   let caption = `Make me ${playmode == 'bot'?'human':'bot'}`;
   UI.bPlaymode = mButton(caption, testOnclickPlaymode, dExtra); 
 }
-function testUpdateTestButtons_() {
-  let table = Clientdata.table;
-  let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
-  let me = getUname();
-  let names = getButtonCaptionNames(table);
-  for (const name of names) {
-    let idname = getButtonCaptionName(name);
-    let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
-    if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
+function toElem(d) { return isString(d) ? mBy(d) : d; }
+function toggleItemSelection(item, selectedItems) {
+  let ui = iDiv(item);
+  item.isSelected = nundef(item.isSelected) ? true : !item.isSelected;
+  if (item.isSelected) mClass(ui, 'framedPicture'); else mRemoveClass(ui, 'framedPicture');
+  if (isdef(selectedItems)) {
+    if (item.isSelected) {
+      console.assert(!selectedItems.includes(item), 'UNSELECTED PIC IN PICLIST!!!!!!!!!!!!')
+      selectedItems.push(item);
+    } else {
+      console.assert(selectedItems.includes(item), 'PIC NOT IN PICLIST BUT HAS BEEN SELECTED!!!!!!!!!!!!')
+      removeInPlace(selectedItems, item);
+    }
   }
-  if (nundef(table)) return;
-  let playmode = getPlaymode(table, me); 
-  if (nundef(playmode)) return;
-  UI.bTestBot = mButton('bot', testOnclickBot, dExtra);
-  UI.bTestHuman = mButton('human', testOnclickHuman, dExtra);
-  if (playmode == 'bot') mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
-  else if (playmode == 'human') mStyle(UI.bTestHuman, { bg: 'red', fg: 'white' });
-}
-function toggle_select(item, funcs) {
-  let params = [...arguments];
-  let ifunc = (valf(item.ifunc, 0) + 1) % funcs.length; let f = funcs[ifunc]; f(item, ...params.slice(2));
 }
 function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'framedPicture') {
   if (selectedPics.includes(selkey)) {
@@ -4680,6 +7418,14 @@ function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'frame
   } else {
     selectedPics.push(selkey); collSelect(elem);
   }
+}
+function toLetters(s) { return [...s]; }
+function toWords(s, allow_ = false) {
+  let arr = allow_ ? s.split(/[\W]+/) : s.split(/[\W|_]+/);
+  return arr.filter(x => !isEmpty(x));
+}
+function trim(str) {
+  return str.replace(/^\s+|\s+$/gm, '');
 }
 function tryJSONParse(astext) {
   try {
@@ -4689,6 +7435,23 @@ function tryJSONParse(astext) {
     console.log('text', astext)
     return { message: 'ERROR', text: astext }
   }
+}
+function turtle() {
+  background(51);
+  stroke(255);
+  translate(width / 2, height);
+  for (let i = 0; i < sentence.length; i++) {
+    let x = sentence.charAt(i);
+    if ('ABF'.includes(x)) { line(0, 0, 0, -len); translate(0, -len); }
+    else if (x == '+') rotate(angle);
+    else if (x == '-') rotate(-angle);
+    else if (x == '[') push();
+    else if (x == ']') pop();
+  }
+}
+function uid() {
+  UID += 1;
+  return 'a' + UID;
 }
 function uiGadgetTypeCheckList(form, content, styles, opts) {
   addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
@@ -4953,6 +7716,10 @@ function unionOfArrays() {
 function unselectPlayerItem(item) { mStyle(iDiv(item), { bg: 'transparent', fg: 'black', border: `transparent` }); }
 async function updateClientData() {
 }
+function updateKeySettings(nMin) {
+  if (nundef(G)) return;
+  G.keys = setKeys({ nMin, lang: Settings.language, keysets: KeySets, key: Settings.vocab });
+}
 async function uploadImg(img, unique, coll, name) {
   return new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas');
@@ -4984,5 +7751,26 @@ async function uploadImg(img, unique, coll, name) {
         reject(error);
       }
     });
+  });
+}
+function valf() {
+  for (const arg of arguments) if (isdef(arg)) return arg;
+  return null;
+}
+function valnwhite() {
+  for (const arg of arguments) {
+    if (nundef(arg) || isEmpty(arg) || isWhiteSpace(arg)) {
+      continue;
+    }
+    return arg;
+  }
+  return null;
+}
+function where(o) {
+  let fname = getFunctionsNameThatCalledThisFunction();
+}
+function without(arr, elementToRemove) {
+  return arr.filter(function (el) {
+    return el !== elementToRemove;
   });
 }

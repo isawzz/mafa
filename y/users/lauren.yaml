@@ -3,4 +3,4 @@ color: '#008080'
 key: lauren
 setgame:
   level: 6
-  playmode: human
+  playmode: bot

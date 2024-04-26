@@ -3,4 +3,4 @@ color: '#f07f7f'
 key: annabel
 setgame:
   level: 6
-  playmode: human
+  playmode: bot
