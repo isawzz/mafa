@@ -52,6 +52,73 @@ async function test1_ode() {
 	AU.ta.value = text;
 
 }
+function createListsFromSeed(bykey,list,seed){
+
+	//mach die closure von seed
+	let nogos = ['uiGetContact', 'grid']; // { codingfull: ['uiGetContact'], coding: ['uiGetContact', 'grid'] };
+	nogos = nogos.concat(['accuse', 'aristo', 'bluff', 'ferro', 'nations', 'spotit' ,'wise','a_game'])
+	// if (project == 'nature') seed = seed.concat(['branch_draw', 'leaf_draw', 'lsys_init', 'tree_init', 'lsys_add', 'tree_add', 'lsys_draw', 'tree_draw']);
+	// let nogos = valf(knownNogos[project], [])
+
+	let byKeyMinimized = minimizeCode(bykey, seed, nogos);
+	['start','rest'].map(x=>delete byKeyMinimized[x]);
+
+	for (const k in byKeyMinimized) {
+		let code = byKeyMinimized[k].code;
+		let lines = code.split('\n');
+		let newcode = '';
+		for (const l of lines) {
+			newcode += removeTrailingComments(l) + '\n';
+		}
+		byKeyMinimized[k].code = newcode.trim();
+	}
+	let cvckeys = list.filter(x => isdef(byKeyMinimized[x.key]) && x.type != 'function').map(x => x.key); //in order of appearance!
+	let funckeys = list.filter(x => isdef(byKeyMinimized[x.key]) && x.type == 'function').map(x => x.key); //in order of appearance!
+	funckeys = sortCaseInsensitive(funckeys);
+
+	return [cvckeys,funckeys,byKeyMinimized];
+}	
+function minimizeCode(di, symlist = ['start'], nogo = []) {
+	let done = {};
+	let tbd = symlist;
+	let MAX = 1000000, i = 0;
+	let visited = {
+		autocomplete: true, Card: true, change: true, config: true, grid: true, hallo: true,
+		jQuery: true, init: true,
+		Number: true, sat: true, step: true, PI: true
+	};
+	console.log('di',di)
+	console.log('tbd',tbd)
+	while (!isEmpty(tbd)) {
+		if (++i > MAX) {console.log('MAX reached');break;}
+		let sym = tbd[0]; //console.log('sym',sym)
+		if (isdef(visited[sym])) { tbd.shift(); continue; }
+		visited[sym] = true;
+		let o = di[sym]; //console.log('o',o)
+		if (nundef(o)) { tbd.shift(); continue; }
+		let text = o.code;
+		let words = toWords(text, true);
+		for (const w of words) {
+			if (nogo.some(x => w.startsWith(x))) continue;
+			if (w.startsWith('d') && w[1]==w[1].toUpperCase()) continue;
+
+			//remove words within quotes that are functions
+			let idx = text.indexOf(w);
+			let ch = text[idx - 1];
+			if (w.startsWith('lsys')) console.log('.....ch', w, ch, sym)
+			if (ch == "'" || '"`'.includes(ch)) continue;
+
+			if (nundef(done[w]) && nundef(visited[w]) && w != sym && isdef(di[w])) {
+				//console.log('first',w,'from',sym)
+				addIf(tbd, w);
+			}
+		}
+		assertion(sym == tbd[0], 'W T F')
+		tbd.shift();
+		done[sym] = o;//console.log('o',o)
+	}
+	return done;
+}
 
 async function test01_try() {
 	let [bykey, bytype] = await getTheDicts();
