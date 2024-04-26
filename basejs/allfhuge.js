@@ -14003,6 +14003,7 @@ async function closureFromProject(project) {
   let knownNogos = { codingfull: ['uiGetContact'], coding: ['uiGetContact', 'grid'] };
   let seed = ['start'].concat(extractOnclickFromHtml(html)); console.log('seed', seed);
   if (project == 'nature') seed = seed.concat(['branch_draw', 'leaf_draw', 'lsys_init', 'tree_init', 'lsys_add', 'tree_add', 'lsys_draw', 'tree_draw']);
+  //if (project == 'ode') seed = seed.concat()
   let byKeyMinimized = _minimizeCode(bykey, seed, valf(knownNogos[project], []));
   for (const k in byKeyMinimized) {
     let code = byKeyMinimized[k].code;

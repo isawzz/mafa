@@ -2576,6 +2576,32 @@ async function mGetRoute(route, o = {}) {
   });
   return tryJSONParse(await response.text());
 }
+function mGetStyle(elem, prop) {
+  let val;
+  elem = toElem(elem);
+  if (prop == 'bg') { val = getStyleProp(elem, 'background-color'); if (isEmpty(val)) return getStyleProp(elem, 'background'); }
+  else if (isdef(STYLE_PARAMS[prop])) { val = getStyleProp(elem, STYLE_PARAMS[prop]); }
+  else {
+    switch (prop) {
+      case 'vmargin': val = stringBefore(elem.style.margin, ' '); break;
+      case 'hmargin': val = stringAfter(elem.style.margin, ' '); break;
+      case 'vpadding': val = stringBefore(elem.style.padding, ' '); break;
+      case 'hpadding': val = stringAfter(elem.style.padding, ' '); break;
+      case 'box': val = elem.style.boxSizing; break;
+      case 'dir': val = elem.style.flexDirection; break;
+    }
+  }
+  if (nundef(val)) val = getStyleProp(elem, prop);
+  if (val.endsWith('px')) return firstNumber(val); else return val;
+}
+async function mGetYaml(path = '../base/assets/m.txt') {
+  let res = await fetch(path);
+  let text = await res.text();
+  let di = jsyaml.load(text);
+  //console.log('di',di);
+  return di;
+
+}
 function mGrid(rows, cols, dParent, styles = {}) {
   addKeys({ display: 'inline-grid', gridCols: 'repeat(' + cols + ',1fr)' }, styles);
   if (rows) styles.gridRows = 'repeat(' + rows + ',auto)';

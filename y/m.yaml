@@ -56401,6 +56401,12 @@ superdi:
       - bug
     colls:
       - critters
+  owls1:
+    key: owls1
+    friendly: owls1
+    img: ../assets/img/owls/owls1.png
+    cats: []
+    colls: []
 playerColors:
   - '#800000'
   - '#8a0000'
