@@ -73,6 +73,42 @@ games:
       max_handsize: '4,5,6,7'
       strategy: 'clairvoyant,random'
       #strategy: 'random,clairvoyant'
+  button96:
+    friendly: Race
+    logo: dodo
+    color: darkslateblue
+    game_type: race
+    ploptions:
+      playmode: bot,human
+    options:
+      gamemode: 'solo,multi'
+  button97:
+    friendly: YesNo
+    logo: camel
+    color: steelblue
+    game_type: race
+    ploptions:
+      playmode: bot,human
+    options:
+      gamemode: 'solo,multi'
+  button98:
+    friendly: Simple
+    logo: bear
+    color: skyblue
+    game_type: race
+    ploptions:
+      playmode: bot,human
+    options:
+      gamemode: 'solo,multi'
+  button99:
+    friendly: Button
+    logo: frog
+    color: lightskyblue
+    game_type: race
+    ploptions:
+      playmode: bot,human
+    options:
+      gamemode: 'solo,multi'
   fritz:
     friendly: "A L'Honneur!"
     logo: fencing #weary face

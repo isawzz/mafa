@@ -91,13 +91,13 @@ function adjustComplex(panData) {
   let ideal = panData.cropStartSize.w;
   let [cx0, cy0] = [panData.cropStartPos.l + ideal / 2, panData.cropStartPos.t + ideal / 2];
   let [cx, cy] = [cx0 + dx, cy0 + dy];
-  cx = clamp(cx, ideal / 2, wImg - ideal / 2); cy = clamp(cy, ideal / 2, hImg - ideal / 2); 
-  let lNew = clamp(cx - ideal / 2, 0, wImg); 
-  let tNew = clamp(cy - ideal / 2, 0, hImg); 
-  let rNew = clamp(cx + ideal / 2, 0, wImg); 
-  let bNew = clamp(cy + ideal / 2, 0, hImg); 
+  cx = clamp(cx, ideal / 2, wImg - ideal / 2); cy = clamp(cy, ideal / 2, hImg - ideal / 2);
+  let lNew = clamp(cx - ideal / 2, 0, wImg);
+  let tNew = clamp(cy - ideal / 2, 0, hImg);
+  let rNew = clamp(cx + ideal / 2, 0, wImg);
+  let bNew = clamp(cy + ideal / 2, 0, hImg);
   let wNew = Math.min(Math.abs(cx - lNew) * 2, Math.abs(rNew - cx) * 2);
-  let hNew = Math.min(Math.abs(cy - tNew) * 2, Math.abs(bNew - cy) * 2); 
+  let hNew = Math.min(Math.abs(cy - tNew) * 2, Math.abs(bNew - cy) * 2);
   mStyle(panData.dCrop, { left: cx - wNew / 2, top: cy - hNew / 2, w: wNew, h: hNew });
 }
 function adjustCropper(img, dc, sz) {
@@ -167,7 +167,7 @@ function annotate(sp) {
 }
 function arrAllSameOrDifferent(arr) {
   if (arr.length === 0) {
-    return true; 
+    return true;
   }
   const allSame = arr.every(element => element === arr[0]);
   if (allSame) {
@@ -287,7 +287,7 @@ function calcBotLevel(table) {
   return level;
 }
 function calcBotSpeed(table) {
-  let speed = 2000 + Math.round(Math.random() * 2000); 
+  let speed = 2000 + Math.round(Math.random() * 2000);
   let botLevel = calcBotLevel(table);
   return botLevel ? botLevel == 1 ? speed : speed * 4 / botLevel : speed;
 }
@@ -365,9 +365,9 @@ function clearElement(elem) {
   }
   return elem;
 }
-function clearEvents() { 
-  for (const k in TO) {clearTimeout(TO[k]);TO[k]=null;} 
-  for (const k in ANIM) {if (isdef(ANIM[k])) ANIM[k].cancel();ANIM[k]=null;} 
+function clearEvents() {
+  for (const k in TO) { clearTimeout(TO[k]); TO[k] = null; }
+  for (const k in ANIM) { if (isdef(ANIM[k])) ANIM[k].cancel(); ANIM[k] = null; }
 }
 function clearFleetingMessage() {
   if (isdef(dFleetingMessage)) {
@@ -375,7 +375,6 @@ function clearFleetingMessage() {
     dFleetingMessage = null;
   }
 }
-function clearMain() { DA.counter = 0; clearEvents(); mClear('dMain'); mClear('dTitle'); }
 function clearParent(ev) { mClear(ev.target.parentNode); }
 function clearTimeouts() {
   onclick = null;
@@ -403,7 +402,7 @@ async function clickOnItem(elem, key) {
   if (nundef(UI.selectedImages)) UI.selectedImages = [];
   let collname = elem.getAttribute('collname');
   let selist = UI.selectedImages;
-  let selkey = collGenSelkey(key, collname); 
+  let selkey = collGenSelkey(key, collname);
   toggleSelectionOfPicture(elem, selkey, UI.selectedImages);
   if (isEmpty(selist)) { collDisableListCommands(); collDisableItemCommands(); }
   else if (selist.length == 1) { collEnableListCommands(); collEnableItemCommands(); }
@@ -423,10 +422,10 @@ function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }
 function closePopup(name = 'dPopup') { if (isdef(mBy(name))) mBy(name).remove(); }
 function cmdDisable(cmd) { mClass(iDiv(cmd), 'disabled') }
 function cmdEnable(cmd) { mClassRemove(iDiv(cmd), 'disabled') }
-function cNumber(ckey, styles = {}, opts = {}) { 
+function cNumber(ckey, styles = {}, opts = {}) {
   addKeys({ border: 'silver', h: 100 }, styles);
   addKeys({ backcolor: BLUE, ov: .3, key: ckey, type: 'num' }, opts);
-  let c = cPortrait(null, styles, opts); 
+  let c = cPortrait(null, styles, opts);
   let sym = c.rank = stringBefore(ckey, '_');
   let color = c.suit = c.val = stringAfter(ckey, '_');
   let sz = c.h;
@@ -564,13 +563,13 @@ async function collDelete(collname) {
   if (collLocked(collname) || !collExists(collname)) return;
   let keys = M.byCollection[collname];
   collPreReload(collname);
-  let di = {}, deletedKeys = []; 
+  let di = {}, deletedKeys = [];
   for (const k of keys) {
     await collDeleteOrRemove(k, collname, di, deletedKeys);
   }
   let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys, collname, deletedCollection: true });
   await loadAssets();
-  collPostReload(); 
+  collPostReload();
 }
 async function collDeleteOrRemove(k, collname, di, deletedKeys) {
   let item = M.superdi[k];
@@ -613,7 +612,7 @@ function collectCats(klist) {
   }
   return cats;
 }
-async function collectFromPrevious(gamename){
+async function collectFromPrevious(gamename) {
   let id = 'dPlayerOptions';
   let lastpl = DA.lastPlayerItem;
   let dold = mBy(id);
@@ -636,22 +635,20 @@ async function collectPlayerOptions(pl, gamename) {
   let poss = Serverdata.config.games[gamename].ploptions;
   if (nundef(poss)) return options;
   for (const p in poss) {
-    let fs = mBy(`d_${p}`);
-    let val = getCheckedRadios(fs)[0]; 
-    options[p] = isNumber(val) ? Number(val) : val;
+    options[p] = getRadioValue(p);
   }
   pl[gamename] = options;
   let id = 'dPlayerOptions'; mRemoveIfExists(id);//mRemove(d);
   let uold = Serverdata.users[pl.name];
   let unew = {};
   for (const k in pl) {
-    if (['div', 'isSelected'].includes(k)) continue;
+    if (['div', 'isSelected', 'playmode'].includes(k)) continue;
     unew[k] = jsCopy(pl[k]);
   }
   for (const k in unew[gamename]) {
     if (lookup(uold, [gamename, k]) != unew[gamename][k]) {
       let res = await postUserChange(unew);
-      copyKeys(res,DA.allPlayers[name]);
+      copyKeys(res, DA.allPlayers[name]);
       return;
     }
   }
@@ -748,7 +745,7 @@ function collInitCollection(name, coll) {
     list = Object.keys(M.superdi);
   } else if (isdef(M.byCollection[name])) {
     list = M.byCollection[name];
-  } else list = []; 
+  } else list = [];
   if (coll == UI.collPrimary) localStorage.setItem('collection', name)
   let dMenu = coll.dMenu;
   mClear(dMenu);
@@ -758,7 +755,7 @@ function collInitCollection(name, coll) {
   let dlColl = mDatalist(d, colls, { placeholder: "<select from list>" });
   dlColl.inpElem.oninput = ev => collInitCollection(ev.target.value, coll);
   dlColl.inpElem.value = name;
-  list = sortByFunc(list, x => M.superdi[x].friendly); 
+  list = sortByFunc(list, x => M.superdi[x].friendly);
   coll.masterKeys = list;
   coll.keys = coll.filter ? collFilterImages(coll, coll.filter) : list;
   let cats = collectCats(coll.keys);
@@ -1161,7 +1158,7 @@ function colorTrans(cAny, alpha = 0.5) {
   return colorFrom(cAny, alpha);
 }
 function computeColor(c) { return (c == 'random') ? randomColor() : c; }
-function conslog(s){console.log(s,window[s])}
+function conslog(s) { console.log(s, window[s]) }
 function contains(s, sSub) { return s.toLowerCase().includes(sSub.toLowerCase()); }
 function copyKeys(ofrom, oto, except = {}, only = null) {
   let keys = isdef(only) ? only : Object.keys(ofrom);
@@ -1196,7 +1193,7 @@ function cPrintSym(card, sym, styles, pos) {
   let d1 = mDom(d, styles, opts);
   mPlace(d1, pos, pos[0] == 'c' ? 0 : 2, pos[1] == 'c' ? 0 : 2);
 }
-function createConfirmationModal(dParent,question) {
+function createConfirmationModal(dParent, question) {
   const modal = document.createElement("div");
   modal.classList.add("modal");
   const modalContent = document.createElement("div");
@@ -1249,16 +1246,16 @@ function createInteractiveCanvas(src) {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
       let isDragging = false;
-      let rect = {x: 100, y: 100, width: 50, height: 50}; // Initial rectangle properties
+      let rect = { x: 100, y: 100, width: 50, height: 50 }; // Initial rectangle properties
       let dragOffsetX, dragOffsetY;
       function isMouseInRect(x, y) {
         return x > rect.x && x < rect.x + rect.width && y > rect.y && y < rect.y + rect.height;
       }
       function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); 
-        ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight); 
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, scaledWidth, scaledHeight);
         ctx.fillStyle = 'red';
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height); 
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
       }
       canvas.addEventListener('mousedown', (event) => {
         const rect = canvas.getBoundingClientRect();
@@ -1277,13 +1274,13 @@ function createInteractiveCanvas(src) {
           const y = event.clientY - rect.top;
           rect.x = x - dragOffsetX;
           rect.y = y - dragOffsetY;
-          draw(); 
+          draw();
         }
       });
       canvas.addEventListener('mouseup', () => {
         isDragging = false;
       });
-      draw(); 
+      draw();
       resolve(canvas);
     };
     img.onerror = reject;
@@ -1304,11 +1301,11 @@ function createOpenTable(gamename, players, options) {
       else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
     }
     if (TESTING && gamename == 'setgame') {
-      let keys = ['playmode','score','level','name','color','key'];
-      let osorted={};
-      for (const k of keys) {osorted[k]=o[k];      }
-      pdict[name]=osorted;
-    }else  pdict[name] = o;
+      let keys = ['playmode', 'score', 'level', 'name', 'color', 'key'];
+      let osorted = {};
+      for (const k of keys) { osorted[k] = o[k]; }
+      pdict[name] = osorted;
+    } else pdict[name] = o;
   }
   assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
   let t = {
@@ -1450,7 +1447,7 @@ function deepMergeIndex(target, source) {
   return target;
 }
 function deepmergeOverride(base, drueber) { return mergeOverrideArrays(base, drueber); }
-function deepMergeOverrideLists(target,source) {
+function deepMergeOverrideLists(target, source) {
   let output = Object.assign({}, source);
   if (isObject(source) && isObject(target)) {
     Object.keys(target).forEach(key => {
@@ -1478,16 +1475,6 @@ function defaultArrayMerge(target, source, optionsArgument) {
     }
   })
   return destination
-}
-function defaultGameFunc() {
-  function setup(table) { let fen = { players: table.players, turn: [table.owner] }; delete table.players; }
-  async function activate(table) { console.log('activate for', getUname()) }
-  function checkGameover(table) { return false; }
-  async function present(table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
-  async function hybridMove(table) { console.log('hybrid moves for', getUname()) }
-  async function botMove(table) { console.log('robot moves for', getUname()) }
-  async function stepComplete(table, o) { console.log(`integrate if step complete for ${table.friendly}`); }
-  return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
 }
 async function deleteEvent(id) {
   let result = await simpleUpload('postEvent', { id });
@@ -1606,40 +1593,40 @@ function emptyTarget(val) {
 }
 function enableImageDrop(element, onDropCallback) {
   const originalBorderStyle = element.style.border;
-  element.addEventListener('dragover', function(event) {
+  element.addEventListener('dragover', function (event) {
     event.preventDefault();
   });
-  element.addEventListener('dragenter', function(event) {
+  element.addEventListener('dragenter', function (event) {
     element.style.border = '2px solid red';
   });
-  element.addEventListener('drop', function(event) {
-    event.preventDefault(); 
-    element.style.border = originalBorderStyle; 
-    const files = event.dataTransfer.files; 
+  element.addEventListener('drop', function (event) {
+    event.preventDefault();
+    element.style.border = originalBorderStyle;
+    const files = event.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
       if (file.type.startsWith('image/')) { // Check if the dropped file is an image
-        onDropCallback(file); 
+        onDropCallback(file);
       }
     }
   });
-  element.addEventListener('dragleave', function(event) {
+  element.addEventListener('dragleave', function (event) {
     element.style.border = originalBorderStyle;
   });
 }
 function enableImageOrItemDrop(elem, onDropCallback) {
-  const originalBorderStyle = elem.style.border; 
+  const originalBorderStyle = elem.style.border;
   elem.addEventListener('dragover', function (event) { event.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
   elem.addEventListener('dragenter', function (event) { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
   elem.addEventListener('dragleave', function (event) { elem.style.border = originalBorderStyle; }); // Restore the original border if the item is dragged out without dropping
   elem.addEventListener('drop', function (event) {
-    event.preventDefault(); 
-    elem.style.border = originalBorderStyle; 
+    event.preventDefault();
+    elem.style.border = originalBorderStyle;
     if (isdef(UI.draggedItem)) {
       onDropCallback(null, elem);
       return;
     }
-    const files = event.dataTransfer.files; 
+    const files = event.dataTransfer.files;
     if (files.length > 0) {
       const reader = new FileReader();
       reader.onload = evReader => {
@@ -2124,9 +2111,9 @@ function fleetingMessage(msg, d, styles, ms, fade) {
   if (fade) Animation1 = mAnimate(dFleetingMessage, 'opacity', [1, .4, 0], null, ms, 'ease-in', 0, 'both');
   return dFleetingMessage;
 }
-function formatLegend(key){
-  return key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_') 
-  : key.includes('_')? replaceAll(key,'_',' '): key;
+function formatLegend(key) {
+  return key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_')
+    : key.includes('_') ? replaceAll(key, '_', ' ') : key;
 }
 function gBg(g, color) { g.setAttribute('fill', color); }
 function gCanvas(area, w, h, color, originInCenter = true) {
@@ -2217,8 +2204,8 @@ function getBrowser() {
     return "Other";
   }
 }
-function getButtonCaptionName(name){ return `bTest${name}`;}
-function getButtonCaptionNames(table){  return isdef(table) ? table.playerNames : ['felix', 'gul', 'amanda', 'lauren', 'mimi'];}
+function getButtonCaptionName(name) { return `bTest${name}`; }
+function getButtonCaptionNames(table) { return isdef(table) ? table.playerNames : ['felix', 'gul', 'amanda', 'lauren', 'mimi']; }
 function getButtonId(key) { return 'b' + capitalize(key); }
 function getCheckedNames(dParent) {
   let checks = Array.from(dParent.querySelectorAll('input[type="checkbox"]')); //dParent.getElementsByTagName('input'));
@@ -2644,7 +2631,7 @@ function getLevelColor(n) {
   const levelColors = [LIGHTBLUE, BLUE, GREEN, YELLOW, 'orange', RED, '#222',
     GREEN, BLUE, PURPLE, YELLOW2, 'deepskyblue', 'deeppink', //** MAXLEVEL 10 */
     TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE, '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'palegreen', '#e6194B'];
-  return levelColors[n - 1]; 
+  return levelColors[n - 1];
 }
 function getLine(ctx, list, val) {
   let res = list.filter(p => isWithinDelta(p.y, val, 2) && (isLightBeforeV(ctx, p.x, p.y) || isLightAfterV(ctx, p.x, p.y)));
@@ -2723,6 +2710,12 @@ function getPlaymode(idOrTable, name) {
   } else if (Clientdata.table) {
     return Clientdata.table.id == idOrTable ? Clientdata.table.fen.players[name].playmode : 'wrong table';
   } else return 'NO table!';
+}
+function getRadioValue(prop) {
+  let fs = mBy(`d_${prop}`);
+  if (nundef(fs)) return null;
+  let val = getCheckedRadios(fs)[0];
+  return isNumber(val) ? Number(val) : val;
 }
 function getRandomFromArray(array) { return (array[randomIndex(array) | 0]) }
 function getRect(elem, relto) {
@@ -3189,7 +3182,7 @@ function hue(h) {
   var b = 2 - Math.abs(h * 6 - 4);
   return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
 }
-function iAdd(item, liveprops={}, addprops={}) {
+function iAdd(item, liveprops = {}, addprops = {}) {
   let id, l;
   if (isString(item)) { id = item; item = valf(Items[id], {}); }
   let el = valf(liveprops.div, liveprops.ui, iDiv(item), null);
@@ -3212,7 +3205,7 @@ function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
   r = rgb.r;
   g = rgb.g;
   b = rgb.b;
-  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114; 
+  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
   var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
   if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
   return foreColor;
@@ -3328,12 +3321,6 @@ function inpToChecklist(ev, grid) {
 }
 function instructionUpdate() {
 }
-function INTERRUPT() {
-  DA.merged = getNow(); 
-  if (isdef(TO.SLEEPTIMEOUT)) { clearEvents(); } 
-  DA.Tprev = T; T = null;
-  delete DA.stopAutobot;
-}
 function intersection(arr1, arr2) {
   let res = [];
   for (const a of arr1) {
@@ -3391,7 +3378,7 @@ function isMergeableObject(val) {
     && Object.prototype.toString.call(val) !== '[object RegExp]'
     && Object.prototype.toString.call(val) !== '[object Date]'
 }
-function isMyTurn(fen) {  return fen.turn.includes(getUname())}
+function isMyTurn(fen) { return fen.turn.includes(getUname()) }
 function isNumber(x) { return x !== ' ' && x !== true && x !== false && isdef(x) && (x == 0 || !isNaN(+x)); }
 function isNumeric(x) { return !isNaN(+x); }
 function isObject(item) { return item && typeof item === 'object' && !Array.isArray(item); }
@@ -3748,7 +3735,7 @@ function mButton(caption, handler, dParent, styles, classes, id) {
 function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
   mIfNotRelative(dParent);
   let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
-  bx.onclick = ev => { evNoBubble(ev); handler(ev); } 
+  bx.onclick = ev => { evNoBubble(ev); handler(ev); }
   let o = M.superdi.xmark;
   el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: color, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
@@ -4196,7 +4183,7 @@ function menuCommand(dParent, menuKey, key, html, open, close) {
 function menuDisable(menu, key) { mClass(iDiv(menu.commands[key]), 'disabled') }
 function menuEnable(menu, key) { mClassRemove(iDiv(menu.commands[key]), 'disabled') }
 async function menuOpen(menu, key) {
-  let cmd = menu.commands[key];  
+  let cmd = menu.commands[key];
   menu.cur = key;
   mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
   await cmd.open();
@@ -4293,7 +4280,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
     let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
     let formStyles = { position: 'absolute' };
     addKeys(vPos, formStyles);
-    addKeys(hPos, formStyles); 
+    addKeys(hPos, formStyles);
     let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
     dialog.addEventListener('mouseup', ev => {
       if (isPointOutsideOf(form, ev.clientX, ev.clientY)) {
@@ -4390,7 +4377,7 @@ function mGridFromItems(dParent, items, maxHeight, numColumns) { return mGridFro
 function mHasClass(el, className) {
   if (el.classList) return el.classList.contains(className);
   else {
-    let x = !!el.className; 
+    let x = !!el.className;
     return isString(x) && !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
   }
 }
@@ -4467,10 +4454,10 @@ function mMagnify(elem, scale = 5) {
   let originX = 'center';
   let originY = 'center';
   let [tx, ty] = [0, 0];
-  if (l < 0) { tx = -l / scale; } 
-  if (t < 0) { ty = -t / scale; } 
-  if (r > window.innerWidth) { tx = -(r - window.innerWidth) / scale; } 
-  if (b > window.innerHeight) { ty = -(b - window.innerHeight) / scale; } 
+  if (l < 0) { tx = -l / scale; }
+  if (t < 0) { ty = -t / scale; }
+  if (r > window.innerWidth) { tx = -(r - window.innerWidth) / scale; }
+  if (b > window.innerHeight) { ty = -(b - window.innerHeight) / scale; }
   elem.style.transform = `scale(${scale}) translate(${tx}px,${ty}px)`;
   elem.style.transformOrigin = `${originX} ${originY}`;
 }
@@ -4499,11 +4486,11 @@ function mOnEnter(elem, setter) {
 function mPlace(elem, pos, offx, offy) {
   elem = toElem(elem);
   pos = pos.toLowerCase();
-  let dParent = elem.parentNode; mIfNotRelative(dParent); 
+  let dParent = elem.parentNode; mIfNotRelative(dParent);
   let vert = valf(offx, 0);
   let hor = isdef(offy) ? offy : vert;
   if (pos[0] == 'c' || pos[1] == 'c') {
-    let dpp = dParent.parentNode; 
+    let dpp = dParent.parentNode;
     let opac = mGetStyle(dParent, 'opacity'); console.log('opac', opac);
     if (nundef(dpp)) { mAppend(document.body, dParent); mStyle(dParent, { opacity: 0 }) }
     let rParent = getRect(dParent);
@@ -4609,7 +4596,7 @@ function mRemove(elem) {
   elem.remove();
 }
 function mRemoveClass(d) { for (let i = 1; i < arguments.length; i++) d.classList.remove(arguments[i]); }
-function mRemoveIfExists(d){ d=toElem(d);if (isdef(d)) d.remove();}
+function mRemoveIfExists(d) { d = toElem(d); if (isdef(d)) d.remove(); }
 function mRise(d, ms = 800) {
   toElem(d).animate([{ opacity: 0, transform: 'translateY(50px)' }, { opacity: 1, transform: 'translateY(0px)' },], { fill: 'both', duration: ms, easing: 'ease' });
 }
@@ -4884,7 +4871,7 @@ function mTableStylify(rowitems, di) {
   for (const item of rowitems) {
     for (const index in di) {
       let colitem = item.colitems[index];
-      mStyle(colitem.div,di[index]);
+      mStyle(colitem.div, di[index]);
     }
   }
 }
@@ -4929,7 +4916,7 @@ function normalizeString(s, sep = '_') {
 }
 function nundef(x) { return x === null || x === undefined; }
 async function onclickAddCategory() {
-  let selist = UI.selectedImages; 
+  let selist = UI.selectedImages;
   let keys = selist.map(x => stringBefore(x, '@'));
   let catlist = M.categories.map(x => ({ name: x, value: false }));
   let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklist' });
@@ -4956,7 +4943,7 @@ async function onclickAddCategory() {
   collPostReload();
 }
 async function onclickAddSelected() {
-  let selist = UI.selectedImages; 
+  let selist = UI.selectedImages;
   let keys = selist.map(x => stringBefore(x, '@'));
   let collist = M.collections.filter(x => !collLocked(x)).map(x => ({ name: x, value: false }));
   let colls = await mGather(iDiv(UI.addSelected), {}, { content: collist, type: 'checklist' });
@@ -5013,9 +5000,9 @@ async function onclickBot() {
   let plmode = table.fen.players[name].playmode;
   if (plmode == 'bot') return;
   let id = table.id;
-  let overrideList = [];
-  overrideList.push({ keys: ['fen', 'players', name, 'playmode'], val: 'bot' });
-  let res = await sendMergeTable({ id, name, overrideList });
+  let olist = [];
+  olist.push({ keys: ['fen', 'players', name, 'playmode'], val: 'bot' });
+  let res = await sendMergeTable({ id, name, olist });
 }
 async function onclickCatListDone(ui) { ui.setAttribute('proceed', getCheckedNames(ui).join('@')); }
 function onclickClear(inp, grid) {
@@ -5080,7 +5067,7 @@ async function onclickCollItemLabel(ev) {
   console.log('clicked', key, collname);
   let newfriendly = await mGather(ev.target);
   if (!newfriendly) return;
-  if (isEmpty(newfriendly)) { 
+  if (isEmpty(newfriendly)) {
     showMessage(`ERROR: name invalid: ${newfriendly}`);
     return;
   }
@@ -5103,7 +5090,7 @@ async function onclickCollSelectAll(ev) {
   let coll = UI.collSecondary.isOpen ? UI.collSecondary : UI.collPrimary;
   for (const cell of coll.cells) {
     let d = cell.firstChild;
-    if (nundef(d)) break; 
+    if (nundef(d)) break;
     collSelect(d);
   }
   for (const k of coll.keys) {
@@ -5115,7 +5102,7 @@ async function onclickCollSelectPage(ev) {
   let coll = UI.collSecondary.isOpen ? UI.collSecondary : UI.collPrimary;
   for (const cell of coll.cells) {
     let d = cell.firstChild;
-    if (nundef(d)) break; 
+    if (nundef(d)) break;
     collSelect(d);
     let o = collKeyCollnameFromElem(d);
     addIf(UI.selectedImages, collGenSelkey(o.key, o.collname));
@@ -5174,7 +5161,7 @@ async function onclickDeleteSelected() {
   for (const k in deletedKeys) {
     let res = await mPostRoute('postUpdateSuperdi', { di, deletedKeys: deletedKeys[k], collname: k });
     console.log('postUpdateSuperdi', k, res)
-    di = {}; 
+    di = {};
   }
   await loadAssets();
   collPostReload();
@@ -5183,10 +5170,10 @@ async function onclickDeleteTable(id) {
   let res = await mPostRoute('deleteTable', { id });
 }
 async function onclickEditCategories() {
-  let selist = UI.selectedImages; 
+  let selist = UI.selectedImages;
   let keys = selist.map(x => stringBefore(x, '@'));
   let arrs = keys.map(x => M.superdi[x].cats);
-  let lst = unionOfArrays(arrs); 
+  let lst = unionOfArrays(arrs);
   let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
   sortByDescending(catlist, 'value');
   let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
@@ -5210,7 +5197,7 @@ async function onclickEditCategories() {
   collPostReload();
 }
 async function onclickEditCollItem() {
-  let selist = UI.selectedImages; 
+  let selist = UI.selectedImages;
   let key = selist.map(x => stringBefore(x, '@'))[0];
   let item = M.superdi[key];
   let catlist = M.categories.map(x => ({ name: x, value: item.cats.includes(x) }));
@@ -5245,9 +5232,9 @@ async function onclickHuman() {
   let plmode = table.fen.players[name].playmode;
   if (plmode == 'human') return;
   let id = table.id;
-  let overrideList = [];
-  overrideList.push({ keys: ['fen', 'players', name, 'playmode'], val: 'human' });
-  let res = await sendMergeTable({ id, name, overrideList });
+  let olist = [];
+  olist.push({ keys: ['fen', 'players', name, 'playmode'], val: 'human' });
+  let res = await sendMergeTable({ id, name, olist });
 }
 async function onclickJoinTable(id) {
   let table = Serverdata.tables.find(x => x.id == id);
@@ -5359,17 +5346,17 @@ async function onclickPlay() {
   showGames();
 }
 async function onclickRemoveCategory() {
-  let selist = UI.selectedImages; 
+  let selist = UI.selectedImages;
   let keys = selist.map(x => stringBefore(x, '@'));
   let arrs = keys.map(x => M.superdi[x].cats);
-  let lst = unionOfArrays(arrs); lst.sort(); 
+  let lst = unionOfArrays(arrs); lst.sort();
   let catlist = lst.map(x => ({ name: x, value: false }));
   let cats = await mGather(iDiv(UI.removeCategory), {}, { content: catlist, type: 'checklist' });
   if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
   cats = cats.split('@');
   cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
   if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
-  let remolist = cats; 
+  let remolist = cats;
   console.log('remove cats', remolist);
   let di = {}, changed = false;
   for (const kc of selist) {
@@ -5443,7 +5430,7 @@ async function onclickRenameCollection(oldname, newname) {
 }
 async function onclickStartGame() {
   await collectFromPrevious(DA.gamename);
-  let options = collectOptions(); 
+  let options = collectOptions();
   let players = collectPlayers();
   await startGame(DA.gamename, players, options);
 }
@@ -5513,7 +5500,7 @@ async function onEventEdited(id, text, time) {
   closePopup();
 }
 async function oninputCollFilter(ev) {
-  let id = evToId(ev); 
+  let id = evToId(ev);
   let coll = UI[id];
   let s = ev.target.value.toLowerCase().trim();
   let list = collFilterImages(coll, s);
@@ -5526,7 +5513,7 @@ async function onsockEvent(x) {
   console.log('SOCK::event', x)
   Serverdata.events[x.id] = x;
 }
-async function onsockMerged(x){
+async function onsockMerged(x) {
   let isSameTableOpen = lookup(Clientdata, ['table', 'id']) == x.id;
   if (!isSameTableOpen) return;
   await showTable(x);
@@ -5604,27 +5591,6 @@ function posXY(d1, dParent, x, y, unit = 'px', position = 'absolute') {
   d1.style.setProperty('position', position);
   if (isdef(x)) d1.style.setProperty('left', makeUnitString(x, unit));
   if (isdef(y)) d1.style.setProperty('top', makeUnitString(y, unit));
-}
-async function prelims() {
-  let t1 = performance.now();
-  Serverdata = await mGetRoute('session'); //session ist: users,config,events
-  let t2 = performance.now();
-  await loadAssets();
-  let t4 = performance.now();
-  sockInit();
-  UI.nav = showNavbar();
-  UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
-  dTitle = mBy('dTitle');
-  await switchToUser(localStorage.getItem('username'));
-  let t5 = performance.now();
-  window.onkeydown = keyDownHandler;
-  window.onkeyup = keyUpHandler;
-  DA.funcs = { setgame: setgame(), }; //implemented games!
-  for (const gname in Serverdata.config.games) {
-    if (isdef(DA.funcs[gname])) continue;
-    DA.funcs[gname] = defaultGameFunc();
-  }
-  DA.counter = 0;
 }
 function present() {
   if (Settings.perspective == 'me') presentFor(me);
@@ -6085,38 +6051,23 @@ function selPrep(fen, autosubmit = false) {
   Clientdata.A = { level: 0, di: {}, ll: [], items: [], selected: [], tree: null, breadcrumbs: [], sib: [], command: null, autosubmit: autosubmit };
   Clientdata.fen = fen;
 }
-async function sendMergeTable(o) { 
-  if (nundef(o)) {
-    let table = Cliendata.table;
-    let name = getUname();
-    let id = table.id;
-    o={name,id,table};
-  }else if (nundef(o.name)){
-    let table = o;
-    let name = getUname();
-    let id = table.id;
-    o={name,id,table};
-  }
-  let table =  await mPostRoute('mergeTable', o); 
-  await showTable(table);
-}
 async function setActivate(items) {
   try {
-    T.sets = setFindAllSets(items); 
+    T.sets = setFindAllSets(items);
     [T.bNoSet, T.bHint] = setShowButtons(items);
     setActivateCards(items);
     let use_level = getGameOption('use_level'); if (use_level == 'no') { T.bHint.remove(); return; }
     let level = getPlayerProp('level');
-    let noset=isEmpty(T.sets);
-    T.numHints = level <= 3 ? noset?1:2 : level <= 5 ? 1 : 0;
-    if (level > 5){T.bHint.remove();}
-    else if (level == 1){  T.autoHints = noset?1: 2; T.hintTimes = [noset?10000:2000,5000]; }
-    else if (level == 2){  T.autoHints = noset?1:2; T.hintTimes = [noset?10000:3000,8000]; }
-    else if (level == 3){  T.autoHints = 1; T.hintTimes = [noset?10000:4000]; }
-    else if (level == 4){  T.autoHints = 1; T.hintTimes = [noset?10000:8000]; }
-    let i=0;
-    while(i<T.autoHints){
-      await mSleep(T.hintTimes[i]); 
+    let noset = isEmpty(T.sets);
+    T.numHints = level <= 3 ? noset ? 1 : 2 : level <= 5 ? 1 : 0;
+    if (level > 5) { T.bHint.remove(); }
+    else if (level == 1) { T.autoHints = noset ? 1 : 2; T.hintTimes = [noset ? 10000 : 2000, 5000]; }
+    else if (level == 2) { T.autoHints = noset ? 1 : 2; T.hintTimes = [noset ? 10000 : 3000, 8000]; }
+    else if (level == 3) { T.autoHints = 1; T.hintTimes = [noset ? 10000 : 4000]; }
+    else if (level == 4) { T.autoHints = 1; T.hintTimes = [noset ? 10000 : 8000]; }
+    let i = 0;
+    while (i < T.autoHints) {
+      await mSleep(T.hintTimes[i]);
       if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
       if (DA.stopAutobot == true) { console.log(`autoHint ${i}`); return; }
       await setOnclickHint(items);
@@ -6139,11 +6090,11 @@ async function setBotMove(table) {
     let speed = calcBotSpeed(table); console.log('speed', speed);
     T.sets = setFindAllSets(items);
     if (isEmpty(T.sets)) {
-      speed *= 3; 
+      speed *= 3;
       await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
       await setOnclickNoSet(items);
     } else {
-      let list = rChoose(T.sets); 
+      let list = rChoose(T.sets);
       await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep 1'); return; }
       await setOnclickCard(list[0], items);
       await mSleep(speed); if (checkInterrupt(items)) { console.log('!!sleep 2'); return; }
@@ -6260,32 +6211,6 @@ function setFindAllSets(items) {
   if (isEmpty(result)) console.log('no set!')
   return result;
 }
-function setgame() {
-  function setup(table) {
-    let fen = {};
-    fen.players = {};
-    for (const name in table.players) {
-      let pl = fen.players[name] = table.players[name];
-      pl.color = getUserColor(name)
-      pl.score = 0;
-    }
-    fen.deck = setCreateDeck();
-    fen.cards = deckDeal(fen.deck, table.options.numCards);
-    fen.plorder = jsCopy(table.playerNames);
-    fen.turn = jsCopy(table.playerNames); 
-    delete table.players;
-    return fen;
-  }
-  async function activate(table,items) { await setActivate(items); } 
-  function checkGameover(table) {
-    return table.playerNames.some(x => x.score == table.options.winning_score);
-  }
-  async function present(dParent,table) { return await setPresent(dParent,table); }
-  async function hybridMove(table) { await setHybridMove(table); } 
-  async function botMove(table,items,name) { await setBotMove(table,items,name); } 
-  async function stepComplete(table, o) { }
-  return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
-}
 function setGameover(table) {
   table.status = 'over';
   table.winners = getPlayersWithMaxScore(table.fen);
@@ -6338,7 +6263,7 @@ function setLanguage(x) { currentLanguage = x; startLevel(); }
 function setLoadPatterns(dParent, colors) {
   dParent = toElem(dParent);
   let id = "setpatterns";
-  if (isdef(mBy(id))) { return; } 
+  if (isdef(mBy(id))) { return; }
   let html = `
     <svg id="setpatterns" width="0" height="0">
       <!--  Define the patterns for the different fill colors  -->
@@ -6364,33 +6289,33 @@ async function setOnclickCard(item, items, direct = false) {
   toggleItemSelection(item);
   let selitems = items.filter(x => x.isSelected);
   let [keys, m] = [selitems.map(x => x.key), selitems.length];
-  let overrideList = [];
+  let olist = [];
   if (m == 3) {
     clearEvents();
     mShield(dOpenTable, { bg: '#00000000' }); //disable ui
     let [me, table] = [getUname(), Clientdata.table];
     let [fen, pl] = [table.fen, table.fen.players[me]];
-    let isSet = setCheckIfSet(keys); 
-    if (isSet) { 
+    let isSet = setCheckIfSet(keys);
+    if (isSet) {
       assertion(fen.cards.length >= table.options.numCards || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
-      let toomany = Math.max(0, fen.cards.length - table.options.numCards); 
-      let need = Math.max(0, 3 - toomany); 
-      let newCards = deckDeal(fen.deck, need); 
+      let toomany = Math.max(0, fen.cards.length - table.options.numCards);
+      let need = Math.max(0, 3 - toomany);
+      let newCards = deckDeal(fen.deck, need);
       for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
-      overrideList.push({ keys: ['fen', 'cards'], val: table.fen.cards });
-      overrideList.push({ keys: ['fen', 'deck'], val: table.fen.deck });
+      olist.push({ keys: ['fen', 'cards'], val: table.fen.cards });
+      olist.push({ keys: ['fen', 'deck'], val: table.fen.deck });
       pl.score++;
       pl.incScore = 1;
     } else {
       pl.score--;
       pl.incScore = -1;
     }
-    overrideList.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
+    olist.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
     if (pl.playmode == 'bot') {
       await mSleep(500);
       if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
     }
-    let res = await sendMergeTable({ id: table.id, name: me, overrideList }); // console.log('res', res)
+    let res = await sendMergeTable({ id: table.id, name: me, olist }); // console.log('res', res)
   }
 }
 async function setOnclickHint(items, direct = false) {
@@ -6420,19 +6345,19 @@ async function setOnclickNoSet(items, direct = false) {
   let b = T.bNoSet; mClass(b, 'framedPicture')
   let [me, table] = [getUname(), Clientdata.table];
   let [fen, pl] = [table.fen, table.fen.players[me]];
-  let overrideList = [];
-  if (isEmpty(T.sets)) { 
+  let olist = [];
+  if (isEmpty(T.sets)) {
     pl.score++;
     pl.incScore = 1;
-    let newCards = deckDeal(fen.deck, 1); 
+    let newCards = deckDeal(fen.deck, 1);
     if (!isEmpty(newCards)) {
       fen.cards.push(newCards[0]);
-      overrideList.push({ keys: ['fen', 'cards'], val: table.fen.cards });
-      overrideList.push({ keys: ['fen', 'deck'], val: table.fen.deck });
+      olist.push({ keys: ['fen', 'cards'], val: table.fen.cards });
+      olist.push({ keys: ['fen', 'deck'], val: table.fen.deck });
     } else {
       setGameover(table);
-      overrideList.push({ keys: ['status'], val: table.status });
-      overrideList.push({ keys: ['winners'], val: table.winners });
+      olist.push({ keys: ['status'], val: table.status });
+      olist.push({ keys: ['winners'], val: table.winners });
       console.log(`table status is now ${table.status}`);
       assertion(table.status == 'over', "HAAAAAAAAALLLLLLLO")
     }
@@ -6440,12 +6365,12 @@ async function setOnclickNoSet(items, direct = false) {
     pl.score--;
     pl.incScore = -1;
   }
-  overrideList.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
+  olist.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
   if (pl.playmode == 'bot') {
     await mSleep(500);
     if (checkInterrupt(items)) { console.log('!!!onclick noset!!!'); return; }
   }
-  let res = await sendMergeTable({ id: table.id, name: me, overrideList });
+  let res = await sendMergeTable({ id: table.id, name: me, olist });
 }
 async function setPlayerNotPlaying(item, gamename) {
   await collectFromPrevious(gamename);
@@ -6453,7 +6378,78 @@ async function setPlayerNotPlaying(item, gamename) {
   mRemoveIfExists('dPlayerOptions');
   unselectPlayerItem(item);
 }
-async function setPresent(dParent,table) {
+async function setPlayerPlaying(item, gamename) {
+  let [name, da] = [item.name, item.div];
+  addIf(DA.playerList, name);
+  selectPlayerItem(item);
+  await collectFromPrevious(gamename);
+  let id = 'dPlayerOptions';
+  DA.lastPlayerItem = item;
+  let poss = getGamePlayerOptions(gamename);
+  if (nundef(poss)) return;
+  let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
+  let bg = getUserColor(name);
+  let rounding = 6;
+  let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
+  mDom(d1, {}, { html: `${name}` }); //title
+  d = mDom(d1, {}); mCenterFlex(d);
+  mCenterCenter(d);
+  for (const p in poss) {
+    let key = p;
+    let val = poss[p];
+    if (isString(val)) {
+      let list = val.split(',');
+      let legend = formatLegend(key);
+      let fs = mRadioGroup(d, {}, `d_${key}`, legend);
+      for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
+      let userval = lookup(DA.allPlayers, [name, gamename, p]);
+      let radio;
+      let chi = fs.children;
+      for (const ch of chi) {
+        let id = ch.id;
+        if (nundef(id)) continue;
+        let radioval = stringAfterLast(id, '_');
+        if (isNumber(radioval)) radioval = Number(radioval);
+        if (userval == radioval) ch.firstChild.checked = true;
+        else if (nundef(userval) && `${radioval}` == arrLast(list)) ch.firstChild.checked = true;
+      }
+      measureFieldset(fs);
+    }
+  }
+  let r = getRectInt(da, mBy('dGameMenu'));
+  let rp = getRectInt(d1);
+  let [y, w, h] = [r.y - rp.h - 4, rp.w, rp.h];
+  let x = r.x - rp.w / 2 + r.w / 2;
+  if (x < 0) x = r.x - 22;
+  if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
+  mIfNotRelative(dParent);
+  mPos(d1, x, y);
+  mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
+}
+function setPlayersToMulti() {
+  for (const name in DA.allPlayers) {
+    //DA.allPlayers[name][DA.gamename].playmode = 'human';
+    lookupSetOverride(DA.allPlayers, [name, DA.gamename, 'playmode'], 'human');
+    let el = document.querySelector(`div[username="${name}"]`);
+    let img = el.getElementsByTagName('img')[0];
+    mStyle(img, { round: true });
+  }
+  setRadioValue('playmode', 'human');
+}
+function setPlayersToSolo() {
+  for (const name in DA.allPlayers) {
+    if (name == getUname()) continue;
+    // DA.allPlayers[name][DA.gamename].playmode = 'bot';
+    lookupSetOverride(DA.allPlayers, [name, DA.gamename, 'playmode'], 'bot');
+    let el = document.querySelector(`div[username="${name}"]`);
+    let img = el.getElementsByTagName('img')[0];
+    mStyle(img, { rounding: 2 });
+  }
+  let popup = mBy('dPlayerOptions');
+  if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
+  setRadioValue('playmode', 'bot');
+}
+async function setPresent(dParent, table) {
   const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
   setLoadPatterns('dPage', colors);
   mClear(dParent);
@@ -6472,6 +6468,11 @@ async function setPresent(dParent,table) {
   setStats(table, dOben, 'rowflex', false);
   return items;
 }
+function setRadioValue(prop, val) {
+  let input = mBy(`i_${prop}_${val}`);
+  if (nundef(input)) return;
+  input.checked = true;
+}
 function setRect(elem, options) {
   let r = getRect(elem);
   elem.rect = r;
@@ -6486,33 +6487,33 @@ function setRect(elem, options) {
   }
   return r;
 }
-function setScoresSameOrHigher(told,tnew){
+function setScoresSameOrHigher(told, tnew) {
   if (nundef(told)) return true;
-  let [plold,plnew]=[told.fen.players,tnew.fen.players];
-  for(const name in plnew){
-    if (plold[name].score+plold[name].incScore != plnew[name].score) return false;
+  let [plold, plnew] = [told.fen.players, tnew.fen.players];
+  for (const name in plnew) {
+    if (plold[name].score + plold[name].incScore != plnew[name].score) return false;
     plnew[name].incScore = 0;
   }
   return true;
 }
 function setShowButtons(items) {
   let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
-  let bno = mButton('NO Set', ()=>setOnclickNoSet(items,true), buttons, { w: 80 }, 'input');
-  let bhint = mButton('Hint', ()=>setOnclickHint(items,true), buttons, { w: 80 }, 'input');
+  let bno = mButton('NO Set', () => setOnclickNoSet(items, true), buttons, { w: 80 }, 'input');
+  let bhint = mButton('Hint', () => setOnclickHint(items, true), buttons, { w: 80 }, 'input');
   return [bno, bhint];
 }
 function setStats(table, dParent, layout, showTurn = true) {
-  let [fen,me] = [table.fen,getUname()];
+  let [fen, me] = [table.fen, getUname()];
   let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
   let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
   let uselevel = getGameOption('use_level');
-  let botLevel = Math.floor(calcBotLevel(table)); 
+  let botLevel = Math.floor(calcBotLevel(table));
   for (const plname in fen.players) {
-    let pl = fen.players[plname]; 
+    let pl = fen.players[plname];
     let item = player_stat_items[plname];
     if (pl.playmode == 'bot') {
-      let c=getLevelColor(botLevel);
-      mStyle(item.img,{rounding:0,border:`${c} ${botLevel}px solid`});
+      let c = getLevelColor(botLevel);
+      mStyle(item.img, { rounding: 0, border: `${c} ${botLevel}px solid` });
     }
     let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
     playerStatCount('star', pl.score, d);
@@ -6527,7 +6528,7 @@ function setTableSize(w, h, unit = 'px') {
 function setTableToStarted(table) {
   table.status = 'started';
   table.step = 0;
-  table.fen = DA.funcs[table.game].setup(table); 
+  table.fen = DA.funcs[table.game].setup(table);
   return table;
 }
 function setup() {
@@ -6588,7 +6589,7 @@ async function showColors() {
 async function showDashboard() {
   let me = getUname();
   mDom('dMain', { fg: getThemeFg() }, { html: `hi, ${me}! this is your dashboard` });
-  if (me == 'guest') mDom('dMain',{align:'center',className:'section'},{html:'click username in upper left corner to log in'})
+  if (me == 'guest') mDom('dMain', { align: 'center', className: 'section' }, { html: 'click username in upper left corner to log in' })
 }
 function showDeck(keys, dParent, splay, w, h) {
   let d = mDiv(dParent);
@@ -6687,7 +6688,7 @@ async function showGameOptions(dParent, game) {
   let poss = Serverdata.config.games[game].options;
   if (nundef(poss)) return;
   for (const p in poss) {
-    let key = p; 
+    let key = p;
     let val = poss[p];
     if (isString(val)) {
       let list = val.split(',');
@@ -6697,8 +6698,8 @@ async function showGameOptions(dParent, game) {
       measureFieldset(fs);
     }
   }
-  let inpsolo=mBy(`i_gamemode_solo`);//console.log('HALLO',inpsolo)
-  let inpmulti=mBy(`i_gamemode_multi`);
+  let inpsolo = mBy(`i_gamemode_solo`);//console.log('HALLO',inpsolo)
+  let inpmulti = mBy(`i_gamemode_multi`);
   if (isdef(inpsolo)) inpsolo.onclick = setPlayersToSolo;
   if (isdef(inpmulti)) inpmulti.onclick = setPlayersToMulti;
 }
@@ -6715,7 +6716,7 @@ async function showGamePlayers(dParent, users) {
   for (const name in users) {
     let d = mDom(dParent, { align: 'center', padding: 2, cursor: 'pointer', border: `transparent` });
     d.setAttribute('username', name)
-    let img = showUserImage(name, d, 40); 
+    let img = showUserImage(name, d, 40);
     let label = mDom(d, { matop: -4, fz: 12, hline: 12 }, { html: name });
     let item = jsCopy(users[name]);
     item.div = d;
@@ -6730,7 +6731,7 @@ function showGames(ms = 500) {
   mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
   let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
   let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-  gamelist = ['setgame']
+  gamelist = ['button99','button98','button97','button96']; //, 'setgame']
   for (const gname of gamelist) {
     let g = Serverdata.config.games[gname];
     let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
@@ -6798,10 +6799,10 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
   if (keys.length <= numCells) inc = 0;
   let newPageIndex = coll.pageIndex + inc;
   let numItems = keys.length;
-  let maxPage = Math.max(1, Math.ceil(numItems / numCells)); 
+  let maxPage = Math.max(1, Math.ceil(numItems / numCells));
   if (newPageIndex > maxPage) newPageIndex = 1;
   if (newPageIndex < 1) newPageIndex = maxPage;
-  index = numCells * (newPageIndex - 1); 
+  index = numCells * (newPageIndex - 1);
   let list = arrTakeFromTo(keys, index, index + numCells);
   coll.index = index; coll.pageIndex = newPageIndex;
   for (let i = 0; i < list.length; i++) {
@@ -6822,7 +6823,7 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
   else { mClassRemove(dPrev, 'disabled'); mClassRemove(dNext, 'disabled'); }
 }
 function showImageInBatch(key, dParent, styles = {}) {
-  let o = M.superdi[key]; o.key = key; 
+  let o = M.superdi[key]; o.key = key;
   addKeys({ bg: rColor() }, styles);
   mClear(dParent);
   [w, h] = [dParent.offsetWidth, dParent.offsetHeight];
@@ -6849,7 +6850,7 @@ function showImageInBatch(key, dParent, styles = {}) {
   d1.onclick = onclickCollItem;
   d1.setAttribute('key', key);
   d1.setAttribute('draggable', true)
-  d1.ondragstart = () => { UI.draggedItem = o; }; 
+  d1.ondragstart = () => { UI.draggedItem = o; };
   return d1;
 }
 function showMessage(msg, ms = 3000) {
@@ -6869,26 +6870,6 @@ function showNavbar() {
   commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
   nav.commands = commands;
   return nav;
-}
-async function showTable(table) {
-  INTERRUPT(); 
-  DA.counter += 1; let me = getUname();
-  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); } 
-  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-  else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
-  Clientdata.table = table; DA.tsTable=DA.merged;
-  clearEvents();
-  showTitle(`${table.friendly}`);
-  let func = DA.funcs[table.game];
-  T = {};
-  let items = T.items = await func.present('dMain',table);
-  mRise('dMain');
-  let playmode = getPlaymode(table,me);
-  if (TESTING) testUpdateTestButtons();
-  if (table.status == 'over') return showGameover(table);
-  if (!table.fen.turn.includes(me)) return;
-  if (playmode == 'bot') return await func.botMove(table, items, me);
-  else return await func.activate(table, items);
 }
 async function showTables(from) {
   Clientdata.table = null;
@@ -6911,7 +6892,7 @@ async function showTables(from) {
   let d = iDiv(t);
   for (const ri of t.rowitems) {
     let r = iDiv(ri);
-    let id = ri.o.id; 
+    let id = ri.o.id;
     if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: getWaitingHtml(24) }); //'my turn!'});
     if (ri.o.status == 'open') {
       let playerNames = ri.o.playerNames;
@@ -7050,7 +7031,7 @@ function squareTo(tool, sznew = 128) {
 }
 async function startGame(gamename, players, options) {
   let table = createOpenTable(gamename, players, options);
-  table = setTableToStarted(table); 
+  table = setTableToStarted(table);
   let res = await mPostRoute('postTable', table);
 }
 function startLevel() {
@@ -7163,17 +7144,17 @@ function stringCount(s, sSub, caseInsensitive = true) {
   let s1 = s.match(m);
   return s1 ? s1.length : 0;
 }
-async function switchToMainMenu(name){return await switchToMenu(UI.nav,name);}
+async function switchToMainMenu(name) { return await switchToMenu(UI.nav, name); }
 async function switchToMenu(menu, key) {
   menuCloseCurrent(menu);
-  Clientdata.curMenu = key; 
+  Clientdata.curMenu = key;
   await menuOpen(menu, key);
 }
 async function switchToOtherUser() {
-  let uname = await mGetRoute('otherUser',arguments);
+  let uname = await mGetRoute('otherUser', arguments);
   await switchToUser(uname);
 }
-async function switchToTables(){return await switchToMainMenu('play');}
+async function switchToTables() { return await switchToMainMenu('play'); }
 async function switchToUser(uname) {
   if (!isEmpty(uname)) uname = normalizeString(uname);
   if (isEmpty(uname)) uname = 'guest';
@@ -7183,13 +7164,13 @@ async function switchToUser(uname) {
   localStorage.setItem('username', uname);
   iDiv(UI.user).innerHTML = uname;
   setColors(U.color);
-  if (uname == 'guest') { 
-    await switchToMenu(UI.nav, 'home'); 
-    menuDisable(UI.nav, 'plan'); 
-  }  else {
+  if (uname == 'guest') {
+    await switchToMenu(UI.nav, 'home');
+    menuDisable(UI.nav, 'plan');
+  } else {
     menuEnable(UI.nav, 'plan');
     let t = Clientdata.table;
-    let cur = Clientdata.curMenu; 
+    let cur = Clientdata.curMenu;
     if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t.id);
     else await switchToMenu(UI.nav, valf(cur, 'home'));
   }
@@ -7278,10 +7259,10 @@ async function testOnclickBot(ev) {
   await onclickBot();
 }
 async function testOnclickCaption(ev) {
-  let x = ev.target.innerHTML; 
+  let x = ev.target.innerHTML;
   let b = UI[getButtonCaptionName(name)];
-  for (const name of getButtonCaptionNames(Clientdata.table)){
-    let b=UI[getButtonCaptionName(name)];
+  for (const name of getButtonCaptionNames(Clientdata.table)) {
+    let b = UI[getButtonCaptionName(name)];
     if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
   }
   mStyle(UI[getButtonCaptionName(x)], { bg: 'red', fg: 'white' });
@@ -7290,7 +7271,7 @@ async function testOnclickCaption(ev) {
 async function testOnclickDeck0() {
   let tnew = jsCopy(Clientdata.table);
   tnew.fen.deck = [];
-  let res = await sendMergeTable({name:getUname(),id:tnew.id,table:tnew});
+  let res = await sendMergeTable({ name: getUname(), id: tnew.id, table: tnew });
   console.log('res', res.fen.deck)
 }
 async function testOnclickHuman(ev) {
@@ -7308,27 +7289,30 @@ async function testOnclickHybrid(ev) {
   await onclickHybrid();
 }
 async function testOnclickPlaymode(ev) {
-  let b=UI.bPlaymode;
+  let b = UI.bPlaymode;
   let caption = b.innerHTML;
-  if (caption.includes('human')) await onclickHuman(); 
-  else await onclickBot(); 
+  if (caption.includes('human')) await onclickHuman();
+  else await onclickBot();
 }
 function testUpdateTestButtons() {
   let table = Clientdata.table;
   let id = 'dTestButtons'; mRemoveIfExists(id); let dExtra = mDom('dExtra', { display: 'flex', gap: 10 }, { id });
   let me = getUname();
-  let names = isdef(table)? []:['amanda', 'felix', 'lauren', 'mimi', 'gul'];
+  let names = isdef(table) ? [] : ['amanda', 'felix', 'lauren', 'mimi', 'gul'];
   for (const name of names) {
     let idname = getButtonCaptionName(name);
     let b = UI[idname] = mButton(name, testOnclickCaption, dExtra);
     if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
   }
   if (nundef(table)) return;
-  let playmode = getPlaymode(table, me); 
+  let playmode = getPlaymode(table, me);
   if (nundef(playmode)) return;
-  mDom(dExtra,{},{html:`I'm a ${playmode}`});
-  let caption = `Make me ${playmode == 'bot'?'human':'bot'}`;
-  UI.bPlaymode = mButton(caption, testOnclickPlaymode, dExtra); 
+
+  //let playmodeKey = playmode == 'human'?
+
+  mDom(dExtra, {}, { html: `I'm a ${playmode}` });
+  let caption = `Make me ${playmode == 'bot' ? 'human' : 'bot'}`;
+  UI.bPlaymode = mButton(caption, testOnclickPlaymode, dExtra);
 }
 function toElem(d) { return isString(d) ? mBy(d) : d; }
 function toggleItemSelection(item, selectedItems) {
@@ -7559,27 +7543,27 @@ function uiTypeCheckList(lst, dParent, styles = {}, opts = {}) {
     let dlabel = mDom(d, {}, { tag: 'label', for: dcheck.id, html: text });
     mNewline(d, 0);
   });
-  let r = getRect(d); 
-  let rp = getRect(dParent); 
+  let r = getRect(d);
+  let rp = getRect(dParent);
   let hParent = rp.h;
   if (hParent == 0) hParent = mGetStyle(dParent, 'max-height');
   let p = mGetStyle(dParent, 'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
-  let h = hParent - r.y; 
+  let h = hParent - r.y;
   mStyle(d, { hmax: h });//,pabottom:10,box:true});
   return d;
 }
 function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
   mStyle(dParent, { w: 1000 })
   let dg = mDom(dParent);
-  let list = lst; 
-  let items = []; 
+  let list = lst;
+  let items = [];
   for (const o of list) {
     let div = mCheckbox(dg, o.name, o.value);
     items.push({ nam: o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
   }
   let wmax = arrMax(items, 'w'); //console.log('wmax',wmax); //measure max width of items
   let cols = 3;
-  let wgrid = wmax * cols + 100; 
+  let wgrid = wmax * cols + 100;
   dg.remove();
   dg = mDom(dParent);
   let inp = mDom(dg, { w100: true, box: true, mabottom: 10 }, { className: 'input', tag: 'input', type: 'text' });
@@ -7624,24 +7608,24 @@ function uiTypeExtraWorker(w) {
   return { itemtype: 'worker', a: s, key: `worker_${res}`, o: { res: res, n: n }, friendly: s, present, select }
 }
 function uiTypePlayerStats(fen, me, dParent, layout, styles = {}) {
-  let dOuter = mDom(dParent); dOuter.setAttribute('inert',true); //console.log(dOuter)
-  if (layout == 'rowflex') mStyle(dOuter,{display:'flex',justify:'center'});
-  else if (layout == 'col') mStyle(dOuter,{display:'flex',dir:'column'});
+  let dOuter = mDom(dParent); dOuter.setAttribute('inert', true); //console.log(dOuter)
+  if (layout == 'rowflex') mStyle(dOuter, { display: 'flex', justify: 'center' });
+  else if (layout == 'col') mStyle(dOuter, { display: 'flex', dir: 'column' });
   addKeys({ rounding: 10, bg: '#00000050', margin: 4, box: true, 'border-style': 'solid', 'border-width': 4 }, styles);
   let show_first = me;
   let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
   let items = {};
   for (const name of order) {
     let pl = fen.players[name];
-    styles['border-color'] = name == me?colorLighter(pl.color):pl.color;
+    styles['border-color'] = name == me ? colorLighter(pl.color) : pl.color;
     let d = mDom(dOuter, styles, { id: name2id(name) })
-    let img = showUserImage(name, d, 40);mStyle(img,{box:true})
+    let img = showUserImage(name, d, 40); mStyle(img, { box: true })
     items[name] = { div: d, img, name };
   }
   return items;
 }
 function unionOfArrays() {
-  let arrs = arguments[0]; 
+  let arrs = arguments[0];
   if (!arrs.every(Array.isArray)) arrs = Array.from(arguments);
   const flattenedArray = arrs.flat();
   return [...new Set(flattenedArray)];

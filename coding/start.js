@@ -1,7 +1,7 @@
 
-async function start() { await test2_ode(); }
+async function start() { await test4_intode(); }
 async function test4_intode(){
-	test3_integrate(`../ode/clo6.js`,'../ode/bau3.js');
+	test3_integrate(`../ode/closure.js`,'../ode/bau3.js');
 }
 async function test3_integrate(pathLarge,pathNew){
 	S.type = detectSessionType();

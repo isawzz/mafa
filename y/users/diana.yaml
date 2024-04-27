@@ -4,3 +4,5 @@ key: bird15
 setgame:
   level: 3
   playmode: bot
+button96:
+  playmode: bot

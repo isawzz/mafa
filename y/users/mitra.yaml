@@ -3,4 +3,4 @@ color: '#3cb472'
 key: mitra
 setgame:
   level: 2
-  playmode: bot
+  playmode: human

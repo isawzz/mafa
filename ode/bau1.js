@@ -1,116 +1,29 @@
-//#region mStyle refactoring
+async function showTable(table) {
+  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
+  let func = DA.funcs[table.game];
+  let me = getUname();
 
-function mStyle(elem, styles = {}, unit = 'px') {
-	//remove: rest,wrest,hrest,whrest
-	elem = toElem(elem);
+  INTERRUPT();
 
-	let style = styles = jsCopy(styles);
-	if (isdef(styles.w100)) style.w = '100%';
-	if (isdef(styles.h100)) style.h = '100%';
+  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+  else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
-	let bg, fg;
-	if (isdef(styles.bg) || isdef(styles.fg)) {
-		[bg, fg] = colorsFromBFA(styles.bg, styles.fg, styles.alpha);
-	}
+  showTitle(`${table.friendly}`);
+  Clientdata.table = table; //console.log(table);
 
+  TPrev = T; T = func.present('dMain', table); //console.log('TPrev',TPrev,'T',T);
+  mRise('dMain');
 
-	if (isdef(styles.vpadding) || isdef(styles.hpadding)) {
-		styles.padding = valf(styles.vpadding, 0) + unit + ' ' + valf(styles.hpadding, 0) + unit;
-	}
-	if (isdef(styles.vmargin) || isdef(styles.hmargin)) {
-		styles.margin = valf(styles.vmargin, 0) + unit + ' ' + valf(styles.hmargin, 0) + unit;
-		//console.log('margin should be',styles.margin)
-	}
-	if (isdef(styles.upperRounding) || isdef(styles.lowerRounding)) {
-		let rtop = '' + valf(styles.upperRounding, 0) + unit;
-		let rbot = '' + valf(styles.lowerRounding, 0) + unit;
-		styles['border-radius'] = rtop + ' ' + rtop + ' ' + rbot + ' ' + rbot;
-	}
-	if (isdef(styles.box)) styles['box-sizing'] = 'border-box';
-	if (isdef(styles.round)) { elem.style.setProperty('border-radius', '50%'); }
-	for (const k in styles) {
-		if (['round', 'box'].includes(k)) continue;
-		let val = styles[k];
-		let key = k;
-		if (isdef(_STYLE_PARAMS[k])) key = _STYLE_PARAMS[k];
-		else if (k == 'font' && !isString(val)) {
-			let fz = f.size; if (isNumber(fz)) fz = '' + fz + 'px';
-			let ff = f.family;
-			let fv = f.variant;
-			let fw = isdef(f.bold) ? 'bold' : isdef(f.light) ? 'light' : f.weight;
-			let fs = isdef(f.italic) ? 'italic' : f.style;
-			if (nundef(fz) || nundef(ff)) return null;
-			let s = fz + ' ' + ff;
-			if (isdef(fw)) s = fw + ' ' + s;
-			if (isdef(fv)) s = fv + ' ' + s;
-			if (isdef(fs)) s = fs + ' ' + s;
-			elem.style.setProperty(k, s);
-			continue;
-		} else if (k.includes('class')) {
-			mClass(elem, styles[k]);
-		} else if (k == 'border') {
-			if (isNumber(val)) val = `solid ${val}px ${isdef(styles.fg) ? styles.fg : '#ffffff80'}`;
-			if (val.indexOf(' ') < 0) val = 'solid 1px ' + val;
-		} else if (k == 'ajcenter') {
-			elem.style.setProperty('justify-content', 'center');
-			elem.style.setProperty('align-items', 'center');
-		} else if (k == 'layout') {
-			if (val[0] == 'f') {
-				val = val.slice(1);
-				elem.style.setProperty('display', 'flex');
-				elem.style.setProperty('flex-wrap', 'wrap');
-				let hor, vert;
-				if (val.length == 1) hor = vert = 'center';
-				else {
-					let di = { c: 'center', s: 'start', e: 'end' };
-					hor = di[val[1]];
-					vert = di[val[2]];
-				}
-				let justStyle = val[0] == 'v' ? vert : hor;
-				let alignStyle = val[0] == 'v' ? hor : vert;
-				elem.style.setProperty('justify-content', justStyle);
-				elem.style.setProperty('align-items', alignStyle);
-				switch (val[0]) {
-					case 'v': elem.style.setProperty('flex-direction', 'column'); break;
-					case 'h': elem.style.setProperty('flex-direction', 'row'); break;
-				}
-			} else if (val[0] == 'g') {
-				val = val.slice(1);
-				elem.style.setProperty('display', 'grid');
-				let n = allNumbers(val);
-				let cols = n[0];
-				let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
-				elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
-				elem.style.setProperty('place-content', 'center');
-			}
-		} else if (k == 'layflex') {
-			elem.style.setProperty('display', 'flex');
-			elem.style.setProperty('flex', '0 1 auto');
-			elem.style.setProperty('flex-wrap', 'wrap');
-			if (val == 'v') { elem.style.setProperty('writing-mode', 'vertical-lr'); }
-		} else if (k == 'laygrid') {
-			elem.style.setProperty('display', 'grid');
-			let n = allNumbers(val);
-			let cols = n[0];
-			let w = n.length > 1 ? '' + n[1] + 'px' : 'auto';
-			elem.style.setProperty('grid-template-columns', `repeat(${cols}, ${w})`);
-			elem.style.setProperty('place-content', 'center');
-		}
-		if (key == 'font-weight') { elem.style.setProperty(key, val); continue; }
-		else if (key == 'background-color') elem.style.background = bg;
-		else if (key == 'color') elem.style.color = fg;
-		else if (key == 'opacity') elem.style.opacity = val;
-		else if (key == 'wrap') { if (val == 'hard') elem.setAttribute('wrap', 'hard'); else elem.style.flexWrap = 'wrap'; }
-		else if (k.startsWith('dir')) {
-			isCol = val[0] == 'c';
-			elem.style.setProperty('flex-direction', 'column');
-		} else if (key == 'flex') {
-			if (isNumber(val)) val = '' + val + ' 1 0%';
-			elem.style.setProperty(key, makeUnitString(val, unit));
-		} else {
-			elem.style.setProperty(key, makeUnitString(val, unit));
-		}
-	}
+  if (TESTING) testUpdateTestButtons();
+
+  if (table.status == 'over') return showGameover(table);
+  else if (func.checkGameover(table)) return await sendMergeTable(table);
+  
+  if (!table.fen.turn.includes(me)) return;
+  
+  let playmode = getPlaymode(table, me); 
+  if (playmode == 'bot') return await func.botMove(table, T, me);
+  else return await func.activate(table, T, me);
 }
 
-//#endregion
+

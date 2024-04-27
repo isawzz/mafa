@@ -5,3 +5,5 @@ setgame:
   level: 1
   playmode: bot
 playmode: bot
+button:
+  playmode: bot

@@ -33,6 +33,30 @@ function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k]
 function arrClear(arr) { arr.length = 0; return arr; }
 function arrLast(arr) { return arr.length > 0 ? arr[arr.length - 1] : null; }
 function arrMinus(arr, b) { if (isList(b)) return arr.filter(x => !b.includes(x)); else return arr.filter(x => x != b); }
+function assertion(cond) {
+  if (!cond) {
+    let args = [...arguments];
+		console.log('!!!ASSERTION!!!')
+    for (const a of args) {
+      console.log('\n', a);
+    }
+    return false;
+  }else return true;
+}
+function calcScoreSum(table){
+  let res=0;
+  for(const name in table.fen.players){
+    res+=table.fen.players[name].score;
+  }
+  return res;
+}
+function calcErrSum(table){
+  let res=0;
+  for(const name in table.fen.players){
+    res+=valf(table.fen.players[name].errors,0);
+  }
+  return res;
+}
 function copyKeys(ofrom, oto, except = {}, only = null) {
 	let keys = isdef(only) ? only : Object.keys(ofrom);
 	for (const k of keys) {
@@ -308,31 +332,6 @@ app.get('/table', (req, res) => {
 app.get('/tables', (req, res) => { return res.json(getTablesInfo()); });
 
 //#region post routes (uses emit)
-app.post('/mergeTable', (req, res) => {
-	let name = req.body.name;
-	if (nundef(name)) return res.json("ERRROR! no name provided for mergeTable!")
-	let id = req.body.id;
-	if (nundef(id)) return res.json("ERRROR! no id provided for mergeTable!")
-	let tnew = req.body.table;
-	let data = req.body.overrideList;
-	let table =  lookup(Session, ['tables', id]);
-	console.log('__merge by:',name);
-	if (isdef(data)){
-		//partial merge!
-		for(const o of data){
-			let score = lookupSetOverride(table,o.keys,o.val);
-			let last = arrLast(o.keys);
-			console.log('override',last,isLiteral(o.val)?o.val:typeof o.val)
-		}
-	}else if (isdef(tnew)){
-		console.log(Object.keys(tnew))
-		table = deepmergeOverride(table,tnew);
-	}
-	saveTable(id, table);
-	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
-	emitToPlayers(arrMinus(table.playerNames,name), 'merged', table);
-	res.json(table);
-});
 app.post('/postTable', (req, res) => {
 	let id = req.body.id;
 	let newTable = req.body;
@@ -505,6 +504,120 @@ app.post('/renameImgDir', (req, res) => {
 	res.json(`dir ${oldname} renamed successfully!`);
 });
 
+var MergeCount=0;
+app.post('/mergeTable', (req, res) => {
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for mergeTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for mergeTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table = lookup(Session, ['tables', id]);
+
+	console.log(`__merge ${MergeCount++}:`,name);
+	if (isdef(olist)){
+		//partial merge!
+		for(const o of olist){
+			lookupSetOverride(table,o.keys,o.val);
+			let last = arrLast(o.keys);
+			// console.log('override',last,isLiteral(o.val)?o.val:typeof o.val)
+		}
+	}else if (isdef(tnew)){
+		// console.log(Object.keys(tnew))
+		table = tnew; //deepmergeOverride(table,tnew);
+	}
+	saveTable(id, table);
+	// console.log('table',table)
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(arrMinus(table.playerNames,name), 'merged', table);
+	res.json(table);
+});
+
+var RaceCount=0;
+app.post('/raceTable0', (req, res) => {
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
+	let step = req.body.step; 
+	if (nundef(step)) return res.json("ERRROR! no step provided for raceTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table =  lookup(Session, ['tables', id]);
+	if (!assertion(table,`table ${id} does NOT exist`)) {res.json('ASSERTION ERROR'); return;}
+
+	console.log(`__race ${RaceCount++}:`,name,step);
+	
+	let tcopy = jsCopy(table); //erstmal eine table copy machen
+	if (isdef(olist)){
+		//partial merge!
+		for(const o of olist){
+			lookupSetOverride(tcopy,o.keys,o.val);
+			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
+		}
+	}else if (isdef(tnew)){
+		// console.log(Object.keys(tnew))
+		tcopy = tnew; //deepmergeOverride(table,tnew);
+	}
+
+	let sum = calcScoreSum(tcopy); //check if this new table is valid!
+	let fen=tcopy.fen;
+	let scores = tcopy.playerNames.map(x=>fen.players[x].score).join(',')
+	if (sum!=step){
+		console.log('=>INVALID!\nstep',step,'\nsum',sum,'\nplayer',name,'\nscores',scores);
+		//do NOT update table and do NOT send anything!!!
+		res.json('INVALID');
+		return;
+	}
+	saveTable(id, tcopy);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(arrMinus(tcopy.playerNames,name), 'merged', tcopy);
+	res.json(tcopy);
+});
+app.post('/raceTable', (req, res) => {
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table =  lookup(Session, ['tables', id]);
+	if (!assertion(table,`table ${id} does NOT exist`)) {res.json('ASSERTION ERROR'); return;}
+
+	let step = valf(req.body.step,table.step); 
+	let errors = valf(req.body.errors,0); 
+	
+	let tcopy = jsCopy(table); //erstmal eine table copy machen
+	if (isdef(olist)){
+		//partial merge!
+		for(const o of olist){
+			lookupSetOverride(tcopy,o.keys,o.val);
+			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
+		}
+	}else if (isdef(tnew)){
+		// console.log(Object.keys(tnew))
+		tcopy = tnew; //deepmergeOverride(table,tnew);
+	}
+
+	let sum = calcScoreSum(tcopy); //check if this new table is valid!
+	let errsum = calcErrSum(tcopy);
+	console.log(`__race ${RaceCount++}:`,name,step,`-${errors}`,sum,errsum);
+
+	let scores = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].score}`).join(',')
+	let allErrors = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].errors}`).join(',')
+	if (sum!=step-errsum){
+		console.log('=>INVALID!\nstep',step,sum+errsum,'\nerrsum',errsum,'\nsum',sum,'\nplayer',name,'\nscores',scores,'\nerrors',allErrors);
+		//do NOT update table and do NOT send anything!!!
+		res.json('INVALID');
+		return;
+	}
+	saveTable(id, tcopy);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	// *** the following only works if players is only logged in ONCE!!!!!!
+	emitToPlayers(arrMinus(tcopy.playerNames,name), 'merged', tcopy); 
+	res.json(tcopy);
+});
+
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');
 	Session.config = yaml.load(yamlFile);
@@ -533,7 +646,7 @@ async function init() {
 		let o = yaml.load(yamlFile);
 		Session.tables[o.id] = o;
 	}
-	server.listen(PORT, () => console.log('listening on port ' + PORT));
+	server.listen(PORT, () => console.log('ode: listening on port ' + PORT));
 }
 init();
 
