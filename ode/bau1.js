@@ -1,3 +1,3 @@
-showThemeWood(){
-	setColors
+function showThemeWood(){
+	//setColors
 }
