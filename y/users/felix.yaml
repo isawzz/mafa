@@ -9,3 +9,4 @@ button96:
   playmode: human
 button97:
   playmode: human
+texture: url("../assets/textures/Melamine-wood-004.png")

@@ -1,14 +1,14 @@
 :root{
 	--bgBody: transparent;
 	--bgButton: null;
-	--bgButtonActive: red;
-	--bgNav: black;
-	--bgLighter: silver;
-	--bgDarker: dimgray;
-	--fgButton: white;
+	--bgButtonActive: transparent;
+	--bgNav: transparent;
+	--bgLighter: transparent;
+	--bgDarker: transparent;
+	--fgButton: gray;
 	--fgButtonDisabled: gray;
-	--fgButtonHover: yellow;
-	--fgButtonActive: green;
+	--fgButtonHover: dimgray;
+	--fgButtonActive: black;
 	--fgTitle: dimgray;
 	--fgSubtitle: silver;
 	--magnifyScale: 5;
@@ -131,9 +131,14 @@ dialog:-internal-dialog-in-top-layer {
 	border-radius: 4px;
 	box-shadow: 0px 0px 3px 3px #efff04;
 }
+:root{
+  --bgTexture: url('../assets/textures/Melamine-wood-001.png');
+
+}
 .wood {
 	/* background-color: #BA8C63; */
 	background-repeat: repeat;
+	/* background-image: var(--bgTexture); */
 	background-image: url('../assets/textures/Melamine-wood-001.png');
 }
 /* #endregion */

@@ -1,3 +1,7 @@
+function showThemeWood(){
+	setColors('beige','../assets/textures/Melamine-wood-001.png');
+	//mClass('dMain','wood');
+}
 function testUpdateTestButtons(dParent,styles={}) {
   let table = Clientdata.table;
   let id = 'dTestButtons'; mRemoveIfExists(id); 

@@ -359,6 +359,14 @@ function cLandscape(dParent, styles = {}, opts = {}) {
   return cBlank(dParent, styles, opts);
 }
 function clearBodyDiv(styles = {}, opts = {}) { document.body.innerHTML = ''; return mDom(document.body, styles, opts) }
+function clearBodyReset100(styles = {}, opts = {}) { 
+  let body=document.body;
+  body.setAttribute('style','');
+  body.innerHTML = ''; 
+  copyKeys({w:'100vw',h:'100vh',position:'relative'},styles)
+  let d=mDom(document.body, styles, opts) 
+  return d;
+}
 function clearCell(cell) { mClear(cell); mStyle(cell, { opacity: 0 }); }
 function clearElement(elem) {
   if (isString(elem)) elem = document.getElementById(elem);
@@ -3512,6 +3520,8 @@ async function loadAssets() {
   M.categories = Object.keys(byCat); M.categories.sort();
   M.collections = Object.keys(byColl); M.collections.sort();
   M.names = Object.keys(byFriendly); M.names.sort();
+  let textures = await mGetFiles(`../assets/textures`);
+  M.textures = textures.map(x=>`../assets/textures/${x}`); console.log('textures',M.textures)
 }
 async function loadImageAsync(src, img) {
   return new Promise((resolve, reject) => {
@@ -5114,13 +5124,6 @@ async function onclickCollSelectPage(ev) {
   }
   collEnableListCommands();
 }
-async function onclickColor(ev) {
-  let c = ev.target.style.background;
-  c = colorHex(c);
-  setColors(c);
-  U.color = c;
-  await postUserChange();
-}
 async function onclickCommand(ev) {
   let key = evToAttr(ev, 'key');
   assertion(isdef(UI[key]), `command ${key} not in UI!!!`)
@@ -6115,35 +6118,6 @@ function setCheckIfSet(keys) {
   let isSet = arr.every(x => arrAllSameOrDifferent(x));
   return isSet;
 }
-function setColors(c) {
-  let hsl = colorHSL(c, true);
-  let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
-  let hstart = (hue + diff);
-  for (i = hstart; i <= hstart + 235; i += 20) {
-    let h = i % 360;
-    let c1 = colorFromHSL(h, 100, 75);
-    wheel.push(c1);
-  }
-  let cc = idealTextColor(c);
-  let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
-  let palc = colorPalette(cc);
-  function light(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 + i]; }
-  function dark(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 - i]; }
-  function simil(i = 3) { return cc == 'white' ? dark(i) : light(i); }
-  function contrast(i = 3) { return cc == 'white' ? light(i) : dark(i); }
-  setCssVar('--bgBody', c);
-  setCssVar('--bgButton', 'transparent')
-  setCssVar('--bgButtonActive', light(3))
-  setCssVar('--bgNav', simil(2))
-  setCssVar('--bgLighter', light())
-  setCssVar('--bgDarker', dark())
-  setCssVar('--fgButton', contrast(3))
-  setCssVar('--fgButtonActive', cc == 'black' ? dark(2) : c)
-  setCssVar('--fgButtonDisabled', 'silver')
-  setCssVar('--fgButtonHover', contrast(5))
-  setCssVar('--fgTitle', contrast(4))
-  setCssVar('--fgSubtitle', contrast(3))
-}
 function setCreateDeck() {
   let deck = [];
   ['red', 'purple', 'green'].forEach(color => {
@@ -6579,18 +6553,6 @@ function showChatWindow() {
     ev.target.value = '';
   });
 }
-async function showColors() {
-  showTitle('Set Color Theme');
-  let sz = 30;
-  let d = mDom('dMain', { wmax: (sz + 4) * 15,margin:20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-  let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
-  list = M.playerColors.concat(grays);
-  for (const c of list) {
-    let dc = mDom(d, { w: sz, h: sz, bg: c, fg: idealTextColor(c) });
-    dc.onclick = onclickColor;
-    mStyle(dc, { cursor: 'pointer' });
-  }
-}
 async function showDashboard() {
   let me = getUname();
   showTitle('dashboard')
@@ -6938,7 +6900,7 @@ function showUser() {
   mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
   let d;
   d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: getUname(), className: 'activeLink' });
-  setColors(U.color)
+  setColors(U.color,U.texture)
   d.onclick = onclickUser;
 }
 function showUserImage(uname, d, sz = 40) {
@@ -7167,7 +7129,7 @@ async function switchToUser(uname) {
   Clientdata.curUser = uname;
   localStorage.setItem('username', uname);
   iDiv(UI.user).innerHTML = uname;
-  setColors(U.color);
+  setColors(U.color,U.texture);
   if (uname == 'guest') {
     await switchToMenu(UI.nav, 'home');
     menuDisable(UI.nav, 'plan');

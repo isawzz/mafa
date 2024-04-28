@@ -1,5 +1,5 @@
 name: amanda
-color: '#008a8a'
+color: '#f0e78e'
 key: amanda
 setgame:
   level: 6
@@ -12,3 +12,4 @@ button97:
   playmode: bot
 button96:
   playmode: human
+texture: url("../assets/textures/Melamine-wood-004.png")

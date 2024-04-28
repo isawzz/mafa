@@ -1,3 +1,4 @@
 name: guest
 color: '#f0e78e'
 key: guest
+texture: url("../assets/textures/Melamine-wood-004.png")
