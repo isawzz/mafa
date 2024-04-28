@@ -1,7 +1,18 @@
 
-async function start() { await test4_intode(); }
+async function start() { await test5_lineEndings(); }
+async function test5_lineEndings(){
+	S.type = detectSessionType();
+	initCodingUI();
+	let bykey = await getCodeDictByKey(`../ode/closure.js`);
+	let text = '';
+	for (const k in bykey) { 
+		text += bykey[k].code + '\n'; 
+	}
+	AU.ta.value = text;
+
+}
 async function test4_intode(){
-	test3_integrate(`../ode/closure.js`,'../ode/bau3.js');
+	test3_integrate(`../ode/closure.js`,'../ode/baui.js');
 }
 async function test3_integrate(pathLarge,pathNew){
 	S.type = detectSessionType();

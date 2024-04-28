@@ -1,4 +1,3 @@
-
 //#region mStyle refactoring
 const _STYLE_PARAMS = {
 	acontent: 'align-content',
@@ -162,6 +161,7 @@ function mStyle(elem, styles = {}, unit = 'px') {
 
 //#endregion
 
+// *** broken code *** (params zu activate, botMove, geaendert: T enthaelt jetzt table und name)
 //#region button97
 function button97() {
   function setup(table) {

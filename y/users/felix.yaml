@@ -5,3 +5,7 @@ setgame:
   level: 6
   playmode: bot
 playmode: bot
+button96:
+  playmode: human
+button97:
+  playmode: human

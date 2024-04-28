@@ -6871,7 +6871,7 @@ function showNavbar() {
   return nav;
 }
 async function showTables(from) {
-  // mClear('dMain');
+  //mClear('dMain');
   Clientdata.table = null;
   if (TESTING) {
     let dT=mDom('dMain');

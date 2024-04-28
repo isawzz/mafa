@@ -4,7 +4,7 @@ async function start() { TESTING = true; test51(); }
 
 async function test51() {
   await prelims(); 
-  await switchToOtherUser('amanda', 'annabel', 'diana');
+  await switchToOtherUser('amanda','felix'); // 'diana');
   await switchToMenu(UI.nav, 'play');
   await clickFirstTable();
 }
@@ -16,18 +16,18 @@ async function prelims() {
   await loadAssets();
   let t4 = performance.now();
   sockInit();
-  UI.nav = showNavbar();
+  UI.nav = showNavbar(); 
   UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
-  dTitle = mBy('dTitle');
-  await switchToUser(localStorage.getItem('username'));
+  UI.dTitle = mBy('dTitle');
   let t5 = performance.now();
   window.onkeydown = keyDownHandler;
   window.onkeyup = keyUpHandler;
-  DA.funcs = { button99: button99(), button98: button98(), button97: button97(), button96: button96() }; //implemented games!
+  DA.funcs = { button96: button96() }; //implemented games!
   for (const gname in Serverdata.config.games) {
     if (isdef(DA.funcs[gname])) continue;
     DA.funcs[gname] = defaultGameFunc();
   }
+  await switchToUser(localStorage.getItem('username'));
 }
 function defaultGameFunc() {
   function setup(table) { let fen = { players: table.players, turn: [table.owner] }; delete table.players; }

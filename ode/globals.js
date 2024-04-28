@@ -1,3 +1,10 @@
+var WhichCorner = 0;
+const CORNERS0 = ['♠', '♡']; //, '♣', '♢'];
+const CORNERS = ['◢', '◣', '◤', '◥'];
+const CORNERS2 = ['⬔', '⬕'];
+const CORNERS3 = ['⮜', '⮝', '⮞', '⮟'];
+const CORNERS4 = ['⭐', '⭑']; //, '⭒', '⭓'];
+const CORNERS5 = ['⬛', '⬜']; //, '⭒', '⭓'];
 const ANIM={};
 var Session = {};
 var Clientdata = {};
