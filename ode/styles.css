@@ -149,7 +149,7 @@ body{
 	/* padding: 2px 12px; */
 	padding: 0;
 	margin:0;
-	background: var(--bgBody) !important;
+	background-color: var(--bgBody) !important;
 }
 .button {
 	padding: 5px 10px;

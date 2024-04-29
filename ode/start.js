@@ -26,6 +26,7 @@ async function test54_dynBody(){
 async function test53_clearReset(){
   await loadAssets();
   let d=clearBodyReset100({bg:'skyblue',overy:'scroll'},{id:'dPage'});
+  mClass(d,'wood');
 
 }
 async function test52(){
