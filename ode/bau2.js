@@ -7,3 +7,10 @@ function uiTypeRadios(lst, d, styles = {}, opts = {}) {
 	}
 	return rg;
 }
+
+function getRepeatAndSizeForTexture(t){
+	if (isEmpty(t)) return ['',''];
+	let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
+	let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
+	return [bgRepeat,bgSize];
+}

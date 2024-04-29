@@ -1,6 +1,6 @@
 onload = start;
 
-async function start() { TESTING = true; test52(); }
+async function start() { TESTING = true; test54_dynBody(); }
 
 async function test54_dynBody(){
   let html =`
@@ -46,33 +46,6 @@ async function test52(){
   // }
   // multiply screen overlay darken lighten
 }
-
-//#region onclickColor orig
-async function onclickColor_(ev) {
-  let c = ev.target.style.background;
-  c = colorHex(c);
-  setColors(c,U.texture);
-  U.color = c;
-  await postUserChange();
-}
-async function onclickTexture_(ev) {
-  let texture = ev.target.style.backgroundImage;
-
-  let d=mBy('sample');
-  d.style.backgroundImage = texture;
-  d.style.backgroundRepeat='repeat';
-
-  //setCssVar('--bgTexture',texture);
-  //mClass('sample','wood')
-  
-  
-	// console.log('texture',isEmpty(texture),texture);
-	// texture = isEmpty(texture)?null:
-  // U.texture = isEmpty(texture)?null:texture;
-  // setColors(U.color,U.texture);
-  // await postUserChange();
-}
-//#endregion
 
 async function test51() {
   await prelims(); 

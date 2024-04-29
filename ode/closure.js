@@ -6825,7 +6825,7 @@ function showNavbar() {
   let nav = mMenu('dNav');
   let commands = {};
   commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
-  commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, clearMain);
+  commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, colorsUpdate);
   commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
   commands.play = menuCommand(nav.l, 'nav', 'play', 'Tables', onclickPlay, clearMain);
   commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
