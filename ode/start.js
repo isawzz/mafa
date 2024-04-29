@@ -22,6 +22,8 @@ async function test54_dynBody(){
   `;
   document.body.innerHTML = html;
   await prelims();
+  await switchToMenu(UI.nav, 'colors');
+
 }
 async function test53_clearReset(){
   await loadAssets();

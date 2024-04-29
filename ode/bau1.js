@@ -51,11 +51,31 @@ async function showColors() {
   //hier moecht ich ein fs mit radios fuer die verschiedenen bland modes
   // let dBlend = mDom('dMain', { margin:20, hpadding: 0 });
 
+  // hier moecht ich die User settings selecten
+  let ucitem = itemsColor.find(x=>x.color == U.color); //das geht nicht wenn user eine variante gewaehlt hat mit slider!!!
+  //falls das eine slider variant ist, muss ich so ein item dazutun oben
+  //irgendein anderes wird geloescht? ne, einfach neben none in die line geben?
+  if (nundef(ucitem)) {
+    console.log(`user ${U.name} has no color!!!!`)
+  }else{
+    iDiv(ucitem).click();
+  }
+
+  let utitem = itemsTexture.find(x=>x.texture == U.texture); //das geht nicht wenn user eine variante gewaehlt hat mit slider!!!
+  //falls das eine slider variant ist, muss ich so ein item dazutun oben
+  //irgendein anderes wird geloescht? ne, einfach neben none in die line geben?
+  if (nundef(utitem)) {
+    console.log(`user ${U.name} has no texture!!!!`,U);
+  }else{
+    iDiv(utitem).click();
+  }
+
   
 
 
 
 }
+
 function setColors(c, texture, blendMode) {
   // mClass(document.body, 'wood');
   if (nundef(c)){
@@ -70,7 +90,7 @@ function setColors(c, texture, blendMode) {
   let [bgRepeat,bgSize] = getRepeatAndSizeForTexture(texture);
   console.log('')
   //mStyle(document.body,{'background-'}
-
+  
 
   return;
   if (isdef(texture)) c = 'transparent';
@@ -109,22 +129,14 @@ function setColors(c, texture, blendMode) {
 async function colorsUpdate(){
   let seldivs = document.body.getElementsByClassName('framedPicture');
   //first, find selected sample!
+  //if there is a sample already, take all the attributes from it
+  let sample = seldivs.find(x=>x.id.startsWith('dSample'));
+  console.log('YES, we have a sample',sample);
 
   // for(const el of Array.from(seldivs)){
   //   console.log('el',el);
   //   if (el.id.startsWith('dSample'))
   // }
-}
-async function onclickColor(item, items) {
-  let c = item.color;//ev.target.style.background; 
-  toggleItemSelection(item);//console.log('items',items)
-  let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
-  //console.log('c',c,typeof(c),isEmpty(c))
-  if (!isEmpty(c)) c = colorHex(c);
-  if (isEmpty(c)) { console.log('color EMPTY!', item); } //ev.target.style);}
-  for (const i of range(0, 9)) { mBy(`dSample${i}`).style.backgroundColor = c; }
-  document.body.style.background = c;
-  // mBy('dPos').style.backgroundColor = c;
 }
 async function onclickTexture(item, items) {
   console.log('item', item)

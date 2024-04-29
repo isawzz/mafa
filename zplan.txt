@@ -1,3 +1,11 @@
+_____ mi 24.4.24 airport
+- am anfang: select items die dem user entsprechen!
+(mindestens eine color!)
+- bg muss ab sofort background-color setzen!!!!
+- goto mStyle
+
+
+
 _____ mi 24.4.24 airport 220
 5:25 AM 4/24/2024 220
 6:05 AM 4/24/2024 260
