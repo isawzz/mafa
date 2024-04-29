@@ -1,6 +1,6 @@
 onload = start;
 
-async function start() { TESTING = true; test53_clearReset(); }
+async function start() { TESTING = true; test52(); }
 
 async function test54_dynBody(){
   let html =`
@@ -32,35 +32,19 @@ async function test53_clearReset(){
 async function test52(){
   await loadAssets();
   let d=clearBodyDiv({w:'100vw',h:'100vh'},{id:'dPage'});
-  mStyle(d,{'background-blend-mode': 'normal','background-repeat':'repeat'})
+  // mStyle(d,{'background-blend-mode': 'multiply','background-size':'cover'})
+  // let d1=mDom(d,{border:'white',position:'absolute',w:500,h:320,left:700,top:100,'background-blend-mode': 'luminosity','background-size':'cover'},{id:'dPos'})
   mDom(d,{},{id:'dTitle'});
   mDom(d,{},{id:'dMain'});
-  d=mDom(d,{gap:4},{id:'dSamples'});mCenterFlex(d)
   showColors();
-  let list='normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-  console.log('list',list.length)
-  for(const [i,mode] of list.entries()){
-    let id = `dSample${i}`;
-    mDom(d,{border:'white',w:100,h:100,'background-blend-mode': mode,'background-repeat':'repeat'},{id});
-  }
+  // d=mDom(d,{gap:4},{id:'dSamples'});mCenterFlex(d)
+  // let list='normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+  // console.log('list',list.length)
+  // for(const [i,mode] of list.entries()){
+  //   let id = `dSample${i}`;
+  //   mDom(d,{border:'white',w:100,h:100,'background-blend-mode': mode,'background-repeat':'repeat'},{id});
+  // }
   // multiply screen overlay darken lighten
-}
-async function onclickColor(ev) {
-  let c = ev.target.style.background; 
-  console.log('c',c,typeof(c),isEmpty(c))
-  if (!isEmpty(c)) c = colorHex(c);
-  if (isEmpty(c)) {console.log('color EMPTY!',ev.target.style);}
-  for(const i of range(0,9)){mBy(`dSample${i}`).style.backgroundColor=c;}
-  mBy('dPage').style.backgroundColor = c;
-}
-async function onclickTexture(ev) {
-  let texture = ev.target.style.backgroundImage;
-  if (isEmpty(texture)) {console.log('color EMPTY!',ev.target.style);}
-  for(const i of range(0,9)){
-    mBy(`dSample${i}`).style.backgroundImage = texture;
-    // mBy(`dSample${i}`).style.backgroundRepeat='repeat';
-  }
-  mBy('dPage').style.backgroundImage = texture;
 }
 
 //#region onclickColor orig
