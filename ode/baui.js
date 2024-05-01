@@ -121,6 +121,63 @@ function mStyle(elem, styles = {}, unit = 'px') {
 //#endregion
 
 //#region colors menu
+function colorPaletteFromImage(img) {
+  if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
+  //console.log('ColorThiefObject',ColorThiefObject)
+  let palette0 = ColorThiefObject.getPalette(img);
+  //console.log('...',palette0); //das ist manchmal null for some reason!
+  let palette = [];
+  for (const pal of palette0) {
+    let color = colorFrom(pal);
+    palette.push(color);
+  }
+  return palette;
+}
+function colorPaletteFromUrl(path) {
+  let img = mCreateFrom(`<img src='${path}' />`);
+  let pal = colorPaletteFromImage(img);
+  return pal;
+}
+function selectUserColor(itemsColor){
+  //console.log('selectUserColor',U.color); 
+	// let [color,texture,blend]=[U.color,U.texture,U.blend];
+	//console.log(color);
+	if (isEmpty(U.color)) U.color=rChoose(itemsColor);
+	let chex=colorHex(U.color);
+	//console.log(chex,itemsColor)
+	let item = itemsColor.find(x=>x.color==chex);
+	//console.log('item with same color',item);
+
+	if (isdef(item)) iDiv(item).click();
+	return item.color;
+
+
+}
+function selectUserTexture(itemsTexture){
+  //console.log('selectUserTexture',U.texture); 
+
+	//let [color,texture,blend]=[U.color,U.texture,U.blend];
+	//console.log(texture,blend);
+	//console.log('itemsTexture',itemsTexture)
+	let item = itemsTexture.find(x=>x.bgImage.includes(U.texture));
+	//console.log('item with same color',item);
+	if (isdef(item)) iDiv(item).click();
+
+	return isdef(item)?item.path:'';
+
+}
+function selectUserBlend(itemsBlend){
+  //console.log('selectUserBlend',U.blend); 
+
+	//let [color,texture,blend]=[U.color,U.texture,U.blend];
+	//console.log(texture,blend);
+	let item = itemsBlend.find(x=>x.blendMode==U.blend);
+	//console.log('item with same color',item);
+	if (isdef(item)) iDiv(item).click();
+
+	return isdef(item)?item.blendMode:'';
+
+}
 function setColors(c, texture, blendMode) {
   // mClass(document.body, 'wood');
   if (nundef(c)){
@@ -133,7 +190,7 @@ function setColors(c, texture, blendMode) {
   if (nundef(texture)) texture = '';
   if (nundef(blendMode)) blendMode = '';
   let [bgRepeat,bgSize] = getRepeatAndSizeForTexture(texture);
-  console.log('')
+  //console.log('')
   //mStyle(document.body,{'background-'}
   
 
@@ -167,7 +224,7 @@ function setColors(c, texture, blendMode) {
   setCssVar('--fgTitle', contrast(4))
   setCssVar('--fgSubtitle', contrast(3))
   if (nundef(texture)) return;
-  console.log('HALLO')
+  //console.log('HALLO')
   mStyle(document.body, { 'background-repeat': 'repeat', 'background-image': texture })
 
 }
@@ -183,7 +240,7 @@ async function onclickColor(item, items) {
   let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
   //console.log('c',c,typeof(c),isEmpty(c))
   if (!isEmpty(c)) c = colorHex(c);
-  if (isEmpty(c)) { console.log('color EMPTY!', item); } //ev.target.style);}
+  //if (isEmpty(c)) { console.log('color EMPTY!', item); } //ev.target.style);}
   for (const i of range(0, 9)) { mBy(`dSample${i}`).style.backgroundColor = c; }
   document.body.style.backgroundColor = c;
   // mBy('dPos').style.backgroundColor = c;
@@ -197,12 +254,12 @@ async function onclickTexture(item, items) {
   toggleItemSelection(item);
   let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
   //console.log('texture',texture,'repeat',repeat)
-  if (isEmpty(texture)) { console.log('texture EMPTY!', item); } //ev.target.style);}
+  //if (isEmpty(texture)) { console.log('texture EMPTY!', item); } //ev.target.style);}
   let blendModeDiv = null;
   for (const i of range(0, 9)) {
     let sample = mBy(`dSample${i}`);
     //console.log(sample.style.backgroundBlendMode, blendMode)
-    if (sample.style.backgroundBlendMode == blendMode) { blendModeDiv = sample; console.log('YES!') }
+    if (sample.style.backgroundBlendMode == blendMode) { blendModeDiv = sample; }//console.log('YES!') }
     sample.style.backgroundImage = texture;
     sample.style.backgroundRepeat = repeat;
     sample.style.backgroundSize = bgSize;
@@ -219,7 +276,7 @@ async function onclickTexture(item, items) {
   // mBy('dPos').style.backgroundSize = bgSize;
 }
 async function onclickBlendSample(item, items) {
-  console.log('CLICK!!!');//,item)
+  //console.log('CLICK!!!');//,item)
   let blendMode = item.blendMode; //ev.target.style.backgroundImage;
   toggleItemSelection(item);
   let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
@@ -315,7 +372,7 @@ function button96() {
   }
   function checkGameover(table) {
     let score_sum = calcScoreSum(table);
-    console.log('___check score sum',score_sum);
+    //console.log('___check score sum',score_sum);
     if (score_sum >= 5) {
       table.winners = getPlayersWithMaxScore(table.fen);
       table.status = 'over';

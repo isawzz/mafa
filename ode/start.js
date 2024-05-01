@@ -2,6 +2,10 @@ onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
 
+async function test56_colorthief(){
+  ColorThiefObject=new ColorThief();
+  console.log(ColorThiefObject);
+}
 async function test55_cleanUsers(){
   await prelims();
   let users = await mGetRoute('users');
@@ -33,7 +37,7 @@ async function test54_dynBody(){
   
   `;
   document.body.innerHTML = html;
-  await prelims();
+  await prelims(); //return;
   U=await postUserChange({name:U.name,color:'blue',blend:'multiply'});
   await switchToMenu(UI.nav, 'colors');
 
@@ -76,7 +80,7 @@ async function test51() {
 }
 
 async function prelims() {
-  ColorThiefObject = new ColorThief();
+  ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
   let t1 = performance.now();
   Serverdata = await mGetRoute('session'); //session ist: users,config,events
   let t2 = performance.now();

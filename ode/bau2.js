@@ -1,43 +1,3 @@
-function selectUserColor(itemsColor){
-  console.log('selectUserColor',U.color); 
-	// let [color,texture,blend]=[U.color,U.texture,U.blend];
-	//console.log(color);
-	if (isEmpty(U.color)) U.color=rChoose(itemsColor);
-	let chex=colorHex(U.color);
-	console.log(chex,itemsColor)
-	let item = itemsColor.find(x=>x.color==chex);
-	console.log('item with same color',item);
-
-	if (isdef(item)) iDiv(item).click();
-	return item.color;
-
-
-}
-function selectUserTexture(itemsTexture){
-  console.log('selectUserTexture',U.texture); 
-
-	//let [color,texture,blend]=[U.color,U.texture,U.blend];
-	//console.log(texture,blend);
-	console.log('itemsTexture',itemsTexture)
-	let item = itemsTexture.find(x=>x.bgImage.includes(U.texture));
-	console.log('item with same color',item);
-	if (isdef(item)) iDiv(item).click();
-
-	return isdef(item)?item.path:'';
-
-}
-function selectUserBlend(itemsBlend){
-  console.log('selectUserBlend',U.blend); 
-
-	//let [color,texture,blend]=[U.color,U.texture,U.blend];
-	//console.log(texture,blend);
-	let item = itemsBlend.find(x=>x.blendMode==U.blend);
-	console.log('item with same color',item);
-	if (isdef(item)) iDiv(item).click();
-
-	return isdef(item)?item.blendMode:'';
-
-}
 async function showColors() {
   showTitle('Set Color Theme');
   let sz = 30;
@@ -58,14 +18,15 @@ async function showColors() {
 
   let dTheme = mDom('dMain', { wmax: (sz + 4) * 15, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
   list = M.textures;
-  let itemsTexture = [];
+  let itemsTexture = DA.itemsTexture = [];
   for (const t of list) {
     //console.log(c, typeof c)
     let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
     let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
     let bgImage = `url('${t}')`;
     let recommendedMode = t.includes('ttrans')?'normal':t.includes('marble_')?'luminosity':'multiply';
-    let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
+    // let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
+    let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz},{tag:'img'});
     let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blendMode:recommendedMode, isSelected: false };
     itemsTexture.push(item);
     dc.onclick = () => onclickTexture(item, itemsTexture);
@@ -94,9 +55,49 @@ async function showColors() {
 
 	//mach einen mix aus diesen 3 in einem neuen sample
 
-  let pal=await getPaletteFromColorTextureBlend(color,pathTexture,blend,'dMain');console.log('!!!!!YEAH!!!!!',pal); 
+  let pal=await getPaletteFromColorTextureBlend(color,pathTexture,blend,'dMain');//console.log('!!!!!YEAH!!!!!',pal); 
   pal.unshift('#ffffff');pal.push('#000000');
-  console.log('got new palette',pal);
+  //console.log('got new palette',pal);
+
+	//alle paletten holen
+	//console.log('HALLOOOOOOOOOOOOOOOOOOOOOOOOO');
+	//console.log(itemsTexture)
+	for(const [i,o] of itemsTexture.entries()){
+		let img=iDiv(o);
+		img.onload=()=>{
+			// let pal=item.pal=colorPaletteFromImage(dc);
+			let pal = ColorThiefObject.getPalette(img);
+			if (o.path.includes('ttrans') && pal != null){console.log('not null:',o.path,pal)}
+			else if (pal == null) console.log('t',o.path,'pal',pal);
+
+			//if (pal == null) pal = ['white','#ffffff']
+			if (pal == null){
+				//mach eine transparency palette!
+				
+			}
+			if (pal != null){
+				pal.unshift('white');pal.push('black');
+				let n= pal.length;
+				pal = pal.map(x=>colorFrom(x));
+				let palhex = Array.from(new Set(pal));
+				let palhsl = palhex.map(x=>colorHSL(x,true));
+				let lum=palhsl.map(x=>x.l);
+				let hue=palhsl.map(x=>x.h);
+				let sat=palhsl.map(x=>x.s);
+				pal = [];
+				for(let i=0;i<palhex.length;i++){
+					let o={hex:palhex[i],lum:lum[i],hue:hue[i],sat:sat[i]};
+					pal.push(o);
+				}
+				if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
+			}
+
+			DA.itemsTexture[i].palette = pal;
+		}
+		img.src=o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
+
+	}
+
 
 	return;
   //hier moecht ich ein fs mit radios fuer die verschiedenen bland modes

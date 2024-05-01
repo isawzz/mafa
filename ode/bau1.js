@@ -20,7 +20,7 @@ async function getPaletteFromElem(elem){
   let arr=pal.map(x=>({orig:x,hex:colorHex(x),lum:colorHSL(x,true).l}));
   arr=sortBy(arr,'lum');
   //img.remove();
-  console.log(arr);
+  //console.log(arr);
 
   return arr.map(x=>x.hex); //.map(x=>colorHex(x));//new Image(cv.width,cv.height,imgData;
   // .then(function (canvas) {
@@ -72,3 +72,4 @@ async function colorsUpdate(){
   //   if (el.id.startsWith('dSample'))
   // }
 }
+

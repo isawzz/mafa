@@ -1,5 +1,56 @@
 
+//#region canvas for with a div that has a backgroundImage and backgroundBlendMode?
+function getPixelColorFromDiv(divElement, x, y) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
 
+  // Assume the div has explicit width and height either through CSS or inline styles
+  canvas.width = divElement.offsetWidth;
+  canvas.height = divElement.offsetHeight;
+
+  // Get background image URL from computed style
+  const style = window.getComputedStyle(divElement);
+  const bgImage = style.backgroundImage.slice(4, -1).replace(/["']/g, "");
+
+  // Load the image
+  const img = new Image();
+  img.crossOrigin = "Anonymous"; // Handle CORS if necessary
+  img.src = bgImage;
+  img.onload = () => {
+      // First, fill the background color if any
+      ctx.fillStyle = style.backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Set blend mode
+      ctx.globalCompositeOperation = convertCSSBlendModeToCanvas(style.backgroundBlendMode);
+
+      // Draw the background image
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Get the pixel data
+      const pixelData = ctx.getImageData(x, y, 1, 1).data;
+      console.log(`rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, ${pixelData[3] / 255})`);
+  };
+}
+
+function convertCSSBlendModeToCanvas(blendMode) {
+  // This needs to be expanded based on actual CSS-to-Canvas blend mode mappings
+  switch (blendMode) {
+      case 'multiply':
+          return 'multiply';
+      case 'screen':
+          return 'screen';
+      // add other cases as necessary
+      default:
+          return 'source-over';
+  }
+}
+
+// Example usage: Assuming there is a div with an id of "myDiv"
+const div = document.getElementById('myDiv');
+getPixelColorFromDiv(div, 10, 10);  // Replace 10, 10 with the coordinates you're interested in
+
+//#endregion
 
 // Create a modal with a question, Yes button, and No button
 function createConfirmationModal(dParent,question) {
