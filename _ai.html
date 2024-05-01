@@ -1,0 +1,115 @@
+<!-- #region -->
+<!-- #endregion -->
+
+<!-- #region html2canvas: does not catch backgroundBlendMode correctly -->
+<canvas id="myCanvas" width="200" height="200"></canvas>
+<script>
+var canvas = document.getElementById('myCanvas');
+var ctx = canvas.getContext('2d');
+
+var img1 = new Image();
+var img2 = new Image();
+img1.onload = function() {
+    ctx.drawImage(img1, 0, 0);
+    img2.onload = function() {
+        ctx.globalAlpha = 0.5; // Adjust for blend effect
+        ctx.drawImage(img2, 0, 0);
+    };
+    img2.src = 'path/to/your/second-image.png'; // Set to your image path
+};
+img1.src = 'path/to/your/first-image.png'; // Set to your image path
+</script>
+
+<!-- #endregion -->
+
+<!-- #region js function to convert a div into an image or canvas -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Convert Div to Image</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<div id="contentDiv" style="width: 300px; height: 200px; background-color: #4CAF50; color: white; display: flex; align-items: center; justify-content: center;">
+    <h1>Hello, World!</h1>
+</div>
+<button onclick="convertDivToCanvas()">Convert to Canvas</button>
+<button onclick="convertDivToImage()">Convert to Image</button>
+<script>
+function convertDivToCanvas() {
+    const div = document.getElementById('contentDiv');
+    html2canvas(div).then(canvas => {
+        // Do something with the canvas
+        document.body.appendChild(canvas); // Append canvas to body or handle differently
+    });
+}
+
+function convertDivToImage() {
+    const div = document.getElementById('contentDiv');
+    html2canvas(div).then(canvas => {
+        const img = canvas.toDataURL('image/png');
+        const imageElement = document.createElement('img');
+        imageElement.src = img;
+        document.body.appendChild(imageElement); // Append image to body or handle differently
+    });
+}
+</script>
+</body>
+</html>
+<!-- #endregion -->
+
+<!-- #region js extract colors from a div with a backgroundImage -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Extract Colors from Background Image</title>
+</head>
+<body>
+<div id="imageDiv" style="width: 500px; height: 500px; background-image: url('your-image-url.jpg');"></div>
+<canvas id="canvas" style="display: none;"></canvas>
+<script>
+function extractColors() {
+    const div = document.getElementById('imageDiv');
+    const imageUrl = div.style.backgroundImage.slice(5, -2); // Remove `url(" and ")`
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, img.width, img.height);
+        const colors = analyzeColors(imageData);
+        console.log(colors);
+    };
+
+    img.src = imageUrl;
+}
+
+function analyzeColors(imageData) {
+    const data = imageData.data;
+    const colors = {};
+    // Example: Simple count of colors, might need quantization for better color grouping
+    for (let i = 0; i < data.length; i += 4) {
+        const key = `${data[i]}-${data[i+1]}-${data[i+2]}`; // RGB color key
+        if (colors[key]) {
+            colors[key]++;
+        } else {
+            colors[key] = 1;
+        }
+    }
+    return colors;
+}
+
+extractColors();
+</script>
+</body>
+</html>
+
+<!-- #endregion -->
+

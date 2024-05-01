@@ -1,3 +1,6 @@
+
+
+
 // Create a modal with a question, Yes button, and No button
 function createConfirmationModal(dParent,question) {
   // Get the modal element

@@ -1,15 +1,10 @@
 name: amanda
-color: '#f0e78e'
+color: blue
 key: amanda
 setgame:
   level: 6
   playmode: bot
-button:
-  playmode: bot
-button98:
-  playmode: bot
-button97:
-  playmode: bot
 button96:
   playmode: human
-texture: url("../assets/textures/Melamine-wood-004.png")
+texture: ../assets/textures/marble_black2.jpeg
+blend: multiply

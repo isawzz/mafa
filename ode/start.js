@@ -2,6 +2,18 @@ onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
 
+async function test55_cleanUsers(){
+  await prelims();
+  let users = await mGetRoute('users');
+  console.log('users',users);
+  for(const name in users){
+    let u=users[name];
+    //u.texture = 
+    //['button','button98','button97'].map(x=>delete u[x]);
+    //await 
+  }
+}
+
 async function test54_dynBody(){
   let html =`
 	<div style="position:fixed;width:100%;z-index:20000">
@@ -22,7 +34,11 @@ async function test54_dynBody(){
   `;
   document.body.innerHTML = html;
   await prelims();
+  U=await postUserChange({name:U.name,color:'blue',blend:'multiply'});
   await switchToMenu(UI.nav, 'colors');
+
+  //console.log(U)
+  //setTimeout(colorsUpdate,200)
 
 }
 async function test53_clearReset(){
@@ -60,6 +76,7 @@ async function test51() {
 }
 
 async function prelims() {
+  ColorThiefObject = new ColorThief();
   let t1 = performance.now();
   Serverdata = await mGetRoute('session'); //session ist: users,config,events
   let t2 = performance.now();

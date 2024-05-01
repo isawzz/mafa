@@ -492,6 +492,7 @@ app.post('/postUser', (req, res) => {
 	if (isNew) user = userdata; else copyKeys(userdata, user);
 	delete user.div;
 	delete user.isSelected;
+	['button','button98','button97'].map(x=>delete user[x]);
 	saveUser(name, user);
 	let msg = `user posted: ${user.name} new:${isNew}`;
 	console.log(msg)

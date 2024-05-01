@@ -1,3 +1,4 @@
+var ColorThiefObject;
 var WhichCorner = 0;
 const CORNERS0 = ['♠', '♡']; //, '♣', '♢'];
 const CORNERS = ['◢', '◣', '◤', '◥'];
