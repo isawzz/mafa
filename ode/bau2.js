@@ -73,13 +73,13 @@ async function showColors() {
 			//if (pal == null) pal = ['white','#ffffff']
 			if (pal == null){
 				//mach eine transparency palette!
-				
+
 			}
 			if (pal != null){
 				pal.unshift('white');pal.push('black');
 				let n= pal.length;
-				pal = pal.map(x=>colorFrom(x));
-				let palhex = Array.from(new Set(pal));
+				pal = pal.map(x=>colorHex(x));  console.log(pal)
+				let palhex = Array.from(new Set(pal)); console.log(palhex)
 				let palhsl = palhex.map(x=>colorHSL(x,true));
 				let lum=palhsl.map(x=>x.l);
 				let hue=palhsl.map(x=>x.h);

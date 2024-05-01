@@ -121,6 +121,43 @@ function mStyle(elem, styles = {}, unit = 'px') {
 //#endregion
 
 //#region colors menu
+function colorTransPalette(n=7){
+  let c=colorHex('white');
+  let pal=['white'];
+  // alpha 0,0.1,0.2,0.3
+  //wieviele alpha values kann ich in x colors unterbringen?
+  //ex. x=3 1/3 
+  //der mittlere ist 0
+
+  //example n=5: 0 1 2 3 4 (Math.floor(n/2) = 2 sollte trans sein)
+  // w, w .5 ,trans, b .5 ,b
+  // incw=2, incb=2, iw=1, ib=1
+
+  //  n iw  incw  ib  incb  vals
+  //  3 0   _     0   _     white,trans,black
+  //  4 1   .5    0   _     white,w.5,trans,black
+  //  5 1   .5    1   .5    white,w.5,trans,b.5,black
+  //  6 2   .33   1   .5    white,w.33,w.66,trans,b.5,black
+  //  7 2   .33   2   .33   white,w.33,w.66,trans,b.33,b.66,black
+  //  8 3   .25   2   .33   white,w.25,w.5.w.75,trans,b.33,b.66,black
+  //  9 3   .25   3   .25   white,w.25,w.5.w.75,trans,b.25,b.5,b.75,black
+  //...
+  //  n 
+
+
+  //n=6: 0 1 2 3 4 5 (6/2 = 3 sollte trans sein!)
+  // w, w .33, w .66 ,trans, b .5 ,b
+  //ich hab also 1-Math.floor(n/2)
+  let incw = 1 / Math.floor(n/2);
+  let incb = 1 / Math.floor((n-1)/2);
+  
+  //n=3 ist minimum
+  //
+  for(let i=1;i<Math.floor(n/2);i++){
+
+  }
+
+}
 function colorPaletteFromImage(img) {
   if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
   //console.log('ColorThiefObject',ColorThiefObject)
