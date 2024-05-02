@@ -1,3 +1,14 @@
+function hsl360StringToHex79(cAny){
+	let parts = cAny.split(',');
+	let h = firstNumber(parts[0]);
+	let s = firstNumber(parts[1]);
+	let l = firstNumber(parts[2]);
+	let a = parts.length > 3? Number(stringBefore(parts[3], ')')):null;
+	let o = hsl360ArgsToHsl01Object(h,s,l,a);
+	let rgb = hsl01ArgsToRgbArray(o.h,o.s,o.l,o.a);
+	let res = rgbArgsToHex79(rgb[0],rgb[1],rgb[2],rgb.length>3?rgb[3]:null);
+	return res;
+}
 function colorFrom_orig(cAny, a, allowHsl = false) {
   //returns hex standard format (7 or 9 characters)
   if (isString(cAny)) {

@@ -13,111 +13,64 @@ function hex2RgbObject(hex) {
 
 //#endregion
 
-function isStandardHexColor(c){return isString(c) && c[0]=='#' && (c.length==7 || c.length == 9); }
-function rgbString2Hex79(cAny,a){
-	
+function colorFrom(c, a) {
+	c = anyToHex79(c);
+	if (nundef(a)) return c;
+	return c.substring(0, 7) + (a < 1 ? alphaToHex(a) : '');
 }
-
-function colorFrom(cAny, a) {
+function isStandardHexColor(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
+function anyToHex79(c) {
 	//returns hex standard format (7 or 9 characters)
-	let alpha = isdef(a) && a < 1 ? alphaToHex(a) : '';
-	let tString = isString(cAny), tArr = isArray(cAny), tObj = isDict(cAny);
-	if (tString && cAny[0] == '#' && cAny.length >= 7) return cAny.substring(0, 7) + alpha;
-	else if (tString && cAny[0] == '#') return hex42hex79(cAny, a);
-	else if (tString && isdef(ColorDi) && lookup(ColorDi, [cAny])) return ColorDi[cAny].substring(0, 7) + alpha;
-	else if (tString && cAny.startsWith('rand')) {
+	if (isStandardHexColor(c)) return c;
+
+	let tString = isString(c), tArr = isList(c), tObj = isDict(c);
+	if (tString && c[0] == '#') return hex45ToHex79(c);
+	else if (tString && isdef(ColorDi) && lookup(ColorDi, [c])) return ColorDi[c].c;
+	else if (tString && c.startsWith('rand')) {
 		//eg. randLight => colorLight
-		let spec = capitalize(cAny.substring(4));
+		let spec = capitalize(c.substring(4));
 		let func = window['color' + spec];
-		cAny=isdef(func)?func():rColor();
-		assertion(isStandardHexColor(cAny),'ERROR coloFrom!!!!!!!!! (rand)');
-	}else if (tString && (cAny.startsWith('linear') || cAny.startsWith('radial'))) return cAny;
-	else if (tString && cAny.startsWith('rgb')) return rgbString2RgbArr(cAny)+alpha;
+		c = isdef(func) ? func() : rColor();
+		assertion(isStandardHexColor(c), 'ERROR coloFrom!!!!!!!!! (rand)');
+		return c;
+	} else if (tString && (c.startsWith('linear') || c.startsWith('radial'))) return c;
+	else if (tString && c.startsWith('rgb')) return rgbStringToHex79(c);
+	else if (tString && c.startsWith('hsl')) return hsl360StringToHex79(c);
+	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.c; }
+	else if (tArr && (c.length == 3 || c.length == 4) && isNumber(c[0])) return rgbArrayToHex79(c);
+	else if (tArr) return anyToHex79(rChoose(tArr));
+	else if (tObj && 'h' in c && c.h>1) {return hsl360ObjectToHex79(c);} //console.log('!!!');
+	else if (tObj && 'h' in c) return hsl01ObjectToHex79(c);
+	else if (tObj && 'r' in c) return rgbArgsToHex79(c.r,c.g,c.b,c.a);
 
-}
-function restrestrest(cAny, a) {
-	if (cAny[0] == 'r' && cAny[1] == 'g') {
-		let parts = cAny.split(',');
-		let r = firstNumber(parts[0]);
-		let g = firstNumber(parts[1]);
-		let b = firstNumber(parts[2]);
-		if (nundef(a) && parts.length > 3) a = Number(stringBefore(parts[3], ')'));
-		return rgbArgs2Hex79(r, g, b, a);
-	} else if (cAny[0] == 'h' && cAny[1] == 's') {
-		let parts = cAny.split(',');
-		let h = firstNumber(parts[0]);
-		let s = firstNumber(parts[1]);
-		let l = firstNumber(parts[2]);
-		if (parts.length > 3) a = valf(a, Number(stringBefore(parts[3], ')')));
-		return hslToHex(h, s, l, a);
-	} else {
-		ensureColorDict();
-		let c = ColorDi[cAny];
-		if (nundef(c)) {
-			if (cAny.startsWith('rand')) {
-				let spec = cAny.substring(4);
-				if (isdef(window['color' + spec])) {
-					c = window['color' + spec](res);
-				} else c = rColor();
-			} else {
-				console.log('color not available:', cAny);
-				throw new Error('color not found: ' + cAny)
-				return '#00000000';
-			}
-		} else c = c.c;
-		if (a == undefined) return c;
-		c = c.substring(0, 7);
-		return c + (a == 1 ? '' : alphaToHex(a));
-
-	} else if (Array.isArray(cAny)) {
-		if (cAny.length == 3 && isNumber(cAny[0])) {
-			let r = cAny[0];
-			let g = cAny[1];
-			let b = cAny[2];
-			return rgbArgs2Hex79(r, g, b, a);
-			// return a == undefined || a == 1 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
-		} else {
-			return rChoose(cAny);
-		}
-	} else if (typeof cAny == 'object') {
-		if ('h' in cAny) { return hslToHex(cAny.h, cAny.s, cAny.l, valf(a, cAny.a)); }
-		else if ('r' in cAny) { return rgbArgs2Hex79(cAny.r, cAny.g, cAny.b, valf(a, cAny.a)); }
-	}
+	assertion(false,`NO COLOR FOUND FOR ${c}`);
 }
 
-function hex42hex79(cAny, a) {
-	let r = cAny[1];
-	let g = cAny[2];
-	let b = cAny[3];
-	if (cAny.length == 5 && nundef(a)) return `#${r}${r}${g}${g}${b}${b}${cAny[4]}${cAny[4]}`;
-	cAny = `#${r}${r}${g}${g}${b}${b}`;
-
-	if (a == undefined) return cAny;
-	cAny = cAny.substring(0, 7);
-	return cAny + (a == 1 ? '' : alphaToHex(a));
+function hex45ToHex79(c) {
+	let r = c[1];
+	let g = c[2];
+	let b = c[3];
+	if (c.length == 5) return `#${r}${r}${g}${g}${b}${b}${c[4]}${c[4]}`;
+	return `#${r}${r}${g}${g}${b}${b}`;
 }
-function hex2Hsl01Array(hex) { return rgbArgs2Hsl01Array(...hex2RgbArray(hex)); }
-function hex2Hsl360Object(hex) {
-	let arr = hex2Hsl01Array(hex);
-	return hsl01Array2hsl360Object(arr);
+function hexToHsl01Array(hex) { return rgbArgsToHsl01Array(...hexToRgbArray(hex)); }
+function hexToHsl360Object(hex) {
+	let arr = hexToHsl01Array(hex);
+	return hsl01ArrayToHsl360Object(arr);
 }
-function hex2RgbArray(hex) {
+function hexToRgbArray(c) {
 	let r = 0, g = 0, b = 0;
-	// 3 digits
-	if (hex.length === 4) {
-		r = parseInt(hex[1] + hex[1], 16);
-		g = parseInt(hex[2] + hex[2], 16);
-		b = parseInt(hex[3] + hex[3], 16);
-	}
-	// 6 digits
-	else if (hex.length === 7) {
-		r = parseInt(hex[1] + hex[2], 16);
-		g = parseInt(hex[3] + hex[4], 16);
-		b = parseInt(hex[5] + hex[6], 16);
-	}
-	return [r, g, b];
+
+	if (c.length < 7) c = hext45ToHex79(c);
+	r = parseInt(c[1] + c[2], 16);
+	g = parseInt(c[3] + c[4], 16);
+	b = parseInt(c[5] + c[6], 16);
+	if (c.length == 7) return [r, g, b];
+
+	let a = parseInt(c[7] + c[8], 16) / 255;
+	return [r, g, b, a];
 }
-function hsl01Args2RgbArray(h, s, l) {
+function hsl01ArgsToRgbArray(h, s, l, a) {
 	let r, g, b;
 
 	if (s === 0) {
@@ -139,14 +92,55 @@ function hsl01Args2RgbArray(h, s, l) {
 		b = hue2rgb(p, q, h - 1 / 3);
 	}
 
-	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	let res = [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	if (nundef(a) || a== 1) return res;
+	res.push(a);
+	return res;
 }
-function hsl01Array2hsl360Object(arr) {
+function hsl01ArgsToHex79(h, s, l, a) {
+	let rgb = hsl01ArgsToRgbArray(h, s, l, a); //console.log(h,s,l,a,rgb)
+	let res = rgbArgsToHex79(rgb[0], rgb[1], rgb[2], rgb.length > 3 ? rgb[3] : null);
+	return res;
+}
+function hsl01ArrayToHsl360Object(arr) {
 	let res = { h: arr[0] * 360, s: arr[1] * 100, l: arr[2] * 100 };
 	if (arr.length > 3) res.a = arr[3];
 	return res;
 }
-function rgbArgs2Hex79(r, g, b, a) {
+function hsl01ObjectToHex79(c){
+	//console.log('!!!!!',c)
+	return hsl01ArgsToHex79(c.h, c.s, c.l, c.a);
+}
+function hsl360ArgsToHsl01Object(h, s, l, a) {
+	let res = { h: h / 360, s: s / 100, l: l / 100 };
+	if (isdef(a)) res.a = a;
+	return res;
+}
+function hsl360ArgsToHex79(h,s,l,a){
+	let o01 = hsl360ArgsToHsl01Object(h, s, l, a);
+	return hsl01ArgsToHex79(o01.h, o01.s, o01.l, o01.a)
+}
+function hsl360ObjectToHex79(c){
+	let o01 = hsl360ArgsToHsl01Object(c.h, c.s, c.l, c.a); //console.log('!!!!',o01)
+	return hsl01ObjectToHex79(o01)
+}
+function hsl360StringToHsl360Object(cAny) {
+	let parts = cAny.split(',');
+	let h = firstNumber(parts[0]);
+	let s = firstNumber(parts[1]);
+	let l = firstNumber(parts[2]);
+	if (parts.length <= 3) return { h, s, l };
+	let a = Number(stringBefore(parts[3], ')'));
+	return { h, s, l, a };
+}
+function hsl360StringToHex79(cAny) {
+	let o360 = hsl360StringToHsl360Object(cAny); //console.log(o360);
+	let o01 = hsl360ArgsToHsl01Object(o360.h, o360.s, o360.l, o360.a); //console.log(o01);
+	return hsl01ObjectToHex79(o01);
+}
+function rgbArrayToHex79(arr) { return rgbArgsToHex79(...arr); }
+
+function rgbArgsToHex79(r, g, b, a) {
 	//returns a standard hex 7
 	r = Math.round(r).toString(16).padStart(2, '0');
 	g = Math.round(g).toString(16).padStart(2, '0');
@@ -157,7 +151,7 @@ function rgbArgs2Hex79(r, g, b, a) {
 	a = Math.round(a * 255).toString(16).padStart(2, '0');
 	return `#${r}${g}${b}${a}`;
 }
-function rgbArgs2Hsl01Array(r, g, b) {
+function rgbArgsToHsl01Array(r, g, b) {
 	r /= 255, g /= 255, b /= 255;
 	let max = Math.max(r, g, b), min = Math.min(r, g, b);
 	let h, s, l = (max + min) / 2;
@@ -176,6 +170,14 @@ function rgbArgs2Hsl01Array(r, g, b) {
 	}
 
 	return [h, s, l];
+}
+function rgbStringToHex79(c) {
+	let parts = c.split(',');
+	let r = firstNumber(parts[0]);
+	let g = firstNumber(parts[1]);
+	let b = firstNumber(parts[2]);
+	let a = parts.length > 3 ? Number(stringBefore(parts[3], ')')) : null;
+	return rgbArgsToHex79(r, g, b, a);
 }
 
 

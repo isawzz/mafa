@@ -1,3 +1,4 @@
+
 async function showColors() {
 	showTitle('Set Color Theme');
 	let sz = 30;

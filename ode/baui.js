@@ -128,8 +128,8 @@ async function settingsClose(){
 //#region colors menu
 function colorBlendMode(c1, c2, blendMode) {
 	function blendColorDodge(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
 		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
 
@@ -137,68 +137,68 @@ function colorBlendMode(c1, c2, blendMode) {
 		let g = dodge(g1, g2);
 		let b = dodge(b1, b2);
 
-		return rgbArgs2Hex79(r, g, b);
+		return rgbArgsToHex79(r, g, b);
 	}
 	function blendColor(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
-		let [h1, s1, l1] = rgbArgs2Hsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = rgbArgs2Hsl01Array(r2, g2, b2);
+		let [h1, s1, l1] = rgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = rgbArgsToHsl01Array(r2, g2, b2);
 
 		// Use the blend hue, but keep the base saturation and lightness
-		let cfinal = hsl01Args2RgbArray(h2, s1, l1);
-		return rgbArgs2Hex79(...cfinal);
+		let cfinal = hsl01ArgsToRgbArray(h2, s1, l1);
+		return rgbArgsToHex79(...cfinal);
 	}
 	function blendDarken(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
 		let r = Math.min(r1, r2);
 		let g = Math.min(g1, g2);
 		let b = Math.min(b1, b2);
 
-		return rgbArgs2Hex79(r, g, b);
+		return rgbArgsToHex79(r, g, b);
 	}
 	function blendLighten(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
 		let r = Math.max(r1, r2);
 		let g = Math.max(g1, g2);
 		let b = Math.max(b1, b2);
 
-		return rgbArgs2Hex79(r, g, b);
+		return rgbArgsToHex79(r, g, b);
 	}
 	function blendLuminosity(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
-		let [h1, s1, l1] = rgbArgs2Hsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = rgbArgs2Hsl01Array(r2, g2, b2);
+		let [h1, s1, l1] = rgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = rgbArgsToHsl01Array(r2, g2, b2);
 
 		// Set the luminosity of the base color to the luminosity of the blend color
-		let [r, g, b] = hsl01Args2RgbArray(h1, s1, l2);
+		let [r, g, b] = hsl01ArgsToRgbArray(h1, s1, l2);
 
-		return rgbArgs2Hex79(r, g, b);
+		return rgbArgsToHex79(r, g, b);
 	}
 	function blendMultiply(color1, color2) {
-		let [r1, g1, b1] = hex2RgbArray(color1);
-		let [r2, g2, b2] = hex2RgbArray(color2);
+		let [r1, g1, b1] = hexToRgbArray(color1);
+		let [r2, g2, b2] = hexToRgbArray(color2);
 
 		// Multiply each channel and divide by 255 to scale back to color space
 		let r = (r1 * r2) / 255;
 		let g = (g1 * g2) / 255;
 		let b = (b1 * b2) / 255;
 
-		return rgbArgs2Hex79(Math.round(r), Math.round(g), Math.round(b));
+		return rgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
 	}
 	function blendNormal(baseColor, blendColor) {
 		return blendColor; // The blend color simply replaces the base color
 	}
 	function blendOverlay(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
 		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
 
@@ -206,29 +206,29 @@ function colorBlendMode(c1, c2, blendMode) {
 		let g = overlayCalculate(g1, g2);
 		let b = overlayCalculate(b1, b2);
 
-		return rgbArgs2Hex79(r, g, b);
+		return rgbArgsToHex79(r, g, b);
 	}
 	function blendSaturation(baseColor, blendColor) {
-		let [r1, g1, b1] = hex2RgbArray(baseColor);
-		let [r2, g2, b2] = hex2RgbArray(blendColor);
+		let [r1, g1, b1] = hexToRgbArray(baseColor);
+		let [r2, g2, b2] = hexToRgbArray(blendColor);
 
-		let [h1, s1, l1] = rgbArgs2Hsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = rgbArgs2Hsl01Array(r2, g2, b2);
+		let [h1, s1, l1] = rgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = rgbArgsToHsl01Array(r2, g2, b2);
 
 		// Use the base hue and lightness, blend saturation
-		let cfinal = hsl01Args2RgbArray(h1, s2, l1);
-		return rgbArgs2Hex79(...cfinal);
+		let cfinal = hsl01ArgsToRgbArray(h1, s2, l1);
+		return rgbArgsToHex79(...cfinal);
 	}
 	function blendScreen(color1, color2) {
-		let [r1, g1, b1] = hex2RgbArray(color1);
-		let [r2, g2, b2] = hex2RgbArray(color2);
+		let [r1, g1, b1] = hexToRgbArray(color1);
+		let [r2, g2, b2] = hexToRgbArray(color2);
 
 		// Apply the screen blend mode formula
 		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
 		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
 		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
 
-		return rgbArgs2Hex79(r, g, b);
+		return rgbArgsToHex79(r, g, b);
 	}
 
   //console.log('blendMode',blendMode);

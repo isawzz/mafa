@@ -3,46 +3,58 @@ onload = start;
 async function start() { TESTING = true; test54_dynBody(); }
 async function start() { TESTING = true; test57_colorFrom(); }
 
-async function test58_color(){
+async function test59_ColorDi() {
+  ensureColorDict();
+  console.log(ColorDi); //entries string: c:hexcolor,[ E:english name, D:german name ]
+}
+async function test58_color() {
   //await prelims();
   document.body.style.backgroundColor = '#ffff00'; //BLUEGREEN;
   console.log(document.body);
   console.log(document.body.style.backgroundColor);
   //ja ist ja irre! colors werden automatisch in rgb verwandelt!
 }
-async function test57_colorFrom(){
-  console.log(colorFrom('rgb(255,122,122)'));
-  console.log(colorFrom('hsla(300,50%,50%,.3)'));
-  console.log(colorFrom({h:120,s:50,l:50}));
-  console.log(rgbArgs2Hsl01Array(255,255,0)); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
-  console.log(hex2RgbArray('#ffff00')); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
+async function test57_colorFrom() {
+  //testing anyToHex79
+  let clist = ["#ff0000","#f00",'rgb(255,122,122)', 'rgba(255,122,122,0.5)', [255, 122, 122, 0.5], { r: 255, g: 122, b: 122, a: 0.5 }];
+  // for (const c of clist) console.log(c, anyToHex79(c));
+  console.log('____________'); 
+  clist=  ['hsla(300,50%,50%,.5)', { h: 300, s: 50, l: 50 }, hsl360ArgsToHsl01Object(300,50,50,.5)];
+  // for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
 
-  let c='#ffff00';
-  for(const c of range(0,10).map(x=>rColor())){
-    let x=hex2Hsl01Array(c);
-    let y=hsl01Array2hsl360Object(x);
-    let x2=colorFrom(y);
-    console.log(c,'=',x2); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
-    }
+  
+  clist = [rgbArgsToHsl01Array(255, 255, 0)];
+  for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
+
+  return;
+  console.log(hexToRgbArray('#ffff00')); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
+
+  let c = '#ffff00';
+  for (const c of range(0, 10).map(x => rColor())) {
+    let x = hexToHsl01Array(c);
+    let y = hsl01ArrayToHsl360Object(x);
+    let x2 = colorFrom(y);
+    console.log(c, '=', x2); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
+  }
 }
-async function test56_colorthief(){
-  ColorThiefObject=new ColorThief();
+async function test56_colorthief() {
+  ColorThiefObject = new ColorThief();
   console.log(ColorThiefObject);
 }
-async function test55_cleanUsers(){
+async function test55_cleanUsers() {
   await prelims();
   let users = await mGetRoute('users');
-  console.log('users',users);
-  for(const name in users){
-    let u=users[name];
+  console.log('users', users);
+  for (const name in users) {
+    let u = users[name];
     //u.texture = 
     //['button','button98','button97'].map(x=>delete u[x]);
     //await 
   }
 }
 
-async function test54_dynBody(){
-  let html =`
+async function test54_dynBody() {
+  let html = `
 	<div style="position:fixed;width:100%;z-index:20000">
 		<div id="dNav" class="nav p10"></div>
 		<div id="dMessage" style='height:0px;padding-left:10px' class="transh"></div>
@@ -63,7 +75,7 @@ async function test54_dynBody(){
   await prelims(); //return;
   M.playerColors = loadPlayerColors(); return;
   console.log(M.playerColors)
-  U=await postUserChange({name:U.name,color:BLUEGREEN,texture:'../assets/textures/marble_gold.jpeg',blend:'multiply'});
+  U = await postUserChange({ name: U.name, color: BLUEGREEN, texture: '../assets/textures/marble_gold.jpeg', blend: 'multiply' });
   console.log(U)
   await switchToUser('mimi');
   await switchToMenu(UI.nav, 'settings');
@@ -72,19 +84,19 @@ async function test54_dynBody(){
   //setTimeout(colorsUpdate,200)
 
 }
-async function test53_clearReset(){
+async function test53_clearReset() {
   await loadAssets();
-  let d=clearBodyReset100({bg:'skyblue',overy:'scroll'},{id:'dPage'});
-  mClass(d,'wood');
+  let d = clearBodyReset100({ bg: 'skyblue', overy: 'scroll' }, { id: 'dPage' });
+  mClass(d, 'wood');
 
 }
-async function test52(){
+async function test52() {
   await loadAssets();
-  let d=clearBodyDiv({w:'100vw',h:'100vh'},{id:'dPage'});
+  let d = clearBodyDiv({ w: '100vw', h: '100vh' }, { id: 'dPage' });
   // mStyle(d,{'background-blend-mode': 'multiply','background-size':'cover'})
   // let d1=mDom(d,{border:'white',position:'absolute',w:500,h:320,left:700,top:100,'background-blend-mode': 'luminosity','background-size':'cover'},{id:'dPos'})
-  mDom(d,{},{id:'dTitle'});
-  mDom(d,{},{id:'dMain'});
+  mDom(d, {}, { id: 'dTitle' });
+  mDom(d, {}, { id: 'dMain' });
   showColors();
   // d=mDom(d,{gap:4},{id:'dSamples'});mCenterFlex(d)
   // let list='normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
@@ -97,13 +109,13 @@ async function test52(){
 }
 
 async function test51() {
-  await prelims(); 
+  await prelims();
   //await switchToOtherUser('amanda','felix'); // 'diana');
   // await switchToMenu(UI.nav, 'play');
   // await clickFirstTable();
   //showThemeWood();
   console.log(UI.nav)
-  await switchToMenu(UI.nav,'colors');
+  await switchToMenu(UI.nav, 'colors');
 }
 
 async function prelims() {
@@ -114,7 +126,7 @@ async function prelims() {
   await loadAssets();
   let t4 = performance.now();
   sockInit();
-  UI.nav = showNavbar(); 
+  UI.nav = showNavbar();
   UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
   UI.dTitle = mBy('dTitle');
   let t5 = performance.now();
@@ -129,7 +141,7 @@ async function prelims() {
 }
 function defaultGameFunc() {
   function setup(table) { let fen = { players: table.players, turn: [table.owner] }; delete table.players; }
-  function present(dParent,table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
+  function present(dParent, table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
   async function activate(table) { console.log('activate for', getUname()) }
   function checkGameover(table) { return false; }
   async function hybridMove(table) { console.log('hybrid moves for', getUname()) }

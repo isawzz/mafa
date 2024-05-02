@@ -58,7 +58,7 @@ function loadPlayerColors() {
   list = Array.from(s);
 	// let x=list.filter(x=>x.length!=7); console.log(x)
 	assertion(list.every(x=>x.length == 7),"COLORS WRONG!")
-  let hsllist = list.map(x => hex2Hsl01Array(x)); //, true));
+  let hsllist = list.map(x => hexToHsl01Array(x)); //, true));
 	// hsllist = hsllist.map(x=>({h:x[0],s:x[1],l:x[2]}));
 	hsllist = hsllist.map(x=>({h:x[0]*360,s:x[1]*100,l:x[2]*100}));
   console.log('list',jsCopy(hsllist)); 
@@ -153,7 +153,7 @@ function showTextureGrid(dParent,sz,wmax,handler){
 				let n = pal.length;
 				pal = pal.map(x => colorHex(x)); // console.log(pal)
 				let palhex = Array.from(new Set(pal));// console.log(palhex)
-				let palhsl = palhex.map(x => hex2Hsl360Object(x));
+				let palhsl = palhex.map(x => hexToHsl360Object(x));
 				let lum = palhsl.map(x => x.l);
 				let hue = palhsl.map(x => x.h);
 				let sat = palhsl.map(x => x.s);
