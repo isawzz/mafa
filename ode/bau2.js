@@ -14,6 +14,10 @@ function hex2RgbObject(hex) {
 //#endregion
 
 function isStandardHexColor(c){return isString(c) && c[0]=='#' && (c.length==7 || c.length == 9); }
+function rgbString2Hex79(cAny,a){
+	
+}
+
 function colorFrom(cAny, a) {
 	//returns hex standard format (7 or 9 characters)
 	let alpha = isdef(a) && a < 1 ? alphaToHex(a) : '';
@@ -28,7 +32,7 @@ function colorFrom(cAny, a) {
 		cAny=isdef(func)?func():rColor();
 		assertion(isStandardHexColor(cAny),'ERROR coloFrom!!!!!!!!! (rand)');
 	}else if (tString && (cAny.startsWith('linear') || cAny.startsWith('radial'))) return cAny;
-	else if (tString && cAny.startsWith('rgb')) return rgbString2Hex7(cAny)+alpha;
+	else if (tString && cAny.startsWith('rgb')) return rgbString2RgbArr(cAny)+alpha;
 
 }
 function restrestrest(cAny, a) {
