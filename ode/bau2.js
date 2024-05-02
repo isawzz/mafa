@@ -53,15 +53,8 @@ function hex45ToHex79(c) {
 	if (c.length == 5) return `#${r}${r}${g}${g}${b}${b}${c[4]}${c[4]}`;
 	return `#${r}${r}${g}${g}${b}${b}`;
 }
-function hexToHsl01Array(hex) { return rgbArgsToHsl01Array(...hexToRgbArray(hex)); }
-function hexToHsl360Object(hex) {
-	let arr = hexToHsl01Array(hex);
-	return hsl01ArrayToHsl360Object(arr);
-}
-function hexToRgbArray(c) {
+function hex79ToRgbArray(c){
 	let r = 0, g = 0, b = 0;
-
-	if (c.length < 7) c = hext45ToHex79(c);
 	r = parseInt(c[1] + c[2], 16);
 	g = parseInt(c[3] + c[4], 16);
 	b = parseInt(c[5] + c[6], 16);
@@ -69,6 +62,32 @@ function hexToRgbArray(c) {
 
 	let a = parseInt(c[7] + c[8], 16) / 255;
 	return [r, g, b, a];
+}
+function hexToHsl01Array(hex) { return rgbArgsToHsl01Array(...hexToRgbArray(hex)); }
+function hexToHsl360Object(hex) {
+	let arr = hexToHsl01Array(hex);
+	return hsl01ArrayToHsl360Object(arr);
+}
+function hexToHsl360String(hex) {
+	let arr = hexToHsl01Array(hex);
+	let o = hsl01ArrayToHsl360Object(arr);
+	if (nundef(o.a)) return `hsl(${o.h},${o.s}%,${o.l}%)`;
+	return `hsla(${o.h},${o.s}%,${o.l}%,${o.a})`;
+}
+function hexToRgbArray(c) {
+	if (c.length < 7) c = hex45ToHex79(c);
+	return hex79ToRgbArray(c);
+}
+function hexToRgbObject(c) {
+	let arr = hexToRgbArray(c);
+	let o = {r:arr[0],g:arr[1],b:arr[2]};
+	if (arr.length>3) o.a=arr[3];
+	return o;
+}
+function hexToRgbString(hex){
+	let o = hexToRgbObject(hex);
+	if (nundef(o.a)) return `rgb(${o.r},${o.g}%,${o.b}%)`;
+	return `rgba(${o.r},${o.g}%,${o.b}%,${o.a})`;
 }
 function hsl01ArgsToRgbArray(h, s, l, a) {
 	let r, g, b;

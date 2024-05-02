@@ -22,11 +22,17 @@ async function test57_colorFrom() {
   clist=  ['hsla(300,50%,50%,.5)', { h: 300, s: 50, l: 50 }, hsl360ArgsToHsl01Object(300,50,50,.5)];
   // for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
 
-  
-  clist = [rgbArgsToHsl01Array(255, 255, 0)];
+  clist = ['#ff0000'];
+  for(const c of clist){
+    let ch=hexToHsl360String(c);
+    let c1=hsl360StringToHex79(ch);
+    let cr = hexToRgbString(c1);
+    let c2 = rgbStringToHex79(cr);
+    assertion(c == c1 && c == c2,`ERROR! ${c} ${c1} ${c2}`);
+
+  }
   for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
 
-  return;
   console.log(hexToRgbArray('#ffff00')); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
 
   let c = '#ffff00';
