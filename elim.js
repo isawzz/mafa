@@ -1,3 +1,252 @@
+function colorFrom_orig(cAny, a, allowHsl = false) {
+  //returns hex standard format (7 or 9 characters)
+  if (isString(cAny)) {
+    if (cAny[0] == '#') {
+      if (cAny.length <= 5 && cAny[0] === '#') {
+        // Expand each character to double
+        let r = cAny[1];
+        let g = cAny[2];
+        let b = cAny[3];
+        if (cAny.length==5 && nundef(a)) return `#${r}${r}${g}${g}${b}${b}${cAny[4]}${cAny[4]}`;
+        cAny=`#${r}${r}${g}${g}${b}${b}`;
+      }      
+      if (a == undefined) return cAny;
+      cAny = cAny.substring(0, 7);
+      return cAny + (a == 1 ? '' : alphaToHex(a));
+    } else if (isdef(ColorDi) && lookup(ColorDi, [cAny])) {
+      let c = ColorDi[cAny].c;
+      if (a == undefined) return c;
+      c = c.substring(0, 7);
+      return c + (a == 1 ? '' : alphaToHex(a));
+    } else if (cAny.startsWith('rand')) {
+      let spec = capitalize(cAny.substring(4));
+      if (isdef(window['color' + spec])) {
+        c = window['color' + spec]();
+      } else c = rColor();
+      if (a == undefined) return c;
+      return c + (a == 1 ? '' : alphaToHex(a));
+    } else if (cAny.startsWith('linear') || cAny.startsWith('radial')) {
+      return cAny;
+    } else if (cAny[0] == 'r' && cAny[1] == 'g') {
+      let parts = cAny.split(',');
+      let r=firstNumber(parts[0]);
+      let g=firstNumber(parts[1]);
+      let b=firstNumber(parts[2]);
+      if (nundef(a) && parts.length>3) a=Number(stringBefore(parts[3],')'));
+      return rgbArgs2Hex79(r,g,b,a);
+    } else if (cAny[0] == 'h' && cAny[1] == 's') {
+      let parts = cAny.split(',');
+      let h=firstNumber(parts[0]);
+      let s=firstNumber(parts[1]);
+      let l=firstNumber(parts[2]);
+      if (parts.length>3) a=valf(a,Number(stringBefore(parts[3],')')));
+      return hslToHex(h,s,l,a);
+    } else {
+      ensureColorDict();
+      let c = ColorDi[cAny];
+      if (nundef(c)) {
+        if (cAny.startsWith('rand')) {
+          let spec = cAny.substring(4);
+          if (isdef(window['color' + spec])) {
+            c = window['color' + spec](res);
+          } else c = rColor();
+        } else {
+          console.log('color not available:', cAny);
+          throw new Error('color not found: ' + cAny)
+          return '#00000000';
+        }
+      } else c = c.c;
+      if (a == undefined) return c;
+      c = c.substring(0, 7);
+      return c + (a == 1 ? '' : alphaToHex(a));
+    }
+  } else if (Array.isArray(cAny)) {
+    if (cAny.length == 3 && isNumber(cAny[0])) {
+      let r = cAny[0];
+      let g = cAny[1];
+      let b = cAny[2];
+      return rgbArgs2Hex79(r,g,b,a);
+      // return a == undefined || a == 1 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
+    } else {
+      return rChoose(cAny);
+    }
+  } else if (typeof cAny == 'object') {
+    if ('h' in cAny) { return hslToHex(cAny.h,cAny.s,cAny.l,valf(a,cAny.a)); }
+    else if ('r' in cAny) { return rgbArgs2Hex79(cAny.r,cAny.g,cAny.b,valf(a,cAny.a)); }
+  }
+}
+
+async function _onclickBlendSample(item, items) {
+  //console.log('CLICK!!!');//,item)
+  let texture = settingsGetSelectedTexture();
+  if (nundef(texture)) {console.log('please select a texture');return;}
+  let blend = item.blend; //ev.target.style.backgroundImage;
+  toggleItemSelection(item);
+  let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
+  document.body.style.backgroundBlend = blend;
+
+
+  return;
+  let selTextureItem = DA.itemsTexture.find(x=>x.isSelected == true);
+  let selColorItem = DA.itemsColor.find(x=>x.isSelected == true);
+  if (nundef(selColorItem) || nundef(selTextureItem)) return;
+  console.log('selcolor',selColorItem);
+  if (nundef(selColorItem)) return;
+  let palette = selTextureItem.palette.map(x=>x.hex); console.log(palette);
+  let color = selColorItem.color;
+  let d = mBy('dPalette');
+  let szSmall = 30;
+
+  for(let c of palette){
+    let c1 = colorBlendMode(color,c,blend);
+    mDom(d, { w: szSmall, h: szSmall, bg: c1 })
+  }
+
+
+}
+function getThemeBg() { let style = window.getComputedStyle(document.body); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
+function showUser() {
+  mClear(dUser);
+  mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
+  let d;
+  d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: getUname(), className: 'activeLink' });
+  setColors(U.color,U.texture,U.blend)
+  d.onclick = onclickUser;
+}
+async function colorsUpdate(){
+  let seldivs = Array.from(document.body.getElementsByClassName('framedPicture'));
+  console.log(seldivs); 
+  //first, find selected sample!
+  //if there is a sample already, take all the attributes from it
+  let sample = seldivs.find(x=>x.id.startsWith('dSample'));
+
+  let pal=await getPaletteFromElem(sample);console.log('!!!!!YEAH!!!!!',pal); 
+  pal.unshift('#ffffff');pal.push('#000000');
+  console.log('got new palette',pal);
+  
+  //U=await postUserChange({name:getUname(),color:'red'})
+  return;
+
+  console.log('YES, we have a sample',sample);
+
+  //extract styles
+  sample = document.body; 
+  let color = sample.style.backgroundColor;if (!isEmpty(color)) color=colorHex(color);
+  let texture = stringBetween(sample.style.backgroundImage,'"','"');
+  let repeat = sample.style.backgroundRepeat;
+  let size = sample.style.backgroundSize;
+  let blend = sample.style.backgroundBlend;
+
+  console.log(color,texture,repeat,size,blend);
+  if (isEmpty(color) && isEmpty(texture)) return;
+
+  let data={name:getUname()};
+  if (isEmpty(color)) {
+    //take a random color from body
+
+
+  }
+  //der user braucht nur color,texture,blend
+  U=await postUserChange({name:getUname(),color,texture,blend})
+
+
+  // for(const el of Array.from(seldivs)){
+  //   console.log('el',el);
+  //   if (el.id.startsWith('dSample'))
+  // }
+}
+async function showPalette(elem){
+	//mach einen mix aus diesen 3 in einem neuen sample
+  if (nundef(elem)) elem = document.body;
+  console.log(elem)
+  let color = elem.style.backgroundColor;
+  let texture = elem.style.backgroundImage;
+  let blend = elem.style.backgroundBlend;
+
+	let pal = await getPaletteFromColorTextureBlend(color, texture, blend, elem); 
+  //pal.unshift('#ffffff'); pal.push('#000000'); console.log('pal', pal)
+	
+  console.log('texture',texture);
+  let filename=stringAfterLast(texture,'/');filename=stringBefore(filename,'.');
+  console.log(filename)
+  console.log(DA.itemsTexture)
+  let y=null;
+  for(const t1 of DA.itemsTexture){
+    console.log(t1.path)
+    if (t1.path.includes(filename)) {y=t1;break;}
+  }
+  let res=jsCopy(y);
+  //console.log(jsCopy(y)); return;
+  //let t=DA.itemsTexture.find(x=>x.path.includes(x));console.log(t)
+  let pal2 = y.palette.map(x=>x.hex); console.log('pal2',pal2);
+
+  let d=mBy('dPalette');
+  mClear(d);
+	for (const c of pal) { mDom(d, { w: 30, h: 30, bg: c }) }
+  mLinebreak(d);
+	for (const c of pal2) { mDom(d, { w: 30, h: 30, bg: c }) }
+}
+function setColors(c, texture, blend) {
+  // mClass(document.body, 'wood');
+  if (nundef(c)) {
+    //pickup document.body style
+    c = document.body.style.background;
+    texture = document.body.style.backgroundImage;
+    blend = document.body.style.backgroundBlendMode;
+  }
+  if (isEmpty(c)) c = 'transparent';
+  if (nundef(texture)) texture = '';
+  if (nundef(blend)) blend = '';
+  let [bgRepeat, bgSize] = getRepeatAndSizeForTexture(texture);
+  //console.log('')
+  //mStyle(document.body,{'background-'}
+
+
+  return;
+  if (isdef(texture)) c = 'transparent';
+  let hsl = colorHSL(c, true);
+  let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
+  let hstart = (hue + diff);
+  for (i = hstart; i <= hstart + 235; i += 20) {
+    let h = i % 360;
+    let c1 = colorFromHSL(h, 100, 75);
+    wheel.push(c1);
+  }
+}
+function setColorsOrig(c){
+  let cc = idealTextColor(c);
+  let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
+  let palc = colorPalette(cc);
+  function light(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 + i]; }
+  function dark(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 - i]; }
+  function simil(i = 3) { return cc == 'white' ? dark(i) : light(i); }
+  function contrast(i = 3) { return cc == 'white' ? light(i) : dark(i); }
+  setCssVar('--bgBody', c);
+  setCssVar('--bgButton', 'transparent')
+  setCssVar('--bgButtonActive', light(3))
+  setCssVar('--bgNav', simil(2))
+  setCssVar('--bgLighter', light())
+  setCssVar('--bgDarker', dark())
+  setCssVar('--fgButton', contrast(3))
+  setCssVar('--fgButtonActive', cc == 'black' ? dark(2) : c)
+  setCssVar('--fgButtonDisabled', 'silver')
+  setCssVar('--fgButtonHover', contrast(5))
+  setCssVar('--fgTitle', contrast(4))
+  setCssVar('--fgSubtitle', contrast(3))
+  if (nundef(texture)) return;
+  //console.log('HALLO')
+  mStyle(document.body, { 'background-repeat': 'repeat', 'background-image': texture })
+
+}
+function _hexToRgb(hex) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+  return [r, g, b];
+}
+function _rgbToHex(r, g, b) { return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+
+
 //region von ode/closure.js
 
 function clearMain() { DA.counter = 0; clearEvents(); mClear('dMain'); mClear('dTitle'); }

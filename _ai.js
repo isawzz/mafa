@@ -1,3 +1,51 @@
+//#region js function that sorts a list of hex colors by hue and luminance
+function hexToHSL(hex) {
+  // Convert hex to RGB first
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
+
+  r /= 255;
+  g /= 255;
+  b /= 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+      h = s = 0; // achromatic
+  } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+  }
+  return { h, s, l };
+}
+
+function sortColorsByHueAndLuminance(hexColors) {
+  return hexColors.map(hex => ({ hex, hsl: hexToHSL(hex) }))
+      .sort((a, b) => {
+          // Sort by hue
+          if (a.hsl.h !== b.hsl.h) {
+              return a.hsl.h - b.hsl.h;
+          }
+          // If hues are the same, sort by luminance
+          return a.hsl.l - b.hsl.l;
+      })
+      .map(color => color.hex);
+}
+
+// Example usage:
+const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+console.log(sortColorsByHueAndLuminance(colors));
+
+//#endregion
 
 //#region canvas for with a div that has a backgroundImage and backgroundBlendMode?
 function getPixelColorFromDiv(divElement, x, y) {

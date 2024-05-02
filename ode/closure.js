@@ -139,14 +139,11 @@ function allNumbers(s) {
   let m = s.match(/\-.\d+|\-\d+|\.\d+|\d+\.\d+|\d+\b|\d+(?=\w)/g);
   if (m) return m.map(v => +v); else return null;
 }
-function alphaToHex(zero1) {
-  zero1 = Math.round(zero1 * 100) / 100;
-  var alpha = Math.round(zero1 * 255);
-  var hex = (alpha + 0x10000)
-    .toString(16)
-    .slice(-2)
-    .toUpperCase();
-  var perc = Math.round(zero1 * 100);
+function alphaToHex(a01) {
+  a01 = Math.round(a01 * 100) / 100;
+  var alpha = Math.round(a01 * 255);
+  var hex = (alpha + 0x10000).toString(16).slice(-2).toUpperCase();
+  //var perc = Math.round(zero1 * 100);
   return hex;
 }
 function animate(elem, aniclass, timeoutms) {
@@ -871,7 +868,7 @@ function collPresent(coll, rows, cols) {
   coll.rows = rows; coll.cols = cols;
   coll.grid = mGrid(coll.rows, coll.cols, d1, { maleft: 10, 'align-self': 'start' });
   coll.cells = [];
-  let bg = mGetStyle('dNav', 'bg');
+  let bg = getNavBg();
   for (let i = 0; i < coll.rows * coll.cols; i++) {
     let d = mDom(coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
     mCenterCenterFlex(d);
@@ -941,235 +938,6 @@ function collSidebar() {
   UI.asAvatar = mCommand(d, 'asAvatar', 'Set Avatar'); mNewline(d, gap);
 }
 function collUnselect(elem) { mClassRemove(elem, 'framedPicture'); }
-function colorContrast(dDrop, list = ['white', 'black']) {
-  let bg = mGetStyle(dDrop, 'bg'); return bestContrastingColor(bg, list);
-}
-function colorFrom(cAny, a, allowHsl = false) {
-  if (isString(cAny)) {
-    if (cAny[0] == '#') {
-      if (a == undefined) return cAny;
-      cAny = cAny.substring(0, 7);
-      return cAny + (a == 1 ? '' : alphaToHex(a));
-    } else if (isdef(ColorDi) && lookup(ColorDi, [cAny])) {
-      let c = ColorDi[cAny].c;
-      if (a == undefined) return c;
-      c = c.substring(0, 7);
-      return c + (a == 1 ? '' : alphaToHex(a));
-    } else if (cAny.startsWith('rand')) {
-      let spec = capitalize(cAny.substring(4));
-      if (isdef(window['color' + spec])) {
-        c = window['color' + spec]();
-      } else c = rColor();
-      if (a == undefined) return c;
-      return c + (a == 1 ? '' : alphaToHex(a));
-    } else if (cAny.startsWith('linear')) {
-      return cAny;
-    } else if (cAny[0] == 'r' && cAny[1] == 'g') {
-      if (a == undefined) return cAny;
-      if (cAny[3] == 'a') {
-        if (a < 1) {
-          return stringBeforeLast(cAny, ',') + ',' + a + ')';
-        } else {
-          let parts = cAny.split(',');
-          let r = firstNumber(parts[0]);
-          return 'rgb(' + r + ',' + parts[1] + ',' + parts[2] + ')';
-        }
-      } else {
-        if (a < 1) {
-          return 'rgba' + cAny.substring(3, cAny.length - 1) + ',' + a + ')';
-        } else {
-          return cAny;
-        }
-      }
-    } else if (cAny[0] == 'h' && cAny[1] == 's') {
-      if (allowHsl) {
-        if (a == undefined) return cAny;
-        if (cAny[3] == 'a') {
-          if (a < 1) {
-            return stringBeforeLast(cAny, ',') + ',' + a + ')';
-          } else {
-            let parts = cAny.split(',');
-            let r = firstNumber(parts[0]);
-            return 'hsl(' + r + ',' + parts[1] + ',' + parts[2] + ')';
-          }
-        } else {
-          return a == 1 ? cAny : 'hsla' + cAny.substring(3, cAny.length - 1) + ',' + a + ')';
-        }
-      } else {
-        if (cAny[3] == 'a') {
-          cAny = HSLAToRGBA(cAny);
-        } else {
-          cAny = HSLToRGB(cAny);
-        }
-        return colorFrom(cAny, a, false);
-      }
-    } else {
-      ensureColorDict();
-      let c = ColorDi[cAny];
-      if (nundef(c)) {
-        if (cAny.startsWith('rand')) {
-          let spec = cAny.substring(4);
-          if (isdef(window['color' + spec])) {
-            c = window['color' + spec](res);
-          } else c = rColor();
-        } else {
-          console.log('color not available:', cAny);
-          throw new Error('color not found: ' + cAny)
-          return '#00000000';
-        }
-      } else c = c.c;
-      if (a == undefined) return c;
-      c = c.substring(0, 7);
-      return c + (a == 1 ? '' : alphaToHex(a));
-    }
-  } else if (Array.isArray(cAny)) {
-    if (cAny.length == 3 && isNumber(cAny[0])) {
-      let r = cAny[0];
-      let g = cAny[1];
-      let b = cAny[2];
-      return a == undefined || a == 1 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
-    } else {
-      return rChoose(cAny);
-    }
-  } else if (typeof cAny == 'object') {
-    if ('h' in cAny) {
-      let hslString = '';
-      if (a == undefined || a == 1) {
-        hslString = `hsl(${cAny.h},${Math.round(cAny.s <= 1.0 ? cAny.s * 100 : cAny.s)}%,${Math.round(cAny.l <= 1.0 ? cAny.l * 100 : cAny.l)}%)`;
-      } else {
-        hslString = `hsla(${cAny.h},${Math.round(cAny.s <= 1.0 ? cAny.s * 100 : cAny.s)}%,${Math.round(cAny.l <= 1.0 ? cAny.l * 100 : cAny.l)}%,${a})`;
-      }
-      if (allowHsl) {
-        return hslString;
-      } else {
-        return colorFrom(hslString, a, allowHsl);
-      }
-    } else if ('r' in cAny) {
-      if (a !== undefined && a < 1) {
-        return `rgba(${cAny.r},${cAny.g},${cAny.b},${a})`;
-      } else {
-        return `rgb(${cAny.r},${cAny.g},${cAny.b})`;
-      }
-    }
-  }
-}
-function colorFromHSL(hue, sat = 100, lum = 50) {
-  return hslToHex(valf(hue, rHue()), sat, lum);
-}
-function colorHex(cAny) {
-  let c = colorFrom(cAny);
-  if (c[0] == '#') {
-    return c;
-  } else {
-    let res = pSBC(0, c, 'c');
-    return res;
-  }
-}
-function colorHexToRgb(hex) {
-  hex = hex.replace(/^#/, '');
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
-function colorHSL(cAny, asObject = false) {
-  let res = colorFrom(cAny, undefined, true);
-  let shsl = res;
-  if (res[0] == '#') {
-    if (res.length == 9) {
-      shsl = hexAToHSLA(res);
-    } else if (res.length == 7) {
-      shsl = hexToHSL(res);
-    }
-  } else if (res[0] == 'r') {
-    if (res[3] == 'a') {
-      shsl = RGBAToHSLA(res);
-    } else {
-      shsl = RGBToHSL(res);
-    }
-  }
-  let n = allNumbers(shsl);
-  if (asObject) {
-    return { h: n[0], s: n[1] / 100, l: n[2] / 100, a: n.length > 3 ? n[3] : 1 };
-  } else {
-    return shsl;
-  }
-}
-function colorHSLBuild(hue, sat = 100, lum = 50) { let result = "hsl(" + hue + ',' + sat + '%,' + lum + '%)'; return result; }
-function colorIdealText(bg, grayPreferred = false) {
-  let rgb = colorRGB(bg, true);
-  const nThreshold = 105;
-  let r = rgb.r;
-  let g = rgb.g;
-  let b = rgb.b;
-  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
-  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
-  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
-  return foreColor;
-}
-function colorLight(c, percent = 20, log = true) {
-  if (nundef(c)) {
-    return colorFromHSL(rHue(), 100, 85);
-  } else c = colorFrom(c);
-  let zero1 = percent / 100;
-  return pSBC(zero1, c, undefined, !log);
-}
-function colorLighter(c, zero1 = .2, log = true) {
-  c = colorFrom(c);
-  return pSBC(zero1, c, undefined, !log);
-}
-function colorLum(cAny, percent = false) {
-  let hsl = colorHSL(cAny, true);
-  return percent ? hsl.l * 100 : hsl.l;
-}
-function colorNameToHexString(str) {
-  var ctx = document.createElement('canvas').getContext('2d');
-  ctx.fillStyle = str;
-  return ctx.fillStyle;
-}
-function colorPalette(color, type = 'shade') {
-  color = colorFrom(color);
-  return colorShades(color);
-}
-function colorRGB(cAny, asObject = false) {
-  let res = colorFrom(cAny);
-  let srgb = res;
-  if (res[0] == '#') {
-    srgb = pSBC(0, res, 'c');
-  }
-  let n = allNumbers(srgb);
-  if (asObject) {
-    return { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 };
-  } else {
-    return srgb;
-  }
-}
-function colorsFromBFA(bg, fg, alpha) {
-  if (fg == 'contrast') {
-    if (bg != 'inherit') bg = colorFrom(bg, alpha);
-    fg = colorIdealText(bg);
-  } else if (bg == 'contrast') {
-    fg = colorFrom(fg);
-    bg = colorIdealText(fg);
-  } else {
-    if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
-    if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
-  }
-  return [bg, fg];
-}
-function colorShades(color) {
-  let res = [];
-  for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
-    let c = pSBC(frac, color, undefined, true);
-    res.push(c);
-  }
-  return res;
-}
-function colorTrans(cAny, alpha = 0.5) {
-  return colorFrom(cAny, alpha);
-}
-function computeColor(c) { return (c == 'random') ? randomColor() : c; }
 function conslog(s) { console.log(s, window[s]) }
 function contains(s, sSub) { return s.toLowerCase().includes(sSub.toLowerCase()); }
 function copyKeys(ofrom, oto, except = {}, only = null) {
@@ -2601,15 +2369,6 @@ function getEventValue(o) {
   if (isEmpty(o.time)) return o.text;
   return o.time + ' ' + stringBefore(o.text, '\n');
 }
-function getExtendedColors(bg, fg) {
-  bg = computeColor(bg);
-  fg = computeColor(fg);
-  if (bg == 'inherit' && (nundef(fg) || fg == 'contrast')) {
-    fg = 'inherit';
-  } else if (fg == 'contrast' && isdef(bg) && bg != 'inherit') fg = colorIdealText(bg);
-  else if (bg == 'contrast' && isdef(fg) && fg != 'inherit') { bg = colorIdealText(fg); }
-  return [bg, fg];
-}
 function getFunctionsNameThatCalledThisFunction() {
   let c1 = getFunctionsNameThatCalledThisFunction.caller;
   if (nundef(c1)) return 'no caller!';
@@ -2783,9 +2542,8 @@ function getServerurl() {
   return server;
 }
 function getStyleProp(elem, prop) { return getComputedStyle(elem).getPropertyValue(prop); }
-function getThemeBg() { let style = window.getComputedStyle(document.body); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
-function getThemeDark() { return getCSSVariable('--bgNav'); } //  let bg=getThemeBg();return colorIdealText(bg);}
-function getThemeFg() { return getCSSVariable('--fgButtonHover'); } //  let bg=getThemeBg();return colorIdealText(bg);}
+function getThemeDark() { return getCSSVariable('--bgNav'); } 
+function getThemeFg() { return getCSSVariable('--fgButtonHover'); } 
 function getTimestamp() { return Date.now(); }
 function getTurnPlayers(fen) {
   return fen.turn.join(', ');
@@ -2927,98 +2685,6 @@ function gSize(g, w, h, shape = null, iChild = 0) {
 }
 function gStroke(g, color, thickness) { g.setAttribute('stroke', color); if (thickness) g.setAttribute('stroke-width', thickness); }
 function gSvg() { return gCreate('svg'); }
-function hexAToHSLA(H) {
-  let ex = /^#([\da-f]{4}){1,2}$/i;
-  if (ex.test(H)) {
-    let r = 0,
-      g = 0,
-      b = 0,
-      a = 1;
-    if (H.length == 5) {
-      r = '0x' + H[1] + H[1];
-      g = '0x' + H[2] + H[2];
-      b = '0x' + H[3] + H[3];
-      a = '0x' + H[4] + H[4];
-    } else if (H.length == 9) {
-      r = '0x' + H[1] + H[2];
-      g = '0x' + H[3] + H[4];
-      b = '0x' + H[5] + H[6];
-      a = '0x' + H[7] + H[8];
-    }
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    let cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    a = (a / 255).toFixed(3);
-    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
-  } else {
-    return 'Invalid input color';
-  }
-}
-function hexToHSL(H) {
-  let ex = /^#([\da-f]{3}){1,2}$/i;
-  if (ex.test(H)) {
-    let r = 0,
-      g = 0,
-      b = 0;
-    if (H.length == 4) {
-      r = '0x' + H[1] + H[1];
-      g = '0x' + H[2] + H[2];
-      b = '0x' + H[3] + H[3];
-    } else if (H.length == 7) {
-      r = '0x' + H[1] + H[2];
-      g = '0x' + H[3] + H[4];
-      b = '0x' + H[5] + H[6];
-    }
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    let cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
-  } else {
-    return 'Invalid input color';
-  }
-}
-function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    }
-    : null;
-}
 function hFunc(content, funcname, arg1, arg2, arg3) {
   let html = `<a style='color:blue' href="javascript:${funcname}('${arg1}','${arg2}','${arg3}');">${content}</a>`;
   return html;
@@ -3033,166 +2699,6 @@ function hide(elem) {
   }
 }
 function hourglassUpdate() {
-}
-function HSLAToRGBA(hsla, isPct) {
-  let ex = /^hsla\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)(((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2},\s?)|((\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}\s\/\s))((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
-  if (ex.test(hsla)) {
-    let sep = hsla.indexOf(',') > -1 ? ',' : ' ';
-    hsla = hsla
-      .substr(5)
-      .split(')')[0]
-      .split(sep);
-    if (hsla.indexOf('/') > -1) hsla.splice(3, 1);
-    isPct = isPct === true;
-    let h = hsla[0],
-      s = hsla[1].substr(0, hsla[1].length - 1) / 100,
-      l = hsla[2].substr(0, hsla[2].length - 1) / 100,
-      a = hsla[3];
-    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
-    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
-    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
-    if (h >= 360) h %= 360;
-    let c = (1 - Math.abs(2 * l - 1)) * s,
-      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
-      m = l - c / 2,
-      r = 0,
-      g = 0,
-      b = 0;
-    if (0 <= h && h < 60) {
-      r = c;
-      g = x;
-      b = 0;
-    } else if (60 <= h && h < 120) {
-      r = x;
-      g = c;
-      b = 0;
-    } else if (120 <= h && h < 180) {
-      r = 0;
-      g = c;
-      b = x;
-    } else if (180 <= h && h < 240) {
-      r = 0;
-      g = x;
-      b = c;
-    } else if (240 <= h && h < 300) {
-      r = x;
-      g = 0;
-      b = c;
-    } else if (300 <= h && h < 360) {
-      r = c;
-      g = 0;
-      b = x;
-    }
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    b = Math.round((b + m) * 255);
-    let pctFound = a.indexOf('%') > -1;
-    if (isPct) {
-      r = +((r / 255) * 100).toFixed(1);
-      g = +((g / 255) * 100).toFixed(1);
-      b = +((b / 255) * 100).toFixed(1);
-      if (!pctFound) {
-        a *= 100;
-      } else {
-        a = a.substr(0, a.length - 1);
-      }
-    } else if (pctFound) {
-      a = a.substr(0, a.length - 1) / 100;
-    }
-    return 'rgba(' + (isPct ? r + '%,' + g + '%,' + b + '%,' + a + '%' : +r + ',' + +g + ',' + +b + ',' + +a) + ')';
-  } else {
-    return 'Invalid input color';
-  }
-}
-function hslToHex(h, s, l) {
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = n => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0');
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-}
-function hslToHexCOOL(hslColor) {
-  const hslColorCopy = { ...hslColor };
-  hslColorCopy.l /= 100;
-  const a =
-    (hslColorCopy.s * Math.min(hslColorCopy.l, 1 - hslColorCopy.l)) / 100;
-  const f = (n) => {
-    const k = (n + hslColorCopy.h / 30) % 12;
-    const color = hslColorCopy.l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color)
-      .toString(16)
-      .padStart(2, "0");
-  };
-  return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
-}
-function HSLToRGB(hsl, isPct) {
-  let ex = /^hsl\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}|(\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2})\)$/i;
-  if (ex.test(hsl)) {
-    let sep = hsl.indexOf(',') > -1 ? ',' : ' ';
-    hsl = hsl
-      .substr(4)
-      .split(')')[0]
-      .split(sep);
-    isPct = isPct === true;
-    let h = hsl[0],
-      s = hsl[1].substr(0, hsl[1].length - 1) / 100,
-      l = hsl[2].substr(0, hsl[2].length - 1) / 100;
-    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
-    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
-    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
-    if (h >= 360) h %= 360;
-    let c = (1 - Math.abs(2 * l - 1)) * s,
-      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
-      m = l - c / 2,
-      r = 0,
-      g = 0,
-      b = 0;
-    if (0 <= h && h < 60) {
-      r = c;
-      g = x;
-      b = 0;
-    } else if (60 <= h && h < 120) {
-      r = x;
-      g = c;
-      b = 0;
-    } else if (120 <= h && h < 180) {
-      r = 0;
-      g = c;
-      b = x;
-    } else if (180 <= h && h < 240) {
-      r = 0;
-      g = x;
-      b = c;
-    } else if (240 <= h && h < 300) {
-      r = x;
-      g = 0;
-      b = c;
-    } else if (300 <= h && h < 360) {
-      r = c;
-      g = 0;
-      b = x;
-    }
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    b = Math.round((b + m) * 255);
-    if (isPct) {
-      r = +((r / 255) * 100).toFixed(1);
-      g = +((g / 255) * 100).toFixed(1);
-      b = +((b / 255) * 100).toFixed(1);
-    }
-    return 'rgb(' + (isPct ? r + '%,' + g + '%,' + b + '%' : +r + ',' + +g + ',' + +b) + ')';
-  } else {
-    return 'Invalid input color';
-  }
-}
-function hue(h) {
-  var r = Math.abs(h * 6 - 3) - 1;
-  var g = 2 - Math.abs(h * 6 - 2);
-  var b = 2 - Math.abs(h * 6 - 4);
-  return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
 }
 function iAdd(item, liveprops = {}, addprops = {}) {
   let id, l;
@@ -3213,7 +2719,7 @@ function iAdd(item, liveprops = {}, addprops = {}) {
 }
 function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
   if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
-  rgb = hexToRgb(bg);
+  rgb = hex2RgbObject(bg);
   r = rgb.r;
   g = rgb.g;
   b = rgb.b;
@@ -3533,69 +3039,6 @@ async function loadImageAsync(src, img) {
     };
     img.src = src;
   });
-}
-function loadPlayerColors() {
-  let [hstep, hmin, hmax] = [20, 0, 359];
-  let [lstep, lmin, lmax] = [20, 50, 60];
-  let [sstep, smin, smax] = [30, 70, 100];
-  let [whites, blacks, all] = [[], [], []];
-  for (let h = hmin; h < hmax; h += hstep) {
-    for (let l = lmin; l <= lmax; l += lstep) {
-      for (let s = smin; s <= smax; s += sstep) {
-        let o = { h: h, s: s, l: l };
-        let c = hslToHexCOOL(o);
-        o.c = c;
-        all.push(o);
-        let fg = idealTextColor(c);
-        if (fg == 'white') whites.push(c); else blacks.push(c);
-      }
-    }
-  }
-  DA.allColors = all;
-  blacks.push('#FFDD33')
-  let plColors = whites.concat(blacks);
-  shuffle(plColors);
-  let userColors = {
-    "afia": "#69c963",
-    "ally": "#6660f3",
-    "amanda": "#339940FF",
-    "annabel": "#ADA0EEFF",
-    "bob": "#033993",
-    "buddy": "midnightblue",
-    "felix": BLUE,
-    "guest": "dodgerblue",
-    "gul": "#6fccc3",
-    "lauren": BLUEGREEN,
-    "leo": "#C19450FF",
-    "mac": ORANGE,
-    "minnow": "#F28DB2",
-    "mimi": "#76AEEBFF",
-    "nasi": "#EC4169FF",
-    "nimble": "#6E52CCFF",
-    "sarah": "deeppink",
-    "sheeba": "gold",
-    "valerie": "lightgreen"
-  };
-  for (const plname in userColors) {
-    let uc = userColors[plname];
-    uc = colorHex(uc);
-    let already = firstCond(all, x => x.c.toLowerCase() == uc.substring(0, 7).toLowerCase());
-    if (already) console.log('present', uc);
-  }
-  ensureColorDict();
-  ensureColorNames();
-  let allColors = Object.values(ColorDi).map(x => x.c);
-  let list = Object.values(userColors).concat(plColors.concat(allColors).concat(Object.values(ColorNames)));
-  list = list.filter(x => colorLum(x) < .85);
-  list = list.filter(x => !isGrayColor(x));
-  let s = new Set(list);
-  list = Array.from(s);
-  let hsllist = list.map(x => colorHSL(x, true));
-  sortByMultipleProperties(hsllist, 'h', 'l');
-  list = hsllist.map(x => colorHex(x));
-  list = arrRemoveDuplicates(list);
-  M.playerColors = list;
-  return list;
 }
 function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
 function lookup(dict, keys) {
@@ -4397,19 +3840,6 @@ function mHasClass(el, className) {
 }
 function mIfNotRelative(d) { d=toElem(d);if (isEmpty(d.style.position)) d.style.position = 'relative'; }
 
-function mimali(c, n) {
-  function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
-  function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
-  function cinc(c, hinc, sinc, linc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, clamp(hsl.s * 100 + sinc, 0, 100), clamp(hsl.l * 100 + linc, 0, 100)); }
-  function arrd(c, hinc, sinc, linc, n) { let r = []; for (let i = 0; i < n; i++) { r.push(cinc(c, hinc * i, sinc * i, linc * i)); } return r; }
-  function light(c, lper = 75) { let hsl = colorHSL(c, true); return colorHSLBuild(hsl.h, hsl.s * 100, lper); }
-  function sat(c, sper = 100) { let hsl = colorHSL(c, true); return colorHSLBuild(sper, hsl.s * 100, hsl.l * 100); }
-  function hue(c, hdeg) { let hsl = colorHSL(c, true); return colorHSLBuild(hdeg, hsl.s * 100, hsl.l * 100); }
-  c = light(c, 75);
-  let diff = Math.round(360 / n)
-  wheel = arrd(c, diff, 0, 0, n);
-  return wheel;
-}
 function mInput(dParent, styles, id, placeholder, classtr = 'input', tabindex = null, value = '', selectOnClick = false, type = "text") {
   let html = `<input type="${type}" autocomplete="off" ${selectOnClick ? 'onclick="this.select();"' : ''} id=${id} class="${classtr}" placeholder="${valf(placeholder, '')}" tabindex="${tabindex}" value="${value}">`;
   let d = mAppend(dParent, mCreateFrom(html));
@@ -5286,7 +4716,7 @@ async function onclickNATIONS() {
   arrShuffle(M.events);
   let d1 = mDiv('dMain'); mFlex(d1);
   UI.coll.rows = 3; UI.coll.cols = 7;
-  let bg = mGetStyle('dNav', 'bg');
+  let bg = getNavBg();
   let h = 180;
   let dcost = M.costGrid = mGrid(UI.coll.rows, 1, d1, { 'align-self': 'start' });
   for (let cost = 3; cost >= 1; cost--) {
@@ -5852,85 +5282,6 @@ function resizeTo(tool, wnew, hnew) {
     wnew = aspectRatio * hnew;
   }
   redrawImage(img, dParent, 0, 0, img.width, img.height, wnew, hnew, () => setRect(0, 0, wnew, hnew))
-}
-function RGBAToHSLA(rgba) {
-  let ex = /^rgba\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){3}))|(((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){3}))\/\s)((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
-  if (ex.test(rgba)) {
-    let sep = rgba.indexOf(',') > -1 ? ',' : ' ';
-    rgba = rgba
-      .substr(5)
-      .split(')')[0]
-      .split(sep);
-    if (rgba.indexOf('/') > -1) rgba.splice(3, 1);
-    for (let R in rgba) {
-      let r = rgba[R];
-      if (r.indexOf('%') > -1) {
-        let p = r.substr(0, r.length - 1) / 100;
-        if (R < 3) {
-          rgba[R] = Math.round(p * 255);
-        }
-      }
-    }
-    let r = rgba[0] / 255,
-      g = rgba[1] / 255,
-      b = rgba[2] / 255,
-      a = rgba[3],
-      cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
-  } else {
-    return 'Invalid input color';
-  }
-}
-function RGBToHSL(rgb) {
-  let ex = /^rgb\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){2}|((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s)){2})((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]))|((((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){2}|((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){2})(([1-9]?\d(\.\d+)?)|100|(\.\d+))%))\)$/i;
-  if (ex.test(rgb)) {
-    let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
-    rgb = rgb
-      .substr(4)
-      .split(')')[0]
-      .split(sep);
-    for (let R in rgb) {
-      let r = rgb[R];
-      if (r.indexOf('%') > -1) rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
-    }
-    let r = rgb[0] / 255,
-      g = rgb[1] / 255,
-      b = rgb[2] / 255,
-      cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
-  } else {
-    return 'Invalid input color';
-  }
 }
 function rHue(vari = 36) { return (rNumber(0, vari) * Math.round(360 / vari)) % 360; }
 function rLetter(except) { return rLetters(1, except)[0]; }
@@ -6816,7 +6167,7 @@ function showImageInBatch(key, dParent, styles = {}) {
 }
 function showMessage(msg, ms = 3000) {
   let d = mBy('dMessage');
-  mStyle(d, { h: 21, bg: 'red', fg: 'yellow' }); //getThemeFg()});
+  mStyle(d, { h: 21, bg: 'red', fg: 'yellow' }); 
   d.innerHTML = msg;
   clearTimeout(TO.message);
   TO.message = setTimeout(() => mStyle('dMessage', { h: 0 }), ms)
@@ -6825,7 +6176,7 @@ function showNavbar() {
   let nav = mMenu('dNav');
   let commands = {};
   commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
-  commands.colors = menuCommand(nav.l, 'nav', 'colors', null, showColors, colorsUpdate);
+  commands.settings = menuCommand(nav.l, 'nav', 'settings', null, showColors, settingsClose);
   commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
   commands.play = menuCommand(nav.l, 'nav', 'play', 'Tables', onclickPlay, clearMain);
   commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
@@ -6894,14 +6245,6 @@ function showTrick() {
     mStyleX(d1, { position: 'absolute', left: offset.x, top: offset.y, z: zIndex });
     zIndex += 1;
   }
-}
-function showUser() {
-  mClear(dUser);
-  mStyle(dUser, { display: 'flex', gap: 12, valign: 'center' })
-  let d;
-  d = mDom(dUser, { cursor: 'pointer', padding: '.5rem 1rem', rounding: '50%' }, { html: getUname(), className: 'activeLink' });
-  setColors(U.color,U.texture)
-  d.onclick = onclickUser;
 }
 function showUserImage(uname, d, sz = 40) {
   let u = Serverdata.users[uname];
@@ -7129,7 +6472,7 @@ async function switchToUser(uname) {
   Clientdata.curUser = uname;
   localStorage.setItem('username', uname);
   iDiv(UI.user).innerHTML = uname;
-  setColors(U.color,U.texture);
+  setColors(U.color,U.texture,U.blend);
   if (uname == 'guest') {
     await switchToMenu(UI.nav, 'home');
     menuDisable(UI.nav, 'plan');
@@ -7262,6 +6605,7 @@ async function testOnclickPlaymode(ev) {
 }
 function toElem(d) { return isString(d) ? mBy(d) : d; }
 function toggleItemSelection(item, selectedItems) {
+  if (nundef(item)) return;
   let ui = iDiv(item);
   item.isSelected = nundef(item.isSelected) ? true : !item.isSelected;
   if (item.isSelected) mClass(ui, 'framedPicture'); else mRemoveClass(ui, 'framedPicture');
@@ -7429,7 +6773,7 @@ async function uiTypeCalendar(dParent) {
     dYear = mDiv(dDate, {}, 'dYear', `${currentDate.getFullYear()}`);
     mClear(dGrid);
     dDays.length = 0;
-    let c = colorHex(mGetStyle('dNav', 'bg')); //info.seedColor; //info.wheel[m-1];
+    let c = getNavBg();
     let dayColors = mimali(c, 43).map(x => colorHex(x))
     for (const i of range(42)) {
       let cell = mDiv(dGrid, outerStyles);

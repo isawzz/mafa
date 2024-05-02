@@ -1,14 +1,14 @@
 function stringBetween(sFull, sStart, sEnd) {
-	return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
+  return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
 }
 function uiTypeRadios(lst, d, styles = {}, opts = {}) {
-	let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-	let handler = x => squareTo(cropper, x);
-	mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
-	for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
-		mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
-	}
-	return rg;
+  let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
+  let handler = x => squareTo(cropper, x);
+  mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
+  for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
+    mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
+  }
+  return rg;
 }
 
 //#region mStyle
@@ -20,6 +20,7 @@ function mStyle(elem, styles = {}, unit = 'px') {
   let bg, fg;
   if (isdef(styles.bg) || isdef(styles.fg)) {
     [bg, fg] = colorsFromBFA(styles.bg, styles.fg, styles.alpha);
+    //console.log('bg',bg)
   }
   if (isdef(styles.vpadding) || isdef(styles.hpadding)) {
     styles.padding = valf(styles.vpadding, 0) + unit + ' ' + valf(styles.hpadding, 0) + unit;
@@ -120,43 +121,126 @@ function mStyle(elem, styles = {}, unit = 'px') {
 }
 //#endregion
 
+//#region settings menu
+async function settingsClose(){
+  console.log('close Settings!!!'); mClear('dMain');
+}
 //#region colors menu
-function colorTransPalette(n=7){
-  let c=colorHex('white');
-  let pal=['white'];
-  // alpha 0,0.1,0.2,0.3
-  //wieviele alpha values kann ich in x colors unterbringen?
-  //ex. x=3 1/3 
-  //der mittlere ist 0
+function colorBlendMode(c1, c2, blendMode) {
+	function blendColorDodge(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
 
-  //example n=5: 0 1 2 3 4 (Math.floor(n/2) = 2 sollte trans sein)
-  // w, w .5 ,trans, b .5 ,b
-  // incw=2, incb=2, iw=1, ib=1
+		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
 
-  //  n iw  incw  ib  incb  vals
-  //  3 0   _     0   _     white,trans,black
-  //  4 1   .5    0   _     white,w.5,trans,black
-  //  5 1   .5    1   .5    white,w.5,trans,b.5,black
-  //  6 2   .33   1   .5    white,w.33,w.66,trans,b.5,black
-  //  7 2   .33   2   .33   white,w.33,w.66,trans,b.33,b.66,black
-  //  8 3   .25   2   .33   white,w.25,w.5.w.75,trans,b.33,b.66,black
-  //  9 3   .25   3   .25   white,w.25,w.5.w.75,trans,b.25,b.5,b.75,black
-  //...
-  //  n 
+		let r = dodge(r1, r2);
+		let g = dodge(g1, g2);
+		let b = dodge(b1, b2);
 
+		return rgbArgs2Hex79(r, g, b);
+	}
+	function blendColor(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
 
-  //n=6: 0 1 2 3 4 5 (6/2 = 3 sollte trans sein!)
-  // w, w .33, w .66 ,trans, b .5 ,b
-  //ich hab also 1-Math.floor(n/2)
-  let incw = 1 / Math.floor(n/2);
-  let incb = 1 / Math.floor((n-1)/2);
-  
-  //n=3 ist minimum
-  //
-  for(let i=1;i<Math.floor(n/2);i++){
+		let [h1, s1, l1] = rgbArgs2Hsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = rgbArgs2Hsl01Array(r2, g2, b2);
 
-  }
+		// Use the blend hue, but keep the base saturation and lightness
+		let cfinal = hsl01Args2RgbArray(h2, s1, l1);
+		return rgbArgs2Hex79(...cfinal);
+	}
+	function blendDarken(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
 
+		let r = Math.min(r1, r2);
+		let g = Math.min(g1, g2);
+		let b = Math.min(b1, b2);
+
+		return rgbArgs2Hex79(r, g, b);
+	}
+	function blendLighten(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
+
+		let r = Math.max(r1, r2);
+		let g = Math.max(g1, g2);
+		let b = Math.max(b1, b2);
+
+		return rgbArgs2Hex79(r, g, b);
+	}
+	function blendLuminosity(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
+
+		let [h1, s1, l1] = rgbArgs2Hsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = rgbArgs2Hsl01Array(r2, g2, b2);
+
+		// Set the luminosity of the base color to the luminosity of the blend color
+		let [r, g, b] = hsl01Args2RgbArray(h1, s1, l2);
+
+		return rgbArgs2Hex79(r, g, b);
+	}
+	function blendMultiply(color1, color2) {
+		let [r1, g1, b1] = hex2RgbArray(color1);
+		let [r2, g2, b2] = hex2RgbArray(color2);
+
+		// Multiply each channel and divide by 255 to scale back to color space
+		let r = (r1 * r2) / 255;
+		let g = (g1 * g2) / 255;
+		let b = (b1 * b2) / 255;
+
+		return rgbArgs2Hex79(Math.round(r), Math.round(g), Math.round(b));
+	}
+	function blendNormal(baseColor, blendColor) {
+		return blendColor; // The blend color simply replaces the base color
+	}
+	function blendOverlay(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
+
+		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
+
+		let r = overlayCalculate(r1, r2);
+		let g = overlayCalculate(g1, g2);
+		let b = overlayCalculate(b1, b2);
+
+		return rgbArgs2Hex79(r, g, b);
+	}
+	function blendSaturation(baseColor, blendColor) {
+		let [r1, g1, b1] = hex2RgbArray(baseColor);
+		let [r2, g2, b2] = hex2RgbArray(blendColor);
+
+		let [h1, s1, l1] = rgbArgs2Hsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = rgbArgs2Hsl01Array(r2, g2, b2);
+
+		// Use the base hue and lightness, blend saturation
+		let cfinal = hsl01Args2RgbArray(h1, s2, l1);
+		return rgbArgs2Hex79(...cfinal);
+	}
+	function blendScreen(color1, color2) {
+		let [r1, g1, b1] = hex2RgbArray(color1);
+		let [r2, g2, b2] = hex2RgbArray(color2);
+
+		// Apply the screen blend mode formula
+		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
+		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
+		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
+
+		return rgbArgs2Hex79(r, g, b);
+	}
+
+  //console.log('blendMode',blendMode);
+  let di={darken:blendDarken,lighten:blendLighten,color:blendColor,colorDodge:blendColorDodge,luminosity:blendLuminosity,multiply:blendMultiply,normal:blendNormal,overlay:blendOverlay,
+    saturation:blendSaturation,screen:blendScreen};
+	let func = di[blendMode]; if (nundef(di)) {console.log('blendMode',blendMode);return c1;} //this[`blend${blendMode.toUpperCase}`];
+	//console.log(func);
+	c1hex = colorFrom(c1);
+	c2hex = colorFrom(c2);
+  let res = func(c1hex,c2hex);
+	//console.log('blend',c1hex,c2hex,'=>',res);
+	return res;
 }
 function colorPaletteFromImage(img) {
   if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
@@ -175,101 +259,88 @@ function colorPaletteFromUrl(path) {
   let pal = colorPaletteFromImage(img);
   return pal;
 }
-function selectUserColor(itemsColor){
-  //console.log('selectUserColor',U.color); 
-	// let [color,texture,blend]=[U.color,U.texture,U.blend];
-	//console.log(color);
-	if (isEmpty(U.color)) U.color=rChoose(itemsColor);
-	let chex=colorHex(U.color);
-	//console.log(chex,itemsColor)
-	let item = itemsColor.find(x=>x.color==chex);
-	//console.log('item with same color',item);
+function colorTransPalette(n = 9) {
+  let c = colorHex('white');
+  let pal = [c];
+  // alpha 0,0.1,0.2,0.3
+  //wieviele alpha values kann ich in x colors unterbringen?
+  //ex. x=3 1/3 
+  //der mittlere ist 0
 
-	if (isdef(item)) iDiv(item).click();
-	return item.color;
+  //example n=5: 0 1 2 3 4 (Math.floor(n/2) = 2 sollte trans sein)
+  // w, w .5 ,trans, b .5 ,b
+  // incw=2, incb=2, iw=1, ib=1
 
-
-}
-function selectUserTexture(itemsTexture){
-  //console.log('selectUserTexture',U.texture); 
-
-	//let [color,texture,blend]=[U.color,U.texture,U.blend];
-	//console.log(texture,blend);
-	//console.log('itemsTexture',itemsTexture)
-	let item = itemsTexture.find(x=>x.bgImage.includes(U.texture));
-	//console.log('item with same color',item);
-	if (isdef(item)) iDiv(item).click();
-
-	return isdef(item)?item.path:'';
-
-}
-function selectUserBlend(itemsBlend){
-  //console.log('selectUserBlend',U.blend); 
-
-	//let [color,texture,blend]=[U.color,U.texture,U.blend];
-	//console.log(texture,blend);
-	let item = itemsBlend.find(x=>x.blendMode==U.blend);
-	//console.log('item with same color',item);
-	if (isdef(item)) iDiv(item).click();
-
-	return isdef(item)?item.blendMode:'';
-
-}
-function setColors(c, texture, blendMode) {
-  // mClass(document.body, 'wood');
-  if (nundef(c)){
-    //pickup document.body style
-    c=document.body.style.background;
-    texture = document.body.style.backgroundImage;
-    blendMode = document.body.style.backgroundBlendMode;
+  //  n iw  incw  ib  incb  vals
+  //  3 0   _     0   _     white,trans,black
+  //  4 1   .5    0   _     white,w.5,trans,black
+  //  5 1   .5    1   .5    white,w.5,trans,b.5,black
+  //  6 2   .33   1   .5    white,w.33,w.66,trans,b.5,black
+  //  7 2   .33   2   .33   white,w.33,w.66,trans,b.33,b.66,black
+  //  8 3   .25   2   .33   white,w.25,w.5.w.75,trans,b.33,b.66,black
+  //  9 3   .25   3   .25   white,w.25,w.5.w.75,trans,b.25,b.5,b.75,black
+  //...
+  //  n Math.floor(n/2)-1 1/(iw+1) Math.floor((n-1)/2)-1 1/(ib+1)
+  let [iw, ib] = [Math.floor(n / 2) - 1, Math.floor((n - 1) / 2) - 1];
+  let [incw, incb] = [1 / (iw + 1), 1 / (ib + 1)];
+  for (let i = 1; i < iw; i++) {
+    let alpha = i * incw;
+    pal.push(colorTrans(c, alpha));
   }
-  if (isEmpty(c)) c='transparent';
-  if (nundef(texture)) texture = '';
-  if (nundef(blendMode)) blendMode = '';
-  let [bgRepeat,bgSize] = getRepeatAndSizeForTexture(texture);
-  //console.log('')
-  //mStyle(document.body,{'background-'}
-  
-
-  return;
-  if (isdef(texture)) c = 'transparent';
-  let hsl = colorHSL(c, true);
-  let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
-  let hstart = (hue + diff);
-  for (i = hstart; i <= hstart + 235; i += 20) {
-    let h = i % 360;
-    let c1 = colorFromHSL(h, 100, 75);
-    wheel.push(c1);
+  pal.push('transparent');
+  c = colorHex('black');
+  for (let i = 1; i < ib; i++) {
+    let alpha = i * incb;
+    pal.push(colorTrans(c, alpha));
   }
-  let cc = idealTextColor(c);
-  let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
-  let palc = colorPalette(cc);
-  function light(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 + i]; }
-  function dark(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 - i]; }
-  function simil(i = 3) { return cc == 'white' ? dark(i) : light(i); }
-  function contrast(i = 3) { return cc == 'white' ? light(i) : dark(i); }
-  setCssVar('--bgBody', c);
-  setCssVar('--bgButton', 'transparent')
-  setCssVar('--bgButtonActive', light(3))
-  setCssVar('--bgNav', simil(2))
-  setCssVar('--bgLighter', light())
-  setCssVar('--bgDarker', dark())
-  setCssVar('--fgButton', contrast(3))
-  setCssVar('--fgButtonActive', cc == 'black' ? dark(2) : c)
-  setCssVar('--fgButtonDisabled', 'silver')
-  setCssVar('--fgButtonHover', contrast(5))
-  setCssVar('--fgTitle', contrast(4))
-  setCssVar('--fgSubtitle', contrast(3))
-  if (nundef(texture)) return;
-  //console.log('HALLO')
-  mStyle(document.body, { 'background-repeat': 'repeat', 'background-image': texture })
+  pal.push(c);
 
+  return pal;
 }
-function getRepeatAndSizeForTexture(t){
-	if (isEmpty(t)) return ['',''];
-	let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-	let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-	return [bgRepeat,bgSize];
+function expandHexShorthand(c) {
+  // Check if the input is a valid shorthand hex code
+  if (c.length === 4 && c[0] === '#') {
+    // Expand each character to double
+    let r = c[1];
+    let g = c[2];
+    let b = c[3];
+
+    return `#${r}${r}${g}${g}${b}${b}`;
+  } else {
+    // Return the original input if it's not a valid shorthand hex code
+    return c;
+  }
+}
+async function getPaletteFromColorTextureBlend(color,texture,blend,dParent){
+  let elem = mDom(dParent, {w:100,h:100,border:'red',position:'absolute',top:100,left:800});
+  elem.style.backgroundColor = color;
+  if (isEmpty(texture)) return colorPalette(color);
+  elem.style.backgroundImage=texture.startsWith('url')?texture:`url("${texture}")`;
+  elem.style.backgroundBlend = blend;
+  let [repeat,size]=getRepeatAndSizeForTexture(texture);
+  elem.style.backgroundRepeat = repeat;
+  elem.style.backgroundSize = size;
+  return getPaletteFromElem(elem);
+}
+function getRepeatAndSizeForTexture(t) {
+  if (isEmpty(t)) return ['', ''];
+  let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
+  let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
+  return [bgRepeat, bgSize];
+}
+function getNavBg(){return mGetStyle('dNav', 'bg');}
+async function onclickBlendSample(item, items) {
+  //console.log('CLICK!!!');//,item)
+  let texture = settingsGetSelectedTexture();
+  if (nundef(texture)) {console.log('please select a texture');return;}
+  let blend = item.blend; //ev.target.style.backgroundImage;
+  let prev=settingsGetSelectedBlend();//console.log(prev)
+  if (prev != item) toggleItemSelection(prev);
+  toggleItemSelection(item);
+  if (item.isSelected) document.body.style.backgroundBlendMode = blend;
+
+  let color=settingsGetSelectedColor();
+
 }
 async function onclickColor(item, items) {
   let c = item.color;//ev.target.style.background; 
@@ -287,16 +358,16 @@ async function onclickTexture(item, items) {
   let texture = item.bgImage; //ev.target.style.backgroundImage;
   let repeat = item.bgRepeat; //ev.target.style.backgroundRepeat;
   let bgSize = item.bgSize; //repeat == 'repeat'?'auto':'cover';
-  let blendMode = item.blendMode;
+  let blend = item.blend;
   toggleItemSelection(item);
   let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
   //console.log('texture',texture,'repeat',repeat)
   //if (isEmpty(texture)) { console.log('texture EMPTY!', item); } //ev.target.style);}
-  let blendModeDiv = null;
+  let blendDiv = null;
   for (const i of range(0, 9)) {
     let sample = mBy(`dSample${i}`);
-    //console.log(sample.style.backgroundBlendMode, blendMode)
-    if (sample.style.backgroundBlendMode == blendMode) { blendModeDiv = sample; }//console.log('YES!') }
+    //console.log(sample.style.backgroundBlend, blend)
+    if (sample.style.backgroundBlend == blend) { blendDiv = sample; break; }//console.log('YES!') }
     sample.style.backgroundImage = texture;
     sample.style.backgroundRepeat = repeat;
     sample.style.backgroundSize = bgSize;
@@ -304,33 +375,68 @@ async function onclickTexture(item, items) {
   document.body.style.backgroundImage = texture;
   document.body.style.backgroundRepeat = repeat;
   document.body.style.backgroundSize = bgSize;
-  if (nundef(blendModeDiv)) return;
-  blendModeDiv.click();
+  if (nundef(blendDiv)) return;
+  blendDiv.click();
 
-  //mBy('dSample0').click()
-  // mBy('dPos').style.backgroundImage = texture;
-  // mBy('dPos').style.backgroundRepeat = repeat;
-  // mBy('dPos').style.backgroundSize = bgSize;
+  let palette = item.palette.map(x=>x.hex); console.log(palette);
+  let d=mBy('dPalette');
+  mClear(d);
+	let szSmall = 30;
+	for (const c of palette) { mDom(d, { w: szSmall, h: szSmall, bg: c }) }
+  mLinebreak(d);
+
 }
-async function onclickBlendSample(item, items) {
-  //console.log('CLICK!!!');//,item)
-  let blendMode = item.blendMode; //ev.target.style.backgroundImage;
-  toggleItemSelection(item);
-  let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
-  document.body.style.backgroundBlendMode = blendMode;
+function selectUserColor(itemsColor) {
+  if (isEmpty(U.color)) U.color = rChoose(itemsColor);
+  console.log('user color is',U.color)
+  let c = colorHex(U.color);  //console.log(chex,itemsColor)
+  let item = itemsColor.find(x => x.color == c);  //console.log('item with same color',item);
+  console.log(c,item)
+  if (isdef(item)) iDiv(item).click();
+  return item.color;
+}
+function selectUserTexture(itemsTexture) {
+  if (isEmpty(U.texture)) {console.log('no texture');return '';}
+  let item = itemsTexture.find(x => x.bgImage.includes(U.texture));
+  if (isdef(item)) iDiv(item).click();
+  return isdef(item) ? item.path : '';
+}
+function selectUserBlend(itemsBlend) {
+  if (isEmpty(U.blend)) {console.log('no blend');return '';}
+  let item = itemsBlend.find(x => x.blend == U.blend);
+  if (isdef(item)) iDiv(item).click();
+  return isdef(item) ? item.blend : '';
+}
+function settingsGetSelectedBlend(){  
+  let item = DA.itemsBlend.find(x=>x.isSelected == true);
+  return item; 
+}
+function settingsGetSelectedColor(){  
+  let item = DA.itemsColor.find(x=>x.isSelected == true);
+  return item; 
+}
+function settingsGetSelectedTexture(){  
+  let item = DA.itemsTexture.find(x=>x.isSelected == true);
+  return item; 
+}
+async function settingsSave(){
+  let o={name:U.name};
+  let item = settingsGetSelectedColor();if (isdef(item)) o.color=item.color;
+  item = settingsGetSelectedTexture();if (isdef(item)) o.texture=item.path;
+  item = settingsGetSelectedBlend();if (isdef(item)) o.blend=item.blend;
 }
 
-//#endregion
+//#_endregion
 
 //#region showTable
 async function showTable(table) {
   if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
   if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 
-	let func = DA.funcs[table.game];
+  let func = DA.funcs[table.game];
   let me = getUname();
 
-  clearMain(); 
+  clearMain();
 
 }
 async function ____showTable(table) {
@@ -344,48 +450,48 @@ async function ____showTable(table) {
   else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
   Clientdata.table = table; //console.log(table);
-  TPrev = T; T={table,me};
+  TPrev = T; T = { table, me };
 
-  let d=T.dMain=mBy('dMain');//mClass(d,'wood')
-  let dInstruction = T.dInstruction=mDom(d,{className:'instruction'},{html:`Waiting for ${table.fen.turn.join(', ')}`});  
+  let d = T.dMain = mBy('dMain');//mClass(d,'wood')
+  let dInstruction = T.dInstruction = mDom(d, { className: 'instruction' }, { html: `Waiting for ${table.fen.turn.join(', ')}` });
   mCenterFlex(dInstruction);
   // let dTitle=T.dTitle=mDom(d,{fz:'2em',weight:'bold',padding:'10'},{html:table.friendly,classes:'title'});
-  let dTitle=T.dTitle=mDom(d,{},{html:table.friendly});
-  let dGameover=T.dGameover=mDom(d);
-  let dStats=T.dStats=mDom('dMain');
-  let dOpenTable=T.dOpenTable=mDom(d);
+  let dTitle = T.dTitle = mDom(d, {}, { html: table.friendly });
+  let dGameover = T.dGameover = mDom(d);
+  let dStats = T.dStats = mDom('dMain');
+  let dOpenTable = T.dOpenTable = mDom(d);
   // showRibbon(d,"this is the game!")
   //showMessage('HALLO this is a message');
-  let dt=testUpdateTestButtons(dTitle); mStyle(dt,{matop:4});
+  let dt = testUpdateTestButtons(dTitle); mStyle(dt, { matop: 4 });
 
   func.present(T);
   func.showStats(T);
   mRise(d);
 
-  
+
 }
-async function ___showTable_rest(table){
+async function ___showTable_rest(table) {
   //showTitle(`${table.friendly}`);
-  mStyle('dTitle',{display:'flex',justify:'space-between'})
-  mDom('dTitle',{fz:'2em',weight:'bold',maleft:10,display:'inline'},{html:table.friendly,classes: 'title'});
-  let dOver=mDom('dMain',{},{id:'dGameover'})
+  mStyle('dTitle', { display: 'flex', justify: 'space-between' })
+  mDom('dTitle', { fz: '2em', weight: 'bold', maleft: 10, display: 'inline' }, { html: table.friendly, classes: 'title' });
+  let dOver = mDom('dMain', {}, { id: 'dGameover' })
 
 
-  
+
   T = func.present('dMain', table, me); //console.log('TPrev',TPrev,'T',T);
   func.showStats(T);
   mRise('dMain');
 
   if (TESTING) testUpdateTestButtons();
 
-  if (table.status == 'over') return showGameover(table,dOver);
+  if (table.status == 'over') return showGameover(table, dOver);
   else if (func.checkGameover(table)) return await sendMergeTable(table);
-  
-  if (!table.fen.turn.includes(me)) {staticTitle(table); return;}
+
+  if (!table.fen.turn.includes(me)) { staticTitle(table); return; }
 
   animatedTitle();
-  
-  let playmode = getPlaymode(table, me); 
+
+  let playmode = getPlaymode(table, me);
   if (playmode == 'bot') return await func.botMove(T);
   else return await func.activate(T);
 }
@@ -432,7 +538,7 @@ function button96() {
 
     // return { div, bYes, bNo, dInstruction, dStats, table, name };
   }
-  function showStats(T){ button96Stats(T);}
+  function showStats(T) { button96Stats(T); }
   async function activate(T) {
     dInstruction.innerHTML = "click one of the buttons!"
     T.bYes.onclick = () => button96OnclickYes(T, true);
@@ -443,8 +549,8 @@ function button96() {
   }
   return { setup, activate, checkGameover, present, showStats, botMove };
 }
-function button96Stats(T){
-  let [fen,name,dStats]=[T.table.fen,T.name,T.dStats];
+function button96Stats(T) {
+  let [fen, name, dStats] = [T.table.fen, T.name, T.dStats];
   let layout = 'rowflex';
   let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
   let player_stat_items = uiTypePlayerStats(fen, name, dStats, layout, style)
@@ -468,9 +574,9 @@ async function button96OnclickNo(T, direct = false) {
   if (direct) clearEvents();
   disableUI(); //disableButton(b);
 
-  await sendRaceError(T.table,T.name);
+  await sendRaceError(T.table, T.name);
 }
 async function button96BotMove(T) {
   if (coin(80)) await button96OnclickYes(T); else await button96OnclickNo(T);
-} 
+}
 //#endregion

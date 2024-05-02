@@ -1,6 +1,8 @@
 name: mimi
-color: '#ce8740'
+color: '#004054'
 key: mimi
 setgame:
   level: 2
   playmode: human
+texture: ../assets/textures/marble_gold.jpeg
+blend: multiply

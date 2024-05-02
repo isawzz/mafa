@@ -1,134 +1,184 @@
-async function showColors() {
-  showTitle('Set Color Theme');
-  let sz = 30;
-  let d = mDom('dMain', { wmax: (sz + 4) * 15, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-  let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
-  list = M.playerColors.concat(grays);
-  let itemsColor = [];
-  for (const c of list) {
-    let dc = mDom(d, { w: sz, h: sz, bg: c, fg: idealTextColor(c), cursor: 'pointer' });
-    let item = { div: dc, color: c, isSelected: false };
-    itemsColor.push(item);
-    dc.onclick = () => onclickColor(item, itemsColor);
-  }
-  let dcc = mDom(d, { bg:'white', border: getThemeFg(), h: sz, cursor: 'pointer', hpadding: 4 }, { html: 'none' });
-  let itemc = { div: dcc, color: '', isSelected: false };
-  itemsColor.push(itemc);
-  dcc.onclick = () => onclickColor(itemc, itemsColor);
 
-  let dTheme = mDom('dMain', { wmax: (sz + 4) * 15, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-  list = M.textures;
-  let itemsTexture = DA.itemsTexture = [];
-  for (const t of list) {
-    //console.log(c, typeof c)
-    let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-    let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-    let bgImage = `url('${t}')`;
-    let recommendedMode = t.includes('ttrans')?'normal':t.includes('marble_')?'luminosity':'multiply';
-    // let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
-    let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz},{tag:'img'});
-    let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blendMode:recommendedMode, isSelected: false };
-    itemsTexture.push(item);
-    dc.onclick = () => onclickTexture(item, itemsTexture);
-  }
-  let dct = mDom(dTheme, { bg:'white', border: getThemeFg(), h: sz, cursor: 'pointer', hpadding: 4 }, { html: 'none' });
-  let itemt = { div: dct, bgImage: '', bgRepeat: '', bgSize: '', blendMode:'', isSelected: false };
-  itemsTexture.push(itemt);
-  dct.onclick = () => onclickTexture(itemt, itemsTexture);
-
-  sz = 100;
-  let dBlend = mDom('dMain', { wmax: (sz + 4) * 6, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-  list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-  let itemsBlend = [];
-  // console.log('list',list.length)
-  for (const [idx, mode] of list.entries()) {
-    let id = `dSample${idx}`;
-    let db = mDom(dBlend, { border: 'white', w: 100, h: 100, 'background-blend-mode': mode, cursor: 'pointer' }, { id, idx });
-    let item = { div: db, blendMode: mode, isSelected: false };
-    itemsBlend.push(item);
-    db.onclick = () => onclickBlendSample(item, itemsBlend);
-  }
-
-	let color=selectUserColor(itemsColor);
-	let pathTexture=selectUserTexture(itemsTexture);
-	let blend=selectUserBlend(itemsBlend);
-
-	//mach einen mix aus diesen 3 in einem neuen sample
-
-  let pal=await getPaletteFromColorTextureBlend(color,pathTexture,blend,'dMain');//console.log('!!!!!YEAH!!!!!',pal); 
-  pal.unshift('#ffffff');pal.push('#000000');
-  //console.log('got new palette',pal);
-
-	//alle paletten holen
-	//console.log('HALLOOOOOOOOOOOOOOOOOOOOOOOOO');
-	//console.log(itemsTexture)
-	for(const [i,o] of itemsTexture.entries()){
-		let img=iDiv(o);
-		img.onload=()=>{
-			// let pal=item.pal=colorPaletteFromImage(dc);
-			let pal = ColorThiefObject.getPalette(img);
-			if (o.path.includes('ttrans') && pal != null){console.log('not null:',o.path,pal)}
-			else if (pal == null) console.log('t',o.path,'pal',pal);
-
-			//if (pal == null) pal = ['white','#ffffff']
-			if (pal == null){
-				//mach eine transparency palette!
-
-			}
-			if (pal != null){
-				pal.unshift('white');pal.push('black');
-				let n= pal.length;
-				pal = pal.map(x=>colorHex(x));  console.log(pal)
-				let palhex = Array.from(new Set(pal)); console.log(palhex)
-				let palhsl = palhex.map(x=>colorHSL(x,true));
-				let lum=palhsl.map(x=>x.l);
-				let hue=palhsl.map(x=>x.h);
-				let sat=palhsl.map(x=>x.s);
-				pal = [];
-				for(let i=0;i<palhex.length;i++){
-					let o={hex:palhex[i],lum:lum[i],hue:hue[i],sat:sat[i]};
-					pal.push(o);
-				}
-				if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
-			}
-
-			DA.itemsTexture[i].palette = pal;
+//#region legacy colors
+function hex2RgbObject(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
 		}
-		img.src=o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
+		: null;
+}
 
-	}
+//#endregion
 
-
-	return;
-  //hier moecht ich ein fs mit radios fuer die verschiedenen bland modes
-  // let dBlend = mDom('dMain', { margin:20, hpadding: 0 });
-
-  // hier moecht ich die User settings selecten
-  let ucitem = itemsColor.find(x=>x.color == U.color); //das geht nicht wenn user eine variante gewaehlt hat mit slider!!!
-  //falls das eine slider variant ist, muss ich so ein item dazutun oben
-  //irgendein anderes wird geloescht? ne, einfach neben none in die line geben?
-  if (nundef(ucitem)) {
-    console.log(`user ${U.name} has no color!!!!`)
-  }else{
-    iDiv(ucitem).click();
-  }
-
-  let utitem = itemsTexture.find(x=>x.bgImage == U.texture); //U.texture hat die url drin!!! das geht nicht wenn user eine variante gewaehlt hat mit slider!!!
-  //falls das eine slider variant ist, muss ich so ein item dazutun oben
-  //irgendein anderes wird geloescht? ne, einfach neben none in die line geben?
-  if (nundef(utitem)) {
-    console.log(`user ${U.name} has no texture!!!!`,U);
-    //clicj on a random texture!
-    let t=rChoose(itemsTexture);
-    iDiv(t).click();
-  }else{
-    iDiv(utitem).click();
-  }
-
-  
-
-
+function isStandardHexColor(c){return isString(c) && c[0]=='#' && (c.length==7 || c.length == 9); }
+function colorFrom(cAny, a) {
+	//returns hex standard format (7 or 9 characters)
+	let alpha = isdef(a) && a < 1 ? alphaToHex(a) : '';
+	let tString = isString(cAny), tArr = isArray(cAny), tObj = isDict(cAny);
+	if (tString && cAny[0] == '#' && cAny.length >= 7) return cAny.substring(0, 7) + alpha;
+	else if (tString && cAny[0] == '#') return hex42hex79(cAny, a);
+	else if (tString && isdef(ColorDi) && lookup(ColorDi, [cAny])) return ColorDi[cAny].substring(0, 7) + alpha;
+	else if (tString && cAny.startsWith('rand')) {
+		//eg. randLight => colorLight
+		let spec = capitalize(cAny.substring(4));
+		let func = window['color' + spec];
+		cAny=isdef(func)?func():rColor();
+		assertion(isStandardHexColor(cAny),'ERROR coloFrom!!!!!!!!! (rand)');
+	}else if (tString && (cAny.startsWith('linear') || cAny.startsWith('radial'))) return cAny;
+	else if (tString && cAny.startsWith('rgb')) return rgbString2Hex7(cAny)+alpha;
 
 }
+function restrestrest(cAny, a) {
+	if (cAny[0] == 'r' && cAny[1] == 'g') {
+		let parts = cAny.split(',');
+		let r = firstNumber(parts[0]);
+		let g = firstNumber(parts[1]);
+		let b = firstNumber(parts[2]);
+		if (nundef(a) && parts.length > 3) a = Number(stringBefore(parts[3], ')'));
+		return rgbArgs2Hex79(r, g, b, a);
+	} else if (cAny[0] == 'h' && cAny[1] == 's') {
+		let parts = cAny.split(',');
+		let h = firstNumber(parts[0]);
+		let s = firstNumber(parts[1]);
+		let l = firstNumber(parts[2]);
+		if (parts.length > 3) a = valf(a, Number(stringBefore(parts[3], ')')));
+		return hslToHex(h, s, l, a);
+	} else {
+		ensureColorDict();
+		let c = ColorDi[cAny];
+		if (nundef(c)) {
+			if (cAny.startsWith('rand')) {
+				let spec = cAny.substring(4);
+				if (isdef(window['color' + spec])) {
+					c = window['color' + spec](res);
+				} else c = rColor();
+			} else {
+				console.log('color not available:', cAny);
+				throw new Error('color not found: ' + cAny)
+				return '#00000000';
+			}
+		} else c = c.c;
+		if (a == undefined) return c;
+		c = c.substring(0, 7);
+		return c + (a == 1 ? '' : alphaToHex(a));
+
+	} else if (Array.isArray(cAny)) {
+		if (cAny.length == 3 && isNumber(cAny[0])) {
+			let r = cAny[0];
+			let g = cAny[1];
+			let b = cAny[2];
+			return rgbArgs2Hex79(r, g, b, a);
+			// return a == undefined || a == 1 ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
+		} else {
+			return rChoose(cAny);
+		}
+	} else if (typeof cAny == 'object') {
+		if ('h' in cAny) { return hslToHex(cAny.h, cAny.s, cAny.l, valf(a, cAny.a)); }
+		else if ('r' in cAny) { return rgbArgs2Hex79(cAny.r, cAny.g, cAny.b, valf(a, cAny.a)); }
+	}
+}
+
+function hex42hex79(cAny, a) {
+	let r = cAny[1];
+	let g = cAny[2];
+	let b = cAny[3];
+	if (cAny.length == 5 && nundef(a)) return `#${r}${r}${g}${g}${b}${b}${cAny[4]}${cAny[4]}`;
+	cAny = `#${r}${r}${g}${g}${b}${b}`;
+
+	if (a == undefined) return cAny;
+	cAny = cAny.substring(0, 7);
+	return cAny + (a == 1 ? '' : alphaToHex(a));
+}
+function hex2Hsl01Array(hex) { return rgbArgs2Hsl01Array(...hex2RgbArray(hex)); }
+function hex2Hsl360Object(hex) {
+	let arr = hex2Hsl01Array(hex);
+	return hsl01Array2hsl360Object(arr);
+}
+function hex2RgbArray(hex) {
+	let r = 0, g = 0, b = 0;
+	// 3 digits
+	if (hex.length === 4) {
+		r = parseInt(hex[1] + hex[1], 16);
+		g = parseInt(hex[2] + hex[2], 16);
+		b = parseInt(hex[3] + hex[3], 16);
+	}
+	// 6 digits
+	else if (hex.length === 7) {
+		r = parseInt(hex[1] + hex[2], 16);
+		g = parseInt(hex[3] + hex[4], 16);
+		b = parseInt(hex[5] + hex[6], 16);
+	}
+	return [r, g, b];
+}
+function hsl01Args2RgbArray(h, s, l) {
+	let r, g, b;
+
+	if (s === 0) {
+		r = g = b = l; // achromatic
+	} else {
+		function hue2rgb(p, q, t) {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		}
+
+		let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		let p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+
+	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+function hsl01Array2hsl360Object(arr) {
+	let res = { h: arr[0] * 360, s: arr[1] * 100, l: arr[2] * 100 };
+	if (arr.length > 3) res.a = arr[3];
+	return res;
+}
+function rgbArgs2Hex79(r, g, b, a) {
+	//returns a standard hex 7
+	r = Math.round(r).toString(16).padStart(2, '0');
+	g = Math.round(g).toString(16).padStart(2, '0');
+	b = Math.round(b).toString(16).padStart(2, '0');
+
+	if (nundef(a)) return `#${r}${g}${b}`;
+
+	a = Math.round(a * 255).toString(16).padStart(2, '0');
+	return `#${r}${g}${b}${a}`;
+}
+function rgbArgs2Hsl01Array(r, g, b) {
+	r /= 255, g /= 255, b /= 255;
+	let max = Math.max(r, g, b), min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
+
+	if (max === min) {
+		h = s = 0; // achromatic
+	} else {
+		let d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+		h /= 6;
+	}
+
+	return [h, s, l];
+}
+
+
+
+
+
+
+
 
 

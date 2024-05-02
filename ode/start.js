@@ -1,7 +1,30 @@
 onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
+async function start() { TESTING = true; test57_colorFrom(); }
 
+async function test58_color(){
+  //await prelims();
+  document.body.style.backgroundColor = '#ffff00'; //BLUEGREEN;
+  console.log(document.body);
+  console.log(document.body.style.backgroundColor);
+  //ja ist ja irre! colors werden automatisch in rgb verwandelt!
+}
+async function test57_colorFrom(){
+  console.log(colorFrom('rgb(255,122,122)'));
+  console.log(colorFrom('hsla(300,50%,50%,.3)'));
+  console.log(colorFrom({h:120,s:50,l:50}));
+  console.log(rgbArgs2Hsl01Array(255,255,0)); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
+  console.log(hex2RgbArray('#ffff00')); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
+
+  let c='#ffff00';
+  for(const c of range(0,10).map(x=>rColor())){
+    let x=hex2Hsl01Array(c);
+    let y=hsl01Array2hsl360Object(x);
+    let x2=colorFrom(y);
+    console.log(c,'=',x2); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
+    }
+}
 async function test56_colorthief(){
   ColorThiefObject=new ColorThief();
   console.log(ColorThiefObject);
@@ -38,8 +61,12 @@ async function test54_dynBody(){
   `;
   document.body.innerHTML = html;
   await prelims(); //return;
-  U=await postUserChange({name:U.name,color:'blue',blend:'multiply'});
-  await switchToMenu(UI.nav, 'colors');
+  M.playerColors = loadPlayerColors(); return;
+  console.log(M.playerColors)
+  U=await postUserChange({name:U.name,color:BLUEGREEN,texture:'../assets/textures/marble_gold.jpeg',blend:'multiply'});
+  console.log(U)
+  await switchToUser('mimi');
+  await switchToMenu(UI.nav, 'settings');
 
   //console.log(U)
   //setTimeout(colorsUpdate,200)
