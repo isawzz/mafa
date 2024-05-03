@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Color Picker</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+			background-color: #f4f4f4;
+			color: #333;
+		}
+
+		h1 {
+			color: #666;
+		}
+
+		#colorPicker {
+			border: 2px solid #ccc;
+			border-radius: 5px;
+			height: 30px;
+			width: 100px;
+			cursor: pointer;
+		}
+
+		button {
+			background-color: #4CAF50;
+			color: white;
+			border: none;
+			padding: 10px 20px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Select a Color</h1>
+	<input type="color" id="colorPicker">
+	<button onclick="showColor()">Submit Color</button>
+
+	<script>
+		function showColor() {
+			var color = document.getElementById('colorPicker').value;
+			alert('You selected: ' + color);
+		}
+	</script>
+</body>
+
+</html>

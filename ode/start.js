@@ -1,7 +1,30 @@
 onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
-async function start() { TESTING = true; test57_colorFrom(); }
+async function start() { TESTING = true; test60_genauerTesten(); }
+
+async function test61_w3Colorpicker(){
+  await loadAssets();
+  let d = clearBodyReset100({ bg: 'skyblue', overy: 'scroll' }, { id: 'dPage' });
+  mDom(d,{},{tag:'input',type:'color'});
+}
+async function test60_genauerTesten(){
+  let c;
+  c={h:0,s:1,l:.5}; console.log(hsl01ObjectToHex79(c),'(=? ff0000)'); 
+  c={h:0,s:100,l:50}; console.log(hsl360ObjectToHex79(c),'(=? ff0000)'); 
+  c={h:360,s:100,l:50}; console.log(hsl360ObjectToHex79(c),'(=? ff0000)'); 
+  c='hsl(360,100%,50%)'; console.log(hsl360StringToHex79(c),'(=? ff0000)'); 
+  c='hsla(360,100%,50%,.5)'; console.log(hsl360StringToHex79(c),'(=? ff000080)'); 
+
+  let clist = [{h:0,s:1,l:.5},'deeppink'];
+  for(const c of clist){
+    console.log('_________',c)
+    //let hex = hsl01ObjectToHex79(c); console.log('hex',hex); 
+
+    hex = anyToHex79(c); console.log('hex',hex); 
+  }
+
+}
 
 async function test59_ColorDi() {
   ensureColorDict();
@@ -16,23 +39,32 @@ async function test58_color() {
 }
 async function test57_colorFrom() {
   //testing anyToHex79
-  let clist = ["#ff0000","#f00",'rgb(255,122,122)', 'rgba(255,122,122,0.5)', [255, 122, 122, 0.5], { r: 255, g: 122, b: 122, a: 0.5 }];
+  // let clist = ["#ff0000","#f00",'rgb(255,122,122)', 'rgba(255,122,122,0.5)', [255, 122, 122, 0.5], { r: 255, g: 122, b: 122, a: 0.5 }];
   // for (const c of clist) console.log(c, anyToHex79(c));
-  console.log('____________'); 
-  clist=  ['hsla(300,50%,50%,.5)', { h: 300, s: 50, l: 50 }, hsl360ArgsToHsl01Object(300,50,50,.5)];
+  // console.log('____________'); 
+  // clist=  ['hsla(300,50%,50%,.5)', { h: 300, s: 50, l: 50 }, hsl360ArgsToHsl01Object(300,50,50,.5)];
   // for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
 
-  clist = ['#ff0000'];
+  let clist = [{h:0,s:1,l:.5}]; //'hsl(0,1,.5)',]; //'#ff0000']; //,BLUEGREEN,'blue','deeppink'];
+  //red sollte in hsl360 sein [0,1,.5]
+  // for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
+
+
   for(const c of clist){
-    let ch=hexToHsl360String(c);
-    let c1=hsl360StringToHex79(ch);
-    let cr = hexToRgbString(c1);
-    let c2 = rgbStringToHex79(cr);
-    assertion(c == c1 && c == c2,`ERROR! ${c} ${c1} ${c2}`);
+    console.log('_________',c)
+    let hex = hsl01ObjectToHex79(c); console.log('hex',hex); 
+    // let s=hexToHsl360String(hex); console.log('hsl string',s);
+    // let hex2=hsl360StringToHex79(s);console.log('hex',hex2); 
+    // break;
 
+    // let ch = hexToHsl360String(c0); console.log('hsl',c,ch)
+    // let c1 = hsl360StringToHex79(ch); console.log('hsl',c,c1)
+    // let cr = hexToRgbString(c0); console.log('rgb',c,cr)
+    // let c2 = rgbStringToHex79(cr); 
+    // assertion(c0 == c1 && c0 == c2,`ERROR! ${c}: ${c0} ${c1} ${c2}`);
   }
-  for (const c of clist) console.log('from',c,'=>', anyToHex79(c));
 
+  return;
   console.log(hexToRgbArray('#ffff00')); // damit da eine valid hsl rauskommt muss ich h*=360,s*=100,l*=100 nehmen
 
   let c = '#ffff00';
