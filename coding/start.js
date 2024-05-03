@@ -1,5 +1,23 @@
 
-async function start() { await test5_lineEndings(); }
+async function start() { await test6_sortFunctionsOfAFile(); }
+
+async function test6_sortFunctionsOfAFile(){
+	S.type = detectSessionType();	initCodingUI();
+
+	let path = `../copi2/w3helpers.js`;
+
+	let bykey = await getCodeDictByKey(path);
+	let text = '';
+	let keys = Object.keys(bykey);
+	keys.sort();
+	for (const k of keys) { 
+		text += bykey[k].code + '\n'; 
+	}
+	AU.ta.value = text;
+
+
+}
+
 async function test5_lineEndings(){
 	S.type = detectSessionType();
 	initCodingUI();

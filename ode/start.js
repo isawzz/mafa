@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
-async function start() { TESTING = true; test60_genauerTesten(); }
+//async function start() { TESTING = true; test60_genauerTesten(); }
 
 async function test61_w3Colorpicker(){
   await loadAssets();
