@@ -1,1 +1,0 @@
-function conslog(s){console.log(s,window[s])}
