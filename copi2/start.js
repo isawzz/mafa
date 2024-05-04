@@ -1,34 +1,43 @@
 window.onload = start;
 
-async function start() { test2();	}
-async function test2(){
-	let i=0;
+async function start() { test2(); }
+async function test2() {
+	let i = 0;
+	let d;
 	//mInsert(document.body,copi2_navbar(),i++); //GEHT!
 	//mInsert(document.body,copi2_sidebar(),i++); //GEHT!
-	let maindivs=copi2_maindivs();
-	mInsert(document.body,maindivs,i++);
-	let dMain=mBy('dMain');
-	mAppend(dMain,copi2_title()); //GEHT!
-	mAppend(dMain,copi2_prevNextButtons()); //GEHT!
-	
-	
+	let maindivs = copi2_maindivs();
+	mInsert(document.body, maindivs, i++);
+	let dMain = d = mBy('dMain');
+	mAppend(d, copi2_title()); //GEHT!
+	mAppend(d, copi2_prevNextButtons()); //GEHT!
+	mAppend(d, copi2_horizontalLine()); //GEHT!
+
+	let dRow1 = copi2_row();
+	let dCol11 = d = copi2_col();
+	mAppend(dRow1, dCol11);
+	mAppend(d, copi2_titleh3('Pick a Color:')); //GEHT!
+
+
+
+
 }
-async function test1(){
+async function test1() {
 	//let d=clearBodyDiv(); mAppend(d,copi2_navbar()); //GEHT!! aber urviele fehlermeldungen!!!
 	//mAppend(document.body,copi2_navbar()); // GEHT!
-	mInsert(document.body,copi2_navbar()); //GEHT!
-	mInsert(document.body,copi2_sidebar(),1); //GEHT!
-	let maindivs=copi2_maindivs();
-	mInsert(document.body,maindivs,2);
-	let dMain=mBy('dMain');
-	
-	
+	mInsert(document.body, copi2_navbar()); //GEHT!
+	mInsert(document.body, copi2_sidebar(), 1); //GEHT!
+	let maindivs = copi2_maindivs();
+	mInsert(document.body, maindivs, 2);
+	let dMain = mBy('dMain');
+
+
 }
-async function test0(){
+async function test0() {
 	prelims_orig();
 }
 
-function prelims_orig(){
+function prelims_orig() {
 	var x = document.createElement("input");
 	x.setAttribute("type", "color");
 	if (x.type == "text") {

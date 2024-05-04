@@ -1,4 +1,4 @@
-function copi2_navbar(){
+function copi2_navbar() {
 	let html = `
 				<div class='w3-card-2 topnav notranslate' id='topnav'>
 					<div style="overflow:auto;">
@@ -477,7 +477,7 @@ function copi2_navbar(){
 		`;
 	return mCreateFrom(html);
 }
-function copi2_sidebar(){
+function copi2_sidebar() {
 	let html = `
 		<div class='w3-sidebar w3-collapse' id='sidenav'>
 			<div id='leftmenuinner'>
@@ -546,7 +546,7 @@ function copi2_sidebar(){
 		`;
 	return mCreateFrom(html);
 }
-function copi2_maindivs(){
+function copi2_maindivs() {
 	let html = `
 		<div class='w3-main w3-light-grey' id='belowtopnav' style='margin-left:220px;'>
 			<div class='w3-row w3-white'>
@@ -558,27 +558,43 @@ function copi2_maindivs(){
 	`;
 	return mCreateFrom(html);
 }
-function copi2_title(){
+function copi2_title() {
 	let html = `
 		<h1>HTML <span class="color_h1">Color Picker</span></h1>
 
 	`;
 	return mCreateFrom(html);
 }
-function copi2_prevNextButtons(){
+function copi2_prevNextButtons() {
 	let html = `
 		<div class="w3-clear nextprev">
 			<a class="w3-left w3-btn" href="colors_shades.html">&#10094; Previous</a>
 			<a class="w3-right w3-btn" href="colors_mixer.html">Next &#10095;</a>
 		</div>
-`;
+		`;
+	return mCreateFrom(html);
+}
+function copi2_horizontalLine() { let html = `<hr>`; return mCreateFrom(html); }
+function copi2_row() { let html = `<div class="w3-row"></div>`; return mCreateFrom(html); }
+function copi2_col() { let html = `<div class="w3-col colorthird1" style="text-align:center;"></div>`; return mCreateFrom(html); }
+function copi2_titleh3(s) { let html = `<h3>${s}</h3>`; return mCreateFrom(html); }
+
+
+
+
+
+
+function copi2_part() {
+	let html = `
+
+		`;
 	return mCreateFrom(html);
 }
 
-function copi2_part(){
+function copi2_part() {
 	let html = `
 
-	`;
+		`;
 	return mCreateFrom(html);
 }
 
