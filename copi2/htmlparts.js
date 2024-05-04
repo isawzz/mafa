@@ -477,7 +477,6 @@ function copi2_navbar(){
 		`;
 	return mCreateFrom(html);
 }
-
 function copi2_sidebar(){
 	let html = `
 		<div class='w3-sidebar w3-collapse' id='sidenav'>
@@ -547,7 +546,6 @@ function copi2_sidebar(){
 		`;
 	return mCreateFrom(html);
 }
-
 function copi2_maindivs(){
 	let html = `
 		<div class='w3-main w3-light-grey' id='belowtopnav' style='margin-left:220px;'>
@@ -558,6 +556,22 @@ function copi2_maindivs(){
 		</div>
 
 	`;
+	return mCreateFrom(html);
+}
+function copi2_title(){
+	let html = `
+		<h1>HTML <span class="color_h1">Color Picker</span></h1>
+
+	`;
+	return mCreateFrom(html);
+}
+function copi2_prevNextButtons(){
+	let html = `
+		<div class="w3-clear nextprev">
+			<a class="w3-left w3-btn" href="colors_shades.html">&#10094; Previous</a>
+			<a class="w3-right w3-btn" href="colors_mixer.html">Next &#10095;</a>
+		</div>
+`;
 	return mCreateFrom(html);
 }
 

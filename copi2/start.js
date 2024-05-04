@@ -1,6 +1,18 @@
 window.onload = start;
 
-async function start() { test1();	}
+async function start() { test2();	}
+async function test2(){
+	let i=0;
+	//mInsert(document.body,copi2_navbar(),i++); //GEHT!
+	//mInsert(document.body,copi2_sidebar(),i++); //GEHT!
+	let maindivs=copi2_maindivs();
+	mInsert(document.body,maindivs,i++);
+	let dMain=mBy('dMain');
+	mAppend(dMain,copi2_title()); //GEHT!
+	mAppend(dMain,copi2_prevNextButtons()); //GEHT!
+	
+	
+}
 async function test1(){
 	//let d=clearBodyDiv(); mAppend(d,copi2_navbar()); //GEHT!! aber urviele fehlermeldungen!!!
 	//mAppend(document.body,copi2_navbar()); // GEHT!
