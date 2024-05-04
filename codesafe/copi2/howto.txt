@@ -1,0 +1,25 @@
+
+w3/common-dep.js
+hat code fuer cookies und base64 decode.
+nicht gebraucht (atob() macht das base64 decode natively, cookies derzeit no need)
+
+wschools_footer.js
+derzeit nicht geladen. macht lauter weiredes zeug, reinschauen falls was mit der page nicht passt!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

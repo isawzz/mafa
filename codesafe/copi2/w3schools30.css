@@ -539,7 +539,7 @@ a {
 }
 
 .w3-main,
-.xmain {
+#main {
   transition: margin-left .4s
 }
 
@@ -2336,7 +2336,7 @@ a.topnav-localicons {
   padding-top: 20px;
 }
 
-.xmain {
+#main {
   padding: 16px
 }
 
@@ -2716,7 +2716,7 @@ input.gsc-input,
 
 /*"nullstilling" slutt*/
 @media (min-width:1675px) {
-  .xmain {
+  #main {
     width: 79%
   }
 
@@ -3735,7 +3735,7 @@ body.darkpagetheme .topnav .topnav-icons {
   background-color: rgb(13, 23, 33);
 }
 
-body.darkpagetheme .xmain {
+body.darkpagetheme #main {
   border-right: 1px solid #38444d;
 }
 
@@ -4148,7 +4148,7 @@ table.gstl_50 {
 }
 
 /*NYTT:*/
-.xmain {
+#main {
   padding: 16px 32px 32px 32px;
   border-right: 1px solid #f1f1f1;
 }
@@ -4616,7 +4616,7 @@ w3-codeline {
 
 /*@media only screen and (max-device-width: 480px) {*/
 @media only screen and (max-width: 500px) {
-  .xmain {
+  #main {
     padding: 24px;
     padding: 16px
   }

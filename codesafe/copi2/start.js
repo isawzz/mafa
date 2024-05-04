@@ -6,10 +6,6 @@ async function test1(){
 	//mAppend(document.body,copi2_navbar()); // GEHT!
 	mInsert(document.body,copi2_navbar()); //GEHT!
 	mInsert(document.body,copi2_sidebar(),1); //GEHT!
-	let maindivs=copi2_maindivs();
-	mInsert(document.body,maindivs,2);
-	let dMain=mBy('dMain');
-	
 	
 }
 async function test0(){
