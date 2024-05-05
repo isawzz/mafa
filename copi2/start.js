@@ -12,13 +12,23 @@ async function test2() {
 	mAppend(d, copi2_title()); //GEHT!
 	mAppend(d, copi2_prevNextButtons()); //GEHT!
 	mAppend(d, copi2_horizontalLine()); //GEHT!
+	mAppend(d, part111()); //GEHT!
 
-	let dRow1 = copi2_row();
-	let dCol11 = d = copi2_col();
-	mAppend(dRow1, dCol11);
-	mAppend(d, copi2_titleh3('Pick a Color:')); //GEHT!
+	clickColor(colorObj.toHexString());
+	// let dRow1 = d = copi2_row();
+	// mAppend(d, copi2_all111()); 
 
+	// let dCol11 = d = copi2_col();
+	// mAppend(dRow1, dCol11);
+	// mAppend(d, copi2_titleh3('Pick a Color:')); //GEHT!
 
+	// let dImgMap = d = mDom(d,{w:236,margin:'auto',bg:'red'});
+
+	// mDom(d,{},{tag:'img',src:'../copi2/w3/img_colormap.gif'})
+	// mAppend(d,copi2_imgForUsemap('../copi2/w3/img_colormap.gif','colormap'));
+	// mAppend(d, copi2_usemap('colormap')); 
+
+	
 
 
 }
