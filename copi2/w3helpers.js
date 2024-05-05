@@ -4,7 +4,7 @@ function open_menu() {
   if (m.style.display == "block") {
     close_menu();
   } else {
-    w3_close_all_nav();  
+    w3_close_all_nav();
     m.style.display = "block";
     if (document.getElementsByClassName) {
       x = document.getElementsByClassName("chapter")
@@ -26,7 +26,7 @@ function open_menu() {
 function close_menu() {
   var m;
   m = (document.getElementById("leftmenu") || document.getElementById("sidenav"));
-  m.style.display = "none";  
+  m.style.display = "none";
   if (document.getElementsByClassName) {
     x = document.getElementsByClassName("chapter")
     for (i = 0; i < x.length; i++) {
@@ -39,7 +39,7 @@ function close_menu() {
     x = document.getElementsByClassName("sharethis")
     for (i = 0; i < x.length; i++) {
       x[i].style.visibility = "visible";
-    }            
+    }
   }
 }
 function changeAll() {
@@ -65,24 +65,24 @@ function changeGreen(value) {
   changeAll();
 }
 function changepagetheme(n) {
-	var a = document.getElementById("radio_darkcode");
-	var b = document.getElementById("radio_darkpage");
-	document.body.className = document.body.className.replace("darktheme", "");
-	document.body.className = document.body.className.replace("darkpagetheme", "");
-	document.body.className = document.body.className.replace("  ", " ");
-	if (a.checked && b.checked) {
-		localStorage.setItem("preferredmode", "light");
-		localStorage.setItem("preferredpagemode", "light");
-		a.checked = false;
-		b.checked = false;
-	} else {
-		document.body.className += " darktheme";
-		document.body.className += " darkpagetheme";
-		localStorage.setItem("preferredmode", "dark");
-		localStorage.setItem("preferredpagemode", "dark");
-		a.checked = true;
-		b.checked = true;
-	}
+  var a = document.getElementById("radio_darkcode");
+  var b = document.getElementById("radio_darkpage");
+  document.body.className = document.body.className.replace("darktheme", "");
+  document.body.className = document.body.className.replace("darkpagetheme", "");
+  document.body.className = document.body.className.replace("  ", " ");
+  if (a.checked && b.checked) {
+    localStorage.setItem("preferredmode", "light");
+    localStorage.setItem("preferredpagemode", "light");
+    a.checked = false;
+    b.checked = false;
+  } else {
+    document.body.className += " darktheme";
+    document.body.className += " darkpagetheme";
+    localStorage.setItem("preferredmode", "dark");
+    localStorage.setItem("preferredpagemode", "dark");
+    a.checked = true;
+    b.checked = true;
+  }
 }
 function changeRed(value) {
   document.getElementById('valRed').innerHTML = value;
@@ -112,26 +112,32 @@ function clickColor(hex, seltop, selleft, html5) {
     wrongInput();
     return;
   }
+
   r = cObj.red;
   g = cObj.green;
   b = cObj.blue;
-  document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
-  document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
-  document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
-  document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
-  if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
-    colormap = document.getElementById("colormap");
-    areas = colormap.getElementsByTagName("AREA");
-    for (i = 0; i < areas.length; i++) {
-      areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
-      areacolor = areacolor.replace('")', '');
-      if (areacolor.toLowerCase() == colorhex) {
-        cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
-        seltop = Number(cc[1]);
-        selleft = Number(cc[2]);
+
+  if (isdef(mBy('colornamDIV'))) {
+    document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
+    document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
+    document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
+    document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
+    if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
+      colormap = document.getElementById("colormap");
+      areas = colormap.getElementsByTagName("AREA");
+      for (i = 0; i < areas.length; i++) {
+        areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
+        areacolor = areacolor.replace('")', '');
+        if (areacolor.toLowerCase() == colorhex) {
+          cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
+          seltop = Number(cc[1]);
+          selleft = Number(cc[2]);
+        }
       }
     }
+    document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
   }
+
   if ((seltop + 200) > -1 && selleft > -1) {
     document.getElementById("selectedhexagon").style.top = seltop + "px";
     document.getElementById("selectedhexagon").style.left = selleft + "px";
@@ -140,38 +146,43 @@ function clickColor(hex, seltop, selleft, html5) {
     document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
     document.getElementById("selectedhexagon").style.visibility = "hidden";
   }
-  document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
-  document.getElementById("html5colorpicker").value = cObj.toHexString();
-  document.getElementById('slideRed').value = r;
-  document.getElementById('slideGreen').value = g;
-  document.getElementById('slideBlue').value = b;
-  changeRed(r); changeGreen(g); changeBlue(b);
-  changeColor();
-  document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
+
+  if (isdef(mBy('html5colorpicker'))) {
+    document.getElementById("html5colorpicker").value = cObj.toHexString();
+  }
+
+  if (isdef(mBy('slideRed'))) {
+    document.getElementById('slideRed').value = r;
+    document.getElementById('slideGreen').value = g;
+    document.getElementById('slideBlue').value = b;
+    changeRed(r); changeGreen(g); changeBlue(b);
+    changeColor();
+    document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
+  }
 }
 function click_darkcode() {
-	var a = document.getElementById("radio_darkcode");
-	if (a.checked) {
-		document.body.className += " darktheme";
-		document.body.className = document.body.className.replace("  ", " ");
-		localStorage.setItem("preferredmode", "dark");
-	} else {
-		document.body.className = document.body.className.replace("darktheme", "");
-		document.body.className = document.body.className.replace("  ", " ");
-		localStorage.setItem("preferredmode", "light");
-	}
+  var a = document.getElementById("radio_darkcode");
+  if (a.checked) {
+    document.body.className += " darktheme";
+    document.body.className = document.body.className.replace("  ", " ");
+    localStorage.setItem("preferredmode", "dark");
+  } else {
+    document.body.className = document.body.className.replace("darktheme", "");
+    document.body.className = document.body.className.replace("  ", " ");
+    localStorage.setItem("preferredmode", "light");
+  }
 }
 function click_darkpage() {
-	var b = document.getElementById("radio_darkpage");
-	if (b.checked) {
-		document.body.className += " darkpagetheme";
-		document.body.className = document.body.className.replace("  ", " ");
-		localStorage.setItem("preferredpagemode", "dark");
-	} else {
-		document.body.className = document.body.className.replace("darkpagetheme", "");
-		document.body.className = document.body.className.replace("  ", " ");
-		localStorage.setItem("preferredpagemode", "light");
-	}
+  var b = document.getElementById("radio_darkpage");
+  if (b.checked) {
+    document.body.className += " darkpagetheme";
+    document.body.className = document.body.className.replace("  ", " ");
+    localStorage.setItem("preferredpagemode", "dark");
+  } else {
+    document.body.className = document.body.className.replace("darkpagetheme", "");
+    document.body.className = document.body.className.replace("  ", " ");
+    localStorage.setItem("preferredpagemode", "light");
+  }
 }
 function hslLum_top() {
   var i, a, match;
@@ -315,15 +326,15 @@ function mouseOverColor(hex) {
   document.body.style.cursor = "pointer";
 }
 function mouseoverdarkicon() {
-	if (window.matchMedia("(pointer: coarse)").matches) {
-		return false;
-	}
-	var a = document.getElementById("darkmodemenu");
-	a.style.top = "44px";
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    return false;
+  }
+  var a = document.getElementById("darkmodemenu");
+  a.style.top = "44px";
 }
 function mouseoutofdarkicon() {
-	var a = document.getElementById("darkmodemenu");
-	a.style.top = "-40px";
+  var a = document.getElementById("darkmodemenu");
+  a.style.top = "-40px";
 }
 function submitOnEnter(e) {
   keyboardKey = e.which || e.keyCode;

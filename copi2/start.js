@@ -14,6 +14,7 @@ async function test2() {
 	mAppend(d, copi2_horizontalLine()); //GEHT!
 	mAppend(d, part111()); //GEHT!
 
+	console.log(colorObj);
 	clickColor(colorObj.toHexString());
 	// let dRow1 = d = copi2_row();
 	// mAppend(d, copi2_all111()); 
