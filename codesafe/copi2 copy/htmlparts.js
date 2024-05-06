@@ -1117,7 +1117,7 @@ function script111(){
 function selecthexagon111(){
 	return `
 		<div id='selectedhexagon'
-		style='visibility:hidden;position:relative;width:21px;height:21px;background-image:url("../copi2/img_selectedcolor.gif")'>
+		style='visibility:hidden;position:relative;width:21px;height:21px;background-image:url("../copi2/w3/img_selectedcolor.gif")'>
 		</div>
 	`;
 }
@@ -1261,7 +1261,7 @@ function part111(){
 		<div class="w3-col colorthird1" style="text-align:center;">
 			<h3>Pick a Color:</h3>
 			<div style="margin:auto;width:236px;">
-				<img style='margin-right:2px;' src='../copi2/img_colormap.gif' usemap='#colormap' alt='colormap' />
+				<img style='margin-right:2px;' src='../copi2/w3/img_colormap.gif' usemap='#colormap' alt='colormap' />
 				${map111()}				
 				${selecthexagon111()}				
 				${previewDiv_111()}				
