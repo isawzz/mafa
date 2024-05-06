@@ -1,3 +1,130 @@
+
+//#region clickColor progress from orig
+function clickColor(hex, seltop, selleft, html5) {
+  var c=hex;
+  let cObj = w3color(c);
+  let colorhex = cObj.toHexString();
+	let colormap, areas, i, areacolor, cc;
+  r = cObj.red;
+  g = cObj.green;
+  b = cObj.blue;
+
+	//hier versucht er herauszufinden ob die color die via input eingegeben wurde im colorpicker existiert und setzt die coordinates falls ja!
+  if (isdef(mBy('colornamDIV'))) {
+    document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
+    document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
+    document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
+    document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
+    if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
+      colormap = document.getElementById("colormap");
+      areas = colormap.getElementsByTagName("AREA");
+      for (i = 0; i < areas.length; i++) {
+        areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
+        areacolor = areacolor.replace('")', '');
+        if (areacolor.toLowerCase() == colorhex) {
+          cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
+          seltop = Number(cc[1]);
+          selleft = Number(cc[2]);
+        }
+      }
+    }
+    document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
+  }
+
+  if ((seltop + 200) > -1 && selleft > -1) {
+    document.getElementById("selectedhexagon").style.top = seltop + "px";
+    document.getElementById("selectedhexagon").style.left = selleft + "px";
+    document.getElementById("selectedhexagon").style.visibility = "visible";
+  } else {
+    document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
+    document.getElementById("selectedhexagon").style.visibility = "hidden";
+  }
+
+  if (isdef(mBy('html5colorpicker'))) {
+    document.getElementById("html5colorpicker").value = cObj.toHexString();
+  }
+
+  if (isdef(mBy('slideRed'))) {
+    document.getElementById('slideRed').value = r;
+    document.getElementById('slideGreen').value = g;
+    document.getElementById('slideBlue').value = b;
+    changeRed(r); changeGreen(g); changeBlue(b);
+    changeColor();
+    document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
+  }
+}
+function clickColor_orig(hex, seltop, selleft, html5) {
+  var c, cObj, colormap, areas, i, areacolor, cc;
+  if (html5 && html5 == 5) {
+    c = document.getElementById("html5colorpicker").value;
+  } else {
+    if (hex == 0) {
+      c = document.getElementById("entercolor").value;
+      c = c.replace(/;/g, ","); //replace any semicolon with a comma
+    } else {
+      c = hex;
+    }
+  }
+  cObj = w3color(c);
+  colorhex = cObj.toHexString();
+  if (cObj.valid) {
+    clearWrongInput();
+  } else {
+    wrongInput();
+    return;
+  }
+
+  r = cObj.red;
+  g = cObj.green;
+  b = cObj.blue;
+
+  if (isdef(mBy('colornamDIV'))) {
+    document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
+    document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
+    document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
+    document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
+    if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
+      colormap = document.getElementById("colormap");
+      areas = colormap.getElementsByTagName("AREA");
+      for (i = 0; i < areas.length; i++) {
+        areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
+        areacolor = areacolor.replace('")', '');
+        if (areacolor.toLowerCase() == colorhex) {
+          cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
+          seltop = Number(cc[1]);
+          selleft = Number(cc[2]);
+        }
+      }
+    }
+    document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
+  }
+
+  if ((seltop + 200) > -1 && selleft > -1) {
+    document.getElementById("selectedhexagon").style.top = seltop + "px";
+    document.getElementById("selectedhexagon").style.left = selleft + "px";
+    document.getElementById("selectedhexagon").style.visibility = "visible";
+  } else {
+    document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
+    document.getElementById("selectedhexagon").style.visibility = "hidden";
+  }
+
+  if (isdef(mBy('html5colorpicker'))) {
+    document.getElementById("html5colorpicker").value = cObj.toHexString();
+  }
+
+  if (isdef(mBy('slideRed'))) {
+    document.getElementById('slideRed').value = r;
+    document.getElementById('slideGreen').value = g;
+    document.getElementById('slideBlue').value = b;
+    changeRed(r); changeGreen(g); changeBlue(b);
+    changeColor();
+    document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
+  }
+}
+
+
+//#endregion
+
 //#region bad copi2 parts
 function NOpart111(){
 	let html = `
@@ -766,3 +893,11 @@ function part111(){
 
 }
 //#endregion
+
+//#region 
+
+
+//#endregion
+
+
+

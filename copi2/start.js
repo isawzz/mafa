@@ -1,6 +1,16 @@
 window.onload = start;
 
-async function start() { test2(); }
+async function start() { test3(); }
+
+async function test3() {
+	let i = 0;
+	let d;
+	let maindivs = copi2_maindivs();
+	mInsert(document.body, maindivs, i++);
+	let dMain = d = mBy('dMain');
+	mAppend(d, part111()); //GEHT!
+	clickColor('blue'); //colorObj.toHexString());
+}
 async function test2() {
 	let i = 0;
 	let d;
