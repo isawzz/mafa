@@ -244,17 +244,21 @@ function hslTable(x) {
   if (x == "light") { document.getElementById("hsllumcontainer").innerHTML = a; }
 }
 function mouseOutMap() {
+  let dp=document.getElementById("divpreview");
   if (hh == 0) {
-    document.getElementById("divpreview").style.visibility = "hidden";
+    if (dp) dp.style.visibility = "hidden";
   } else {
     hh = 0;
   }
-  document.getElementById("divpreview").style.backgroundColor = colorObj.toHexString();
+  if (dp) dp.style.backgroundColor = colorObj.toHexString();
   document.body.style.cursor = "";
 }
 function mouseOverColor(hex) {
-  document.getElementById("divpreview").style.visibility = "visible";
-  document.getElementById("divpreview").style.backgroundColor = hex;
+  let dp=document.getElementById("divpreview");
+  if (dp) {
+    document.getElementById("divpreview").style.visibility = "visible";
+    document.getElementById("divpreview").style.backgroundColor = hex;
+  }
   document.body.style.cursor = "pointer";
 }
 function mouseoverdarkicon() {

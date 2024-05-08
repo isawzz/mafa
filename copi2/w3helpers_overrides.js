@@ -5,7 +5,7 @@ function clickColor(c, y, x) {
   if ((!y || y == -1) && (!x || x == -1)) { [x, y] = findColor(hex); }
 
   if (nundef(x)) { console.log('NO VALID COLOR FOUND!!!!', hex); return; }
-  document.getElementById("selectedhexagon").style.top = y + "px";
-  document.getElementById("selectedhexagon").style.left = x + "px";
-  document.getElementById("selectedhexagon").style.visibility = "visible";
+
+  mStyle("selectedhexagon",{top:y,left:x,visibility:'visible'});
+  mStyle(document.body,{bg:hex});
 }

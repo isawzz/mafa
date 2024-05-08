@@ -1,3 +1,15 @@
+function drawHex(dParent, styles={}, opts={}) {
+  //if (nundef(styles.w)) addKeys({ w: 100, h: 100, bg: 'blue' },styles);
+	//styles.h=valf(styles.h,styles.w);//*.866);
+  addKeys({ classes:'hop1' },opts);
+	let d=mDom(dParent,styles,opts);
+  // if (nundef(classes)) classes = ['frameOnHover'];
+  // if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
+  // let d = mDiv(dParent, styles, null, null, classes, sizing);
+  mStyle(d, { 'clip-path': 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' });
+  return d;
+}
+
 
 //#region clickColor progress from orig
 function clickColor(hex, seltop, selleft, html5) {

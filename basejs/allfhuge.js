@@ -26396,10 +26396,12 @@ function getCenter(elem) { let r = isdef(elem.x) ? elem : getRect(elem); return 
 function getCenters(layout, rows, cols, wCell, hCell,) {
   if (layout == 'quad') { return quadCenters(rows, cols, wCell, hCell); }
   else if (layout == 'hex') { return hexCenters(rows, cols, wCell, hCell); }
+  else if (layout == 'hex1') { info = hex1Centers(rows, cols, wCell, hCell); }
   else if (layout == 'circle') { return circleCenters(rows, cols, wCell, hCell); }
 }
 function getCentersFromAreaSize(layout, wBoard, hBoard, wCell, hCell) {
   let info;
+  let [rows,cols]=[Math.ceil(wBoard/wCell),Math.ceil(hBoard/hCell)]
   if (layout == 'quad') { info = quadCenters(rows, cols, wCell, hCell); }
   else if (layout == 'hex') { info = hexCenters(rows, cols, wCell, hCell); }
   else if (layout == 'hex1') { info = hex1Centers(rows, cols, wCell, hCell); }

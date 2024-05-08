@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Beehive Hex Board</title>
+	<style>
+		.hex-board {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+			gap: 2px;
+			padding: 10px;
+			margin: auto;
+			width: 80%;
+			max-width: 800px;
+		}
+
+		.hex {
+			width: calc(100% / 3);
+			aspect-ratio: 1 / sqrt(3);
+			background-color: #f0f0f0;
+			clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="hex-board" id="hexBoard"></div>
+	<script>
+		function createHexBoard(rows, cols) {
+			const hexBoard = document.getElementById('hexBoard');
+			hexBoard.innerHTML = '';
+			for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < cols; j++) {
+					const hex = document.createElement('div');
+					hex.classList.add('hex');
+					hexBoard.appendChild(hex);
+				}
+			}
+		}
+
+		// Example: Create a 5x5 hex board
+		createHexBoard(5, 5);
+	</script>
+</body>
+
+</html>
