@@ -1,3 +1,40 @@
+function hexBoardCenters(topside,side){
+	if (nundef(topside)) topside = 4;
+	if (nundef(side)) side=topside;
+	let [rows,maxcols]=[side+side-1,topside+side-1];
+	assertion(rows%2 == 1,`hex with even rows ${rows} top:${topside} side:${side}!`);
+	let centers = [];
+	console.log(`top:${topside} side:${side} rows:${rows} maxcols:${maxcols}`);
+	let cols=topside;
+	let y=0.5;
+  for (i of range(rows)) {
+    let n=cols;
+		let x=(maxcols-n)/2+.5;
+		for(const c of range(n)) {
+			centers.push({x,y,row:i+1,col:x*2}); x++;
+		}
+		y+=.75
+
+    if (i < (rows - 1) / 2) cols += 1; else cols -= 1;
+  }
+	assertion(cols == topside-1,`END OF COLS WRONG ${cols}`)
+
+	return [centers,rows,maxcols];
+}
+
+
+function _calc_hex_col_array(rows, cols) {
+  let colarr = [];
+  let even = rows % 2 == 0;
+  for (let i = 0; i < rows; i++) {
+    colarr[i] = cols;
+    if (even && i < (rows / 2) - 1) cols += 1;
+    else if (even && i > rows / 2) cols -= 1;
+    else if (!even && i < (rows - 1) / 2) cols += 1;
+    else if (!even || i >= (rows - 1) / 2) cols -= 1;
+  }
+  return colarr;
+}
 function drawHexFlat(dParent, styles={},opts={}) {
   if (nundef(styles.w)) addKeys({ w: 100, h: 100, bg: 'blue' },styles);
 	styles.h=valf(styles.h,styles.w);//*.866);
