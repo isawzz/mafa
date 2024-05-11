@@ -654,11 +654,11 @@ function hsl360ObjectToHex79(c) {
 function hsl360StringToHsl360Object(c) {
 	let [h, s, l, a] = c.match(/\d+\.?\d*/g).map(Number);
 	if (isdef(a) && a>1) a/=10;
-	console.log('parsed',h,s,l,a)
+	//console.log('parsed',h,s,l,a)
 	return { h, s, l, a };
 }
 function hsl360StringToHex79(c) {
- 	let o360 = hsl360StringToHsl360Object(c); console.log(o360);
+ 	let o360 = hsl360StringToHsl360Object(c); //console.log(o360);
 	let o01 = hsl360ArgsToHsl01Object(o360.h, o360.s, o360.l, o360.a); //console.log(o01);
 	return hsl01ObjectToHex79(o01);
 }

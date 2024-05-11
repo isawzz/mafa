@@ -1,20 +1,68 @@
 onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
-async function start() { TESTING = true; test64_colorhex(); }
+async function start() { TESTING = true; test65_changeColors(); }
 
+async function test65_changeColors(){
+  console.log(w3color('red'))
+  let colors = getColormapColors();
+	let d = clearBodyDiv({ gap: 10 }); mFlexWrap(d);
+	let board = mColorPickerHex(d,colors);
+  console.log(board);
+  //return;
+  //jetzt mach eine palette mit ryb colors
+  showPalette(d,colorSchemeRYB());
+
+  // showPalette(d,levelColors);
+  // showPalette(d,Object.values(playerColors));
+  // showPalette(d,modernColors);
+  // showPalette(d,vibrantColors);
+  // showPalette(d,childrenRoomColors);
+  // showPalette(d,deepRichColors);
+
+  let list = levelColors.concat(modernColors.concat(Object.values(playerColors).concat(vibrantColors.concat(childrenRoomColors.concat(deepRichColors)))));
+  //list = sortByHue(list);
+  list = sortByLum(list);
+  showPalette(d,list);
+
+}
+function sortByHue(colors){
+  let list=colors.map(x=>w3color(x));
+  list = sortBy(list,'hue');
+  for(const c of list){c.hex=c.toHexString()}
+  return list.map(x=>x.hex);
+}
+function sortByLum(colors){
+  let list=colors.map(x=>w3color(x));
+  list = sortBy(list,'lightness');
+  for(const c of list){c.hex=c.toHexString()}
+  return list.map(x=>x.hex);
+}
+function showPalette(dParent,colors){
+  let d1=mDom(dParent,{display:'flex',dir:'column',wrap:true, gap:2, hmax:'100vh'});
+
+  for(const c of sortByHue(colors)){
+    let dmini=mDom(d1,{wmin:40,hmin:40,padding:2,bg:c,fg:idealTextColor(c)},{html:`${c}<br>hue:${w3color(c).hue}`});
+  }
+
+}
 async function test64_colorhex(){
   let colors = getColormapColors(); // generateRYBColorHexagon();
+  di={
+    '#ccbb00':'#FFE119'
+  };
   let newColors = [], cnew;
   for(const c of colors){
     let wc=w3color(c);
     let hue = wc.hue;
     let sat = wc.sat*100;
     let lum = wc.lightness*100;
-    console.log(hue,sat,lum);
+    //console.log(hue,sat,lum);
     let m=hue%30;
-    if (m>25 || m<5){
-      hue=hue+15%360;
+    if (isdef(di[c])) cnew = di[c];
+    else if (m>25 || m<5){
+      let inc=isCloseTo(hue,60)?-3:isCloseTo(hue,0)?5:10;
+      hue=(hue+inc)%360;
       cnew=anyToHex79(`hsl(${hue},${sat},${lum})`);
     }else cnew=c;
     newColors.push(cnew);

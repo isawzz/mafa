@@ -1,7 +1,7 @@
 
 function colorSchemeRYB(){
 	let ryb=['#FE2712','#FC600A','#FB9902','#FCCC1A','#FEFE33','#B2D732','#66B032','#347C98','#0247FE','#4424D6','#8601AF','#C21460'];
-
+	return ryb;
 	console.log('w3color',w3color('deeppink'))
 
 	for (const c of ryb){

@@ -318,7 +318,7 @@ function hexBoardCenters(topside,side){
 	let [rows,maxcols]=[side+side-1,topside+side-1];
 	assertion(rows%2 == 1,`hex with even rows ${rows} top:${topside} side:${side}!`);
 	let centers = [];
-	console.log(`top:${topside} side:${side} rows:${rows} maxcols:${maxcols}`);
+	//console.log(`top:${topside} side:${side} rows:${rows} maxcols:${maxcols}`);
 	let cols=topside;
 	let y=0.5;
   for (i of range(rows)) {
@@ -342,6 +342,7 @@ function hexFromCenter(dParent, center, styles = {}, opts = {}) {
 	mStyle(d, styles);
 	return d;
 }
+function isCloseTo(n, m, acc = 10) { return Math.abs(n - m) <= acc + 1; }
 function mColorPicker(dParent,handler){
 	dParent = mDom(dParent); mFlex(dParent);
 	async function mCPClick(item,board){
