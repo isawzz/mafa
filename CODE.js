@@ -1,3 +1,224 @@
+
+function hslTable(dParent,x,color,cols) {
+  var lineno, header, i, a, match, same, comp, loopHSL, HSL;
+  //var color = document.getElementById("colorhexDIV").innerHTML;
+  var hslObj = w3color(color);
+  var h = hslObj.hue;
+  var s = hslObj.sat;
+  var l = hslObj.lightness;
+  var arr = [];
+  if (x == "hue") { header = "Hue"; lineno = 24; }
+  if (x == "sat") { header = "Saturation"; lineno = 20; }
+  if (x == "light") { header = "Lightness"; lineno = 20; }
+  for (i = 0; i <= lineno; i++) {
+    if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+    if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+    if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
+  }
+  if (x == "sat" || x == "light") { arr.reverse(); }
+  a = "<h3>" + header + "</h3>";
+  a += "<div class='w3-responsive'>";
+  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+  a += "<tr>";
+  a += "<td style='width:150px;'></td>";
+  a += "<td style='text-align:right;text-transform:capitalize;'>" + x + "&nbsp;</td>";
+  a += "<td>Hex</td>";
+  a += "<td>Rgb</td>";
+  a += "<td>Hsl</td>";
+  a += "</tr>";
+  match = 0;
+  for (i = 0; i < arr.length; i++) {
+    same = 0;
+    if (x == "hue") {
+      loopHSL = w3color(arr[i]).hue;
+      HSL = h;
+      if (i == arr.length - 1) { loopHSL = 360; }
+      comp = (loopHSL > HSL);
+    }
+    if (x == "sat") {
+      loopHSL = Math.round(w3color(arr[i]).sat * 100);
+      HSL = Number(s * 100);
+      HSL = Math.round(HSL);
+      comp = (loopHSL < HSL);
+      HSL = HSL + "%";
+      loopHSL = loopHSL + "%";
+    }
+    if (x == "light") {
+      loopHSL = Math.round(w3color(arr[i]).lightness * 100);
+      HSL = Number(l * 100);
+      HSL = Math.round(HSL);
+      comp = (loopHSL < HSL);
+      HSL = HSL + "%";
+      loopHSL = loopHSL + "%";
+    }
+    if (HSL == loopHSL) {
+      match++;
+      same = 1;
+    }
+    if (comp) { match++; }
+    if (match == 1) {
+      a += "<tr class='ws-green'>";
+      a += "<td style='background-color:" + hslObj.toHexString() + "'></td>";
+      a += "<td style='text-align:right;'><b>" + HSL + "&nbsp;</b></td>";
+      a += "<td><b>" + hslObj.toHexString() + "</b></td>";
+      a += "<td><b>" + hslObj.toRgbString() + "</b></td>";
+      a += "<td><b>" + hslObj.toHslString() + "</b></td>";
+      a += "</tr>";
+      match = 2;
+    }
+    if (same == 0) {
+      a += "<tr>";
+      a += "<td style='cursor:pointer;background-color:" + arr[i].toHexString() + "' onclick='clickColor(\"" + arr[i].toHexString() + "\")'></td>";
+      a += "<td style='text-align:right;'>" + loopHSL + "&nbsp;</td>";
+      a += "<td>" + arr[i].toHexString() + "</td>";
+      a += "<td>" + arr[i].toRgbString() + "</td>";
+      a += "<td>" + arr[i].toHslString() + "</td>";
+      a += "</tr>";
+    }
+  }
+  a += "</table></div>";
+  dParent.innerHTML = a;
+  // if (x == "hue") { document.getElementById("huecontainer").innerHTML = a; }
+  // if (x == "sat") { document.getElementById("hslsatcontainer").innerHTML = a; }
+  // if (x == "light") { document.getElementById("hsllumcontainer").innerHTML = a; }
+}
+
+function hslTable(dParent,x,color) {
+  let i, a='', match, same, comp, loopHSL, HSL;
+  //var color = document.getElementById("colorhexDIV").innerHTML;
+  let  hslObj = w3color(color);
+  let h = hslObj.hue;
+  let s = hslObj.sat;
+  let l = hslObj.lightness;
+  let arr = [];
+  let lineno = (x == "hue")?24:20;
+  let header = x.toUpperCase();
+  for (i = 0; i <= lineno; i++) {
+    if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+    else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+    else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
+  }
+  // console.log('arr',arr); 
+  if (x == "sat" || x == "light") { arr.reverse(); }
+  a += "<div class='w3-responsive'>";
+  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+  a += "<tr>";
+  a += `<td style='width:30px;'>${header}</td>`;
+  for (i = 0; i < arr.length; i++) {
+    a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
+  }
+  a += "</table></div>";
+  dParent.innerHTML = a;
+}
+
+function hsl360StringToHex79_(hsl) {
+	let [h, s, l] = hsl.match(/\d+\.?\d*/g).map(Number);
+	console.log('anfang',h,s,l);
+	const hue = h/360;
+	const saturation = s / 100;
+	const lightness = l / 100;
+
+
+
+	const [r, g, b] = hslToRgb__(h, s, l); //saturation, lightness);
+	console.log('rgb',r,g,b)
+	// Convert RGB to Hex
+	const toHex = x => x.toString(16).padStart(2, '0');
+	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+function hslToRgb__(h, s, l) {
+	console.log('hallo')
+	let c = (1 - Math.abs(2 * l - 1)) * s;
+	let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+	let m = l - c / 2;
+	let r = 0, g = 0, b = 0;
+
+	if (h >= 0 && h < 60) {
+		r = c; g = x; b = 0;
+	} else if (h >= 60 && h < 120) {
+		r = x; g = c; b = 0;
+	} else if (h >= 120 && h < 180) {
+		r = 0; g = c; b = x;
+	} else if (h >= 180 && h < 240) {
+		r = 0; g = x; b = c;
+	} else if (h >= 240 && h < 300) {
+		r = x; g = 0; b = c;
+	} else if (h >= 300 && h < 360) {
+		r = c; g = 0; b = x;
+	}
+
+	// Converting from 0-1 range to 0-255 range and adding m
+	r = Math.round((r + m) * 255);
+	g = Math.round((g + m) * 255);
+	b = Math.round((b + m) * 255);
+
+	return [r, g, b];
+}
+
+async function mColorPicker(dParent) {
+	let d = mDom(dParent,{bg:'black'});
+	let img = await imgAsync(d, {}, { src: '../copi2/img_colormap.gif', usemap: '#colormap' });
+	mStyle(d,{w:img.naturalWidth,h:img.naturalHeight});
+	//console.log(img.naturalWidth, img.naturalHeight); let r = getRect(d); let ri = getRect(img); console.log('rect', r.w, r.h); console.log('ri', ri.w, ri.h);
+	mAppend(d, colormapHtml());
+
+	let dselect = mDom(d, { visibility: 'hidden', position: 'relative', w: 21, h: 21, bgImage: 'url("../copi2/img_selectedcolor.gif")' }, { id: 'selectedhexagon' });
+
+	// <div id="selectedhexagon"
+	// style='visibility:hidden;position:relative;width:21px;height:21px;background-image:url("../copi2/img_selectedcolor.gif")'>
+	// </div>
+
+
+	// d.innerHTML = `
+	// 		<div style="display:inline-block;height:199px">
+	// 			<img src='../copi2/img_colormap.gif' usemap='#colormap' alt='colormap' />
+	// 			${map111()}				
+	// 			${selecthexagon111()}				
+	// 		</div>
+	// `;
+	console.log('rect', getRect(d));
+	return d;
+}
+function drawHexBoard(topside,side,dParent,styles={},opts={}){
+	addKeys({position:'relative'},styles);
+	let d = mDom(dParent, styles, opts); // { position: 'relative', bg:'#222' });
+	let [centers,rows,maxcols] = hexBoardCenters(topside,side);
+	//console.log('centers',centers[0],centers)
+	let sz = 20;
+	let [w, h] = [sz, sz];
+	let items = [];
+	for(const c of centers){
+		// let [x,y]=[w/2+c.x*w,h/2+c.y*h*.75];
+		let dhex = hexFromCenter(d, {x:c.x*w,y:c.y*h}, { w:w-2, h:h-2, bg: 'pink' },{classes:'hop1'});
+		dhex.onclick = ()=>mStyle(document.body, {bg:rColor()}); 
+		let item = {div:dhex,cx:c.x,cy:c.y,row:c.row,col:c.col};
+		items.push(item);
+	}
+	let [wBoard,hBoard]=[maxcols*w,rows*h*.75+h*.25];
+	mStyle(d,{w:wBoard,h:hBoard}); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
+	return {div:d,topside,side,centers,rows,maxcols,boardShape:'hex',w,h,wBoard,hBoard,items}
+
+}
+function drawHexBoard(topside,side,dParent,styles={},opts={}){
+	addKeys({position:'relative'},styles);
+	let d = mDom(dParent, styles, opts); // { position: 'relative', bg:'#222' });
+	let [centers,rows,maxcols] = hexBoardCenters(topside,side);
+	//console.log('centers',centers[0],centers)
+	let sz = 20;
+	let [w, h] = [sz, sz];
+	let items = [];
+	for(const c of centers){
+		// let [x,y]=[w/2+c.x*w,h/2+c.y*h*.75];
+		let dhex = hexFromCenter(d, {x:c.x*w,y:c.y*h}, { w:w-2, h:h-2, bg: 'pink' },{classes:'hop1'});
+		dhex.onclick = ()=>mStyle(document.body, {bg:rColor()}); 
+		let item = {div:dhex,cx:c.x,cy:c.y,row:c.row,col:c.col};
+		items.push(item);
+	}
+	let [wBoard,hBoard]=[maxcols*w,rows*h*.75+h*.25];
+	mStyle(d,{w:wBoard,h:hBoard}); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
+	return {div:d,topside,side,centers,rows,maxcols,boardShape:'hex',w,h,wBoard,hBoard,items}
+
+}
 function drawHex(dParent, styles={}, opts={}) {
   //if (nundef(styles.w)) addKeys({ w: 100, h: 100, bg: 'blue' },styles);
 	//styles.h=valf(styles.h,styles.w);//*.866);

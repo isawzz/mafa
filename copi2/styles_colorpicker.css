@@ -1,3 +1,9 @@
+.hexSelected, .hexframe:hover{
+	border-radius: 50%;
+	outline: solid silver 5px;
+	border: solid silver 5px;
+}
+
 #selectedcolor {
 	border: 1px solid #e3e3e3;
 	width: 80%;

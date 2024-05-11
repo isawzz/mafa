@@ -1,8 +1,50 @@
 onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
-//async function start() { TESTING = true; test60_genauerTesten(); }
+async function start() { TESTING = true; test64_colorhex(); }
 
+async function test64_colorhex(){
+  let colors = getColormapColors(); // generateRYBColorHexagon();
+  let newColors = [], cnew;
+  for(const c of colors){
+    let wc=w3color(c);
+    let hue = wc.hue;
+    let sat = wc.sat*100;
+    let lum = wc.lightness*100;
+    console.log(hue,sat,lum);
+    let m=hue%30;
+    if (m>25 || m<5){
+      hue=hue+15%360;
+      cnew=anyToHex79(`hsl(${hue},${sat},${lum})`);
+    }else cnew=c;
+    newColors.push(cnew);
+    //break;
+  }
+	let d = clearBodyReset100({ gap: 10 }); mFlexWrap(d);
+	let board = mColorPickerHex(d,newColors);
+
+  let board2 = mColorPickerHex(d,colors);
+
+}
+async function test63_mColorPicker1(){
+  colorSchemeRYB();
+  return;
+	let d = clearBodyReset100({ gap: 10 }); mFlexWrap(d);
+	let board = mColorPickerBoard(d);
+
+}
+
+async function test62_mColorPicker(){
+	let d = clearBodyReset100({ gap: 10 }); mFlexWrap(d);
+	let cpi = mColorPicker(d);
+  cpi.setColor();
+
+  //let dhue = mDom(d);
+  // hslTable(mDom(d),'hue',cpi.getColor(),0);
+  // hslTable(mDom(d),'sat',cpi.getColor(),0);
+  // hslTable(mDom(d),'light',cpi.getColor(),0);
+
+}
 async function test61_w3Colorpicker(){
   await loadAssets();
   let d = clearBodyReset100({ bg: 'skyblue', overy: 'scroll' }, { id: 'dPage' });
@@ -25,7 +67,6 @@ async function test60_genauerTesten(){
   }
 
 }
-
 async function test59_ColorDi() {
   ensureColorDict();
   console.log(ColorDi); //entries string: c:hexcolor,[ E:english name, D:german name ]
@@ -90,7 +131,6 @@ async function test55_cleanUsers() {
     //await 
   }
 }
-
 async function test54_dynBody() {
   let html = `
 	<div style="position:fixed;width:100%;z-index:20000">
@@ -145,7 +185,6 @@ async function test52() {
   // }
   // multiply screen overlay darken lighten
 }
-
 async function test51() {
   await prelims();
   //await switchToOtherUser('amanda','felix'); // 'diana');
@@ -155,7 +194,6 @@ async function test51() {
   console.log(UI.nav)
   await switchToMenu(UI.nav, 'colors');
 }
-
 async function prelims() {
   ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
   let t1 = performance.now();

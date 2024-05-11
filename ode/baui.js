@@ -1,15 +1,720 @@
-function stringBetween(sFull, sStart, sEnd) {
-  return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
-}
-function uiTypeRadios(lst, d, styles = {}, opts = {}) {
-  let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-  let handler = x => squareTo(cropper, x);
-  mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
-  for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
-    mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
+
+//#region color legacy code: TODO!!!! mimali, or isolate and eliminate
+function colorHSL(cAny, asObject = false) {
+  let res = colorFrom(cAny, undefined, true);
+  let shsl = res;
+  if (res[0] == '#') {
+    if (res.length == 9) {
+      shsl = hexAToHSLA(res);
+    } else if (res.length == 7) {
+      shsl = hexToHSL(res);
+    }
+  } else if (res[0] == 'r') {
+    if (res[3] == 'a') {
+      shsl = RGBAToHSLA(res);
+    } else {
+      shsl = RGBToHSL(res);
+    }
   }
-  return rg;
+  let n = allNumbers(shsl);
+  if (asObject) {
+    return { h: n[0] / 360, s: n[1] / 100, l: n[2] / 100, a: n.length > 3 ? n[3] : 1 };
+  } else {
+    return shsl;
+  }
 }
+function colorLum(cAny, percent = false) {
+  let hsl = colorHSL(cAny, true);
+  return percent ? hsl.l * 100 : hsl.l;
+}
+async function getPaletteFromElem(elem){
+	let cv = await html2canvas(elem);
+  let imgData = cv.toDataURL("image/jpeg", 0.9);
+  let img = await imgAsync(elem.parentNode, {w:100,h:100,border:'red',position:'absolute',top:210,left:800}, {src:imgData});
+  let pal=ColorThiefObject.getPalette(img); //console.log('palette',pal)
+
+  //sort palette by brightness!
+  let arr=pal.map(x=>({orig:x,hex:colorHex(x),lum:colorHSL(x,true).l}));
+  arr=sortBy(arr,'lum');
+  //img.remove();
+  //console.log(arr);
+
+  return arr.map(x=>x.hex); //.map(x=>colorHex(x));//new Image(cv.width,cv.height,imgData;
+  // .then(function (canvas) {
+	// 	let imgData = canvas.toDataURL("image/jpeg", 0.9);
+	// 	var profile_image = mBy("profile_image");
+	// 	profile_image.src = imgData;
+	// 	mBy('imgPreview').src = imgData;
+
+}
+function mimali(c, n) {
+  function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
+  function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
+  function cinc(c, hinc, sinc, linc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, clamp(hsl.s * 100 + sinc, 0, 100), clamp(hsl.l * 100 + linc, 0, 100)); }
+  function arrd(c, hinc, sinc, linc, n) { let r = []; for (let i = 0; i < n; i++) { r.push(cinc(c, hinc * i, sinc * i, linc * i)); } return r; }
+  function light(c, lper = 75) { let hsl = colorHSL(c, true); return colorHSLBuild(hsl.h, hsl.s * 100, lper); }
+  function sat(c, sper = 100) { let hsl = colorHSL(c, true); return colorHSLBuild(sper, hsl.s * 100, hsl.l * 100); }
+  function hue(c, hdeg) { let hsl = colorHSL(c, true); return colorHSLBuild(hdeg, hsl.s * 100, hsl.l * 100); }
+  c = light(c, 75);
+  let diff = Math.round(360 / n)
+  wheel = arrd(c, diff, 0, 0, n);
+  return wheel;
+}
+
+//#endregion
+
+//#region legacy color functions
+function hexAToHSLA(H) {
+  let ex = /^#([\da-f]{4}){1,2}$/i;
+  if (ex.test(H)) {
+    let r = 0,
+      g = 0,
+      b = 0,
+      a = 1;
+    if (H.length == 5) {
+      r = '0x' + H[1] + H[1];
+      g = '0x' + H[2] + H[2];
+      b = '0x' + H[3] + H[3];
+      a = '0x' + H[4] + H[4];
+    } else if (H.length == 9) {
+      r = '0x' + H[1] + H[2];
+      g = '0x' + H[3] + H[4];
+      b = '0x' + H[5] + H[6];
+      a = '0x' + H[7] + H[8];
+    }
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    a = (a / 255).toFixed(3);
+    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hexToHSL(H) {
+  let ex = /^#([\da-f]{3}){1,2}$/i;
+  if (ex.test(H)) {
+    let r = 0,
+      g = 0,
+      b = 0;
+    if (H.length == 4) {
+      r = '0x' + H[1] + H[1];
+      g = '0x' + H[2] + H[2];
+      b = '0x' + H[3] + H[3];
+    } else if (H.length == 7) {
+      r = '0x' + H[1] + H[2];
+      g = '0x' + H[3] + H[4];
+      b = '0x' + H[5] + H[6];
+    }
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hex2RgbObject(hex) {
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		}
+		: null;
+}
+function HSLAToRGBA(hsla, isPct) {
+  let ex = /^hsla\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)(((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2},\s?)|((\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}\s\/\s))((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+  if (ex.test(hsla)) {
+    let sep = hsla.indexOf(',') > -1 ? ',' : ' ';
+    hsla = hsla
+      .substr(5)
+      .split(')')[0]
+      .split(sep);
+    if (hsla.indexOf('/') > -1) hsla.splice(3, 1);
+    isPct = isPct === true;
+    let h = hsla[0],
+      s = hsla[1].substr(0, hsla[1].length - 1) / 100,
+      l = hsla[2].substr(0, hsla[2].length - 1) / 100,
+      a = hsla[3];
+    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
+    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
+    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
+    if (h >= 360) h %= 360;
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+      m = l - c / 2,
+      r = 0,
+      g = 0,
+      b = 0;
+    if (0 <= h && h < 60) {
+      r = c;
+      g = x;
+      b = 0;
+    } else if (60 <= h && h < 120) {
+      r = x;
+      g = c;
+      b = 0;
+    } else if (120 <= h && h < 180) {
+      r = 0;
+      g = c;
+      b = x;
+    } else if (180 <= h && h < 240) {
+      r = 0;
+      g = x;
+      b = c;
+    } else if (240 <= h && h < 300) {
+      r = x;
+      g = 0;
+      b = c;
+    } else if (300 <= h && h < 360) {
+      r = c;
+      g = 0;
+      b = x;
+    }
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    let pctFound = a.indexOf('%') > -1;
+    if (isPct) {
+      r = +((r / 255) * 100).toFixed(1);
+      g = +((g / 255) * 100).toFixed(1);
+      b = +((b / 255) * 100).toFixed(1);
+      if (!pctFound) {
+        a *= 100;
+      } else {
+        a = a.substr(0, a.length - 1);
+      }
+    } else if (pctFound) {
+      a = a.substr(0, a.length - 1) / 100;
+    }
+    return 'rgba(' + (isPct ? r + '%,' + g + '%,' + b + '%,' + a + '%' : +r + ',' + +g + ',' + +b + ',' + +a) + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hslToHex(h, s, l, alpha) {
+  //expects h:0..360, s,l 0..100%, alpha 0..1
+  l /= 100;
+  const a = s * Math.min(l, 1 - l) / 100;
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}` + (isdef(alpha)?alphaToHex(alpha):'');
+}
+function hslToHexCOOL(hslColor) {
+  const hslColorCopy = { ...hslColor };
+  hslColorCopy.l /= 100;
+  const a =
+    (hslColorCopy.s * Math.min(hslColorCopy.l, 1 - hslColorCopy.l)) / 100;
+  const f = (n) => {
+    const k = (n + hslColorCopy.h / 30) % 12;
+    const color = hslColorCopy.l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+}
+function HSLToRGB(hsl, isPct) {
+  let ex = /^hsl\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}|(\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2})\)$/i;
+  if (ex.test(hsl)) {
+    let sep = hsl.indexOf(',') > -1 ? ',' : ' ';
+    hsl = hsl
+      .substr(4)
+      .split(')')[0]
+      .split(sep);
+    isPct = isPct === true;
+    let h = hsl[0],
+      s = hsl[1].substr(0, hsl[1].length - 1) / 100,
+      l = hsl[2].substr(0, hsl[2].length - 1) / 100;
+    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
+    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
+    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
+    if (h >= 360) h %= 360;
+    let c = (1 - Math.abs(2 * l - 1)) * s,
+      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+      m = l - c / 2,
+      r = 0,
+      g = 0,
+      b = 0;
+    if (0 <= h && h < 60) {
+      r = c;
+      g = x;
+      b = 0;
+    } else if (60 <= h && h < 120) {
+      r = x;
+      g = c;
+      b = 0;
+    } else if (120 <= h && h < 180) {
+      r = 0;
+      g = c;
+      b = x;
+    } else if (180 <= h && h < 240) {
+      r = 0;
+      g = x;
+      b = c;
+    } else if (240 <= h && h < 300) {
+      r = x;
+      g = 0;
+      b = c;
+    } else if (300 <= h && h < 360) {
+      r = c;
+      g = 0;
+      b = x;
+    }
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    b = Math.round((b + m) * 255);
+    if (isPct) {
+      r = +((r / 255) * 100).toFixed(1);
+      g = +((g / 255) * 100).toFixed(1);
+      b = +((b / 255) * 100).toFixed(1);
+    }
+    return 'rgb(' + (isPct ? r + '%,' + g + '%,' + b + '%' : +r + ',' + +g + ',' + +b) + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function hue(h) {
+  var r = Math.abs(h * 6 - 3) - 1;
+  var g = 2 - Math.abs(h * 6 - 2);
+  var b = 2 - Math.abs(h * 6 - 4);
+  return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+}
+function RGBAToHSLA(rgba) {
+  let ex = /^rgba\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){3}))|(((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){3}))\/\s)((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+  if (ex.test(rgba)) {
+    let sep = rgba.indexOf(',') > -1 ? ',' : ' ';
+    rgba = rgba
+      .substr(5)
+      .split(')')[0]
+      .split(sep);
+    if (rgba.indexOf('/') > -1) rgba.splice(3, 1);
+    for (let R in rgba) {
+      let r = rgba[R];
+      if (r.indexOf('%') > -1) {
+        let p = r.substr(0, r.length - 1) / 100;
+        if (R < 3) {
+          rgba[R] = Math.round(p * 255);
+        }
+      }
+    }
+    let r = rgba[0] / 255,
+      g = rgba[1] / 255,
+      b = rgba[2] / 255,
+      a = rgba[3],
+      cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+  } else {
+    return 'Invalid input color';
+  }
+}
+function RGBToHSL(rgb) {
+  let ex = /^rgb\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){2}|((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s)){2})((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]))|((((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){2}|((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){2})(([1-9]?\d(\.\d+)?)|100|(\.\d+))%))\)$/i;
+  if (ex.test(rgb)) {
+    let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
+    rgb = rgb
+      .substr(4)
+      .split(')')[0]
+      .split(sep);
+    for (let R in rgb) {
+      let r = rgb[R];
+      if (r.indexOf('%') > -1) rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
+    }
+    let r = rgb[0] / 255,
+      g = rgb[1] / 255,
+      b = rgb[2] / 255,
+      cmin = Math.min(r, g, b),
+      cmax = Math.max(r, g, b),
+      delta = cmax - cmin,
+      h = 0,
+      s = 0,
+      l = 0;
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+  } else {
+    return 'Invalid input color';
+  }
+}
+
+
+function colorContrast(dDrop, list = ['white', 'black']) {
+  let bg = mGetStyle(dDrop, 'bg'); return bestContrastingColor(bg, list);
+}
+function colorFromHSL(hue, sat = 100, lum = 50) {
+  return hslToHex(valf(hue, rHue()), sat, lum);
+}
+function colorHex(cAny) {
+  let c = colorFrom(cAny);
+  if (c[0] == '#') {
+    return c;
+  } else {
+    let res = pSBC(0, c, 'c');
+    return res;
+  }
+}
+function colorHexToRgb(hex) {
+  hex = hex.replace(/^#/, '');
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return { r, g, b };
+}
+function colorHSLBuild(hue, sat = 100, lum = 50) { let result = "hsl(" + hue + ',' + sat + '%,' + lum + '%)'; return result; }
+function colorNameToHexString(str) {
+  var ctx = document.createElement('canvas').getContext('2d');
+  ctx.fillStyle = str;
+  return ctx.fillStyle;
+}
+function colorRGB(cAny, asObject = false) {
+  let res = colorFrom(cAny);
+  let srgb = res;
+  if (res[0] == '#') {
+    srgb = pSBC(0, res, 'c');
+  }
+  let n = allNumbers(srgb);
+  if (asObject) {
+    return { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 };
+  } else {
+    return srgb;
+  }
+}
+function colorsFromBFA(bg, fg, alpha) {
+  if (fg == 'contrast') {
+    if (bg != 'inherit') bg = colorFrom(bg, alpha);
+    fg = colorIdealText(bg);
+  } else if (bg == 'contrast') {
+    fg = colorFrom(fg);
+    bg = colorIdealText(fg);
+  } else {
+    if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
+    if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
+  }
+  return [bg, fg];
+}
+function colorIdealText(bg, grayPreferred = false) {
+  let rgb = colorRGB(bg, true);
+  const nThreshold = 105;
+  let r = rgb.r;
+  let g = rgb.g;
+  let b = rgb.b;
+  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+  return foreColor;
+}
+function colorLight(c, percent = 20, log = true) {
+  if (nundef(c)) {
+    return colorFromHSL(rHue(), 100, 85);
+  } else c = colorFrom(c);
+  let zero1 = percent / 100;
+  return pSBC(zero1, c, undefined, !log);
+}
+function colorLighter(c, zero1 = .2, log = true) {
+  c = colorFrom(c);
+  return pSBC(zero1, c, undefined, !log);
+}
+function colorPalette(color, type = 'shade') {
+  color = colorFrom(color);
+  return colorShades(color);
+}
+function colorShades(color) {
+  let res = [];
+  for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
+    let c = pSBC(frac, color, undefined, true);
+    res.push(c);
+  }
+  return res;
+}
+function colorTrans(cAny, alpha = 0.5) {
+  return colorFrom(cAny, alpha);
+}
+function computeColor(c) { return (c == 'random') ? randomColor() : c; }
+function getExtendedColors(bg, fg) {
+  bg = computeColor(bg);
+  fg = computeColor(fg);
+  if (bg == 'inherit' && (nundef(fg) || fg == 'contrast')) {
+    fg = 'inherit';
+  } else if (fg == 'contrast' && isdef(bg) && bg != 'inherit') fg = colorIdealText(bg);
+  else if (bg == 'contrast' && isdef(fg) && fg != 'inherit') { bg = colorIdealText(fg); }
+  return [bg, fg];
+}
+//#endregion
+
+//#region NEW color functions
+function colorFrom(c, a) {
+	c = anyToHex79(c);
+	if (nundef(a)) return c;
+	return c.substring(0, 7) + (a < 1 ? alphaToHex(a) : '');
+}
+function isStandardHexColor(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
+function anyToHex79(c) {
+	//returns hex standard format (7 or 9 characters)
+	if (isStandardHexColor(c)) return c;
+
+	let tString = isString(c), tArr = isList(c), tObj = isDict(c);
+	if (tString && c[0] == '#') return hex45ToHex79(c);
+	else if (tString && isdef(ColorDi) && lookup(ColorDi, [c])) return ColorDi[c].c;
+	else if (tString && c.startsWith('rand')) {
+		//eg. randLight => colorLight
+		let spec = capitalize(c.substring(4));
+		let func = window['color' + spec];
+		c = isdef(func) ? func() : rColor();
+		assertion(isStandardHexColor(c), 'ERROR coloFrom!!!!!!!!! (rand)');
+		return c;
+	} else if (tString && (c.startsWith('linear') || c.startsWith('radial'))) return c;
+	else if (tString && c.startsWith('rgb')) return rgbStringToHex79(c);
+	else if (tString && c.startsWith('hsl')) return hsl360StringToHex79(c);
+	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.c; }
+	else if (tArr && (c.length == 3 || c.length == 4) && isNumber(c[0])) return rgbArrayToHex79(c);
+	else if (tArr) return anyToHex79(rChoose(tArr));
+	else if (tObj && 'h' in c && c.h > 1) { return hsl360ObjectToHex79(c); } //console.log('!!!');
+	else if (tObj && 'h' in c) return hsl01ObjectToHex79(c);
+	else if (tObj && 'r' in c) return rgbArgsToHex79(c.r, c.g, c.b, c.a);
+
+	assertion(false, `NO COLOR FOUND FOR ${c}`);
+}
+
+function hex45ToHex79(c) {
+	let r = c[1];
+	let g = c[2];
+	let b = c[3];
+	if (c.length == 5) return `#${r}${r}${g}${g}${b}${b}${c[4]}${c[4]}`;
+	return `#${r}${r}${g}${g}${b}${b}`;
+}
+function hex79ToRgbArray(c) {
+	let r = 0, g = 0, b = 0;
+	r = parseInt(c[1] + c[2], 16);
+	g = parseInt(c[3] + c[4], 16);
+	b = parseInt(c[5] + c[6], 16);
+	if (c.length == 7) return [r, g, b];
+
+	let a = parseInt(c[7] + c[8], 16) / 255;
+	return [r, g, b, a];
+}
+function hexToHsl01Array(c) { return rgbArgsToHsl01Array(...hexToRgbArray(c)); }
+function hexToHsl360Object(c) {
+	let arr = hexToHsl01Array(c);
+	return hsl01ArrayToHsl360Object(arr);
+}
+function hexToHsl360String(c) {
+	let arr = hexToHsl01Array(c);
+	let o = hsl01ArrayToHsl360Object(arr);
+	if (nundef(o.a)) return `hsl(${o.h},${o.s}%,${o.l}%)`;
+	return `hsla(${o.h},${o.s}%,${o.l}%,${o.a})`;
+}
+function hexToHsl360String(c) {
+	let r = 0, g = 0x40 / 255, b = 0x54 / 255;
+	let max = Math.max(r, g, b), min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
+
+	if (max === min) {
+		h = s = 0; // achromatic
+	} else {
+		let d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		if (max === r)
+			h = (g - b) / d + (g < b ? 6 : 0);
+		else if (max === g)
+			h = (b - r) / d + 2;
+		else if (max === b)
+			h = (r - g) / d + 4;
+		h *= 60;
+		if (h < 0) h += 360;
+	}
+	return `hsl(${h.toFixed(1)}, ${(s * 100).toFixed(1)}%, ${(l * 100).toFixed(1)}%)`;
+}
+function hexToRgbArray(c) {
+	if (c.length < 7) c = hex45ToHex79(c);
+	return hex79ToRgbArray(c);
+}
+function hexToRgbObject(c) {
+	let arr = hexToRgbArray(c);
+	let o = { r: arr[0], g: arr[1], b: arr[2] };
+	if (arr.length > 3) o.a = arr[3];
+	return o;
+}
+function hexToRgbString(hex) {
+	let o = hexToRgbObject(hex);
+	if (nundef(o.a)) return `rgb(${o.r},${o.g},${o.b})`;
+	return `rgba(${o.r},${o.g},${o.b},${o.a})`;
+}
+function hsl01ArgsToRgbArray(h, s, l, a) {
+	let r, g, b;
+
+	//console.log('...',h,s,l,a)
+
+	if (s === 0) {
+		r = g = b = l; // achromatic
+	} else {
+
+		let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		let p = 2 * l - q;
+		//console.log('???',q,p)
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+
+	let res = [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+	//console.log('!!!res',res)
+	if (nundef(a) || a == 1) return res;
+	res.push(a);
+	return res;
+}
+function hsl01ArgsToHex79(h, s, l, a) {
+	let rgb = hsl01ArgsToRgbArray(h, s, l, a); //console.log(h,s,l,a,rgb)
+	let res = rgbArgsToHex79(rgb[0], rgb[1], rgb[2], rgb.length > 3 ? rgb[3] : null);
+	return res;
+}
+function hsl01ArrayToHsl360Object(arr) {
+	let res = { h: arr[0] * 360, s: arr[1] * 100, l: arr[2] * 100 };
+	if (arr.length > 3) res.a = arr[3];
+	return res;
+}
+function hsl01ObjectToHex79(c) {
+	//console.log('!!!!!',c)
+	if (isdef(c.a)) return hsl01ArgsToHex79(c.h, c.s, c.l, c.a);
+	return hsl01ArgsToHex79(c.h, c.s, c.l);
+}
+function hsl360ArgsToHsl01Object(h, s, l, a) {
+	let res = { h: h / 360, s: s / 100, l: l / 100 };
+	if (isdef(a)) res.a = a;
+	return res;
+}
+function hsl360ArgsToHex79(h, s, l, a) {
+	let o01 = hsl360ArgsToHsl01Object(h, s, l, a);
+	return hsl01ArgsToHex79(o01.h, o01.s, o01.l, o01.a)
+}
+function hsl360ObjectToHex79(c) {
+	let o01 = hsl360ArgsToHsl01Object(c.h, c.s, c.l, c.a); //console.log('!!!!',o01)
+	return hsl01ObjectToHex79(o01)
+}
+function hsl360StringToHsl360Object(c) {
+	let [h, s, l, a] = c.match(/\d+\.?\d*/g).map(Number);
+	if (isdef(a) && a>1) a/=10;
+	console.log('parsed',h,s,l,a)
+	return { h, s, l, a };
+}
+function hsl360StringToHex79(c) {
+ 	let o360 = hsl360StringToHsl360Object(c); console.log(o360);
+	let o01 = hsl360ArgsToHsl01Object(o360.h, o360.s, o360.l, o360.a); //console.log(o01);
+	return hsl01ObjectToHex79(o01);
+}
+
+function rgbArrayToHex79(arr) { return rgbArgsToHex79(...arr); }
+
+function rgbArgsToHex79(r, g, b, a) {
+	//returns a standard hex 7
+	r = Math.round(r).toString(16).padStart(2, '0');
+	g = Math.round(g).toString(16).padStart(2, '0');
+	b = Math.round(b).toString(16).padStart(2, '0');
+
+	if (nundef(a)) return `#${r}${g}${b}`;
+
+	a = Math.round(a * 255).toString(16).padStart(2, '0');
+	return `#${r}${g}${b}${a}`;
+}
+function rgbArgsToHsl01Array(r, g, b) {
+	r /= 255, g /= 255, b /= 255;
+	let max = Math.max(r, g, b), min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
+
+	if (max === min) {
+		h = s = 0; // achromatic
+	} else {
+		let d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+		h /= 6;
+	}
+
+	return [h, s, l];
+}
+function rgbStringToHex79(c) {
+	let parts = c.split(',');
+	let r = firstNumber(parts[0]);
+	let g = firstNumber(parts[1]);
+	let b = firstNumber(parts[2]);
+	let a = parts.length > 3 ? Number(stringBefore(parts[3], ')')) : null;
+	return rgbArgsToHex79(r, g, b, a);
+}
+
+function hue2rgb(p, q, t) {
+	if (t < 0) t += 1;
+	if (t > 1) t -= 1;
+	if (t < 1 / 6) return p + (q - p) * 6 * t;
+	if (t < 1 / 2) return q;
+	if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+	return p;
+}
+
+//#endregion
 
 //#region mStyle
 function mStyle(elem, styles = {}, unit = 'px') {
@@ -121,11 +826,11 @@ function mStyle(elem, styles = {}, unit = 'px') {
 }
 //#endregion
 
-//#region settings menu
+//#region settings and colors menu
 async function settingsClose(){
   console.log('close Settings!!!'); mClear('dMain');
 }
-//#region colors menu
+
 function colorBlendMode(c1, c2, blendMode) {
 	function blendColorDodge(baseColor, blendColor) {
 		let [r1, g1, b1] = hexToRgbArray(baseColor);
@@ -426,7 +1131,7 @@ async function settingsSave(){
   item = settingsGetSelectedBlend();if (isdef(item)) o.blend=item.blend;
 }
 
-//#_endregion
+//#endregion
 
 //#region showTable
 async function showTable(table) {

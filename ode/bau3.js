@@ -1,65 +1,74 @@
 
-//#region color legacy code: isolate and eliminate
-function colorHSL(cAny, asObject = false) {
-  let res = colorFrom(cAny, undefined, true);
-  let shsl = res;
-  if (res[0] == '#') {
-    if (res.length == 9) {
-      shsl = hexAToHSLA(res);
-    } else if (res.length == 7) {
-      shsl = hexToHSL(res);
-    }
-  } else if (res[0] == 'r') {
-    if (res[3] == 'a') {
-      shsl = RGBAToHSLA(res);
-    } else {
-      shsl = RGBToHSL(res);
-    }
+function hslTable(dParent,x,color) {
+  let i, a='', match, same, comp, loopHSL, HSL;
+  //var color = document.getElementById("colorhexDIV").innerHTML;
+  let  hslObj = w3color(color);
+  let h = hslObj.hue;
+  let s = hslObj.sat;
+  let l = hslObj.lightness;
+  let arr = [];
+  let lineno = (x == "hue")?12:10;
+  let header = x.toUpperCase();
+  for (i = 0; i <= lineno; i++) {
+    let chue=`hsl(${(h+i*30)%360},${s},${l})`;
+    if (x == "hue") { arr.push(w3color(chue)); }
+    // if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+    else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+    else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
   }
-  let n = allNumbers(shsl);
-  if (asObject) {
-    return { h: n[0] / 360, s: n[1] / 100, l: n[2] / 100, a: n.length > 3 ? n[3] : 1 };
-  } else {
-    return shsl;
+  // console.log('arr',arr); 
+  if (x == "sat" || x == "light") { arr.reverse(); }
+  a += "<div class='w3-responsive'>";
+  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+  a += "<tr>";
+  a += `<td style='width:30px;'>${header}</td>`;
+  for (i = 0; i < arr.length; i++) {
+    a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
   }
+  a += "</table></div>";
+  dParent.innerHTML = a;
 }
-function colorLum(cAny, percent = false) {
-  let hsl = colorHSL(cAny, true);
-  return percent ? hsl.l * 100 : hsl.l;
+function hslTables(dParent,color) {
+  let i, a='', match, same, comp, loopHSL, HSL;
+  //var color = document.getElementById("colorhexDIV").innerHTML;
+  let  hslObj = w3color(color);
+  let h = hslObj.hue;
+  let s = hslObj.sat;
+  let l = hslObj.lightness;
+  let arr = [];
+  lineno=10;
+  //let header = x.toUpperCase();
+  for (i = 0; i <= lineno; i++) {
+    let chue=`hsl(${(h-50+i*10)%360},${s},${l})`;
+    let csat=`hsl(${h},${i*.1},${l})`;
+    let clum=`hsl(${h},${s},${i*.1})`;
+    arr.push({h:w3color(chue),s:w3color(csat),l:w3color(clum)});
+  }
+  // console.log('arr',arr); 
+  a += "<div class='w3-responsive'>";
+  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+  a += "<tr>";
+  a += `<td style='width:30px;'>Hue</td><td style='width:30px;'>Sat</td><td style='width:30px;'>Lum</td>`;
+  for (i = 0; i < arr.length; i++) {
+    let [hexh,hexs,hexl]=[arr[i].h.toHexString(),arr[i].s.toHexString(),arr[i].l.toHexString()];
+    a += `
+      <tr>
+        <td style='cursor:pointer;background-color:${hexh}' onclick='onclickHue("${hexh}")'>${hexh}</td>
+        <td style='cursor:pointer;background-color:${hexs}' onclick='onclickSat("${hexs}")'>${hexs}</td>
+        <td style='cursor:pointer;background-color:${hexl}' onclick='onclickLum("${hexl}")'>${hexl}</td>
+      </tr>`;
+  }
+  a += "</table></div>";
+  dParent.innerHTML = a;
 }
-async function getPaletteFromElem(elem){
-	let cv = await html2canvas(elem);
-  let imgData = cv.toDataURL("image/jpeg", 0.9);
-  let img = await imgAsync(elem.parentNode, {w:100,h:100,border:'red',position:'absolute',top:210,left:800}, {src:imgData});
-  let pal=ColorThiefObject.getPalette(img); //console.log('palette',pal)
+function onclickHue(color){
+  
+}
 
-  //sort palette by brightness!
-  let arr=pal.map(x=>({orig:x,hex:colorHex(x),lum:colorHSL(x,true).l}));
-  arr=sortBy(arr,'lum');
-  //img.remove();
-  //console.log(arr);
 
-  return arr.map(x=>x.hex); //.map(x=>colorHex(x));//new Image(cv.width,cv.height,imgData;
-  // .then(function (canvas) {
-	// 	let imgData = canvas.toDataURL("image/jpeg", 0.9);
-	// 	var profile_image = mBy("profile_image");
-	// 	profile_image.src = imgData;
-	// 	mBy('imgPreview').src = imgData;
 
-}
-function mimali(c, n) {
-  function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
-  function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
-  function cinc(c, hinc, sinc, linc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, clamp(hsl.s * 100 + sinc, 0, 100), clamp(hsl.l * 100 + linc, 0, 100)); }
-  function arrd(c, hinc, sinc, linc, n) { let r = []; for (let i = 0; i < n; i++) { r.push(cinc(c, hinc * i, sinc * i, linc * i)); } return r; }
-  function light(c, lper = 75) { let hsl = colorHSL(c, true); return colorHSLBuild(hsl.h, hsl.s * 100, lper); }
-  function sat(c, sper = 100) { let hsl = colorHSL(c, true); return colorHSLBuild(sper, hsl.s * 100, hsl.l * 100); }
-  function hue(c, hdeg) { let hsl = colorHSL(c, true); return colorHSLBuild(hdeg, hsl.s * 100, hsl.l * 100); }
-  c = light(c, 75);
-  let diff = Math.round(360 / n)
-  wheel = arrd(c, diff, 0, 0, n);
-  return wheel;
-}
+
+
 
 
 

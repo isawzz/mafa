@@ -272,6 +272,27 @@ function mouseoutofdarkicon() {
   var a = document.getElementById("darkmodemenu");
   a.style.top = "-40px";
 }
+function setThemeCheckboxes() {
+	var x = localStorage.getItem("preferredmode");
+	var y = localStorage.getItem("preferredpagemode");
+	if (x == "dark") {
+		document.getElementById("radio_darkcode").checked = true;
+
+	}
+	if (y == "dark") {
+		document.getElementById("radio_darkpage").checked = true;
+	}
+}
+function setThemeMode() {
+	var x = localStorage.getItem("preferredmode");
+	var y = localStorage.getItem("preferredpagemode");
+	if (x == "dark") {
+		document.body.className += " darktheme";
+	}
+	if (y == "dark") {
+		document.body.className += " darkpagetheme";
+	}
+}
 function submitOnEnter(e) {
   keyboardKey = e.which || e.keyCode;
   if (keyboardKey == 13) {

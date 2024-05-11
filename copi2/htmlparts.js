@@ -1477,6 +1477,11 @@ function colormapHtml() {
 }
 function colormapHtml(dParent) {
 	let map = mDom(dParent,{},{tag:'map', id:'colormap', onmouseout:mouseOutMap});
+	let html = colormapAsString();
+	map.innerHTML = html;
+	return map; //mCreateFrom(html);
+}
+function colormapAsString(){
 	let html = `
 		<area style='cursor:pointer' shape='poly' coords='63,0,72,4,72,15,63,19,54,15,54,4' onclick='clickColor("#003366",-200,54)' onmouseover='mouseOverColor("#003366")' alt='#003366' />
 		<area style='cursor:pointer' shape='poly' coords='81,0,90,4,90,15,81,19,72,15,72,4' onclick='clickColor("#336699",-200,72)' onmouseover='mouseOverColor("#336699")' alt='#336699' />
@@ -1606,34 +1611,9 @@ function colormapHtml(dParent) {
 		<area style='cursor:pointer' shape='poly' coords='153,180,162,184,162,195,153,199,144,195,144,184' onclick='clickColor("#800000",-20,144)' onmouseover='mouseOverColor("#800000")' alt='#800000' />
 		<area style='cursor:pointer' shape='poly' coords='171,180,180,184,180,195,171,199,162,195,162,184' onclick='clickColor("#993333",-20,162)' onmouseover='mouseOverColor("#993333")' alt='#993333' />
 	 `;
-	map.innerHTML = html;
-	return map; //mCreateFrom(html);
+	return html;
 }
 
-async function mColorPicker(dParent) {
-	let d = mDom(dParent,{bg:'black'});
-	let img = await imgAsync(d, {}, { src: '../copi2/img_colormap.gif', usemap: '#colormap' });
-	mStyle(d,{w:img.naturalWidth,h:img.naturalHeight});
-	//console.log(img.naturalWidth, img.naturalHeight); let r = getRect(d); let ri = getRect(img); console.log('rect', r.w, r.h); console.log('ri', ri.w, ri.h);
-	mAppend(d, colormapHtml());
-
-	let dselect = mDom(d, { visibility: 'hidden', position: 'relative', w: 21, h: 21, bgImage: 'url("../copi2/img_selectedcolor.gif")' }, { id: 'selectedhexagon' });
-
-	// <div id="selectedhexagon"
-	// style='visibility:hidden;position:relative;width:21px;height:21px;background-image:url("../copi2/img_selectedcolor.gif")'>
-	// </div>
-
-
-	// d.innerHTML = `
-	// 		<div style="display:inline-block;height:199px">
-	// 			<img src='../copi2/img_colormap.gif' usemap='#colormap' alt='colormap' />
-	// 			${map111()}				
-	// 			${selecthexagon111()}				
-	// 		</div>
-	// `;
-	console.log('rect', getRect(d));
-	return d;
-}
 async function mColorPicker(dParent) {
 	let d = mDom(dParent,{bg:'black'});
 	let img = await imgAsync(d, {}, { src: '../copi2/img_colormap.gif', usemap: '#colormap' });

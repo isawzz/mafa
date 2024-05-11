@@ -1,80 +1,85 @@
 window.onload = start;
 
-async function start() { test10_hexboard(); }
+async function start() { test12_colorPicker(); }
+
+async function test12_colorPicker(){
+	let d = clearBodyReset100({ gap: 10 }); mCenterFlex(d);
+	let cpi = mColorPicker(d,onclickColor);
+}
+async function test11_extractColors() {
+	async function onclickColor(item,items){
+		let selitems = items.filter(x=>x.isSelected==true); selitems.map(x=>toggleItemSelection(x))
+		toggleItemSelection(item);
+		mClassRemove(iDiv(item),'hexframe')
+		mStyle(document.body,{bg:item.color});
+	}
+	async function onenterColor(item,board){	
+		mStyle(iDiv(board),{bg:item.color});
+	}
+	async function onleaveColor(item,board){	
+		let selitem = board.items.find(x=>x.isSelected==true); 
+		if (isdef(selitem)) mStyle(iDiv(board),{bg:selitem.color});
+	}
+	
+	let d = clearBodyReset100({ gap: 10 }); mCenterFlex(d);
+	//let cpi = mColorPicker(d,onclickColor);
+	let board = drawHexBoard(7, 7, d, { bg: rColor(), padding:10, transition:'1s' }, {w:20,h:22, classes:'hexframe'}); //, {padding:10});
+	//let board = drawHexBoard(7, 7, d, { bg: rColor(), padding:10 }, {w:20,h:22, classes:'hexframe'}); //, {padding:10});
+	let colors = getColormapColors(); console.log('colors', colors);
+	let i = 0;
+	for (const item of board.items) {
+		let bg = colors[i++];
+		item.color = bg;
+		let dhex=iDiv(item);
+		dhex.onmouseenter = ()=>onenterColor(item,board);
+		dhex.onmouseleave = ()=>onleaveColor(item,board);
+		dhex.onclick = ()=>onclickColor(item,board.items); //{mStyle(document.body, {bg});} 
+		mStyle(dhex, { bg });
+	}
+	console.log('board', board);
+}
 
 async function test10_hexboard() {
-	let d=clearBodyReset100({gap:10}); mCenterFlex(d);
-	for(const i of range(2)){
-		let board=drawHexBoard(rChoose(range(1,3)),rChoose(range(1,5)),d,{bg:rColor()});
-		console.log('board',board.items);
+	let d = clearBodyReset100({ gap: 10 }); mCenterFlex(d);
+	for (const i of range(2)) {
+		let board = drawHexBoard(rChoose(range(1, 3)), rChoose(range(1, 5)), d, { bg: rColor() });
+		console.log('board', board);
 	}
 }
 async function test9_hexboard() {
-	let d=clearBodyReset100({gap:10}); mCenterFlex(d);
-	let board=drawHexBoard(4,4,d,{bg:rColor()});
-	drawHexBoard(4,5,d,{bg:rColor()});
-	drawHexBoard(5,5,d,{bg:rColor()});
-	drawHexBoard(5,4,d,{bg:rColor()});
-}
-function drawHexBoard(topside,side,dParent,styles={},opts={}){
-	addKeys({position:'relative'},styles, opts);
-	let d = mDom(dParent, styles); // { position: 'relative', bg:'#222' });
-	let [centers,rows,maxcols] = hexBoardCenters(topside,side);
-	//console.log('centers',centers[0],centers)
-	let sz = 20;
-	let [w, h] = [sz, sz];
-	let items = [];
-	for(const c of centers){
-		// let [x,y]=[w/2+c.x*w,h/2+c.y*h*.75];
-		let dhex = hexFromCenter(d, {x:c.x*w,y:c.y*h}, { w:w-2, h:h-2, bg: 'pink' },{classes:'hop1'});
-		dhex.onclick = ()=>mStyle(document.body, {bg:rColor()}); 
-		let item = {div:dhex,cx:c.x,cy:c.y,row:c.row,col:c.col};
-		items.push(item);
-	}
-	let [wBoard,hBoard]=[maxcols*w,rows*h*.75+h*.25];
-	mStyle(d,{w:wBoard,h:hBoard}); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
-	return {div:d,topside,side,centers,rows,maxcols,boardShape:'hex',w,h,wBoard,hBoard,items}
-
+	let d = clearBodyReset100({ gap: 10 }); mCenterFlex(d);
+	let board = drawHexBoard(4, 4, d, { bg: rColor() });
+	drawHexBoard(4, 5, d, { bg: rColor() });
+	drawHexBoard(5, 5, d, { bg: rColor() });
+	drawHexBoard(5, 4, d, { bg: rColor() });
 }
 async function test8_hexboard() {
-	let d = mDom(document.body, { position: 'relative', bg:'#222' });
-	let sz = 100;	let [w, h] = [sz, sz];	let center = { x: w / 2, y: h / 2 };	let [x, y] = [w / 2, h / 2];
-	let boardsz=6;	let [dx, dy, rows, cols] = [w, h * .75, boardsz*2-1, boardsz];
-	let colarr = _calc_hex_col_array(rows,cols);let maxcols = arrMax(colarr); console.log(colarr);
+	let d = mDom(document.body, { position: 'relative', bg: '#222' });
+	let sz = 100; let [w, h] = [sz, sz]; let center = { x: w / 2, y: h / 2 }; let [x, y] = [w / 2, h / 2];
+	let boardsz = 6; let [dx, dy, rows, cols] = [w, h * .75, boardsz * 2 - 1, boardsz];
+	let colarr = _calc_hex_col_array(rows, cols); let maxcols = arrMax(colarr); console.log(colarr);
 
-	let rmid=Math.floor(rows/2); console.log(rows,rmid)
-	let xmin=100000,xmax=-1,ymin=1000000,ymax=-1;
+	let rmid = Math.floor(rows / 2); console.log(rows, rmid)
+	let xmin = 100000, xmax = -1, ymin = 1000000, ymax = -1;
 	for (const r of range(rows)) {
-		let skip=maxcols-colarr[r]/2-boardsz+1;
-		x = skip*w; y = h * .75 * r + h / 2; 
-		if (x<xmin) xmin=x;if (y<ymin) ymin=y;if (x>xmax) xmax=x;if (y>ymax) ymax=y;
+		let skip = maxcols - colarr[r] / 2 - boardsz + 1;
+		x = skip * w; y = h * .75 * r + h / 2;
+		if (x < xmin) xmin = x; if (y < ymin) ymin = y; if (x > xmax) xmax = x; if (y > ymax) ymax = y;
 		console.log(`${x} ${y} (${colarr[r]})`)
 		for (const c of range(colarr[r])) {
 			//if (c<skip) {x+=w;continue;}
 			//hexFromCenter(d, {x,y}, { w, h, bg: rColor() });
-			let dhex = hexFromCenter(d, {x,y}, { w:w-2, h:h-2, bg: 'pink' },{classes:'hop1'});
-			dhex.onclick = ()=>mStyle(document.body, {bg:rColor()}); 
-			
+			let dhex = hexFromCenter(d, { x, y }, { w: w - 2, h: h - 2, bg: 'pink' }, { classes: 'hop1' });
+			dhex.onclick = () => mStyle(document.body, { bg: rColor() });
+
 			//drawHex(d, { w, h, x, y, bg: 'orange', position: 'absolute', border: 'dimgray' });
 			//circleFromCenter(d, {x,y}, { w: 10, h: 10, bg: 'orangered' });
-			x+=w;
+			x += w;
 		}
 
 	}
 	console.log('')
-	mStyle(d,{w:maxcols*w,h:rows*h*.75+h*.25,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
-}
-
-function muell() {
-	let dx = w;
-	let nextCenter = { x: center.x + dx, y: center.y };
-	drawHex(d, { w, h, x: nextCenter.x - w / 2, y: nextCenter.y - h / 2, bg: 'orange', position: 'absolute' })
-	circleFromCenter(d, nextCenter, { w: 10, h: 10, bg: 'orangered' });
-
-	let dy = h * .75;
-	nextCenter = { x: center.x + dx / 2, y: center.y + dy };
-	drawHex(d, { w, h, x: nextCenter.x - w / 2, y: nextCenter.y - h / 2, bg: 'pink', position: 'absolute' })
-	circleFromCenter(d, nextCenter, { w: 10, h: 10, bg: 'hotpink' });
+	mStyle(d, { w: maxcols * w, h: rows * h * .75 + h * .25, 'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)' });
 }
 async function test7_hexboard() {
 	let d = mDom(document.body, { position: 'relative' });
@@ -94,51 +99,6 @@ async function test7_hexboard() {
 	drawHex(d, { w, h, x: nextCenter.x - w / 2, y: nextCenter.y - h / 2, bg: 'pink', position: 'absolute' })
 	circleFromCenter(d, nextCenter, { w: 10, h: 10, bg: 'hotpink' });
 }
-function hexFromCenter(dParent, center, styles = {}, opts = {}) {
-	let [w, h] = mSizeSuccession(styles);
-	let [left, top] = [center.x - w / 2, center.y - h / 2];
-	let d = mDom(dParent, { position: 'absolute', left, top, 'clip-path': 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }, opts);
-	mStyle(d, styles);
-	return d;
-}
-function drawHex(dParent, styles = {}, opts = {}) {
-	addKeys({ classes: 'hop1' }, opts);
-	let d = mDom(dParent, styles, opts);
-	mStyle(d, { 'clip-path': 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' });
-	return d;
-}
-function mSizeSuccession(styles = {}, szDefault = 100, fromWidth = true) {
-	let [w, h] = [styles.w, styles.h];
-	if (fromWidth) {
-		w = valf(w, styles.sz, h, szDefault);
-		h = valf(h, styles.sz, w, szDefault);
-	} else {
-		h = valf(h, styles.sz, w, szDefault);
-		w = valf(w, styles.sz, h, szDefault);
-	}
-	return [w, h];
-}
-function circleFromCenter(dParent, center, styles = {}) {
-	mSizeSuccession(styles);
-	let [left, top] = [center.x - styles.w / 2, center.y - styles.h / 2];
-	let d = mDom(dParent, { position: 'absolute', left, top, round: true });
-	mStyle(d, styles);
-	return d;
-}
-async function muell() {
-	return;
-	let centers = calculateHexCenters(2, 2, szSide);
-	console.log('centers', centers); console.log(Math.sqrt(3));
-	//let [w,h]=[szSide*1.5,szSide*.75];
-	//let w=szSide*Math.sqrt(3);
-	for (const c of centers) {
-		console.log(c)
-		let hex = drawHex(d, { bg: 'red', w, h, top: c.x, left: c.y, position: 'absolute' });
-		console.log(hex)
-		//break;
-	}
-	//let dHex=drawHex(d,{bg:'red'}); console.log(dHex)
-}
 async function test6_hexboard() {
 	let d = mDom(document.body);
 	let x = hexCenters(5, 5, 50);
@@ -148,38 +108,6 @@ async function test6_hexboard() {
 async function test5_hexboard() {
 	let d = mDom(document.body);
 	hexBoard(d);
-}
-function hexBoard(dParent, rows = 5, cols = 5, wHex = 100) {
-	let hline = (wHex / .866) * .75;
-	dParent = mDiv(dParent, { position: 'relative', w: wHex * cols, h: hline * (rows + .5), display: 'inline-block' });
-	let hlist = [];
-	let xOffset = 0;//-20;
-	for (let r = 0; r < rows; r++) {
-		let curCols = r % 2 ? cols - 1 : cols;
-		let dx = r % 2 ? wHex / 2 : 0;
-		dx += xOffset;
-		for (let c = 0; c < curCols; c++) {
-			let [dOuter, dInner] = oneHex(dParent, wHex, wHex, '#ff000080'); //'#ffffff10');
-			mStyleX(dOuter, { position: 'absolute', left: dx + c * wHex, top: r * (hline - 12) });
-			hlist.push(dInner);
-		}
-	}
-	function oneHex(dParent, w, h, bg) {
-		let d1 = mDiv(dParent, { w: w, h: h, display: 'inline', position: 'relative' });
-		let d2 = mDiv(d1, { w: w, h: h, display: 'inline', position: 'absolute', left: 0, top: 0 });
-		let g = aSvgg(d2);
-		let wgap = 8, hgap = 0;
-		// let hex1 = agShape(g, 'hex', w - 2 * wgap, h - 2 * hgap, bg);
-		let gap = 0;
-		let hex1 = agShape(g, 'hex', w - gap, h - gap, colorTrans(rColor(), .5)); // - 2 * wgap, h - 2 * hgap, bg);
-		let offx = 16;
-		let offy = 20;
-		let d3 = mDiv(d1, { w: w, h: h, display: 'inline', position: 'absolute', left: 0, top: 0 });
-		let d4 = mDiv(d3, { left: `${offx / 2}%`, top: `${offy / 2}%`, w: `${100 - offx}%`, h: `${100 - offy}%`, rounding: '50%', display: 'inline', position: 'absolute' });
-		return [d1, d4];
-	}
-
-	return hlist;
 }
 async function test4() {
 	let i = 0;
@@ -192,7 +120,6 @@ async function test4() {
 	// mAppend(d, part111()); //GEHT!
 	clickColor('blue'); //colorObj.toHexString());
 }
-
 async function test3() {
 	let i = 0;
 	let d;
@@ -256,28 +183,5 @@ function prelims_orig() {
 		document.getElementById("html5DIV").style.visibility = "hidden";
 	}
 	// setThemeMode(); //scheinbar garnicht gebraucht - vielleicht spaeter!
-	setThemeCheckboxes();
-}
-
-function setThemeCheckboxes() {
-	var x = localStorage.getItem("preferredmode");
-	var y = localStorage.getItem("preferredpagemode");
-	if (x == "dark") {
-		document.getElementById("radio_darkcode").checked = true;
-
-	}
-	if (y == "dark") {
-		document.getElementById("radio_darkpage").checked = true;
-	}
-}
-
-function setThemeMode() {
-	var x = localStorage.getItem("preferredmode");
-	var y = localStorage.getItem("preferredpagemode");
-	if (x == "dark") {
-		document.body.className += " darktheme";
-	}
-	if (y == "dark") {
-		document.body.className += " darkpagetheme";
-	}
+	// setThemeCheckboxes();
 }

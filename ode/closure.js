@@ -6443,6 +6443,9 @@ function stringBeforeLast(sFull, sSub) {
   let parts = sFull.split(sSub);
   return sFull.substring(0, sFull.length - arrLast(parts).length - 1);
 }
+function stringBetween(sFull, sStart, sEnd) {
+  return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
+}
 function stringCount(s, sSub, caseInsensitive = true) {
   let n = 0;
   for (let i = 0; i < s.length; i++) {
@@ -6604,11 +6607,11 @@ async function testOnclickPlaymode(ev) {
   else await onclickBot();
 }
 function toElem(d) { return isString(d) ? mBy(d) : d; }
-function toggleItemSelection(item, selectedItems) {
+function toggleItemSelection(item, classSelected='framedPicture', selectedItems=null) {
   if (nundef(item)) return;
   let ui = iDiv(item);
   item.isSelected = nundef(item.isSelected) ? true : !item.isSelected;
-  if (item.isSelected) mClass(ui, 'framedPicture'); else mRemoveClass(ui, 'framedPicture');
+  if (item.isSelected) mClass(ui, classSelected); else mRemoveClass(ui, classSelected);
   if (isdef(selectedItems)) {
     if (item.isSelected) {
       console.assert(!selectedItems.includes(item), 'UNSELECTED PIC IN PICLIST!!!!!!!!!!!!')
@@ -6913,6 +6916,15 @@ function uiTypePlayerStats(fen, me, dParent, layout, styles = {}) {
     items[name] = { div: d, img, name };
   }
   return items;
+}
+function uiTypeRadios(lst, d, styles = {}, opts = {}) {
+  let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
+  let handler = x => squareTo(cropper, x);
+  mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
+  for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
+    mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
+  }
+  return rg;
 }
 function unionOfArrays() {
   let arrs = arguments[0];
