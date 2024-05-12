@@ -1,20 +1,53 @@
 
+async function start() { await test7_integrate_bau4_ode(); } //test6_sortFunctionsOfAFile(); }
 async function start() { await test6_sortFunctionsOfAFile(); }
+async function start() { await integrate(`../ode/closure.js`,'../ode/bau4.js'); }
 
+async function integrate(pathLarge,pathNew){
+	let keys;
+	S.type = detectSessionType();
+	initCodingUI();
+	let bykey = await getCodeDictByKey(pathLarge);
+
+	// keys = Object.keys(bykey);
+	//console.log(keys); return;
+
+	let bykeyNew = await getCodeDictByKey(pathNew);
+	copyKeys(bykeyNew,bykey);
+
+	// let list = Object.keys(bykey);
+	// list = sortCaseInsensitive(list);
+	keys = Object.keys(bykey);
+	keys.sort();
+	// console.log(keys); return;
+	
+	let text = '';
+	for (const k of keys) { 
+		let s=bykey[k].code;
+
+		if (!s.includes('\n')) {console.log('oneliner',s); s+='\n';}
+		text += s + '\n'; 
+	}
+	AU.ta.value = text;
+
+}
+async function test7_integrate_bau4_ode(){	test3_integrate(`../ode/closure.js`,'../ode/bau4.js');}
 async function test6_sortFunctionsOfAFile(){
 	S.type = detectSessionType();	initCodingUI();
 
-	let path = `../copi2/w3helpers.js`;
+	let path = `../ode/newclosure.js`;
 
 	let bykey = await getCodeDictByKey(path);
 	let text = '';
 	let keys = Object.keys(bykey);
 	keys.sort();
 	for (const k of keys) { 
-		text += bykey[k].code + '\n'; 
+		let s=bykey[k].code;
+
+		if (!s.includes('\n')) {console.log('oneliner',s); s+='\n';}
+		text += s + '\n'; 
 	}
 	AU.ta.value = text;
-
 
 }
 

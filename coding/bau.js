@@ -382,7 +382,7 @@ function codeParseKeys(text) {
 }
 function codeParseBlocks(text) {
 	//erstmal ohne regions!!!
-	let lines = text.split('\r\n');
+	let lines = text.split('\n');
 	lines = lines.map(x => removeTrailingComments(x));
 	let i = 0, o = null, res = [];
 	while (i < lines.length) {
@@ -629,7 +629,7 @@ async function getCodeList(path){
 	return funclist;
 }
 async function getCodeDictByKey(path){
-	let list = await codeParseFile(path);
+	let list = await codeParseFile(path); console.log(list)
 	let bykey = list2dict(list, 'key');
 	return bykey;
 }

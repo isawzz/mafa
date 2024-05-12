@@ -612,234 +612,10 @@ function mStyle(elem, styles = {}, unit = 'px') {
 }
 //#endregion
 
-//#region showTable
-async function showTable(table) {
-  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
-  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-
-  let func = DA.funcs[table.game];
-  let me = getUname();
-
-  clearMain();
-
-}
-async function ____showTable(table) {
-  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
-  let func = DA.funcs[table.game];
-  let me = getUname();
-
-  clearMain(); //INTERRUPT();
-
-  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-  else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
-
-  Clientdata.table = table; //console.log(table);
-  TPrev = T; T = { table, me };
-
-  let d = T.dMain = mBy('dMain');//mClass(d,'wood')
-  let dInstruction = T.dInstruction = mDom(d, { className: 'instruction' }, { html: `Waiting for ${table.fen.turn.join(', ')}` });
-  mCenterFlex(dInstruction);
-  // let dTitle=T.dTitle=mDom(d,{fz:'2em',weight:'bold',padding:'10'},{html:table.friendly,classes:'title'});
-  let dTitle = T.dTitle = mDom(d, {}, { html: table.friendly });
-  let dGameover = T.dGameover = mDom(d);
-  let dStats = T.dStats = mDom('dMain');
-  let dOpenTable = T.dOpenTable = mDom(d);
-  // showRibbon(d,"this is the game!")
-  //showMessage('HALLO this is a message');
-  let dt = testUpdateTestButtons(dTitle); mStyle(dt, { matop: 4 });
-
-  func.present(T);
-  func.showStats(T);
-  mRise(d);
-
-
-}
-async function ___showTable_rest(table) {
-  //showTitle(`${table.friendly}`);
-  mStyle('dTitle', { display: 'flex', justify: 'space-between' })
-  mDom('dTitle', { fz: '2em', weight: 'bold', maleft: 10, display: 'inline' }, { html: table.friendly, classes: 'title' });
-  let dOver = mDom('dMain', {}, { id: 'dGameover' })
-
-
-
-  T = func.present('dMain', table, me); //console.log('TPrev',TPrev,'T',T);
-  func.showStats(T);
-  mRise('dMain');
-
-  if (TESTING) testUpdateTestButtons();
-
-  if (table.status == 'over') return showGameover(table, dOver);
-  else if (func.checkGameover(table)) return await sendMergeTable(table);
-
-  if (!table.fen.turn.includes(me)) { staticTitle(table); return; }
-
-  animatedTitle();
-
-  let playmode = getPlaymode(table, me);
-  if (playmode == 'bot') return await func.botMove(T);
-  else return await func.activate(T);
-}
-//#endregion 
-
-//#region button96
-function button96() {
-  function setup(table) {
-    let fen = {};
-    fen.players = {};
-    for (const name in table.players) {
-      let pl = fen.players[name] = table.players[name];
-      pl.color = getUserColor(name)
-      pl.score = 0;
-    }
-    fen.number = 0;
-    fen.plorder = jsCopy(table.playerNames);
-    fen.turn = jsCopy(table.playerNames);
-    delete table.players;
-    return fen;
-  }
-  function checkGameover(table) {
-    let score_sum = calcScoreSum(table);
-    //console.log('___check score sum',score_sum);
-    if (score_sum >= 5) {
-      table.winners = getPlayersWithMaxScore(table.fen);
-      table.status = 'over';
-      return true;
-    } else return false;
-    //return table.playerNames.some(x => x.score == table.options.winning_score);
-  }
-  function present(T) {
-    // //assumes that me is player at this table!!!
-    // //assertion(calcScoreSum(table) == table.fen.number, "SCORE MISMATCH!!!! present")
-    // //mClear(dParent);
-    // let dInstruction = mDom(dParent,{className:'instruction'},{html:`Waiting for ${table.fen.turn.join(', ')}`});
-    // let dStats = mDom(dParent);
-    // let div = mDom(dParent, { margin: 12, align: 'center' }, { id: 'dGameDiv' }); //for shield! 
-
-    // let bYes = mDom(div, { fz: 100, wmin: 200, margin:10, className: 'button' }, { tag: 'button', html: `Step:${table.step}` });
-    // let bNo = mDom(div, { fz: 100, wmin: 200, margin:10,className: 'button' }, { tag: 'button', html: `Error!` });
-
-    // if (nundef(name)) name=getUname(); //eingeloggter user perspective is default!
-
-    // return { div, bYes, bNo, dInstruction, dStats, table, name };
-  }
-  function showStats(T) { button96Stats(T); }
-  async function activate(T) {
-    dInstruction.innerHTML = "click one of the buttons!"
-    T.bYes.onclick = () => button96OnclickYes(T, true);
-    T.bNo.onclick = () => button96OnclickNo(T, true);
-  }
-  async function botMove(T) {
-    TO.button = setTimeout(() => button96BotMove(T), rChoose([1000, 2000, 3000]));
-  }
-  return { setup, activate, checkGameover, present, showStats, botMove };
-}
-function button96Stats(T) {
-  let [fen, name, dStats] = [T.table.fen, T.name, T.dStats];
-  let layout = 'rowflex';
-  let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
-  let player_stat_items = uiTypePlayerStats(fen, name, dStats, layout, style)
-  for (const plname in fen.players) {
-    let pl = fen.players[plname];
-    let item = player_stat_items[plname];
-    if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
-    let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
-    playerStatCount('star', pl.score, d);
-  }
-}
-async function button96OnclickYes(T, direct = false) {
-  let b = T.bYes;
-  if (direct) clearEvents();
-  disableUI(); //disableButton(b);
-
-  await sendRaceStepScore(T.table, T.name);
-}
-async function button96OnclickNo(T, direct = false) {
-  let b = T.bNo;
-  if (direct) clearEvents();
-  disableUI(); //disableButton(b);
-
-  await sendRaceError(T.table, T.name);
-}
-async function button96BotMove(T) {
-  if (coin(80)) await button96OnclickYes(T); else await button96OnclickNo(T);
-}
-//#endregion
-
-function loadPlayerColors() {
-  let [hstep, hmin, hmax] = [20, 0, 359];
-  let [lstep, lmin, lmax] = [20, 50, 60];
-  let [sstep, smin, smax] = [30, 70, 100];
-  let [whites, blacks, all] = [[], [], []];
-  for (let h = hmin; h < hmax; h += hstep) {
-    for (let l = lmin; l <= lmax; l += lstep) {
-      for (let s = smin; s <= smax; s += sstep) {
-        let o = { h: h, s: s, l: l };
-        let c = hslToHexCOOL(o);
-        o.c = c;
-        all.push(o);
-        let fg = idealTextColor(c);
-        if (fg == 'white') whites.push(c); else blacks.push(c);
-      }
-    }
-  }
-  DA.allColors = all;
-  blacks.push('#FFDD33')
-  let plColors = whites.concat(blacks);
-  shuffle(plColors);
-  let userColors = {
-    "afia": "#69c963",
-    "ally": "#6660f3",
-    "amanda": "#339940",
-    "annabel": "#ADA0EE",
-    "bob": "#033993",
-    "buddy": "midnightblue",
-    "felix": BLUE,
-    "guest": "dodgerblue",
-    "gul": "#6fccc3",
-    "lauren": BLUEGREEN,
-    "leo": "#C19450",
-    "mac": ORANGE,
-    "minnow": "#F28DB2",
-    "mimi": "#76AEEB",
-    "nasi": "#EC4169",
-    "nimble": "#6E52CC",
-    "sarah": "deeppink",
-    "sheeba": "gold",
-    "valerie": "lightgreen"
-  };
-  // for (const plname in userColors) {
-  //   let uc = userColors[plname];
-  //   uc = colorFrom(uc);
-  //   let already = firstCond(all, x => x.c.toLowerCase() == uc.substring(0, 7).toLowerCase());
-  //   if (already) console.log('present', uc);
-  // }
-	userColors = Object.values(userColors).map(x=>colorFrom(x));
-  ensureColorDict();
-  ensureColorNames();
-  let allColors = Object.values(ColorDi).map(x => x.c);
-  let list = Object.values(userColors).concat(plColors).concat(allColors).concat(Object.values(ColorNames));
-  // console.log('list',jsCopy(list))
-  //list = list.filter(x => colorLum(x) < .85);
-  list = list.filter(x => !isGrayColor(x));
-  let s = new Set(list);
-  list = Array.from(s);
-	// let x=list.filter(x=>x.length!=7); console.log(x)
-	assertion(list.every(x=>x.length == 7),"COLORS WRONG!")
-  let hsllist = list.map(x => colorHexToHsl01Array(x)); //, true));
-	// hsllist = hsllist.map(x=>({h:x[0],s:x[1],l:x[2]}));
-	hsllist = hsllist.map(x=>({h:x[0]*360,s:x[1]*100,l:x[2]*100}));
-  console.log('list',jsCopy(hsllist)); 
-  sortByMultipleProperties(hsllist, 'h', 'l');
-  console.log('list',jsCopy(hsllist[100])); 
-  // let list2 = hsllist.map(x => hslToHex(x.h*360,x.s*100,x.l*100)); //colorFrom(hslToHsl(x)));
-  let list2 = hsllist.map(x => hslToHex(x.h,x.s,x.l)); //colorFrom(hslToHsl(x)));
-	for(let i=0;i<list2.length;i++) if (!list.includes(list2[i])) console.log("ERROR")
-  console.log('list',jsCopy(list))
-  //list = arrRemoveDuplicates(list);
-  //M.playerColors = list;
-  return list;
-}
 //#region settings and colors menu
+async function settingsClose(){
+  console.log('close Settings!!!'); mClear('dMain');
+}
 
 function colorBlendMode(c1, c2, blendMode) {
 	function blendColorDodge(baseColor, blendColor) {
@@ -1143,133 +919,155 @@ async function settingsSave(){
 
 //#endregion
 
-//#region showColors
-async function showColors() {
-	showTitle('Settings');
-	let [szSmall, szMiddle, wmax] = [30,80, 34*15];
-	let dParent = mBy('dMain'); mClear(dParent);
+//#region showTable
+async function showTable(table) {
+  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
+  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 
-	DA.itemsColor = showColorGrid(dParent,szSmall,wmax,onclickColor)
+  let func = DA.funcs[table.game];
+  let me = getUname();
 
-	let dPalette = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dPalette' });
+  clearMain();
 
-	DA.itemsTexture = showTextureGrid(dParent,szSmall,wmax,onclickTexture);
-
-	DA.itemsBlend = showBlendGrid(dParent,szMiddle,wmax,onclickBlendSample);
-
-	mButton('Apply',settingsApply,'dMain',{fz:24,maleft:20});
-	mButton('Save',settingsSave,'dMain',{fz:24,maleft:20});
-
-	let color = selectUserColor(DA.itemsColor);
-	let pathTexture = selectUserTexture(DA.itemsTexture);
-	if (isEmpty(pathTexture)) return;
-	let blend = selectUserBlend(DA.itemsBlend);
 }
-function showBlendGrid(dParent,sz,wmax,handler){
-	let dBlend = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-	list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-	let itemsBlend = DA.itemsBlend = [];
-	// console.log('list',list.length)
-	for (const [idx, mode] of list.entries()) {
-		let id = `dSample${idx}`;
-		let db = mDom(dBlend, { border: 'white', w: sz, h: sz, 'background-blend-mode': mode, cursor: 'pointer' }, { id, idx });
-		let item = { div: db, blend: mode, isSelected: false };
-		itemsBlend.push(item);
-		db.onclick = () => handler(item, itemsBlend);
-	}
-	return itemsBlend;
-}
-function showColorGrid(dParent,sz,wmax,handler){
-	let dColors = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dColors' });
-	let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
-	list = M.playerColors.concat(grays);
-	let items = [];
-	//console.log(BLUEGREEN)
-	for (const c of list) {
-		let dc = mDom(dColors, { w: sz, h: sz, bg: c, cursor: 'pointer' });
-		let item = { div: dc, color: c, isSelected: false };
-		//console.log('color',c,dc,item)
-		items.push(item);
-		dc.onclick = () => handler(item, items);
-	}
-	return items;
-}
-function showTextureGrid(dParent,sz,wmax,handler){
-	let dTheme = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-	list = M.textures;
-	let itemsTexture = [];
-	for (const t of list) {
-		let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-		let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-		let bgImage = `url('${t}')`;
-		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
-		// let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
-		let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz }, { tag: 'img' });
-		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blend: recommendedMode, isSelected: false };
-		itemsTexture.push(item);
-		dc.onclick = () => handler(item, itemsTexture);
-	}
-	for (const [i, o] of itemsTexture.entries()) {
-		let img = iDiv(o);
-		img.onload = () => {
-			let pal = ColorThiefObject.getPalette(img);
-			if (pal == null) {
-				//mach eine transparency palette!
-				pal = colorTransPalette();
+async function ____showTable(table) {
+  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
+  let func = DA.funcs[table.game];
+  let me = getUname();
 
-			}
-			if (pal != null) {
-				pal.unshift('white'); pal.push('black');
-				let n = pal.length;
-				pal = pal.map(x => colorHex(x)); // console.log(pal)
-				let palhex = Array.from(new Set(pal));// console.log(palhex)
-				let palhsl = palhex.map(x => colorHexToHsl360Object(x));
-				let lum = palhsl.map(x => x.l);
-				let hue = palhsl.map(x => x.h);
-				let sat = palhsl.map(x => x.s);
-				pal = [];
-				for (let i = 0; i < palhex.length; i++) {
-					let o = { hex: palhex[i], lum: lum[i], hue: hue[i], sat: sat[i] };
-					pal.push(o);
-				}
-				//if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
-			}
+  clearMain(); //INTERRUPT();
 
-			itemsTexture[i].palette = pal;
-		}
-		img.src = o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
+  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+  else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
-	}
-	return itemsTexture;
+  Clientdata.table = table; //console.log(table);
+  TPrev = T; T = { table, me };
+
+  let d = T.dMain = mBy('dMain');//mClass(d,'wood')
+  let dInstruction = T.dInstruction = mDom(d, { className: 'instruction' }, { html: `Waiting for ${table.fen.turn.join(', ')}` });
+  mCenterFlex(dInstruction);
+  // let dTitle=T.dTitle=mDom(d,{fz:'2em',weight:'bold',padding:'10'},{html:table.friendly,classes:'title'});
+  let dTitle = T.dTitle = mDom(d, {}, { html: table.friendly });
+  let dGameover = T.dGameover = mDom(d);
+  let dStats = T.dStats = mDom('dMain');
+  let dOpenTable = T.dOpenTable = mDom(d);
+  // showRibbon(d,"this is the game!")
+  //showMessage('HALLO this is a message');
+  let dt = testUpdateTestButtons(dTitle); mStyle(dt, { matop: 4 });
+
+  func.present(T);
+  func.showStats(T);
+  mRise(d);
+
+
 }
+async function ___showTable_rest(table) {
+  //showTitle(`${table.friendly}`);
+  mStyle('dTitle', { display: 'flex', justify: 'space-between' })
+  mDom('dTitle', { fz: '2em', weight: 'bold', maleft: 10, display: 'inline' }, { html: table.friendly, classes: 'title' });
+  let dOver = mDom('dMain', {}, { id: 'dGameover' })
 
-//#endregion
 
-//#region settings
-function settingsApply(){
-	console.log('apply settings');
-	let color = settingsGetSelectedColor();
-	let texture = settingsGetSelectedTexture();
-	let blend = settingsGetSelectedBlend();
-	setColors(color,texture,blend);
+
+  T = func.present('dMain', table, me); //console.log('TPrev',TPrev,'T',T);
+  func.showStats(T);
+  mRise('dMain');
+
+  if (TESTING) testUpdateTestButtons();
+
+  if (table.status == 'over') return showGameover(table, dOver);
+  else if (func.checkGameover(table)) return await sendMergeTable(table);
+
+  if (!table.fen.turn.includes(me)) { staticTitle(table); return; }
+
+  animatedTitle();
+
+  let playmode = getPlaymode(table, me);
+  if (playmode == 'bot') return await func.botMove(T);
+  else return await func.activate(T);
 }
-function extractUrlFromBlendMode(blend){
-	let parts = blend.split('.');
-	console.log('parts',parts);
-}
-function _setColors(c, texture, blend) {
-  // mClass(document.body, 'wood');
-  if (nundef(c)) {
-    //pickup document.body style
-    c = document.body.style.background;
-    texture = document.body.style.backgroundImage;
-    blend = document.body.style.backgroundBlendMode;
+//#endregion 
+
+//#region button96
+function button96() {
+  function setup(table) {
+    let fen = {};
+    fen.players = {};
+    for (const name in table.players) {
+      let pl = fen.players[name] = table.players[name];
+      pl.color = getUserColor(name)
+      pl.score = 0;
+    }
+    fen.number = 0;
+    fen.plorder = jsCopy(table.playerNames);
+    fen.turn = jsCopy(table.playerNames);
+    delete table.players;
+    return fen;
   }
-  if (isEmpty(c)) c = 'transparent';
-  if (nundef(texture)) texture = '';
-  if (nundef(blend)) blend = '';
-  let [bgRepeat, bgSize] = getRepeatAndSizeForTexture(texture);
+  function checkGameover(table) {
+    let score_sum = calcScoreSum(table);
+    //console.log('___check score sum',score_sum);
+    if (score_sum >= 5) {
+      table.winners = getPlayersWithMaxScore(table.fen);
+      table.status = 'over';
+      return true;
+    } else return false;
+    //return table.playerNames.some(x => x.score == table.options.winning_score);
+  }
+  function present(T) {
+    // //assumes that me is player at this table!!!
+    // //assertion(calcScoreSum(table) == table.fen.number, "SCORE MISMATCH!!!! present")
+    // //mClear(dParent);
+    // let dInstruction = mDom(dParent,{className:'instruction'},{html:`Waiting for ${table.fen.turn.join(', ')}`});
+    // let dStats = mDom(dParent);
+    // let div = mDom(dParent, { margin: 12, align: 'center' }, { id: 'dGameDiv' }); //for shield! 
+
+    // let bYes = mDom(div, { fz: 100, wmin: 200, margin:10, className: 'button' }, { tag: 'button', html: `Step:${table.step}` });
+    // let bNo = mDom(div, { fz: 100, wmin: 200, margin:10,className: 'button' }, { tag: 'button', html: `Error!` });
+
+    // if (nundef(name)) name=getUname(); //eingeloggter user perspective is default!
+
+    // return { div, bYes, bNo, dInstruction, dStats, table, name };
+  }
+  function showStats(T) { button96Stats(T); }
+  async function activate(T) {
+    dInstruction.innerHTML = "click one of the buttons!"
+    T.bYes.onclick = () => button96OnclickYes(T, true);
+    T.bNo.onclick = () => button96OnclickNo(T, true);
+  }
+  async function botMove(T) {
+    TO.button = setTimeout(() => button96BotMove(T), rChoose([1000, 2000, 3000]));
+  }
+  return { setup, activate, checkGameover, present, showStats, botMove };
 }
+function button96Stats(T) {
+  let [fen, name, dStats] = [T.table.fen, T.name, T.dStats];
+  let layout = 'rowflex';
+  let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+  let player_stat_items = uiTypePlayerStats(fen, name, dStats, layout, style)
+  for (const plname in fen.players) {
+    let pl = fen.players[plname];
+    let item = player_stat_items[plname];
+    if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
+    let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+    playerStatCount('star', pl.score, d);
+  }
+}
+async function button96OnclickYes(T, direct = false) {
+  let b = T.bYes;
+  if (direct) clearEvents();
+  disableUI(); //disableButton(b);
 
+  await sendRaceStepScore(T.table, T.name);
+}
+async function button96OnclickNo(T, direct = false) {
+  let b = T.bNo;
+  if (direct) clearEvents();
+  disableUI(); //disableButton(b);
 
+  await sendRaceError(T.table, T.name);
+}
+async function button96BotMove(T) {
+  if (coin(80)) await button96OnclickYes(T); else await button96OnclickNo(T);
+}
 //#endregion

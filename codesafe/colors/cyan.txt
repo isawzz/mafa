@@ -1,0 +1,126 @@
+	Azure mist	#F0FFFF	240	255	255	180.0	97.0	100.0
+	Bubbles	#E7FEFF	231	254	255	182.4	95.2	100.0
+	Indigo white (Aijiro)	#EBF6F7	235	246	247	184.9	94.5	42.8
+	Light cyan	#E0FFFF	224	255	255	180.0	93.9	100.0
+	Water	#D4F1F9	212	241	249	192.9	90.3	75.5
+	Diamond	#B9F2FF	185	242	255	191.1	86.2	100.0
+	Celeste	#B2FFFF	178	255	255	180.0	84.9	100.0
+	Aluminum foil	#D2D9DB	210	217	219	193.3	84.1	11.1
+	Columbia Blue	#C4D8E2	196	216	226	199.9	82.7	34.0
+	Fresh Air	#A6E7FF	166	231	255	196.1	82.5	100.0
+	Winter Wizard	#A0E6FF	160	230	255	195.7	81.3	100.0
+	Pale Blue / Pale Turquoise	#AFEEEE	175	238	238	180.0	80.9	64.9
+	Waterspout	#A4F4F9	164	244	249	183.5	80.9	87.6
+	Blizzard blue	#ACE5EE	172	229	238	188.1	80.3	66.0
+	Powder blue	#B0E0E6	176	224	230	186.6	79.6	51.9
+	Light blue	#ADD8E6	173	216	230	194.7	79.0	53.2
+	Non-photo blue	#A4DDED	164	221	237	193.1	78.6	66.9
+	Crystal	#A7D8DE	167	216	222	186.5	76.2	45.4
+	Silver sand	#BFC1C2	191	193	194	199.9	75.4	2.3
+	Pale Cyan	#87D3F8	135	211	248	199.6	75.0	88.9
+	Pastel blue	#AEC6CF	174	198	207	196.3	74.7	25.5
+	Cornflower	#93CCEA	147	204	234	200.6	74.7	67.4
+	Electric blue	#7DF9FF	125	249	255	182.7	74.5	100.0
+	Baby blue	#89CFF0	137	207	240	199.2	73.9	77.4
+	Sky blue	#87CEEB	135	206	235	197.4	72.5	71.4
+	Medium sky blue	#80DAEB	128	218	235	189.5	71.1	72.7
+	Middle blue	#7ED4E6	126	212	230	190.3	69.8	67.5
+	Dark sky blue	#8CBED6	140	190	214	199.4	69.4	47.4
+	Sky blue (Crayola)	#76D7EA	118	215	234	189.8	69.0	73.4
+	Pewter Blue	#8BA8B7	139	168	183	200.4	63.1	23.4
+	Moonstone blue	#73A9C2	115	169	194	198.9	60.5	39.3
+	Delicate girl blue	#6AB2CA	106	178	202	195.0	60.3	47.5
+	Aqua Blue color (Mizu-iro)	#86ABA5	134	171	165	170.2	59.8	18.0
+	Picton blue	#45B1E8	69	177	232	200.2	59.0	77.9
+	Bayside	#5FC9BF	95	201	191	174.3	58.0	49.5
+	Turquoise	#40E0D0	64	224	208	174.0	56.4	72.0
+	Sea Serpent	#4BC7CF	75	199	207	183.6	55.2	57.8
+	Medium turquoise	#48D1CC	72	209	204	177.8	55.0	59.8
+	Crystal blue	#68A0B0	104	160	176	193.3	54.9	31.3
+	Maximum blue	#47ABCC	71	171	204	194.8	53.9	56.5
+	Lotion blue	#15F2FD	21	242	253	182.8	53.7	98.3
+	Spiro Disco Ball	#0FC0FC	15	192	252	195.1	52.3	97.5
+	Fluorescent blue	#15F4EE	21	244	238	178.3	51.9	91.0
+	Twitter blue	#26A7DE	38	167	222	197.9	50.9	73.6
+	Desaturated cyan	#669999	102	153	153	180.0	50.0	19.9
+	Cadet blue	#5F9EA0	95	158	160	181.8	50.0	25.4
+	Aqua	#00FFFF	0	255	255	180.0	50.0	100.0
+	Turquoise blue	#00FFEF	0	255	239	176.2	50.0	100.0
+	Vivid sky blue	#00CCFF	0	204	255	192.0	50.0	100.0
+	Capri	#00BFFF	0	191	255	195.0	50.0	100.0
+	Moonstone	#3AA8C1	58	168	193	191.1	49.2	53.7
+	Blue bolt	#00B9FB	0	185	251	195.7	49.2	100.0
+	Sky Blue color (Sora-iro)	#4D8FAC	77	143	172	198.3	48.8	38.1
+	Caribbean blue	#1AC1DD	26	193	221	188.6	48.4	78.9
+	Verdigris	#43B3AE	67	179	174	177.3	48.2	45.5
+	Blue raspberry	#0CBFE9	12	191	233	191.4	48.0	90.2
+	Battery charged blue	#1DACD6	29	172	214	193.6	47.6	76.1
+	Douban Blue	#2496CD	36	150	205	199.5	47.2	70.1
+	Bright turquoise	#08E8DE	8	232	222	177.3	47.0	93.3
+	Maximum blue green	#30BFBF	48	191	191	180.0	46.8	59.8
+	AuroMetalSaurus	#6E7F80	110	127	128	183.3	46.6	7.5
+	Ball blue	#21ABCD	33	171	205	191.8	46.6	72.2
+	Vivid cerulean	#00AAEE	0	170	238	197.1	46.6	100.0
+	Microsoft blue	#00A2ED	0	162	237	198.9	46.4	100.0
+	Cyan (process)	#00B7EB	0	183	235	193.2	46.0	100.0
+	Steel Teal	#5F8A8B	95	138	139	181.3	45.8	18.8
+	Keppel	#3AB09E	58	176	158	170.8	45.8	50.4
+	Pacific blue	#1CA9C9	28	169	201	191.0	44.9	75.5
+	Light blue color (Asagi-iro)	#48929B	72	146	155	186.5	44.5	36.5
+	Hawaii blue	#00C3E3	0	195	227	188.4	44.5	100.0
+	Cyan cornflower blue	#188BC2	24	139	194	199.4	42.7	77.9
+	Rich electric blue	#0892D0	8	146	208	198.6	42.3	92.5
+	Jelly bean blue	#44798E	68	121	142	197.0	41.1	35.2
+	Light sea green	#20B2AA	32	178	170	176.7	41.1	69.5
+	Dark turquoise	#00CED1	0	206	209	180.8	40.9	100.0
+	Turquoise Surf	#00C5CD	0	197	205	182.3	40.1	100.0
+	Robin egg blue	#00CCCC	0	204	204	180.0	40.0	100.0
+	Blue-green	#0D98BA	13	152	186	191.7	39.0	86.9
+	Cadet	#536872	83	104	114	199.3	38.6	15.7
+	Tiffany Blue	#0ABAB5	10	186	181	178.2	38.4	89.7
+	Teal blue	#367588	54	117	136	193.9	37.2	43.1
+	Blue (NCS)	#0087BD	0	135	189	197.1	37.0	100.0
+	Thousand herb color (Chigusa-iro)	#317589	49	117	137	193.6	36.4	47.3
+	Stormcloud	#4F666A	79	102	106	188.8	36.2	14.5
+	Opposite flower color (Masuhana-iro)	#4D646C	77	100	108	195.4	36.2	16.7
+	Star command blue	#007BB8	0	123	184	199.8	36.0	100.0
+	Deep Space Sparkle	#4A646C	74	100	108	194.1	35.6	18.6
+	Bondi blue	#0095B6	0	149	182	190.8	35.6	100.0
+	Celadon green	#2F847C	47	132	124	174.3	35.0	47.4
+	Boy red	#0E9CA5	14	156	165	183.5	35.0	84.3
+	Ming	#36747D	54	116	125	187.6	35.0	39.6
+	Blue (Munsell)	#0093AF	0	147	175	189.6	34.3	100.0
+	Myrtle green	#317873	49	120	115	175.7	33.1	42.0
+	Celadon blue	#007BA7	0	123	167	195.8	32.7	100.0
+	Persian green	#00A693	0	166	147	173.1	32.5	100.0
+	CG blue	#007AA5	0	122	165	195.6	32.3	100.0
+	Rusty storage (Sabionando)	#455859	69	88	89	183.0	30.9	12.6
+	Light blue flower (Hanaasagi)	#1D697C	29	105	124	192.0	30.0	62.0
+	Viridian green	#009698	0	150	152	180.7	29.8	100.0
+	Metallic Seaweed	#0A7E8C	10	126	140	186.4	29.4	86.6
+	Sea blue	#006994	0	105	148	197.4	29.0	100.0
+	Blue sapphire	#126180	18	97	128	196.9	28.6	75.3
+	Kimono storage (Omeshionando)	#3D4C51	61	76	81	195.0	27.8	14.0
+	Outer space	#414A4C	65	74	76	190.9	27.6	7.8
+	Dark cyan	#008B8B	0	139	139	180.0	27.2	100.0
+	Iron head flower color (Noshimehana-iro)	#344D56	52	77	86	195.8	27.0	24.6
+	Silk crepe brown (Omeshicha)	#354E4B	53	78	75	172.7	25.6	19.0
+	Teal green	#00827F	0	130	127	178.6	25.4	100.0
+	Teal	#008080	0	128	128	180.0	25.0	100.0
+	"New Bridge" color (Shinbashi-iro)	#006C7F	0	108	127	188.9	24.9	100.0
+	Dark slate gray	#2F4F4F	47	79	79	180.0	24.7	25.3
+	Pine green	#01796F	1	121	111	175.0	23.9	98.3
+	Onando color (Onando-iro)	#364141	54	65	65	180.0	23.3	9.2
+	Skobeloff	#007474	0	116	116	180.0	22.7	100.0
+	Onyx	#353839	53	56	57	195.0	21.5	3.6
+	Japanese indigo	#264348	38	67	72	188.8	21.5	30.9
+	Light blue silk (Hanada)	#044F67	4	79	103	194.5	20.9	92.5
+	Outer space (Crayola)	#2D383A	45	56	58	189.2	20.1	12.6
+	Gunmetal	#2A3439	42	52	57	200.0	19.4	15.1
+	Iron storage (Tetsuonando)	#2B3736	43	55	54	175.0	19.2	12.2
+	Goryeo storeroom (Kōrainando)	#203838	32	56	56	180.0	17.2	27.2
+	Midnight green (eagle green)	#004953	0	73	83	187.2	16.2	100.0
+	Charleston green	#232B2B	35	43	43	180.0	15.2	10.2
+	Deep jungle green	#004B49	0	75	73	178.3	14.7	100.0
+	Warm black	#004242	0	66	66	180.0	12.9	100.0
+	Rich black	#004040	0	64	64	180.0	12.5	

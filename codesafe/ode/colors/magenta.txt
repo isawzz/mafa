@@ -1,0 +1,104 @@
+	Pale purple (Pantone)	#FAE6FA	250	230	250	300.0	94.1	66.6
+	Pink lace	#FFDDF4	255	221	244	319.4	93.3	100.0
+	Shampoo	#FFCFF1	255	207	241	317.5	90.5	100.0
+	Brilliant lavender	#F4BBFF	244	187	255	290.2	86.6	100.0
+	Rich brilliant lavender	#F1A7FE	241	167	254	291.0	82.5	97.7
+	Lavender rose	#FBA0E3	251	160	227	315.8	80.5	91.9
+	Thistle (Crayola)	#EBB0D7	235	176	215	320.3	80.5	59.5
+	Thistle	#D8BFD8	216	191	216	300.0	79.8	24.2
+	Light orchid	#E6A8D7	230	168	215	314.5	78.0	55.3
+	Pink lavender	#D8B2D1	216	178	209	311.0	77.2	32.7
+	Bright ube	#D19FE8	209	159	232	281.0	76.6	61.3
+	Tropical violet	#CDA4DE	205	164	222	282.4	75.6	46.7
+	Bright lilac	#D891EF	216	145	239	285.3	75.2	74.6
+	Light magenta	#FF80FF	255	128	255	300.0	75.0	100.0
+	Orchid (Crayola)	#E29CD2	226	156	210	313.7	74.9	54.6
+	Light fuchsia pink	#F984EF	249	132	239	305.1	74.7	90.6
+	Pale Magenta	#F984E5	249	132	229	310.2	74.7	90.6
+	Medium lavender magenta	#DDA0DD	221	160	221	300.0	74.7	47.2
+	Wisteria	#C9A0DC	201	160	220	281.0	74.5	46.1
+	Fuchsia pink	#FF77FF	255	119	255	300.0	73.3	100.0
+	Heliotrope	#DF73FF	223	115	255	286.2	72.5	100.0
+	Pink flamingo	#FC74FD	252	116	253	299.5	72.3	97.1
+	Lavender magenta	#EE82EE	238	130	238	300.0	72.1	76.0
+	Shocking pink (Crayola)	#FF6FFF	255	111	255	300.0	71.7	100.0
+	Light medium orchid	#D39BCB	211	155	203	308.5	71.7	38.8
+	Lilac	#C8A2C8	200	162	200	300.0	70.9	25.6
+	Rose pink	#FF66CC	255	102	204	320.0	70.0	100.0
+	Light grayish magenta	#CC99CC	204	153	204	300.0	70.0	33.3
+	Pastel violet	#CB99C9	203	153	201	302.4	69.8	32.4
+	Light deep pink	#FF5CCD	255	92	205	318.4	68.0	100.0
+	Pastel purple	#B39EB5	179	158	181	294.7	66.4	13.4
+	Purple pizzazz	#FE4EDA	254	78	218	312.2	65.0	98.8
+	Orchid	#DA70D6	218	112	214	302.2	64.7	58.8
+	Deep mauve	#D473D4	212	115	212	300.0	64.1	53.0
+	Lilac Luster	#AE98AA	174	152	170	310.9	63.9	11.9
+	Glossy grape	#AB92B3	171	146	179	285.4	63.7	17.8
+	African violet	#B284BE	178	132	190	287.5	63.1	30.8
+	Heliotrope gray	#AA98A9	170	152	169	303.3	63.1	9.5
+	Sky magenta	#CF71AF	207	113	175	320.4	62.7	49.4
+	Opera mauve	#B784A7	183	132	167	318.8	61.7	26.1
+	Rich lilac	#B666D2	182	102	210	284.4	61.1	54.5
+	Razzle dazzle rose	#FF33CC	255	51	204	315.0	60.0	100.0
+	Deep amethyst	#9C8AA4	156	138	164	281.5	59.2	12.5
+	Medium orchid	#BA55D3	186	85	211	288.0	58.0	58.8
+	Thin color (Usu-iro)	#A87CA0	168	124	160	310.9	57.2	20.1
+	Pearly purple	#B768A2	183	104	162	315.9	56.2	35.4
+	Hot magenta	#FF1DCE	255	29	206	313.0	55.6	100.0
+	Deep fuchsia	#C154C1	193	84	193	300.0	54.3	46.7
+	Rose quartz pink	#BD559C	189	85	156	319.0	53.7	44.0
+	Taupe gray	#8B8589	139	133	137	320.0	53.3	2.5
+	Shocking pink	#FC0FC0	252	15	192	315.1	52.3	97.5
+	Tatarian aster color (Shion-iro)	#976E9A	151	110	154	295.9	51.7	17.8
+	Purple Plum	#9C51B6	156	81	182	284.5	51.5	40.8
+	Fuchsia	#FF00FF	255	0	255	300.0	50.0	100.0
+	Phlox	#DF00FF	223	0	255	292.4	50.0	100.0
+	Steel pink	#CC33CC	204	51	204	300.0	50.0	60.0
+	Vivid orchid	#CC00FF	204	0	255	288.0	50.0	100.0
+	Electric purple	#BF00FF	191	0	255	284.9	50.0	100.0
+	Purpureus	#9A4EAE	154	78	174	287.5	49.4	38.0
+	Fashion fuchsia	#F400A1	244	0	161	320.4	47.8	100.0
+	Byzantine	#BD33A4	189	51	164	310.8	47.0	57.5
+	Vivid mulberry	#B80CE3	184	12	227	288.0	46.8	89.9
+	French lilac	#86608E	134	96	142	289.5	46.6	19.3
+	Antique fuchsia	#915C83	145	92	131	315.8	46.4	22.3
+	Half color (Hashita-iro)	#8D608C	141	96	140	301.3	46.4	18.9
+	Fandango	#B53389	181	51	137	320.3	45.4	56.0
+	Chinese violet	#856088	133	96	136	295.5	45.4	17.2
+	Old lavender	#796878	121	104	120	303.5	44.1	7.5
+	Razzmic Berry	#8D4E85	141	78	133	307.6	42.9	28.7
+	Rum	#716675	113	102	117	284.0	42.9	6.8
+	Cadmium violet	#7F3E98	127	62	152	283.3	41.9	42.0
+	Violet (crayola)	#963D7F	150	61	127	315.5	41.3	42.1
+	Dark violet	#9400D3	148	0	211	282.0	41.3	100.0
+	Plum	#8E4585	142	69	133	307.3	41.3	34.5
+	Deep magenta	#CC00CC	204	0	204	300.0	40.0	100.0
+	Purple (Munsell)	#9F00C5	159	0	197	288.4	38.6	100.0
+	Heliotrope magenta	#AA00BB	170	0	187	294.5	36.6	100.0
+	Maximum purple	#733380	115	51	128	289.8	35.0	43.0
+	Eminence	#6C3082	108	48	130	283.9	34.9	46.0
+	Violet (RYB)	#8601AF	134	1	175	285.8	34.5	98.8
+	Iris color (Ayame-iro)	#763568	118	53	104	312.9	33.5	38.0
+	Bellflower color (Kikyō-iro)	#5D3F6A	93	63	106	281.8	33.1	25.4
+	Chinese purple	#720B98	114	11	152	283.8	31.9	86.5
+	Flirt	#A2006D	162	0	109	319.6	31.7	100.0
+	Imperial	#602F6B	96	47	107	289.0	30.1	38.9
+	Byzantium	#702963	112	41	99	310.9	30.0	46.4
+	Quartz	#51484F	81	72	79	313.3	30.0	5.8
+	English violet	#563C5C	86	60	92	288.7	29.8	21.0
+	Midnight	#702670	112	38	112	300.0	29.4	49.3
+	Dark byzantium	#5D3954	93	57	84	315.0	29.4	23.9
+	Palatinate purple	#682860	104	40	96	307.5	28.2	44.4
+	Purple taupe	#50404D	80	64	77	311.2	28.2	11.1
+	Japanese violet	#5B3256	91	50	86	307.3	27.6	29.0
+	Dark magenta	#8B008B	139	0	139	300.0	27.2	100.0
+	Mardi Gras	#880085	136	0	133	301.3	26.6	100.0
+	Philippine violet	#81007F	129	0	127	300.9	25.2	100.0
+	Patriarch	#800080	128	0	128	300.0	25.0	100.0
+	Purple (Murasaki)	#4F284B	79	40	75	306.1	23.3	32.7
+	American purple	#431C53	67	28	83	282.5	21.7	49.5
+	Rabbit-ear iris (Kakitsubata)	#491E3C	73	30	60	318.1	20.1	41.7
+	Deep purple (Kokimurasaki)	#3A243B	58	36	59	297.3	18.6	24.2
+	Dark purple	#301934	48	25	52	291.1	15.0	35.0
+	Blue violet (Shikon)	#2B2028	43	32	40	316.3	14.7	14.6
+	Raisin black	#242124	36	33	36	300.0	13.5	4.3

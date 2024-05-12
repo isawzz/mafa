@@ -1,0 +1,71 @@
+	Baby powder	#FEFEFA	254	254	250	60.0	98.8	66.6
+	Ivory	#FFFFF0	255	255	240	60.0	97.0	100.0
+	Light yellow	#FFFFE0	255	255	224	60.0	93.9	100.0
+	Beige	#F5F5DC	245	245	220	60.0	91.1	55.5
+	Cream	#FFFDD0	255	253	208	57.4	90.7	100.0
+	Lemon chiffon	#FFFACD	255	250	205	53.9	90.1	100.0
+	Light goldenrod yellow	#FAFAD2	250	250	210	60.0	90.1	80.0
+	Conditioner	#FFFFCC	255	255	204	60.0	90.0	100.0
+	Very pale yellow	#FFFFBF	255	255	191	60.0	87.4	100.0
+	Dirty white	#E8E4C9	232	228	201	52.2	84.9	40.2
+	Pale spring bud	#ECEBBD	236	235	189	58.7	83.3	55.2
+	Lemon yellow (Crayola)	#FFFF9F	255	255	159	60.0	81.1	100.0
+	Canary	#FFFF99	255	255	153	60.0	80.0	100.0
+	Pale goldenrod	#EEE8AA	238	232	170	54.7	80.0	66.6
+	Pastel yellow	#FDFD96	253	253	150	60.0	79.0	96.2
+	Pastel gray	#CFCFC4	207	207	196	60.0	79.0	10.2
+	Flavescent	#F7E98E	247	233	142	51.9	76.2	86.7
+	Green-yellow (Crayola)	#F0E891	240	232	145	54.9	75.4	76.0
+	Light khaki	#F0E68C	240	230	140	54.0	74.5	76.9
+	Sunny	#F2F27A	242	242	122	60.0	71.3	82.1
+	Laser lemon	#FFFF66	255	255	102	60.0	70.0	100.0
+	Icterine	#FCF75E	252	247	94	58.1	67.8	96.3
+	Dodie yellow	#FEF65B	254	246	91	57.0	67.6	98.7
+	Corn	#FBEC5D	251	236	93	54.3	67.4	95.1
+	Straw	#E4D96F	228	217	111	54.3	66.4	68.4
+	Lemon yellow	#FFF44F	255	244	79	56.2	65.4	100.0
+	Underside of willow leaves (Urahayanagi)	#BCB58C	188	181	140	51.2	64.3	26.3
+	Sage	#BCB88A	188	184	138	55.1	63.9	27.1
+	Minion yellow	#F5E050	245	224	80	52.3	63.7	89.1
+	Banana yellow	#FFE135	255	225	53	51.0	60.3	100.0
+	Electric yellow	#FFFF33	255	255	51	60.0	60.0	100.0
+	Misty moss	#BBB477	187	180	119	53.8	60.0	33.3
+	Yellow (RYB)	#FEFE33	254	254	51	60.0	59.8	99.0
+	Maximum yellow	#FAFA37	250	250	55	60.0	59.8	95.1
+	Daffodil	#FFFF31	255	255	49	60.0	59.6	100.0
+	Pomelo Olive	#BFBD70	191	189	112	58.4	59.4	38.1
+	Sandstorm	#ECD540	236	213	64	51.9	58.8	81.9
+	Dark khaki	#BDB76B	189	183	107	55.6	58.0	38.3
+	Margarine	#F2D930	242	217	48	52.2	56.8	88.1
+	Dandelion	#F0E130	240	225	48	55.3	56.4	86.4
+	Olive green	#B5B35C	181	179	92	58.6	53.5	37.5
+	Battleship grey	#848482	132	132	130	60.0	51.3	0.8
+	Sprint Yellow	#FFDD05	255	221	5	51.8	50.9	100.0
+	Vivid yellow	#FFE302	255	227	2	53.3	50.3	100.0
+	Sponge	#FDFE03	253	254	3	60.2	50.3	99.2
+	Yellow	#FFFF00	255	255	0	60.0	50.0	100.0
+	Lemon	#FFF700	255	247	0	58.1	50.0	100.0
+	Cadmium yellow	#FFF600	255	246	0	57.8	50.0	100.0
+	Yellow rose	#FFF000	255	240	0	56.4	50.0	100.0
+	Canary yellow	#FFEF00	255	239	0	56.2	50.0	100.0
+	Middle yellow	#FFEB00	255	235	0	55.2	50.0	100.0
+	Golden yellow	#FFDF00	255	223	0	52.4	50.0	100.0
+	Sizzling Sunrise	#FFDB00	255	219	0	51.5	50.0	100.0
+	Lemon glacier	#FDFF00	253	255	0	60.4	50.0	100.0
+	Yellow (Pantone)	#FEDF00	254	223	0	52.6	49.8	100.0
+	Aureolin	#FDEE00	253	238	0	56.4	49.6	100.0
+	Brass	#B5A642	181	166	66	52.1	48.4	46.5
+	Safety yellow	#EED202	238	210	2	52.8	47.0	98.3
+	Yellow (Munsell)	#EFCC00	239	204	0	51.2	46.8	100.0
+	Titanium yellow	#EEE600	238	230	0	57.9	46.6	100.0
+	Citrine	#E4D00A	228	208	10	54.4	46.6	91.5
+	Peridot	#E6E200	230	226	0	58.9	45.0	100.0
+	Greenfinch color (Hiwa-iro)	#BDA928	189	169	40	51.9	44.9	65.0
+	Old moss green	#867E36	134	126	54	54.0	36.8	42.5
+	Spanish bistre	#807532	128	117	50	51.5	34.9	43.8
+	Dark yellow	#9B870C	155	135	12	51.6	32.7	85.6
+	Mustard green	#6E6E30	110	110	48	60.0	30.9	39.2
+	Sooty willow bamboo (Yanagisusutake)	#4D4B3A	77	75	58	53.6	26.4	14.0
+	Antique bronze	#665D1E	102	93	30	52.4	25.8	54.5
+	Heart gold	#808000	128	128	0	60.0	25.0	100.0
+	Bronze yellow	#737000	115	112	0	58.4	22.5	100.0

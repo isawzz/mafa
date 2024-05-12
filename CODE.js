@@ -1,4 +1,209 @@
+//#region 12.mai 24
+async function prelims_old() {
+  ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
+  let t1 = performance.now();
+  Serverdata = await mGetRoute('session'); //session ist: users,config,events
+  let t2 = performance.now();
+  await loadAssets();
+  let t4 = performance.now();
+  sockInit();
+  UI.nav = showNavbar();
+  UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
+  UI.dTitle = mBy('dTitle');
+  let t5 = performance.now();
+  window.onkeydown = keyDownHandler;
+  window.onkeyup = keyUpHandler;
+  DA.funcs = { button96: button96() }; //implemented games!
+  for (const gname in Serverdata.config.games) {
+    if (isdef(DA.funcs[gname])) continue;
+    DA.funcs[gname] = defaultGameFunc();
+  }
+  await switchToUser(localStorage.getItem('username'));
+}
+function hslTable(dParent,x,color) {
+  let i, a='', match, same, comp, loopHSL, HSL;
+  //var color = document.getElementById("colorhexDIV").innerHTML;
+  let  hslObj = w3color(color);
+  let h = hslObj.hue;
+  let s = hslObj.sat;
+  let l = hslObj.lightness;
+  let arr = [];
+  let lineno = (x == "hue")?12:10;
+  let header = x.toUpperCase();
+  for (i = 0; i <= lineno; i++) {
+    let chue=`hsl(${(h+i*30)%360},${s},${l})`;
+    if (x == "hue") { arr.push(w3color(chue)); }
+    // if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+    else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+    else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
+  }
+  // console.log('arr',arr); 
+  if (x == "sat" || x == "light") { arr.reverse(); }
+  a += "<div class='w3-responsive'>";
+  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+  a += "<tr>";
+  a += `<td style='width:30px;'>${header}</td>`;
+  for (i = 0; i < arr.length; i++) {
+    a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
+  }
+  a += "</table></div>";
+  dParent.innerHTML = a;
+}
+function hslTables(dParent,color) {
+  let i, a='', match, same, comp, loopHSL, HSL;
+  //var color = document.getElementById("colorhexDIV").innerHTML;
+  let  hslObj = w3color(color);
+  let h = hslObj.hue;
+  let s = hslObj.sat;
+  let l = hslObj.lightness;
+  let arr = [];
+  lineno=10;
+  //let header = x.toUpperCase();
+  for (i = 0; i <= lineno; i++) {
+    let chue=`hsl(${(h-50+i*10)%360},${s},${l})`;
+    let csat=`hsl(${h},${i*.1},${l})`;
+    let clum=`hsl(${h},${s},${i*.1})`;
+    arr.push({h:w3color(chue),s:w3color(csat),l:w3color(clum)});
+  }
+  // console.log('arr',arr); 
+  a += "<div class='w3-responsive'>";
+  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+  a += "<tr>";
+  a += `<td style='width:30px;'>Hue</td><td style='width:30px;'>Sat</td><td style='width:30px;'>Lum</td>`;
+  for (i = 0; i < arr.length; i++) {
+    let [hexh,hexs,hexl]=[arr[i].h.toHexString(),arr[i].s.toHexString(),arr[i].l.toHexString()];
+    a += `
+      <tr>
+        <td style='cursor:pointer;background-color:${hexh}' onclick='onclickHue("${hexh}")'>${hexh}</td>
+        <td style='cursor:pointer;background-color:${hexs}' onclick='onclickSat("${hexs}")'>${hexs}</td>
+        <td style='cursor:pointer;background-color:${hexl}' onclick='onclickLum("${hexl}")'>${hexl}</td>
+      </tr>`;
+  }
+  a += "</table></div>";
+  dParent.innerHTML = a;
+}
+function mColorPickerBoard(dParent) {
+	dParent = mDom(dParent); 
 
+	//let board = drawHexBoard(7, 7, dParent, { bg: rColor(), padding:10, transition:'1s' }, {w:20,h:22, classes:'hexframe'}); //, {padding:10});
+	let board = drawHexBoard(7, 7, dParent, { bg: 'transparent', padding: 10 }, { w: 20, h: 22 }); 
+	board.dSample = mDom(dParent,{w:200,hmin:40,margin:'auto',align:'center'});
+	let tables = mDom(dParent, {}, { id: 'dHslTable' });
+	let colors = getColormapColors(); //console.log('colors', colors);
+
+	let i = 0;
+	for (const item of board.items) {
+		let bg = colors[i++];
+		item.color = bg;
+		let dhex = iDiv(item);
+		dhex.onmouseenter = () => onenterHex(item, board);
+		dhex.onmouseleave = () => onleaveHex(item, board);
+		dhex.onclick = () => onclickHex(item, board); //{mStyle(document.body, {bg});} 
+		mStyle(dhex, { bg });
+	}
+
+	return board;
+}
+function sortColorsByHueAndLuminance(colors) {
+	function _hexToHSL(hex) {
+		// Convert hex to RGB first
+		let r = parseInt(hex.slice(1, 3), 16) / 255;
+		let g = parseInt(hex.slice(3, 5), 16) / 255;
+		let b = parseInt(hex.slice(5, 7), 16) / 255;
+		let cmin = Math.min(r, g, b),
+				cmax = Math.max(r, g, b),
+				delta = cmax - cmin,
+				h = 0,
+				s = 0,
+				l = 0;
+	
+		if (delta === 0)
+				h = 0;
+		else if (cmax === r)
+				h = ((g - b) / delta) % 6;
+		else if (cmax === g)
+				h = (b - r) / delta + 2;
+		else
+				h = (r - g) / delta + 4;
+	
+		h = Math.round(h * 60);
+	
+		// Make negative hues positive behind 360°
+		if (h < 0)
+				h += 360;
+	
+		l = (cmax + cmin) / 2;
+	
+		// Calculate saturation
+		s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		
+		// Multiply s and l by 100 to get the value in percentage, rather than [0,1]
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+	
+		return { h, s, l };
+	}
+	return colors.sort((a, b) => {
+		const hslA = _hexToHSL(a);
+		const hslB = _hexToHSL(b);
+		if (hslA.h !== hslB.h) {
+				return hslA.h - hslB.h;
+		}
+		// Sort by luminance if hues are equal
+		return hslB.l - hslA.l; // Note: reverse to get light to dark if desired
+	});
+}
+function sortColorsByLumHue(colors) {
+	function _hexToHSL(hex) {
+		// Convert hex to RGB first
+		let r = parseInt(hex.slice(1, 3), 16) / 255;
+		let g = parseInt(hex.slice(3, 5), 16) / 255;
+		let b = parseInt(hex.slice(5, 7), 16) / 255;
+		let cmin = Math.min(r, g, b),
+				cmax = Math.max(r, g, b),
+				delta = cmax - cmin,
+				h = 0,
+				s = 0,
+				l = 0;
+	
+		if (delta === 0)
+				h = 0;
+		else if (cmax === r)
+				h = ((g - b) / delta) % 6;
+		else if (cmax === g)
+				h = (b - r) / delta + 2;
+		else
+				h = (r - g) / delta + 4;
+	
+		h = Math.round(h * 60);
+	
+		// Make negative hues positive behind 360°
+		if (h < 0)
+				h += 360;
+	
+		l = (cmax + cmin) / 2;
+	
+		// Calculate saturation
+		s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		
+		// Multiply s and l by 100 to get the value in percentage, rather than [0,1]
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+	
+		return { h, s, l };
+	}
+	return colors.sort((a, b) => {
+		const hslA = _hexToHSL(a);
+		const hslB = _hexToHSL(b);
+		if (hslA.l !== hslB.l) {
+				return hslA.l - hslB.l;
+		}
+		// Sort by luminance if hues are equal
+		return hslB.h - hslA.h; // Note: reverse to get light to dark if desired
+	});
+}
+
+//#region 11.mai 24
 function generateRYBColorHexagon() {
 	const colors = [];
 	const steps = 127;
@@ -276,7 +481,7 @@ function drawHex(dParent, styles={}, opts={}) {
   mStyle(d, { 'clip-path': 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' });
   return d;
 }
-
+//#endregion
 
 //#region clickColor progress from orig
 function clickColor(hex, seltop, selleft, html5) {

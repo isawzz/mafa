@@ -1,12 +1,10 @@
 name: felix
-color: '#1f8fff'
+color: '#00a2ed'
 key: felix
 setgame:
   level: 6
   playmode: bot
 playmode: bot
 button96:
-  playmode: human
-button97:
   playmode: human
 texture: url("../assets/textures/Melamine-wood-004.png")

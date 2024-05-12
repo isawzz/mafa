@@ -1,0 +1,239 @@
+	Floral white	#FFFAF0	255	250	240	39.9	97.0	100.0
+	Seashell	#FFF5EE	255	245	238	24.7	96.6	100.0
+	Penguin White	#F5F3EF	245	243	239	39.9	94.9	23.0
+	Old lace	#FDF5E6	253	245	230	39.1	94.7	85.1
+	Linen	#FAF0E6	250	240	230	30.0	94.1	66.6
+	Isabelline	#F4F0EC	244	240	236	29.9	94.1	26.6
+	Papaya whip	#FFEFD5	255	239	213	37.1	91.7	100.0
+	Antique white	#FAEBD7	250	235	215	34.2	91.1	77.7
+	Flesh	#FFE9D1	255	233	209	31.3	90.9	100.0
+	Blanched almond	#FFEBCD	255	235	205	35.9	90.1	100.0
+	Lumber	#FFE4CD	255	228	205	27.6	90.1	100.0
+	Unbleached silk	#FFDDCA	255	221	202	21.5	89.6	100.0
+	Platinum	#E5E4E2	229	228	226	40.0	89.2	5.4
+	Champagne	#F7E7CE	247	231	206	36.5	88.8	71.9
+	Bisque	#FFE4C4	255	228	196	32.5	88.4	100.0
+	Champagne pink	#F1DDCF	241	221	207	24.7	87.8	54.8
+	Very pale orange	#FFDFBF	255	223	191	30.0	87.4	100.0
+	Almond	#EFDECD	239	222	205	30.0	87.0	51.5
+	White coffee	#E6E0D4	230	224	212	39.9	86.6	26.4
+	Peach puff	#FFDAB9	255	218	185	28.2	86.2	100.0
+	Peach	#FFE5B4	255	229	180	39.1	85.2	100.0
+	Sandy Tan	#FDD9B5	253	217	181	29.9	85.0	94.7
+	Light orange	#FED8B1	254	216	177	30.3	84.5	97.4
+	Feldspar	#FDD5B1	253	213	177	28.4	84.3	95.0
+	Timberwolf	#DBD7D2	219	215	210	33.3	84.1	11.1
+	Navajo white	#FFDEAD	255	222	173	35.8	83.9	100.0
+	Apricot	#FBCEB1	251	206	177	23.5	83.9	90.2
+	Bone	#E3DAC9	227	218	201	39.2	83.9	31.7
+	Wheat	#F5DEB3	245	222	179	39.0	83.1	76.7
+	Peach-yellow	#FADFAD	250	223	173	38.9	82.9	88.5
+	Deep peach	#FFCBA4	255	203	164	25.7	82.1	100.0
+	Deep champagne	#FAD6A5	250	214	165	34.5	81.3	89.4
+	Desert sand	#EDC9AF	237	201	175	25.1	80.7	63.2
+	Caramel	#FFD59A	255	213	154	35.0	80.1	100.0
+	Peach-orange	#FFCC99	255	204	153	30.0	80.0	100.0
+	Durian White	#E6D0AB	230	208	171	37.6	78.6	54.1
+	Manila	#E7C9A9	231	201	169	30.9	78.4	56.3
+	Macaroni and Cheese	#FFBD88	255	189	136	26.7	76.6	100.0
+	Douban Light Yellow	#F7C58E	247	197	142	31.4	76.2	86.7
+	Pale silver	#C9C0BB	201	192	187	21.4	76.0	11.4
+	Eggshell paper-colored (Torinoko-iro)	#E2BE9F	226	190	159	27.7	75.4	53.5
+	Topaz	#FFC87C	255	200	124	34.8	74.3	100.0
+	Dark vanilla	#D1BEA8	209	190	168	32.1	73.9	30.8
+	Very light tangelo	#FFB077	255	176	119	25.1	73.3	100.0
+	Light yellow (Asagi)	#F7BB7D	247	187	125	30.4	72.9	88.4
+	Pale persimmon (Usugaki)	#FCA474	252	164	116	21.1	72.1	95.7
+	Mellow apricot	#F8B878	248	184	120	30.0	72.1	90.1
+	Gold (Crayola)	#E6BE8A	230	190	138	33.9	72.1	64.7
+	Stylish persimmon (Sharegaki)	#FFA26B	255	162	107	22.2	70.9	100.0
+	Tumbleweed	#DEAA88	222	170	136	23.7	70.1	56.5
+	Burlywood	#DEB887	222	184	135	33.7	70.0	56.8
+	Pale incense (Usukō)	#FFA565	255	165	101	24.9	69.8	100.0
+	Middle yellow red	#ECB176	236	177	118	29.9	69.4	75.6
+	Tan	#D2B48C	210	180	140	34.2	68.6	43.7
+	Rajah	#FBAB60	251	171	96	29.0	68.0	95.0
+	Cape jasmine or gardenia (Kuchinashi)	#FFB95A	255	185	90	34.5	67.6	100.0
+	Fawn	#E5AA70	229	170	112	29.7	66.8	69.2
+	Sandy brown	#F4A460	244	164	96	27.5	66.6	87.0
+	Plum-dyed (Umezome)	#FA9258	250	146	88	21.4	66.2	94.1
+	Mocha	#BEA493	190	164	147	23.7	66.0	24.8
+	Steamed chestnut color (Mushikuri-iro)	#D3B17D	211	177	125	36.2	65.8	49.4
+	Floral leaf-colored (Hanaba-iro or kayou-iro)	#FFB94E	255	185	78	36.2	65.2	100.0
+	Chickadee	#FFC34D	255	195	77	39.7	65.0	100.0
+	White mouse (Shironezumi)	#B9A193	185	161	147	22.1	65.0	21.3
+	Light French beige	#C8AD7F	200	173	127	37.8	64.1	39.8
+	Pastel orange	#FFB347	255	179	71	35.2	63.9	100.0
+	Tan (Crayola)	#D99A6C	217	154	108	25.3	63.7	58.9
+	Neon Carrot	#FFA343	255	163	67	30.6	63.1	100.0
+	Big Foot Feet	#E88E5A	232	142	90	21.9	63.1	75.5
+	Antique brass	#CD9575	205	149	117	21.8	63.1	46.8
+	Yellow Orange	#FFAE42	255	174	66	34.2	62.9	100.0
+	Earth yellow	#E1A95F	225	169	95	34.1	62.7	68.4
+	Corn-colored (Tōmorokoshi-iro)	#FAA945	250	169	69	33.1	62.5	94.7
+	Royal orange	#F99245	249	146	69	25.6	62.3	93.7
+	White oak (Shirotsurubami)	#CE9F6F	206	159	111	30.3	62.1	49.2
+	Maximum yellow red	#F2BA49	242	186	73	40.1	61.7	86.6
+	Sunray	#E3AB57	227	171	87	36.0	61.5	71.4
+	Indian yellow	#E3A857	227	168	87	34.7	61.5	71.4
+	Pale taupe	#BC987E	188	152	126	25.1	61.5	31.6
+	Daylily-colored (Kanzō-iro)	#FF8936	255	137	54	24.7	60.5	100.0
+	Brown Yellow	#CC9966	204	153	102	29.9	60.0	50.0
+	Deep saffron	#FF9933	255	153	51	30.0	60.0	100.0
+	Red-bronze (Beniukon)	#FB8136	251	129	54	22.8	59.8	96.0
+	Persian orange	#D99058	217	144	88	26.0	59.8	62.9
+	Egg-colored (Tamago-iro)	#FFA631	255	166	49	34.0	59.6	100.0
+	Raw Sienna	#D68A59	214	138	89	23.5	59.4	60.3
+	Grullo	#A99A86	169	154	134	34.2	59.4	16.9
+	White tea-colored (Shiracha)	#C48E69	196	142	105	24.3	59.0	43.5
+	Jasper orange	#DE8F4E	222	143	78	27.0	58.8	68.5
+	Camel	#C19A6B	193	154	107	32.7	58.8	40.9
+	Faded Sen no Rikyu's tea (Rikyūshiracha)	#B0927A	176	146	122	26.6	58.4	25.4
+	Golden fallen leaves (Kikuchiba)	#E29C45	226	156	69	33.2	57.8	73.0
+	Stone Terrace	#A09484	160	148	132	34.2	57.2	12.8
+	Turmeric-colored (Ukon-iro)	#E69B3A	230	155	58	33.8	56.4	77.4
+	Light taupe	#B38B6D	179	139	109	25.7	56.4	31.5
+	Gamboge (Tōō)	#FFB61E	255	182	30	40.5	55.8	100.0
+	Bright yellow (Crayola)	#FFAA1D	255	170	29	37.4	55.6	100.0
+	Tiger's Eye	#E08D3C	224	141	60	29.6	55.6	72.5
+	Princeton orange	#F58025	245	128	37	26.2	55.2	91.2
+	Cadmium orange	#ED872D	237	135	45	28.1	55.2	84.2
+	Pumpkin	#FF7518	255	117	24	24.1	54.7	100.0
+	Vivid tangelo	#F07427	240	116	39	22.9	54.7	87.0
+	Deer	#BA8759	186	135	89	28.4	53.9	41.2
+	Silver-grey (Ginnezumi)	#97867C	151	134	124	22.2	53.9	11.4
+	Dark tangerine	#FFA812	255	168	18	37.9	53.5	100.0
+	Ochre	#BE7F51	190	127	81	25.3	53.1	45.6
+	Beaver	#9F8170	159	129	112	21.7	53.1	19.6
+	Beer	#F28E1C	242	142	28	31.9	52.9	89.1
+	Carrot orange	#ED9121	237	145	33	32.9	52.9	85.0
+	Kumquat	#FB9912	251	153	18	34.7	52.7	96.6
+	Peru	#CD853F	205	133	63	29.5	52.5	58.6
+	Maple syrup	#BB9351	187	147	81	37.3	52.5	43.8
+	Marigold	#EAA221	234	162	33	38.5	52.3	82.7
+	Middle grey	#8B8680	139	134	128	32.7	52.3	4.5
+	Decaying leaves color (Kuchiba-iro)	#D57835	213	120	53	25.1	52.1	65.5
+	Bronze (metallic)	#B08D57	176	141	87	36.4	51.5	36.0
+	Yellow Orange (Color Wheel)	#FF9505	255	149	5	34.5	50.9	100.0
+	Café au lait	#A67B5B	166	123	91	25.6	50.3	29.6
+	Chrome yellow	#FFA700	255	167	0	39.2	50.0	100.0
+	Cheese	#FFA600	255	166	0	39.0	50.0	100.0
+	Golden yellow	#FFA400	255	164	0	38.5	50.0	100.0
+	Vivid orange peel	#FFA000	255	160	0	37.6	50.0	100.0
+	Orange peel	#FF9F00	255	159	0	37.4	50.0	100.0
+	Weebly Orange	#FF9A00	255	154	0	36.2	50.0	100.0
+	Vivid gamboge	#FF9900	255	153	0	36.0	50.0	100.0
+	Dark orange	#FF8C00	255	140	0	32.9	50.0	100.0
+	American orange	#FF8B00	255	139	0	32.7	50.0	100.0
+	Orange (color wheel)	#FF7F00	255	127	0	29.8	50.0	100.0
+	Amber (SAE/ECE)	#FF7E00	255	126	0	29.6	50.0	100.0
+	Heat Wave	#FF7A00	255	122	0	28.7	50.0	100.0
+	Safety orange	#FF7800	255	120	0	28.2	50.0	100.0
+	Philippine orange	#FF7300	255	115	0	27.0	50.0	100.0
+	Safety orange (blaze orange)	#FF6700	255	103	0	24.2	50.0	100.0
+	Orange	#FF6600	255	102	0	24.0	50.0	100.0
+	Vivid orange	#FF5F00	255	95	0	22.3	50.0	100.0
+	Maximum orange	#FF5B00	255	91	0	21.4	50.0	100.0
+	Chinese bronze	#CD8032	205	128	50	30.1	50.0	60.7
+	Bronze	#CD7F32	205	127	50	29.8	50.0	60.7
+	Sumac-dyed (Hajizome)	#E08A1E	224	138	30	33.4	49.8	76.3
+	Orange (RYB)	#FB9902	251	153	2	36.3	49.6	98.4
+	Golden oak (Kitsurubami)	#BB8141	187	129	65	31.4	49.4	48.4
+	Chamoisee	#A0785A	160	120	90	25.7	49.0	27.9
+	University Of Tennessee Orange	#F77F00	247	127	0	30.8	48.4	100.0
+	Gamboge	#E49B0F	228	155	15	39.4	47.6	87.6
+	Mulberry-dyed (Kuwazome)	#C57F2E	197	127	46	32.1	47.6	62.1
+	Tangerine	#F28500	242	133	0	32.9	47.4	100.0
+	Cinnamon	#D2691E	210	105	30	24.9	47.0	74.9
+	Ochre	#CC7722	204	119	34	30.0	46.6	71.4
+	Amber (Kohaku-iro)	#CA6924	202	105	36	24.9	46.6	69.7
+	Dirt	#9B7653	155	118	83	29.1	46.6	30.2
+	Liver chestnut	#987456	152	116	86	27.2	46.6	27.7
+	Golden brown (Kincha)	#C66B27	198	107	39	25.6	46.4	67.0
+	Persimmon	#EC5800	236	88	0	22.3	46.2	100.0
+	Pale Brown	#987654	152	118	84	30.0	46.2	28.8
+	Copper	#B87333	184	115	51	28.8	46.0	56.5
+	Metallic bronze	#A97142	169	113	66	27.3	46.0	43.8
+	Gold-brown (Yamabukicha)	#CB7E1F	203	126	31	33.1	45.8	73.5
+	Metallic orange	#DA680F	218	104	15	26.3	45.6	87.1
+	Durian	#B07939	176	121	57	32.2	45.6	51.0
+	Spanish orange	#E86100	232	97	0	25.0	45.4	100.0
+	Shadow	#8A795D	138	121	93	37.3	45.2	19.4
+	Fulvous	#E48400	228	132	0	34.7	44.7	100.0
+	Chinese yellow tea-colored (Kigaracha)	#B7702D	183	112	45	29.1	44.7	60.5
+	Ruddy brown	#BB6528	187	101	40	24.8	44.5	64.7
+	Dark gold	#AA6C39	170	108	57	27.0	44.5	49.7
+	Liver (dogs)	#B86D29	184	109	41	28.5	44.1	63.5
+	Loquat (tree) brown (Biwacha)	#AB6134	171	97	52	22.6	43.7	53.3
+	Dark silver	#71706E	113	112	110	40.0	43.7	1.3
+	University Of California Gold	#B78727	183	135	39	40.0	43.5	64.8
+	Lye-colored (Aku-iro)	#7F6B5D	127	107	93	24.7	43.1	15.4
+	Clove-dyed (Chōjizome)	#A96232	169	98	50	24.2	42.9	54.3
+	Harvest gold	#DA9100	218	145	0	39.9	42.7	100.0
+	Sen no Rikyu's tea (Rikyūcha)	#826B58	130	107	88	27.1	42.7	19.2
+	Dark brown-tangelo	#88654E	136	101	78	23.7	41.9	27.1
+	Pastel brown	#836953	131	105	83	27.5	41.9	22.4
+	Alloy orange	#C46210	196	98	16	27.3	41.5	84.9
+	Metallic Sunburst	#9C7C38	156	124	56	40.8	41.5	47.1
+	Dirty brown	#B5651E	181	101	30	28.2	41.3	71.5
+	Asda Orange (1968)	#CA7309	202	115	9	32.9	41.3	91.4
+	Light brown	#B5651D	181	101	29	28.4	41.1	72.3
+	French bistre	#856D4D	133	109	77	34.2	41.1	26.6
+	Mustard brown	#CD7A00	205	122	0	35.7	40.1	100.0
+	Tenné (tawny)	#CD5700	205	87	0	25.4	40.1	100.0
+	Burnt orange	#CC5500	204	85	0	24.9	40.0	100.0
+	Asda Orange	#C86500	200	101	0	30.3	39.2	100.0
+	Raw umber	#826644	130	102	68	32.9	38.8	31.3
+	Brushwood-dyed (Fushizome)	#8C5939	140	89	57	23.1	38.6	42.1
+	Yellow Sea pine-brown (Kimirucha)	#896C39	137	108	57	38.2	38.0	41.2
+	Fox-color (Kitsune-iro)	#985629	152	86	41	24.3	37.8	57.5
+	The color of an undried wall (Namakabe-iro)	#785E49	120	94	73	26.8	37.8	24.3
+	Milk chocolate	#84563C	132	86	60	21.6	37.6	37.5
+	Coyote brown	#81613C	129	97	60	32.1	37.0	36.5
+	Japanese iris and sooty bamboo (Higosusutake)	#7F5D3B	127	93	59	29.9	36.4	36.5
+	Italian leather	#635A52	99	90	82	28.2	35.4	9.3
+	Philippine gold	#B17304	177	115	4	38.4	35.4	95.5
+	Quincy	#6A5445	106	84	69	24.3	34.3	21.1
+	Golden brown	#996515	153	101	21	36.3	34.1	75.8
+	Mud	#70543E	112	84	62	26.3	34.1	28.7
+	Umber	#635147	99	81	71	21.4	33.3	16.4
+	Mousy indigo (Ainezumi)	#5C544E	92	84	78	25.7	33.3	8.2
+	Golden-grey bamboo	#7D4E2D	125	78	45	24.7	33.3	47.0
+	Contemplation in a tea garden (Rokōcha)	#665343	102	83	67	27.4	33.1	20.7
+	Windsor tan	#A75502	167	85	2	30.1	33.1	97.6
+	Coffee	#6F4E37	111	78	55	24.6	32.5	33.7
+	Iwai brown (Iwaicha)	#5E5545	94	85	69	38.3	31.9	15.3
+	Saddle brown	#8B4513	139	69	19	24.9	30.9	75.9
+	Russet	#80461B	128	70	27	25.5	30.3	65.1
+	Gamboge orange (brown)	#996600	153	102	0	40.0	30.0	100.0
+	Aloewood-color (Kyara-iro)	#6A432D	106	67	45	21.6	29.6	40.3
+	Brown (traditional)	#964B00	150	75	0	30.0	29.4	100.0
+	Iced tea	#923C01	146	60	1	24.4	28.8	98.6
+	Bronze	#88540B	136	84	11	35.0	28.8	85.0
+	Dull blue (Aonibi)	#4F4944	79	73	68	27.2	28.8	7.4
+	Brown-nose	#6B4423	107	68	35	27.4	27.8	50.7
+	Van Dyke brown	#664228	102	66	40	25.1	27.8	43.6
+	Dark brown	#654321	101	67	33	30.0	26.2	50.7
+	Sepia	#704214	112	66	20	30.0	25.8	69.6
+	Nightingale-brown	#5C4827	92	72	39	37.3	25.6	40.4
+	Dark bronze	#804A00	128	74	0	34.6	25.0	100.0
+	Weathered bamboo	#593A27	89	58	39	22.8	25.0	39.0
+	Simmered seaweed (Mirucha)	#4C3D30	76	61	48	27.8	24.3	22.5
+	Chocolate (traditional)	#7B3F00	123	63	0	30.7	24.1	100.0
+	Pullman Brown (UPS Brown)	#644117	100	65	23	32.7	24.1	62.6
+	Dark lava	#483C32	72	60	50	27.2	23.9	18.0
+	Earthtone	#5D3A1A	93	58	26	28.6	23.3	56.3
+	Philippine bronze	#6E3A07	110	58	7	29.7	22.9	88.0
+	Café noir	#4B3621	75	54	33	29.9	21.1	38.8
+	Violin Brown	#674403	103	68	3	38.9	20.7	94.3
+	Jacko bean	#413628	65	54	40	33.6	20.5	23.8
+	Thousand year old brown (Sensaicha)	#3B3429	59	52	41	36.6	19.6	17.9
+	Pineapple	#563C0D	86	60	13	38.6	19.4	73.7
+	Cola	#3C3024	60	48	36	30.0	18.8	25.0
+	Bistre	#3D2B1F	61	43	31	24.0	18.0	32.6
+	Ink color (Sumi-iro)	#27221F	39	34	31	22.4	13.7	11.4
+	Black chestnut oak (Kurotsurubami)	#252321	37	35	33	30.0	13.7	5.7
+	American bronze	#391802	57	24	2	24.0	11.5	93.2
+	Zinnwaldite brown	#2C1608	44	22	8	23.3	10.1	69.2
+	Black (Kokushoku)	#171412	23	20	18	24.0	8.0	12.1
+	Smoky black	#100C08	16	12	8	30.0	4.7	33.3

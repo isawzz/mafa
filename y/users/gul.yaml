@@ -1,9 +1,7 @@
 name: gul
-color: '#2662d9'
+color: '#7db700'
 key: gul
 setgame:
   level: 1
   playmode: bot
 playmode: bot
-button:
-  playmode: bot
