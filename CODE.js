@@ -1,4 +1,50 @@
 
+function generateRYBColorHexagon() {
+	const colors = [];
+	const steps = 127;
+	const huesPerStep = 360 / steps;
+	
+	for (let i = 0; i < steps; i++) {
+			const hue = i * huesPerStep;
+			const angle = hue * Math.PI / 180;
+			// Generate RYB values based on the angle
+			const ryb = [
+					(Math.cos(angle) + 1) / 2 * 255,               // Red
+					(Math.cos(angle - 2 * Math.PI / 3) + 1) / 2 * 255, // Yellow
+					(Math.cos(angle + 2 * Math.PI / 3) + 1) / 2 * 255  // Blue
+			];
+			const rgb = rybToRgb(ryb);
+			const hex = `#${rgb.map(x => x.toString(16).padStart(2, '0')).join('')}`;
+			colors.push(hex);
+	}
+	
+	return colors;
+}
+function rybToRgb(ryb) {
+	const r = ryb[0] / 255, y = ryb[1] / 255, b = ryb[2] / 255;
+	// Convert RYB directly to RGB
+	const rgb = [
+			1 * r + 1 * y + 0 * b, // Red
+			0 * r + 1 * y + 0.5 * b, // Green
+			0 * r + 0 * y + 1 * b // Blue
+	];
+	// Normalize the colors
+	return rgb.map(c => Math.round(c * 255));
+}
+
+function sortByHue(colors){
+  let list=colors.map(x=>w3color(x));
+  list = sortBy(list,'hue');
+  for(const c of list){c.hex=c.toHexString()}
+  return list.map(x=>x.hex);
+}
+function sortByLum(colors){
+  let list=colors.map(x=>w3color(x));
+  list = sortBy(list,'lightness');
+  for(const c of list){c.hex=c.toHexString()}
+  return list.map(x=>x.hex);
+}
+
 function hslTable(dParent,x,color,cols) {
   var lineno, header, i, a, match, same, comp, loopHSL, HSL;
   //var color = document.getElementById("colorhexDIV").innerHTML;

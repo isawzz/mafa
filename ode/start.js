@@ -1,8 +1,273 @@
 onload = start;
 
 async function start() { TESTING = true; test54_dynBody(); }
-async function start() { TESTING = true; test65_changeColors(); }
+async function start() { TESTING = true; test75_showColors(); }
 
+async function test75_showColors(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
+	let d = clearBodyDiv(); //{ gap: 10 }); mFlexWrap(d);
+  for(const bucket in di){
+    let list = dict2list(di[bucket]);
+    let clist=[];
+    for(const c of list){
+      let o=w3color(c.value);
+      //console.log('c',c)
+      o.name = c.id;
+      o.hex = c.value;
+      clist.push(o);
+    }
+
+    let sorted = sortByFunc(clist,x=>-x.lightness); //(10*x.lightness+x.sat*100));
+    //console.log(sorted[0]); return;
+
+    mDom(d,{},{html:`<br>${bucket}<br>`})
+    showPaletteNames(d,sorted);
+    
+  }
+}
+async function test74_checkColorsUnique(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
+  let bykey={};
+  for(const k in di){
+    for(const name in di[k]){
+      let prev=bykey[name];
+      if (isdef(prev)) {
+        console.log(`${k}:${name}:${di[k][name]} already in ${prev.bucket} ${prev.hex}`);
+      } else{
+        //console.log('unique:',name);
+        bykey[name]={bucket:k,hex:di[k][name],name};
+      }
+    }
+  }
+  console.log(Object.keys(bykey).length,bykey);
+  let byhex={};
+  for(const name in bykey){
+    let c=bykey[name];
+    let hex=c.hex;
+    if (!name.includes('grey') && isdef(byhex[hex])) console.log(`${hex} already in byhex!:`,name,byhex[hex]);
+    byhex[hex]={name,bucket:c.bucket,hex};
+  }
+}
+async function test73_addKnownColors(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
+  let bykey={};
+  for(const k in di){
+    for(const name in di[k]){
+      let prev=bykey[name];
+      if (isdef(prev)) {
+        console.log(`${k}:${name}:${di[k][name]} already in ${prev.bucket} ${prev.hex}`);
+      } else{
+        //console.log('unique:',name);
+        bykey[name]={bucket:k,hex:di[k][name],name};
+      }
+    }
+  }
+  console.log(bykey);
+  let byhex={};
+  for(const name in bykey){
+    let c=bykey[name];
+    let hex=c.hex;
+    if (isdef(byhex[hex])) console.log(`${hex} already in byhex!:`,name,byhex[hex]);
+    byhex[hex]={name,bucket:c.bucket,hex};
+  }
+
+  ensureColorNames();
+  for(const name in ColorNames){
+    let oName=bykey[name];
+    let newHex = isdef(oName)?oName.hex:null;
+    let oldHex=ColorNames[name];
+    let oHex=byhex[oldHex];
+    let newName = isdef(oHex)?oHex.name:null;
+    if (newHex && newHex != oldHex) {
+      //console.log('duplicate name!',name,oldHex,newHex);
+      if (newName && newName != name){
+        //newName ist jetzt der name der fuer diese color im dicolors existiert
+        //console.log('...color already in di under name',newName);
+      } else {
+        //oldHex muss eingetragen werden unter einem neuen namen!
+        //gib es in dasselbe bucket wie duplicate oName
+        let name1=oName.bucket.substring(0,3)+'_'+name;
+        let o={bucket:oName.bucket,hex:oldHex,name:name1}
+        bykey[name1]=byhex[oldHex]=o;
+        di[o.bucket][name1]=o.hex
+        console.log('...added',name1,'to bykey and di')
+      }
+    }else if (nundef(oName) && isdef(oHex)){
+      let altname = replaceAll(oHex.name,'_','');
+      if (altname == name){
+        //change this name in dicolor!!!
+        let bucket=oHex.bucket;
+        bykey[name]=bykey[newName]
+        delete bykey[newName];
+        di[bucket][name]=oldHex;
+        delete di[bucket][newName];
+        console.log(`same color ${oldHex} renamed from ${oHex.name} to ${name}!!!!`);
+      }
+      
+      
+    }else if (nundef(oName)){
+      console.log(`bykey missing ${name}:${ColorNames[name]}`);
+    }
+  }
+
+  //download di as new dict
+  downloadAsYaml(di,'dicolors')
+}
+
+async function test72_newcolors(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
+  let dires={};
+  let byhex={};
+  for(const k in di){
+    let di1=di[k];
+    dires[k]={};
+    let list = dict2list(di1,'name');
+    //console.log('list',list);
+    for(const name in di1){
+      let o=w3color(di1[name]);
+      o.name=name;
+      o.hex=di1[name];
+      dires[k][name]=o;
+      lookupAddToList(byhex,[o.hex],o)
+    }
+    //break
+  }
+  console.log(byhex);
+  console.log(dires);
+
+  for(const hex in byhex){
+    if (byhex[hex].length>1) console.log('HA!',byhex[hex]);
+  }
+  console.log(Object.keys(byhex).length);
+}
+async function test71_missingColors(){
+
+  let filenames = await mGetFiles(`../ode/colors`);// console.log(filenames);
+  let di={}
+  for(const fname of filenames){
+    let text= await mGetText(`../ode/colors/${fname}`);
+    let key = stringBefore(fname,'.');
+    let bucket=di[key]={};
+    //console.log('text',text);
+    let lines = text.split('\n'); let i=0;
+    for(const line of lines){
+      //console.log('line',line);
+      let [name,hexrest]=line.split('#');
+      let newname='';
+      for(const ch of name.trim()) {
+        let code = ch.charCodeAt(0);
+        if (code == 160 || code == 32 || '-'.includes(ch)) newname+='_';
+        else if (code != 9 && !"()'/".includes(ch)) newname+=ch.toLowerCase();
+      }
+      name = newname;
+      //console.log(fname,name);
+      if (isEmptyOrWhiteSpace(name)) continue;
+      name = name.replaceAll('__',"_");
+
+      let hex = '#'+stringBefore(hexrest,'\t');
+      if (hex.length!=7) console.log('FEHLER!!!!!',fname,name,hexrest)
+      hex = hex.toLowerCase();
+      //if (i++>100) return;
+      // parts = splitAtAnyOf line.split('\t');
+      // if (parts.length<3) {console.log('line',line,fname);continue;}
+      // let name=parts[1].trim(); //stringBefore(line,'#');
+      // //name = stringBefore(name,'(');
+      // let color = parts[2].trim(); //`#${stringBefore(stringAfter(line,'#'),' ')}`;
+      if (isdef(bucket[name])) {
+        if (bucket[name] == hex) continue;
+        else {console.log('duplicate',fname,name);name+='1';}
+      }
+      bucket[name]=hex;
+      //break;
+    }
+  }
+  //let s='thousand_herb_color chigusa_iro';
+  //for(const ch of s) console.log(ch.charCodeAt(0))
+  downloadAsYaml(di,'di1');
+} 
+function splitAtWhiteSpace(s){
+  return s.split(/\s+/).filter(x => x.trim() !== "");
+}
+async function test70_newcolors(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`);
+  let dires={};
+  let byhex={};
+  for(const k in di){
+    let di1=di[k];
+    dires[k]={};
+    let list = dict2list(di1,'name');
+    //console.log('list',list);
+    for(const name in di1){
+      let o=w3color(di1[name]);
+      o.name=name;
+      o.hex=di1[name];
+      dires[k][name]=o;
+      lookupAddToList(byhex,[o.hex],o)
+    }
+    //break
+  }
+  console.log(byhex);
+  console.log(dires);
+
+  for(const hex in byhex){
+    if (byhex[hex].length>1) console.log('HA!',byhex[hex]);
+  }
+  console.log(Object.keys(byhex).length);
+}
+async function test69_colorsYaml(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`);
+  console.log(di)
+}
+async function test68_newColors(){
+
+  let filenames = await mGetFiles(`../ode/colors`);// console.log(filenames);
+  let di={}
+  for(const fname of filenames){
+    let text= await mGetText(`../ode/colors/${fname}`);
+    let key = stringBefore(fname,'.');
+    let bucket=di[key]={};
+    //console.log('text',text);
+    let lines = text.split('\n');
+    for(const line of lines){
+      //console.log('line',line);
+      parts = line.split('\t');
+      if (parts.length<3) {console.log('line',line,fname);continue;}
+      let name=parts[1].trim(); //stringBefore(line,'#');
+      name = stringBefore(name,'(');
+      let color = parts[2].trim(); //`#${stringBefore(stringAfter(line,'#'),' ')}`;
+      bucket[name]=color;
+      //break;
+    }
+
+  }
+  console.log(di)
+  downloadAsYaml(di,'di1');
+} 
+
+async function test67_colors(){
+  let olist = getBeautifulColors(); console.log(olist)
+  let lists = sortByHues(olist);
+	let d = clearBodyDiv({ gap: 10 }); mFlexWrap(d);
+  for(const k in lists){
+    showPalette(d,lists[k].map(x=>x.hex));
+  }
+
+}
+async function test66_colors(){
+  let olist = getBeautifulColors(); console.log(olist)
+  //sortByMultipleProperties(olist, 'hue'); //, 'lightness');
+  // let list=sortByFunc(olist,x=>x.lightness); console.log(list)
+  let lists = sortByHues(olist);
+
+  // let colors = olist.map(x=>x.hex); console.log(colors)
+	let d = clearBodyDiv({ gap: 10 }); mFlexWrap(d);
+	// let board = mColorPickerHex(d,colors);
+
+  for(const k in lists){
+    showPalette(d,lists[k].map(x=>x.hex));
+  }
+
+}
 async function test65_changeColors(){
   console.log(w3color('red'))
   let colors = getColormapColors();
@@ -11,7 +276,7 @@ async function test65_changeColors(){
   console.log(board);
   //return;
   //jetzt mach eine palette mit ryb colors
-  showPalette(d,colorSchemeRYB());
+  //showPalette(d,colorSchemeRYB());
 
   // showPalette(d,levelColors);
   // showPalette(d,Object.values(playerColors));
@@ -21,29 +286,18 @@ async function test65_changeColors(){
   // showPalette(d,deepRichColors);
 
   let list = levelColors.concat(modernColors.concat(Object.values(playerColors).concat(vibrantColors.concat(childrenRoomColors.concat(deepRichColors)))));
+  list = list.map(x=>w3color(x));
+  list.map(x=>x.hex=x.toHexString());
+  //list = sortBy(list,'lightness');
+  //list = list.map(x=>x.toHexString());
+  let newlist = sortByFunc(list,x=>x.lightness);
+
+  console.log(newlist[1]);
+  mDom(d,{bg:newlist[1].hex,w:50,h:50});
+
   //list = sortByHue(list);
-  list = sortByLum(list);
+  //list = sortByLum(list);
   showPalette(d,list);
-
-}
-function sortByHue(colors){
-  let list=colors.map(x=>w3color(x));
-  list = sortBy(list,'hue');
-  for(const c of list){c.hex=c.toHexString()}
-  return list.map(x=>x.hex);
-}
-function sortByLum(colors){
-  let list=colors.map(x=>w3color(x));
-  list = sortBy(list,'lightness');
-  for(const c of list){c.hex=c.toHexString()}
-  return list.map(x=>x.hex);
-}
-function showPalette(dParent,colors){
-  let d1=mDom(dParent,{display:'flex',dir:'column',wrap:true, gap:2, hmax:'100vh'});
-
-  for(const c of sortByHue(colors)){
-    let dmini=mDom(d1,{wmin:40,hmin:40,padding:2,bg:c,fg:idealTextColor(c)},{html:`${c}<br>hue:${w3color(c).hue}`});
-  }
 
 }
 async function test64_colorhex(){

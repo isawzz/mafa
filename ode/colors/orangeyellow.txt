@@ -1,0 +1,95 @@
+	Lotion	#FEFDFA	254	253	250	45.0	98.8	66.6
+	Cosmic latte	#FFF8E7	255	248	231	42.4	95.2	100.0
+	Cornsilk	#FFF8DC	255	248	220	47.9	93.1	100.0
+	Alabaster	#F2F0E6	242	240	230	50.0	92.5	31.5
+	Eggshell	#F0EAD6	240	234	214	46.1	89.0	46.4
+	White chocolate	#EDE6D6	237	230	214	41.7	88.4	38.9
+	Blond	#FAF0BE	250	240	190	50.0	86.2	85.7
+	Lemon meringue	#F6EABE	246	234	190	47.1	85.4	75.6
+	Pearl	#EAE0C8	234	224	200	42.3	85.0	44.7
+	Banana Mania	#FAE7B5	250	231	181	43.4	84.5	87.3
+	Dutch white	#EFDFBB	239	223	187	41.5	83.5	61.9
+	Cookies and cream	#EEE0B1	238	224	177	46.2	81.3	64.2
+	Medium champagne	#F3E5AB	243	229	171	48.3	81.1	74.9
+	Yellow (Crayola)	#FCE883	252	232	131	50.0	75.0	95.2
+	Inside of a bottle (Kamenozoki)	#C6C2B6	198	194	182	44.9	74.5	12.3
+	Jasmine	#F8DE7E	248	222	126	47.2	73.3	89.7
+	Buff	#F0DC82	240	220	130	49.0	72.5	78.5
+	Flax	#EEDC82	238	220	130	50.0	72.1	76.0
+	Shandy	#FFE670	255	230	112	49.5	71.9	100.0
+	Dandelion (Crayola)	#FDDB6D	253	219	109	45.8	70.9	97.2
+	Orange-yellow (Crayola)	#F8D568	248	213	104	45.4	69.0	91.1
+	Naples yellow	#FADA5E	250	218	94	47.6	67.4	93.9
+	Mustard	#FFDB58	255	219	88	47.0	67.2	100.0
+	Arylide yellow	#E9D66B	233	214	107	50.9	66.6	74.1
+	Gargoyle Gas	#FFDF46	255	223	70	49.6	63.7	100.0
+	Google Chrome yellow	#FFCE44	255	206	68	44.2	63.3	100.0
+	Ecru	#C2B280	194	178	128	45.4	63.1	35.1
+	Maize (Crayola)	#F2C649	242	198	73	44.3	61.7	86.6
+	Lanzones	#E0BC5B	224	188	91	43.7	61.7	68.2
+	Iron	#A19D94	161	157	148	41.5	60.5	6.4
+	Sunglow	#FFCC33	255	204	51	45.0	60.0	100.0
+	Amur cork tree (Kihada) (Phellodendron amurense)	#F3C13A	243	193	58	43.7	59.0	88.5
+	Pale oak (Aoshirotsurubami)	#BBA46D	187	164	109	42.3	58.0	36.4
+	Saffron	#F4C430	244	196	48	45.3	57.2	89.9
+	Ripe mango	#FFC324	255	195	36	43.5	57.0	100.0
+	Sunset Yellow	#FFC922	255	201	34	45.3	56.6	100.0
+	Meat brown	#E5B73B	229	183	59	43.7	56.4	76.5
+	Japanese triandra grass (Kariyasu) (Themeda japonica)	#E2B13C	226	177	60	42.2	56.0	74.1
+	Vegas gold	#C5B358	197	179	88	50.0	55.8	48.4
+	Orange-yellow	#F5BD1F	245	189	31	44.2	54.1	91.4
+	Rape-blossom brown (Nanohanacha)	#E3B130	227	177	48	43.2	53.9	76.1
+	Deep lemon	#F5C71A	245	199	26	47.3	53.1	91.6
+	Mikado yellow	#FFC40C	255	196	12	45.4	52.3	100.0
+	Gold (metallic)	#D4AF37	212	175	55	45.8	52.3	64.6
+	Metallic yellow	#FDCC0D	253	204	13	47.7	52.1	98.3
+	Jonquil	#F4CA16	244	202	22	48.6	52.1	90.9
+	Old gold	#CFB53B	207	181	59	49.4	52.1	60.6
+	American gold	#D3AF37	211	175	55	46.1	52.1	63.9
+	Durian Yellow	#E1BD27	225	189	39	48.3	51.7	75.6
+	Titanium	#878681	135	134	129	50.0	51.7	2.4
+	Spanish yellow	#F6B511	246	181	17	42.9	51.5	92.7
+	Urobilin	#E1AD21	225	173	33	43.7	50.5	76.1
+	Satin sheen gold	#CBA135	203	161	53	43.1	50.1	59.0
+	School bus yellow	#FFD800	255	216	0	50.8	50.0	100.0
+	Golden	#FFD700	255	215	0	50.5	50.0	100.0
+	Cyber yellow	#FFD300	255	211	0	49.6	50.0	100.0
+	Tangerine yellow	#FFCC00	255	204	0	48.0	50.0	100.0
+	Amber	#FFBF00	255	191	0	44.9	50.0	100.0
+	Selective yellow	#FFBA00	255	186	0	43.7	50.0	100.0
+	Ucla Gold	#FFB300	255	179	0	42.1	50.0	100.0
+	Chinese yellow	#FFB200	255	178	0	41.8	50.0	100.0
+	Mango	#FDBE02	253	190	2	44.9	50.0	98.4
+	Philippine yellow	#FECB00	254	203	0	47.9	49.8	100.0
+	Microsoft yellow	#FDB900	253	185	0	43.8	49.6	100.0
+	Golden poppy	#FCC200	252	194	0	46.1	49.4	100.0
+	Goldenrod	#DAA520	218	165	32	42.9	49.0	74.4
+	American yellow	#F2B400	242	180	0	44.6	47.4	100.0
+	Patrinia flowers (Ominaeshi) (Patrinia scabiosaefolia) (Ominaeshi)	#D9B611	217	182	17	49.5	45.8	85.4
+	Willow grey (Yanaginezumi)	#817B69	129	123	105	45.0	45.8	10.2
+	Lemon curry	#CCA01D	204	160	29	44.9	45.6	75.1
+	Willow tea (Yanagicha)	#9C8A4D	156	138	77	46.3	45.6	33.9
+	Mustard yellow	#E1AD01	225	173	1	46.0	44.3	99.1
+	Dark tan	#918151	145	129	81	45.0	44.3	28.3
+	Pale fallen leaves (Aokuchiba)	#AA8736	170	135	54	41.8	43.9	51.7
+	Baiko brown (Baikōcha)	#857C55	133	124	85	48.7	42.7	22.0
+	Gold foil	#BD9B16	189	155	22	47.7	41.3	79.1
+	Gold Fusion	#85754E	133	117	78	42.5	41.3	26.0
+	Finch-brown (Hiwacha) (Cardueline finch)	#957B38	149	123	56	43.2	40.1	45.3
+	Chinese gold	#CC9900	204	153	0	45.0	40.0	100.0
+	Moss color (Koke-iro)	#8B7D3A	139	125	58	49.6	38.6	41.1
+	Dark goldenrod	#B8860B	184	134	11	42.6	38.2	88.7
+	Greyish dark green (Rikyūnezumi)	#656255	101	98	85	48.7	36.4	8.6
+	Rapeseed oil-colored (Nataneyu-iro)	#A17917	161	121	23	42.6	36.0	75.0
+	Light gold	#B29700	178	151	0	50.8	34.9	100.0
+	Bistre brown	#967117	150	113	23	42.5	33.9	73.4
+	Gold	#A57C00	165	124	0	45.0	32.3	100.0
+	Porcupine	#936900	147	105	0	42.8	28.8	100.0
+	Field drab	#6C541E	108	84	30	41.5	27.0	56.5
+	Rikan brown (Rikancha)	#534A32	83	74	50	43.6	26.0	24.8
+	Codium fragile seaweed color (Miru-iro)	#524B2A	82	75	42	49.4	24.3	32.2
+	Flirtatious indigo tea (Aikobicha)	#473F2D	71	63	45	41.5	22.7	22.4
+	Olive Drab	#3C341F	60	52	31	43.4	17.8	31.8
+	Pullman Green	#3B331C	59	51	28	44.5	17.0	35.6
+	Dark bronze (Coin)	#514100	81	65	0	48.1	15.8	100.0
+	Black chocolate	#1B1811	27	24	17	41.9	8.6	22.7

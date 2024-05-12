@@ -1,0 +1,116 @@
+	Honeydew	#F0FFF0	240	255	240	120.0	97.0	100.0
+	Nyanza	#E9FFDB	233	255	219	96.6	92.9	100.0
+	Chinese white	#E2E5DE	226	229	222	85.7	88.4	11.8
+	Tea green	#D0F0C0	208	240	192	99.9	84.7	61.5
+	Menthol	#C1F9A2	193	249	162	98.6	80.5	87.8
+	Mint green	#98FF98	152	255	152	120.0	79.8	100.0
+	Pale Green	#98FB98	152	251	152	120.0	79.0	92.5
+	Celadon	#ACE1AF	172	225	175	123.3	77.8	46.9
+	Light moss green	#ADDFAD	173	223	173	120.0	77.6	43.8
+	Granny Smith apple	#A8E4A0	168	228	160	112.9	76.0	55.7
+	Teal deer	#99E6B3	153	230	179	140.2	75.0	60.6
+	Light green	#90EE90	144	238	144	120.0	74.9	73.4
+	Ash gray	#B2BEB5	178	190	181	135.0	72.1	8.4
+	Screamin' Green	#66FF66	102	255	102	120.0	70.0	100.0
+	Cambridge blue	#A3C1AD	163	193	173	140.0	69.8	19.4
+	Silver foil	#AFB1AE	175	177	174	99.9	68.8	1.8
+	Eton blue	#96C8A2	150	200	162	134.3	68.6	31.2
+	Lemon lime	#5CFF67	92	255	103	124.0	68.0	100.0
+	Laurel green	#A9BA9D	169	186	157	95.1	67.2	17.3
+	Pastel green	#77DD77	119	221	119	120.0	66.6	60.0
+	Very light malachite green	#64E986	100	233	134	135.3	65.2	75.1
+	Whitish green (Byakuroku)	#A5BA93	165	186	147	92.3	65.2	22.0
+	Dark sea green	#8FBC8F	143	188	143	120.0	64.9	25.1
+	Inchworm	#B2EC5D	178	236	93	84.3	64.5	79.0
+	Pistachio	#93C572	147	197	114	96.1	60.9	41.7
+	French lime	#9EFD38	158	253	56	88.9	60.5	98.0
+	Green-yellow	#ADFF2F	173	255	47	83.6	59.2	100.0
+	Iguana green	#71BC78	113	188	120	125.6	59.0	35.8
+	Olivine	#9AB973	154	185	115	86.5	58.8	33.3
+	Spring Frost	#87FF2A	135	255	42	93.8	58.2	100.0
+	Mantis	#74C365	116	195	101	110.4	58.0	43.9
+	Green Lizard	#A7F432	167	244	50	83.8	57.6	89.8
+	Kiwi	#8EE53F	142	229	63	91.4	57.2	76.1
+	Dollar bill	#85BB65	133	187	101	97.6	56.4	38.7
+	Emerald	#50C878	80	200	120	140.0	54.9	52.1
+	Bud green	#7BB661	123	182	97	101.6	54.7	36.7
+	Asparagus	#87A96B	135	169	107	92.9	54.1	26.4
+	Neon green	#39FF14	57	255	20	110.5	53.9	100.0
+	Pale blue (Usuao)	#8C9C76	140	156	118	85.2	53.7	16.1
+	Dolphin gray	#828E84	130	142	132	130.0	53.3	5.0
+	Pale young green onion (Usumoegi)	#8DB255	141	178	85	83.8	51.5	37.6
+	Oxley	#6D9A79	109	154	121	136.0	51.5	18.2
+	Shiny Shamrock	#5FA778	95	167	120	140.8	51.3	29.0
+	Forest green (Crayola)	#5FA777	95	167	119	140.0	51.3	29.0
+	Asda Green	#7DC242	125	194	66	92.3	50.9	51.2
+	Mango green	#96FF00	150	255	0	84.7	50.0	100.0
+	Bright green	#66FF00	102	255	0	96.0	50.0	100.0
+	Green slime	#65FF00	101	255	0	96.2	50.0	100.0
+	Chlorophyll green	#4AFF00	74	255	0	102.5	50.0	100.0
+	Harlequin	#3FFF00	63	255	0	105.1	50.0	100.0
+	Lime green	#32CD32	50	205	50	120.0	50.0	60.7
+	Electric green	#00FF00	0	255	0	120.0	50.0	100.0
+	Lawn green	#7CFC00	124	252	0	90.4	49.4	100.0
+	Apple	#66B447	102	180	71	102.9	49.2	43.4
+	Xanadu	#738678	115	134	120	135.7	48.8	7.6
+	Russian green	#679267	103	146	103	120.0	48.8	17.2
+	Smoke	#738276	115	130	118	132.0	48.0	6.1
+	Young bamboo color (Wakatake-iro)	#6B9362	107	147	98	108.9	48.0	19.9
+	Harbor rat (Minatonezumi)	#757D75	117	125	117	120.0	47.4	3.3
+	Camouflage green	#78866B	120	134	107	91.1	47.2	11.2
+	American green	#34B334	52	179	52	120.0	45.2	54.9
+	Nickel	#727472	114	116	114	120.0	45.0	0.8
+	Wageningen Green	#34B233	52	178	51	119.5	44.9	55.4
+	Malachite	#0BDA51	11	218	81	140.2	44.9	90.3
+	Harlequin green	#46CB18	70	203	24	104.5	44.5	78.8
+	Green (RYB)	#66B032	102	176	50	95.2	44.3	55.7
+	Middle green	#4D8C57	77	140	87	129.5	42.5	29.0
+	Palm Leaf	#6F9940	111	153	64	88.3	42.5	41.0
+	Axolotl	#63775B	99	119	91	102.8	41.1	13.3
+	Kelly green	#4CBB17	76	187	23	100.6	41.1	78.0
+	May green	#4C9141	76	145	65	111.7	41.1	38.0
+	Vine Green	#38A32A	56	163	42	113.0	40.1	59.0
+	Yellow-green (Color Wheel)	#30B21A	48	178	26	111.3	40.0	74.5
+	Vivid malachite	#00CC33	0	204	51	135.0	40.0	100.0
+	Douban Green	#2E963D	46	150	61	128.6	38.4	53.0
+	Dark pastel green	#03C03C	3	192	60	138.0	38.2	96.9
+	Maximum green	#5E8C31	94	140	49	90.3	37.0	48.1
+	Aloeswood brown (Tonocha)	#5A6457	90	100	87	106.1	36.6	6.9
+	Fern green	#4F7942	79	121	66	105.8	36.6	29.4
+	Patina (Rokushō)	#407A52	64	122	82	138.6	36.4	31.1
+	Fresh onion (Moegi)	#5B8930	91	137	48	91.0	36.2	48.1
+	Ebony	#555D50	85	93	80	96.9	33.9	7.5
+	Slimy green	#299617	41	150	23	111.4	33.9	73.4
+	Forest Green	#228B22	34	139	34	120.0	33.9	60.6
+	Sap green	#507D2A	80	125	42	92.5	32.7	49.7
+	Japanese laurel	#2F7532	47	117	50	122.5	32.1	42.6
+	Gray-asparagus	#465945	70	89	69	116.9	30.9	12.6
+	Dark olive green	#556B2F	85	107	47	82.0	30.1	38.9
+	Horsetail color (Tokusa-iro)	#3D5D42	61	93	66	129.3	30.1	20.7
+	Verse green	#18880D	24	136	13	114.6	29.2	82.5
+	North Texas Green	#059033	5	144	51	139.8	29.2	93.2
+	Deep moss green	#355E3B	53	94	59	128.7	28.8	27.8
+	Mughal green	#306030	48	96	48	120.0	28.2	33.3
+	India green	#138808	19	136	8	114.8	28.2	88.8
+	Islamic green	#009000	0	144	0	120.0	28.2	100.0
+	Green Cola	#4C721D	76	114	29	86.8	28.0	59.4
+	Green (Midori)	#2A603B	42	96	59	138.8	27.0	39.1
+	Xbox Green	#0E7A0D	14	122	13	119.4	26.4	80.7
+	Rifle green	#444C38	68	76	56	83.9	25.8	15.1
+	Napier green	#2A8000	42	128	0	100.3	25.0	100.0
+	Green	#008001	0	128	1	120.4	25.0	100.0
+	Ao (English)	#008000	0	128	0	120.0	25.0	100.0
+	Rusty storeroom (Sabitetsuonando)	#3A403B	58	64	59	130.0	23.9	4.9
+	Thousand year old green (Sensaimidori)	#374231	55	66	49	98.8	22.5	14.7
+	Kombu green	#354230	53	66	48	103.3	22.3	15.7
+	Metallic green	#296E01	41	110	1	97.9	21.7	98.1
+	Deep green	#056608	5	102	8	121.8	20.9	90.6
+	Cal Poly Pomona green	#1E4D2B	30	77	43	136.5	20.9	43.9
+	Royal green	#136207	19	98	7	112.0	20.5	86.6
+	Emerald green	#046307	4	99	7	121.8	20.1	92.2
+	Pakistan green	#006600	0	102	0	120.0	20.0	100.0
+	Indigo Codium fragile seaweed brown (Aimirucha)	#2E372E	46	55	46	120.0	19.8	8.9
+	Dark green (X11)	#006400	0	100	0	120.0	19.6	100.0
+	Lincoln green	#195905	25	89	5	105.7	18.4	89.3
+	Black leather jacket	#253529	37	53	41	135.0	17.6	17.7
+	Pine tree	#2A2F23	42	47	35	85.0	16.0	14.6
