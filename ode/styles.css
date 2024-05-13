@@ -5,7 +5,8 @@
 	--bgNav: transparent;
 	--bgLighter: transparent;
 	--bgDarker: transparent;
-	--fgButton: gray;
+	--fgButton: red; 
+	/* --fgButton: gray; */
 	--fgButtonDisabled: gray;
 	--fgButtonHover: dimgray;
 	--fgButtonActive: black;

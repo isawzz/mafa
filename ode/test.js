@@ -422,7 +422,7 @@ async function test54_dynBody() {
   await prelims(); //return;
   M.playerColors = loadPlayerColors(); return;
   console.log(M.playerColors)
-  U = await postUserChange({ name: U.name, color: BLUEGREEN, texture: '../assets/textures/marble_gold.jpeg', blend: 'multiply' });
+  U = await postUserChange({ name: U.name, color: BLUEGREEN, texture: '../assets/textures/marble_gold.jpeg', bgBlend: 'multiply' });
   console.log(U)
   await switchToUser('mimi');
   await switchToMenu(UI.nav, 'settings');

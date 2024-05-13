@@ -44,10 +44,10 @@ async function prelims() {
       <div id="dMessage" style='height:0px;padding-left:10px' class="transh"></div>
     </div>
     <div id="dBuffer" style="height:32px;width:100%"></div>
-    <div id="dExtra" class="p10hide"></div>
+    <div id="dExtra" class="p10hide nav"></div>
     <div id="dTitle"></div>
     <div id="dPage" style="display:grid;grid-template-columns: auto 1fr auto;">
-      <div id="dLeft" class="h100 over0 translow">
+      <div id="dLeft" class="h100 over0 translow nav">
       </div>
       <div id="dMain"></div>
       <div id="dRight" class="h100 over0 translow"></div>

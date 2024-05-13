@@ -472,7 +472,7 @@ function clearFleetingMessage() {
 		dFleetingMessage = null;
 	}
 }
-function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); mClear('dExtra') }
+function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); if (!TESTING) mClear('dExtra') }
 
 function clearParent(ev) { mClear(ev.target.parentNode); }
 
@@ -859,7 +859,11 @@ async function collOnDroppedUrl(url, coll) {
 	mButton('cancel', () => collCancelEditing(dPopup), db2, { w: 70 }, 'input');
 	mButton('OK', () => collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, coll), db2, { w: 70 }, 'input');
 }
-function collOpenPrimary(rows, cols) { collPresent(UI.collPrimary, rows, cols); UI.collPrimary.isOpen = true; }
+function collOpenPrimary(rows, cols) {
+	//console.log('collOpenPrimary')
+	collPresent(UI.collPrimary, rows, cols);
+	UI.collPrimary.isOpen = true;
+}
 
 function collOpenSecondary(rows, cols) {
 	let coll = UI.collSecondary;
@@ -946,7 +950,7 @@ async function collShowImageInCell(cell, src) {
 }
 function collSidebar() {
 	let wmin = 170;
-	mStyle('dLeft', { wmin: wmin, });
+	mStyle('dLeft', { wmin: wmin });
 	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
 	let gap = 5;
 	UI.collSelectAll = mCommand(d, 'collSelectAll', 'Select All'); mNewline(d, gap);
@@ -960,7 +964,7 @@ function collSidebar() {
 	UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d, 3 * gap);
 	collDisableListCommands();
 	UI.newCollection = mCommand(d, 'newCollection', 'New Collection'); mNewline(d, gap);
-	UI.asSecondary = mCommand(d, 'asSecondary', 'Open DragDrop'); mNewline(d, gap);
+	UI.asSecondary = mCommand(d, 'asSecondary', 'Edit Collection'); mNewline(d, gap);
 	UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection'); mNewline(d, gap);
 	UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection'); mNewline(d, 3 * gap);
 	UI.asAvatar = mCommand(d, 'asAvatar', 'Set Avatar'); mNewline(d, gap);
@@ -5033,6 +5037,7 @@ async function menuOpen(menu, key) {
 	let cmd = menu.commands[key];
 	menu.cur = key;
 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
+  if (TESTING) testUpdateTestButtons('dExtra');
 	await cmd.open();
 }
 function mergeArrays(target, source) {
@@ -5219,7 +5224,7 @@ async function onclickAsAvatar(ev) {
 	console.log('res', res)
 }
 async function onclickAsSecondary(ev) {
-	name = UI.collPrimary.name;
+	let name = UI.collPrimary.name;
 	if (name == 'all' || collLocked(name)) {
 		showMessage(`ERROR! collection ${name} cannot be altered!`);
 		return;
@@ -5372,6 +5377,7 @@ async function onclickDeleteCollection(name) {
 	if (nundef(name) && UI.collSecondary.isOpen) name = UI.collSecondary.name;
 	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
 	if (!name) return;
+	if (collLocked(name)) { showMessage(`collection ${name} cannot be deleted!!!!`); return; }
 	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });
 	if (proceed) await collDelete(name);
 	if (UI.collSecondary.isOpen && UI.collSecondary.name == name) collCloseSecondary();
@@ -5642,7 +5648,7 @@ async function onclickRemoveSelected() {
 	collPostReload();
 }
 async function onclickRenameCollection(oldname, newname) {
-	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : UI.collPrimary.name;
+	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : collLocked(UI.collPrimary.name)?null:UI.collPrimary.name;
 	if (nundef(newname)) {
 		let di = await mGather(iDiv(UI.renameCollection), {}, { content: { oldname: valf(oldname, ''), newname: '' }, type: 'multi' });
 		if (!di) return;
@@ -5657,10 +5663,7 @@ async function onclickRenameCollection(oldname, newname) {
 		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
 		return;
 	}
-	if (collLocked(oldname)) {
-		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);
-		return;
-	}
+	if (collLocked(oldname)) {		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);		return;	}
 	if (!collExists(oldname)) {
 		showMessage(`ERROR: Collection ${oldname} not found!`);
 		return;
@@ -5865,9 +5868,9 @@ async function postImage(img, path) {
 	let resp = await mPostRoute('postImage', o);
 	console.log('resp', resp); //sollte path enthalten!
 }
-async function postUserChange(data) {
+async function postUserChange(data,override=false) {
 	data = valf(data, U)
-	return Serverdata.users[data.name] = await mPostRoute('postUser', data);
+	return Serverdata.users[data.name] = override?await mPostRoute('overrideUser',data):await mPostRoute('postUser', data);
 }
 function present() {
 	if (Settings.perspective == 'me') presentFor(me);
@@ -7043,7 +7046,7 @@ function showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
 	for (var c of colors) {
 		let bg = c.hex;
-		let d2 = mDom(d1, { wmin: 250, bg, fg: idealTextColor(bg), padding: 20 },{class:'colorbox',dataColor:bg});
+		let d2 = mDom(d1, { wmin: 250, bg, fg: idealTextColor(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
 		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
 		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
 		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: idealTextColor(bg) }, { html });
@@ -7407,7 +7410,7 @@ async function switchToUser(uname) {
 	Clientdata.curUser = uname;
 	localStorage.setItem('username', uname);
 	iDiv(UI.user).innerHTML = uname;
-	setColors(U.color, U.texture, U.blend);
+	setTheme(U);
 	if (uname == 'guest') {
 		await switchToMenu(UI.nav, 'home');
 		menuDisable(UI.nav, 'plan');
@@ -7537,28 +7540,6 @@ async function testOnclickPlaymode(ev) {
 	let caption = b.innerHTML;
 	if (caption.includes('human')) await onclickHuman();
 	else await onclickBot();
-}
-function testUpdateTestButtons(dParent, styles = {}) {
-	let table = Clientdata.table;
-	let id = 'dTestButtons'; mRemoveIfExists(id);
-	mIfNotRelative(dParent);
-	addKeys({ display: 'flex', gap: 10, vpadding: 2, position: 'absolute', right: 8, top: 0 }, styles);
-	let dBotHuman = mDom(dParent, styles, { id });
-	let me = getUname();
-	let names = isdef(table) ? [] : ['amanda', 'felix', 'lauren', 'mimi', 'gul'];
-	for (const name of names) {
-		let idname = getButtonCaptionName(name);
-		let b = UI[idname] = mButton(name, testOnclickCaption, dBotHuman);
-		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
-	}
-	if (nundef(table)) return dBotHuman;;
-	let playmode = getPlaymode(table, me);
-	if (nundef(playmode)) return dBotHuman;;
-	let [playmodeKey, sz, bg, matop, patop] = [playmode == 'human' ? 'skullcap' : 'robot', 25, 'transparent', 2, 0];
-	showImage(playmodeKey, dBotHuman, { fg: 'white', sz, round: true, bg, matop, patop });// , 'line-height': sz });
-	let caption = `Make me ${playmode == 'bot' ? 'human' : 'bot'}`;
-	UI.bPlaymode = mButton(caption, testOnclickPlaymode, dBotHuman, { w: 130 });
-	return dBotHuman;
 }
 function toElem(d) { return isString(d) ? mBy(d) : d; }
 

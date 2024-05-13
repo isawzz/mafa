@@ -482,6 +482,12 @@ app.post('/postUpdateItem', (req, res) => {
 		res.json(`item ${key} updated successfully!`);
 	}
 });
+app.post('/overrideUser', (req, res) => {
+	let name=req.body.name;
+	let data=req.body;
+	saveUser(name, data);
+	res.json(data);
+});
 app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let userdata = req.body;

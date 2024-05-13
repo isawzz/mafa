@@ -1,47 +1,76 @@
 
-async function settingsOpen(){
-  console.log('open Settings!!!'); mClear('dMain');
+function setColors(bg, fg) {
+  let fgIsLight = isdef(fg)?colorIdealText(fg)=='black':colorIdealText(bg)=='white';
+  let bgIsDark = colorIdealText(bg)=='white';
 
-	let di=M.dicolor,d=mDom('dMain',{padding:12});
-  for(const bucket in di){
-    let list = dict2list(di[bucket]);
-    let clist=[];
-    for(const c of list){
-      let o=w3color(c.value);
-      //console.log('c',c)
-      o.name = c.id;
-      o.hex = c.value;
-      clist.push(o);
+  if (nundef(fg)) fg = colorIdealText(bg);
+
+  let bgNav=bg;
+  fg=colorToHex79(fg); console.log('fg',fg);
+  if (fgIsLight){
+    //navbar soll ein dunkler ton sein, based on bg, aber NICHT fully opaque!
+    if (isEmpty(U.bgImage)){
+      bgNav = '#00000040';
+    } else if (bgIsDark){ //das heisst bg ist fairly dark already!
+      bgNav = colorTrans(bg,.8);
+    }else{
+      //bg needs to be darker
+      bgNav = colorTrans(colorDark(bg,50),.8);
     }
-
-    let sorted = sortByFunc(clist,x=>-x.lightness); //(10*x.lightness+x.sat*100));
-    //console.log(sorted[0]); return;
-
-    mDom(d,{},{html:`<br>${bucket}<br>`})
-    showPaletteNames(d,sorted);
-    
-  }
-
-  let divs=document.getElementsByClassName('colorbox');
-  for(const div of divs){
-    div.onclick=async()=>{
-      setColors(div.getAttribute('dataColor'));
-      let c=getCSSVariable('--bgBody');
-      let hex = colorToHex79(c);
-      U.color = hex;
-      await postUserChange();
-    
+  }else{
+    if (isEmpty(U.bgImage)){
+      bgNav = '#ffffff40';
+    } else if (!bgIsDark){ //das heisst bg ist fairly dark already!
+      bgNav = colorTrans(bg,.8);
+    }else{
+      //bg needs to be darker
+      bgNav = colorTrans(colorLight(bg,50),.8);
     }
-    //console.log('HAAAAAAALLLO',div);break;
-
   }
+  setCssVar('--bgBody', isEmpty(U.bgImage)?bg:colorTrans(bg,.5));
+  setCssVar('--bgButton', 'transparent')
+  setCssVar('--bgButtonActive', 'transparent')
+  setCssVar('--bgNav', bgNav)
+  // setCssVar('--bgLighter', light())
+  // setCssVar('--bgDarker', dark())
+  setCssVar('--fgButton', fg)
+  setCssVar('--fgButtonActive', fg)
+  setCssVar('--fgButtonDisabled', 'silver')
+  setCssVar('--fgButtonHover', fg)
+  setCssVar('--fgTitle', fg)
+  setCssVar('--fgSubtitle', fg);
 
-
-
+  console.log(':::body color',colorToHex79(mGetStyle(document.body,'bg')))
+  console.log('body style',['backgroundColor','backgroundImage','backgroundSize','backgroundRepeat','backgroundBlandMode'].map(x=>document.body.style[x]).join(','));
 }
-async function settingsClose(){
-  //uebernimm current color!
-  console.log('close Settings!!!'); mClear('dMain');
+function setTexture(item) {
+  // console.log(item);
+  let d=document.body;
+  let bgImage = valf(item.bgImage,'');
+  let bgRepeat = valf(item.bgRepeat,'');
+  let bgBlend = valf(item.bgBlend,'');
+  let bgSize = valf(item.bgSize,'');
+
+  // console.log('setTexture',bgImage,bgRepeat,bgBlend,bgSize);
+
+  d.style.backgroundImage = bgImage;
+  d.style.backgroundSize = bgSize;
+  d.style.backgroundRepeat = bgRepeat;
+  d.style.backgroundBlendMode = 'color-dodge'; //'overlay'; //bgBlend;
+  //d.style.backgroundColor = colorTrans(U.color,.5);
+
+  //d.style.opacity = .5
+
+	//if (!isEmpty(bgImage)) d.style.filter = `url(#transparencyFilter)`;
+  console.log(':::body color',colorToHex79(mGetStyle(document.body,'bg')))
+  console.log('body style',['backgroundColor','backgroundImage','backgroundSize','backgroundRepeat','backgroundBlandMode'].map(x=>document.body.style[x]).join(','));
+  // console.log('body style',document.body);
 }
+
+
+
+
+
+
 
 

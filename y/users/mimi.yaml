@@ -1,8 +1,11 @@
 name: mimi
-color: '#ccccff'
+color: '#2e2d8880'
 key: mimi
 setgame:
   level: 2
   playmode: human
-texture: ../assets/textures/marble_gold.jpeg
-blend: multiply
+fg: '#ffffff'
+bgImage: url('../assets/textures/ttransfood.png')
+bgBlend: normal
+bgSize: auto
+bgRepeat: repeat

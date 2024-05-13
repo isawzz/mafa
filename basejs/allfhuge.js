@@ -52595,6 +52595,23 @@ function PrSq(sq) {
   return sqStr;
 }
 function pSBC(p, c0, c1, l) {
+  function pSBCr(d) {
+    let i = parseInt, m = Math.round, a = typeof c1 == 'string';
+    let n = d.length,
+      x = {};
+    if (n > 9) {
+      ([r, g, b, a] = d = d.split(',')), (n = d.length);
+      if (n < 3 || n > 4) return null;
+      (x.r = parseInt(r[3] == 'a' ? r.slice(5) : r.slice(4))), (x.g = parseInt(g)), (x.b = parseInt(b)), (x.a = a ? parseFloat(a) : -1);
+    } else {
+      if (n == 8 || n == 6 || n < 4) return null;
+      if (n < 6) d = '#' + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : '');
+      d = parseInt(d.slice(1), 16);
+      if (n == 9 || n == 5) (x.r = (d >> 24) & 255), (x.g = (d >> 16) & 255), (x.b = (d >> 8) & 255), (x.a = m((d & 255) / 0.255) / 1000);
+      else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
+    }
+    return x;
+  }
   let r, g, b, P, f, t, h, i = parseInt, m = Math.round, a = typeof c1 == 'string';
   if (typeof p != 'number' || p < -1 || p > 1 || typeof c0 != 'string' || (c0[0] != 'r' && c0[0] != '#') || (c1 && !a)) return null;
   h = c0.length > 9;
@@ -52613,23 +52630,6 @@ function pSBC(p, c0, c1, l) {
   a = f ? (a < 0 ? t : t < 0 ? a : a * P + t * p) : 0;
   if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
   else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
-}
-function pSBCr(d) {
-  let i = parseInt, m = Math.round, a = typeof c1 == 'string';
-  let n = d.length,
-    x = {};
-  if (n > 9) {
-    ([r, g, b, a] = d = d.split(',')), (n = d.length);
-    if (n < 3 || n > 4) return null;
-    (x.r = parseInt(r[3] == 'a' ? r.slice(5) : r.slice(4))), (x.g = parseInt(g)), (x.b = parseInt(b)), (x.a = a ? parseFloat(a) : -1);
-  } else {
-    if (n == 8 || n == 6 || n < 4) return null;
-    if (n < 6) d = '#' + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : '');
-    d = parseInt(d.slice(1), 16);
-    if (n == 9 || n == 5) (x.r = (d >> 24) & 255), (x.g = (d >> 16) & 255), (x.b = (d >> 8) & 255), (x.a = m((d & 255) / 0.255) / 1000);
-    else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
-  }
-  return x;
 }
 function pTest0() {
   let state = DB.tables.t0;

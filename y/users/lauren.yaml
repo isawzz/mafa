@@ -1,6 +1,7 @@
 name: lauren
-color: '#008080'
+color: '#0000cd'
 key: lauren
 setgame:
   level: 6
   playmode: bot
+fg: '#000000'

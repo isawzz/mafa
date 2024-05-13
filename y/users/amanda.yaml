@@ -1,10 +1,12 @@
 name: amanda
-color: '#3aa8c1'
+color: '#006994'
 key: amanda
 setgame:
   level: 6
   playmode: bot
 button96:
   playmode: human
-texture: ../assets/textures/marble_black2.jpeg
-blend: multiply
+bgImage: url('../assets/textures/ttransdiamonds.png')
+bgBlend: normal
+bgSize: auto
+bgRepeat: repeat

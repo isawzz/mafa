@@ -949,7 +949,7 @@ function colorBlendMode(c1, c2, blendMode) {
   //console.log('blendMode',blendMode);
   let di={darken:blendDarken,lighten:blendLighten,color:blendColor,colorDodge:blendColorDodge,luminosity:blendLuminosity,multiply:blendMultiply,normal:blendNormal,overlay:blendOverlay,
     saturation:blendSaturation,screen:blendScreen};
-	let func = di[blendMode]; if (nundef(di)) {console.log('blendMode',blendMode);return c1;} //this[`blend${blendMode.toUpperCase}`];
+	let func = di[blendMode]; if (nundef(di)) {console.log('blendMode',blendMode);return c1;} 
 	//console.log(func);
 	c1hex = colorFrom(c1);
 	c2hex = colorFrom(c2);
@@ -1044,15 +1044,16 @@ function getRepeatAndSizeForTexture(t) {
   return [bgRepeat, bgSize];
 }
 function getNavBg(){return mGetStyle('dNav', 'bg');}
+
 async function onclickBlendSample(item, items) {
   //console.log('CLICK!!!');//,item)
   let texture = settingsGetSelectedTexture();
   if (nundef(texture)) {console.log('please select a texture');return;}
-  let blend = item.blend; //ev.target.style.backgroundImage;
+  let bgBlend = item.bgBlend; //ev.target.style.backgroundImage;
   let prev=settingsGetSelectedBlend();//console.log(prev)
   if (prev != item) toggleItemSelection(prev);
   toggleItemSelection(item);
-  if (item.isSelected) document.body.style.backgroundBlendMode = blend;
+  if (item.isSelected) document.body.style.backgroundBlendMode = bgBlend;
 
   let color=settingsGetSelectedColor();
 
@@ -1068,12 +1069,12 @@ async function onclickColor(item, items) {
   document.body.style.backgroundColor = c;
   // mBy('dPos').style.backgroundColor = c;
 }
-async function onclickTexture(item, items) {
+async function _onclickTexture(item, items) {
   //console.log('item', item)
   let texture = item.bgImage; //ev.target.style.backgroundImage;
   let repeat = item.bgRepeat; //ev.target.style.backgroundRepeat;
   let bgSize = item.bgSize; //repeat == 'repeat'?'auto':'cover';
-  let blend = item.blend;
+  let blend = item.bgBlend;
   toggleItemSelection(item);
   let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
   //console.log('texture',texture,'repeat',repeat)
@@ -1117,10 +1118,10 @@ function selectUserTexture(itemsTexture) {
   return isdef(item) ? item.path : '';
 }
 function selectUserBlend(itemsBlend) {
-  if (isEmpty(U.blend)) {console.log('no blend');return '';}
-  let item = itemsBlend.find(x => x.blend == U.blend);
+  if (isEmpty(U.bgBlend)) {console.log('no blend');return '';}
+  let item = itemsBlend.find(x => x.bgBlend == U.bgBlend);
   if (isdef(item)) iDiv(item).click();
-  return isdef(item) ? item.blend : '';
+  return isdef(item) ? item.bgBlend : '';
 }
 function settingsGetSelectedBlend(){  
   let item = DA.itemsBlend.find(x=>x.isSelected == true);
@@ -1138,13 +1139,13 @@ async function settingsSave(){
   let o={name:U.name};
   let item = settingsGetSelectedColor();if (isdef(item)) o.color=item.color;
   item = settingsGetSelectedTexture();if (isdef(item)) o.texture=item.path;
-  item = settingsGetSelectedBlend();if (isdef(item)) o.blend=item.blend;
+  item = settingsGetSelectedBlend();if (isdef(item)) o.bgBlend=item.bgBlend;
 }
 
 //#endregion
 
 //#region showColors
-async function showColors() {
+async function _showColors() {
 	showTitle('Settings');
 	let [szSmall, szMiddle, wmax] = [30,80, 34*15];
 	let dParent = mBy('dMain'); mClear(dParent);
