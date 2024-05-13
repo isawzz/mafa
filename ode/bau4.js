@@ -74,7 +74,7 @@ async function onclickSettRemoveTexture(){
   await postUserChange(U,true)
 }
 async function onclickSettTexture(){
-  console.log('set Texture!!!')
+  //console.log('set Texture!!!')
   await showTextures();
 }
 async function onclickTexture(item) {
@@ -132,8 +132,9 @@ async function showColors(){
   let divs=document.getElementsByClassName('colorbox');
   for(const div of divs){
     div.onclick=async()=>{
-      setColors(div.getAttribute('dataColor'));
-      let c=getCSSVariable('--bgBody');
+      let c = div.getAttribute('dataColor');
+      setColors(c);
+      //let c=getCSSVariable('--bgBody');
       let hex = colorToHex79(c);
       U.color = hex;
       await postUserChange();
@@ -169,7 +170,7 @@ async function showTextColors(){
       setColors(getCSSVariable('--bgBody'),fg);
       let hex = colorToHex79(fg);
       U.fg = hex;
-      await postUserChange();
+      await postUserChange({name:U.name,fg:U.fg});
     
     }
     //console.log('HAAAAAAALLLO',div);break;
@@ -181,7 +182,7 @@ async function showTextures(){
   mClear('dMain');
 	let list=M.textures;
 	let dTheme=mDom('dMain',{padding:12, gap:10}); mFlexWrap(dTheme);
-  console.log(list)
+  //console.log(list)
 	let itemsTexture = [];
 	for (const t of list) {
 		// let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';

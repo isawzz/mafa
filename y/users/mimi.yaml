@@ -1,11 +1,11 @@
 name: mimi
-color: '#8b72be80'
+color: '#dcdcdc'
 key: mimi
 setgame:
   level: 2
   playmode: human
 fg: '#ffffff'
-bgImage: url('../assets/textures/ttransfood.png')
-bgBlend: normal
+bgImage: url('../assets/textures/marble_blaugold.jpeg')
+bgBlend: lighten
 bgSize: auto
 bgRepeat: repeat

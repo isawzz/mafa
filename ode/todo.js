@@ -1252,7 +1252,7 @@ function settingsApply(){
 	let color = settingsGetSelectedColor();
 	let texture = settingsGetSelectedTexture();
 	let blend = settingsGetSelectedBlend();
-	setColors(color,texture,blend);
+	_setColors(color,texture,blend);
 }
 function extractUrlFromBlendMode(blend){
 	let parts = blend.split('.');

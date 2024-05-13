@@ -1,7 +1,7 @@
 
 async function onclickBlendMode(item) {
 
-  console.log('WASSSSSSSSSSSSSS'); return;
+  //console.log('WASSSSSSSSSSSSSS'); //return;
 	U.bgImage = item.bgImage;
 	U.bgBlend = item.bgBlend;
 	U.bgSize = item.bgSize;
@@ -9,7 +9,7 @@ async function onclickBlendMode(item) {
 
 	setTexture(item);
 
-  await postUserChange();
+  await postUserChange(U,);
 }
 
 

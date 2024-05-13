@@ -1,0 +1,26 @@
+___ 13.5.24
+- warum geht das texture mit blend mode nicht?
+- mach eines!
+U.color darf KEINE transparency haben!!!
+- schreib auf die blend mode items den blend mode in weiss und in schwarz drauf!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

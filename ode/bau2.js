@@ -1,5 +1,6 @@
 
 async function showBlendModes(){
+	console.log(U)
 	if (isEmpty(U.bgImage)) {
 		showMessage('No Texture has been selected! Blend mode needs a texture!');
 		return;
@@ -10,15 +11,25 @@ async function showBlendModes(){
 	let bgRepeat = 'repeat'; //U.bgRepeat;
 	let bgSize = 'auto'; //U.bgSize;
 
-	let dTheme=mDom('dMain',{padding:12, gap:10}); mFlexWrap(dTheme);
+	let dTheme=mDom('dMain',{padding:12, gap:10, bg:'white'}); mFlexWrap(dTheme);
+
+	//let dex=mDom(dTheme,{border:'red',bgBlend:'multiply',bg,bgRepeat,bgImage,bgRepeat,bgSize:'cover',w:300,h:200}); 
+	//return;
+
 	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
   console.log(list)
 	let items = [];
 	for (const bgBlend of list) {
-    let dc = mDom(dTheme, { bgBlend,bgImage,bgRepeat,bgSize,bg,cursor: 'pointer', border: 'white', w: 300, h: 170 }, { tag: 'img' });
-    let item = { div: dc, bgImage, bgRepeat, bgSize, bgBlend, isSelected: false };
+		console.log('blend mode',bgBlend)
+		let d=mDom(dTheme,{align:'center',border:'red',bgBlend,bg,bgRepeat,bgImage,bgRepeat,bgSize:'cover',w:300,h:200}); 
+		mCenterCenterFlex(d);
+		let d1=mDom(d,{className:'no_events'})
+		mDom(d1,{fz:30,weight:'bold',align:'center',fg:'white'},{html:bgBlend})
+		mDom(d1,{fz:30,weight:'bold',align:'center',fg:'black'},{html:bgBlend})
+    // let dc = mDom(dTheme, { bgBlend,bgImage,bgRepeat,bgSize:'cover',border:'red solid 3px',bg,cursor: 'pointer', border: 'white', w: 300, h: 170 }, { tag: 'img' });
+    let item = { div: d, bgImage, bgRepeat, bgSize, bgBlend, isSelected: false };
 		items.push(item);
-    dc.onclick=async()=>onclickBlendMode(item,items);
+    d.onclick=async()=>onclickBlendMode(item,items);
   }
 
   // for (const [i, o] of items.entries()) {
