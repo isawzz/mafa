@@ -6,7 +6,7 @@ setgame:
   playmode: bot
 button96:
   playmode: human
-bgImage: url('../assets/textures/ttransdiamonds.png')
-bgBlend: normal
-bgSize: auto
+bgImage: url('../assets/textures/marble_blue2.jpeg')
+bgBlend: luminosity
+bgSize: 100vw 100vh
 bgRepeat: repeat

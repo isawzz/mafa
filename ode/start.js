@@ -5,8 +5,8 @@ async function start() { TESTING = true; test76_RESTART(); }
 
 async function test76_RESTART(){
   await prelims();
-  await switchToUser('mimi');
-  await switchToMenu(UI.nav, 'settings');
+  //await switchToUser('mimi');
+  //await switchToMenu(UI.nav, 'settings');
   //await switchToMainMenu('plan')
   
 }

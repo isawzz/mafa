@@ -4524,7 +4524,7 @@ function mPlace(elem, pos, offx, offy) {
 	let hor = isdef(offy) ? offy : vert;
 	if (pos[0] == 'c' || pos[1] == 'c') {
 		let dpp = dParent.parentNode;
-		let opac = mGetStyle(dParent, 'opacity'); console.log('opac', opac);
+		let opac = mGetStyle(dParent, 'opacity'); //console.log('opac', opac);
 		if (nundef(dpp)) { mAppend(document.body, dParent); mStyle(dParent, { opacity: 0 }) }
 		let rParent = getRect(dParent);
 		let [wParent, hParent] = [rParent.w, rParent.h];
@@ -7752,7 +7752,7 @@ async function uiTypeCalendar(dParent) {
 	}
 	async function refreshEvents() {
 		let events = await getEvents();
-		console.log('refreshing events', events)
+		//console.log('refreshing events', events)
 		for (const k in events) {
 			let o = events[k];
 			let dt = new Date(Number(o.day));

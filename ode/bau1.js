@@ -6,7 +6,7 @@ function setColors(bg, fg) {
   if (nundef(fg)) fg = colorIdealText(bg);
 
   let bgNav=bg;
-  fg=colorToHex79(fg); console.log('fg',fg);
+  fg=colorToHex79(fg); //console.log('fg',fg);
   if (fgIsLight){
     //navbar soll ein dunkler ton sein, based on bg, aber NICHT fully opaque!
     if (isEmpty(U.bgImage)){
@@ -40,8 +40,8 @@ function setColors(bg, fg) {
   setCssVar('--fgTitle', fg)
   setCssVar('--fgSubtitle', fg);
 
-  console.log(':::body color',colorToHex79(mGetStyle(document.body,'bg')))
-  console.log('body style',['backgroundColor','backgroundImage','backgroundSize','backgroundRepeat','backgroundBlandMode'].map(x=>document.body.style[x]).join(','));
+  //console.log(':::body color',colorToHex79(mGetStyle(document.body,'bg')))
+  //console.log('body style',['backgroundColor','backgroundImage','backgroundSize','backgroundRepeat','backgroundBlandMode'].map(x=>document.body.style[x]).join(','));
 }
 function setTexture(item) {
   // console.log(item);
@@ -62,8 +62,8 @@ function setTexture(item) {
   //d.style.opacity = .5
 
 	//if (!isEmpty(bgImage)) d.style.filter = `url(#transparencyFilter)`;
-  console.log(':::body color',colorToHex79(mGetStyle(document.body,'bg')))
-  console.log('body style',['backgroundColor','backgroundImage','backgroundSize','backgroundRepeat','backgroundBlandMode'].map(x=>document.body.style[x]).join(','));
+  //console.log(':::body color',colorToHex79(mGetStyle(document.body,'bg')))
+  //console.log('body style',['backgroundColor','backgroundImage','backgroundSize','backgroundRepeat','backgroundBlandMode'].map(x=>document.body.style[x]).join(','));
   // console.log('body style',document.body);
 }
 
