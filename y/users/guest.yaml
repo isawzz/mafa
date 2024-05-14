@@ -1,3 +1,8 @@
 name: guest
-color: '#bfc0ee'
+color: '#004225'
 key: guest
+fg: '#ffffff'
+bgImage: url('../assets/textures/marble_red.jpeg')
+bgBlend: luminosity
+bgSize: 100vw 100vh
+bgRepeat: repeat

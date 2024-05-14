@@ -5354,9 +5354,6 @@ async function onclickCollections() {
 	UI.collSecondary = { div: dSecondary, name: null };
 	collOpenPrimary(5, 7);
 }
-async function onclickColor(color) {
-	mStyle(document.body, { bg: color });
-}
 async function onclickCommand(ev) {
 	let key = evToAttr(ev, 'key');
 	assertion(isdef(UI[key]), `command ${key} not in UI!!!`)
@@ -6825,7 +6822,7 @@ function showEventOpen(id) {
 	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
 	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
 	mOnEnter(inpt);
-	console.log('event text:', e.text)
+	//console.log('event text:', e.text)
 	let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
 	let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
 	let buttons = mDom(line, { display: 'inline-block' });
@@ -7040,16 +7037,6 @@ function showPalette(dParent, colors) {
 		if (isDict(c)) c = c.hex;
 		let html = `${c}<br>hue:${w3color(c).hue}<br>sat:${Math.round(w3color(c).sat * 100)}<br>lum:${Math.round(w3color(c).lightness * 100)}`
 		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: idealTextColor(c) }, { html });
-	}
-}
-function showPaletteNames(dParent, colors) {
-	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
-	for (var c of colors) {
-		let bg = c.hex;
-		let d2 = mDom(d1, { wmin: 250, bg, fg: idealTextColor(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
-		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
-		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
-		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: idealTextColor(bg) }, { html });
 	}
 }
 function showRibbon(dParent, msg) {
@@ -7667,7 +7654,7 @@ async function uiTypeCalendar(dParent) {
 	innerStyles.w = wcell - 11.75;
 	innerStyles.hmin = `calc( 100% - 23px )`;//hcell-32
 	let fz = 12;
-	let h = measureHeightOfTextStyle(dParent, { fz: fz }); console.log('h', h)
+	let h = measureHeightOfTextStyle(dParent, { fz: fz }); //console.log('h', h)
 	let eventStyles = { fz: fz, hmin: h, w: '100%' };
 	const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

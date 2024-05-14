@@ -1,7 +1,11 @@
 name: lauren
-color: '#ccccff80'
+color: '#006c7f'
 key: lauren
 setgame:
   level: 6
   playmode: bot
-fg: '#000000'
+fg: '#ffffff'
+bgImage: url('../assets/textures/marble_greenorange.jpeg')
+bgBlend: luminosity
+bgSize: cover
+bgRepeat: no-repeat

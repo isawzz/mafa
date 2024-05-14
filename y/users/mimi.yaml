@@ -5,7 +5,7 @@ setgame:
   level: 2
   playmode: human
 fg: '#ffffff'
-bgImage: url('../assets/textures/marble_blaugold.jpeg')
-bgBlend: lighten
-bgSize: auto
+bgImage: url('../assets/textures/marble_beige1.jpeg')
+bgBlend: normal
+bgSize: 100vw 100vh
 bgRepeat: repeat

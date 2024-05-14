@@ -1,12 +1,12 @@
 name: gul
-color: '#a9714280'
+color: '#2243b6'
 key: gul
 setgame:
   level: 1
   playmode: bot
 playmode: bot
-bgImage: url('../assets/textures/marble_greenorange.jpeg')
-bgBlend: luminosity
-bgSize: 100vw 100vh
+fg: '#ffffff'
+bgImage: url('../assets/textures/ttrans_moebel.png')
+bgBlend: normal
+bgSize: ''
 bgRepeat: repeat
-fg: '#000000'
