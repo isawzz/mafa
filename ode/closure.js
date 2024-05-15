@@ -1,6 +1,14 @@
 function _INTERRUPT() {
 	clearEvents();
 }
+function _showPaletteNames(dParent, colors) {
+	let d1 = mDom(dParent, { padding: 10, gap: 4 }); mFlexWrap(d1);
+	for (var c of colors) {
+		let bg = c.hex;
+		let html = `${c.name}`; //: ${bg} hue:${c.hue} sat:${Math.round(c.sat * 100)} lum:${Math.round(c.lightness * 100)}`
+		let dmini = mDom(d1, { padding: 10, bg, fg: idealTextColor(bg) }, { html, class: 'colorbox', dataColor: bg });
+	}
+}
 function addAREA(id, o) {
 	if (AREAS[id]) {
 		error('AREAS ' + id + ' exists already!!! ');
@@ -369,6 +377,13 @@ function calcBotSpeed(table) {
 	let speed = 2000 + Math.round(Math.random() * 2000);
 	let botLevel = calcBotLevel(table);
 	return botLevel ? botLevel == 1 ? speed : speed * 4 / botLevel : speed;
+}
+function calcRestHeight(dtop) {
+	let hwin = window.innerHeight;
+	let r = getRect(dtop);
+	let top = r.y;
+	let hmax = hwin - top - 20;
+	return hmax;
 }
 function calcScoreSum(table) {
 	let res = 0;
@@ -852,11 +867,9 @@ async function collOnDroppedUrl(url, coll) {
 	mButton('OK', () => collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, coll), db2, { w: 70 }, 'input');
 }
 function collOpenPrimary(rows, cols) {
-	//console.log('collOpenPrimary')
 	collPresent(UI.collPrimary, rows, cols);
 	UI.collPrimary.isOpen = true;
 }
-
 function collOpenSecondary(rows, cols) {
 	let coll = UI.collSecondary;
 	let d = iDiv(coll);
@@ -1024,6 +1037,48 @@ function collectPlayers() {
 	}
 	return players;
 }
+function colorCalculator(p, c0, c1, l) {
+	function pSBCr(d) {
+		let i = parseInt, m = Math.round, a = typeof c1 == 'string';
+		let n = d.length,
+			x = {};
+		if (n > 9) {
+			([r, g, b, a] = d = d.split(',')), (n = d.length);
+			if (n < 3 || n > 4) return null;
+			(x.r = parseInt(r[3] == 'a' ? r.slice(5) : r.slice(4))), (x.g = parseInt(g)), (x.b = parseInt(b)), (x.a = a ? parseFloat(a) : -1);
+		} else {
+			if (n == 8 || n == 6 || n < 4) return null;
+			if (n < 6) d = '#' + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : '');
+			d = parseInt(d.slice(1), 16);
+			if (n == 9 || n == 5) (x.r = (d >> 24) & 255), (x.g = (d >> 16) & 255), (x.b = (d >> 8) & 255), (x.a = m((d & 255) / 0.255) / 1000);
+			else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
+		}
+		return x;
+	}
+	let r, g, b, P, f, t, h, i = parseInt, m = Math.round, a = typeof c1 == 'string';
+	if (typeof p != 'number' || p < -1 || p > 1 || typeof c0 != 'string' || (c0[0] != 'r' && c0[0] != '#') || (c1 && !a)) return null;
+	h = c0.length > 9;
+	h = a ? (c1.length > 9 ? true : c1 == 'c' ? !h : false) : h;
+	f = pSBCr(c0);
+	P = p < 0;
+	t = c1 && c1 != 'c' ? pSBCr(c1) : P ? { r: 0, g: 0, b: 0, a: -1 } : { r: 255, g: 255, b: 255, a: -1 };
+	p = P ? p * -1 : p;
+	P = 1 - p;
+	if (!f || !t) return null;
+	if (l) { r = m(P * f.r + p * t.r); g = m(P * f.g + p * t.g); b = m(P * f.b + p * t.b); }
+	else { r = m((P * f.r ** 2 + p * t.r ** 2) ** 0.5); g = m((P * f.g ** 2 + p * t.g ** 2) ** 0.5); b = m((P * f.b ** 2 + p * t.b ** 2) ** 0.5); }
+	a = f.a;
+	t = t.a;
+	f = a >= 0 || t >= 0;
+	a = f ? (a < 0 ? t : t < 0 ? a : a * P + t * p) : 0;
+	if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
+	else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
+}
+function colorDark(c, percent = 50, log = true) {
+	if (nundef(c)) c = rColor(); else c = colorFrom(c);
+	let zero1 = -percent / 100;
+	return colorCalculator(zero1, c, undefined, !log);
+}
 function colorFrom(c, a) {
 	c = colorToHex79(c);
 	if (nundef(a)) return c;
@@ -1135,6 +1190,13 @@ function colorHsl360StringToHsl360Object(c) {
 }
 function colorIsHex79(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
 
+function colorLight(c, percent = 20, log = true) {
+	if (nundef(c)) {
+		return colorFromHSL(rHue(), 100, 85);
+	} else c = colorFrom(c);
+	let zero1 = percent / 100;
+	return colorCalculator(zero1, c, undefined, !log);
+}
 function colorRgbArgsToHex79(r, g, b, a) {
 	r = Math.round(r).toString(16).padStart(2, '0');
 	g = Math.round(g).toString(16).padStart(2, '0');
@@ -5029,7 +5091,7 @@ async function menuOpen(menu, key) {
 	let cmd = menu.commands[key];
 	menu.cur = key;
 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
-  if (TESTING) testUpdateTestButtons('dExtra');
+	if (TESTING) testUpdateTestButtons('dExtra');
 	await cmd.open();
 }
 function mergeArrays(target, source) {
@@ -5230,6 +5292,14 @@ async function onclickAsSecondary(ev) {
 	collOpenSecondary(4, 3);
 	collOpenPrimary(4, 3);
 }
+async function onclickBlendMode(item) {
+	U.bgImage = item.bgImage;
+	U.bgBlend = item.bgBlend;
+	U.bgSize = item.bgSize;
+	U.bgRepeat = item.bgRepeat;
+	await postUserChange();
+	setTheme(U);
+}
 async function onclickBot() {
 	let name = getUname();
 	let table = Clientdata.table;
@@ -5345,6 +5415,12 @@ async function onclickCollections() {
 	UI.collPrimary = { div: dPrimary, name: collName };
 	UI.collSecondary = { div: dSecondary, name: null };
 	collOpenPrimary(5, 7);
+}
+async function onclickColor(color) {
+	let hex = colorToHex79(color);
+	U.color = hex; delete U.fg;
+	await postUserChange(U, true);
+	setTheme(U);
 }
 async function onclickCommand(ev) {
 	let key = evToAttr(ev, 'key');
@@ -5637,7 +5713,7 @@ async function onclickRemoveSelected() {
 	collPostReload();
 }
 async function onclickRenameCollection(oldname, newname) {
-	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : collLocked(UI.collPrimary.name)?null:UI.collPrimary.name;
+	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : collLocked(UI.collPrimary.name) ? null : UI.collPrimary.name;
 	if (nundef(newname)) {
 		let di = await mGather(iDiv(UI.renameCollection), {}, { content: { oldname: valf(oldname, ''), newname: '' }, type: 'multi' });
 		if (!di) return;
@@ -5652,7 +5728,7 @@ async function onclickRenameCollection(oldname, newname) {
 		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
 		return;
 	}
-	if (collLocked(oldname)) {		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);		return;	}
+	if (collLocked(oldname)) { showMessage(`ERROR: Collection ${oldname} is Read-Only!`); return; }
 	if (!collExists(oldname)) {
 		showMessage(`ERROR: Collection ${oldname} not found!`);
 		return;
@@ -5663,6 +5739,39 @@ async function onclickRenameCollection(oldname, newname) {
 	}
 	await collRename(oldname, newname);
 }
+async function onclickSettBlendMode() {
+	if (isEmpty(U.bgImage)) {
+		showMessage('You need to set a Texture in order to set a Blend Mode!');
+		return;
+	}
+	showBlendModes();
+}
+async function onclickSettColor() { await showColors(); }
+
+async function onclickSettFg() { await showTextColors(); }
+
+async function onclickSettRemoveTexture() {
+	if (isEmpty(U.bgImage)) return;
+	for (const prop of ['bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
+	await postUserChange(U, true)
+	setTheme();
+}
+async function onclickSettResetAll() {
+	assertion(isdef(DA.settings), "NO DA.settings!!!!!!!!!!!!!!!")
+	if (JSON.stringify(U) == JSON.stringify(DA.settings)) return;
+	U = jsCopy(DA.settings);
+	await postUserChange(U, true);
+	setTheme();
+	await onclickSettColor();
+}
+async function onclickSettSwapColoring() {
+	if (isdef(U.swapColoring)) delete U.swapColoring;
+	else U.swapColoring = true;
+	await postUserChange(U, true);
+	setTheme();
+}
+async function onclickSettTexture() { await showTextures(); }
+
 async function onclickStartGame() {
 	await collectFromPrevious(DA.gamename);
 	let options = collectOptions();
@@ -5679,6 +5788,20 @@ async function onclickTable(id) {
 }
 async function onclickTest() { console.log('nations!!!!'); }
 
+async function onclickTextColor(fg) {
+	let hex = colorToHex79(fg);
+	U.fg = hex;
+	await postUserChange();
+	setTheme(U);
+}
+async function onclickTexture(item) {
+	U.bgImage = item.bgImage;
+	U.bgBlend = item.bgBlend;
+	U.bgSize = item.bgSize;
+	U.bgRepeat = item.bgRepeat;
+	await postUserChange();
+	setTheme(U);
+}
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user), { w: 100, margin: 0 }, { content: 'username', align: 'br', placeholder: ' <username> ' });
 	if (!uname) return;
@@ -5857,9 +5980,9 @@ async function postImage(img, path) {
 	let resp = await mPostRoute('postImage', o);
 	console.log('resp', resp); //sollte path enthalten!
 }
-async function postUserChange(data,override=false) {
+async function postUserChange(data, override = false) {
 	data = valf(data, U)
-	return Serverdata.users[data.name] = override?await mPostRoute('overrideUser',data):await mPostRoute('postUser', data);
+	return Serverdata.users[data.name] = override ? await mPostRoute('overrideUser', data) : await mPostRoute('postUser', data);
 }
 function present() {
 	if (Settings.perspective == 'me') presentFor(me);
@@ -6324,6 +6447,38 @@ function setCheckIfSet(keys) {
 	let isSet = arr.every(x => arrAllSameOrDifferent(x));
 	return isSet;
 }
+function setColors(bg, fg) {
+	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
+	let bgIsDark = colorIdealText(bg) == 'white';
+	if (nundef(fg)) fg = colorIdealText(bg);
+	let bgNav = bg;
+	fg = colorToHex79(fg);
+	if (fgIsLight) {
+		if (isEmpty(U.bgImage)) { bgNav = '#00000040'; }
+		else if (bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorDark(bg, 50), .8); }
+	} else {
+		if (isEmpty(U.bgImage)) { bgNav = '#ffffff40'; }
+		else if (!bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorLight(bg, 50), .8); }
+	}
+	let t = U.bgImage;
+	let realBg = bg;
+	if (bgNav == realBg) bgNav = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let bgContrast = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let fgContrast = fgIsLight ? '#ffffff80' : '#00000080'; // 'red'; //bestContrastingColor(bgNav); // colorContrast(bgNav); // fgIsLight ? colorDark(fg, .5) : colorLight(fg, .5);
+	console.log('fg', fg, 'fgContrast', fgContrast)
+	setCssVar('--bgBody', realBg);
+	setCssVar('--bgButton', 'transparent')
+	setCssVar('--bgButtonActive', bgContrast)
+	setCssVar('--bgNav', bgNav)
+	setCssVar('--fgButton', fg)
+	setCssVar('--fgButtonActive', fg)
+	setCssVar('--fgButtonDisabled', 'silver')
+	setCssVar('--fgButtonHover', fgContrast)
+	setCssVar('--fgTitle', fg)
+	setCssVar('--fgSubtitle', fgContrast);
+}
 function setCreateDeck() {
 	let deck = [];
 	['red', 'purple', 'green'].forEach(color => {
@@ -6717,6 +6872,45 @@ function setTableToStarted(table) {
 	table.fen = DA.funcs[table.game].setup(table);
 	return table;
 }
+function setTexture(item) {
+	let d = document.body;
+	let bgImage = valf(item.bgImage, '');
+	let bgRepeat = valf(item.bgRepeat, '');
+	let bgBlend = valf(item.bgBlend, '');
+	let bgSize = valf(item.bgSize, '');
+	d.style.backgroundColor = U.color;
+	d.style.backgroundImage = bgImage;
+	d.style.backgroundSize = bgSize == 'cover' ? '100vw 100vh' : bgSize;
+	d.style.backgroundRepeat = 'repeat'; //bgRepeat;
+	d.style.backgroundBlendMode = bgBlend;
+}
+function setTheme(o) {
+	if (nundef(o)) o = U;
+	setColors(o.color, o.fg);
+	setTexture(o);
+	console.log('___setTheme', 'color', U.color, '\nfg', U.fg, '\nbgImage', U.bgImage, '\nbgSize', U.bgSize, U.bgRepeat, U.bgBlend)
+}
+async function settingsClose() { delete DA.settings; closeLeftSidebar(); clearMain(); }
+
+async function settingsOpen() {
+	DA.settings = jsCopy(U);
+	mClear('dMain');
+	let d = mDom('dMain', { padding: 0, overy: 'auto', hmax: calcRestHeight('dMain') }, { id: 'dSettingsColor' });
+	await showColors()
+	settingsSidebar();
+}
+function settingsSidebar() {
+	let wmin = 170;
+	mStyle('dLeft', { wmin: wmin });
+	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let gap = 5;
+	UI.settColor = mCommand(d, 'settColor', 'Color'); mNewline(d, gap);
+	UI.settFg = mCommand(d, 'settFg', 'Text Color'); mNewline(d, gap);
+	UI.settTexture = mCommand(d, 'settTexture', 'Texture'); mNewline(d, gap);
+	UI.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode'); mNewline(d, gap);
+	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
+	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
+}
 function setup() {
 	axiom = system.axiom;
 	rules = system.rules;
@@ -6739,6 +6933,28 @@ function show(elem, isInline = false) {
 	}
 	return elem;
 }
+async function showBlendModes() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
+	let bgImage = U.bgImage;
+	let bg = U.color;
+	let bgRepeat = bgImage.includes('marble') ? 'no-repeat' : 'repeat';
+	let bgSize = bgImage.includes('marble') ? 'cover' : '';
+	let bgSizeItem = bgSize;
+	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+	let items = [];
+	for (const bgBlend of list) {
+		let d = mDom(dTheme, { align: 'center', border: 'red', bgBlend, bg, bgRepeat, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
+		mCenterCenterFlex(d);
+		let d1 = mDom(d, { className: 'no_events' })
+		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
+		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
+		let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
+		items.push(item);
+		d.onclick = async () => onclickBlendMode(item);
+	}
+	return items;
+}
 async function showCalendarApp() {
 	if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
 	showTitle('Calendar');
@@ -6759,6 +6975,29 @@ function showChatWindow() {
 		Socket.emit('message', { user: getUname(), msg: ev.target.value });
 		ev.target.value = '';
 	});
+}
+async function showColors() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let di = M.dicolor;
+	let bucketlist = 'yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
+	bucketlist = arrCycle(bucketlist, 8);
+	for (const bucket of bucketlist) {
+		let list = dict2list(di[bucket]);
+		let clist = [];
+		for (const c of list) {
+			let o = w3color(c.value);
+			o.name = c.id;
+			o.hex = c.value;
+			clist.push(o);
+		}
+		let sorted = sortByFunc(clist, x => -x.lightness);
+		_showPaletteNames(d, sorted);
+	}
+	let divs = document.getElementsByClassName('colorbox');
+	for (const div of divs) {
+		mStyle(div, { cursor: 'pointer' })
+		div.onclick = async () => onclickColor(div.getAttribute('dataColor'));
+	}
 }
 async function showDashboard() {
 	let me = getUname();
@@ -6814,7 +7053,6 @@ function showEventOpen(id) {
 	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
 	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
 	mOnEnter(inpt);
-	//console.log('event text:', e.text)
 	let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
 	let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
 	let buttons = mDom(line, { display: 'inline-block' });
@@ -7031,6 +7269,16 @@ function showPalette(dParent, colors) {
 		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: idealTextColor(c) }, { html });
 	}
 }
+function showPaletteNames(dParent, colors) {
+	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
+	for (var c of colors) {
+		let bg = c.hex;
+		let d2 = mDom(d1, { wmin: 250, bg, fg: idealTextColor(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
+		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
+		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
+		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: idealTextColor(bg) }, { html });
+	}
+}
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
@@ -7072,6 +7320,40 @@ async function showTables(from) {
 		let h = hFunc('delete', 'onclickDeleteTable', id); let c = mAppend(r, mCreate('td')); c.innerHTML = h;
 		if (ri.o.status == 'open') { let h1 = hFunc('start', 'onclickStartTable', id); let c1 = mAppend(r, mCreate('td')); c1.innerHTML = h1; }
 	}
+}
+async function showTextColors() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
+	let colors = ['white', 'silver', 'dimgray', 'black'].map(x => w3color(x)); //, getCSSVariable('--fgButton'), getCSSVariable('--fgButtonHover')].map(x => w3color(x));
+	for (var c of colors) {
+		let bg = 'transparent';
+		let fg = c.hex = c.toHexString();
+		let d2 = mDom(d1, { border: fg, wmin: 250, bg, fg, padding: 20 }, { class: 'colorbox', dataColor: fg });
+		mDom(d2, { weight: 'bold', align: 'center' }, { html: 'Text Sample' });
+		let html = `<br>${fg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
+		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg }, { html });
+	}
+	let divs = document.getElementsByClassName('colorbox');
+	for (const div of divs) {
+		div.onclick = async () => onclickTextColor(div.getAttribute('dataColor'));
+	}
+}
+async function showTextures() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let dTheme = mDom(d, { padding: 12, gap: 10 }); mFlexWrap(dTheme);
+	let list = M.textures;
+	let itemsTexture = [];
+	for (const t of list) {
+		let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
+		let bgSize = t.includes('marble_') ? `cover` : t.includes('ttrans') ? '' : 'auto';
+		let bgImage = `url('${t}')`;
+		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
+		let dc = mDom(dTheme, { bg: U.color, bgImage, bgSize, bgRepeat, bgBlend: 'normal', cursor: 'pointer', border: 'white', w: '30%', wmax: 300, h: 170 });
+		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, bgBlend: recommendedMode, isSelected: false };
+		itemsTexture.push(item);
+		dc.onclick = async () => onclickTexture(item, itemsTexture);
+	}
+	return itemsTexture;
 }
 function showTitle(title, dParent = 'dTitle') {
 	mClear(dParent);
@@ -7726,7 +8008,6 @@ async function uiTypeCalendar(dParent) {
 	}
 	async function refreshEvents() {
 		let events = await getEvents();
-		//console.log('refreshing events', events)
 		for (const k in events) {
 			let o = events[k];
 			let dt = new Date(Number(o.day));

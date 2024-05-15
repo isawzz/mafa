@@ -1,3 +1,32 @@
+//region 14.mai 24
+async function showColors() {
+
+  let d=mBy('dSettingsColor');mClear(d);
+  let di = M.dicolor; //console.log('buckets',Object.keys(di).length);
+	let bucketlist = 'yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
+  for (const bucket of bucketlist) {
+    let list = dict2list(di[bucket]);
+    let clist = [];
+    for (const c of list) {
+      let o = w3color(c.value);
+      o.name = c.id;
+      o.hex = c.value;
+      clist.push(o);
+    }
+    let sorted = sortByFunc(clist, x => -x.lightness);
+    // mDom(d, {hpadding:10}, { html: `<br>${bucket}<br>`, class:'nav' });
+    _showPaletteNames(d, sorted);
+  }
+
+  let divs = document.getElementsByClassName('colorbox');
+  for (const div of divs) {
+    mStyle(div,{cursor:'pointer'})
+    div.onclick =async()=>onclickColor(div.getAttribute('dataColor')); 
+  }
+}
+
+//#endregion
+
 //region 13.mai 24
 async function onclickSettColor(){
   console.log('set Color!!!')

@@ -1,0 +1,113 @@
+onload = start;
+
+async function start() { TESTING = true; await prelims(); }
+async function start() { TESTING = true; test76_RESTART(); }
+
+async function test76_RESTART(){
+  await prelims();
+  //await switchToUser('mimi');
+  await switchToMenu(UI.nav, 'settings');
+  //await onclickSettBlendMode();
+  //await switchToMainMenu('plan')
+  
+}
+async function test75_showColors(){
+  let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
+	let d = clearBodyDiv({padding:12}); //{ gap: 10 }); mFlexWrap(d);
+  for(const bucket in di){
+    let list = dict2list(di[bucket]);
+    let clist=[];
+    for(const c of list){
+      let o=w3color(c.value);
+      //console.log('c',c)
+      o.name = c.id;
+      o.hex = c.value;
+      clist.push(o);
+    }
+
+    let sorted = sortByFunc(clist,x=>-x.lightness); //(10*x.lightness+x.sat*100));
+    //console.log(sorted[0]); return;
+
+    mDom(d,{},{html:`<br>${bucket}<br>`})
+    showPaletteNames(d,sorted);
+
+    //ok jetzt will ich hier onclick attechen das dann die color setzt, erstmal nur die color for simplicity!
+    //und zugleich sollen all die anderen colors gesetzt werden in styles!
+
+    
+  }
+}
+
+async function prelims() {
+  let html = `
+    <div style="position:fixed;width:100%;z-index:20000">
+      <div id="dNav" class="nav p10"></div>
+      <div id="dMessage" style='height:0px;padding-left:10px' class="transh"></div>
+    </div>
+    <div id="dBuffer" style="height:32px;width:100%"></div>
+    <div id="dExtra" class="p10hide nav"></div>
+    <div id="dTitle"></div>
+    <div id="dPage" style="display:grid;grid-template-columns: auto 1fr auto;">
+      <div id="dLeft" class="h100 over0 translow nav">
+      </div>
+      <div id="dMain"></div>
+      <div id="dRight" class="h100 over0 translow"></div>
+    </div>
+    <d id="dBottom"></d>
+    
+    `;
+  document.body.innerHTML = html;
+  ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
+  let t1 = performance.now();
+  Serverdata = await mGetRoute('session'); //session ist: users,config,events
+  let t2 = performance.now();
+  await loadAssets();
+  let t4 = performance.now();
+  sockInit();
+  UI.nav = showNavbar();
+  UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
+  UI.dTitle = mBy('dTitle');
+  let t5 = performance.now();
+  window.onkeydown = keyDownHandler;
+  window.onkeyup = keyUpHandler;
+  DA.funcs = { button96: button96() }; //implemented games!
+  for (const gname in Serverdata.config.games) {
+    if (isdef(DA.funcs[gname])) continue;
+    DA.funcs[gname] = defaultGameFunc();
+  }
+  await switchToUser(localStorage.getItem('username'));
+}
+function defaultGameFunc() {
+  function setup(table) { let fen = { players: table.players, turn: [table.owner] }; delete table.players; }
+  function present(dParent, table) { mClear('dMain'); } //showMessage(`BINGO!!! ${table.friendly} view ${name}: NOT IMPLEMENTED!!!!!`,1000); } 
+  async function activate(table) { console.log('activate for', getUname()) }
+  function checkGameover(table) { return false; }
+  async function hybridMove(table) { console.log('hybrid moves for', getUname()) }
+  async function botMove(table) { console.log('robot moves for', getUname()) }
+  async function stepComplete(table, o) { console.log(`integrate if step complete for ${table.friendly}`); }
+  return { setup, activate, checkGameover, present, hybridMove, botMove, stepComplete };
+}
+function testUpdateTestButtons(dParent, styles = {}) {
+	let table = Clientdata.table;
+	dParent = toElem(dParent);
+	let id = 'dTestButtons'; mRemoveIfExists(id);
+	mIfNotRelative(dParent);
+	if (dParent.id == 'dExtra') mStyle(dParent,{hmin:26});
+	addKeys({ display: 'flex', gap: 10, vpadding: 2, position: 'absolute', right: 8, top: 0 }, styles);
+	let dBotHuman = mDom(dParent, styles, { id });
+	let me = getUname();
+	let names = isdef(table) ? [] : ['amanda', 'felix', 'lauren', 'mimi', 'gul'];
+	for (const name of names) {
+		let idname = getButtonCaptionName(name);
+		let b = UI[idname] = mButton(name, testOnclickCaption, dBotHuman);
+		if (me == name) mStyle(b, { bg: 'red', fg: 'white' });
+	}
+	if (nundef(table)) return dBotHuman;;
+	let playmode = getPlaymode(table, me);
+	if (nundef(playmode)) return dBotHuman;;
+	let [playmodeKey, sz, bg, matop, patop] = [playmode == 'human' ? 'skullcap' : 'robot', 25, 'transparent', 2, 0];
+	showImage(playmodeKey, dBotHuman, { fg: 'white', sz, round: true, bg, matop, patop });// , 'line-height': sz });
+	let caption = `Make me ${playmode == 'bot' ? 'human' : 'bot'}`;
+	UI.bPlaymode = mButton(caption, testOnclickPlaymode, dBotHuman, { w: 130 });
+	return dBotHuman;
+}

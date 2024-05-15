@@ -1,11 +1,13 @@
 name: mimi
-color: '#dcdcdc'
+color: '#ffe4e1'
 key: mimi
 setgame:
   level: 2
   playmode: human
-fg: '#ffffff'
-bgImage: url('../assets/textures/marble_beige1.jpeg')
-bgBlend: normal
-bgSize: 100vw 100vh
-bgRepeat: repeat
+button96:
+  playmode: human
+bgImage: url('../assets/textures/marble_weiss2.jpeg')
+bgBlend: screen
+bgSize: cover
+bgRepeat: no-repeat
+fg: '#696969'

@@ -4,3 +4,5 @@ key: mitra
 setgame:
   level: 2
   playmode: human
+button96:
+  playmode: human

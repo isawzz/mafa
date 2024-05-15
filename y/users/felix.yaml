@@ -1,5 +1,5 @@
 name: felix
-color: '#007fff'
+color: '#2a52be'
 key: felix
 setgame:
   level: 6
@@ -7,8 +7,7 @@ setgame:
 playmode: bot
 button96:
   playmode: human
-fg: '#ffffff'
-bgImage: url('../assets/textures/ttransdiamonds.png')
+bgImage: url('../assets/textures/marble_meer1.jpg')
 bgBlend: normal
-bgSize: ''
-bgRepeat: repeat
+bgSize: cover
+bgRepeat: no-repeat
