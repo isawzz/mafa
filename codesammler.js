@@ -403,6 +403,19 @@ async function resetUsers() {
   console.log(Serverdata.users);
 }
 //#endregion
+async function ondropSaveUrl(url) {
+	console.log('save dropped url to config:', url);
+	Serverdata.config = mPostRoute('postConfig', { url: url });
+}
+app.post('/postConfig', (req, res) => {
+	console.log('<== post config')
+	let newConfig = req.body;
+	let oldConfig = Session.config;
+	Session.config = deepMerge(oldConfig, newConfig);
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	res.json(Session.config);
+});
 
 
 

@@ -34,15 +34,15 @@ class CancelablePromise {
   }
 }
 async function mySleep(ms, oncancel) {
-	// // Usage example:
-	// (async () => {
-	//   const sleep = await mySleep(3000, () => console.log('Canceled!'));
+  // // Usage example:
+  // (async () => {
+  //   const sleep = await mySleep(3000, () => console.log('Canceled!'));
 
-	//   // To cancel the sleep
-	//   setTimeout(() => sleep.cancel(), 1000); // Cancels the sleep after 1 second
-	// })();
-	//if (nundef(oncancel)) oncancel = ()=>console.log('SLEEP CANCELLED!!!!');
-	return new CancelablePromise((resolve) => {
+  //   // To cancel the sleep
+  //   setTimeout(() => sleep.cancel(), 1000); // Cancels the sleep after 1 second
+  // })();
+  //if (nundef(oncancel)) oncancel = ()=>console.log('SLEEP CANCELLED!!!!');
+  return new CancelablePromise((resolve) => {
     const timeoutId = setTimeout(resolve, ms);
     // Clean up timeout if canceled
     this.promise.catch((err) => {
@@ -53,44 +53,72 @@ async function mySleep(ms, oncancel) {
   }, oncancel);
 }
 
-async function mSleep0(ms){
-	if (SLEEP_WATCHER) SLEEP_WATCHER.cancel();
-	SLEEP_WATCHER = await mySleep(ms);
+async function mSleep0(ms) {
+  if (SLEEP_WATCHER) SLEEP_WATCHER.cancel();
+  SLEEP_WATCHER = await mySleep(ms);
 }
-async function mSleep1(ms){
-	const sleep = await mySleep(3000, () => console.log('Canceled!'));
-	setTimeout(() => sleep.cancel(), 4000); // Cancels the sleep after 1 second
+async function mSleep1(ms) {
+  const sleep = await mySleep(3000, () => console.log('Canceled!'));
+  setTimeout(() => sleep.cancel(), 4000); // Cancels the sleep after 1 second
 }
 //#endregion
 
 //#region theme setting
 async function onclickSettTheme() { await showThemes(); }
-async function onclickSettAddTheme() { await showThemeEditor(); }
-
-async function showThemeEditor(){
-	let d = mBy('dSettingsColor'); mClear(d);
-  let sam=mDom(d,{margin:20,w:'80vw',h:'80vh',bg:'white'});
-
-  let dnav=mDom(sam,{h:'20%',bg:'orange'});
-  let drest=mDom(sam,{h:'80%'});
-  let [dside,dmain]=mColFlex(drest,[1,5],['blue','green']);
-
-
-  let [bg,bgImage,bgSize,bgBlend,bgRepeat,fg]=[U.bg,U.bgImage,U.bgSize,U.bgBlend,U.bgRepeat,U.fg];
-
-
+async function onclickSettAddYourTheme() {
+  let name = await mGather(iDiv(UI.settAddYourTheme));
+  console.log(`should add theme for user ${getUname()} under name ${name}`);
+  //await showThemeEditor(); 
+  let o = {};
+  for (const s of ['color', 'bgImage', 'bgBlend', 'fg']) {
+    if (isdef(U[s])) o[s] = U[s];
+  }
+  o.name = name;
+  let themes = lookup(Serverdata.config, ['themes']);
+  let key = isdef(themes[name]) ? rUniqueId(6, 'th') : name;
+  Serverdata.config.themes[key] = o;
+  await mPostRoute('postConfig', Serverdata.config);
 }
 
 async function showThemes() {
-  //am besten waers ich haette 4 themes, 
-  //let 
-	let d = mBy('dSettingsColor'); mClear(d);
-	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
-	let themes = ['bga', 'calm', 'wild', 'stones'];
+  let d = mBy('dSettingsColor'); mClear(d);
+  let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
+  let themes = lookup(Serverdata.config, ['themes']);
+  let bgImage, bgSize, bgRepeat, bgBlend, name, color, fg;
+  for (const key in themes) {
+    let th = themes[key];
+    if (isdef(th.bgImage)) {
+      //find bgSize and bgRepeat for bgImage
+      bgImage = th.bgImage;
+      bgRepeat = (bgImage.includes('marble')||bgImage.includes('wall')) ? 'no-repeat' : 'repeat';
+      bgSize = (bgImage.includes('marble')||bgImage.includes('wall')) ? 'cover' : '';
+      bgBlend = isdef(th.bgBlend) ? th.bgBlend : (bgImage.includes('ttrans') ? 'normal' : bgImage.includes('marble_') ? 'luminosity' : 'multiply');
+    }
+    color = th.color;
+    if (isdef(th.fg)) fg = th.fg;
+    name = th.name;
 
-  let theme = 'stones';
+    //mach ein beispiel!
+    let [realBg,bgContrast,bgNav,fgNew,fgContrast] = calculateGoodColors(color,fg)
+
+    let styles = {w:300,h:200,bg:realBg,fg:fgNew};
+    if (isdef(bgImage)) addKeys({bgImage,bgSize,bgRepeat},styles);
+    if (isdef(bgBlend)) addKeys({bgBlend},styles);
+    let dsample = mDom(d1,styles);
+    let dnav = mDom(dsample,{bg:bgNav,padding:10},{html:name.toUpperCase()});
+    let dmain = mDom(dsample,{padding:10,fg:'black',className:'section'},{html:getMotto()});
 
 
+
+  }
+}
+function getMotto(){
+  let list = [
+    `Let's play!`, 'Enjoy this beautiful space!', 'First vacation day!', 'No place like home!',
+    'You are free!', 'Nothing to do here!', `Don't worry, be happy!`, `Good times ahead!`,
+    'Right here, right now', 'Life is a dream', 'Dream away!', 'Airport forever'
+  ];
+  return rChoose(list);
 }
 //#endregion
 
@@ -123,24 +151,24 @@ function colorLum(cAny, percent = false) {
   let hsl = colorHSL(cAny, true);
   return percent ? hsl.l * 100 : hsl.l;
 }
-async function getPaletteFromElem(elem){
-	let cv = await html2canvas(elem);
+async function getPaletteFromElem(elem) {
+  let cv = await html2canvas(elem);
   let imgData = cv.toDataURL("image/jpeg", 0.9);
-  let img = await imgAsync(elem.parentNode, {w:100,h:100,border:'red',position:'absolute',top:210,left:800}, {src:imgData});
-  let pal=ColorThiefObject.getPalette(img); //console.log('palette',pal)
+  let img = await imgAsync(elem.parentNode, { w: 100, h: 100, border: 'red', position: 'absolute', top: 210, left: 800 }, { src: imgData });
+  let pal = ColorThiefObject.getPalette(img); //console.log('palette',pal)
 
   //sort palette by brightness!
-  let arr=pal.map(x=>({orig:x,hex:colorHex(x),lum:colorHSL(x,true).l}));
-  arr=sortBy(arr,'lum');
+  let arr = pal.map(x => ({ orig: x, hex: colorHex(x), lum: colorHSL(x, true).l }));
+  arr = sortBy(arr, 'lum');
   //img.remove();
   //console.log(arr);
 
-  return arr.map(x=>x.hex); //.map(x=>colorHex(x));//new Image(cv.width,cv.height,imgData;
+  return arr.map(x => x.hex); //.map(x=>colorHex(x));//new Image(cv.width,cv.height,imgData;
   // .then(function (canvas) {
-	// 	let imgData = canvas.toDataURL("image/jpeg", 0.9);
-	// 	var profile_image = mBy("profile_image");
-	// 	profile_image.src = imgData;
-	// 	mBy('imgPreview').src = imgData;
+  // 	let imgData = canvas.toDataURL("image/jpeg", 0.9);
+  // 	var profile_image = mBy("profile_image");
+  // 	profile_image.src = imgData;
+  // 	mBy('imgPreview').src = imgData;
 
 }
 function mimali(c, n) {
@@ -243,14 +271,14 @@ function hexToHSL(H) {
   }
 }
 function hex2RgbObject(hex) {
-	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result
-		? {
-			r: parseInt(result[1], 16),
-			g: parseInt(result[2], 16),
-			b: parseInt(result[3], 16)
-		}
-		: null;
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    }
+    : null;
 }
 function HSLAToRGBA(hsla, isPct) {
   let ex = /^hsla\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)(((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2},\s?)|((\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}\s\/\s))((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
@@ -331,7 +359,7 @@ function hslToHex(h, s, l, alpha) {
     const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
     return Math.round(255 * color).toString(16).padStart(2, '0');
   };
-  return `#${f(0)}${f(8)}${f(4)}` + (isdef(alpha)?alphaToHex(alpha):'');
+  return `#${f(0)}${f(8)}${f(4)}` + (isdef(alpha) ? alphaToHex(alpha) : '');
 }
 function hslToHexCOOL(hslColor) {
   const hslColorCopy = { ...hslColor };
@@ -815,7 +843,7 @@ function loadPlayerColors() {
   //   let already = firstCond(all, x => x.c.toLowerCase() == uc.substring(0, 7).toLowerCase());
   //   if (already) console.log('present', uc);
   // }
-	userColors = Object.values(userColors).map(x=>colorFrom(x));
+  userColors = Object.values(userColors).map(x => colorFrom(x));
   ensureColorDict();
   ensureColorNames();
   let allColors = Object.values(ColorDi).map(x => x.c);
@@ -825,18 +853,18 @@ function loadPlayerColors() {
   list = list.filter(x => !isGrayColor(x));
   let s = new Set(list);
   list = Array.from(s);
-	// let x=list.filter(x=>x.length!=7); console.log(x)
-	assertion(list.every(x=>x.length == 7),"COLORS WRONG!")
+  // let x=list.filter(x=>x.length!=7); console.log(x)
+  assertion(list.every(x => x.length == 7), "COLORS WRONG!")
   let hsllist = list.map(x => colorHexToHsl01Array(x)); //, true));
-	// hsllist = hsllist.map(x=>({h:x[0],s:x[1],l:x[2]}));
-	hsllist = hsllist.map(x=>({h:x[0]*360,s:x[1]*100,l:x[2]*100}));
-  console.log('list',jsCopy(hsllist)); 
+  // hsllist = hsllist.map(x=>({h:x[0],s:x[1],l:x[2]}));
+  hsllist = hsllist.map(x => ({ h: x[0] * 360, s: x[1] * 100, l: x[2] * 100 }));
+  console.log('list', jsCopy(hsllist));
   sortByMultipleProperties(hsllist, 'h', 'l');
-  console.log('list',jsCopy(hsllist[100])); 
+  console.log('list', jsCopy(hsllist[100]));
   // let list2 = hsllist.map(x => hslToHex(x.h*360,x.s*100,x.l*100)); //colorFrom(hslToHsl(x)));
-  let list2 = hsllist.map(x => hslToHex(x.h,x.s,x.l)); //colorFrom(hslToHsl(x)));
-	for(let i=0;i<list2.length;i++) if (!list.includes(list2[i])) console.log("ERROR")
-  console.log('list',jsCopy(list))
+  let list2 = hsllist.map(x => hslToHex(x.h, x.s, x.l)); //colorFrom(hslToHsl(x)));
+  for (let i = 0; i < list2.length; i++) if (!list.includes(list2[i])) console.log("ERROR")
+  console.log('list', jsCopy(list))
   //list = arrRemoveDuplicates(list);
   //M.playerColors = list;
   return list;
@@ -844,120 +872,122 @@ function loadPlayerColors() {
 //#region settings and colors menu
 
 function colorBlendMode(c1, c2, blendMode) {
-	function blendColorDodge(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+  function blendColorDodge(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
+    const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
 
-		let r = dodge(r1, r2);
-		let g = dodge(g1, g2);
-		let b = dodge(b1, b2);
+    let r = dodge(r1, r2);
+    let g = dodge(g1, g2);
+    let b = dodge(b1, b2);
 
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendColor(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendColor(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+    let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+    let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
 
-		// Use the blend hue, but keep the base saturation and lightness
-		let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
-		return colorRgbArgsToHex79(...cfinal);
-	}
-	function blendDarken(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+    // Use the blend hue, but keep the base saturation and lightness
+    let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
+    return colorRgbArgsToHex79(...cfinal);
+  }
+  function blendDarken(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		let r = Math.min(r1, r2);
-		let g = Math.min(g1, g2);
-		let b = Math.min(b1, b2);
+    let r = Math.min(r1, r2);
+    let g = Math.min(g1, g2);
+    let b = Math.min(b1, b2);
 
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendLighten(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendLighten(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		let r = Math.max(r1, r2);
-		let g = Math.max(g1, g2);
-		let b = Math.max(b1, b2);
+    let r = Math.max(r1, r2);
+    let g = Math.max(g1, g2);
+    let b = Math.max(b1, b2);
 
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendLuminosity(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendLuminosity(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+    let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+    let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
 
-		// Set the luminosity of the base color to the luminosity of the blend color
-		let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
+    // Set the luminosity of the base color to the luminosity of the blend color
+    let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
 
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendMultiply(color1, color2) {
-		let [r1, g1, b1] = colorHexToRgbArray(color1);
-		let [r2, g2, b2] = colorHexToRgbArray(color2);
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendMultiply(color1, color2) {
+    let [r1, g1, b1] = colorHexToRgbArray(color1);
+    let [r2, g2, b2] = colorHexToRgbArray(color2);
 
-		// Multiply each channel and divide by 255 to scale back to color space
-		let r = (r1 * r2) / 255;
-		let g = (g1 * g2) / 255;
-		let b = (b1 * b2) / 255;
+    // Multiply each channel and divide by 255 to scale back to color space
+    let r = (r1 * r2) / 255;
+    let g = (g1 * g2) / 255;
+    let b = (b1 * b2) / 255;
 
-		return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
-	}
-	function blendNormal(baseColor, blendColor) {
-		return blendColor; // The blend color simply replaces the base color
-	}
-	function blendOverlay(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+    return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
+  }
+  function blendNormal(baseColor, blendColor) {
+    return blendColor; // The blend color simply replaces the base color
+  }
+  function blendOverlay(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
+    const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
 
-		let r = overlayCalculate(r1, r2);
-		let g = overlayCalculate(g1, g2);
-		let b = overlayCalculate(b1, b2);
+    let r = overlayCalculate(r1, r2);
+    let g = overlayCalculate(g1, g2);
+    let b = overlayCalculate(b1, b2);
 
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendSaturation(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendSaturation(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
 
-		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+    let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+    let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
 
-		// Use the base hue and lightness, blend saturation
-		let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
-		return colorRgbArgsToHex79(...cfinal);
-	}
-	function blendScreen(color1, color2) {
-		let [r1, g1, b1] = colorHexToRgbArray(color1);
-		let [r2, g2, b2] = colorHexToRgbArray(color2);
+    // Use the base hue and lightness, blend saturation
+    let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
+    return colorRgbArgsToHex79(...cfinal);
+  }
+  function blendScreen(color1, color2) {
+    let [r1, g1, b1] = colorHexToRgbArray(color1);
+    let [r2, g2, b2] = colorHexToRgbArray(color2);
 
-		// Apply the screen blend mode formula
-		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
-		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
-		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
+    // Apply the screen blend mode formula
+    let r = 255 - (((255 - r1) * (255 - r2)) / 255);
+    let g = 255 - (((255 - g1) * (255 - g2)) / 255);
+    let b = 255 - (((255 - b1) * (255 - b2)) / 255);
 
-		return colorRgbArgsToHex79(r, g, b);
-	}
+    return colorRgbArgsToHex79(r, g, b);
+  }
 
   //console.log('blendMode',blendMode);
-  let di={darken:blendDarken,lighten:blendLighten,color:blendColor,colorDodge:blendColorDodge,luminosity:blendLuminosity,multiply:blendMultiply,normal:blendNormal,overlay:blendOverlay,
-    saturation:blendSaturation,screen:blendScreen};
-	let func = di[blendMode]; if (nundef(di)) {console.log('blendMode',blendMode);return c1;} 
-	//console.log(func);
-	c1hex = colorFrom(c1);
-	c2hex = colorFrom(c2);
-  let res = func(c1hex,c2hex);
-	//console.log('blend',c1hex,c2hex,'=>',res);
-	return res;
+  let di = {
+    darken: blendDarken, lighten: blendLighten, color: blendColor, colorDodge: blendColorDodge, luminosity: blendLuminosity, multiply: blendMultiply, normal: blendNormal, overlay: blendOverlay,
+    saturation: blendSaturation, screen: blendScreen
+  };
+  let func = di[blendMode]; if (nundef(di)) { console.log('blendMode', blendMode); return c1; }
+  //console.log(func);
+  c1hex = colorFrom(c1);
+  c2hex = colorFrom(c2);
+  let res = func(c1hex, c2hex);
+  //console.log('blend',c1hex,c2hex,'=>',res);
+  return res;
 }
 function colorPaletteFromImage(img) {
   if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
@@ -1028,13 +1058,13 @@ function expandHexShorthand(c) {
     return c;
   }
 }
-async function getPaletteFromColorTextureBlend(color,texture,blend,dParent){
-  let elem = mDom(dParent, {w:100,h:100,border:'red',position:'absolute',top:100,left:800});
+async function getPaletteFromColorTextureBlend(color, texture, blend, dParent) {
+  let elem = mDom(dParent, { w: 100, h: 100, border: 'red', position: 'absolute', top: 100, left: 800 });
   elem.style.backgroundColor = color;
   if (isEmpty(texture)) return colorPalette(color);
-  elem.style.backgroundImage=texture.startsWith('url')?texture:`url("${texture}")`;
+  elem.style.backgroundImage = texture.startsWith('url') ? texture : `url("${texture}")`;
   elem.style.backgroundBlend = blend;
-  let [repeat,size]=getRepeatAndSizeForTexture(texture);
+  let [repeat, size] = getRepeatAndSizeForTexture(texture);
   elem.style.backgroundRepeat = repeat;
   elem.style.backgroundSize = size;
   return getPaletteFromElem(elem);
@@ -1045,19 +1075,19 @@ function getRepeatAndSizeForTexture(t) {
   let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
   return [bgRepeat, bgSize];
 }
-function getNavBg(){return mGetStyle('dNav', 'bg');}
+function getNavBg() { return mGetStyle('dNav', 'bg'); }
 
 async function onclickBlendSample(item, items) {
   //console.log('CLICK!!!');//,item)
   let texture = settingsGetSelectedTexture();
-  if (nundef(texture)) {console.log('please select a texture');return;}
+  if (nundef(texture)) { console.log('please select a texture'); return; }
   let bgBlend = item.bgBlend; //ev.target.style.backgroundImage;
-  let prev=settingsGetSelectedBlend();//console.log(prev)
+  let prev = settingsGetSelectedBlend();//console.log(prev)
   if (prev != item) toggleItemSelection(prev);
   toggleItemSelection(item);
   if (item.isSelected) document.body.style.backgroundBlendMode = bgBlend;
 
-  let color=settingsGetSelectedColor();
+  let color = settingsGetSelectedColor();
 
 }
 async function onclickColor(item, items) {
@@ -1096,169 +1126,169 @@ async function _onclickTexture(item, items) {
   if (nundef(blendDiv)) return;
   blendDiv.click();
 
-  let palette = item.palette.map(x=>x.hex); console.log(palette);
-  let d=mBy('dPalette');
+  let palette = item.palette.map(x => x.hex); console.log(palette);
+  let d = mBy('dPalette');
   mClear(d);
-	let szSmall = 30;
-	for (const c of palette) { mDom(d, { w: szSmall, h: szSmall, bg: c }) }
+  let szSmall = 30;
+  for (const c of palette) { mDom(d, { w: szSmall, h: szSmall, bg: c }) }
   mLinebreak(d);
 
 }
 function selectUserColor(itemsColor) {
   if (isEmpty(U.color)) U.color = rChoose(itemsColor);
-  console.log('user color is',U.color)
+  console.log('user color is', U.color)
   let c = colorHex(U.color);  //console.log(chex,itemsColor)
   let item = itemsColor.find(x => x.color == c);  //console.log('item with same color',item);
-  console.log(c,item)
+  console.log(c, item)
   if (isdef(item)) iDiv(item).click();
   return item.color;
 }
 function selectUserTexture(itemsTexture) {
-  if (isEmpty(U.texture)) {console.log('no texture');return '';}
+  if (isEmpty(U.texture)) { console.log('no texture'); return ''; }
   let item = itemsTexture.find(x => x.bgImage.includes(U.texture));
   if (isdef(item)) iDiv(item).click();
   return isdef(item) ? item.path : '';
 }
 function selectUserBlend(itemsBlend) {
-  if (isEmpty(U.bgBlend)) {console.log('no blend');return '';}
+  if (isEmpty(U.bgBlend)) { console.log('no blend'); return ''; }
   let item = itemsBlend.find(x => x.bgBlend == U.bgBlend);
   if (isdef(item)) iDiv(item).click();
   return isdef(item) ? item.bgBlend : '';
 }
-function settingsGetSelectedBlend(){  
-  let item = DA.itemsBlend.find(x=>x.isSelected == true);
-  return item; 
+function settingsGetSelectedBlend() {
+  let item = DA.itemsBlend.find(x => x.isSelected == true);
+  return item;
 }
-function settingsGetSelectedColor(){  
-  let item = DA.itemsColor.find(x=>x.isSelected == true);
-  return item; 
+function settingsGetSelectedColor() {
+  let item = DA.itemsColor.find(x => x.isSelected == true);
+  return item;
 }
-function settingsGetSelectedTexture(){  
-  let item = DA.itemsTexture.find(x=>x.isSelected == true);
-  return item; 
+function settingsGetSelectedTexture() {
+  let item = DA.itemsTexture.find(x => x.isSelected == true);
+  return item;
 }
-async function settingsSave(){
-  let o={name:U.name};
-  let item = settingsGetSelectedColor();if (isdef(item)) o.color=item.color;
-  item = settingsGetSelectedTexture();if (isdef(item)) o.texture=item.path;
-  item = settingsGetSelectedBlend();if (isdef(item)) o.bgBlend=item.bgBlend;
+async function settingsSave() {
+  let o = { name: U.name };
+  let item = settingsGetSelectedColor(); if (isdef(item)) o.color = item.color;
+  item = settingsGetSelectedTexture(); if (isdef(item)) o.texture = item.path;
+  item = settingsGetSelectedBlend(); if (isdef(item)) o.bgBlend = item.bgBlend;
 }
 
 //#endregion
 
 //#region showColors
 async function _showColors() {
-	showTitle('Settings');
-	let [szSmall, szMiddle, wmax] = [30,80, 34*15];
-	let dParent = mBy('dMain'); mClear(dParent);
+  showTitle('Settings');
+  let [szSmall, szMiddle, wmax] = [30, 80, 34 * 15];
+  let dParent = mBy('dMain'); mClear(dParent);
 
-	DA.itemsColor = showColorGrid(dParent,szSmall,wmax,onclickColor)
+  DA.itemsColor = showColorGrid(dParent, szSmall, wmax, onclickColor)
 
-	let dPalette = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dPalette' });
+  let dPalette = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dPalette' });
 
-	DA.itemsTexture = showTextureGrid(dParent,szSmall,wmax,onclickTexture);
+  DA.itemsTexture = showTextureGrid(dParent, szSmall, wmax, onclickTexture);
 
-	DA.itemsBlend = showBlendGrid(dParent,szMiddle,wmax,onclickBlendSample);
+  DA.itemsBlend = showBlendGrid(dParent, szMiddle, wmax, onclickBlendSample);
 
-	mButton('Apply',settingsApply,'dMain',{fz:24,maleft:20});
-	mButton('Save',settingsSave,'dMain',{fz:24,maleft:20});
+  mButton('Apply', settingsApply, 'dMain', { fz: 24, maleft: 20 });
+  mButton('Save', settingsSave, 'dMain', { fz: 24, maleft: 20 });
 
-	let color = selectUserColor(DA.itemsColor);
-	let pathTexture = selectUserTexture(DA.itemsTexture);
-	if (isEmpty(pathTexture)) return;
-	let blend = selectUserBlend(DA.itemsBlend);
+  let color = selectUserColor(DA.itemsColor);
+  let pathTexture = selectUserTexture(DA.itemsTexture);
+  if (isEmpty(pathTexture)) return;
+  let blend = selectUserBlend(DA.itemsBlend);
 }
-function showBlendGrid(dParent,sz,wmax,handler){
-	let dBlend = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-	list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-	let itemsBlend = DA.itemsBlend = [];
-	// console.log('list',list.length)
-	for (const [idx, mode] of list.entries()) {
-		let id = `dSample${idx}`;
-		let db = mDom(dBlend, { border: 'white', w: sz, h: sz, 'background-blend-mode': mode, cursor: 'pointer' }, { id, idx });
-		let item = { div: db, blend: mode, isSelected: false };
-		itemsBlend.push(item);
-		db.onclick = () => handler(item, itemsBlend);
-	}
-	return itemsBlend;
+function showBlendGrid(dParent, sz, wmax, handler) {
+  let dBlend = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
+  list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+  let itemsBlend = DA.itemsBlend = [];
+  // console.log('list',list.length)
+  for (const [idx, mode] of list.entries()) {
+    let id = `dSample${idx}`;
+    let db = mDom(dBlend, { border: 'white', w: sz, h: sz, 'background-blend-mode': mode, cursor: 'pointer' }, { id, idx });
+    let item = { div: db, blend: mode, isSelected: false };
+    itemsBlend.push(item);
+    db.onclick = () => handler(item, itemsBlend);
+  }
+  return itemsBlend;
 }
-function showColorGrid(dParent,sz,wmax,handler){
-	let dColors = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dColors' });
-	let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
-	list = M.playerColors.concat(grays);
-	let items = [];
-	//console.log(BLUEGREEN)
-	for (const c of list) {
-		let dc = mDom(dColors, { w: sz, h: sz, bg: c, cursor: 'pointer' });
-		let item = { div: dc, color: c, isSelected: false };
-		//console.log('color',c,dc,item)
-		items.push(item);
-		dc.onclick = () => handler(item, items);
-	}
-	return items;
+function showColorGrid(dParent, sz, wmax, handler) {
+  let dColors = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dColors' });
+  let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
+  list = M.playerColors.concat(grays);
+  let items = [];
+  //console.log(BLUEGREEN)
+  for (const c of list) {
+    let dc = mDom(dColors, { w: sz, h: sz, bg: c, cursor: 'pointer' });
+    let item = { div: dc, color: c, isSelected: false };
+    //console.log('color',c,dc,item)
+    items.push(item);
+    dc.onclick = () => handler(item, items);
+  }
+  return items;
 }
-function showTextureGrid(dParent,sz,wmax,handler){
-	let dTheme = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-	list = M.textures;
-	let itemsTexture = [];
-	for (const t of list) {
-		let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-		let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-		let bgImage = `url('${t}')`;
-		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
-		// let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
-		let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz }, { tag: 'img' });
-		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blend: recommendedMode, isSelected: false };
-		itemsTexture.push(item);
-		dc.onclick = () => handler(item, itemsTexture);
-	}
-	for (const [i, o] of itemsTexture.entries()) {
-		let img = iDiv(o);
-		img.onload = () => {
-			let pal = ColorThiefObject.getPalette(img);
-			if (pal == null) {
-				//mach eine transparency palette!
-				pal = colorTransPalette();
+function showTextureGrid(dParent, sz, wmax, handler) {
+  let dTheme = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
+  list = M.textures;
+  let itemsTexture = [];
+  for (const t of list) {
+    let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
+    let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
+    let bgImage = `url('${t}')`;
+    let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
+    // let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
+    let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz }, { tag: 'img' });
+    let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blend: recommendedMode, isSelected: false };
+    itemsTexture.push(item);
+    dc.onclick = () => handler(item, itemsTexture);
+  }
+  for (const [i, o] of itemsTexture.entries()) {
+    let img = iDiv(o);
+    img.onload = () => {
+      let pal = ColorThiefObject.getPalette(img);
+      if (pal == null) {
+        //mach eine transparency palette!
+        pal = colorTransPalette();
 
-			}
-			if (pal != null) {
-				pal.unshift('white'); pal.push('black');
-				let n = pal.length;
-				pal = pal.map(x => colorHex(x)); // console.log(pal)
-				let palhex = Array.from(new Set(pal));// console.log(palhex)
-				let palhsl = palhex.map(x => colorHexToHsl360Object(x));
-				let lum = palhsl.map(x => x.l);
-				let hue = palhsl.map(x => x.h);
-				let sat = palhsl.map(x => x.s);
-				pal = [];
-				for (let i = 0; i < palhex.length; i++) {
-					let o = { hex: palhex[i], lum: lum[i], hue: hue[i], sat: sat[i] };
-					pal.push(o);
-				}
-				//if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
-			}
+      }
+      if (pal != null) {
+        pal.unshift('white'); pal.push('black');
+        let n = pal.length;
+        pal = pal.map(x => colorHex(x)); // console.log(pal)
+        let palhex = Array.from(new Set(pal));// console.log(palhex)
+        let palhsl = palhex.map(x => colorHexToHsl360Object(x));
+        let lum = palhsl.map(x => x.l);
+        let hue = palhsl.map(x => x.h);
+        let sat = palhsl.map(x => x.s);
+        pal = [];
+        for (let i = 0; i < palhex.length; i++) {
+          let o = { hex: palhex[i], lum: lum[i], hue: hue[i], sat: sat[i] };
+          pal.push(o);
+        }
+        //if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
+      }
 
-			itemsTexture[i].palette = pal;
-		}
-		img.src = o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
+      itemsTexture[i].palette = pal;
+    }
+    img.src = o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
 
-	}
-	return itemsTexture;
+  }
+  return itemsTexture;
 }
 
 //#endregion
 
 //#region settings
-function settingsApply(){
-	console.log('apply settings');
-	let color = settingsGetSelectedColor();
-	let texture = settingsGetSelectedTexture();
-	let blend = settingsGetSelectedBlend();
-	_setColors(color,texture,blend);
+function settingsApply() {
+  console.log('apply settings');
+  let color = settingsGetSelectedColor();
+  let texture = settingsGetSelectedTexture();
+  let blend = settingsGetSelectedBlend();
+  _setColors(color, texture, blend);
 }
-function extractUrlFromBlendMode(blend){
-	let parts = blend.split('.');
-	console.log('parts',parts);
+function extractUrlFromBlendMode(blend) {
+  let parts = blend.split('.');
+  console.log('parts', parts);
 }
 function _setColors(c, texture, blend) {
   // mClass(document.body, 'wood');

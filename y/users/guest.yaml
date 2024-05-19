@@ -1,6 +1,10 @@
 name: guest
-color: '#044f67'
+color: '#446ccf'
 key: guest
 games:
   button96:
     handicap: 3
+bgImage: url('../assets/textures/wall6.JPG')
+bgBlend: multiply
+bgSize: cover
+bgRepeat: no-repeat

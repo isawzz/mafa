@@ -1,3 +1,7 @@
 name: wolferl
-color: '#4d0085'
+color: '#2d68c4'
 key: cat38
+bgImage: url('../assets/textures/wall4.jpg')
+bgBlend: normal
+bgSize: cover
+bgRepeat: no-repeat

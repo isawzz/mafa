@@ -408,15 +408,6 @@ app.post('/moveImage', (req, res) => {
 		res.json(`did NOT find ${oldpath}`);
 	}
 });
-app.post('/postConfig', (req, res) => {
-	console.log('<== post config')
-	let newConfig = req.body;
-	let oldConfig = Session.config;
-	Session.config = deepMerge(oldConfig, newConfig);
-	let y = yaml.dump(Session.config);
-	fs.writeFileSync(configFile, y, 'utf8');
-	res.json(Session.config);
-});
 app.post('/postEvent', (req, res) => {
 	let id = req.body.id;
 	let data = req.body;
@@ -559,6 +550,14 @@ app.post('/olist', (req, res) => { //partial override using olist, emit+return i
 	saveTable(id, table);
 	io.emit('pending',id);
 	res.json(`YEAH!!!!`);
+});
+app.post('/postConfig', (req, res) => {
+	console.log('<== post config')
+	Session.config = req.body;
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	io.emit('config',Session.config);
+	res.json("config saved!");
 });
 
 

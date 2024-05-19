@@ -3,7 +3,7 @@
 function button96() {
 
 	function setup(table) {
-		console.log('setup',table)
+		//console.log('setup',table)
 		let fen = {};
 		for (const name in table.players) {
 			let pl = table.players[name];
@@ -107,7 +107,7 @@ function button96() {
 		let d = iDiv(item);
 		let ms = rChoose(range(300, 400));
 		mClass(d, 'framedPicture'); TO.hallo = setTimeout(() => mClassRemove(d, 'framedPicture'), ms);
-		try { await mSleep(ms); } catch (err) { console.log("ERR", err); return; }
+		try { await mSleep(ms); } catch (err) { return; } //console.log("ERR", err); 
 
 		let id = table.id;
 		let name = getUname();
@@ -125,7 +125,7 @@ function button96() {
 
 		if (move == best) o.stepIfValid = step + 1; // nur 1 kann punkt kriegen pro runde
 
-		let res = await mPostRoute('olist', o); console.log(res);
+		let res = await mPostRoute('olist', o); //console.log(res);
 	}
 
 	return { setup, resolvePending, present, stats, activate }; 

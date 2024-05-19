@@ -5214,7 +5214,7 @@ async function onchangeBotSwitch(ev) {
 	let id = T.id;
 	let playmode = (elem.checked) ? 'bot' : 'human';
 	let olist = [{ keys: ['players', name, 'playmode'], val: playmode }];
-	let res = await mPostRoute(`olist`, { id, name, olist }); console.log(res)
+	let res = await mPostRoute(`olist`, { id, name, olist }); //console.log(res)
 }
 async function onclickAddCategory() {
 	let selist = UI.selectedImages;
@@ -5851,10 +5851,6 @@ async function ondropPreviewImage(dParent, url, key) {
 		mButton('Restart', () => ondropPreviewImage(url), dButtons, { w: 120, maleft: 12 }, 'input');
 	}
 }
-async function ondropSaveUrl(url) {
-	console.log('save dropped url to config:', url);
-	Serverdata.config = mPostRoute('postConfig', { url: url });
-}
 async function ondropShowImage(url, dDrop) {
 	mClear(dDrop);
 	let img = await imgAsync(dDrop, { hmax: 300 }, { src: url });
@@ -5881,6 +5877,10 @@ function onleaveHex(item, board) {
 	let selitem = board.items.find(x => x.isSelected == true);
 	if (nundef(selitem)) return;
 	colorSample(board.dSample, selitem.color);
+}
+async function onsockConfig(x){
+	console.log('SOCK::config', x)
+	Serverdata.config = x;
 }
 async function onsockEvent(x) {
 	console.log('SOCK::event', x)
@@ -6101,7 +6101,7 @@ function rLetters(n, except = []) {
 function rNumber(min = 0, max = 100) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function rUniqueId(n = 10) { return rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
+function rUniqueId(n = 10,prefix='') { return prefix + rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
 
 function rWord(n = 6) { return rLetters(n).join(''); }
 
@@ -6446,34 +6446,16 @@ async function sendRaceStepScore(table, name, score = 1, olist = []) {
 	let res = await sendMergeTable(data, 'race');
 }
 function setColors(bg, fg) {
-	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
-	let bgIsDark = colorIdealText(bg) == 'white';
-	if (nundef(fg)) fg = colorIdealText(bg);
-	let bgNav = bg;
-	fg = colorToHex79(fg);
-	if (fgIsLight) {
-		if (isEmpty(U.bgImage)) { bgNav = '#00000040'; }
-		else if (bgIsDark) { bgNav = colorTrans(bg, .8); }
-		else { bgNav = colorTrans(colorDark(bg, 50), .8); }
-	} else {
-		if (isEmpty(U.bgImage)) { bgNav = '#ffffff40'; }
-		else if (!bgIsDark) { bgNav = colorTrans(bg, .8); }
-		else { bgNav = colorTrans(colorLight(bg, 50), .8); }
-	}
-	let t = U.bgImage;
-	let realBg = bg;
-	if (bgNav == realBg) bgNav = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
-	let bgContrast = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
-	let fgContrast = fgIsLight ? '#ffffff80' : '#00000080'; // 'red'; //bestContrastingColor(bgNav); // colorContrast(bgNav); // fgIsLight ? colorDark(fg, .5) : colorLight(fg, .5);
+	let [realBg,bgContrast,bgNav,fgNew,fgContrast]=calculateGoodColors(bg,fg);
 	setCssVar('--bgBody', realBg);
 	setCssVar('--bgButton', 'transparent')
 	setCssVar('--bgButtonActive', bgContrast)
 	setCssVar('--bgNav', bgNav)
-	setCssVar('--fgButton', fg)
-	setCssVar('--fgButtonActive', fg)
+	setCssVar('--fgButton', fgNew)
+	setCssVar('--fgButtonActive', fgNew)
 	setCssVar('--fgButtonDisabled', 'silver')
 	setCssVar('--fgButtonHover', fgContrast)
-	setCssVar('--fgTitle', fg)
+	setCssVar('--fgTitle', fgNew)
 	setCssVar('--fgSubtitle', fgContrast);
 }
 function setCssVar(varname, val) { document.body.style.setProperty(varname, val); }
@@ -6689,7 +6671,7 @@ function settingsSidebar() {
 	UI.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode'); mNewline(d, 2 * gap);
 	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
 	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
-	UI.settAddTheme = mCommand(d, 'settAddTheme', 'Add Theme'); mNewline(d, gap);
+	UI.settAddYourTheme = mCommand(d, 'settAddYourTheme', 'Add Your Theme'); mNewline(d, gap);
 }
 function show(elem, isInline = false) {
 	if (isString(elem)) elem = document.getElementById(elem);
@@ -6705,8 +6687,8 @@ async function showBlendModes() {
 	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
 	let bgImage = U.bgImage;
 	let bg = U.color;
-	let bgRepeat = bgImage.includes('marble') ? 'no-repeat' : 'repeat';
-	let bgSize = bgImage.includes('marble') ? 'cover' : '';
+	let bgRepeat = bgImage.includes('marble')||bgImage.includes('wall') ? 'no-repeat' : 'repeat';
+	let bgSize = bgImage.includes('marble')||bgImage.includes('wall') ? 'cover' : '';
 	let bgSizeItem = bgSize;
 	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
 	let items = [];
@@ -7113,10 +7095,10 @@ async function showTextures() {
 	let list = M.textures;
 	let itemsTexture = [];
 	for (const t of list) {
-		let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-		let bgSize = t.includes('marble_') ? `cover` : t.includes('ttrans') ? '' : 'auto';
+		let bgRepeat = t.includes('marble_')||t.includes('wall') ? 'no-repeat' : 'repeat';
+		let bgSize = t.includes('marble_')||t.includes('wall') ? `cover` : t.includes('ttrans') ? '' : 'auto';
 		let bgImage = `url('${t}')`;
-		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
+		let recommendedMode = t.includes('ttrans') ? 'normal' : (t.includes('marble_')||t.includes('wall')) ? 'luminosity' : 'multiply';
 		let dc = mDom(dTheme, { bg: U.color, bgImage, bgSize, bgRepeat, bgBlend: 'normal', cursor: 'pointer', border: 'white', w: '30%', wmax: 300, h: 170 });
 		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, bgBlend: recommendedMode, isSelected: false };
 		itemsTexture.push(item);
@@ -7204,6 +7186,7 @@ function sleep() { return new Promise(r => setTimeout(r, m)) }
 function sockInit() {
 	let server = getServerurl();
 	Socket = io(server);
+	Socket.on('config', onsockConfig);
 	Socket.on('disconnect', x => console.log('::SOCK disconnect:', x));
 	Socket.on('event', onsockEvent);
 	Socket.on('message', showChatMessage);
@@ -7291,7 +7274,7 @@ function squareTo(tool, sznew = 128) {
 	redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function startGame(gamename, players, options) {
-	console.log('___startGame', gamename, players, options)
+	//console.log('___startGame', gamename, players, options)
 	let table = createOpenTable(gamename, players, options);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);

@@ -1,4 +1,12 @@
 //#region 18.mai 24
+async function showThemeEditor(){
+	let d = mBy('dSettingsColor'); mClear(d);
+  let sam=mDom(d,{margin:20,w:'80vw',h:'80vh',bg:'white'});
+  let dnav=mDom(sam,{h:'20%',bg:'orange'});
+  let drest=mDom(sam,{h:'80%'});
+  let [dside,dmain]=mColFlex(drest,[1,5],['blue','green']);
+  let [bg,bgImage,bgSize,bgBlend,bgRepeat,fg]=[U.bg,U.bgImage,U.bgSize,U.bgBlend,U.bgRepeat,U.fg];
+}
 function __animate(elem, aniclass, timeoutms) {
 	mClass(elem, aniclass);
 	TO.anim = setTimeout(() => mRemoveClass(elem, aniclass), timeoutms);

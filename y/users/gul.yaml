@@ -5,3 +5,6 @@ bgImage: url('../assets/textures/marble_beige1.jpeg')
 bgBlend: normal
 bgSize: cover
 bgRepeat: no-repeat
+games:
+  button96:
+    handicap: 3

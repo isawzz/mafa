@@ -1,13 +1,13 @@
 status: over
-id: 2MLZjoI3fNpgl7hHKE_Y
+id: RId4YCQBnVkWDHFMj8c3
 fen:
   cards:
-    - 4
-    - 5
+    - 99
+    - 100
   deck: []
 game: button96
 owner: mimi
-friendly: tournament of Vientiane
+friendly: soirée in Baghdad
 players:
   mimi:
     name: mimi
@@ -18,32 +18,32 @@ players:
     bgSize: cover
     bgRepeat: no-repeat
     handicap: 2
-    playmode: human
-    score: 1
+    playmode: bot
+    score: 46
   diana:
     name: diana
-    color: '#4d0085'
+    color: '#4c2882'
     key: bird15
-    bgImage: url('../assets/textures/marble_grey2.jpeg')
-    bgBlend: screen
+    bgImage: url('../assets/textures/marble_violet1.jpeg')
+    bgBlend: luminosity
     bgSize: cover
     bgRepeat: no-repeat
     handicap: 1
     playmode: bot
-    score: 2
+    score: 52
 playerNames:
   - mimi
   - diana
 options:
-  numCards: 5
+  numCards: 100
   gamemode: multi
-step: 3
+step: 98
 plorder:
   - mimi
   - diana
 turn: []
 pending:
-  name: mimi
-  move: 3
+  name: diana
+  move: 98
 winners:
   - diana

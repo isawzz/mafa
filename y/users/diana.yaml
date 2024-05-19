@@ -1,11 +1,10 @@
 name: diana
-color: '#512888'
+color: '#4c2882'
 key: bird15
 games:
   button96:
     handicap: 1
-bgImage: url('../assets/textures/marble_weiss2.jpeg')
-bgBlend: screen
+bgImage: url('../assets/textures/marble_violet1.jpeg')
+bgBlend: luminosity
 bgSize: cover
 bgRepeat: no-repeat
-fg: '#ffffff'
