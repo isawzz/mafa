@@ -1,13 +1,13 @@
 status: over
-id: iCDQknh3KJbXlZmq8UF2
+id: 2MLZjoI3fNpgl7hHKE_Y
 fen:
   cards:
-    - 99
-    - 100
+    - 4
+    - 5
   deck: []
 game: button96
 owner: mimi
-friendly: rendezvous in Islamabad
+friendly: tournament of Vientiane
 players:
   mimi:
     name: mimi
@@ -19,27 +19,31 @@ players:
     bgRepeat: no-repeat
     handicap: 2
     playmode: human
-    score: 18
+    score: 1
   diana:
     name: diana
     color: '#4d0085'
     key: bird15
+    bgImage: url('../assets/textures/marble_grey2.jpeg')
+    bgBlend: screen
+    bgSize: cover
+    bgRepeat: no-repeat
     handicap: 1
     playmode: bot
-    score: 80
+    score: 2
 playerNames:
   - mimi
   - diana
 options:
-  numCards: 100
+  numCards: 5
   gamemode: multi
-step: 98
+step: 3
 plorder:
   - mimi
   - diana
 turn: []
 pending:
-  name: diana
-  move: 98
+  name: mimi
+  move: 3
 winners:
   - diana
