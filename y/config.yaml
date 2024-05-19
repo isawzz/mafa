@@ -266,3 +266,8 @@ themes:
     bgImage: url('../assets/textures/marble_violet1.jpeg')
     bgBlend: luminosity
     name: amethyst
+  cave:
+    color: '#002e63'
+    bgImage: url('../assets/textures/marble_blue1.jpeg')
+    bgBlend: normal
+    name: cave

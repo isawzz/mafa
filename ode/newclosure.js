@@ -5652,10 +5652,10 @@ async function onclickNewCollection(name) {
 async function onclickOpenToJoinGame() {
 	let options = collectOptions();
 	let players = collectPlayers();
-	console.log('players', jsCopy(players));
+	//console.log('players', jsCopy(players));
 	mRemove('dGameMenu');
 	let t = createOpenTable(DA.gamename, players, options);
-	console.log('table open', t)
+	//console.log('table open', t)
 	let res = await mPostRoute('postTable', t);
 }
 async function onclickPlan() { await showCalendarApp(); }

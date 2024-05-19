@@ -1,0 +1,8 @@
+name: maya
+color: '#7eb6ff'
+key: bird14
+bgImage: url('../assets/textures/wall4.jpg')
+bgBlend: normal
+bgSize: cover
+bgRepeat: no-repeat
+fg: '#ffffff'

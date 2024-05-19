@@ -560,8 +560,6 @@ app.post('/postConfig', (req, res) => {
 	res.json("config saved!");
 });
 
-
-
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');
 	Session.config = yaml.load(yamlFile);

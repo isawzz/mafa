@@ -98,19 +98,26 @@ async function showThemes() {
     if (isdef(th.fg)) fg = th.fg;
     name = th.name;
 
-    //mach ein beispiel!
     let [realBg,bgContrast,bgNav,fgNew,fgContrast] = calculateGoodColors(color,fg)
 
-    let styles = {w:300,h:200,bg:realBg,fg:fgNew};
+    let styles = {w:300,h:200,bg:realBg,fg:fgNew,border:`solid 1px ${getCSSVariable('--fgButton')}`};
     if (isdef(bgImage)) addKeys({bgImage,bgSize,bgRepeat},styles);
     if (isdef(bgBlend)) addKeys({bgBlend},styles);
-    let dsample = mDom(d1,styles);
+    let dsample = mDom(d1,styles,{theme:key});
     let dnav = mDom(dsample,{bg:bgNav,padding:10},{html:name.toUpperCase()});
     let dmain = mDom(dsample,{padding:10,fg:'black',className:'section'},{html:getMotto()});
-
-
-
+    dsample.onclick = onclickThemeSample;
   }
+}
+async function onclickThemeSample(ev){
+  let key = evToAttr(ev,'theme');
+  console.log('key',key)
+  let theme = jsCopyExceptKeys(Serverdata.config.themes[key],['name']);
+  console.log('theme',theme);
+
+  copyKeys(theme,U);
+  await postUserChange();
+  setTheme();
 }
 function getMotto(){
   let list = [

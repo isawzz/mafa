@@ -2,8 +2,7 @@
 async function showTable(id) {
 	//INVALID TABLES KOMMEN GARNICHT HIERHER!!!
 	let me = getUname();
-	let table = await mGetRoute('table', { id });
-	//console.log('table',table)
+	let table = await mGetRoute('table', { id });	//console.log('table',table)
 	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 
 	let func = DA.funcs[table.game];
@@ -18,7 +17,7 @@ async function showTable(id) {
 	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
 
 	//let tableSize = calcHeightLeftUnder('dExtra') - 40; //height visible in browser
-	d = mDom('dMain'); mCenterFlex(d); //console.log(getRect('dMain'))
+	d = mDom('dMain'); mCenterFlex(d); 
 
 	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
 
