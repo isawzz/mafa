@@ -1,14 +1,6 @@
 name: annabel
 color: '#f07f7f'
 key: annabel
-setgame:
-  level: 6
-  playmode: bot
-button:
-  playmode: bot
-button98:
-  playmode: bot
-button97:
-  playmode: bot
-button96:
-  playmode: human
+games:
+  button96:
+    handicap: 3

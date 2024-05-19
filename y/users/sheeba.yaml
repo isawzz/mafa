@@ -1,6 +1,3 @@
 name: sheeba
-color: '#808000'
+color: '#c71585'
 key: sheeba
-setgame:
-  level: 1
-  playmode: human

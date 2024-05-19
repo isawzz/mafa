@@ -1,13 +1,10 @@
 name: mimi
 color: '#ffe4e1'
 key: mimi
-setgame:
-  level: 2
-  playmode: human
-button96:
-  playmode: human
-bgImage: url('../assets/textures/marble_weiss2.jpeg')
-bgBlend: screen
+bgImage: url('../assets/textures/marble_rosa.jpeg')
+bgBlend: normal
 bgSize: cover
 bgRepeat: no-repeat
-fg: '#696969'
+games:
+  button96:
+    handicap: 2

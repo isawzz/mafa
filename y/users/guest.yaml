@@ -1,7 +1,6 @@
 name: guest
 color: '#044f67'
 key: guest
-bgImage: url('../assets/textures/marble_red.jpeg')
-bgBlend: luminosity
-bgSize: 100vw 100vh
-bgRepeat: repeat
+games:
+  button96:
+    handicap: 3

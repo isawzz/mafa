@@ -1,8 +1,6 @@
 name: diana
 color: '#4d0085'
 key: bird15
-setgame:
-  level: 3
-  playmode: bot
-button96:
-  playmode: bot
+games:
+  button96:
+    handicap: 1

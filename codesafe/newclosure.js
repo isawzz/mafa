@@ -1,14 +1,6 @@
 function _INTERRUPT() {
 	clearEvents();
 }
-function _showPaletteNames(dParent, colors) {
-	let d1 = mDom(dParent, { padding: 10, gap: 4 }); mFlexWrap(d1);
-	for (var c of colors) {
-		let bg = c.hex;
-		let html = `${c.name}`; //: ${bg} hue:${c.hue} sat:${Math.round(c.sat * 100)} lum:${Math.round(c.lightness * 100)}`
-		let dmini = mDom(d1, { padding: 10, bg, fg: idealTextColor(bg) }, { html, class: 'colorbox', dataColor: bg });
-	}
-}
 function addAREA(id, o) {
 	if (AREAS[id]) {
 		error('AREAS ' + id + ' exists already!!! ');
@@ -150,18 +142,16 @@ function allNumbers(s) {
 	let m = s.match(/\-.\d+|\-\d+|\.\d+|\d+\.\d+|\d+\b|\d+(?=\w)/g);
 	if (m) return m.map(v => +v); else return null;
 }
-function allPlToPlayer(name) {
-	let allPl = DA.allPlayers[name];
-	return jsCopyExceptKeys(allPl, ['div', 'isSelected']);
-}
 function alphaToHex(a01) {
 	a01 = Math.round(a01 * 100) / 100;
 	var alpha = Math.round(a01 * 255);
 	var hex = (alpha + 0x10000).toString(16).slice(-2).toUpperCase();
 	return hex;
 }
-function amIHuman(table) { return isPlayerHuman(table, getUname()); }
-
+function animate(elem, aniclass, timeoutms) {
+	mClass(elem, aniclass);
+	TOMan.TO.anim = setTimeout(() => mRemoveClass(elem, aniclass), timeoutms);
+}
 function animatedTitle(msg = 'DU BIST DRAN!!!!!') {
 	TO.titleInterval = setInterval(() => {
 		let corner = CORNERS[WhichCorner++ % CORNERS.length];
@@ -331,7 +321,6 @@ function cNumber(ckey, styles = {}, opts = {}) {
 	addKeys({ border: 'silver', h: 100 }, styles);
 	addKeys({ backcolor: BLUE, ov: .3, key: ckey, type: 'num' }, opts);
 	let c = cPortrait(null, styles, opts);
-	if (isNumeric(ckey)) { ckey = `${ckey}_blue`; }
 	let sym = c.rank = stringBefore(ckey, '_');
 	let color = c.suit = c.val = stringAfter(ckey, '_');
 	let sz = c.h;
@@ -371,7 +360,7 @@ function cRound(dParent, styles = {}, opts = {}) {
 	return cBlank(dParent, styles, opts);
 }
 function calcBotLevel(table) {
-	let humanPlayers = dict2list(table.players).filter(x => x.playmode == 'human');
+	let humanPlayers = dict2list(table.fen.players).filter(x => x.playmode == 'human');
 	if (isEmpty(humanPlayers) || getGameOption('use_level') == 'no') return null;
 	let level = arrAverage(humanPlayers, 'level');
 	return level;
@@ -381,24 +370,10 @@ function calcBotSpeed(table) {
 	let botLevel = calcBotLevel(table);
 	return botLevel ? botLevel == 1 ? speed : speed * 4 / botLevel : speed;
 }
-function calcHeightLeftUnder(div) {
-	let hwin = window.innerHeight;
-	let r = getRect(div);
-	let top = r.b;
-	let h = hwin - top;
-	return h;
-}
-function calcRestHeight(dtop) {
-	let hwin = window.innerHeight;
-	let r = getRect(dtop);
-	let top = r.y;
-	let hmax = hwin - top - 20;
-	return hmax;
-}
 function calcScoreSum(table) {
 	let res = 0;
-	for (const name in table.players) {
-		res += table.players[name].score;
+	for (const name in table.fen.players) {
+		res += table.fen.players[name].score;
 	}
 	return res;
 }
@@ -435,6 +410,9 @@ function cardRect(ctx, x, y, color) {
 	let o5 = findNextLine(ctx, xline, xline + 20, ynew, ynew + 100, color)
 	console.log('line', o5)
 	return { x: o1.x, y: o4.y, w: o2.x - o1.x, h: o5.y - o4.y };
+}
+function checkInterrupt(items) {
+	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0];
 }
 function checkToInput(ev, inp, grid) {
 	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
@@ -479,12 +457,14 @@ function clearElement(elem) {
 function clearEvents() {
 	for (const k in TO) { clearTimeout(TO[k]); TO[k] = null; }
 	for (const k in ANIM) { if (isdef(ANIM[k])) ANIM[k].cancel(); ANIM[k] = null; }
-	if (SLEEP_WATCHER) { SLEEP_WATCHER.cancel(); console.log('clearEvents: ACHTUNG SLEEP_WATCHER!!!') }
 }
 function clearFleetingMessage() {
-	if (isdef(dFleetingMessage)) { dFleetingMessage.remove(); dFleetingMessage = null; }
+	if (isdef(dFleetingMessage)) {
+		dFleetingMessage.remove();
+		dFleetingMessage = null;
+	}
 }
-function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); }
+function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); if (!TESTING) mClear('dExtra') }
 
 function clearParent(ev) { mClear(ev.target.parentNode); }
 
@@ -502,7 +482,7 @@ function clearZones() {
 }
 async function clickFirstTable() {
 	let table = Serverdata.tables.find(x => x.status != 'open' && x.playerNames.includes(getUname()));
-	if (table) { await onclickTable(table.id); return T; }
+	if (table) { await onclickTable(table.id); return Clientdata.table; }
 }
 function clickOnElemWithAttr(prop, val) {
 	let d = document.querySelectorAll(`[${prop}="${val}"]`)[0];
@@ -526,6 +506,11 @@ async function clickOnPlayer(name) { return await showGameMenuPlayerDialog(name)
 function cloneIfNecessary(value, optionsArgument) {
 	var clone = optionsArgument && optionsArgument.clone === true
 	return (clone && isMergeableObject(value)) ? deepmerge(emptyTarget(value), value, optionsArgument) : value
+}
+function closeApps() {
+	if (isdef(DA.calendar)) { closePopup(); delete DA.calendar; }
+	mClear('dMain');
+	mClear(dTitle);
 }
 function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }) }
 
@@ -638,6 +623,8 @@ async function collAddItem(coll, key, item) {
 	M.names = Object.keys(M.byFriendly); M.names.sort();
 }
 function collCancelEditing(d) { d.remove(); }
+
+function collClear() { closeLeftSidebar(); clearMain(); }
 
 function collClearSelections() {
 	let arr = Array.from(document.getElementsByClassName('framedPicture'));//find all visible uis for selected images
@@ -865,9 +852,11 @@ async function collOnDroppedUrl(url, coll) {
 	mButton('OK', () => collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, coll), db2, { w: 70 }, 'input');
 }
 function collOpenPrimary(rows, cols) {
+	//console.log('collOpenPrimary')
 	collPresent(UI.collPrimary, rows, cols);
 	UI.collPrimary.isOpen = true;
 }
+
 function collOpenSecondary(rows, cols) {
 	let coll = UI.collSecondary;
 	let d = iDiv(coll);
@@ -981,8 +970,14 @@ function collectCats(klist) {
 	}
 	return cats;
 }
+async function collectFromPrevious(gamename) {
+	let id = 'dPlayerOptions';
+	let lastpl = DA.lastPlayerItem;
+	let dold = mBy(id);
+	if (isdef(dold)) { await collectPlayerOptions(lastpl, gamename); dold.remove(); }
+}
 function collectOptions() {
-	let poss = getGameConfig(DA.gamename).options;
+	let poss = Serverdata.config.games[DA.gamename].options;
 	let options = DA.options = {};
 	if (nundef(poss)) return options;
 	for (const p in poss) {
@@ -992,52 +987,42 @@ function collectOptions() {
 	}
 	return options;
 }
+async function collectPlayerOptions(pl, gamename) {
+	let name = pl.name;
+	let options = valf(pl[gamename], {});
+	let poss = Serverdata.config.games[gamename].ploptions;
+	if (nundef(poss)) return options;
+	for (const p in poss) {
+		options[p] = getRadioValue(p);
+	}
+	pl[gamename] = options;
+	let id = 'dPlayerOptions'; mRemoveIfExists(id);//mRemove(d);
+	let uold = Serverdata.users[pl.name];
+	let unew = {};
+	for (const k in pl) {
+		if (['div', 'isSelected', 'playmode'].includes(k)) continue;
+		unew[k] = jsCopy(pl[k]);
+	}
+	for (const k in unew[gamename]) {
+		if (lookup(uold, [gamename, k]) != unew[gamename][k]) {
+			let res = await postUserChange(unew);
+			copyKeys(res, DA.allPlayers[name]);
+			return;
+		}
+	}
+}
 function collectPlayers() {
 	let players = {};
-	for (const name of DA.playerList) { players[name] = allPlToPlayer(name); }
-	return players;
-}
-function colorCalculator(p, c0, c1, l) {
-	function pSBCr(d) {
-		let i = parseInt, m = Math.round, a = typeof c1 == 'string';
-		let n = d.length,
-			x = {};
-		if (n > 9) {
-			([r, g, b, a] = d = d.split(',')), (n = d.length);
-			if (n < 3 || n > 4) return null;
-			(x.r = parseInt(r[3] == 'a' ? r.slice(5) : r.slice(4))), (x.g = parseInt(g)), (x.b = parseInt(b)), (x.a = a ? parseFloat(a) : -1);
-		} else {
-			if (n == 8 || n == 6 || n < 4) return null;
-			if (n < 6) d = '#' + d[1] + d[1] + d[2] + d[2] + d[3] + d[3] + (n > 4 ? d[4] + d[4] : '');
-			d = parseInt(d.slice(1), 16);
-			if (n == 9 || n == 5) (x.r = (d >> 24) & 255), (x.g = (d >> 16) & 255), (x.b = (d >> 8) & 255), (x.a = m((d & 255) / 0.255) / 1000);
-			else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
+	if (isList(DA.playerList)) {
+		for (const name of DA.playerList) {
+			players[name] = DA.allPlayers[name];
 		}
-		return x;
 	}
-	let r, g, b, P, f, t, h, i = parseInt, m = Math.round, a = typeof c1 == 'string';
-	if (typeof p != 'number' || p < -1 || p > 1 || typeof c0 != 'string' || (c0[0] != 'r' && c0[0] != '#') || (c1 && !a)) return null;
-	h = c0.length > 9;
-	h = a ? (c1.length > 9 ? true : c1 == 'c' ? !h : false) : h;
-	f = pSBCr(c0);
-	P = p < 0;
-	t = c1 && c1 != 'c' ? pSBCr(c1) : P ? { r: 0, g: 0, b: 0, a: -1 } : { r: 255, g: 255, b: 255, a: -1 };
-	p = P ? p * -1 : p;
-	P = 1 - p;
-	if (!f || !t) return null;
-	if (l) { r = m(P * f.r + p * t.r); g = m(P * f.g + p * t.g); b = m(P * f.b + p * t.b); }
-	else { r = m((P * f.r ** 2 + p * t.r ** 2) ** 0.5); g = m((P * f.g ** 2 + p * t.g ** 2) ** 0.5); b = m((P * f.b ** 2 + p * t.b ** 2) ** 0.5); }
-	a = f.a;
-	t = t.a;
-	f = a >= 0 || t >= 0;
-	a = f ? (a < 0 ? t : t < 0 ? a : a * P + t * p) : 0;
-	if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
-	else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
-}
-function colorDark(c, percent = 50, log = true) {
-	if (nundef(c)) c = rColor(); else c = colorFrom(c);
-	let zero1 = -percent / 100;
-	return colorCalculator(zero1, c, undefined, !log);
+	if (TESTING == 'felixAmanda') {
+		if (nundef(players.felix)) players.felix = createGamePlayer('felix', DA.gamename)
+		if (nundef(players.amanda)) players.amanda = createGamePlayer('amanda', DA.gamename)
+	}
+	return players;
 }
 function colorFrom(c, a) {
 	c = colorToHex79(c);
@@ -1150,13 +1135,6 @@ function colorHsl360StringToHsl360Object(c) {
 }
 function colorIsHex79(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
 
-function colorLight(c, percent = 20, log = true) {
-	if (nundef(c)) {
-		return colorFromHSL(rHue(), 100, 85);
-	} else c = colorFrom(c);
-	let zero1 = percent / 100;
-	return colorCalculator(zero1, c, undefined, !log);
-}
 function colorRgbArgsToHex79(r, g, b, a) {
 	r = Math.round(r).toString(16).padStart(2, '0');
 	g = Math.round(g).toString(16).padStart(2, '0');
@@ -1537,8 +1515,20 @@ function createConfirmationModal(dParent, question) {
 	dParent.appendChild(modal);
 }
 function createGamePlayer(name, gamename, opts = {}) {
-	let pl = userToPlayer(name, gamename);
-	copyKeys(opts, pl);
+	let pl = jsCopy(Serverdata.users[name]);
+	let plopts = valf(pl[gamename], {}); delete pl[gamename];
+	copyKeys(opts, plopts);
+	let defopts = Serverdata.config.games[gamename].ploptions;
+	for (const k in defopts) {
+		let val = plopts[k];
+		if (nundef(val)) {
+			let vals = defopts[k].split(',').map(x => x.trim());
+			val = arrLast(vals);
+			if (isNumeric(val)) val = Number(val);
+			plopts[k] = val;
+		}
+	}
+	copyKeys(plopts, pl);
 	return pl;
 }
 function createInteractiveCanvas(src) {
@@ -1598,20 +1588,36 @@ function createInteractiveCanvas(src) {
 function createOpenTable(gamename, players, options) {
 	let me = getUname();
 	let playerNames = [me];
-	assertion(me in players, "_createOpenTable without owner!!!!!")
+	assertion(me in players, "createOpenTable without owner!!!!!")
 	for (const name in players) { addIf(playerNames, name); }
-	let table = {
+	let pdict = {};
+	for (const name of playerNames) {
+		let o = {};
+		let pl = players[name];
+		for (const k in pl) {
+			if (k == gamename) { addKeys(pl[gamename], o); }
+			else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
+		}
+		if (TESTING && gamename == 'setgame') {
+			let keys = ['playmode', 'score', 'level', 'name', 'color', 'key'];
+			let osorted = {};
+			for (const k of keys) { osorted[k] = o[k]; }
+			pdict[name] = osorted;
+		} else pdict[name] = o;
+	}
+	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
+	let t = {
 		status: 'open',
 		id: generateTableId(),
 		fen: null,
 		game: gamename,
 		owner: playerNames[0],
 		friendly: generateTableName(),
-		players,
+		players: pdict,
 		playerNames: playerNames,
 		options
 	};
-	return table;
+	return t;
 }
 function createScaledCanvasFromImage(src) {
 	return new Promise((resolve, reject) => {
@@ -3078,21 +3084,15 @@ function getFunctionsNameThatCalledThisFunction() {
 	if (nundef(c2)) return 'no caller!';
 	return c2.name;
 }
-function getGameColor(gamename) { return getGameConfig(gamename).color; }
+function getGameColor(gamename) { return Serverdata.config.games[gamename].color; }
 
-function getGameConfig(gamename) { return Serverdata.config.games[gamename]; }
+function getGameFriendly(game) { return Serverdata.config.games[game].friendly; }
 
-function getGameFriendly(gamename) { return getGameConfig(gamename).friendly; }
+function getGameOption(prop) { return lookup(Clientdata, ['table', 'options', prop]); }
 
-function getGameOption(prop) { return lookup(T, ['options', prop]); }
+function getGamePlayerOptions(gamename) { return Serverdata.config.games[gamename].ploptions; }
 
-function getGameOptions(gamename) { return getGameConfig(gamename).options; }
-
-function getGamePlayerOptions(gamename) { return getGameConfig(gamename).ploptions; }
-
-function getGamePlayerOptionsAsDict(gamename) { return valf(getGamePlayerOptions(gamename), {}); }
-
-function getGameProp(prop) { return getGameConfig(T.game)[prop]; }
+function getGameProp(prop) { return Serverdata.config.games[Clientdata.table.game][prop]; }
 
 function getGameValues() {
 	let user = U.id;
@@ -3138,8 +3138,6 @@ function getLine(ctx, list, val) {
 	for (const s of segments) { if (s.length > len) { len = s.length; best = s } }
 	return best;
 }
-function getMenu() { return isdef(Menu) ? Menu.key : null; }
-
 function getMouseCoordinates(event) {
 	const image = event.target;
 	const offsetX = event.clientX +
@@ -3186,10 +3184,10 @@ function getPixRgb(ctx, x, y) {
 	var red = pix[0]; var green = pix[1]; var blue = pix[2];
 	return { r: red, g: green, b: blue };
 }
-function getPlayerProp(prop) { let pl = T.players[getUname()]; return pl[prop]; }
+function getPlayerProp(prop) { let pl = Clientdata.table.fen.players[getUname()]; return pl[prop]; }
 
-function getPlayersWithMaxScore(table) {
-	let list = dict2list(table.players, 'name');
+function getPlayersWithMaxScore(fen) {
+	let list = dict2list(fen.players, 'name');
 	list = sortByDescending(list, 'score');
 	maxlist = arrTakeWhile(list, x => x.score == list[0].score);
 	return maxlist.map(x => x.name);
@@ -3197,9 +3195,9 @@ function getPlayersWithMaxScore(table) {
 function getPlaymode(idOrTable, name) {
 	if (isDict(idOrTable)) {
 		let table = idOrTable;
-		return table.players[name].playmode;
-	} else if (T) {
-		return T.id == idOrTable ? T.players[name].playmode : 'wrong table';
+		return isdef(table.fen) ? table.fen.players[name].playmode : 'no fen';
+	} else if (Clientdata.table) {
+		return Clientdata.table.id == idOrTable ? Clientdata.table.fen.players[name].playmode : 'wrong table';
 	} else return 'NO table!';
 }
 function getRadioValue(prop) {
@@ -3264,18 +3262,14 @@ function getServerurl() {
 }
 function getStyleProp(elem, prop) { return getComputedStyle(elem).getPropertyValue(prop); }
 
-function getTable() { assertion(!Tid, `getTable!!! ${T.id} !!! ${Tid}`); return T; }
-
 function getThemeDark() { return getCSSVariable('--bgNav'); }
 
 function getThemeFg() { return getCSSVariable('--fgButton'); }
 
-function getTid() { return Tid; }
-
 function getTimestamp() { return Date.now(); }
 
-function getTurnPlayers(table) {
-	return table.turn.join(', ');
+function getTurnPlayers(fen) {
+	return fen.turn.join(', ');
 }
 function getTypeOf(param) {
 	let type = typeof param;
@@ -3295,7 +3289,7 @@ function getUID(pref = '') {
 	UIDCounter += 1;
 	return pref + '_' + UIDCounter;
 }
-function getUname() { return U.name; }
+function getUname() { assertion(Clientdata.curUser == U.name, `getUname!!!!!!!${Clientdata.curUser} != ${U.name}`); return Clientdata.curUser; }
 
 async function getUser(name, cachedOk = false) {
 	let res = lookup(Serverdata, ['users', name]);
@@ -3309,11 +3303,7 @@ async function getUser(name, cachedOk = false) {
 }
 function getUserColor(uname) { return Serverdata.users[uname].color; }
 
-function getUserOptionsForGame(name, gamename) { return lookup(Serverdata.users, [name, 'games', gamename]); }
-
 function getWaitingHtml(sz = 30) { return `<img src="../assets/icons/active_player.gif" height="${sz}" style="margin:0px ${sz / 3}px" />`; }
-
-function get_waiting_html(sz = 30) { return `<img src="../assets/icons/active_player.gif" height="${sz}" style="margin:0px ${sz / 3}px" />`; }
 
 function hFunc(content, funcname, arg1, arg2, arg3) {
 	let html = `<a style='color:blue' href="javascript:${funcname}('${arg1}','${arg2}','${arg3}');">${content}</a>`;
@@ -3355,8 +3345,6 @@ function hide(elem) {
 		elem.style.display = 'none';
 	}
 }
-function highlightPlayerItem(item) { mStyle(iDiv(item), { bg: getUserColor(item.name), fg: 'white', border: `white` }); }
-
 function hourglassUpdate() {
 }
 function iAdd(item, liveprops = {}, addprops = {}) {
@@ -3571,7 +3559,7 @@ function isMergeableObject(val) {
 		&& Object.prototype.toString.call(val) !== '[object RegExp]'
 		&& Object.prototype.toString.call(val) !== '[object Date]'
 }
-function isMyTurn(table) { return table.turn.includes(getUname()) }
+function isMyTurn(fen) { return fen.turn.includes(getUname()) }
 
 function isNumber(x) { return x !== ' ' && x !== true && x !== false && isdef(x) && (x == 0 || !isNaN(+x)); }
 
@@ -3595,8 +3583,6 @@ function isPixLight(ctx, x, y) {
 	var red = pix[0]; var green = pix[1]; var blue = pix[2];
 	return red + green + blue > 520;
 }
-function isPlayerHuman(table, name) { return table.players[name].playmode != 'bot'; }
-
 function isPointOutsideOf(form, x, y) { const r = form.getBoundingClientRect(); return (x < r.left || x > r.right || y < r.top || y > r.bottom); }
 
 function isSameDate(date1, date2) {
@@ -3604,8 +3590,6 @@ function isSameDate(date1, date2) {
 		date1.getMonth() === date2.getMonth() &&
 		date1.getDate() === date2.getDate();
 }
-function isSameTableOpen(id) { return T && T.id == id; }
-
 function isSet(x) { return (isDict(x) && (x.set || x._set)); }
 
 function isString(param) { return typeof param == 'string'; }
@@ -3650,12 +3634,6 @@ function ithWord(s, n, allow_) {
 }
 function jsCopy(o) { return JSON.parse(JSON.stringify(o)); }
 
-function jsCopyExceptKeys(o, keys = []) {
-	if (!isDict(o)) return jsCopy(o);
-	let onew = {};
-	for (const k in o) { if (keys.includes(k)) continue; onew[k] = o[k]; }
-	return JSON.parse(JSON.stringify(onew));
-}
 function keyDownHandler(ev) {
 	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
 	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
@@ -3743,7 +3721,6 @@ async function loadImageAsync(src, img) {
 function logItems() { Object.keys(Items).sort().forEach(k => console.log('Items', Items[k])); }
 
 function lookup(dict, keys) {
-	if (nundef(dict)) return null;
 	let d = dict;
 	let ilast = keys.length - 1;
 	let i = 0;
@@ -3791,6 +3768,7 @@ function lookupSet(dict, keys, val) {
 	let i = 0;
 	for (const k of keys) {
 		if (nundef(k)) continue;
+		if (d[k] === undefined) d[k] = (i == ilast ? val : {});
 		if (nundef(d[k])) d[k] = (i == ilast ? val : {});
 		d = d[k];
 		if (i == ilast) return d;
@@ -4318,8 +4296,6 @@ function mFlex(d, or = 'h') {
 	d.style.display = 'flex';
 	d.style.flexFlow = (or == 'v' ? 'column' : 'row') + ' ' + (or == 'w' ? 'wrap' : 'nowrap');
 }
-function mFlexLine(d, startEndCenter = 'center') { mStyle(d, { display: 'flex', 'justify-content': startEndCenter, 'align-items': 'center' }); }
-
 function mFlexV(d) { mStyle(d, { display: 'flex', 'align-items': 'center' }); }
 
 function mFlexVWrap(d) { mStyle(d, { display: 'flex', 'align-items': 'center', 'flex-flow': 'row wrap' }); }
@@ -4662,10 +4638,10 @@ function mRows100(dParent, spec, gap = 4) {
 	}
 	return res;
 }
-function mShield(dParent, styles = {}, id = null, classnames = null, hideonclick = false) {
-	addKeys({ bg: '#00000020' }, styles);
+function mShield(dParent, styles = { bg: '#00000020' }, id = null, classnames = null, hideonclick = false) {
 	dParent = toElem(dParent);
 	let d = mDiv(dParent, styles, id, classnames);
+	lookupAddIfToList(DA, ['shields'], d);
 	mIfNotRelative(dParent);
 	mStyle(d, { position: 'absolute', left: 0, top: 0, w: '100%', h: '100%' });
 	if (hideonclick) d.onclick = ev => { evNoBubble(ev); d.remove(); };
@@ -4690,13 +4666,6 @@ async function mSleep(ms = 1000) {
 			if (ms > 10000) { ms = 10000; }
 			if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
 			TO.SLEEPTIMEOUT = setTimeout(res, ms);
-			setTimeout(() => {
-				try {
-					rej(`PROMISE REJECT ${isdef(TO.SLEEPTIMEOUT)}`);
-				} catch (err) {
-					console.log(`WTF!!!!!!!!!!!!!!!!!!`, err);
-				}
-			}, ms + 1);
 		});
 }
 function mStyle(elem, styles = {}, unit = 'px') {
@@ -4863,19 +4832,6 @@ function mStyleX(elem, styles, unit = 'px') {
 			elem.style.setProperty(key, makeUnitString(val, unit));
 		}
 	}
-}
-function mSwitch(dParent, styles = {}, opts = {}) {
-	addKeys({ id: 'dSwitch', val: '' }, opts);
-	let inpid = `inp${opts.id}`
-	let html = `
-      <label class="switch">
-        <input id='${inpid}' type="checkbox" ${opts.val}>
-        <span class="slider round"></span>
-      </label>
-    `;
-	opts.html = html
-	let d = mDom(dParent, styles, opts);
-	return { div: d, inp: mBy(inpid) };
 }
 function mSym(key, dParent, styles = {}, pos, classes) {
 	let info = Syms[key];
@@ -5049,10 +5005,6 @@ function measureHeightOfTextStyle(dParent, styles = {}) {
 }
 function measureWidth(elem) { return mGetStyle(elem, 'w') }
 
-function menuCloseCalendar() { closePopup(); delete DA.calendar; clearMain(); }
-
-function menuCloseColl() { closeLeftSidebar(); clearMain(); }
-
 function menuCloseCurrent(menu) {
 	let curKey = lookup(menu, ['cur']);
 	if (curKey) {
@@ -5061,14 +5013,6 @@ function menuCloseCurrent(menu) {
 		cur.close();
 	}
 }
-function menuCloseGames() { clearMain(); }
-
-function menuCloseHome() { clearMain(); }
-
-async function menuCloseSettings() { delete DA.settings; closeLeftSidebar(); clearMain(); }
-
-function menuCloseTable() { if (T) Tid = T.id; T = null; delete DA.pendingChanges; clearMain(); }
-
 function menuCommand(dParent, menuKey, key, html, open, close) {
 	let cmd = mCommand(dParent, key, html, open, close);
 	let a = iDiv(cmd);
@@ -5085,7 +5029,7 @@ async function menuOpen(menu, key) {
 	let cmd = menu.commands[key];
 	menu.cur = key;
 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
-	await updateExtra();
+  if (TESTING) testUpdateTestButtons('dExtra');
 	await cmd.open();
 }
 function mergeArrays(target, source) {
@@ -5207,15 +5151,6 @@ async function onEventEdited(id, text, time) {
 	mBy(id).firstChild.value = getEventValue(e);
 	closePopup();
 }
-async function onchangeBotSwitch(ev) {
-	let elem = ev.target;
-	assertion(T, "NO TABLE!!!!!!!!!!!!!!!")
-	let name = getUname();
-	let id = T.id;
-	let playmode = (elem.checked) ? 'bot' : 'human';
-	let olist = [{ keys: ['players', name, 'playmode'], val: playmode }];
-	let res = await mPostRoute(`olist`, { id, name, olist }); console.log(res)
-}
 async function onclickAddCategory() {
 	let selist = UI.selectedImages;
 	let keys = selist.map(x => stringBefore(x, '@'));
@@ -5295,22 +5230,14 @@ async function onclickAsSecondary(ev) {
 	collOpenSecondary(4, 3);
 	collOpenPrimary(4, 3);
 }
-async function onclickBlendMode(item) {
-	U.bgImage = item.bgImage;
-	U.bgBlend = item.bgBlend;
-	U.bgSize = item.bgSize;
-	U.bgRepeat = item.bgRepeat;
-	await postUserChange();
-	setTheme(U);
-}
 async function onclickBot() {
 	let name = getUname();
-	let table = T;
-	let plmode = table.players[name].playmode;
+	let table = Clientdata.table;
+	let plmode = table.fen.players[name].playmode;
 	if (plmode == 'bot') return;
 	let id = table.id;
 	let olist = [];
-	olist.push({ keys: ['players', name, 'playmode'], val: 'bot' });
+	olist.push({ keys: ['fen', 'players', name, 'playmode'], val: 'bot' });
 	let res = await sendMergeTable({ id, name, olist });
 }
 async function onclickCatListDone(ui) { ui.setAttribute('proceed', getCheckedNames(ui).join('@')); }
@@ -5418,12 +5345,6 @@ async function onclickCollections() {
 	UI.collPrimary = { div: dPrimary, name: collName };
 	UI.collSecondary = { div: dSecondary, name: null };
 	collOpenPrimary(5, 7);
-}
-async function onclickColor(color) {
-	let hex = colorToHex79(color);
-	U.color = hex; delete U.fg;
-	await postUserChange(U, true);
-	setTheme(U);
 }
 async function onclickCommand(ev) {
 	let key = evToAttr(ev, 'key');
@@ -5544,12 +5465,12 @@ async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 
 async function onclickHuman() {
 	let name = getUname();
-	let table = T;
-	let plmode = table.players[name].playmode;
+	let table = Clientdata.table;
+	let plmode = table.fen.players[name].playmode;
 	if (plmode == 'human') return;
 	let id = table.id;
 	let olist = [];
-	olist.push({ keys: ['players', name, 'playmode'], val: 'human' });
+	olist.push({ keys: ['fen', 'players', name, 'playmode'], val: 'human' });
 	let res = await sendMergeTable({ id, name, olist });
 }
 async function onclickJoinTable(id) {
@@ -5652,10 +5573,8 @@ async function onclickNewCollection(name) {
 async function onclickOpenToJoinGame() {
 	let options = collectOptions();
 	let players = collectPlayers();
-	console.log('players', jsCopy(players));
 	mRemove('dGameMenu');
 	let t = createOpenTable(DA.gamename, players, options);
-	console.log('table open', t)
 	let res = await mPostRoute('postTable', t);
 }
 async function onclickPlan() { await showCalendarApp(); }
@@ -5718,7 +5637,7 @@ async function onclickRemoveSelected() {
 	collPostReload();
 }
 async function onclickRenameCollection(oldname, newname) {
-	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : collLocked(UI.collPrimary.name) ? null : UI.collPrimary.name;
+	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : collLocked(UI.collPrimary.name)?null:UI.collPrimary.name;
 	if (nundef(newname)) {
 		let di = await mGather(iDiv(UI.renameCollection), {}, { content: { oldname: valf(oldname, ''), newname: '' }, type: 'multi' });
 		if (!di) return;
@@ -5733,7 +5652,7 @@ async function onclickRenameCollection(oldname, newname) {
 		showMessage(`ERROR! ${newname} needs to be alphanumeric starting with a letter!`);
 		return;
 	}
-	if (collLocked(oldname)) { showMessage(`ERROR: Collection ${oldname} is Read-Only!`); return; }
+	if (collLocked(oldname)) {		showMessage(`ERROR: Collection ${oldname} is Read-Only!`);		return;	}
 	if (!collExists(oldname)) {
 		showMessage(`ERROR: Collection ${oldname} not found!`);
 		return;
@@ -5744,84 +5663,22 @@ async function onclickRenameCollection(oldname, newname) {
 	}
 	await collRename(oldname, newname);
 }
-async function onclickSettBlendMode() {
-	if (isEmpty(U.bgImage)) {
-		showMessage('You need to set a Texture in order to set a Blend Mode!');
-		return;
-	}
-	showBlendModes();
-}
-async function onclickSettColor() { await showColors(); }
-
-async function onclickSettFg() { await showTextColors(); }
-
-async function onclickSettRemoveTexture() {
-	if (isEmpty(U.bgImage)) return;
-	for (const prop of ['bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
-	await postUserChange(U, true)
-	setTheme();
-}
-async function onclickSettResetAll() {
-	assertion(isdef(DA.settings), "NO DA.settings!!!!!!!!!!!!!!!")
-	if (JSON.stringify(U) == JSON.stringify(DA.settings)) return;
-	U = jsCopy(DA.settings);
-	await postUserChange(U, true);
-	setTheme();
-	await onclickSettColor();
-}
-async function onclickSettSwapColoring() {
-	if (isdef(U.swapColoring)) delete U.swapColoring;
-	else U.swapColoring = true;
-	await postUserChange(U, true);
-	setTheme();
-}
-async function onclickSettTexture() { await showTextures(); }
-
 async function onclickStartGame() {
-	await saveDataFromPlayerOptionsUI(DA.gamename);
+	await collectFromPrevious(DA.gamename);
 	let options = collectOptions();
 	let players = collectPlayers();
 	await startGame(DA.gamename, players, options);
 }
 async function onclickStartTable(id) {
-	let table = Serverdata.tables.find(x => x.id == id);
-	console.log('table', jsCopy(table));
-	assertion(isdef(table), `table with id ${id} not in Serverdata!`);
+	let table = Serverdata.tables.find(x => x.id == id); assertion(isdef(table), `table with id ${id} not in Serverdata!`);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
 }
 async function onclickTable(id) {
-	Tid = id;
-	await switchToMainMenu('table');
-}
-async function onclickTableMenu() {
-	let id = getTid();
-	if (nundef(id)) {
-		let me = getUname();
-		let table = Serverdata.tables.find(x => x.status == 'started' && x.turn.includes(me));
-		if (nundef(table)) table = Serverdata.tables.find(x => x.status == 'started' && x.playerNames.includes(me));
-		if (nundef(table)) table = Serverdata.tables.find(x => x.status != 'open' && x.playerNames.includes(me));
-		if (nundef(table)) table = Serverdata.tables.find(x => x.status != 'open');
-		if (isdef(table)) id = table.id;
-	}
-	if (isdef(id)) { Tid = null; await showTable(id); } else await switchToMainMenu('play');
+	await showTable(id)
 }
 async function onclickTest() { console.log('nations!!!!'); }
 
-async function onclickTextColor(fg) {
-	let hex = colorToHex79(fg);
-	U.fg = hex;
-	await postUserChange();
-	setTheme(U);
-}
-async function onclickTexture(item) {
-	U.bgImage = item.bgImage;
-	U.bgBlend = item.bgBlend;
-	U.bgSize = item.bgSize;
-	U.bgRepeat = item.bgRepeat;
-	await postUserChange();
-	setTheme(U);
-}
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user), { w: 100, margin: 0 }, { content: 'username', align: 'br', placeholder: ' <username> ' });
 	if (!uname) return;
@@ -5884,35 +5741,30 @@ function onleaveHex(item, board) {
 }
 async function onsockEvent(x) {
 	console.log('SOCK::event', x)
-	if (isdef(Serverdata.events)) Serverdata.events[x.id] = x;
+	Serverdata.events[x.id] = x;
 }
 async function onsockMerged(x) {
-	if (!isSameTableOpen(x.id)) return;
+	let isSameTableOpen = lookup(Clientdata, ['table', 'id']) == x.id;
+	if (!isSameTableOpen) return;
 	await showTable(x);
-}
-async function onsockPending(id) {
-	if (!isSameTableOpen(id)) return;
-	await showTable(id);
 }
 async function onsockSuperdi(x) {
 	console.log('SOCK::superdi', x)
 }
 async function onsockTable(x) {
 	let [msg, id, turn, isNew] = [x.msg, x.id, x.turn, x.isNew];
-	let menu = getMenu();
+	if (Clientdata.curMenu != 'play') return; //wenn ich nicht in menu play bin mach garnichts
 	let me = getUname();
-	if (turn.includes(me) && menu == 'play') { Tid = id; await switchToMainMenu('table'); }
-	else if (menu == 'table') await showTable(id);
-	else if (menu == 'play') await showTables();
+	let isSameTableOpen = lookup(Clientdata, ['table', 'id']) == id;
+	if (isSameTableOpen || isNew && turn.includes(me) && !Clientdata.table) return await showTable(id);
+	if (!Clientdata.table) return await showTables('onsockTable');
 }
 async function onsockTables(x) {
-	let menu = getMenu();
-	if (menu == 'play') await showTables('onsockTables');
-	else if (menu == 'table') {
-		assertion(isdef(T), "menu table but no table!!!")
-		let id = T.id;
+	if (Clientdata.curMenu == 'play' && !Clientdata.table) await showTables('onsockTables');
+	else if (Clientdata.curMenu == 'play') {
+		let id = Clientdata.table.id;
 		let exists = x.find(t => t.id == id);
-		if (nundef(exists)) { Tid = T = null; await switchToMenu(UI.nav, 'play'); }
+		if (nundef(exists)) await switchToMenu(UI.nav, 'play');
 	}
 }
 function openGameMenuFor(gamename) { clickOnElemWithAttr('gamename', gamename); }
@@ -6005,9 +5857,9 @@ async function postImage(img, path) {
 	let resp = await mPostRoute('postImage', o);
 	console.log('resp', resp); //sollte path enthalten!
 }
-async function postUserChange(data, override = false) {
-	data = valf(data, U);
-	return Serverdata.users[data.name] = override ? await mPostRoute('overrideUser', data) : await mPostRoute('postUser', data);
+async function postUserChange(data,override=false) {
+	data = valf(data, U)
+	return Serverdata.users[data.name] = override?await mPostRoute('overrideUser',data):await mPostRoute('postUser', data);
 }
 function present() {
 	if (Settings.perspective == 'me') presentFor(me);
@@ -6231,16 +6083,6 @@ function resetRound() {
 	clearFleetingMessage();
 	clearEvents();
 }
-async function resetUsers() {
-	for (const name in Serverdata.users) {
-		let uold = Serverdata.users[name];
-		let unew = {};
-		let list = ['name', 'key', 'color', 'bgImage', 'bgBlend', 'bgRepeat', 'bgSize'];
-		for (const s of list) unew[s] = uold[s];
-		await postUserChange(unew, true);
-	}
-	console.log(Serverdata.users);
-}
 function resize() {
 	stage.width = Canvas.clientWidth
 	stage.height = Canvas.clientHeight
@@ -6301,31 +6143,6 @@ function sameList(l1, l2) {
 	}
 	return true;
 }
-async function saveAndUpdatePlayerOptions(allPl, gamename) {
-	let name = allPl.name;
-	let poss = getGamePlayerOptionsAsDict(gamename);
-	if (nundef(poss)) return;
-	let opts = {};
-	for (const p in poss) { allPl[p] = getRadioValue(p); if (p != 'playmode') opts[p] = allPl[p]; }
-	let id = 'dPlayerOptions'; mRemoveIfExists(id); //dont need UI anymore
-	let oldOpts = valf(getUserOptionsForGame(name, gamename), {});
-	let changed = false;
-	for (const p in poss) {
-		if (p == 'playmode') continue;
-		if (oldOpts[p] != opts[p]) { changed = true; break; }
-	}
-	if (changed) {
-		let games = valf(Serverdata.users[name].games, {});
-		games[gamename] = opts;
-		await postUserChange({ name, games })
-	}
-}
-async function saveDataFromPlayerOptionsUI(gamename) {
-	let id = 'dPlayerOptions';
-	let lastAllPl = DA.lastAllPlayerItem;
-	let dold = mBy(id);
-	if (isdef(dold)) { await saveAndUpdatePlayerOptions(lastAllPl, gamename); dold.remove(); }
-}
 function saveFileAtClient(name, type, data) {
 	if (data != null && navigator.msSaveBlob) return navigator.msSaveBlob(new Blob([data], { type: type }), name);
 	let a = document.createElement('a');
@@ -6353,16 +6170,17 @@ function scaleAnimation(element) {
 	return ani;
 }
 function selPrep(fen, autosubmit = false) {
-	A = { level: 0, di: {}, ll: [], items: [], selected: [], tree: null, breadcrumbs: [], sib: [], command: null, autosubmit: autosubmit };
+	Clientdata.A = { level: 0, di: {}, ll: [], items: [], selected: [], tree: null, breadcrumbs: [], sib: [], command: null, autosubmit: autosubmit };
+	Clientdata.fen = fen;
 }
 function selectAddItems(items, callback = null, instruction = null) {
-	let fen = T.fen;
+	let [A, fen] = [Clientdata.A, Clientdata.fen];
 	A.level++; A.items = items; A.callback = callback; A.selected = []; A.di = {};
 	let dInstruction = mBy('dSelections0');
 	mClass(dInstruction, 'instruction');
 	mCenterCenterFlex(dInstruction);
 	mStyle(dInstruction, { 'align-content': 'center', 'justify-content': 'center' })
-	dInstruction.innerHTML = (isMyTurn(table) ? `${getWaitingHtml()}<span style="color:red;font-weight:bold;max-height:25px">You</span>` + "&nbsp;" + instruction : `waiting for: ${getTurnPlayers(table)}`);
+	dInstruction.innerHTML = (isMyTurn(fen) ? `${getWaitingHtml()}<span style="color:red;font-weight:bold;max-height:25px">You</span>` + "&nbsp;" + instruction : `waiting for: ${getTurnPlayers(fen)}`);
 	let buttonstyle = { maleft: 25, vmargin: 2, rounding: 6, padding: '4px 12px 5px 12px', border: '0px solid transparent', outline: 'none' }
 	for (const item of A.items) {
 		let type = item.itemtype = isdef(item.itemtype) ? item.itemtype : is_card(item) ? 'card' : isdef(M.superdi[item.key]) ? 'sym' : isdef(item.o) ? 'container' : isdef(item.src) ? 'img' : 'string';
@@ -6388,6 +6206,8 @@ function selectCivSpot(d) {
 }
 function selectExtraWorker(item) {
 }
+function selectPlayerItem(item) { mStyle(iDiv(item), { bg: getUserColor(item.name), fg: 'white', border: `white` }); }
+
 function selectText(el) {
 	if (el instanceof HTMLTextAreaElement) { el.select(); return; }
 	var sel, range;
@@ -6423,8 +6243,8 @@ async function sendMergeTable(o, cond = 'merge') {
 		o = { name, id, table };
 	}
 	let table = await mPostRoute(`${cond}Table`, o);
-	if (!isDict(table)) { console.log('from server', table); } //INVALID!!!
-	else await showTable(table);
+	if (!isDict(table)) { console.log('from server', table); return; }
+	await showTable(table);
 }
 async function sendRaceError(table, name, errors = 1) {
 	let data = {
@@ -6432,8 +6252,8 @@ async function sendRaceError(table, name, errors = 1) {
 		name,
 		errors,
 		olist: [
-			{ keys: ['players', name, 'score'], val: table.players[name].score - errors },
-			{ keys: ['players', name, 'errors'], val: valf(table.players[name].errors, 0) + errors }
+			{ keys: ['fen', 'players', name, 'score'], val: table.fen.players[name].score - errors },
+			{ keys: ['fen', 'players', name, 'errors'], val: valf(table.fen.players[name].errors, 0) + errors }
 		]
 	}
 	let res = await sendMergeTable(data, 'race');
@@ -6441,43 +6261,109 @@ async function sendRaceError(table, name, errors = 1) {
 async function sendRaceStepScore(table, name, score = 1, olist = []) {
 	let step = table.step + 1;
 	olist.push({ keys: ['step'], val: step });
-	olist.push({ keys: ['players', name, 'score'], val: table.players[name].score + score });
+	olist.push({ keys: ['fen', 'players', name, 'score'], val: table.fen.players[name].score + score });
 	let data = { id: table.id, name, step, olist };
 	let res = await sendMergeTable(data, 'race');
 }
-function setColors(bg, fg) {
-	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
-	let bgIsDark = colorIdealText(bg) == 'white';
-	if (nundef(fg)) fg = colorIdealText(bg);
-	let bgNav = bg;
-	fg = colorToHex79(fg);
-	if (fgIsLight) {
-		if (isEmpty(U.bgImage)) { bgNav = '#00000040'; }
-		else if (bgIsDark) { bgNav = colorTrans(bg, .8); }
-		else { bgNav = colorTrans(colorDark(bg, 50), .8); }
-	} else {
-		if (isEmpty(U.bgImage)) { bgNav = '#ffffff40'; }
-		else if (!bgIsDark) { bgNav = colorTrans(bg, .8); }
-		else { bgNav = colorTrans(colorLight(bg, 50), .8); }
+async function setActivate(items) {
+	try {
+		T.sets = setFindAllSets(items);
+		[T.bNoSet, T.bHint] = setShowButtons(items);
+		setActivateCards(items);
+		let use_level = getGameOption('use_level'); if (use_level == 'no') { T.bHint.remove(); return; }
+		let level = getPlayerProp('level');
+		let noset = isEmpty(T.sets);
+		T.numHints = level <= 3 ? noset ? 1 : 2 : level <= 5 ? 1 : 0;
+		if (level > 5) { T.bHint.remove(); }
+		else if (level == 1) { T.autoHints = noset ? 1 : 2; T.hintTimes = [noset ? 10000 : 2000, 5000]; }
+		else if (level == 2) { T.autoHints = noset ? 1 : 2; T.hintTimes = [noset ? 10000 : 3000, 8000]; }
+		else if (level == 3) { T.autoHints = 1; T.hintTimes = [noset ? 10000 : 4000]; }
+		else if (level == 4) { T.autoHints = 1; T.hintTimes = [noset ? 10000 : 8000]; }
+		let i = 0;
+		while (i < T.autoHints) {
+			await mSleep(T.hintTimes[i]);
+			if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
+			if (DA.stopAutobot == true) { console.log(`autoHint ${i}`); return; }
+			await setOnclickHint(items);
+			i++;
+		}
+	} catch { console.log('human: please reload!') }
+}
+function setActivateCards(items) {
+	for (const item of items) {
+		let d = iDiv(item);
+		d.onclick = () => setOnclickCard(item, items, true);
+		mStyle(d, { cursor: 'pointer' })
 	}
-	let t = U.bgImage;
-	let realBg = bg;
-	if (bgNav == realBg) bgNav = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
-	let bgContrast = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
-	let fgContrast = fgIsLight ? '#ffffff80' : '#00000080'; // 'red'; //bestContrastingColor(bgNav); // colorContrast(bgNav); // fgIsLight ? colorDark(fg, .5) : colorLight(fg, .5);
-	setCssVar('--bgBody', realBg);
-	setCssVar('--bgButton', 'transparent')
-	setCssVar('--bgButtonActive', bgContrast)
-	setCssVar('--bgNav', bgNav)
-	setCssVar('--fgButton', fg)
-	setCssVar('--fgButtonActive', fg)
-	setCssVar('--fgButtonDisabled', 'silver')
-	setCssVar('--fgButtonHover', fgContrast)
-	setCssVar('--fgTitle', fg)
-	setCssVar('--fgSubtitle', fgContrast);
+}
+async function setBotMove(table) {
+	try {
+		let items = T.items;
+		[T.bNoSet, T.bHint] = setShowButtons(items); T.bHint.remove();
+		mShield(dOpenTable, { bg: '#00000010' });
+		let speed = calcBotSpeed(table); console.log('speed', speed);
+		T.sets = setFindAllSets(items);
+		if (isEmpty(T.sets)) {
+			speed *= 3;
+			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
+			await setOnclickNoSet(items);
+		} else {
+			let list = rChoose(T.sets);
+			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep 1'); return; }
+			await setOnclickCard(list[0], items);
+			await mSleep(speed); if (checkInterrupt(items)) { console.log('!!sleep 2'); return; }
+			await setOnclickCard(list[1], items);
+			await mSleep(speed); if (checkInterrupt(items)) { console.log('!!!sleep 3'); return; }
+			await setOnclickCard(list[2], items);
+		}
+		console.log('* END OF AUTOMOVE *');
+	} catch { console.log('please reload!') }
+}
+function setCheckIfSet(keys) {
+	let arr = makeArrayWithParts(keys);
+	let isSet = arr.every(x => arrAllSameOrDifferent(x));
+	return isSet;
+}
+function setCreateDeck() {
+	let deck = [];
+	['red', 'purple', 'green'].forEach(color => {
+		['diamond', 'squiggle', 'oval'].forEach(shape => {
+			[1, 2, 3].forEach(num => {
+				['solid', 'striped', 'open'].forEach(fill => {
+					deck.push(`${color}_${shape}_${num}_${fill}`);
+				});
+			});
+		});
+	});
+	arrShuffle(deck);
+	return deck;
 }
 function setCssVar(varname, val) { document.body.style.setProperty(varname, val); }
 
+function setDrawCard(card, dParent, colors, sz = 100) {
+	const paths = {
+		diamond: "M25 0 L50 50 L25 100 L0 50 Z",
+		squiggle: "M38.4,63.4c2,16.1,11,19.9,10.6,28.3c1,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z",
+		oval: "M25,95C14.2,95,5.5,85.2,5.5,80V20C5.5,13.2,14.2,5.2,25,5.2S44.5,13.2,44.5,20v60 C44.5,85.2,35.8,95,25,95z"
+	}
+	let [color, shape, num, fill] = card.split('_');
+	var attr = {
+		d: paths[shape],
+		fill: fill == 'striped' ? `url(#striped-${color})` : fill == 'solid' ? colors[color] : 'none',
+		stroke: colors[color],
+		'stroke-width': 2,
+	};
+	let h = sz, w = sz / .65;
+	let ws = w / 4;
+	let hs = 2 * ws;
+	let d0 = mDom(dParent, { display: 'flex', w, h, bg: 'white', rounding: 10 });
+	mStyle(d0, { justify: 'center', 'align-items': 'center', gap: 6 })
+	let shapeSvg = `<svg viewbox="-2 -2 54 104">` + makeSVG("path", attr) + '</svg>';
+	for (const i of range(num)) {
+		let d1 = mDom(d0, { h: hs, w: ws }, { html: shapeSvg });
+	}
+	return d0;
+}
 function setDropPosition(ev, elem, targetElem, dropPos) {
 	if (dropPos == 'mouse') {
 		var elm = $(targetElem);
@@ -6496,6 +6382,25 @@ function setDropPosition(ev, elem, targetElem, dropPos) {
 		dropPos(ev, elem, targetElem);
 	}
 }
+function setFindAllSets(items) {
+	let result = [];
+	for (var x = 0; x < items.length; x++) {
+		for (var y = x + 1; y < items.length; y++) {
+			for (var z = y + 1; z < items.length; z++) {
+				assertion(items[x] != items[y], `WTF!?!?!?! ${items[x].key} ${items[y].key}`)
+				let list = [items[x], items[y], items[z]];
+				let keys = list.map(x => x.key);
+				if (setCheckIfSet(keys)) result.push(list);
+			}
+		}
+	}
+	if (isEmpty(result)) console.log('no set!')
+	return result;
+}
+function setGameover(table) {
+	table.status = 'over';
+	table.winners = getPlayersWithMaxScore(table.fen);
+}
 function setGoal(index) {
 	if (nundef(index)) {
 		let rnd = G.numPics < 2 ? 0 : randomNumber(0, G.numPics - 2);
@@ -6505,6 +6410,8 @@ function setGoal(index) {
 	lastPosition = index;
 	Goal = Pictures[index];
 }
+function setHintHide() { mClass(T.bHint, 'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
+
 function setKeys({ allowDuplicates, nMin = 25, lang, key, keySets, filterFunc, param, confidence, sortByFunc } = {}) {
 	let keys = jsCopy(keySets[key]);
 	if (isdef(nMin)) {
@@ -6541,22 +6448,134 @@ function setKeys({ allowDuplicates, nMin = 25, lang, key, keySets, filterFunc, p
 }
 function setLanguage(x) { currentLanguage = x; startLevel(); }
 
+function setLoadPatterns(dParent, colors) {
+	dParent = toElem(dParent);
+	let id = "setpatterns";
+	if (isdef(mBy(id))) { return; }
+	let html = `
+    <svg id="setpatterns" width="0" height="0">
+      <!--  Define the patterns for the different fill colors  -->
+      <pattern id="striped-red" patternUnits="userSpaceOnUse" width="4" height="4">
+        <path d="M-1,1 H5" style="stroke:${colors.red}; stroke-width:1" />
+      </pattern>
+      <pattern id="striped-green" patternUnits="userSpaceOnUse" width="4" height="4">
+        <path d="M-1,1 H5" style="stroke:${colors.green}; stroke-width:1" />
+      </pattern>
+      <pattern id="striped-purple" patternUnits="userSpaceOnUse" width="4" height="4">
+        <path d="M-1,1 H5" style="stroke:${colors.purple}; stroke-width:1" />
+      </pattern>
+    </svg>
+    `;
+	let el = mCreateFrom(html);
+	mAppend(dParent, el)
+}
+async function setOnclickCard(item, items, direct = false) {
+	if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
+	else if (direct) stopAutobot();
+	else if (!direct && item.isSelected) { console.log('already clicked!'); return; }
+	else if (DA.stopAutobot == true) { assertion(!direct, 'direct and autobot true'); return; }
+	toggleItemSelection(item);
+	let selitems = items.filter(x => x.isSelected);
+	let [keys, m] = [selitems.map(x => x.key), selitems.length];
+	let olist = [];
+	if (m == 3) {
+		clearEvents();
+		mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+		let [me, table] = [getUname(), Clientdata.table];
+		let [fen, pl] = [table.fen, table.fen.players[me]];
+		let isSet = setCheckIfSet(keys);
+		if (isSet) {
+			assertion(fen.cards.length >= table.options.numCards || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
+			let toomany = Math.max(0, fen.cards.length - table.options.numCards);
+			let need = Math.max(0, 3 - toomany);
+			let newCards = deckDeal(fen.deck, need);
+			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
+			olist.push({ keys: ['fen', 'cards'], val: table.fen.cards });
+			olist.push({ keys: ['fen', 'deck'], val: table.fen.deck });
+			pl.score++;
+			pl.incScore = 1;
+		} else {
+			pl.score--;
+			pl.incScore = -1;
+		}
+		olist.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
+		if (pl.playmode == 'bot') {
+			await mSleep(500);
+			if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
+		}
+		let res = await sendMergeTable({ id: table.id, name: me, olist }); // console.log('res', res)
+	}
+}
+async function setOnclickHint(items, direct = false) {
+	assertion(T.numHints > 0, 'NO Hints left!!!!');
+	if (direct) stopAutobot();
+	T.numHints -= 1;
+	if (isEmpty(T.sets)) {
+		let elem = T.bNoSet;
+		T.numHints = 0; setHintHide();
+		ANIM.button = scaleAnimation(elem);
+		return;
+	} else if (nundef(T.hintSet)) {
+		T.hintSet = rChoose(T.sets);
+	} else {
+		let sofar = T.items.filter(x => x.isSelected);
+		if (sofar.length >= 2) {
+			return;
+		}
+	}
+	let item = T.hintSet.find(x => !x.isSelected);
+	if (!T.numHints) setHintHide();
+	await setOnclickCard(item, T.items, direct);
+}
+async function setOnclickNoSet(items, direct = false) {
+	if (direct) stopAutobot();
+	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
+	let b = T.bNoSet; mClass(b, 'framedPicture')
+	let [me, table] = [getUname(), Clientdata.table];
+	let [fen, pl] = [table.fen, table.fen.players[me]];
+	let olist = [];
+	if (isEmpty(T.sets)) {
+		pl.score++;
+		pl.incScore = 1;
+		let newCards = deckDeal(fen.deck, 1);
+		if (!isEmpty(newCards)) {
+			fen.cards.push(newCards[0]);
+			olist.push({ keys: ['fen', 'cards'], val: table.fen.cards });
+			olist.push({ keys: ['fen', 'deck'], val: table.fen.deck });
+		} else {
+			setGameover(table);
+			olist.push({ keys: ['status'], val: table.status });
+			olist.push({ keys: ['winners'], val: table.winners });
+			console.log(`table status is now ${table.status}`);
+			assertion(table.status == 'over', "HAAAAAAAAALLLLLLLO")
+		}
+	} else {
+		pl.score--;
+		pl.incScore = -1;
+	}
+	olist.push({ keys: ['fen', 'players', me, 'score'], val: pl.score });
+	if (pl.playmode == 'bot') {
+		await mSleep(500);
+		if (checkInterrupt(items)) { console.log('!!!onclick noset!!!'); return; }
+	}
+	let res = await sendMergeTable({ id: table.id, name: me, olist });
+}
 async function setPlayerNotPlaying(item, gamename) {
-	await saveDataFromPlayerOptionsUI(gamename);
+	await collectFromPrevious(gamename);
 	removeInPlace(DA.playerList, item.name);
 	mRemoveIfExists('dPlayerOptions');
 	unselectPlayerItem(item);
 }
-async function setPlayerPlaying(allPlItem, gamename) {
-	let [name, da] = [allPlItem.name, allPlItem.div];
+async function setPlayerPlaying(item, gamename) {
+	let [name, da] = [item.name, item.div];
 	addIf(DA.playerList, name);
-	highlightPlayerItem(allPlItem);
-	await saveDataFromPlayerOptionsUI(gamename);
+	selectPlayerItem(item);
+	await collectFromPrevious(gamename);
 	let id = 'dPlayerOptions';
-	DA.lastAllPlayerItem = allPlItem;
+	DA.lastPlayerItem = item;
 	let poss = getGamePlayerOptions(gamename);
 	if (nundef(poss)) return;
-	let dParent = mBy('dGameMenu');
+	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
 	let bg = getUserColor(name);
 	let rounding = 6;
 	let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
@@ -6571,7 +6590,8 @@ async function setPlayerPlaying(allPlItem, gamename) {
 			let legend = formatLegend(key);
 			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
 			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
-			let userval = lookup(DA.allPlayers, [name, p]);
+			let userval = lookup(DA.allPlayers, [name, gamename, p]);
+			let radio;
 			let chi = fs.children;
 			for (const ch of chi) {
 				let id = ch.id;
@@ -6592,11 +6612,11 @@ async function setPlayerPlaying(allPlItem, gamename) {
 	if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
 	mIfNotRelative(dParent);
 	mPos(d1, x, y);
-	mButtonX(d1, ev => saveAndUpdatePlayerOptions(allPlItem, gamename), 18, 3, 'dimgray');
+	mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
 }
 function setPlayersToMulti() {
 	for (const name in DA.allPlayers) {
-		lookupSetOverride(DA.allPlayers, [name, 'options', 'playmode'], 'human');
+		lookupSetOverride(DA.allPlayers, [name, DA.gamename, 'playmode'], 'human');
 		let el = document.querySelector(`div[username="${name}"]`);
 		let img = el.getElementsByTagName('img')[0];
 		mStyle(img, { round: true });
@@ -6606,7 +6626,7 @@ function setPlayersToMulti() {
 function setPlayersToSolo() {
 	for (const name in DA.allPlayers) {
 		if (name == getUname()) continue;
-		lookupSetOverride(DA.allPlayers, [name, 'options', 'playmode'], 'bot');
+		lookupSetOverride(DA.allPlayers, [name, DA.gamename, 'playmode'], 'bot');
 		let el = document.querySelector(`div[username="${name}"]`);
 		let img = el.getElementsByTagName('img')[0];
 		mStyle(img, { rounding: 2 });
@@ -6614,6 +6634,25 @@ function setPlayersToSolo() {
 	let popup = mBy('dPlayerOptions');
 	if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
 	setRadioValue('playmode', 'bot');
+}
+async function setPresent(dParent, table) {
+	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
+	setLoadPatterns('dPage', colors);
+	mClear(dParent);
+	let d = mDom(dParent, { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
+	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
+	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.fen.players, table.fen.turn];
+	let cards = fen.cards;
+	let dp = mDom(dOpenTable, { w100: true }); mCenterFlex(dp);
+	let dBoard = T.dBoard = mGrid(cards.length / 3, 3, dp, { gap: 14 });
+	let items = [];
+	for (const c of cards) {
+		let d = setDrawCard(c, dBoard, colors, TESTING ? 80 : 100);
+		let item = mItem({ div: d }, { key: c });
+		items.push(item);
+	}
+	setStats(table, dOben, 'rowflex', false);
+	return items;
 }
 function setRadioValue(prop, val) {
 	let input = mBy(`i_${prop}_${val}`);
@@ -6636,12 +6675,37 @@ function setRect(elem, options) {
 }
 function setScoresSameOrHigher(told, tnew) {
 	if (nundef(told)) return true;
-	let [plold, plnew] = [told.players, tnew.players];
+	let [plold, plnew] = [told.fen.players, tnew.fen.players];
 	for (const name in plnew) {
 		if (plold[name].score + plold[name].incScore != plnew[name].score) return false;
 		plnew[name].incScore = 0;
 	}
 	return true;
+}
+function setShowButtons(items) {
+	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
+	let bno = mButton('NO Set', () => setOnclickNoSet(items, true), buttons, { w: 80 }, 'input');
+	let bhint = mButton('Hint', () => setOnclickHint(items, true), buttons, { w: 80 }, 'input');
+	return [bno, bhint];
+}
+function setStats(table, dParent, layout, showTurn = true) {
+	let [fen, me] = [table.fen, getUname()];
+	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+	let player_stat_items = uiTypePlayerStats(fen, me, dParent, layout, style)
+	let uselevel = getGameOption('use_level');
+	let botLevel = Math.floor(calcBotLevel(table));
+	for (const plname in fen.players) {
+		let pl = fen.players[plname];
+		let item = player_stat_items[plname];
+		if (pl.playmode == 'bot') {
+			let c = getLevelColor(botLevel);
+			mStyle(item.img, { rounding: 0, border: `${c} ${botLevel}px solid` });
+		}
+		let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+		playerStatCount('star', pl.score, d);
+		if (uselevel != 'yes') continue;
+		mDom(d, { fz: 11, round: true, hpadding: 3, fg: 'contrast', bg: getLevelColor(pl.level), position: 'absolute', top: 1, right: 2 }, { html: pl.level })
+	}
 }
 function setTableSize(w, h, unit = 'px') {
 	let d = mBy('areaTable');
@@ -6653,43 +6717,18 @@ function setTableToStarted(table) {
 	table.fen = DA.funcs[table.game].setup(table);
 	return table;
 }
-function setTexture(item) {
-	let d = document.body;
-	let bgImage = valf(item.bgImage, '');
-	let bgRepeat = valf(item.bgRepeat, '');
-	let bgBlend = valf(item.bgBlend, '');
-	let bgSize = valf(item.bgSize, '');
-	d.style.backgroundColor = U.color;
-	d.style.backgroundImage = bgImage;
-	d.style.backgroundSize = bgSize == 'cover' ? '100vw 100vh' : bgSize;
-	d.style.backgroundRepeat = 'repeat'; //bgRepeat;
-	d.style.backgroundBlendMode = bgBlend;
-}
-function setTheme(o) {
-	if (nundef(o)) o = U;
-	setColors(o.color, o.fg);
-	setTexture(o);
-}
-async function settingsOpen() {
-	DA.settings = jsCopy(U);
-	mClear('dMain');
-	let d = mDom('dMain', { padding: 0, overy: 'auto', hmax: calcRestHeight('dMain') }, { id: 'dSettingsColor' });
-	await showColors()
-	settingsSidebar();
-}
-function settingsSidebar() {
-	let wmin = 170;
-	mStyle('dLeft', { wmin: wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
-	let gap = 5;
-	UI.settTheme = mCommand(d, 'settTheme', 'Theme'); mNewline(d, gap);
-	UI.settColor = mCommand(d, 'settColor', 'Color'); mNewline(d, gap);
-	UI.settFg = mCommand(d, 'settFg', 'Text Color'); mNewline(d, gap);
-	UI.settTexture = mCommand(d, 'settTexture', 'Texture'); mNewline(d, gap);
-	UI.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode'); mNewline(d, 2 * gap);
-	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
-	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
-	UI.settAddTheme = mCommand(d, 'settAddTheme', 'Add Theme'); mNewline(d, gap);
+function setup() {
+	axiom = system.axiom;
+	rules = system.rules;
+	factor = valf(system.factor, 1);
+	angle = radians(valf(system.angle, 60));
+	sentence = axiom;
+	let button = createButton("generate"); button.mousePressed(generate);
+	button = createButton("animate"); button.mousePressed(() => interval_id = setInterval(generate, 500));
+	createCanvas(400, 400);
+	background(51);
+	createP(axiom);
+	turtle();
 }
 function show(elem, isInline = false) {
 	if (isString(elem)) elem = document.getElementById(elem);
@@ -6699,28 +6738,6 @@ function show(elem, isInline = false) {
 		elem.style.display = isInline ? 'inline-block' : null;
 	}
 	return elem;
-}
-async function showBlendModes() {
-	let d = mBy('dSettingsColor'); mClear(d);
-	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
-	let bgImage = U.bgImage;
-	let bg = U.color;
-	let bgRepeat = bgImage.includes('marble') ? 'no-repeat' : 'repeat';
-	let bgSize = bgImage.includes('marble') ? 'cover' : '';
-	let bgSizeItem = bgSize;
-	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-	let items = [];
-	for (const bgBlend of list) {
-		let d = mDom(dTheme, { align: 'center', border: 'red', bgBlend, bg, bgRepeat, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
-		mCenterCenterFlex(d);
-		let d1 = mDom(d, { className: 'no_events' })
-		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
-		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
-		let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
-		items.push(item);
-		d.onclick = async () => onclickBlendMode(item);
-	}
-	return items;
 }
 async function showCalendarApp() {
 	if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
@@ -6742,29 +6759,6 @@ function showChatWindow() {
 		Socket.emit('message', { user: getUname(), msg: ev.target.value });
 		ev.target.value = '';
 	});
-}
-async function showColors() {
-	let d = mBy('dSettingsColor'); mClear(d);
-	let di = M.dicolor;
-	let bucketlist = 'yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
-	bucketlist = arrCycle(bucketlist, 8);
-	for (const bucket of bucketlist) {
-		let list = dict2list(di[bucket]);
-		let clist = [];
-		for (const c of list) {
-			let o = w3color(c.value);
-			o.name = c.id;
-			o.hex = c.value;
-			clist.push(o);
-		}
-		let sorted = sortByFunc(clist, x => -x.lightness);
-		_showPaletteNames(d, sorted);
-	}
-	let divs = document.getElementsByClassName('colorbox');
-	for (const div of divs) {
-		mStyle(div, { cursor: 'pointer' })
-		div.onclick = async () => onclickColor(div.getAttribute('dataColor'));
-	}
 }
 async function showDashboard() {
 	let me = getUname();
@@ -6820,6 +6814,7 @@ function showEventOpen(id) {
 	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
 	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
 	mOnEnter(inpt);
+	//console.log('event text:', e.text)
 	let ta = mDom(popup, { rounding: 4, matop: 7, box: true, w: '100%', vpadding: 4, hpadding: 10, }, { tag: 'textarea', rows: 7, value: e.text });
 	let line = mDom(popup, { matop: 6, w: '100%' }); //,'align-items':'space-between'});
 	let buttons = mDom(line, { display: 'inline-block' });
@@ -6859,14 +6854,14 @@ async function showGameMenu(gamename) {
 	let bclear = mButton('Clear Players', onclickClearPlayers, dButtons, {}, ['button', 'input']);
 }
 async function showGameMenuPlayerDialog(name, shift = false) {
-	let allPlItem = DA.allPlayers[name];
+	let item = DA.allPlayers[name];
 	let gamename = DA.gamename;
-	let da = iDiv(allPlItem);
-	if (!DA.playerList.includes(name)) await setPlayerPlaying(allPlItem, gamename);
-	else await setPlayerNotPlaying(allPlItem, gamename);
+	let da = iDiv(item);
+	if (!DA.playerList.includes(name)) await setPlayerPlaying(item, gamename);
+	else await setPlayerNotPlaying(item, gamename);
 }
-async function showGameOptions(dParent, gamename) {
-	let poss = getGameOptions(gamename);
+async function showGameOptions(dParent, game) {
+	let poss = Serverdata.config.games[game].options;
 	if (nundef(poss)) return;
 	for (const p in poss) {
 		let key = p;
@@ -6886,25 +6881,24 @@ async function showGameOptions(dParent, gamename) {
 }
 async function showGamePlayers(dParent, users) {
 	let me = getUname();
-	mStyle(dParent, { wrap: true });
-	let userlist = ['amanda', 'felix', 'mimi'];
-	for (const name in users) addIf(userlist, name);
-	for (const name of userlist) {
+	mStyle(dParent, { wrap: true })
+	for (const name in users) {
 		let d = mDom(dParent, { align: 'center', padding: 2, cursor: 'pointer', border: `transparent` });
+		d.setAttribute('username', name)
 		let img = showUserImage(name, d, 40);
 		let label = mDom(d, { matop: -4, fz: 12, hline: 12 }, { html: name });
-		d.setAttribute('username', name)
-		d.onclick = onclickGameMenuPlayer;
-		let item = userToPlayer(name, DA.gamename); item.div = d; item.isSelected = false;
+		let item = jsCopy(users[name]);
+		item.div = d;
+		item.isSelected = false;
 		DA.allPlayers[name] = item;
+		d.onclick = onclickGameMenuPlayer;
 	}
 	await clickOnPlayer(me);
 }
-function showGameover(table, dParent) {
+function showGameover(table, dParent = 'dGameover') {
 	let winners = table.winners;
 	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;
 	showRibbon(dParent, msg);
-	updateTestButtonsLogin(table.playerNames);
 }
 function showGames(ms = 500) {
 	let dParent = mBy('dGameList'); if (isdef(dParent)) { mClear(dParent); } else dParent = mDom('dMain', {}, { className: 'section', id: 'dGameList' });
@@ -6913,7 +6907,7 @@ function showGames(ms = 500) {
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
 	gamelist = ['button96']; //'button99','button98','button97','setgame']
 	for (const gname of gamelist) {
-		let g = getGameConfig(gname);
+		let g = Serverdata.config.games[gname];
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
 		let d1 = mDiv(d, { cursor: 'pointer', rounding: 10, margin: 10, padding: 0, patop: 10, w: 140, height: 100, bg: bg, position: 'relative' }, g.id);
 		d1.setAttribute('gamename', gname);
@@ -7021,12 +7015,11 @@ function showMessage(msg, ms = 3000) {
 function showNavbar() {
 	let nav = mMenu('dNav');
 	let commands = {};
-	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, menuCloseHome);
-	commands.settings = menuCommand(nav.l, 'nav', 'settings', null, settingsOpen, menuCloseSettings);
-	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, menuCloseColl);
-	commands.play = menuCommand(nav.l, 'nav', 'play', 'Games', onclickPlay, menuCloseGames);
-	commands.table = menuCommand(nav.l, 'nav', 'table', 'Table', onclickTableMenu, menuCloseTable);
-	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, menuCloseCalendar);
+	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, clearMain);
+	commands.settings = menuCommand(nav.l, 'nav', 'settings', null, settingsOpen, settingsClose);
+	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, collClear);
+	commands.play = menuCommand(nav.l, 'nav', 'play', 'Tables', onclickPlay, clearMain);
+	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, clearMain);
 	nav.commands = commands;
 	return nav;
 }
@@ -7038,23 +7031,13 @@ function showPalette(dParent, colors) {
 		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: idealTextColor(c) }, { html });
 	}
 }
-function showPaletteNames(dParent, colors) {
-	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
-	for (var c of colors) {
-		let bg = c.hex;
-		let d2 = mDom(d1, { wmin: 250, bg, fg: idealTextColor(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
-		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
-		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
-		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: idealTextColor(bg) }, { html });
-	}
-}
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
 	d = mDom(dParent, { bg, mabottom: 10, align: 'center', padding: 10, fz: 40, w100: true }, { html: msg, id: 'ribbon' });
 }
 async function showTables(from) {
-	await updateTestButtonsLogin();
+	Clientdata.table = null;
 	let me = getUname();
 	let tables = Serverdata.tables = await mGetRoute('tables');
 	tables.map(x => x.prior = x.status == 'open' ? 0 : x.turn.includes(me) ? 1 : x.playerNames.includes(me) ? 2 : 3);
@@ -7063,7 +7046,7 @@ async function showTables(from) {
 	if (isdef(dParent)) { mClear(dParent); }
 	else dParent = mDom('dMain', {}, { className: 'section', id: 'dTableList' });
 	if (isEmpty(tables)) { mText('no active game tables', dParent); return []; }
-	tables.map(x => x.game_friendly = capitalize(getGameFriendly(x.game)));
+	tables.map(x => x.game_friendly = capitalize(Serverdata.config.games[x.game].friendly));
 	mText(`<h2>game tables</h2>`, dParent, { maleft: 12 })
 	let t = UI.tables = mDataTable(tables, dParent, null, ['friendly', 'game_friendly', 'playerNames'], 'tables', false);
 	mTableCommandify(t.rowitems.filter(ri => ri.o.status != 'open'), {
@@ -7074,7 +7057,7 @@ async function showTables(from) {
 	for (const ri of t.rowitems) {
 		let r = iDiv(ri);
 		let id = ri.o.id;
-		if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: getWaitingHtml(24) });
+		if (ri.o.prior == 1) mDom(r, {}, { tag: 'td', html: getWaitingHtml(24) }); //'my turn!'});
 		if (ri.o.status == 'open') {
 			let playerNames = ri.o.playerNames;
 			if (playerNames.includes(me)) {
@@ -7089,40 +7072,6 @@ async function showTables(from) {
 		let h = hFunc('delete', 'onclickDeleteTable', id); let c = mAppend(r, mCreate('td')); c.innerHTML = h;
 		if (ri.o.status == 'open') { let h1 = hFunc('start', 'onclickStartTable', id); let c1 = mAppend(r, mCreate('td')); c1.innerHTML = h1; }
 	}
-}
-async function showTextColors() {
-	let d = mBy('dSettingsColor'); mClear(d);
-	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
-	let colors = ['white', 'silver', 'dimgray', 'black'].map(x => w3color(x)); //, getCSSVariable('--fgButton'), getCSSVariable('--fgButtonHover')].map(x => w3color(x));
-	for (var c of colors) {
-		let bg = 'transparent';
-		let fg = c.hex = c.toHexString();
-		let d2 = mDom(d1, { border: fg, wmin: 250, bg, fg, padding: 20 }, { class: 'colorbox', dataColor: fg });
-		mDom(d2, { weight: 'bold', align: 'center' }, { html: 'Text Sample' });
-		let html = `<br>${fg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
-		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg }, { html });
-	}
-	let divs = document.getElementsByClassName('colorbox');
-	for (const div of divs) {
-		div.onclick = async () => onclickTextColor(div.getAttribute('dataColor'));
-	}
-}
-async function showTextures() {
-	let d = mBy('dSettingsColor'); mClear(d);
-	let dTheme = mDom(d, { padding: 12, gap: 10 }); mFlexWrap(dTheme);
-	let list = M.textures;
-	let itemsTexture = [];
-	for (const t of list) {
-		let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-		let bgSize = t.includes('marble_') ? `cover` : t.includes('ttrans') ? '' : 'auto';
-		let bgImage = `url('${t}')`;
-		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
-		let dc = mDom(dTheme, { bg: U.color, bgImage, bgSize, bgRepeat, bgBlend: 'normal', cursor: 'pointer', border: 'white', w: '30%', wmax: 300, h: 170 });
-		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, bgBlend: recommendedMode, isSelected: false };
-		itemsTexture.push(item);
-		dc.onclick = async () => onclickTexture(item, itemsTexture);
-	}
-	return itemsTexture;
 }
 function showTitle(title, dParent = 'dTitle') {
 	mClear(dParent);
@@ -7146,7 +7095,7 @@ function showTrick() {
 }
 function showUserImage(uname, d, sz = 40) {
 	let u = Serverdata.users[uname];
-	return showim1(u.key, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 3px solid` });
+	return showim1(u.key, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 2px solid` });
 }
 function showim(key, dParent, styles = {}, imgFit = 'fill', useSymbol = false) {
 	let o = M.superdi[key];
@@ -7208,7 +7157,6 @@ function sockInit() {
 	Socket.on('event', onsockEvent);
 	Socket.on('message', showChatMessage);
 	Socket.on('merged', onsockMerged);
-	Socket.on('pending', onsockPending);
 	Socket.on('table', onsockTable);
 	Socket.on('tables', onsockTables);
 	Socket.on('superdi', onsockSuperdi);
@@ -7291,7 +7239,6 @@ function squareTo(tool, sznew = 128) {
 	redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function startGame(gamename, players, options) {
-	console.log('___startGame', gamename, players, options)
 	let table = createOpenTable(gamename, players, options);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
@@ -7420,7 +7367,7 @@ async function switchToMainMenu(name) { return await switchToMenu(UI.nav, name);
 
 async function switchToMenu(menu, key) {
 	menuCloseCurrent(menu);
-	Menu = { key }; localStorage.setItem('menu', key);
+	Clientdata.curMenu = key;
 	await menuOpen(menu, key);
 }
 async function switchToOtherUser() {
@@ -7429,16 +7376,25 @@ async function switchToOtherUser() {
 }
 async function switchToTables() { return await switchToMainMenu('play'); }
 
-async function switchToUser(uname, menu) {
+async function switchToUser(uname) {
 	if (!isEmpty(uname)) uname = normalizeString(uname);
 	if (isEmpty(uname)) uname = 'guest';
 	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
+	Clientdata.curUser = uname;
 	localStorage.setItem('username', uname);
 	iDiv(UI.user).innerHTML = uname;
 	setTheme(U);
-	menu = valf(menu, getMenu(), localStorage.getItem('menu'), 'home');
-	switchToMainMenu(menu);
+	if (uname == 'guest') {
+		await switchToMenu(UI.nav, 'home');
+		menuDisable(UI.nav, 'plan');
+	} else {
+		menuEnable(UI.nav, 'plan');
+		let t = Clientdata.table;
+		let cur = Clientdata.curMenu;
+		if (cur == 'play' && isdef(t) && t.playerNames.includes(uname) && t.status == 'started') await showTable(t.id);
+		else await switchToMenu(UI.nav, valf(cur, 'home'));
+	}
 }
 function tableLayoutMR(dParent, m = 7, r = 1) {
 	let ui = UI; ui.players = {};
@@ -7522,6 +7478,22 @@ async function testOnclickBot(ev) {
 	}
 	mStyle(UI.bTestBot, { bg: 'red', fg: 'white' });
 	await onclickBot();
+}
+async function testOnclickCaption(ev) {
+	let x = ev.target.innerHTML;
+	let b = UI[getButtonCaptionName(name)];
+	for (const name of getButtonCaptionNames(Clientdata.table)) {
+		let b = UI[getButtonCaptionName(name)];
+		if (isdef(b)) mStyle(b, { bg: 'silver', fg: 'black' });
+	}
+	mStyle(UI[getButtonCaptionName(x)], { bg: 'red', fg: 'white' });
+	await switchToUser(x);
+}
+async function testOnclickDeck0() {
+	let tnew = jsCopy(Clientdata.table);
+	tnew.fen.deck = [];
+	let res = await sendMergeTable({ name: getUname(), id: tnew.id, table: tnew });
+	console.log('res', res.fen.deck)
 }
 async function testOnclickHuman(ev) {
 	for (const b of [UI.bTestBot, UI.bTestHuman, UI.bTestHybrid]) {
@@ -7754,6 +7726,7 @@ async function uiTypeCalendar(dParent) {
 	}
 	async function refreshEvents() {
 		let events = await getEvents();
+		//console.log('refreshing events', events)
 		for (const k in events) {
 			let o = events[k];
 			let dt = new Date(Number(o.day));
@@ -7838,17 +7811,17 @@ function uiTypeExtraWorker(w) {
 	let select = selectExtraWorker;
 	return { itemtype: 'worker', a: s, key: `worker_${res}`, o: { res: res, n: n }, friendly: s, present, select }
 }
-function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
+function uiTypePlayerStats(fen, me, dParent, layout, styles = {}) {
 	let dOuter = mDom(dParent); dOuter.setAttribute('inert', true); //console.log(dOuter)
 	if (layout == 'rowflex') mStyle(dOuter, { display: 'flex', justify: 'center' });
 	else if (layout == 'col') mStyle(dOuter, { display: 'flex', dir: 'column' });
-	addKeys({ rounding: 10, bg: '#00000050', margin: 4, box: true, 'border-style': 'solid', 'border-width': 2 }, styles);
+	addKeys({ rounding: 10, bg: '#00000050', margin: 4, box: true, 'border-style': 'solid', 'border-width': 4 }, styles);
 	let show_first = me;
-	let order = arrCycle(table.plorder, table.plorder.indexOf(show_first));
+	let order = arrCycle(fen.plorder, fen.plorder.indexOf(show_first));
 	let items = {};
 	for (const name of order) {
-		let pl = table.players[name];
-		styles['border-color'] = pl.color; //name == me ? pl.color: 'transparent'; //colorLighter(pl.color) : 'transparent'; //pl.color;
+		let pl = fen.players[name];
+		styles['border-color'] = name == me ? colorLighter(pl.color) : pl.color;
 		let d = mDom(dOuter, styles, { id: name2id(name) })
 		let img = showUserImage(name, d, 40); mStyle(img, { box: true })
 		items[name] = { div: d, img, name };
@@ -7914,22 +7887,6 @@ async function uploadImg(img, unique, coll, name) {
 			}
 		});
 	});
-}
-function userToPlayer(name, gamename, playmode = 'human') {
-	let user = Serverdata.users[name];
-	let pl = jsCopyExceptKeys(user, ['games']);
-	let options = valf(getUserOptionsForGame(name, gamename), {});
-	addKeys(options, pl);
-	pl.playmode = playmode;
-	let poss = getGamePlayerOptions(gamename);
-	for (const p in poss) {
-		if (isdef(pl[p])) continue;
-		let val = poss[p];
-		let defval = arrLast(val.split(','));
-		if (isNumber(defval)) defval = Number(defval);
-		pl[p] = defval;
-	}
-	return pl;
 }
 function valf() {
 	for (const arg of arguments) if (isdef(arg)) return arg;

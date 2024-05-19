@@ -1,0 +1,56 @@
+status: started
+id: iCDQknh3KJbXlZmq8UF2
+fen:
+  cards:
+    - 88
+    - 89
+    - 90
+  deck:
+    - 91
+    - 92
+    - 93
+    - 94
+    - 95
+    - 96
+    - 97
+    - 98
+    - 99
+    - 100
+game: button96
+owner: mimi
+friendly: rendezvous in Islamabad
+players:
+  mimi:
+    name: mimi
+    color: '#ffe4e1'
+    key: mimi
+    bgImage: url('../assets/textures/marble_rosa.jpeg')
+    bgBlend: normal
+    bgSize: cover
+    bgRepeat: no-repeat
+    handicap: 2
+    playmode: human
+    score: 18
+  diana:
+    name: diana
+    color: '#4d0085'
+    key: bird15
+    handicap: 1
+    playmode: bot
+    score: 69
+playerNames:
+  - mimi
+  - diana
+options:
+  numCards: 100
+  gamemode: multi
+step: 88
+plorder:
+  - mimi
+  - diana
+turn:
+  - mimi
+  - diana
+pending:
+  name: diana
+  move: 88

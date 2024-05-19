@@ -1,12 +1,6 @@
 name: felix
 color: '#2a52be'
 key: felix
-setgame:
-  level: 6
-  playmode: bot
-playmode: bot
-button96:
-  playmode: human
 bgImage: url('../assets/textures/marble_meer1.jpg')
 bgBlend: normal
 bgSize: cover

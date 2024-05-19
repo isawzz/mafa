@@ -1,3 +1,9 @@
+var A = null;
+var Menu = null;
+var T = null;
+var Tid=null;
+var U = null;
+var SLEEP_WATCHER=null; //elim!
 const deepRichColors = [
   "#2B2D42", // Charcoal Blue
   "#3F3351", // Deep Purple
@@ -232,7 +238,6 @@ const levelColors = [LIGHTGREEN, LIGHTBLUE, YELLOW, 'orange', RED, GREEN, BLUE, 
   'deeppink', TEAL, ORANGE, 'seagreen', FIREBRICK, OLIVE,
   '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000', 'gold', 'orangered', 'skyblue', 'pink', 'deeppink',
   'palegreen', '#e6194B'];
-var A;
 var activatedTests = [];
 var AD;
 var ADS;
@@ -375,7 +380,6 @@ var SPEC = null;
 var Speech;
 var symbolDict;
 var Syms;
-var T;
 var TESTING = false;
 var TO = {};
 var TOFleetingMessage;
@@ -383,7 +387,6 @@ var TOList;
 var TOMain;
 var TOMan;
 var TOTrial;
-var U = null;
 var UI = {};
 var uiActivated = false;
 var UID = 0;

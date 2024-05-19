@@ -1,3 +1,961 @@
+//#region 18.mai 24
+function __animate(elem, aniclass, timeoutms) {
+	mClass(elem, aniclass);
+	TO.anim = setTimeout(() => mRemoveClass(elem, aniclass), timeoutms);
+}
+function __setup() {
+	axiom = system.axiom;
+	rules = system.rules;
+	factor = valf(system.factor, 1);
+	angle = radians(valf(system.angle, 60));
+	sentence = axiom;
+	let button = createButton("generate"); button.mousePressed(generate);
+	button = createButton("animate"); button.mousePressed(() => interval_id = setInterval(generate, 500));
+	createCanvas(400, 400);
+	background(51);
+	createP(axiom);
+	turtle();
+}
+function createOpenTable(gamename, players, options) {
+	let me = getUname();
+	let playerNames = [me];
+	assertion(me in players, "_createOpenTable without owner!!!!!")
+	for (const name in players) { addIf(playerNames, name); }
+	let pdict = {};
+	for (const name of playerNames) { pdict[name] = players[name]; }
+	// 	let o = {};
+	// 	let pl = players[name];
+	// 	for (const k in pl) {
+	// 		if (k == gamename) { addKeys(pl[gamename], o); }
+	// 		else if (k == options) { addKeys(pl.options, o); }
+	// 		else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
+	// 	}
+	// 	// let opts = pl.options; delete pl.options; addKeys(opts, pl);
+	// 	pdict[name] = o;
+	// }
+	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
+
+	//vielleicht sort player keys
+	// //mach das hier schon dass die options aufgeteilt werden!!!
+	// if (TESTING && gamename == 'setgame') {
+	// 	let keys = ['playmode', 'score', 'level', 'name', 'color', 'key'];
+	// 	let osorted = {};
+	// 	for (const k of keys) { osorted[k] = o[k]; }
+	// 	pdict[name] = osorted;
+	// } else pdict[name] = o;
+
+	console.log('pdict', jsCopy(pdict));
+
+	let t = {
+		status: 'open',
+		id: generateTableId(),
+		fen: null,
+		game: gamename,
+		owner: playerNames[0],
+		friendly: generateTableName(),
+		players: pdict,
+		playerNames: playerNames,
+		options
+	};
+	return t;
+}
+function collectPlayers() {
+	let players = {};
+	for (const name of DA.playerList) {
+		// players[name] = allPlToPlayer(name);
+		let o = {}
+		let da = DA.allPlayers[name];
+		for (const k in da) {
+			if (k == 'options') { addKeys(da.options, o) }
+			else if (k == 'div' || k == 'isSelected') continue;
+			else o[k] = da[k];
+		}
+		players[name] = o;
+
+	}
+	return players;
+}
+function allPlayerToUser(name, gamename) {
+	//assumes Serverdata.users is up-to-date!
+	//converts from player back to user of gamename
+	//all keys that are player options in gamename are copied back to user.games[gamename] object
+	let poss = valf(getGamePlayerOptions(gamename), {});
+	let optKeys = Object.keys(poss);
+
+	let exceptKeys = ['div', 'isSelected', 'playmode'].concat(optKeys);
+
+	let user = jsCopyExceptKeys(DA.allPlayers[name], exceptKeys);
+
+
+}
+function muell(name, gamename) {
+	let pl = jsCopyExceptKeys(Serverdata.users[name], ['games']);
+	let options = valf(getUserOptionsForGame(name, gamename), {});
+	addKeys(options, pl);
+
+	pl.playmode = playmode;
+
+	//for all the player options in this game, if this user does not have the corresponding options,
+	//copy the default value from game options	
+	let poss = getGamePlayerOptions(gamename);
+	console.log('poss', poss);
+	for (const p in poss) {
+		if (isdef(pl[p])) continue;
+		let val = poss[p];
+		let defval = arrLast(val.split(','));
+		if (isNumber(defval)) defval = Number(defval);
+		pl[p] = defval;
+		//console.log('default for',p,'is',defval);
+	}
+	return pl;
+}
+async function saveAndUpdatePlayerOptions(allPl, gamename) {
+	let name = allPl.name;
+	let poss = getGamePlayerOptionsAsDict(gamename);
+
+	// let allPlCopy = jsCopyExceptKeys(allPl, ['div', 'isSelected']);
+	// console.log('___saveAndUpdatePlayerOptions', name, '\nallPl', allPlCopy, '\nposs', jsCopy(poss));
+
+	if (nundef(poss)) return;
+
+	let opts={};
+	for (const p in poss) { 
+		allPl[p] = getRadioValue(p); 
+		if (p == 'playmode') continue;
+		opts[p] =  allPl[p];
+	}
+
+	let id = 'dPlayerOptions'; mRemoveIfExists(id); //dont need UI anymore
+
+	let oldOpts = valf(getUserOptionsForGame(name,gamename),{});
+
+	let changed = false;
+	for(const p in poss){
+		if (p == 'playmode') continue;
+		if (oldOpts[p]!=opts[p]) {changed = true; break;}
+	}
+
+	if (changed) {
+		let games = valf(Serverdata.users[name].games,{});
+		games[gamename] = opts;
+		await postUserChange({name,games})
+	}
+}
+function createGamePlayer(name, gamename, opts = {}) {
+	let pl = jsCopy(Serverdata.users[name]);
+	let plopts = valf(pl.options, {}); delete pl.options;
+	copyKeys(opts, plopts);
+	let defopts = Serverdata.config.games[gamename].ploptions;
+	for (const k in defopts) {
+		let val = plopts[k];
+		if (nundef(val)) {
+			let vals = defopts[k].split(',').map(x => x.trim());
+			val = arrLast(vals);
+			if (isNumeric(val)) val = Number(val);
+			plopts[k] = val;
+		}
+	}
+	copyKeys(plopts, pl);
+	return pl;
+}
+async function collectPlayerOptions(allPl, gamename) {
+	let name = allPl.name;
+	let options = allPl.options;
+	let poss = Serverdata.config.games[gamename].ploptions;
+
+	console.log('___collectPlayerOptions',name,'\npl.options',jsCopy(allPl.options),'\nposs',jsCopy(poss))
+
+	if (nundef(poss)) return options;
+	for (const p in poss) {
+		options[p] = getRadioValue(p);
+	}
+	//pl[gamename] = options;
+	let id = 'dPlayerOptions'; mRemoveIfExists(id);//mRemove(d);
+	let uold = Serverdata.users[allPl.name];
+	let unew = {};
+	for (const k in allPl) {
+		if (['div', 'isSelected', 'playmode', 'options'].includes(k)) continue;
+		unew[k] = jsCopy(allPl[k]);
+	}
+	lookupSetOverride(unew,['games',gamename],options);
+	for (const k in unew.options) {
+		if (k == 'playmode') continue;
+		if (lookup(uold, ['games',gamename, k]) != lookup(unew, ['games',gamename, k])) {
+			let res = await postUserChange(unew);
+			let o=DA.allPlayers[name];
+			copyKeys(res, o);
+			o.options = lookup(res,['games',gamename]);
+			delete o.games;
+			delete o.options.playmode;
+			DA.allPlayers[name] = o;
+			return;
+		}
+	}
+}
+async function setPlayerPlaying(item, gamename) {
+	let [name, da] = [item.name, item.div];
+	addIf(DA.playerList, name);
+	selectPlayerItem(item);
+	await collectFromPrevious(gamename);
+	let id = 'dPlayerOptions';
+	DA.lastPlayerItem = item;
+	let poss = getGamePlayerOptions(gamename);
+	if (nundef(poss)) return;
+	let dParent = mBy('dGameMenu'); //mBy('dMain'); //mBy('dGameMenu'); //document.body;
+	let bg = getUserColor(name);
+	let rounding = 6;
+	let d1 = mDom(dParent, { bg: colorLight(bg, 50), border: `solid 2px ${bg}`, rounding, display: 'inline-block', hpadding: 3, rounding }, { id });
+	mDom(d1, {}, { html: `${name}` }); //title
+	d = mDom(d1, {}); mCenterFlex(d);
+	mCenterCenter(d);
+	for (const p in poss) {
+		let key = p;
+		let val = poss[p];
+		if (isString(val)) {
+			let list = val.split(',');
+			let legend = formatLegend(key);
+			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
+			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
+			let userval = lookup(DA.allPlayers, [name, 'options', p]);
+			let radio;
+			let chi = fs.children;
+			for (const ch of chi) {
+				let id = ch.id;
+				if (nundef(id)) continue;
+				let radioval = stringAfterLast(id, '_');
+				if (isNumber(radioval)) radioval = Number(radioval);
+				if (userval == radioval) ch.firstChild.checked = true;
+				else if (nundef(userval) && `${radioval}` == arrLast(list)) ch.firstChild.checked = true;
+			}
+			measureFieldset(fs);
+		}
+	}
+	let r = getRectInt(da, mBy('dGameMenu'));
+	let rp = getRectInt(d1);
+	let [y, w, h] = [r.y - rp.h - 4, rp.w, rp.h];
+	let x = r.x - rp.w / 2 + r.w / 2;
+	if (x < 0) x = r.x - 22;
+	if (x > window.innerWidth - w - 100) x = r.x - w + r.w + 14;
+	mIfNotRelative(dParent);
+	mPos(d1, x, y);
+	mButtonX(d1, ev => collectPlayerOptions(item, gamename), 18, 3, 'dimgray');
+}
+async function showGamePlayers(dParent, users) {
+	let me = getUname();
+	mStyle(dParent, { wrap: true });
+	let userlist = ['amanda','felix','mimi'];
+	for(const name in users) addIf(userlist,name);
+	for (const name of userlist) {
+		let d = mDom(dParent, { align: 'center', padding: 2, cursor: 'pointer', border: `transparent` });
+		d.setAttribute('username', name)
+		let img = showUserImage(name, d, 40);
+		let label = mDom(d, { matop: -4, fz: 12, hline: 12 }, { html: name });
+		let item = jsCopy(users[name]); 
+
+		
+		delete item.games;
+		let options = valf(lookup(users,[name,'games',DA.gamename]),{});
+		item.options = jsCopy(options);
+		item.div = d;
+		item.isSelected = false;
+		DA.allPlayers[name] = item;
+		d.onclick = onclickGameMenuPlayer;
+	}
+	await clickOnPlayer(me);
+}
+
+function createOpenTable(gamename, players, options) {
+	let me = getUname();
+	let playerNames = [me];
+	assertion(me in players, "createOpenTable without owner!!!!!")
+	for (const name in players) { addIf(playerNames, name); }
+	let pdict = {};
+	for (const name of playerNames) {
+		let o = {};
+		let pl = players[name];
+		for (const k in pl) {
+			if (k == gamename) { addKeys(pl[gamename], o); }
+			else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
+		}
+		pdict[name]=o;
+	}
+	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
+
+	// //mach das hier schon 
+	// if (TESTING && gamename == 'setgame') {
+	// 	let keys = ['playmode', 'score', 'level', 'name', 'color', 'key'];
+	// 	let osorted = {};
+	// 	for (const k of keys) { osorted[k] = o[k]; }
+	// 	pdict[name] = osorted;
+	// } else pdict[name] = o;
+
+
+	let t = {
+		status: 'open',
+		id: generateTableId(),
+		fen: null,
+		game: gamename,
+		owner: playerNames[0],
+		friendly: generateTableName(),
+		players: pdict,
+		playerNames: playerNames,
+		options
+	};
+	return t;
+}
+
+function button96() {
+
+	function setup(table) {
+		//console.log('setup:table',table)
+		let fen = {};
+		for (const name in table.players) {
+			let pl = table.players[name];
+			let opts = pl.options;
+			delete pl.options;
+			addKeys(opts, pl)
+			pl.score = 0;
+		}
+		fen.cards = [1, 2, 3];
+		fen.deck = range(4, 100); //[4, 5, 6, 7, 8, 9, 10];
+		table.plorder = jsCopy(table.playerNames);
+		table.turn = jsCopy(table.playerNames);
+		return fen;
+	}
+	function resolvePending(table) {
+		//console.log('resolvePending',table.pending)
+		let [fen, players] = [table.fen, table.players];
+		let pending = table.pending; delete table.pending;
+		let [name, move] = [pending.name, pending.move];
+
+		let best = arrMinMax(fen.cards).min; //check if the card is the best
+		if (move == best) {
+			players[name].score += 1;
+			removeInPlace(fen.cards, move);
+			let cardlist = deckDeal(fen.deck, 1); //console.log('new card(s)',cardlist);
+			if (!isEmpty(cardlist)) fen.cards.push(cardlist[0]);
+			DA.pendingChanges = [['players', name, 'score'], ['fen']];
+		} else {
+			players[name].score -= 1;
+			DA.pendingChanges = [['players', name, 'score']];
+		}
+
+	}
+	function present(table) {
+		let [fen, players] = [table.fen, table.players];
+		let d = mDom('dTable', { gap: 10, padding: 10 }); mCenterFlex(d);
+		let items = [];
+		for (const card of fen.cards) {
+			//console.log('card',card)
+			let item = cNumber(card);
+			mAppend(d, iDiv(item));
+			items.push(item);
+			item.feno = card;
+			//console.log(c);
+		}
+		return items;
+	}
+	function stats(table) {
+		let [fen, me, players] = [table.fen, getUname(), table.players];
+		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+		let player_stat_items = uiTypePlayerStats(table, me, 'dStats', 'rowflex', style)
+		for (const plname in players) {
+			let pl = players[plname];
+			let item = player_stat_items[plname];
+			if (pl.playmode == 'bot') {
+				mStyle(item.img, { rounding: 0 });
+			}
+
+			let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+			playerStatCount('star', pl.score, d);
+		}
+	}
+	async function activate(table, items) {
+		let fen = table.fen;
+		let instruction = 'must click a card';
+		let html = (isMyTurn(table) ? `${get_waiting_html()}<span style="color:red;font-weight:bold;max-height:25px">You</span>` + "&nbsp;" + instruction : `waiting for: ${getTurnPlayers(table)}`);
+		let dinst = mBy('dInstruction'); mClear(dinst);
+		let style = { display: 'flex', 'justify-content': 'center', 'align-items': 'center' };
+		if (isMyTurn(table)) style.maleft = -30;
+		mDom(dinst, style, { html });
+
+		if (!isMyTurn(table)) return;
+
+		for (const item of items) {
+			let d = iDiv(item);
+			mStyle(d, { cursor: 'pointer' });
+			d.onclick = ev => onclickCard(table, item);
+		}
+
+		if (amIHuman(table)) return;
+
+		//bot move activation
+		TO.bot = setInterval(async () => { 
+			//console.log('BOT!!!',table.step);
+			let list = sortBy(items, x => x.feno); //console.log(list);
+			let item = list[0]; //rChoose(items);
+			await onclickCard(table, item);
+		}, rNumber(1000, 4000));
+
+	}
+
+	async function onclickCard(table, item) {
+		mShield('dTable', { bg: 'transparent' });
+
+		//highlight clicked card
+		let d = iDiv(item);
+		let ms = rChoose(range(300, 400));
+		mClass(d, 'framedPicture'); TO.hallo = setTimeout(() => mClassRemove(d, 'framedPicture'), ms);
+		try { await mSleep(ms); } catch (err) { console.log("ERR", err); return; }
+
+		let id = table.id;
+		let name = getUname();
+		let move = item.feno;
+		let step = table.step;
+		let olist = [
+			{ keys: ['pending'], val: { name, move } },
+		];
+		if (isdef(DA.pendingChanges)){
+			for (const klist of DA.pendingChanges) {
+				olist.push({ keys: klist, val: lookup(table, klist) });
+			}
+		}
+
+		let o = { id, name, olist, step };
+		let best = arrMinMax(table.fen.cards).min;
+
+		if (move == best) o.stepIfValid = step + 1; // nur 1 kann punkt kriegen pro runde
+
+		let res = await mPostRoute('olist', o); console.log(res);
+	}
+
+	return { setup, resolvePending, present, stats, activate }; //, activate, checkGameover, showStats, botMove };
+}
+async function testOnclickDeck0() {
+	let tnew = jsCopy(T);
+	tnew.fen.deck = [];
+	let res = await sendMergeTable({ name: getUname(), id: tnew.id, table: tnew });
+	console.log('res', res.fen.deck)
+}
+function checkInterrupt(items) {
+	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0];
+}
+
+
+//#region 17.mai 24
+async function switchToUser(uname,menu) {
+	if (!isEmpty(uname)) uname = normalizeString(uname);
+	if (isEmpty(uname)) uname = 'guest';
+	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
+	U = await getUser(uname);
+	localStorage.setItem('username', uname);
+	iDiv(UI.user).innerHTML = uname;
+	setTheme(U);
+	menu = valf(menu,Clientdata.curMenu,localStorage.getItem('menu'),'home');
+  switchToMainMenu(menu);
+	if (menu == 'table') {
+		assertion(Clientdata.table,"Table menu without table!!!!!!!")
+		showTable(Clientdata.table.id);
+	}	else await switchToMainMenu(menu);
+}
+function closeApps() {
+	if (isdef(DA.calendar)) { closePopup(); delete DA.calendar; }
+	mClear('dMain');
+	mClear(dTitle);
+}
+function subscribeAsSpectator(id,name){
+  mPostRoute('spectate',{id,name})
+}
+async function onclickCard(table, item) {
+	//console.log('click!!!')
+	//was soll denn jetzt passieren?
+	let [fen, players] = [table.fen, table.fen.players];
+	let card = item.feno;
+
+	let d = iDiv(item);
+	let ms = 500;
+	mClass(d, 'framedPicture'); TO.hallo = setTimeout(()=>mClassRemove(d,'framedPicture'),ms);
+	try{await mSleep(ms);}catch(err){console.log("ERR",err); return;}
+
+	try{
+		let best = arrMinMax(fen.cards).min;
+		if (card == best) {
+			mShield('dTable',{bg:'transparent'});
+			let name = getUname();
+			let move = card;
+			table.pending = { name, move };
+			//console.log('sending',table)
+			let res = await mPostRoute('move', table); 
+			console.log('res',res)
+			//if (isString(res) && res.includes('INVALID')) console.log('...from server:', res)
+		} else { 
+			//console.log('fehler!');
+			//was soll bei einem fehler passieren?
+			//was wenn es ein bot war?
+		}
+	}catch(err){
+		console.log(`wie bitte???!!!!!!!!!!!!!!!!!!`,err);
+		if (isdef(TO.SLEEPTIMEOUT)) {
+			clearTimeout(TO.SLEEPTIMEOUT);
+			console.log('after clearTimeout',TO.SLEEPTIMEOUT);
+		}
+	}
+	
+
+}
+var MergeCount = 0;
+app.post('/mergeTable', (req, res) => { //partial override using olist, emits to players-name
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for mergeTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for mergeTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table = lookup(Session, ['tables', id]);
+
+	console.log(`__merge ${MergeCount++}:`, name);
+	if (isdef(olist)) {
+		//partial merge!
+		for (const o of olist) {
+			lookupSetOverride(table, o.keys, o.val);
+			//let last = arrLast(o.keys);
+			// console.log('override',last,isLiteral(o.val)?o.val:typeof o.val)
+		}
+	} else if (isdef(tnew)) {
+		// console.log(Object.keys(tnew))
+		table = tnew; //deepmergeOverride(table,tnew);
+	}
+	saveTable(id, table);
+	// console.log('table',table)
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(arrMinus(table.playerNames, name), 'merged', table);
+	res.json(table);
+});
+var RaceCount = 0;
+app.post('/raceTable0', (req, res) => { //ohne error, just 1 score point per step
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
+	let step = req.body.step;
+	if (nundef(step)) return res.json("ERRROR! no step provided for raceTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table = lookup(Session, ['tables', id]);
+	if (!assertion(table, `table ${id} does NOT exist`)) { res.json('ASSERTION ERROR'); return; }
+
+	console.log(`__race ${RaceCount++}:`, name, step);
+
+	let tcopy = jsCopy(table); //erstmal eine table copy machen
+	if (isdef(olist)) {
+		//partial merge!
+		for (const o of olist) {
+			lookupSetOverride(tcopy, o.keys, o.val);
+			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
+		}
+	} else if (isdef(tnew)) {
+		// console.log(Object.keys(tnew))
+		tcopy = tnew; //deepmergeOverride(table,tnew);
+	}
+
+	let sum = calcScoreSum(tcopy); //check if this new table is valid!
+	let fen = tcopy.fen;
+	let scores = tcopy.playerNames.map(x => fen.players[x].score).join(',')
+	if (sum != step) {
+		console.log('=>INVALID!\nstep', step, '\nsum', sum, '\nplayer', name, '\nscores', scores);
+		//do NOT update table and do NOT send anything!!!
+		res.json('INVALID');
+		return;
+	}
+	saveTable(id, tcopy);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	emitToPlayers(arrMinus(tcopy.playerNames, name), 'merged', tcopy);
+	res.json(tcopy);
+});
+app.post('/raceTable', (req, res) => { // 1 score poiint per step, -1 per error
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table = lookup(Session, ['tables', id]);
+	if (!assertion(table, `table ${id} does NOT exist`)) { res.json('ASSERTION ERROR'); return; }
+
+	let step = valf(req.body.step, table.step);
+	let errors = valf(req.body.errors, 0);
+
+	let tcopy = jsCopy(table); //erstmal eine table copy machen
+	if (isdef(olist)) {
+		//partial merge!
+		for (const o of olist) {
+			lookupSetOverride(tcopy, o.keys, o.val);
+			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
+		}
+	} else if (isdef(tnew)) {
+		// console.log(Object.keys(tnew))
+		tcopy = tnew; //deepmergeOverride(table,tnew);
+	}
+
+	let sum = calcScoreSum(tcopy); //check if this new table is valid!
+	let errsum = calcErrSum(tcopy);
+	console.log(`__race ${RaceCount++}:`, name, step, `-${errors}`, sum, errsum);
+
+	let scores = tcopy.playerNames.map(x => `${x}:${tcopy.fen.players[x].score}`).join(',')
+	let allErrors = tcopy.playerNames.map(x => `${x}:${tcopy.fen.players[x].errors}`).join(',')
+	if (sum != step - errsum) {
+		console.log('=>INVALID!\nstep', step, sum + errsum, '\nerrsum', errsum, '\nsum', sum, '\nplayer', name, '\nscores', scores, '\nerrors', allErrors);
+		//do NOT update table and do NOT send anything!!!
+		res.json('INVALID');
+		return;
+	}
+	saveTable(id, tcopy);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	// *** the following only works if players is only logged in ONCE!!!!!!
+	emitToPlayers(arrMinus(tcopy.playerNames, name), 'merged', tcopy);
+	res.json(tcopy);
+});
+app.post('/privateOlist', (req, res) => { //partial override using olist, noemit!
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for privateOlist!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for privateOlist!")
+	let olist = req.body.olist;
+	if (nundef(olist)) return res.json("ERRROR! no olist provided for privateOlist!")
+	let table = lookup(Session, ['tables', id]);
+	for (const o of olist) lookupSetOverride(table, o.keys, o.val);
+	saveTable(id, table);
+	res.json(table);
+});
+app.post('/move', (req, res) => { //send complete table! emits to all players!
+	let table = req.body;
+	let [step, id] = [table.step, table.id];
+	let ti = Session.tableInfo[id];
+	if (nundef(ti)) ti = Session.tableInfo[id] = table.step;
+	if (step < ti) {
+		//diese table ist veraltet!!!
+		res.json(`INVALID!!!! step:${step} tableInfo:${ti}`);
+	} else {
+		Session.tableInfo[id] += 1;
+		saveTableInfo();
+		table.step += 1;
+		saveTable(id, table);
+		emitToPlayers(table.playerNames, 'pending', table);
+		res.json(`YEAH!!!! step:${step} tableInfo:${ti}`);
+	}
+});
+app.post('/spectate', (req, res) => { //emits id turn to everyone, fuer den anfang von einer table!
+	let id = req.body.id;
+	let name = req.body.name; 
+	console.log('SPECTATE!!!',name)
+	//lookupAddIfToList(Spectators,[id],name); console.log('Spectators',Spectators)
+});
+
+
+
+//#region CancelablePromise take 1
+class CancelablePromise {
+  constructor(executor) {
+    this._hasCanceled = false;
+    this.promise = new Promise((resolve, reject) => {
+      this._reject = reject; // Store reject function to call it on cancel
+
+      executor(
+        (value) => {
+          if (this._hasCanceled) {
+            reject({ isCanceled: true });
+          } else {
+            resolve(value);
+          }
+        },
+        (error) => {
+          if (this._hasCanceled) {
+            reject({ isCanceled: true });
+          } else {
+            reject(error);
+          }
+        }
+      );
+    });
+  }
+
+  cancel() {
+    this._hasCanceled = true;
+    this._reject({ isCanceled: true }); // Immediately reject with cancelation
+  }
+}
+
+async function mySleep(ms) {
+  return new CancelablePromise((resolve) => {
+    const timeoutId = setTimeout(resolve, ms);
+    // Clean up timeout if canceled
+    this.promise.catch((err) => {
+      if (err.isCanceled) {
+        clearTimeout(timeoutId);
+      }
+    });
+  });
+}
+
+// Usage example:
+const sleep = mySleep(5000);
+
+sleep.promise
+  .then(() => console.log('Completed'))
+  .catch((err) => {
+    if (err.isCanceled) {
+      console.log('Sleep was canceled');
+    } else {
+      console.error('Error:', err);
+    }
+  });
+
+// To cancel the sleep
+setTimeout(() => sleep.cancel(), 2000); // Cancels the sleep after 2 seconds
+//#endregion
+
+//#region CancelablePromise take 0
+class CancelablePromise {
+  constructor(executor) {
+    this._hasCanceled = false;
+
+    this.promise = new Promise((resolve, reject) => {
+      executor(
+        (value) => {
+          if (this._hasCanceled) {
+            reject({ isCanceled: true });
+          } else {
+            resolve(value);
+          }
+        },
+        (error) => {
+          if (this._hasCanceled) {
+            reject({ isCanceled: true });
+          } else {
+            reject(error);
+          }
+        }
+      );
+    });
+  }
+
+  cancel() {
+    this._hasCanceled = true;
+  }
+}
+
+// Usage example
+const cancelablePromise = new CancelablePromise((resolve, reject) => {
+  setTimeout(() => resolve('Promise resolved'), 3000);
+});
+
+cancelablePromise.promise
+  .then((value) => console.log(value))
+  .catch((error) => {
+    if (error.isCanceled) {
+      console.log('Promise was canceled');
+    } else {
+      console.error('Promise error:', error);
+    }
+  });
+
+// To cancel the promise
+cancelablePromise.cancel();
+//#endregion
+
+//#endregion
+
+//#region 16.mai 24
+function button96() {
+
+	function setup(table) {
+		let fen = {};
+		fen.players = {};
+		for (const name in table.players) {
+			let pl = fen.players[name] = table.players[name];
+			let opts = pl.options;
+			delete pl.options;
+			addKeys(opts,pl)
+			//pl.color = getUserColor(name)
+			pl.score = 0;
+		}
+		fen.cards = [1, 2, 3];
+		fen.deck = range(4,100); //[4, 5, 6, 7, 8, 9, 10];
+		fen.plorder = jsCopy(table.playerNames);
+		fen.turn = jsCopy(table.playerNames);
+		return fen;
+	}
+	function resolvePending(table){
+		let [fen,players] = [table.fen,table.fen.players];
+		let pending = table.pending; delete table.pending;
+		let [name,move] = [pending.name,pending.move];
+		//console.log(name,move,fen.cards,fen.deck);
+		removeInPlace(fen.cards,move);
+		let cardlist = deckDeal(fen.deck,1); //console.log('new card(s)',cardlist);
+		if (!isEmpty(cardlist))	fen.cards.push(cardlist[0]);
+		players[name].score += 1;
+		//table.step+=1;
+	}
+	function present(table) {
+		//console.log(table)
+		let [fen, players] = [table.fen, table.fen.players];
+		console.log('players',players)
+		let d = mDom('dTable', { gap: 10, padding: 10 }); mCenterFlex(d);
+		let items = [];
+		for (const card of fen.cards) {
+			//console.log('card',card)
+			let item = cNumber(card);
+			mAppend(d, iDiv(item));
+			items.push(item);
+			item.feno = card;
+			//console.log(c);
+		}
+		return items;
+	}
+	function stats(table) {
+		let [fen, me] = [table.fen, getUname()];
+		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+		let player_stat_items = uiTypePlayerStats(fen, me, 'dStats', 'rowflex', style)
+		for (const plname in fen.players) {
+			let pl = fen.players[plname];
+			let item = player_stat_items[plname];
+			if (pl.playmode == 'bot') {
+				mStyle(item.img, { rounding: 0 });
+			}
+
+			let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+			playerStatCount('star', pl.score, d);
+		}
+	}
+	async function activate(table, items) {
+		let fen = table.fen;
+		let instruction = 'must click a card';
+		let html = (isMyTurn(fen) ? `${get_waiting_html()}<span style="color:red;font-weight:bold;max-height:25px">You</span>` + "&nbsp;" + instruction : `waiting for: ${getTurnPlayers(fen)}`);
+		//html = 'was ist da eigentlich los???'
+		//mDom('dInstruction',{className:'instruction',},{html})
+		let dinst = mBy('dInstruction'); mClear(dinst);
+		let style={	display: 'flex','justify-content': 'center','align-items': 'center'};
+		if (isMyTurn(fen)) style.maleft=-30;
+		 mDom(dinst,style,{html})
+
+		for (const item of items) {
+			let d = iDiv(item);
+			mStyle(d, { cursor: 'pointer' });
+			d.onclick = ev=>onclickCard(table,item);
+		}
+	}
+	
+	async function onclickCard(table,item) {
+		//was soll denn jetzt passieren?
+		let [fen,players] = [table.fen,table.fen.players];
+		let card = item.feno;
+		let best = arrMinMax(fen.cards).min;
+		if (card == best){
+			mShield('dTable');
+			let name = getUname();
+			let move = card;
+			table.pending = {name,move};
+			//console.log('sending',table)
+			let res = await mPostRoute(`move`, table); console.log('from server:',res)
+			//this should be the correct click!
+			//sendmove to server;
+			//if move is valid, 
+		}else{console.log('fehler!')}
+
+
+	}
+
+	return { setup, resolvePending, present, stats, activate }; //, activate, checkGameover, showStats, botMove };
+}
+
+app.post('muell', (req, res) => {
+	let step = req.body.table.step;
+
+	let tnew=req.body;
+	let id = tnew.id;
+	let table =  lookup(Session, ['tables', id]);
+	if (!table) { io.emit('tables', getTablesInfo()); return; } //as if deleted
+	assertion(table.status == 'started',`ERROR: ${table.status} (condTable only valid for table with status started)`)
+	let expected = diTableStep[id];
+	if (nundef(expected)) diTableStep[id]=expected=0;
+	//if (table.step != )
+});
+
+app.post('/muell', (req, res) => {
+	let name = req.body.name;
+	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
+	let id = req.body.id;
+	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
+	let tnew = req.body.table;
+	let olist = req.body.olist;
+	let table =  lookup(Session, ['tables', id]);
+	if (!assertion(table,`table ${id} does NOT exist`)) {res.json('ASSERTION ERROR'); return;}
+
+	let step = valf(req.body.step,table.step); 
+	let errors = valf(req.body.errors,0); 
+	
+	let tcopy = jsCopy(table); //erstmal eine table copy machen
+	if (isdef(olist)){
+		//partial merge!
+		for(const o of olist){
+			lookupSetOverride(tcopy,o.keys,o.val);
+			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
+		}
+	}else if (isdef(tnew)){
+		// console.log(Object.keys(tnew))
+		tcopy = tnew; //deepmergeOverride(table,tnew);
+	}
+
+	let sum = calcScoreSum(tcopy); //check if this new table is valid!
+	let errsum = calcErrSum(tcopy);
+	console.log(`__race ${RaceCount++}:`,name,step,`-${errors}`,sum,errsum);
+
+	let scores = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].score}`).join(',')
+	let allErrors = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].errors}`).join(',')
+	if (sum!=step-errsum){
+		console.log('=>INVALID!\nstep',step,sum+errsum,'\nerrsum',errsum,'\nsum',sum,'\nplayer',name,'\nscores',scores,'\nerrors',allErrors);
+		//do NOT update table and do NOT send anything!!!
+		res.json('INVALID');
+		return;
+	}
+	saveTable(id, tcopy);
+	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
+	// *** the following only works if players is only logged in ONCE!!!!!!
+	emitToPlayers(arrMinus(tcopy.playerNames,name), 'merged', tcopy); 
+	res.json(tcopy);
+});
+//#endregion
+
+//#region 15.mai 24
+async function showTable(table) {
+	INTERRUPT(); //reentrance?!?!?
+	DA.counter += 1; let me = getUname();
+	if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); } 
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+
+	Clientdata.table = table; DA.tsTable=DA.merged;
+
+	clearEvents();
+	showTitle(`${table.friendly}`);
+	let func = DA.funcs[table.game];
+	T = {};
+	let items = T.items = await func.present('dMain',table);
+	mRise('dMain');
+
+	let playmode = getPlaymode(table,me);
+	if (TESTING) testUpdateTestButtons();
+
+	if (table.status == 'over') return showGameover(table);
+
+	if (!table.fen.turn.includes(me)) return;
+
+	if (playmode == 'bot') return await func.botMove(table, items, me);
+	else return await func.activate(table, items);
+
+}
+
+
 //region 14.mai 24
 async function showColors() {
 
@@ -483,6 +1441,7 @@ function sortColorsByLumHue(colors) {
 		return hslB.h - hslA.h; // Note: reverse to get light to dark if desired
 	});
 }
+//#endregion
 
 //#region 11.mai 24
 function generateRYBColorHexagon() {

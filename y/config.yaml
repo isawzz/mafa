@@ -74,13 +74,15 @@ games:
       strategy: 'clairvoyant,random'
       #strategy: 'random,clairvoyant'
   button96:
-    friendly: Race
+    friendly: Dodogame
     logo: dodo
     color: darkslateblue
     game_type: race
     ploptions:
       playmode: bot,human
+      handicap: 1,2,3
     options:
+      numCards: '5,20,100'
       gamemode: 'solo,multi'
   button97:
     friendly: YesNo

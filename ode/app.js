@@ -16,9 +16,11 @@ const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
 const superdiFile = path.join(uploadDirectory, 'm.yaml');
 const tablesDir = path.join(uploadDirectory, 'tables');
+const tablesFile = path.join(uploadDirectory, 'tableinfo.yaml');
 const usersDir = path.join(uploadDirectory, 'users');
 var Session = {}; // session ist nur fuer temp data: just mem
 var Superdi = {};
+//var Spectators={}; //spectators on tables - never saved
 
 const app = express();
 app.use(bodyParser.json({ limit: '200mb' })); //works!!!
@@ -29,33 +31,34 @@ app.use(express.static(path.join(__dirname, '..'))); //Serve public directory
 //#endregion
 
 //#region functions
+function addIf(arr, el) { if (!arr.includes(el)) arr.push(el); }
 function addKeys(ofrom, oto) { for (const k in ofrom) if (nundef(oto[k])) oto[k] = ofrom[k]; return oto; }
 function arrClear(arr) { arr.length = 0; return arr; }
 function arrLast(arr) { return arr.length > 0 ? arr[arr.length - 1] : null; }
 function arrMinus(arr, b) { if (isList(b)) return arr.filter(x => !b.includes(x)); else return arr.filter(x => x != b); }
 function assertion(cond) {
-  if (!cond) {
-    let args = [...arguments];
+	if (!cond) {
+		let args = [...arguments];
 		console.log('!!!ASSERTION!!!')
-    for (const a of args) {
-      console.log('\n', a);
-    }
-    return false;
-  }else return true;
+		for (const a of args) {
+			console.log('\n', a);
+		}
+		return false;
+	} else return true;
 }
-function calcScoreSum(table){
-  let res=0;
-  for(const name in table.fen.players){
-    res+=table.fen.players[name].score;
-  }
-  return res;
+function calcScoreSum(table) {
+	let res = 0;
+	for (const name in table.players) {
+		res += table.players[name].score;
+	}
+	return res;
 }
-function calcErrSum(table){
-  let res=0;
-  for(const name in table.fen.players){
-    res+=valf(table.fen.players[name].errors,0);
-  }
-  return res;
+function calcErrSum(table) {
+	let res = 0;
+	for (const name in table.players) {
+		res += valf(table.players[name].errors, 0);
+	}
+	return res;
 }
 function copyKeys(ofrom, oto, except = {}, only = null) {
 	let keys = isdef(only) ? only : Object.keys(ofrom);
@@ -74,15 +77,23 @@ function deleteFile(filePath) {
 		console.log('File deleted:', filePath);
 	});
 }
-function deleteTable(id) { delete Session.tables[id]; deleteFile(getTablePath(id)); }
+function deleteTable(id) {
+	delete Session.tables[id];
+	deleteFile(getTablePath(id));
+	let ti = Session.tableInfo[id];
+	if (isdef(ti)) {
+		delete Session.tableInfo[id];
+		saveTableInfo();
+	}
+
+}
 function emitToPlayers(namelist, msgtype, o) {
 	for (const name of namelist) {
 		let idlist = byUsername[name]; //console.log('name', name, '\nid', idlist);
 		if (nundef(idlist)) continue;
-		// console.log('ids for',name,idlist)
+		console.log('ids for',name,idlist)
 		for (const id of idlist) {
 			let client = clients[id]; //console.log(name, client.id); //isdef(client),Object.keys(client))
-			o.clientid=client.id;
 			if (client) client.emit(msgtype, o);
 		}
 	}
@@ -100,13 +111,15 @@ function getTablesInfo() {
 	//console.log('session.tables',Session.tables); return [];
 	for (const id in Session.tables) {
 		let t = jsCopy(Session.tables[id]);
-		if (isdef(t.fen)) { t.turn = t.fen.turn; delete t.fen; }
+		delete t.fen;
+		//delete t.players;
 		info.push(t);
 	}
 	return info;
 }
 function getUserPath(name) { return path.join(usersDir, `${name}.yaml`); }
 function isdef(x) { return x !== null && x !== undefined; }
+function isDict(d) { let res = (d !== null) && (typeof (d) == 'object') && !isList(d); return res; }
 function isEmpty(arr) {
 	return arr === undefined || !arr
 		|| (isString(arr) && (arr == 'undefined' || arr == ''))
@@ -167,8 +180,8 @@ function lookupSet(dict, keys, val) {
 	let i = 0;
 	for (const k of keys) {
 		if (nundef(k)) continue;
-		if (d[k] === undefined) d[k] = (i == ilast ? val : {});
-		if (nundef(d[k])) d[k] = (i == ilast ? val : {});
+		//if (d[k] === undefined) d[k] = (i == ilast ? val : {});
+		if (nundef(d[k])) d[k] = (i == ilast ? val : {}); //only uses val if hasn't been set!
 		d = d[k];
 		if (i == ilast) return d;
 		i += 1;
@@ -209,7 +222,18 @@ function saveTable(id, o) {
 	let y = yaml.dump(Session.tables[id]);
 	fs.writeFileSync(getTablePath(id), y, 'utf8');
 }
+function saveTableInfo() {
+	let y = yaml.dump(Session.tableInfo); fs.writeFileSync(tablesFile, y, 'utf8');
+}
 function saveUser(name, o) {
+	let nogo = ['div', 'isSelected', 'button', 'button99', 'button98', 'button97', 'playmode'];
+	nogo.map(x => delete o[x]);
+	for (const k in o) {
+		let val = o[k];
+		if (!isDict(val)) continue;
+		delete val['playmode'];
+	}
+
 	lookupSetOverride(Session, ['users', name], o);
 	let y = yaml.dump(Session.users[name]);
 	fs.writeFileSync(getUserPath(name), y, 'utf8');
@@ -235,18 +259,20 @@ const clients = {};
 io.on('connection', (client) => {
 	clients[client.id] = client;
 	client.on('userChange', x => handle_userChange(x, client.id));
-	client.on('disconnect', x => handle_disconnect(x, client.id)); 
+	client.on('disconnect', x => handle_disconnect(x, client.id));
 });
 function handle_disconnect(x, id) {
 	console.log('::io.disconnected', id);
 	let uname = byClient[id];
 	let idlist = byUsername[uname];
 	if (isList(idlist)) removeInPlace(idlist, id);
+	// for(const k in Spectators){removeInPlace(Spectators[k],uname)}
 	io.emit('message', `${uname} left`);
 }
 function handle_userChange(x, id) {
 	if (x.oldname == x.newname) { console.log('no change:', x.oldname); return; }
 	console.log('::user change', x.newname);
+	// for(const k in Spectators){removeInPlace(Spectators[k],x.oldname)}
 	byClient[id] = x.newname;
 	lookupAddToList(byUsername, [x.newname], id);
 	let list = byUsername[x.oldname];
@@ -270,7 +296,7 @@ app.get('/otherUser', (req, res) => {
 	//console.log(list)
 	let i = list.indexOf(Session.lastUser);
 	//console.log(i)
-	let name = Session.lastUser = i<0?list[0]:list[(i+1)%list.length];
+	let name = Session.lastUser = i < 0 ? list[0] : list[(i + 1) % list.length];
 	// let [name1, name2] = [params.name1, params.name2];
 	// let name = Session.lastUser = (Session.lastUser == name1 ? name2 : name1);
 	res.json(name);
@@ -279,7 +305,7 @@ app.get('/users', (req, res) => {
 	let users = lookup(Session, ['users']);
 	let di = {};
 	for (const k in users) {
-		if (k.includes('_') || k.includes('unsafe') || k == 'guest') continue;
+		if (k.includes('_') || k.includes('unsafe')) continue;
 		di[k] = users[k];
 	}
 	return res.json(di);
@@ -309,10 +335,9 @@ app.get('/filenames', async (req, res) => {
 		res.status(500).json({ error: 'Error reading directory', details: err.message });
 	}
 });
-
 app.get('/session', (req, res) => {
 	console.log('==> get session')
-	res.json({ users: Session.users, config: Session.config, tables: getTablesInfo() }); 
+	res.json({ users: Session.users, config: Session.config, tables: getTablesInfo() });
 });
 app.get('/table', (req, res) => {
 	let params = req.query;
@@ -332,22 +357,6 @@ app.get('/table', (req, res) => {
 app.get('/tables', (req, res) => { return res.json(getTablesInfo()); });
 
 //#region post routes (uses emit)
-app.post('/postTable', (req, res) => {
-	let id = req.body.id;
-	let newTable = req.body;
-	let table = lookup(Session, ['tables', id]);
-	let isNew = !table || table.status == 'open' && newTable.status == 'started';
-	if (isNew) table = newTable; else copyKeys(newTable, table);
-	console.log(newTable.status);
-	let isStarted = table.status == 'started';
-	saveTable(id, table);
-	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
-	console.log(msg)
-	let turn = isStarted ? table.fen.turn : [];
-	io.emit('table', { msg, id, turn, isNew })
-	res.json(msg);
-});
-
 app.post('/deleteImage', (req, res) => {
 	let path1 = path.join(__dirname, req.body.path);
 	console.log('!!!deleting', path1);
@@ -483,8 +492,8 @@ app.post('/postUpdateItem', (req, res) => {
 	}
 });
 app.post('/overrideUser', (req, res) => {
-	let name=req.body.name;
-	let data=req.body;
+	let name = req.body.name;
+	let data = req.body;
 	saveUser(name, data);
 	res.json(data);
 });
@@ -496,9 +505,6 @@ app.post('/postUser', (req, res) => {
 	let user = lookup(Session, ['users', name]);
 	let isNew = !user;
 	if (isNew) user = userdata; else copyKeys(userdata, user);
-	delete user.div;
-	delete user.isSelected;
-	['button','button98','button97'].map(x=>delete user[x]);
 	saveUser(name, user);
 	let msg = `user posted: ${user.name} new:${isNew}`;
 	console.log(msg)
@@ -511,124 +517,58 @@ app.post('/renameImgDir', (req, res) => {
 	res.json(`dir ${oldname} renamed successfully!`);
 });
 
-var MergeCount=0;
-app.post('/mergeTable', (req, res) => {
-	let name = req.body.name;
-	if (nundef(name)) return res.json("ERRROR! no name provided for mergeTable!")
+app.post('/postTable', (req, res) => { //emits id turn to everyone, fuer den anfang von einer table!
 	let id = req.body.id;
-	if (nundef(id)) return res.json("ERRROR! no id provided for mergeTable!")
-	let tnew = req.body.table;
-	let olist = req.body.olist;
+	let newTable = req.body;
+	let table = lookup(Session, ['tables', id]);
+	let isNew = !table || table.status == 'open' && newTable.status == 'started';
+	if (isNew) table = newTable; else copyKeys(newTable, table);
+	console.log(newTable.status);
+	let isStarted = table.status == 'started';
+	saveTable(id, table);
+	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
+	console.log(msg)
+	let turn = isStarted ? table.turn : [];
+	io.emit('table', { msg, id, turn, isNew })
+	res.json(msg);
+});
+
+
+//******** NEW GAME API *********/
+app.post('/olist', (req, res) => { //partial override using olist, emit+return iff valid!
+	let name = req.body.name; if (nundef(name)) return res.json("ERRROR! no name provided for olist!");
+	let id = req.body.id; if (nundef(id)) return res.json("ERRROR! no id provided for olist!");
+	let olist = req.body.olist; if (nundef(olist)) return res.json("ERRROR! no olist provided for olist!");
+	let step = req.body.step;
+	let stepIfValid = req.body.stepIfValid;
 	let table = lookup(Session, ['tables', id]);
 
-	console.log(`__merge ${MergeCount++}:`,name);
-	if (isdef(olist)){
-		//partial merge!
-		for(const o of olist){
-			lookupSetOverride(table,o.keys,o.val);
-			let last = arrLast(o.keys);
-			// console.log('override',last,isLiteral(o.val)?o.val:typeof o.val)
-		}
-	}else if (isdef(tnew)){
-		// console.log(Object.keys(tnew))
-		table = tnew; //deepmergeOverride(table,tnew);
+	//validity!
+	let version = lookupSet(Session, ['tableInfo', id, 'version'], step);
+	if (isdef(step) && step < version) {
+		//data obsolete! table version has already been updated!
+		res.json(`INVALID!!!! step:${step} version:${version}`);
+		return;
 	}
+	if (isdef(stepIfValid)) {
+		lookupSetOverride(Session, ['tableInfo', id, 'version'], stepIfValid);
+		table.step = stepIfValid;
+		saveTableInfo();
+	}
+	for (const o of olist) lookupSetOverride(table, o.keys, o.val);
 	saveTable(id, table);
-	// console.log('table',table)
-	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
-	emitToPlayers(arrMinus(table.playerNames,name), 'merged', table);
-	res.json(table);
+	io.emit('pending',id);
+	res.json(`YEAH!!!!`);
 });
 
-var RaceCount=0;
-app.post('/raceTable0', (req, res) => {
-	let name = req.body.name;
-	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
-	let id = req.body.id;
-	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
-	let step = req.body.step; 
-	if (nundef(step)) return res.json("ERRROR! no step provided for raceTable!")
-	let tnew = req.body.table;
-	let olist = req.body.olist;
-	let table =  lookup(Session, ['tables', id]);
-	if (!assertion(table,`table ${id} does NOT exist`)) {res.json('ASSERTION ERROR'); return;}
 
-	console.log(`__race ${RaceCount++}:`,name,step);
-	
-	let tcopy = jsCopy(table); //erstmal eine table copy machen
-	if (isdef(olist)){
-		//partial merge!
-		for(const o of olist){
-			lookupSetOverride(tcopy,o.keys,o.val);
-			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
-		}
-	}else if (isdef(tnew)){
-		// console.log(Object.keys(tnew))
-		tcopy = tnew; //deepmergeOverride(table,tnew);
-	}
-
-	let sum = calcScoreSum(tcopy); //check if this new table is valid!
-	let fen=tcopy.fen;
-	let scores = tcopy.playerNames.map(x=>fen.players[x].score).join(',')
-	if (sum!=step){
-		console.log('=>INVALID!\nstep',step,'\nsum',sum,'\nplayer',name,'\nscores',scores);
-		//do NOT update table and do NOT send anything!!!
-		res.json('INVALID');
-		return;
-	}
-	saveTable(id, tcopy);
-	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
-	emitToPlayers(arrMinus(tcopy.playerNames,name), 'merged', tcopy);
-	res.json(tcopy);
-});
-app.post('/raceTable', (req, res) => {
-	let name = req.body.name;
-	if (nundef(name)) return res.json("ERRROR! no name provided for raceTable!")
-	let id = req.body.id;
-	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
-	let tnew = req.body.table;
-	let olist = req.body.olist;
-	let table =  lookup(Session, ['tables', id]);
-	if (!assertion(table,`table ${id} does NOT exist`)) {res.json('ASSERTION ERROR'); return;}
-
-	let step = valf(req.body.step,table.step); 
-	let errors = valf(req.body.errors,0); 
-	
-	let tcopy = jsCopy(table); //erstmal eine table copy machen
-	if (isdef(olist)){
-		//partial merge!
-		for(const o of olist){
-			lookupSetOverride(tcopy,o.keys,o.val);
-			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
-		}
-	}else if (isdef(tnew)){
-		// console.log(Object.keys(tnew))
-		tcopy = tnew; //deepmergeOverride(table,tnew);
-	}
-
-	let sum = calcScoreSum(tcopy); //check if this new table is valid!
-	let errsum = calcErrSum(tcopy);
-	console.log(`__race ${RaceCount++}:`,name,step,`-${errors}`,sum,errsum);
-
-	let scores = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].score}`).join(',')
-	let allErrors = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].errors}`).join(',')
-	if (sum!=step-errsum){
-		console.log('=>INVALID!\nstep',step,sum+errsum,'\nerrsum',errsum,'\nsum',sum,'\nplayer',name,'\nscores',scores,'\nerrors',allErrors);
-		//do NOT update table and do NOT send anything!!!
-		res.json('INVALID');
-		return;
-	}
-	saveTable(id, tcopy);
-	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
-	// *** the following only works if players is only logged in ONCE!!!!!!
-	emitToPlayers(arrMinus(tcopy.playerNames,name), 'merged', tcopy); 
-	res.json(tcopy);
-});
 
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');
 	Session.config = yaml.load(yamlFile);
-	yamlFile = fs.readFileSync(usersFile, 'utf8');
+	yamlFile = fs.readFileSync(tablesFile, 'utf8');
+	Session.tableInfo = yaml.load(yamlFile);
+	// yamlFile = fs.readFileSync(usersFile, 'utf8');
 	// Session.users = valf(yaml.load(yamlFile), {});
 	Session.users = {};
 	let userfiles = await fsp.readdir(usersDir);

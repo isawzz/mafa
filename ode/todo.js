@@ -1,4 +1,100 @@
 
+//#region CancelablePromise und mSleep
+class CancelablePromise {
+  constructor(executor, oncancel) {
+    this._hasCanceled = false;
+    this._oncancel = oncancel;
+    this.promise = new Promise((resolve, reject) => {
+      this._reject = reject; // Store reject function to call it on cancel
+
+      executor(
+        (value) => {
+          if (this._hasCanceled) {
+            reject({ isCanceled: true });
+          } else {
+            resolve(value);
+          }
+        },
+        (error) => {
+          if (this._hasCanceled) {
+            reject({ isCanceled: true });
+          } else {
+            reject(error);
+          }
+        }
+      );
+    });
+  }
+
+  cancel() {
+    if (this._hasCanceled) return;
+    this._hasCanceled = true;
+    if (this._oncancel) this._oncancel();
+    this._reject({ isCanceled: true }); // Immediately reject with cancellation
+  }
+}
+async function mySleep(ms, oncancel) {
+	// // Usage example:
+	// (async () => {
+	//   const sleep = await mySleep(3000, () => console.log('Canceled!'));
+
+	//   // To cancel the sleep
+	//   setTimeout(() => sleep.cancel(), 1000); // Cancels the sleep after 1 second
+	// })();
+	//if (nundef(oncancel)) oncancel = ()=>console.log('SLEEP CANCELLED!!!!');
+	return new CancelablePromise((resolve) => {
+    const timeoutId = setTimeout(resolve, ms);
+    // Clean up timeout if canceled
+    this.promise.catch((err) => {
+      if (err.isCanceled) {
+        clearTimeout(timeoutId);
+      }
+    });
+  }, oncancel);
+}
+
+async function mSleep0(ms){
+	if (SLEEP_WATCHER) SLEEP_WATCHER.cancel();
+	SLEEP_WATCHER = await mySleep(ms);
+}
+async function mSleep1(ms){
+	const sleep = await mySleep(3000, () => console.log('Canceled!'));
+	setTimeout(() => sleep.cancel(), 4000); // Cancels the sleep after 1 second
+}
+//#endregion
+
+//#region theme setting
+async function onclickSettTheme() { await showThemes(); }
+async function onclickSettAddTheme() { await showThemeEditor(); }
+
+async function showThemeEditor(){
+	let d = mBy('dSettingsColor'); mClear(d);
+  let sam=mDom(d,{margin:20,w:'80vw',h:'80vh',bg:'white'});
+
+  let dnav=mDom(sam,{h:'20%',bg:'orange'});
+  let drest=mDom(sam,{h:'80%'});
+  let [dside,dmain]=mColFlex(drest,[1,5],['blue','green']);
+
+
+  let [bg,bgImage,bgSize,bgBlend,bgRepeat,fg]=[U.bg,U.bgImage,U.bgSize,U.bgBlend,U.bgRepeat,U.fg];
+
+
+}
+
+async function showThemes() {
+  //am besten waers ich haette 4 themes, 
+  //let 
+	let d = mBy('dSettingsColor'); mClear(d);
+	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
+	let themes = ['bga', 'calm', 'wild', 'stones'];
+
+  let theme = 'stones';
+
+
+}
+//#endregion
+
+
 //#region color legacy code: TODO!!!! mimali, or isolate and eliminate
 function colorHSL(cAny, asObject = false) {
   let res = colorFrom(cAny, undefined, true);
@@ -613,22 +709,12 @@ function mStyle(elem, styles = {}, unit = 'px') {
 //#endregion
 
 //#region showTable
-async function showTable(table) {
-  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
-  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-
-  let func = DA.funcs[table.game];
-  let me = getUname();
-
-  clearMain();
-
-}
 async function ____showTable(table) {
   if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
   let func = DA.funcs[table.game];
   let me = getUname();
 
-  clearMain(); //INTERRUPT();
+  menuCloseHome(); //INTERRUPT();
 
   if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
   else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
@@ -680,90 +766,6 @@ async function ___showTable_rest(table) {
   else return await func.activate(T);
 }
 //#endregion 
-
-//#region button96
-function button96() {
-  function setup(table) {
-    let fen = {};
-    fen.players = {};
-    for (const name in table.players) {
-      let pl = fen.players[name] = table.players[name];
-      pl.color = getUserColor(name)
-      pl.score = 0;
-    }
-    fen.number = 0;
-    fen.plorder = jsCopy(table.playerNames);
-    fen.turn = jsCopy(table.playerNames);
-    delete table.players;
-    return fen;
-  }
-  function checkGameover(table) {
-    let score_sum = calcScoreSum(table);
-    //console.log('___check score sum',score_sum);
-    if (score_sum >= 5) {
-      table.winners = getPlayersWithMaxScore(table.fen);
-      table.status = 'over';
-      return true;
-    } else return false;
-    //return table.playerNames.some(x => x.score == table.options.winning_score);
-  }
-  function present(T) {
-    // //assumes that me is player at this table!!!
-    // //assertion(calcScoreSum(table) == table.fen.number, "SCORE MISMATCH!!!! present")
-    // //mClear(dParent);
-    // let dInstruction = mDom(dParent,{className:'instruction'},{html:`Waiting for ${table.fen.turn.join(', ')}`});
-    // let dStats = mDom(dParent);
-    // let div = mDom(dParent, { margin: 12, align: 'center' }, { id: 'dGameDiv' }); //for shield! 
-
-    // let bYes = mDom(div, { fz: 100, wmin: 200, margin:10, className: 'button' }, { tag: 'button', html: `Step:${table.step}` });
-    // let bNo = mDom(div, { fz: 100, wmin: 200, margin:10,className: 'button' }, { tag: 'button', html: `Error!` });
-
-    // if (nundef(name)) name=getUname(); //eingeloggter user perspective is default!
-
-    // return { div, bYes, bNo, dInstruction, dStats, table, name };
-  }
-  function showStats(T) { button96Stats(T); }
-  async function activate(T) {
-    dInstruction.innerHTML = "click one of the buttons!"
-    T.bYes.onclick = () => button96OnclickYes(T, true);
-    T.bNo.onclick = () => button96OnclickNo(T, true);
-  }
-  async function botMove(T) {
-    TO.button = setTimeout(() => button96BotMove(T), rChoose([1000, 2000, 3000]));
-  }
-  return { setup, activate, checkGameover, present, showStats, botMove };
-}
-function button96Stats(T) {
-  let [fen, name, dStats] = [T.table.fen, T.name, T.dStats];
-  let layout = 'rowflex';
-  let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
-  let player_stat_items = uiTypePlayerStats(fen, name, dStats, layout, style)
-  for (const plname in fen.players) {
-    let pl = fen.players[plname];
-    let item = player_stat_items[plname];
-    if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
-    let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
-    playerStatCount('star', pl.score, d);
-  }
-}
-async function button96OnclickYes(T, direct = false) {
-  let b = T.bYes;
-  if (direct) clearEvents();
-  disableUI(); //disableButton(b);
-
-  await sendRaceStepScore(T.table, T.name);
-}
-async function button96OnclickNo(T, direct = false) {
-  let b = T.bNo;
-  if (direct) clearEvents();
-  disableUI(); //disableButton(b);
-
-  await sendRaceError(T.table, T.name);
-}
-async function button96BotMove(T) {
-  if (coin(80)) await button96OnclickYes(T); else await button96OnclickNo(T);
-}
-//#endregion
 
 function loadPlayerColors() {
   let [hstep, hmin, hmax] = [20, 0, 359];

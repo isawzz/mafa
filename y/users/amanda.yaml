@@ -1,13 +1,7 @@
 name: amanda
 color: '#2f7532'
 key: amanda
-setgame:
-  level: 6
-  playmode: bot
-button96:
-  playmode: human
 bgImage: url('../assets/textures/marble_greenorange.jpeg')
 bgBlend: overlay
 bgSize: cover
 bgRepeat: no-repeat
-fg: '#ffffff'
