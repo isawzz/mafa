@@ -2,15 +2,10 @@ status: started
 id: q_OPcejRb3gmKAGNXpZD
 fen:
   cards:
-    - 41
-    - 42
-    - 43
-  deck:
-    - 44
-    - 45
     - 46
     - 47
     - 48
+  deck:
     - 49
     - 50
     - 51
@@ -77,8 +72,8 @@ players:
     bgRepeat: no-repeat
     fg: '#ffffff'
     handicap: 1
-    playmode: bot
-    score: 34
+    playmode: human
+    score: 39
   mimi:
     name: mimi
     color: '#ffe4e1'
@@ -96,7 +91,7 @@ playerNames:
 options:
   numCards: 100
   gamemode: multi
-step: 41
+step: 46
 plorder:
   - diana
   - mimi
@@ -105,4 +100,4 @@ turn:
   - mimi
 pending:
   name: diana
-  move: 41
+  move: 46
