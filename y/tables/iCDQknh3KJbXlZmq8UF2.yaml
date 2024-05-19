@@ -1,21 +1,10 @@
-status: started
+status: over
 id: iCDQknh3KJbXlZmq8UF2
 fen:
   cards:
-    - 88
-    - 89
-    - 90
-  deck:
-    - 91
-    - 92
-    - 93
-    - 94
-    - 95
-    - 96
-    - 97
-    - 98
     - 99
     - 100
+  deck: []
 game: button96
 owner: mimi
 friendly: rendezvous in Islamabad
@@ -37,20 +26,20 @@ players:
     key: bird15
     handicap: 1
     playmode: bot
-    score: 69
+    score: 80
 playerNames:
   - mimi
   - diana
 options:
   numCards: 100
   gamemode: multi
-step: 88
+step: 98
 plorder:
   - mimi
   - diana
-turn:
-  - mimi
-  - diana
+turn: []
 pending:
   name: diana
-  move: 88
+  move: 98
+winners:
+  - diana
