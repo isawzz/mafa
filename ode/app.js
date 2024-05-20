@@ -516,7 +516,7 @@ app.post('/renameImgDir', (req, res) => {
 	res.json(`dir ${oldname} renamed successfully!`);
 });
 
-app.post('/postTable', (req, res) => { //emits id turn to everyone, fuer den anfang von einer table!
+app.post('/postTable', (req, res) => { //reset version!!! emits id turn to everyone, fuer den anfang von einer table!
 	let id = req.body.id;
 	let newTable = req.body;
 	let table = lookup(Session, ['tables', id]);
@@ -525,6 +525,7 @@ app.post('/postTable', (req, res) => { //emits id turn to everyone, fuer den anf
 	console.log(newTable.status);
 	let isStarted = table.status == 'started';
 	saveTable(id, table);
+	lookupSetOverride(Session, ['tableInfo', id, 'version'], 0);
 	let msg = `table posted: ${table.friendly} new:${isNew} status:${table.status}`;
 	console.log(msg)
 	let turn = isStarted ? table.turn : [];

@@ -5787,8 +5787,10 @@ async function onclickStartGame() {
 }
 async function onclickStartTable(id) {
 	let table = Serverdata.tables.find(x => x.id == id);
+	if (nundef(table)) table = await mGetRoute('table',{id});
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 	console.log('table', jsCopy(table));
-	assertion(isdef(table), `table with id ${id} not in Serverdata!`);
+	//assertion(isdef(table), `table with id ${id} not in Serverdata!`);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
 }
@@ -6624,6 +6626,7 @@ function setTableSize(w, h, unit = 'px') {
 function setTableToStarted(table) {
 	table.status = 'started';
 	table.step = 0;
+	table.moves = [];
 	table.fen = DA.funcs[table.game].setup(table);
 	return table;
 }
@@ -6877,8 +6880,11 @@ async function showGamePlayers(dParent, users) {
 function showGameover(table, dParent) {
 	let winners = table.winners;
 	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;
-	showRibbon(dParent, msg);
+	let d = showRibbon(dParent, msg);
 	updateTestButtonsLogin(table.playerNames);
+
+	mDom(d,{h:12},{html:'<br>'})
+	mButton('PLAY AGAIN',()=>onclickStartTable(table.id),d,{className:'button',fz:24});
 }
 function showGames(ms = 500) {
 	let dParent = mBy('dGameList'); if (isdef(dParent)) { mClear(dParent); } else dParent = mDom('dMain', {}, { className: 'section', id: 'dGameList' });
@@ -7025,7 +7031,8 @@ function showPaletteNames(dParent, colors) {
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
-	d = mDom(dParent, { bg, mabottom: 10, align: 'center', padding: 10, fz: 40, w100: true }, { html: msg, id: 'ribbon' });
+	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding:10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
+	return d;
 }
 async function showTables(from) {
 	await updateTestButtonsLogin();

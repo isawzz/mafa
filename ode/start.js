@@ -27,7 +27,7 @@ async function test77_switch() {
 async function test76_RESTART() {
   await prelims();
 
-  await switchToOtherUser('mimi', 'felix');
+  //await switchToOtherUser('mimi', 'felix');
 
   //await resetUsers();
   // await switchToUser('mimi');

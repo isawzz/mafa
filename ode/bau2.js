@@ -76,7 +76,7 @@ function setgame() {
 		if (!oset) return; //kann noch kein No Set!
 
 		let avg = calcBotLevel(table);
-		let ms = 18000-avg*2000;
+		let ms = avg?18000-avg*2000:1000;
 
 		TO.bot = setTimeout(async () => {
 			for(const item of oset.items) toggleItemSelection(item);
