@@ -3,6 +3,25 @@ onload = start;
 async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; test76_RESTART(); }
 
+async function test79_colorFuncs(){
+  let lum = colorGetLum('blue'); console.log(lum);
+  // let lum1 = colorLum1('blue'); console.log(lum1);
+  // let x=colorRGB('blue'); console.log(x);
+  // let rgb = colorHexToRgbArray(colorFrom('blue'));
+  //console.log('lum',luminance(...rgb))
+  console.log('_______');
+  console.log(colorGetContrast('black','white'))
+  console.log(colorGetContrast('black','dimgray'))
+  console.log(colorGetContrast('black','#000000'))
+  console.log(colorGetContrast('blue','white'))
+  console.log(colorGetContrast('yellow','white'))
+  console.log(colorGetContrast('yellow','black'))
+  console.log('_______');
+  console.log(colorGetHue('yellow'));
+  console.log(w3color('yellow').hue);
+  console.log(hue('yellow'));
+
+}
 async function test78_switch() {
   let d = clearBodyDiv({ padding: 12 });
   let sw = mSwitch(d, 'sBot');

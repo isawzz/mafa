@@ -5,7 +5,7 @@ function _showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { padding: 10, gap: 4 }); mFlexWrap(d1);
 	for (var c of colors) {
 		let bg = c.hex;
-		let html = `${c.name}`; //: ${bg} hue:${c.hue} sat:${Math.round(c.sat * 100)} lum:${Math.round(c.lightness * 100)}`
+		let html = `${c.name}`; 
 		let dmini = mDom(d1, { padding: 10, bg, fg: colorIdealText(bg) }, { html, class: 'colorbox', dataColor: bg });
 	}
 }

@@ -1,6 +1,7 @@
 
 _____ 6:44 AM 5/20/2024 355
 ==>alles aus todo.js holen was gebraucht wird!!!
+luminosity function rewrite
 
 ==>was ist mit den user_images??? warum resetten die sich staendig?
 das ist von postUser mit true wenn key fehlt!
