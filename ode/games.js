@@ -58,20 +58,6 @@ function setCheckIfSet(keys) {
 	let isSet = arr.every(x => arrAllSameOrDifferent(x));
 	return isSet;
 }
-function setCreateDeck() {
-	let deck = [];
-	['red', 'purple', 'green'].forEach(color => {
-		['diamond', 'squiggle', 'oval'].forEach(shape => {
-			[1, 2, 3].forEach(num => {
-				['solid', 'striped', 'open'].forEach(fill => {
-					deck.push(`${color}_${shape}_${num}_${fill}`);
-				});
-			});
-		});
-	});
-	arrShuffle(deck);
-	return deck;
-}
 function setDrawCard(card, dParent, colors, sz = 100) {
 	const paths = {
 		diamond: "M25 0 L50 50 L25 100 L0 50 Z",
@@ -230,12 +216,12 @@ async function setOnclickNoSet(items, direct = false) {
 	let res = await sendMergeTable({ id: table.id, name: me, olist });
 }
 async function setPresent(dParent, table) {
-	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; //'#4b0082' //'#8e44ed' }; //'blueviolet' }; //'#8e44ad' };
+	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; 
 	setLoadPatterns('dPage', colors);
 	mClear(dParent);
-	let d = mDom(dParent, { margin: 10 }); //, bg: '#00000080' }); mCenterFlex(d)
+	let d = mDom(dParent, { margin: 10 }); 
 	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
-	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.players, table.fen.turn];
+	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.players, table.turn];
 	let cards = fen.cards;
 	let dp = mDom(dOpenTable, { w100: true }); mCenterFlex(dp);
 	let dBoard = T.dBoard = mGrid(cards.length / 3, 3, dp, { gap: 14 });

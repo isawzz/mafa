@@ -5,3 +5,6 @@ bgImage: url('../assets/textures/marble_meer1.jpg')
 bgBlend: normal
 bgSize: cover
 bgRepeat: no-repeat
+games:
+  setgame:
+    level: 7

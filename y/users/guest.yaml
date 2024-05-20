@@ -4,6 +4,8 @@ key: guest
 games:
   button96:
     handicap: 3
+  setgame:
+    level: 7
 bgImage: url('../assets/textures/wall6.JPG')
 bgBlend: multiply
 bgSize: cover

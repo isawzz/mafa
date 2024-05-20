@@ -1,3 +1,6 @@
 name: sheeba
 color: '#c71585'
 key: sheeba
+games:
+  setgame:
+    level: 7

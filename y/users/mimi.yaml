@@ -8,3 +8,5 @@ bgRepeat: no-repeat
 games:
   button96:
     handicap: 2
+  setgame:
+    level: 7

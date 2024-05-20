@@ -4431,6 +4431,7 @@ async function mGetYaml(path = '../base/assets/m.txt') {
 	return di;
 }
 function mGrid(rows, cols, dParent, styles = {}) {
+	[rows,cols]=[Math.ceil(rows),Math.ceil(cols)]
 	addKeys({ display: 'inline-grid', gridCols: 'repeat(' + cols + ',1fr)' }, styles);
 	if (rows) styles.gridRows = 'repeat(' + rows + ',auto)';
 	else styles.overy = 'auto';
@@ -5966,16 +5967,6 @@ function pSBCr(d) {
 	}
 	return x;
 }
-function playerStatCount(key, n, dParent, styles = {}) {
-	let sz = valf(styles.sz, 16);
-	addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'center', fz: sz, align: 'center' }, styles);
-	let d = mDiv(dParent, styles);
-	let o = M.superdi[key];
-	if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg: 'grey' }); //mSym(key, d, { h: sz, 'line-height': sz, w: '100%' });
-	else mText(key, d, { h: sz, fz: sz, w: '100%' });
-	d.innerHTML += `<span style="font-weight:bold;color:inherit">${n}</span>`;
-	return d;
-}
 function polyPointsFrom(w, h, x, y, pointArr) {
 	x -= w / 2;
 	y -= h / 2;
@@ -6893,7 +6884,7 @@ function showGames(ms = 500) {
 	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
 	let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = ['button96']; //'button99','button98','button97','setgame']
+	gamelist = ['button96','setgame']; //'button99','button98','button97','setgame']
 	for (const gname of gamelist) {
 		let g = getGameConfig(gname);
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
@@ -6928,7 +6919,7 @@ function showImage(key, dParent, styles = {}, useSymbol = false) {
 	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: hline, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
 	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoGame', bg: valf(styles.bg, 'beige'), fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-	else if (isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+	else if (isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'contain', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
 	assertion(el, 'PROBLEM mit' + key);
 	mStyle(el, { cursor: 'pointer' })
 	return d1;

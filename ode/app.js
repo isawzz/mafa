@@ -408,6 +408,14 @@ app.post('/moveImage', (req, res) => {
 		res.json(`did NOT find ${oldpath}`);
 	}
 });
+app.post('/postConfig', (req, res) => {
+	console.log('<== post config')
+	Session.config = req.body;
+	let y = yaml.dump(Session.config);
+	fs.writeFileSync(configFile, y, 'utf8');
+	io.emit('config',Session.config);
+	res.json("config saved!");
+});
 app.post('/postEvent', (req, res) => {
 	let id = req.body.id;
 	let data = req.body;
@@ -524,8 +532,7 @@ app.post('/postTable', (req, res) => { //emits id turn to everyone, fuer den anf
 	res.json(msg);
 });
 
-
-//******** NEW GAME API *********/
+// *** old API ***
 app.post('/olist', (req, res) => { //partial override using olist, emit+return iff valid!
 	let name = req.body.name; if (nundef(name)) return res.json("ERRROR! no name provided for olist!");
 	let id = req.body.id; if (nundef(id)) return res.json("ERRROR! no id provided for olist!");
@@ -551,14 +558,32 @@ app.post('/olist', (req, res) => { //partial override using olist, emit+return i
 	io.emit('pending',id);
 	res.json(`YEAH!!!!`);
 });
-app.post('/postConfig', (req, res) => {
-	console.log('<== post config')
-	Session.config = req.body;
-	let y = yaml.dump(Session.config);
-	fs.writeFileSync(configFile, y, 'utf8');
-	io.emit('config',Session.config);
-	res.json("config saved!");
+
+//******** NEW GAME API *********/
+app.post('/table', (req, res) => { //override & emit iff valid!
+	let name = req.body.name; if (nundef(name)) return res.json("ERRROR! no name provided for olist!");
+	let id = req.body.id; if (nundef(id)) return res.json("ERRROR! no id provided for olist!");
+	let table = req.body.table; if (nundef(table)) return res.json("ERRROR! no table provided for olist!");
+	let step = req.body.step;
+	let stepIfValid = req.body.stepIfValid;
+
+	//validity!
+	let version = lookupSet(Session, ['tableInfo', id, 'version'], step);
+	if (isdef(step) && step < version) { //data obsolete! table version has already been updated!
+		res.json(`INVALID!!!! step:${step} version:${version}`);
+		return;
+	}
+	if (isdef(stepIfValid)) {
+		lookupSetOverride(Session, ['tableInfo', id, 'version'], stepIfValid);
+		table.step = stepIfValid;
+		saveTableInfo();
+	}
+	saveTable(id, table);
+	io.emit('pending',id);
+	res.json(`YEAH!!!!`);
 });
+
+
 
 async function init() {
 	let yamlFile = fs.readFileSync(configFile, 'utf8');

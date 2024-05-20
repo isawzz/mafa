@@ -27,7 +27,7 @@ async function test77_switch() {
 async function test76_RESTART() {
   await prelims();
 
-  //await switchToOtherUser('mimi', 'felix');
+  await switchToOtherUser('mimi', 'felix');
 
   //await resetUsers();
   // await switchToUser('mimi');
@@ -99,7 +99,7 @@ async function prelims() {
   let t5 = performance.now();
   window.onkeydown = keyDownHandler;
   window.onkeyup = keyUpHandler;
-  DA.funcs = { button96: button96() }; //implemented games!
+  DA.funcs = { setgame: setgame(), button96: button96() }; //implemented games!
   for (const gname in Serverdata.config.games) {
     if (isdef(DA.funcs[gname])) continue;
     DA.funcs[gname] = defaultGameFunc();
