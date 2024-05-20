@@ -195,6 +195,18 @@ function mimali(c, n) {
 //#endregion
 
 //#region legacy color functions
+function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
+	if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
+	rgb = hex2RgbObject(bg);
+	r = rgb.r;
+	g = rgb.g;
+	b = rgb.b;
+	var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+	var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+	if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+	return foreColor;
+}
+
 function hexAToHSLA(H) {
   let ex = /^#([\da-f]{4}){1,2}$/i;
   if (ex.test(H)) {
@@ -528,10 +540,20 @@ function RGBToHSL(rgb) {
   }
 }
 
-
-function colorContrast(dDrop, list = ['white', 'black']) {
-  let bg = mGetStyle(dDrop, 'bg'); return bestContrastingColor(bg, list);
+function bestContrastingColor(color, colorlist = ['white', 'black']) {
+	let contrast = 0;
+	let result = null;
+	let rgb = colorRGB(color, true);
+	rgb = [rgb.r, rgb.g, rgb.b];
+	for (c1 of colorlist) {
+		let x = colorRGB(c1, true)
+		x = [x.r, x.g, x.b];
+		let c = colorGetContrast(rgb, x);
+		if (c > contrast) { contrast = c; result = c1; }
+	}
+	return result;
 }
+
 function colorFromHSL(hue, sat = 100, lum = 50) {
   return hslToHex(valf(hue, rHue()), sat, lum);
 }
@@ -571,30 +593,6 @@ function colorRGB(cAny, asObject = false) {
     return srgb;
   }
 }
-function colorsFromBFA(bg, fg, alpha) {
-  if (fg == 'contrast') {
-    if (bg != 'inherit') bg = colorFrom(bg, alpha);
-    fg = colorIdealText(bg);
-  } else if (bg == 'contrast') {
-    fg = colorFrom(fg);
-    bg = colorIdealText(fg);
-  } else {
-    if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
-    if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
-  }
-  return [bg, fg];
-}
-function colorIdealText(bg, grayPreferred = false) {
-  let rgb = colorRGB(bg, true);
-  const nThreshold = 105;
-  let r = rgb.r;
-  let g = rgb.g;
-  let b = rgb.b;
-  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
-  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
-  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
-  return foreColor;
-}
 function colorLight(c, percent = 20, log = true) {
   if (nundef(c)) {
     return colorFromHSL(rHue(), 100, 85);
@@ -617,9 +615,6 @@ function colorShades(color) {
     res.push(c);
   }
   return res;
-}
-function colorTrans(cAny, alpha = 0.5) {
-  return colorFrom(cAny, alpha);
 }
 function computeColor(c) { return (c == 'random') ? randomColor() : c; }
 function getExtendedColors(bg, fg) {

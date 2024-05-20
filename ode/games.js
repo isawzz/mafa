@@ -1,264 +1,380 @@
-//#region setgame
-async function setActivate(items) {
-	try {
-		T.sets = setFindAllSets(items);
-		[T.bNoSet, T.bHint] = setShowButtons(items);
-		setActivateCards(items);
-		let use_level = getGameOption('use_level'); if (use_level == 'no') { T.bHint.remove(); return; }
-		let level = getPlayerProp('level');
-		let noset = isEmpty(T.sets);
-		T.numHints = level <= 3 ? noset ? 1 : 2 : level <= 5 ? 1 : 0;
-		if (level > 5) { T.bHint.remove(); }
-		else if (level == 1) { T.autoHints = noset ? 1 : 2; T.hintTimes = [noset ? 10000 : 2000, 5000]; }
-		else if (level == 2) { T.autoHints = noset ? 1 : 2; T.hintTimes = [noset ? 10000 : 3000, 8000]; }
-		else if (level == 3) { T.autoHints = 1; T.hintTimes = [noset ? 10000 : 4000]; }
-		else if (level == 4) { T.autoHints = 1; T.hintTimes = [noset ? 10000 : 8000]; }
-		let i = 0;
-		while (i < T.autoHints) {
-			await mSleep(T.hintTimes[i]);
-			if (checkInterrupt(items)) { console.log(`autoHint ${i}`); return; }
-			if (DA.stopAutobot == true) { console.log(`autoHint ${i}`); return; }
-			await setOnclickHint(items);
-			i++;
+//#region setgame game
+function setgame() {
+
+	function setup(table) {
+		//console.log('setup',table)
+		let fen = {};
+		for (const name in table.players) {
+			let pl = table.players[name];
+			pl.score = 0;
 		}
-	} catch { console.log('human: please reload!') }
-}
-function setActivateCards(items) {
-	for (const item of items) {
-		let d = iDiv(item);
-		d.onclick = () => setOnclickCard(item, items, true);
-		mStyle(d, { cursor: 'pointer' })
+		fen.deck = setCreateDeck(); //console.log('deck size',fen.deck.length)
+		fen.cards = deckDeal(fen.deck, table.options.numCards);
+		table.plorder = jsCopy(table.playerNames);
+		table.turn = jsCopy(table.playerNames);
+		//console.log('players',table.players)
+		return fen;
 	}
-}
-async function setBotMove(table) {
-	try {
-		let items = T.items;
-		[T.bNoSet, T.bHint] = setShowButtons(items); T.bHint.remove();
-		mShield(dOpenTable, { bg: '#00000010' });
-		let speed = calcBotSpeed(table); console.log('speed', speed);
-		T.sets = setFindAllSets(items);
-		if (isEmpty(T.sets)) {
-			speed *= 3;
-			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep noset'); return; }
-			await setOnclickNoSet(items);
-		} else {
-			let list = rChoose(T.sets);
-			await mSleep(speed); if (checkInterrupt(items)) { console.log('!sleep 1'); return; }
-			await setOnclickCard(list[0], items);
-			await mSleep(speed); if (checkInterrupt(items)) { console.log('!!sleep 2'); return; }
-			await setOnclickCard(list[1], items);
-			await mSleep(speed); if (checkInterrupt(items)) { console.log('!!!sleep 3'); return; }
-			await setOnclickCard(list[2], items);
+	function stats(table) {
+		let [me, players] = [getUname(), table.players];
+		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+		let player_stat_items = uiTypePlayerStats(table, me, 'dStats', 'rowflex', style)
+		for (const plname in players) {
+			let pl = players[plname];
+			let item = player_stat_items[plname];
+			if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
+			let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+			playerStatCount('star', pl.score, d); //, {}, {id:`stat_${plname}_score`});
 		}
-		console.log('* END OF AUTOMOVE *');
-	} catch { console.log('please reload!') }
-}
-function setCheckIfSet(keys) {
-	let arr = makeArrayWithParts(keys);
-	let isSet = arr.every(x => arrAllSameOrDifferent(x));
-	return isSet;
-}
-function setDrawCard(card, dParent, colors, sz = 100) {
-	const paths = {
-		diamond: "M25 0 L50 50 L25 100 L0 50 Z",
-		squiggle: "M38.4,63.4c2,16.1,11,19.9,10.6,28.3c1,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z",
-		oval: "M25,95C14.2,95,5.5,85.2,5.5,80V20C5.5,13.2,14.2,5.2,25,5.2S44.5,13.2,44.5,20v60 C44.5,85.2,35.8,95,25,95z"
 	}
-	let [color, shape, num, fill] = card.split('_');
-	var attr = {
-		d: paths[shape],
-		fill: fill == 'striped' ? `url(#striped-${color})` : fill == 'solid' ? colors[color] : 'none',
-		stroke: colors[color],
-		'stroke-width': 2,
-	};
-	let h = sz, w = sz / .65;
-	let ws = w / 4;
-	let hs = 2 * ws;
-	let d0 = mDom(dParent, { display: 'flex', w, h, bg: 'white', rounding: 10 });
-	mStyle(d0, { justify: 'center', 'align-items': 'center', gap: 6 })
-	let shapeSvg = `<svg viewbox="-2 -2 54 104">` + makeSVG("path", attr) + '</svg>';
-	for (const i of range(num)) {
-		let d1 = mDom(d0, { h: hs, w: ws }, { html: shapeSvg });
+	function present(table) {
+		const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' };
+		setLoadPatterns('dPage', colors);
+		let fen = table.fen;
+		mStyle('dTable', { padding: 50, wmin: 500 });
+		let d = mDom('dTable', { gap: 10, padding: 10 }); mCenterFlex(d);
+		let rows = fen.cards.length / 3;
+		let sz = Math.min(80, Math.round(400 / rows));
+		let dBoard = T.dBoard = mGrid(rows, 3, d, { gap: 14 });
+		let items = [];
+		for (const c of fen.cards) {
+			let dc = setDrawCard(c, dBoard, colors, sz); //TESTING ? 80 : 100);
+			let item = mItem({ div: dc }, { key: c });
+			items.push(item);
+		}
+
+		//cheat mode!
+		let oset = setFindOneSet(items); console.log('set',oset?oset.keys[0]:'NO SET'); 
+
+		return items;
 	}
-	return d0;
-}
-function setFindAllSets(items) {
-	let result = [];
-	for (var x = 0; x < items.length; x++) {
-		for (var y = x + 1; y < items.length; y++) {
-			for (var z = y + 1; z < items.length; z++) {
-				assertion(items[x] != items[y], `WTF!?!?!?! ${items[x].key} ${items[y].key}`)
-				let list = [items[x], items[y], items[z]];
-				let keys = list.map(x => x.key);
-				if (setCheckIfSet(keys)) result.push(list);
+	async function activate(table, items) {
+
+		if (!isMyTurn(table)) {console.log('table.turn',table.turn); return;}
+
+		for (const item of items) {
+			let d = iDiv(item);
+			mStyle(d, { cursor: 'pointer' });
+			d.onclick = ev => onclickCard(table, item, items);
+		}
+
+		//show no set button
+		let dParent = mBy('dTable').parentNode;
+		mIfNotRelative(dParent);
+		let bNoSet = mButton('No Set', () => onclickNoSet(table, items), dParent, { className: 'button' });
+		mPos(bNoSet, window.innerWidth / 2 + 180, 110);
+
+		if (amIHuman(table)) return;
+
+		if (isEmpty(table.fen.cards)) return gameoverScore(table);
+		
+		//bot move activation: random move
+		await botMove(table,items);
+	}
+	async function botMove(table,items){
+		let oset = setFindOneSet(items); //console.log('botset',oset?oset.keys:'NO SET!');
+		if (!oset) return; //kann noch kein No Set!
+
+		let avg = calcBotLevel(table);
+		let ms = avg?18000-avg*2000:1000;
+
+		TO.bot = setTimeout(async () => {
+			for(const item of oset.items) toggleItemSelection(item);
+			TO.bot1 = setTimeout(async () => await evalMove(table, oset.keys), 1000);
+		}, rNumber(ms,ms+2000));
+
+	}
+
+	//#region set specific functions
+	function setCheckIfSet(keys) {
+		let arr = makeArrayWithParts(keys);
+		let isSet = arr.every(x => arrAllSameOrDifferent(x));
+		return isSet;
+	}
+	function setCreateDeck() {
+		let deck = [];
+		['red', 'purple', 'green'].forEach(color => {
+			['diamond', 'squiggle', 'oval'].forEach(shape => {
+				[1, 2, 3].forEach(num => {
+					['solid', 'striped', 'open'].forEach(fill => {
+						deck.push(`${color}_${shape}_${num}_${fill}`);
+					});
+				});
+			});
+		});
+		arrShuffle(deck);
+		return deck;
+	}
+	function setDrawCard(card, dParent, colors, sz = 100) {
+		const paths = {
+			diamond: "M25 0 L50 50 L25 100 L0 50 Z",
+			squiggle: "M38.4,63.4c2,16.1,11,19.9,10.6,28.3c1,9.2-21.1,12.2-33.4,3.8s-15.8-21.2-9.3-38c3.7-7.5,4.9-14,4.8-20 c0-16.1-11-19.9-10.6-28.3C1,0.1,21.6-3,33.9,5.5s15.8,21.2,9.3,38C40.4,50.6,38.5,57.4,38.4,63.4z",
+			oval: "M25,95C14.2,95,5.5,85.2,5.5,80V20C5.5,13.2,14.2,5.2,25,5.2S44.5,13.2,44.5,20v60 C44.5,85.2,35.8,95,25,95z"
+		}
+		let [color, shape, num, fill] = card.split('_');
+		var attr = {
+			d: paths[shape],
+			fill: fill == 'striped' ? `url(#striped-${color})` : fill == 'solid' ? colors[color] : 'none',
+			stroke: colors[color],
+			'stroke-width': 2,
+		};
+		let h = sz, w = sz / .65;
+		let ws = w / 4;
+		let hs = 2 * ws;
+		let d0 = mDom(dParent, { display: 'flex', w, h, bg: 'white', rounding: 10 });
+		mStyle(d0, { justify: 'center', 'align-items': 'center', gap: 6 })
+		let shapeSvg = `<svg viewbox="-2 -2 54 104">` + makeSVG("path", attr) + '</svg>';
+		for (const i of range(num)) {
+			let d1 = mDom(d0, { h: hs, w: ws }, { html: shapeSvg });
+		}
+		return d0;
+	}
+	function setFindAllSets(items) {
+		let result = [];
+		for (var x = 0; x < items.length; x++) {
+			for (var y = x + 1; y < items.length; y++) {
+				for (var z = y + 1; z < items.length; z++) {
+					assertion(items[x] != items[y], `WTF!?!?!?! ${items[x].key} ${items[y].key}`)
+					let list = [items[x], items[y], items[z]];
+					let keys = list.map(x => x.key);
+					if (setCheckIfSet(keys)) result.push(list);
+				}
 			}
 		}
+		if (isEmpty(result)) console.log('no set!')
+		return result;
 	}
-	if (isEmpty(result)) console.log('no set!')
-	return result;
-}
-function setGameover(table) {
-	table.status = 'over';
-	table.winners = getPlayersWithMaxScore(table);
-}
-function setHintHide() { mClass(T.bHint, 'disabled'); } //mStyle(T.bHint,{display:'hidden'}); } //T.bHint.remove();}
+	function setFindOneSet(items) {
+		for (var x = 0; x < items.length; x++) {
+			for (var y = x + 1; y < items.length; y++) {
+				for (var z = y + 1; z < items.length; z++) {
+					assertion(items[x] != items[y], `WTF!?!?!?! ${items[x].key} ${items[y].key}`)
+					let list = [items[x], items[y], items[z]];
+					let keys = list.map(x => x.key);
+					if (setCheckIfSet(keys)) return { items: list, keys };
+				}
+			}
+		}
+		//console.log('no set!')
+		return null;
+	}
+	function setLoadPatterns(dParent, colors) {
+		dParent = toElem(dParent);
+		let id = "setpatterns";
+		if (isdef(mBy(id))) { return; }
+		let html = `
+			<svg id="setpatterns" width="0" height="0">
+				<!--  Define the patterns for the different fill colors  -->
+				<pattern id="striped-red" patternUnits="userSpaceOnUse" width="4" height="4">
+					<path d="M-1,1 H5" style="stroke:${colors.red}; stroke-width:1" />
+				</pattern>
+				<pattern id="striped-green" patternUnits="userSpaceOnUse" width="4" height="4">
+					<path d="M-1,1 H5" style="stroke:${colors.green}; stroke-width:1" />
+				</pattern>
+				<pattern id="striped-purple" patternUnits="userSpaceOnUse" width="4" height="4">
+					<path d="M-1,1 H5" style="stroke:${colors.purple}; stroke-width:1" />
+				</pattern>
+			</svg>
+			`;
+		let el = mCreateFrom(html);
+		mAppend(dParent, el)
+	}
 
-function setLoadPatterns(dParent, colors) {
-	dParent = toElem(dParent);
-	let id = "setpatterns";
-	if (isdef(mBy(id))) { return; }
-	let html = `
-    <svg id="setpatterns" width="0" height="0">
-      <!--  Define the patterns for the different fill colors  -->
-      <pattern id="striped-red" patternUnits="userSpaceOnUse" width="4" height="4">
-        <path d="M-1,1 H5" style="stroke:${colors.red}; stroke-width:1" />
-      </pattern>
-      <pattern id="striped-green" patternUnits="userSpaceOnUse" width="4" height="4">
-        <path d="M-1,1 H5" style="stroke:${colors.green}; stroke-width:1" />
-      </pattern>
-      <pattern id="striped-purple" patternUnits="userSpaceOnUse" width="4" height="4">
-        <path d="M-1,1 H5" style="stroke:${colors.purple}; stroke-width:1" />
-      </pattern>
-    </svg>
-    `;
-	let el = mCreateFrom(html);
-	mAppend(dParent, el)
-}
-async function setOnclickCard(item, items, direct = false) {
-	if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
-	else if (direct) stopAutobot();
-	else if (!direct && item.isSelected) { console.log('already clicked!'); return; }
-	else if (DA.stopAutobot == true) { assertion(!direct, 'direct and autobot true'); return; }
-	toggleItemSelection(item);
-	let selitems = items.filter(x => x.isSelected);
-	let [keys, m] = [selitems.map(x => x.key), selitems.length];
-	let olist = [];
-	if (m == 3) {
+	async function onclickCard(table, item, items) {
+		toggleItemSelection(item);
+		let selitems = items.filter(x => x.isSelected);
+		let [keys, m] = [selitems.map(x => x.key), selitems.length];
+		if (m == 3) {
+			await evalMove(table, keys);
+		}
+	}
+	async function evalMove(table, keys) {
 		clearEvents();
-		mShield(dOpenTable, { bg: '#00000000' }); //disable ui
-		let [me, table] = [getUname(), T];
-		let [fen, pl] = [table.fen, table.players[me]];
+		mShield('dTable', { bg: 'transparent' });
+		let id = table.id;
+		let name = getUname();
+		let step = table.step;
+
 		let isSet = setCheckIfSet(keys);
 		if (isSet) {
-			assertion(fen.cards.length >= table.options.numCards || isEmpty(fen.deck), `LOGISCHER IRRTUM SET REPLENISH ${fen.cards.length}, deck:${fen.deck.length}`)
+			table.players[name].score += 1;
+
+			//calc how to replace cards from set
+			let fen = table.fen;
 			let toomany = Math.max(0, fen.cards.length - table.options.numCards);
 			let need = Math.max(0, 3 - toomany);
-			let newCards = deckDeal(fen.deck, need);
-			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i])
-			olist.push({ keys: ['fen', 'cards'], val: table.fen.cards });
-			olist.push({ keys: ['fen', 'deck'], val: table.fen.deck });
-			pl.score++;
-			pl.incScore = 1;
+			let newCards = deckDeal(fen.deck, need); 
+			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i]);
 		} else {
-			pl.score--;
-			pl.incScore = -1;
+			table.players[name].score -= 1;
 		}
-		olist.push({ keys: ['players', me, 'score'], val: pl.score });
-		if (pl.playmode == 'bot') {
-			await mSleep(500);
-			if (checkInterrupt(items)) { console.log('!!!onclick card!!!'); return; }
-		}
-		let res = await sendMergeTable({ id: table.id, name: me, olist }); // console.log('res', res)
+		lookupAddToList(table, ['moves'], { step, name, move:keys, change: isSet ? '+1' : '-1', score: table.players[name].score });
+
+		let o = { id, name, step, table };
+
+		if (isSet) o.stepIfValid = step + 1;
+
+		let res = await mPostRoute('table', o); //console.log(res);
 	}
-}
-async function setOnclickHint(items, direct = false) {
-	assertion(T.numHints > 0, 'NO Hints left!!!!');
-	if (direct) stopAutobot();
-	T.numHints -= 1;
-	if (isEmpty(T.sets)) {
-		let elem = T.bNoSet;
-		T.numHints = 0; setHintHide();
-		ANIM.button = scaleAnimation(elem);
-		return;
-	} else if (nundef(T.hintSet)) {
-		T.hintSet = rChoose(T.sets);
-	} else {
-		let sofar = T.items.filter(x => x.isSelected);
-		if (sofar.length >= 2) {
-			return;
-		}
-	}
-	let item = T.hintSet.find(x => !x.isSelected);
-	if (!T.numHints) setHintHide();
-	await setOnclickCard(item, T.items, direct);
-}
-async function setOnclickNoSet(items, direct = false) {
-	if (direct) stopAutobot();
-	mShield(dOpenTable, { bg: '#00000000' }); //disable ui
-	let b = T.bNoSet; mClass(b, 'framedPicture')
-	let [me, table] = [getUname(), T];
-	let [fen, pl] = [table.fen, table.players[me]];
-	let olist = [];
-	if (isEmpty(T.sets)) {
-		pl.score++;
-		pl.incScore = 1;
-		let newCards = deckDeal(fen.deck, 1);
-		if (!isEmpty(newCards)) {
-			fen.cards.push(newCards[0]);
-			olist.push({ keys: ['fen', 'cards'], val: table.fen.cards });
-			olist.push({ keys: ['fen', 'deck'], val: table.fen.deck });
+
+	async function onclickNoSet(table, items) { 
+		console.log('clicked No Set!') 
+		clearEvents();
+		mShield('dTable', { bg: 'transparent' });
+		let id = table.id;
+		let name = getUname();
+		let step = table.step;
+
+		let oset = setFindOneSet(items);
+		if (!oset){
+			table.players[name].score += 1;
+			let fen = table.fen;
+			let newCards = deckDeal(fen.deck, 1); //add 1 cards!
+			if (!isEmpty(newCards))	fen.cards.push(newCards[0]); else return await gameoverScore(table);
 		} else {
-			setGameover(table);
-			olist.push({ keys: ['status'], val: table.status });
-			olist.push({ keys: ['winners'], val: table.winners });
-			console.log(`table status is now ${table.status}`);
-			assertion(table.status == 'over', "HAAAAAAAAALLLLLLLO")
+			table.players[name].score -= 1;
 		}
-	} else {
-		pl.score--;
-		pl.incScore = -1;
+		lookupAddToList(table, ['moves'], { step, name, move:['noSet'], change: oset ? '-1' : '+1', score: table.players[name].score });
+
+		let o = { id, name, step, table };
+
+		if (!oset) o.stepIfValid = step + 1;
+
+		let res = await mPostRoute('table', o); //console.log(res);
 	}
-	olist.push({ keys: ['players', me, 'score'], val: pl.score });
-	if (pl.playmode == 'bot') {
-		await mSleep(500);
-		if (checkInterrupt(items)) { console.log('!!!onclick noset!!!'); return; }
-	}
-	let res = await sendMergeTable({ id: table.id, name: me, olist });
-}
-async function setPresent(dParent, table) {
-	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; 
-	setLoadPatterns('dPage', colors);
-	mClear(dParent);
-	let d = mDom(dParent, { margin: 10 }); 
-	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
-	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.players, table.turn];
-	let cards = fen.cards;
-	let dp = mDom(dOpenTable, { w100: true }); mCenterFlex(dp);
-	let dBoard = T.dBoard = mGrid(cards.length / 3, 3, dp, { gap: 14 });
-	let items = [];
-	for (const c of cards) {
-		let d = setDrawCard(c, dBoard, colors, TESTING ? 80 : 100);
-		let item = mItem({ div: d }, { key: c });
-		items.push(item);
-	}
-	setStats(table, dOben, 'rowflex', false);
-	return items;
-}
-function setShowButtons(items) {
-	let buttons = mDom(dOpenTable, { w100: true, gap: 10, matop: 20 }); mCenterCenterFlex(buttons);
-	let bno = mButton('NO Set', () => setOnclickNoSet(items, true), buttons, { w: 80 }, 'input');
-	let bhint = mButton('Hint', () => setOnclickHint(items, true), buttons, { w: 80 }, 'input');
-	return [bno, bhint];
-}
-function setStats(table, dParent, layout, showTurn = true) {
-	let [fen, me] = [table.fen, getUname()];
-	let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
-	let player_stat_items = uiTypePlayerStats(table, me, dParent, layout, style)
-	let uselevel = getGameOption('use_level');
-	let botLevel = Math.floor(calcBotLevel(table));
-	for (const plname in fen.players) {
-		let pl = fen.players[plname];
-		let item = player_stat_items[plname];
-		if (pl.playmode == 'bot') {
-			let c = getLevelColor(botLevel);
-			mStyle(item.img, { rounding: 0, border: `${c} ${botLevel}px solid` });
-		}
-		let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
-		playerStatCount('star', pl.score, d);
-		if (uselevel != 'yes') continue;
-		mDom(d, { fz: 11, round: true, hpadding: 3, fg: 'contrast', bg: getLevelColor(pl.level), position: 'absolute', top: 1, right: 2 }, { html: pl.level })
-	}
+
+	return { setup, present, stats, activate };
 }
 
-//#endregion
+//#region button96 game
+function button96() {
+
+	function setup(table) {
+		//console.log('setup',table)
+		let fen = {};
+		for (const name in table.players) {
+			let pl = table.players[name];
+			pl.score = 0;
+		}
+		fen.cards = [1, 2, 3];
+		fen.deck = range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
+		table.plorder = jsCopy(table.playerNames);
+		table.turn = jsCopy(table.playerNames);
+		return fen;
+	}
+	function resolvePending(table) {
+		let [fen, players] = [table.fen, table.players];
+		let pending = table.pending; delete table.pending;
+		let [name, move] = [pending.name, pending.move];
+
+		let best = arrMinMax(fen.cards).min; //check if the card is the best
+		if (move == best) {
+			players[name].score += 1;
+			removeInPlace(fen.cards, move);
+			let cardlist = deckDeal(fen.deck, 1); 
+			if (isEmpty(cardlist)) {
+				table.winners = getPlayersWithMaxScore(table);
+				table.status = 'over';
+				table.turn = [];
+			} else {
+				fen.cards.push(cardlist[0]);
+				DA.pendingChanges = [['players', name, 'score'], ['fen']];
+			}
+		} else {
+			players[name].score -= 1;
+			DA.pendingChanges = [['players', name, 'score']];
+		}
+	}
+	function present(table) {
+		let fen = table.fen;
+		let d = mDom('dTable', { gap: 10, padding: 10 }); mCenterFlex(d);
+		let items = [];
+		for (const card of fen.cards) {
+			let item = cNumber(card);
+			mAppend(d, iDiv(item));
+			items.push(item);
+			item.feno = card;
+		}
+		return items;
+	}
+	function stats(table) {
+		let [me, players] = [getUname(), table.players];
+		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
+		let player_stat_items = uiTypePlayerStats(table, me, 'dStats', 'rowflex', style)
+		for (const plname in players) {
+			let pl = players[plname];
+			let item = player_stat_items[plname];
+			if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
+			let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
+			playerStatCount('star', pl.score, d);
+		}
+	}
+	async function activate(table, items) {
+		let myTurn = isMyTurn(table);
+
+		let styleInstruction = { display: 'flex', 'justify-content': 'center', 'align-items': 'center' };
+		let dinst = mBy('dInstruction'); mClear(dinst);
+
+		if (!myTurn) {
+			mDom(dinst, styleInstruction, { html: `waiting for: ${getTurnPlayers(table)}` });
+			return;
+		}
+
+		styleInstruction.maleft = -30;
+		let instruction = 'must click a card';
+		html = `
+				${get_waiting_html()}
+				<span style="color:red;font-weight:bold;max-height:25px">You</span>
+				&nbsp;${instruction};
+				`;
+		mDom(dinst, styleInstruction, { html });
+
+		for (const item of items) {
+			let d = iDiv(item);
+			mStyle(d, { cursor: 'pointer' });
+			d.onclick = ev => onclickCard(table, item);
+		}
+
+		if (amIHuman(table)) return;
+
+		//bot move activation
+		TO.bot = setInterval(async () => {
+			//console.log('BOT!!!',table.step);
+			let list = sortBy(items, x => x.feno); //console.log(list);
+			let item = list[0]; //rChoose(items);
+			await onclickCard(table, item);
+		}, rNumber(1000, 4000));
+
+	}
+
+	async function onclickCard(table, item) {
+		mShield('dTable', { bg: 'transparent' });
+
+		//highlight clicked card
+		let d = iDiv(item);
+		let ms = rChoose(range(300, 400));
+		mClass(d, 'framedPicture'); TO.hallo = setTimeout(() => mClassRemove(d, 'framedPicture'), ms);
+		try { await mSleep(ms); } catch (err) { return; } //console.log("ERR", err); 
+
+		let id = table.id;
+		let name = getUname();
+		let move = item.feno;
+		let step = table.step;
+		let olist = [			{ keys: ['pending'], val: { name, move } },		];
+		if (isdef(DA.pendingChanges)) {
+			for (const klist of DA.pendingChanges) {
+				olist.push({ keys: klist, val: lookup(table, klist) });
+			}
+		}
+
+		let o = { id, name, olist, step };
+		let best = arrMinMax(table.fen.cards).min;
+
+		if (move == best) o.stepIfValid = step + 1; // nur 1 kann punkt kriegen pro runde
+
+		let res = await mPostRoute('olist', o); //console.log(res);
+	}
+
+	return { setup, resolvePending, present, stats, activate }; 
+}
 

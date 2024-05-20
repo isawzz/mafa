@@ -6,7 +6,7 @@ function _showPaletteNames(dParent, colors) {
 	for (var c of colors) {
 		let bg = c.hex;
 		let html = `${c.name}`; //: ${bg} hue:${c.hue} sat:${Math.round(c.sat * 100)} lum:${Math.round(c.lightness * 100)}`
-		let dmini = mDom(d1, { padding: 10, bg, fg: idealTextColor(bg) }, { html, class: 'colorbox', dataColor: bg });
+		let dmini = mDom(d1, { padding: 10, bg, fg: colorIdealText(bg) }, { html, class: 'colorbox', dataColor: bg });
 	}
 }
 function addAREA(id, o) {
@@ -60,7 +60,7 @@ function addToolX(cropper, d) {
 	let img = cropper.img;
 	function createCropTool() {
 		let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
-		let handler = cropper.setSize;
+		let handler = cropper.setSize; //(_, x) => cropper.setSize(x);
 		mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
 		let [w, h] = [img.offsetWidth, img.offsetHeight];
 		if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, handler, 'rSizes', false)
@@ -87,7 +87,8 @@ function addToolX(cropper, d) {
 	}
 	function createSquareTool() {
 		let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-		let handler = x => squareTo(cropper, x);
+		let handler = x=>squareTo(cropper,x); //(_, x) => squareTo(cropper, x);
+		//mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, (_, x) => cropper.crop(x), 'rSquare', false)
 		mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
 		for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 			mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
@@ -281,19 +282,6 @@ function assertion(cond) {
 		}
 		throw new Error('TERMINATING!!!')
 	}
-}
-function bestContrastingColor(color, colorlist = ['white', 'black']) {
-	let contrast = 0;
-	let result = null;
-	let rgb = colorRGB(color, true);
-	rgb = [rgb.r, rgb.g, rgb.b];
-	for (c1 of colorlist) {
-		let x = colorRGB(c1, true)
-		x = [x.r, x.g, x.b];
-		let c = getContrast(rgb, x);
-		if (c > contrast) { contrast = c; result = c1; }
-	}
-	return result;
 }
 function buyProgressCard(ev) {
 	let o = evToAttrElem(ev, 'key');
@@ -1196,7 +1184,7 @@ function colorRgbStringToHex79(c) {
 }
 function colorSample(d, color) {
 	if (nundef(d)) return;
-	mStyle(d, { bg: color, fg: idealTextColor(color) }); //, fg:idealTextColor(color) });  
+	mStyle(d, { bg: color, fg: colorIdealText(color) }); //, fg:colorIdealText(color) });  
 	d.innerHTML = `${color}<br>${w3color(color).toHslString()}`;
 }
 function colorSchemeRYB() {
@@ -3045,14 +3033,6 @@ function getColormapColors() {
 	for (const p of parts) { if (p.startsWith('#')) colors.push(p.substring(0, 7)); }
 	return colors;
 }
-function getContrast(rgb1, rgb2) {
-	var lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
-	var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
-	var brightest = Math.max(lum1, lum2);
-	var darkest = Math.min(lum1, lum2);
-	return (brightest + 0.05)
-		/ (darkest + 0.05);
-}
 function getCssVar(varname) { return getComputedStyle(document.body).getPropertyValue(varname); }
 
 function getDivId(key) { return 'd' + capitalize(key); }
@@ -3381,17 +3361,6 @@ function iDiv(i) { return isdef(i.live) ? i.live.div : valf(i.div, i.ui, i); } /
 
 function iRegister(item, id) { let uid = isdef(id) ? id : getUID(); Items[uid] = item; return uid; }
 
-function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
-	if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
-	rgb = hex2RgbObject(bg);
-	r = rgb.r;
-	g = rgb.g;
-	b = rgb.b;
-	var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
-	var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
-	if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
-	return foreColor;
-}
 async function imgAsIsInDiv(url, dParent) {
 	let d = mDom(dParent, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
 	let sz = 300;
@@ -3818,15 +3787,6 @@ function lookupSetOverride(dict, keys, val) {
 		i += 1;
 	}
 	return d;
-}
-function luminance(r, g, b) {
-	var a = [r, g, b].map(function (v) {
-		v /= 255;
-		return v <= 0.03928
-			? v / 12.92
-			: Math.pow((v + 0.055) / 1.055, 2.4);
-	});
-	return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
 function mAnimate(elem, prop, valist, callback, msDuration = 1000, easing = 'cubic-bezier(1,-0.03,.86,.68)', delay = 0, forwards = 'none') {
 	let kflist = [];
@@ -4432,7 +4392,7 @@ async function mGetYaml(path = '../base/assets/m.txt') {
 	return di;
 }
 function mGrid(rows, cols, dParent, styles = {}) {
-	[rows,cols]=[Math.ceil(rows),Math.ceil(cols)]
+	[rows, cols] = [Math.ceil(rows), Math.ceil(cols)]
 	addKeys({ display: 'inline-grid', gridCols: 'repeat(' + cols + ',1fr)' }, styles);
 	if (rows) styles.gridRows = 'repeat(' + rows + ',auto)';
 	else styles.overy = 'auto';
@@ -4590,29 +4550,6 @@ async function mPrompt(gadget) {
 			gadget.dialog.close();
 		};
 	});
-}
-function mRadio(label, val, name, dParent, styles = {}, handler, group_id, is_on) {
-	let cursor = styles.cursor; delete styles.cursor;
-	let d = mDiv(dParent, styles, group_id + '_' + val);
-	let id = isdef(group_id) ? `i_${group_id}_${val}` : getUID();
-	let type = isdef(group_id) ? 'radio' : 'checkbox';
-	let checked = isdef(is_on) ? is_on : false;
-	let inp = mCreateFrom(`<input class='radio' id='${id}' type="${type}" name="${name}" value="${val}">`);
-	if (checked) inp.checked = true;
-	let text = mCreateFrom(`<label for='${inp.id}'>${label}</label>`);
-	if (isdef(cursor)) { inp.style.cursor = text.style.cursor = cursor; }
-	mAppend(d, inp);
-	mAppend(d, text);
-	if (isdef(handler)) {
-		inp.onclick = ev => {
-			ev.cancelBubble = true;
-			if (handler == 'toggle') {
-			} else if (isdef(handler)) {
-				handler(val);
-			}
-		};
-	}
-	return d;
 }
 function mRadioGroup(dParent, styles, id, legend, legendstyles) {
 	let f = mCreate('fieldset');
@@ -5787,7 +5724,7 @@ async function onclickStartGame() {
 }
 async function onclickStartTable(id) {
 	let table = Serverdata.tables.find(x => x.id == id);
-	if (nundef(table)) table = await mGetRoute('table',{id});
+	if (nundef(table)) table = await mGetRoute('table', { id });
 	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 	console.log('table', jsCopy(table));
 	//assertion(isdef(table), `table with id ${id} not in Serverdata!`);
@@ -5860,7 +5797,7 @@ async function ondropShowImage(url, dDrop) {
 	let img = await imgAsync(dDrop, { hmax: 300 }, { src: url });
 	console.log('img dims', img.width, img.height); //works!!!
 	mStyle(dDrop, { w: img.width, h: img.height + 30, align: 'center' });
-	mDom(dDrop, { fg: colorContrast(dDrop, ['blue', 'lime', 'yellow']) }, { className: 'blink', html: 'DONE! now click on where you think the image should be centered!' })
+	mDom(dDrop, { fg: colorContrastPickFromList(dDrop, ['blue', 'lime', 'yellow']) }, { className: 'blink', html: 'DONE! now click on where you think the image should be centered!' })
 	console.log('DONE! now click on where you think the image should be centered!')
 	img.onclick = storeMouseCoords;
 }
@@ -5882,7 +5819,7 @@ function onleaveHex(item, board) {
 	if (nundef(selitem)) return;
 	colorSample(board.dSample, selitem.color);
 }
-async function onsockConfig(x){
+async function onsockConfig(x) {
 	console.log('SOCK::config', x)
 	Serverdata.config = x;
 }
@@ -6095,7 +6032,7 @@ function rLetters(n, except = []) {
 function rNumber(min = 0, max = 100) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function rUniqueId(n = 10,prefix='') { return prefix + rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
+function rUniqueId(n = 10, prefix = '') { return prefix + rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
 
 function rWord(n = 6) { return rLetters(n).join(''); }
 
@@ -6440,7 +6377,7 @@ async function sendRaceStepScore(table, name, score = 1, olist = []) {
 	let res = await sendMergeTable(data, 'race');
 }
 function setColors(bg, fg) {
-	let [realBg,bgContrast,bgNav,fgNew,fgContrast]=calculateGoodColors(bg,fg);
+	let [realBg, bgContrast, bgNav, fgNew, fgContrast] = calculateGoodColors(bg, fg);
 	setCssVar('--bgBody', realBg);
 	setCssVar('--bgButton', 'transparent')
 	setCssVar('--bgButtonActive', bgContrast)
@@ -6546,7 +6483,8 @@ async function setPlayerPlaying(allPlItem, gamename) {
 			let list = val.split(',');
 			let legend = formatLegend(key);
 			let fs = mRadioGroup(d, {}, `d_${key}`, legend);
-			for (const v of list) { mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, null, key, false); }
+			let handler = key == 'playmode' ? updateUserImageToBotHuman(name) : null;
+			for (const v of list) { let r = mRadio(v, isNumber(v) ? Number(v) : v, key, fs, { cursor: 'pointer' }, handler, key, false); }
 			let userval = lookup(DA.allPlayers, [name, p]);
 			let chi = fs.children;
 			for (const ch of chi) {
@@ -6569,27 +6507,6 @@ async function setPlayerPlaying(allPlItem, gamename) {
 	mIfNotRelative(dParent);
 	mPos(d1, x, y);
 	mButtonX(d1, ev => saveAndUpdatePlayerOptions(allPlItem, gamename), 18, 3, 'dimgray');
-}
-function setPlayersToMulti() {
-	for (const name in DA.allPlayers) {
-		lookupSetOverride(DA.allPlayers, [name, 'options', 'playmode'], 'human');
-		let el = document.querySelector(`div[username="${name}"]`);
-		let img = el.getElementsByTagName('img')[0];
-		mStyle(img, { round: true });
-	}
-	setRadioValue('playmode', 'human');
-}
-function setPlayersToSolo() {
-	for (const name in DA.allPlayers) {
-		if (name == getUname()) continue;
-		lookupSetOverride(DA.allPlayers, [name, 'options', 'playmode'], 'bot');
-		let el = document.querySelector(`div[username="${name}"]`);
-		let img = el.getElementsByTagName('img')[0];
-		mStyle(img, { rounding: 2 });
-	}
-	let popup = mBy('dPlayerOptions');
-	if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
-	setRadioValue('playmode', 'bot');
 }
 function setRadioValue(prop, val) {
 	let input = mBy(`i_${prop}_${val}`);
@@ -6682,8 +6599,8 @@ async function showBlendModes() {
 	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
 	let bgImage = U.bgImage;
 	let bg = U.color;
-	let bgRepeat = bgImage.includes('marble')||bgImage.includes('wall') ? 'no-repeat' : 'repeat';
-	let bgSize = bgImage.includes('marble')||bgImage.includes('wall') ? 'cover' : '';
+	let bgRepeat = bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
+	let bgSize = bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
 	let bgSizeItem = bgSize;
 	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
 	let items = [];
@@ -6883,15 +6800,15 @@ function showGameover(table, dParent) {
 	let d = showRibbon(dParent, msg);
 	updateTestButtonsLogin(table.playerNames);
 
-	mDom(d,{h:12},{html:'<br>'})
-	mButton('PLAY AGAIN',()=>onclickStartTable(table.id),d,{className:'button',fz:24});
+	mDom(d, { h: 12 }, { html: '<br>' })
+	mButton('PLAY AGAIN', () => onclickStartTable(table.id), d, { className: 'button', fz: 24 });
 }
 function showGames(ms = 500) {
 	let dParent = mBy('dGameList'); if (isdef(dParent)) { mClear(dParent); } else dParent = mDom('dMain', {}, { className: 'section', id: 'dGameList' });
 	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
 	let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = ['button96','setgame']; //'button99','button98','button97','setgame']
+	gamelist = ['button96', 'setgame']; //'button99','button98','button97','setgame']
 	for (const gname of gamelist) {
 		let g = getGameConfig(gname);
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
@@ -7015,23 +6932,23 @@ function showPalette(dParent, colors) {
 	for (var c of colors) {
 		if (isDict(c)) c = c.hex;
 		let html = `${c}<br>hue:${w3color(c).hue}<br>sat:${Math.round(w3color(c).sat * 100)}<br>lum:${Math.round(w3color(c).lightness * 100)}`
-		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: idealTextColor(c) }, { html });
+		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: colorIdealText(c) }, { html });
 	}
 }
 function showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
 	for (var c of colors) {
 		let bg = c.hex;
-		let d2 = mDom(d1, { wmin: 250, bg, fg: idealTextColor(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
+		let d2 = mDom(d1, { wmin: 250, bg, fg: colorIdealText(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
 		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
 		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
-		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: idealTextColor(bg) }, { html });
+		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html });
 	}
 }
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
-	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding:10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
+	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding: 10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
 	return d;
 }
 async function showTables(from) {
@@ -7094,10 +7011,10 @@ async function showTextures() {
 	let list = M.textures;
 	let itemsTexture = [];
 	for (const t of list) {
-		let bgRepeat = t.includes('marble_')||t.includes('wall') ? 'no-repeat' : 'repeat';
-		let bgSize = t.includes('marble_')||t.includes('wall') ? `cover` : t.includes('ttrans') ? '' : 'auto';
+		let bgRepeat = t.includes('marble_') || t.includes('wall') ? 'no-repeat' : 'repeat';
+		let bgSize = t.includes('marble_') || t.includes('wall') ? `cover` : t.includes('ttrans') ? '' : 'auto';
 		let bgImage = `url('${t}')`;
-		let recommendedMode = t.includes('ttrans') ? 'normal' : (t.includes('marble_')||t.includes('wall')) ? 'luminosity' : 'multiply';
+		let recommendedMode = t.includes('ttrans') ? 'normal' : (t.includes('marble_') || t.includes('wall')) ? 'luminosity' : 'multiply';
 		let dc = mDom(dTheme, { bg: U.color, bgImage, bgSize, bgRepeat, bgBlend: 'normal', cursor: 'pointer', border: 'white', w: '30%', wmax: 300, h: 170 });
 		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, bgBlend: recommendedMode, isSelected: false };
 		itemsTexture.push(item);
@@ -7839,7 +7756,7 @@ function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
 }
 function uiTypeRadios(lst, d, styles = {}, opts = {}) {
 	let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-	let handler = x => squareTo(cropper, x);
+	let handler = x=>squareTo(cropper,x); // (_, x) => squareTo(cropper, x);
 	mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
 	for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 		mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)

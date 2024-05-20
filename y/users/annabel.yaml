@@ -4,3 +4,5 @@ key: annabel
 games:
   button96:
     handicap: 3
+  setgame:
+    level: 7

@@ -1,9 +1,11 @@
 name: diana
 color: '#4c2882'
-key: bird15
+key: unknown_user
 games:
   button96:
     handicap: 1
+  setgame:
+    level: 7
 bgImage: url('../assets/textures/marble_violet1.jpeg')
 bgBlend: luminosity
 bgSize: cover

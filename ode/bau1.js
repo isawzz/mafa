@@ -32,13 +32,6 @@ async function showTable(id) {
 
 }
 
-function showValidMoves(table){
-	if (nundef(table.moves)) {console.log('no moves yet!'); return;}
-	console.log('________',table.step)
-	for(const m of table.moves){
-		console.log(`${m.step} ${m.name}: ${m.move.map(x=>x.substring(0,5)).join(',')} (${m.change})=>${m.score}`);
-	}
-}
 
 
 

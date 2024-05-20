@@ -500,10 +500,12 @@ app.post('/postUser', (req, res) => {
 	let name = req.body.name;
 	let userdata = req.body;
 	console.log('<== post user', userdata)
-	if (nundef(userdata.key) || nundef(M.superdi[userdata.key])) userdata.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';
 	let user = lookup(Session, ['users', name]);
 	let isNew = !user;
-	if (isNew) user = userdata; else copyKeys(userdata, user);
+	if (isNew) {
+		if (nundef(userdata.key) || nundef(M.superdi[userdata.key])) userdata.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';		
+		user = userdata; 
+	}	else copyKeys(userdata, user);
 	saveUser(name, user);
 	let msg = `user posted: ${user.name} new:${isNew}`;
 	console.log(msg)

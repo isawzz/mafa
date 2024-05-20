@@ -1,4 +1,56 @@
 
+//20.mai 24: GENIAL!!! function call or return function
+function updateUserImageToBotHuman(playername){
+	return (checked,name,val) =>{
+		let du=mByAttr('username',playername);
+		//console.log('checked',checked,name,val,du); return;
+		let img = du.firstChild;
+		if (val == 'human') mStyle(img,{round:true}); else mStyle(img,{rounding:0});
+	}
+}
+function updateUserImageToBotHuman(playername,a,b,c){
+	function doit(checked,name,val){
+		let du=mByAttr('username',playername);
+		console.log('checked',checked,name,val,du); return;
+		let img = du.firstChild;
+		if (checked==true) if (val == 'human') mStyle(img,{round:true}); else mStyle(img,{rounding:0});
+	}
+	doit(a,b,c);
+}
+function updateUserImageToBotHuman(playername,value){
+	function doit(checked,name,val){
+		let du=mByAttr('username',playername);
+		//console.log('checked',checked,name,val,du); return;
+		let img = du.firstChild;
+		if (checked==true) if (val == 'human') mStyle(img,{round:true}); else mStyle(img,{rounding:0});
+	}
+	if (isdef(value)) doit(true,0,value); else return doit;
+}
+function setPlayersToMulti() {
+	for (const name in DA.allPlayers) {
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'human');
+		updateUserImageToBotHuman(name,'human');
+		// let el = document.querySelector(`div[username="${name}"]`);
+		// let img = el.getElementsByTagName('img')[0];
+		// mStyle(img, { round: true });
+	}
+	setRadioValue('playmode', 'human');
+}
+function setPlayersToSolo() {
+	for (const name in DA.allPlayers) {
+		if (name == getUname()) continue;
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'bot');
+		updateUserImageToBotHuman(name,'bot');
+		// let el = document.querySelector(`div[username="${name}"]`);
+		// let img = el.getElementsByTagName('img')[0];
+		// mStyle(img, { rounding: 2 });
+	}
+	let popup = mBy('dPlayerOptions');
+	if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
+	setRadioValue('playmode', 'bot');
+}
+
+
 //setgame simplified
 function setgame() {
 
