@@ -196,6 +196,7 @@ function arrAllSameOrDifferent(arr) {
 	return allDifferent;
 }
 function arrAverage(arr, prop) {
+	if (isDict(arr)) arr = Object.values(arr);
 	let n = arr.length; if (!n) return 0;
 	let sum = arrSum(arr, prop);
 	return sum / n;

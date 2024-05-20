@@ -12,6 +12,7 @@ function setgame() {
 		fen.cards = deckDeal(fen.deck, table.options.numCards);
 		table.plorder = jsCopy(table.playerNames);
 		table.turn = jsCopy(table.playerNames);
+		//console.log('players',table.players)
 		return fen;
 	}
 	function stats(table) {
@@ -48,7 +49,8 @@ function setgame() {
 		return items;
 	}
 	async function activate(table, items) {
-		let myTurn = isMyTurn(table);
+
+		if (!isMyTurn(table)) {console.log('table.turn',table.turn); return;}
 
 		for (const item of items) {
 			let d = iDiv(item);
@@ -64,16 +66,22 @@ function setgame() {
 
 		if (amIHuman(table)) return;
 
+		if (isEmpty(table.fen.cards)) return gameoverScore(table);
+		
 		//bot move activation: random move
 		await botMove(table,items);
 	}
 	async function botMove(table,items){
-		let oset = setFindOneSet(items); console.log('botset',oset?oset.keys:'NO SET!');
-		if (!oset) return;
+		let oset = setFindOneSet(items); //console.log('botset',oset?oset.keys:'NO SET!');
+		if (!oset) return; //kann noch kein No Set!
+
+		let avg = calcBotLevel(table);
+		let ms = 18000-avg*2000;
+
 		TO.bot = setTimeout(async () => {
 			for(const item of oset.items) toggleItemSelection(item);
 			TO.bot1 = setTimeout(async () => await evalMove(table, oset.keys), 1000);
-		}, rNumber(3000, 4000));
+		}, rNumber(ms,ms+2000));
 
 	}
 
@@ -147,7 +155,7 @@ function setgame() {
 				}
 			}
 		}
-		console.log('no set!')
+		//console.log('no set!')
 		return null;
 	}
 	function setLoadPatterns(dParent, colors) {
@@ -195,7 +203,7 @@ function setgame() {
 			let fen = table.fen;
 			let toomany = Math.max(0, fen.cards.length - table.options.numCards);
 			let need = Math.max(0, 3 - toomany);
-			let newCards = deckDeal(fen.deck, need);
+			let newCards = deckDeal(fen.deck, need); 
 			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i]);
 		} else {
 			table.players[name].score -= 1;
@@ -222,11 +230,11 @@ function setgame() {
 			table.players[name].score += 1;
 			let fen = table.fen;
 			let newCards = deckDeal(fen.deck, 1); //add 1 cards!
-			if (!isEmpty(newCards))	fen.cards.push(newCards[0]);
+			if (!isEmpty(newCards))	fen.cards.push(newCards[0]); else return await gameoverScore(table);
 		} else {
 			table.players[name].score -= 1;
 		}
-		lookupAddToList(table, ['moves'], { step, name, move:['no set'], change: oset ? '-1' : '+1', score: table.players[name].score });
+		lookupAddToList(table, ['moves'], { step, name, move:['noSet'], change: oset ? '-1' : '+1', score: table.players[name].score });
 
 		let o = { id, name, step, table };
 
@@ -238,5 +246,16 @@ function setgame() {
 	return { setup, present, stats, activate };
 }
 
+async function gameoverScore(table){
+	table.winners = getPlayersWithMaxScore(table);
+	table.status = 'over';
+	table.turn = [];
+	let id = table.id;
+	let name = getUname();
+	let step = table.step;
+	let stepIfValid = step + 1;
+	let o = { id, name, step, stepIfValid, table };
+	let res = await mPostRoute('table', o); //console.log(res);
 
+}
 
