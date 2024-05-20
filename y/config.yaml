@@ -166,7 +166,7 @@ games:
       level: 1,2,3,4,5,6,7
       playmode: bot,human
     options:
-      use_level: yes,no,hidden
+      use_level: no,yes
       numCards: 6,9,15,12
       gamemode: solo,multi
   sheriff:
