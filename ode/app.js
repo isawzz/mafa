@@ -571,6 +571,7 @@ app.post('/table', (req, res) => { //override & emit iff valid!
 	let version = lookupSet(Session, ['tableInfo', id, 'version'], step);
 	if (isdef(step) && step < version) { //data obsolete! table version has already been updated!
 		res.json(`INVALID!!!! step:${step} version:${version}`);
+		console.log('INVALID!!!',name,step);
 		return;
 	}
 	if (isdef(stepIfValid)) {

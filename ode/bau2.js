@@ -8,7 +8,7 @@ function setgame() {
 			let pl = table.players[name];
 			pl.score = 0;
 		}
-		fen.deck = setCreateDeck();
+		fen.deck = setCreateDeck(); console.log('deck size',fen.deck.length)
 		fen.cards = deckDeal(fen.deck, table.options.numCards);
 		table.plorder = jsCopy(table.playerNames);
 		table.turn = jsCopy(table.playerNames);
@@ -42,8 +42,8 @@ function setgame() {
 			items.push(item);
 		}
 
-		let oset = setFindOneSet(items);
-		//console.log('set', oset ? oset.keys : 'NO SET');
+		//cheat mode!
+		let oset = setFindOneSet(items); console.log('set',oset?oset.keys:'NO SET'); 
 
 		return items;
 	}
@@ -65,15 +65,14 @@ function setgame() {
 		if (amIHuman(table)) return;
 
 		//bot move activation: random move
-		let it1 = null, it2 = null;
-		for (const ch of 'rgp') {
-			console.log('ch', ch);
-			let arr = items.filter(x => x.key[0] == ch);
-			if (arr.length > 1) { it1 = arr[0]; it2 = arr[1]; break; }
-		}
+		await botMove(table,items);
+	}
+	async function botMove(table,items){
+		let oset = setFindOneSet(items); console.log('botset',oset?oset.keys:'NO SET!');
+		if (!oset) return;
 		TO.bot = setTimeout(async () => {
-			toggleItemSelection(it1); toggleItemSelection(it2);
-			TO.bot1 = setTimeout(async () => await evalMove(table, [it1.key, it2.key]), 400);
+			for(const item of oset.items) toggleItemSelection(item);
+			TO.bot1 = setTimeout(async () => await evalMove(table, oset.keys), 1000);
 		}, rNumber(3000, 4000));
 
 	}
@@ -177,7 +176,7 @@ function setgame() {
 		toggleItemSelection(item);
 		let selitems = items.filter(x => x.isSelected);
 		let [keys, m] = [selitems.map(x => x.key), selitems.length];
-		if (m == 2) {
+		if (m == 3) {
 			await evalMove(table, keys);
 		}
 	}
@@ -188,7 +187,7 @@ function setgame() {
 		let name = getUname();
 		let step = table.step;
 
-		let isSet = keys[0].substring(0, 4) == keys[1].substring(0, 4);
+		let isSet = setCheckIfSet(keys);
 		if (isSet) {
 			table.players[name].score += 1;
 
@@ -197,13 +196,11 @@ function setgame() {
 			let toomany = Math.max(0, fen.cards.length - table.options.numCards);
 			let need = Math.max(0, 3 - toomany);
 			let newCards = deckDeal(fen.deck, need);
-			for (let i = 0; i < 2; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i]);
-
+			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i]);
 		} else {
 			table.players[name].score -= 1;
-
 		}
-		lookupAddToList(table, ['moves'], { step, name, keys, change: isSet ? '+1' : '-1', score: table.players[name].score });
+		lookupAddToList(table, ['moves'], { step, name, move:keys, change: isSet ? '+1' : '-1', score: table.players[name].score });
 
 		let o = { id, name, step, table };
 
@@ -212,8 +209,31 @@ function setgame() {
 		let res = await mPostRoute('table', o); //console.log(res);
 	}
 
-	async function onclickNoSet(table, items) { console.log('clicked No Set!') }
+	async function onclickNoSet(table, items) { 
+		console.log('clicked No Set!') 
+		clearEvents();
+		mShield('dTable', { bg: 'transparent' });
+		let id = table.id;
+		let name = getUname();
+		let step = table.step;
 
+		let oset = setFindOneSet(items);
+		if (!oset){
+			table.players[name].score += 1;
+			let fen = table.fen;
+			let newCards = deckDeal(fen.deck, 1); //add 1 cards!
+			if (!isEmpty(newCards))	fen.cards.push(newCards[0]);
+		} else {
+			table.players[name].score -= 1;
+		}
+		lookupAddToList(table, ['moves'], { step, name, move:['no set'], change: oset ? '-1' : '+1', score: table.players[name].score });
+
+		let o = { id, name, step, table };
+
+		if (!oset) o.stepIfValid = step + 1;
+
+		let res = await mPostRoute('table', o); //console.log(res);
+	}
 
 	return { setup, present, stats, activate };
 }
