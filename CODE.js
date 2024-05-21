@@ -16,7 +16,6 @@ function getRepeatAndSizeForTexture(t) {
   let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
   return [bgRepeat, bgSize];
 }
-function getNavBg() { return mGetStyle('dNav', 'bg'); }
 
 async function onclickBlendSample(item, items) {
   //console.log('CLICK!!!');//,item)

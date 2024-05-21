@@ -1,3 +1,81 @@
+async function test79_colorFuncs(){
+  let lum = colorGetLum('blue'); console.log(lum);
+  // let rgb = colorHexToRgbArray(colorFrom('blue'));
+  console.log('_______');
+  console.log(colorGetContrast('black','white'))
+  console.log(colorGetContrast('black','dimgray'))
+  console.log(colorGetContrast('black','#000000'))
+  console.log(colorGetContrast('blue','white'))
+  console.log(colorGetContrast('yellow','white'))
+  console.log(colorGetContrast('yellow','black'))
+  console.log('_______');
+  console.log(colorGetHue('yellow'));
+  console.log(w3color('yellow').hue);
+
+}
+async function test78_switch() {
+  let d = clearBodyDiv({ padding: 12 });
+  let sw = mSwitch(d, 'sBot');
+  console.log(sw);
+  sw.onchange = onchangeBotSwitch;
+}
+async function test77_switch() {
+
+  let d = clearBodyDiv({ padding: 12 });
+
+  let html = `
+      <label class="switch">
+        <input type="checkbox" checked>
+        <span class="slider round"></span>
+      </label>
+      `;
+  d.innerHTML = html;
+  // let d3=mDom(d,{className:'switch'},{tag:'label'});
+  // let inp=mDom(d3,{},{tag:'input',type:'checkbox',checked:true});
+  // let sp=mDom(d3,{className:'slider round'},{tag:'span'});
+}
+async function test76_RESTART() {
+  await prelims();
+
+  //await switchToOtherUser('mimi', 'felix');
+
+  //await resetUsers();
+  // await switchToUser('mimi');
+  // await switchToMenu(UI.nav, 'settings');
+  // await onclickSettAddTheme();
+
+  //await switchToMenu(UI.nav, 'play');
+  //await clickFirstTable();
+  //await onclickSettBlendMode();
+  //await switchToMainMenu('plan')
+
+}
+async function test75_showColors() {
+  let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
+  let d = clearBodyDiv({ padding: 12 }); //{ gap: 10 }); mFlexWrap(d);
+  for (const bucket in di) {
+    let list = dict2list(di[bucket]);
+    let clist = [];
+    for (const c of list) {
+      let o = w3color(c.value);
+      //console.log('c',c)
+      o.name = c.id;
+      o.hex = c.value;
+      clist.push(o);
+    }
+
+    let sorted = sortByFunc(clist, x => -x.lightness); //(10*x.lightness+x.sat*100));
+    //console.log(sorted[0]); return;
+
+    mDom(d, {}, { html: `<br>${bucket}<br>` })
+    showPaletteNames(d, sorted);
+
+    //ok jetzt will ich hier onclick attechen das dann die color setzt, erstmal nur die color for simplicity!
+    //und zugleich sollen all die anderen colors gesetzt werden in styles!
+
+
+  }
+}
 async function test74_checkColorsUnique(){
   let di = await mGetYaml(`../assets/dicolor.yaml`); // alle hex sind unique!!! das ist gut!
   let bykey={};
