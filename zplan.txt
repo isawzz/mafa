@@ -1,4 +1,7 @@
 
+solo mode soll eigentlich anders sein: die bots
+sollen alle im eigenen browser laufen!
+
 _____ 6:44 AM 5/20/2024 355
 ==>alles aus todo.js holen was gebraucht wird!!!
 luminosity function rewrite
