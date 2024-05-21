@@ -1,4 +1,9 @@
 
+//20.mai 24: unneeded in newclosure / todo abarbeiten!
+function getBg(d) { let style = window.getComputedStyle(toElem(d)); let bg = valf(style.backgroundColor, style.background); return colorFrom(bg); }
+
+
+
 //20.mai 24: GENIAL!!! function call or return function
 function updateUserImageToBotHuman(playername){
 	return (checked,name,val) =>{

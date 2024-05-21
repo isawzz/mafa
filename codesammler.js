@@ -1,4 +1,460 @@
 
+
+//#region integrate 21.mai 24 bau3.js
+//#region theme setting
+async function onclickSettTheme() { await showThemes(); }
+async function onclickSettAddYourTheme() {
+  let name = await mGather(iDiv(UI.settAddYourTheme));
+  //console.log(`should add theme for user ${getUname()} under name ${name}`);
+  let o = {};
+  for (const s of ['color', 'bgImage', 'bgBlend', 'fg']) {
+    if (isdef(U[s])) o[s] = U[s];
+  }
+  o.name = name;
+  let themes = lookup(Serverdata.config, ['themes']);
+  let key = isdef(themes[name]) ? rUniqueId(6, 'th') : name;
+  Serverdata.config.themes[key] = o;
+  await mPostRoute('postConfig', Serverdata.config);
+}
+
+async function showThemes() {
+  let d = mBy('dSettingsColor'); mClear(d);
+  let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
+  let themes = lookup(Serverdata.config, ['themes']);
+  let bgImage, bgSize, bgRepeat, bgBlend, name, color, fg;
+  for (const key in themes) {
+    let th = themes[key];
+    if (isdef(th.bgImage)) {
+      //find bgSize and bgRepeat for bgImage
+      bgImage = th.bgImage;
+      bgRepeat = (bgImage.includes('marble')||bgImage.includes('wall')) ? 'no-repeat' : 'repeat';
+      bgSize = (bgImage.includes('marble')||bgImage.includes('wall')) ? 'cover' : '';
+      bgBlend = isdef(th.bgBlend) ? th.bgBlend : (bgImage.includes('ttrans') ? 'normal' : bgImage.includes('marble_') ? 'luminosity' : 'multiply');
+    }
+    color = th.color;
+    if (isdef(th.fg)) fg = th.fg;
+    name = th.name;
+
+    let [realBg,bgContrast,bgNav,fgNew,fgContrast] = calculateGoodColors(color,fg)
+
+    let styles = {w:300,h:200,bg:realBg,fg:fgNew,border:`solid 1px ${getCSSVariable('--fgButton')}`};
+    if (isdef(bgImage)) addKeys({bgImage,bgSize,bgRepeat},styles);
+    if (isdef(bgBlend)) addKeys({bgBlend},styles);
+    let dsample = mDom(d1,styles,{theme:key});
+    let dnav = mDom(dsample,{bg:bgNav,padding:10},{html:name.toUpperCase()});
+    let dmain = mDom(dsample,{padding:10,fg:'black',className:'section'},{html:getMotto()});
+    dsample.onclick = onclickThemeSample;
+  }
+}
+async function onclickThemeSample(ev){
+  let key = evToAttr(ev,'theme');
+  console.log('key',key)
+  let theme = jsCopyExceptKeys(Serverdata.config.themes[key],['name']);
+  console.log('theme',theme);
+
+  copyKeys(theme,U);
+  await postUserChange();
+  setTheme();
+}
+function getMotto(){
+  let list = [
+    `Let's play!`, 'Enjoy this beautiful space!', 'First vacation day!', 'No place like home!',
+    'You are free!', 'Nothing to do here!', `Don't worry, be happy!`, `Good times ahead!`,
+    'Right here, right now', 'Life is a dream', 'Dream away!', 'Airport forever'
+  ];
+  return rChoose(list);
+}
+//#endregion
+
+//#region color functions neu
+function colorBlendMode(c1, c2, blendMode) {
+  function blendColorDodge(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
+
+    let r = dodge(r1, r2);
+    let g = dodge(g1, g2);
+    let b = dodge(b1, b2);
+
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendColor(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+    let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+
+    // Use the blend hue, but keep the base saturation and lightness
+    let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
+    return colorRgbArgsToHex79(...cfinal);
+  }
+  function blendDarken(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    let r = Math.min(r1, r2);
+    let g = Math.min(g1, g2);
+    let b = Math.min(b1, b2);
+
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendLighten(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    let r = Math.max(r1, r2);
+    let g = Math.max(g1, g2);
+    let b = Math.max(b1, b2);
+
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendLuminosity(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+    let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+
+    // Set the luminosity of the base color to the luminosity of the blend color
+    let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
+
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendMultiply(color1, color2) {
+    let [r1, g1, b1] = colorHexToRgbArray(color1);
+    let [r2, g2, b2] = colorHexToRgbArray(color2);
+
+    // Multiply each channel and divide by 255 to scale back to color space
+    let r = (r1 * r2) / 255;
+    let g = (g1 * g2) / 255;
+    let b = (b1 * b2) / 255;
+
+    return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
+  }
+  function blendNormal(baseColor, blendColor) {
+    return blendColor; // The blend color simply replaces the base color
+  }
+  function blendOverlay(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
+
+    let r = overlayCalculate(r1, r2);
+    let g = overlayCalculate(g1, g2);
+    let b = overlayCalculate(b1, b2);
+
+    return colorRgbArgsToHex79(r, g, b);
+  }
+  function blendSaturation(baseColor, blendColor) {
+    let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+    let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+
+    let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+    let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+
+    // Use the base hue and lightness, blend saturation
+    let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
+    return colorRgbArgsToHex79(...cfinal);
+  }
+  function blendScreen(color1, color2) {
+    let [r1, g1, b1] = colorHexToRgbArray(color1);
+    let [r2, g2, b2] = colorHexToRgbArray(color2);
+
+    // Apply the screen blend mode formula
+    let r = 255 - (((255 - r1) * (255 - r2)) / 255);
+    let g = 255 - (((255 - g1) * (255 - g2)) / 255);
+    let b = 255 - (((255 - b1) * (255 - b2)) / 255);
+
+    return colorRgbArgsToHex79(r, g, b);
+  }
+
+  //console.log('blendMode',blendMode);
+  let di = {
+    darken: blendDarken, lighten: blendLighten, color: blendColor, colorDodge: blendColorDodge, luminosity: blendLuminosity, multiply: blendMultiply, normal: blendNormal, overlay: blendOverlay,
+    saturation: blendSaturation, screen: blendScreen
+  };
+  let func = di[blendMode]; if (nundef(di)) { console.log('blendMode', blendMode); return c1; }
+  //console.log(func);
+  c1hex = colorFrom(c1);
+  c2hex = colorFrom(c2);
+  let res = func(c1hex, c2hex);
+  //console.log('blend',c1hex,c2hex,'=>',res);
+  return res;
+}
+function colorContrastPickFromList(color, colorlist = ['white', 'black']) {
+	let contrast = 0;
+	let result = null;
+	let rgb = colorHexToRgbArray(colorFrom(color));
+	for (c1 of colorlist) {
+    let x = colorHexToRgbArray(colorFrom(c1));
+		let c = colorGetContrast(rgb, x);
+		if (c > contrast) { contrast = c; result = c1; }
+	}
+	return result;
+}
+function colorContrastFromElem(elem, list = ['white', 'black']) {
+  let bg = mGetStyle(elem, 'bg'); 
+  return colorContrastPickFromList(bg, list);
+}
+function colorsFromBFA(bg, fg, alpha) {
+  if (fg == 'contrast') {
+    if (bg != 'inherit') bg = colorFrom(bg, alpha);
+    fg = colorIdealText(bg);
+  } else if (bg == 'contrast') {
+    fg = colorFrom(fg);
+    bg = colorIdealText(fg);
+  } else {
+    if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
+    if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
+  }
+  return [bg, fg];
+}
+function colorGetContrast(c1,c2) {
+  function luminance(r, g, b) {
+    var a = [r, g, b].map(function (v) {
+      v /= 255;
+      return v <= 0.03928
+        ? v / 12.92
+        : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+  }
+	let rgb1 = colorHexToRgbArray(colorFrom(c1));
+	let rgb2 = colorHexToRgbArray(colorFrom(c2));
+  var lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
+	var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
+	var brightest = Math.max(lum1, lum2);
+	var darkest = Math.min(lum1, lum2);
+	return (brightest + 0.05)
+		/ (darkest + 0.05);
+}
+function colorGetLum(c){ return colorGetLum01(c)*100; }
+function colorGetLum01(c){
+	let hex=colorFrom(c);
+	let hsl=colorHexToHsl01Array(hex); //console.log('hsl',hsl);
+	return hsl[2];
+}
+function colorGetHue(c){ return colorGetHue01(c)*360; }
+function colorGetHue01(c){
+	let hex=colorFrom(c);
+	let hsl=colorHexToHsl01Array(hex); //console.log('hsl',hsl);
+	return hsl[0];
+}
+function colorGetSat(c){ return colorGetSat01(c)*100; }
+function colorGetSat01(c){
+	let hex=colorFrom(c);
+	let hsl=colorHexToHsl01Array(hex); //console.log('hsl',hsl);
+	return hsl[1];
+}
+function colorIdealText(bg, grayPreferred = false, nThreshold = 105) {
+  let rgb = colorHexToRgbObject(colorFrom(bg));
+  let r = rgb.r;
+  let g = rgb.g;
+  let b = rgb.b;
+  var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+  var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+  if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+  return foreColor;
+}
+function colorPalette(color, type = 'shade') {  return colorShades(colorFrom(color));}
+function colorPaletteFromImage(img) {
+  if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
+  return ColorThiefObject.getPalette(img).map(x=>colorFrom(x));
+}
+function colorPaletteFromUrl(path) {
+  let img = mCreateFrom(`<img src='${path}' />`);
+  let pal = colorPaletteFromImage(img);
+  return pal;
+}
+function colorShades(color) {
+  let res = [];
+  for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
+    let c = colorCalculator(frac, color, undefined, true);
+    res.push(c);
+  }
+  return res;
+}
+function colorTrans(cAny, alpha = 0.5) { return colorFrom(cAny, alpha); }
+
+function colorTransPalette(n = 9) {
+  let c = colorHex('white');
+  let pal = [c];
+  let [iw, ib] = [Math.floor(n / 2) - 1, Math.floor((n - 1) / 2) - 1];
+  let [incw, incb] = [1 / (iw + 1), 1 / (ib + 1)];
+  for (let i = 1; i < iw; i++) {
+    let alpha = i * incw;
+    pal.push(colorTrans(c, alpha));
+  }
+  pal.push('transparent');
+  c = colorHex('black');
+  for (let i = 1; i < ib; i++) {
+    let alpha = i * incb;
+    pal.push(colorTrans(c, alpha));
+  }
+  pal.push(c);
+
+  return pal;
+}
+//#endregion
+
+
+function calculateGoodColors(bg, fg) {
+	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
+	let bgIsDark = colorIdealText(bg) == 'white';
+	if (nundef(fg)) fg = colorIdealText(bg);
+	let bgNav = bg;
+	fg = colorToHex79(fg);
+	if (fgIsLight) {
+		if (isEmpty(U.bgImage)) { bgNav = '#00000040'; }
+		else if (bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorDark(bg, 50), .8); }
+	} else {
+		if (isEmpty(U.bgImage)) { bgNav = '#ffffff40'; }
+		else if (!bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorLight(bg, 50), .8); }
+	}
+	let t = U.bgImage;
+	let realBg = bg;
+	if (bgNav == realBg) bgNav = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let bgContrast = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let fgContrast = fgIsLight ? '#ffffff80' : '#00000080'; 
+	return [realBg, bgContrast, bgNav, fg, fgContrast];
+}
+async function gameoverScore(table) {
+	table.winners = getPlayersWithMaxScore(table);
+	table.status = 'over';
+	table.turn = [];
+	let id = table.id;
+	let name = getUname();
+	let step = table.step;
+	let stepIfValid = step + 1;
+	let o = { id, name, step, stepIfValid, table };
+	let res = await mPostRoute('table', o); //console.log(res);
+
+}
+function modifyStat(name,prop,val){
+	//for this to work need to provide opts.id to playerStatCount!
+	let id = `stat_${name}_${prop}`;
+	console.log('id',id)
+	let ui=mBy(id);
+	console.log('ui',ui)
+	if (isdef(ui)) ui.innerHTML = val;
+}
+function playerStatCount(key, n, dParent, styles = {}, opts = {}) {
+	let sz = valf(styles.sz, 16);
+	addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'center', fz: sz, align: 'center' }, styles);
+	let d = mDiv(dParent, styles);
+	let o = M.superdi[key];
+	if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg: 'grey' }, true);
+	else mText(key, d, { h: sz, fz: sz, w: '100%' });
+	d.innerHTML += `<span ${isdef(opts.id)?`id='${opts.id}'`:''} style="font-weight:bold;color:inherit">${n}</span>`;
+	return d;
+}
+function showValidMoves(table) {
+	if (nundef(table.moves)) { console.log('no moves yet!'); return; }
+	console.log('________', table.step)
+	for (const m of table.moves) {
+		console.log(`${m.step} ${m.name}: ${m.move.map(x => x.substring(0, 5)).join(',')} (${m.change})=>${m.score}`);
+	}
+}
+
+
+function mByAttr(key, val) {
+  // Build the attribute selector string
+  const selector = val ? `[${key}="${val}"]` : `[${key}]`;
+
+  // Use querySelectorAll to find matching elements
+	let list = Array.from(document.querySelectorAll(selector));
+	return (list.length == 1)? list[0]:list;
+}
+function mRadio(label, val, name, dParent, styles = {}, onchangeHandler, group_id, is_on) {
+	let cursor = styles.cursor; delete styles.cursor;
+	let d = mDiv(dParent, styles, group_id + '_' + val);
+	let id = isdef(group_id) ? `i_${group_id}_${val}` : getUID();
+	let type = isdef(group_id) ? 'radio' : 'checkbox';
+	let checked = isdef(is_on) ? is_on : false;
+	let inp = mCreateFrom(`<input class='radio' id='${id}' type="${type}" name="${name}" value="${val}">`);
+	if (checked) inp.checked = true;
+	let text = mCreateFrom(`<label for='${inp.id}'>${label}</label>`);
+	if (isdef(cursor)) { inp.style.cursor = text.style.cursor = cursor; }
+	mAppend(d, inp);
+	mAppend(d, text);
+	if (isdef(onchangeHandler)) {
+		inp.onchange = ev => {
+			ev.cancelBubble = true;
+			if (onchangeHandler == 'toggle') {
+			} else if (isdef(onchangeHandler)) {
+				onchangeHandler(ev.target.checked,name,val);
+			}
+		};
+	}
+	return d;
+}
+function setPlayersToMulti() {
+	for (const name in DA.allPlayers) {
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'human');
+		updateUserImageToBotHuman(name,'human');
+	}
+	setRadioValue('playmode', 'human');
+}
+function setPlayersToSolo() {
+	for (const name in DA.allPlayers) {
+		if (name == getUname()) continue;
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'bot');
+		updateUserImageToBotHuman(name,'bot');
+	}
+	let popup = mBy('dPlayerOptions');
+	if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
+	setRadioValue('playmode', 'bot');
+}
+async function showTable(id) {
+	//INVALID TABLES KOMMEN GARNICHT HIERHER!!!
+	//VALID TABLES SOLLEN NICHT UNBEDINGT DEN MOVE UNTERBRECHEN! es kann auch nur ein UI update sein!
+	let me = getUname();
+	let table = await mGetRoute('table', { id });	//console.log('table',table)
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+
+	let func = DA.funcs[table.game]; //showValidMoves(table);
+
+	T = table;
+	clearMain();
+	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
+	d = mDom('dMain'); mCenterFlex(d); 
+	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
+	mDom(d, {}, { id: 'dStats' }); mLinebreak(d); 
+	
+	func.stats(table); // player stats
+
+	let minTableSize = 400; // present
+	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
+	mCenterCenter(dTable);
+	let items = func.present(table);
+
+	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
+
+	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
+
+	await updateTestButtonsPlayers(table); // right side buttons
+
+	func.activate(table, items); // activate
+
+}
+function updateUserImageToBotHuman(playername,value){
+	function doit(checked,name,val){
+		let du=mByAttr('username',playername);
+		//console.log('checked',checked,name,val,du); return;
+		let img = du.getElementsByTagName('img')[0]; //du.firstChild;
+		if (checked==true) if (val == 'human') mStyle(img,{round:true}); else mStyle(img,{rounding:2});
+	}
+	if (isdef(value)) doit(true,0,value); else return doit;
+}
+
+//#endregion
+
 //#region integrate 18.mai 24 baui.js
 
 

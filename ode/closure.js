@@ -5,7 +5,7 @@ function _showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { padding: 10, gap: 4 }); mFlexWrap(d1);
 	for (var c of colors) {
 		let bg = c.hex;
-		let html = `${c.name}`; 
+		let html = `${c.name}`;
 		let dmini = mDom(d1, { padding: 10, bg, fg: colorIdealText(bg) }, { html, class: 'colorbox', dataColor: bg });
 	}
 }
@@ -60,7 +60,7 @@ function addToolX(cropper, d) {
 	let img = cropper.img;
 	function createCropTool() {
 		let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
-		let handler = cropper.setSize; //(_, x) => cropper.setSize(x);
+		let handler = cropper.setSize;
 		mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
 		let [w, h] = [img.offsetWidth, img.offsetHeight];
 		if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, handler, 'rSizes', false)
@@ -87,8 +87,7 @@ function addToolX(cropper, d) {
 	}
 	function createSquareTool() {
 		let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-		let handler = x=>squareTo(cropper,x); //(_, x) => squareTo(cropper, x);
-		//mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, (_, x) => cropper.crop(x), 'rSquare', false)
+		let handler = x => squareTo(cropper, x);
 		mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
 		for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 			mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
@@ -390,6 +389,28 @@ function calcScoreSum(table) {
 		res += table.players[name].score;
 	}
 	return res;
+}
+function calculateGoodColors(bg, fg) {
+	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
+	let bgIsDark = colorIdealText(bg) == 'white';
+	if (nundef(fg)) fg = colorIdealText(bg);
+	let bgNav = bg;
+	fg = colorToHex79(fg);
+	if (fgIsLight) {
+		if (isEmpty(U.bgImage)) { bgNav = '#00000040'; }
+		else if (bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorDark(bg, 50), .8); }
+	} else {
+		if (isEmpty(U.bgImage)) { bgNav = '#ffffff40'; }
+		else if (!bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorLight(bg, 50), .8); }
+	}
+	let t = U.bgImage;
+	let realBg = bg;
+	if (bgNav == realBg) bgNav = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let bgContrast = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let fgContrast = fgIsLight ? '#ffffff80' : '#00000080';
+	return [realBg, bgContrast, bgNav, fg, fgContrast];
 }
 function canAct() { return (aiActivated || uiActivated) && !auxOpen; }
 
@@ -986,6 +1007,94 @@ function collectPlayers() {
 	for (const name of DA.playerList) { players[name] = allPlToPlayer(name); }
 	return players;
 }
+function colorBlendMode(c1, c2, blendMode) {
+	function blendColorDodge(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
+		let r = dodge(r1, r2);
+		let g = dodge(g1, g2);
+		let b = dodge(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendColor(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
+		return colorRgbArgsToHex79(...cfinal);
+	}
+	function blendDarken(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let r = Math.min(r1, r2);
+		let g = Math.min(g1, g2);
+		let b = Math.min(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendLighten(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let r = Math.max(r1, r2);
+		let g = Math.max(g1, g2);
+		let b = Math.max(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendLuminosity(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendMultiply(color1, color2) {
+		let [r1, g1, b1] = colorHexToRgbArray(color1);
+		let [r2, g2, b2] = colorHexToRgbArray(color2);
+		let r = (r1 * r2) / 255;
+		let g = (g1 * g2) / 255;
+		let b = (b1 * b2) / 255;
+		return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
+	}
+	function blendNormal(baseColor, blendColor) {
+		return blendColor;
+	}
+	function blendOverlay(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
+		let r = overlayCalculate(r1, r2);
+		let g = overlayCalculate(g1, g2);
+		let b = overlayCalculate(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendSaturation(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
+		return colorRgbArgsToHex79(...cfinal);
+	}
+	function blendScreen(color1, color2) {
+		let [r1, g1, b1] = colorHexToRgbArray(color1);
+		let [r2, g2, b2] = colorHexToRgbArray(color2);
+		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
+		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
+		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	let di = {
+		darken: blendDarken, lighten: blendLighten, color: blendColor, colorDodge: blendColorDodge, luminosity: blendLuminosity, multiply: blendMultiply, normal: blendNormal, overlay: blendOverlay,
+		saturation: blendSaturation, screen: blendScreen
+	};
+	let func = di[blendMode]; if (nundef(di)) { console.log('blendMode', blendMode); return c1; }
+	c1hex = colorFrom(c1);
+	c2hex = colorFrom(c2);
+	let res = func(c1hex, c2hex);
+	return res;
+}
 function colorCalculator(p, c0, c1, l) {
 	function pSBCr(d) {
 		let i = parseInt, m = Math.round, a = typeof c1 == 'string';
@@ -1023,6 +1132,21 @@ function colorCalculator(p, c0, c1, l) {
 	if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
 	else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
 }
+function colorContrastFromElem(elem, list = ['white', 'black']) {
+	let bg = mGetStyle(elem, 'bg');
+	return colorContrastPickFromList(bg, list);
+}
+function colorContrastPickFromList(color, colorlist = ['white', 'black']) {
+	let contrast = 0;
+	let result = null;
+	let rgb = colorHexToRgbArray(colorFrom(color));
+	for (c1 of colorlist) {
+		let x = colorHexToRgbArray(colorFrom(c1));
+		let c = colorGetContrast(rgb, x);
+		if (c > contrast) { contrast = c; result = c1; }
+	}
+	return result;
+}
 function colorDark(c, percent = 50, log = true) {
 	if (nundef(c)) c = rColor(); else c = colorFrom(c);
 	let zero1 = -percent / 100;
@@ -1032,6 +1156,50 @@ function colorFrom(c, a) {
 	c = colorToHex79(c);
 	if (nundef(a)) return c;
 	return c.substring(0, 7) + (a < 1 ? alphaToHex(a) : '');
+}
+function colorFromHsl(h, s, l, a) { return colorHsl360ArgsToHex79(h, s, l, a); }
+
+function colorFromRgb(r, g, b, a) { return colorRgbArgsToHex79(r, g, b, a); }
+
+function colorGetContrast(c1, c2) {
+	function luminance(r, g, b) {
+		var a = [r, g, b].map(function (v) {
+			v /= 255;
+			return v <= 0.03928
+				? v / 12.92
+				: Math.pow((v + 0.055) / 1.055, 2.4);
+		});
+		return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+	}
+	let rgb1 = colorHexToRgbArray(colorFrom(c1));
+	let rgb2 = colorHexToRgbArray(colorFrom(c2));
+	var lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
+	var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
+	var brightest = Math.max(lum1, lum2);
+	var darkest = Math.min(lum1, lum2);
+	return (brightest + 0.05)
+		/ (darkest + 0.05);
+}
+function colorGetHue(c) { return colorGetHue01(c) * 360; }
+
+function colorGetHue01(c) {
+	let hex = colorFrom(c);
+	let hsl = colorHexToHsl01Array(hex);
+	return hsl[0];
+}
+function colorGetLum(c) { return colorGetLum01(c) * 100; }
+
+function colorGetLum01(c) {
+	let hex = colorFrom(c);
+	let hsl = colorHexToHsl01Array(hex);
+	return hsl[2];
+}
+function colorGetSat(c) { return colorGetSat01(c) * 100; }
+
+function colorGetSat01(c) {
+	let hex = colorFrom(c);
+	let hsl = colorHexToHsl01Array(hex);
+	return hsl[1];
 }
 function colorHex45ToHex79(c) {
 	let r = c[1];
@@ -1137,14 +1305,35 @@ function colorHsl360StringToHsl360Object(c) {
 	if (isdef(a) && a > 1) a /= 10;
 	return { h, s, l, a };
 }
+function colorIdealText(bg, grayPreferred = false, nThreshold = 105) {
+	let rgb = colorHexToRgbObject(colorFrom(bg));
+	let r = rgb.r;
+	let g = rgb.g;
+	let b = rgb.b;
+	var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+	var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+	if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+	return foreColor;
+}
 function colorIsHex79(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
 
 function colorLight(c, percent = 20, log = true) {
 	if (nundef(c)) {
-		return colorFromHSL(rHue(), 100, 85);
+		return colorHsl360ArgsToHex79(rHue(), 100, 85);
 	} else c = colorFrom(c);
 	let zero1 = percent / 100;
 	return colorCalculator(zero1, c, undefined, !log);
+}
+function colorPalette(color, type = 'shade') { return colorShades(colorFrom(color)); }
+
+function colorPaletteFromImage(img) {
+	if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
+	return ColorThiefObject.getPalette(img).map(x => colorFrom(x));
+}
+function colorPaletteFromUrl(path) {
+	let img = mCreateFrom(`<img src='${path}' />`);
+	let pal = colorPaletteFromImage(img);
+	return pal;
 }
 function colorRgbArgsToHex79(r, g, b, a) {
 	r = Math.round(r).toString(16).padStart(2, '0');
@@ -1196,6 +1385,14 @@ function colorSchemeRYB() {
 		console.log(cw.hue, cw.sat, cw.lightness, cw.ncol);
 	}
 }
+function colorShades(color) {
+	let res = [];
+	for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
+		let c = colorCalculator(frac, color, undefined, true);
+		res.push(c);
+	}
+	return res;
+}
 function colorToHex79(c) {
 	if (colorIsHex79(c)) return c;
 	let tString = isString(c), tArr = isList(c), tObj = isDict(c);
@@ -1217,6 +1414,26 @@ function colorToHex79(c) {
 	else if (tObj && 'h' in c) return colorHsl01ObjectToHex79(c);
 	else if (tObj && 'r' in c) return colorRgbArgsToHex79(c.r, c.g, c.b, c.a);
 	assertion(false, `NO COLOR FOUND FOR ${c}`);
+}
+function colorTrans(cAny, alpha = 0.5) { return colorFrom(cAny, alpha); }
+
+function colorTransPalette(n = 9) {
+	let c = colorHex('white');
+	let pal = [c];
+	let [iw, ib] = [Math.floor(n / 2) - 1, Math.floor((n - 1) / 2) - 1];
+	let [incw, incb] = [1 / (iw + 1), 1 / (ib + 1)];
+	for (let i = 1; i < iw; i++) {
+		let alpha = i * incw;
+		pal.push(colorTrans(c, alpha));
+	}
+	pal.push('transparent');
+	c = colorHex('black');
+	for (let i = 1; i < ib; i++) {
+		let alpha = i * incb;
+		pal.push(colorTrans(c, alpha));
+	}
+	pal.push(c);
+	return pal;
 }
 function colormapAsString() {
 	let html = `
@@ -1481,6 +1698,19 @@ function colormapAsStringOrig() {
     <area style='cursor:pointer' shape='poly' coords='171,180,180,184,180,195,171,199,162,195,162,184' onclick='clickColor("#993333",-20,162)' onmouseover='mouseOverColor("#993333")' alt='#993333' />
    `;
 	return html;
+}
+function colorsFromBFA(bg, fg, alpha) {
+	if (fg == 'contrast') {
+		if (bg != 'inherit') bg = colorFrom(bg, alpha);
+		fg = colorIdealText(bg);
+	} else if (bg == 'contrast') {
+		fg = colorFrom(fg);
+		bg = colorIdealText(fg);
+	} else {
+		if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
+		if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
+	}
+	return [bg, fg];
 }
 function conslog(s) { console.log(s, window[s]) }
 
@@ -2330,10 +2560,9 @@ function findPointAtDistance(pt, dx, dy, list, delta = 0) {
 function findPoints(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
 	let p;
 	let resy = [], resx = [];
-	cgoal = colorRGB(cgoal, true);
 	for (let y = y1; y < y2; y++) {
 		for (let x = x1; x < x2; x++) {
-			p = isPixDark(ctx, x, y, cgoal, delta);
+			p = isPixDark(ctx, x, y);
 			if (p) {
 				let l = isLightBeforeV(ctx, x, y);
 				let d = isLightAfterV(ctx, x, y);
@@ -2349,10 +2578,9 @@ function findPoints(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
 function findPointsBoth(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
 	let p;
 	let resy = [], resx = [];
-	cgoal = colorRGB(cgoal, true);
 	for (let y = y1; y < y2; y++) {
 		for (let x = x1; x < x2; x++) {
-			p = isPixDark(ctx, x, y, cgoal, delta);
+			p = isPix(ctx, x, y, cgoal, delta);
 			if (p) {
 				let l = isLightBeforeV(ctx, x, y);
 				let d = isLightAfterV(ctx, x, y);
@@ -2367,7 +2595,6 @@ function findPointsBoth(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
 }
 function findRectSample(ctx, x1, x2, y1, y2, cgoal, sz = 4, lightCounts = false) {
 	let p;
-	cgoal = colorRGB(cgoal, true);
 	for (let yStart = y1; yStart <= y2; yStart += sz) {
 		for (let xStart = x1; xStart <= x2; xStart += sz) {
 			let found = true;
@@ -2579,17 +2806,16 @@ function gStroke(g, color, thickness) { g.setAttribute('stroke', color); if (thi
 
 function gSvg() { return gCreate('svg'); }
 
-function geht(sp) {
-	POOLS.augData = makeDefaultPool(sData);
-	annotate(sp);
-	dynSpec = sp;
-	let pool = POOLS.augData;
-	for (const oid in pool) {
-		let o = pool[oid];
-		if (nundef(o.RSG)) continue;
-		let info = mergeIncludingPrototype(oid, o);
-		INFO[oid] = info;
-	}
+async function gameoverScore(table) {
+	table.winners = getPlayersWithMaxScore(table);
+	table.status = 'over';
+	table.turn = [];
+	let id = table.id;
+	let name = getUname();
+	let step = table.step;
+	let stepIfValid = step + 1;
+	let o = { id, name, step, stepIfValid, table };
+	let res = await mPostRoute('table', o); //console.log(res);
 }
 function generateArrayColors(startColor, endColor, numSteps) {
 	const colors = [];
@@ -2638,8 +2864,6 @@ function getBeautifulColors() {
 	for (const o of res) o.hex = o.toHexString();
 	return res;
 }
-function getBg(d) { let style = window.getComputedStyle(toElem(d)); let bg = valf(style.backgroundColor, style.background); return colorHex(bg); }
-
 function getBrowser() {
 	var userAgent = navigator.userAgent;
 	if (userAgent.match(/chrome|chromium|crios/i)) {
@@ -3121,6 +3345,14 @@ function getLine(ctx, list, val) {
 }
 function getMenu() { return isdef(Menu) ? Menu.key : null; }
 
+function getMotto() {
+	let list = [
+		`Let's play!`, 'Enjoy this beautiful space!', 'First vacation day!', 'No place like home!',
+		'You are free!', 'Nothing to do here!', `Don't worry, be happy!`, `Good times ahead!`,
+		'Right here, right now', 'Life is a dream', 'Dream away!', 'Airport forever'
+	];
+	return rChoose(list);
+}
 function getMouseCoordinates(event) {
 	const image = event.target;
 	const offsetX = event.clientX +
@@ -3512,7 +3744,7 @@ function isEmptyOrWhiteSpace(s) { return isEmpty(s.trim()); }
 function isExpressionSeparator(ch) { return ',-.!?;:'.includes(ch); }
 
 function isGrayColor(color, diff = 60) {
-	const rgb = colorHexToRgb(color);
+	const rgb = colorHexToRgbObject(color);
 	return Math.abs(rgb.r - rgb.g) + Math.abs(rgb.r - rgb.b) + Math.abs(rgb.g - rgb.b) < 3 * diff;
 }
 function isLetter(s) { return /^[a-zA-Z]$/i.test(s); }
@@ -3550,7 +3782,7 @@ function isNumeric(x) { return !isNaN(+x); }
 function isObject(item) { return item && typeof item === 'object' && !Array.isArray(item); }
 
 function isPix(ctx, x, y, color, delta = 10) {
-	let rgb = isString(color) ? colorRGB(color, true) : color;
+	let rgb = colorHexToRgbObject(colorFrom(color));
 	let p = getPixRgb(ctx, x, y);
 	let found = isWithinDelta(p.r, rgb.r, delta) && isWithinDelta(p.g, rgb.g, delta) && isWithinDelta(p.b, rgb.b, delta);
 	return found ? p : null;
@@ -3822,6 +4054,11 @@ function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
 }
 function mBy(id) { return document.getElementById(id); }
 
+function mByAttr(key, val) {
+	const selector = val ? `[${key}="${val}"]` : `[${key}]`;
+	let list = Array.from(document.querySelectorAll(selector));
+	return (list.length == 1) ? list[0] : list;
+}
 function mCenterCenter(d, gap) { mCenterCenterFlex(d, gap); }
 
 function mCenterCenterFlex(d, gap) { mCenterFlex(d, true, true, true, gap); }
@@ -4551,6 +4788,29 @@ async function mPrompt(gadget) {
 		};
 	});
 }
+function mRadio(label, val, name, dParent, styles = {}, onchangeHandler, group_id, is_on) {
+	let cursor = styles.cursor; delete styles.cursor;
+	let d = mDiv(dParent, styles, group_id + '_' + val);
+	let id = isdef(group_id) ? `i_${group_id}_${val}` : getUID();
+	let type = isdef(group_id) ? 'radio' : 'checkbox';
+	let checked = isdef(is_on) ? is_on : false;
+	let inp = mCreateFrom(`<input class='radio' id='${id}' type="${type}" name="${name}" value="${val}">`);
+	if (checked) inp.checked = true;
+	let text = mCreateFrom(`<label for='${inp.id}'>${label}</label>`);
+	if (isdef(cursor)) { inp.style.cursor = text.style.cursor = cursor; }
+	mAppend(d, inp);
+	mAppend(d, text);
+	if (isdef(onchangeHandler)) {
+		inp.onchange = ev => {
+			ev.cancelBubble = true;
+			if (onchangeHandler == 'toggle') {
+			} else if (isdef(onchangeHandler)) {
+				onchangeHandler(ev.target.checked, name, val);
+			}
+		};
+	}
+	return d;
+}
 function mRadioGroup(dParent, styles, id, legend, legendstyles) {
 	let f = mCreate('fieldset');
 	f.id = id;
@@ -4740,65 +5000,6 @@ function mStyle(elem, styles = {}, unit = 'px') {
 			if (isNumber(val)) val = '' + val + ' 1 0%';
 			elem.style.setProperty(key, makeUnitString(val, unit));
 		} else {
-			elem.style.setProperty(key, makeUnitString(val, unit));
-		}
-	}
-}
-function mStyleX(elem, styles, unit = 'px') {
-	const paramDict = {
-		bg: 'background-color',
-		fg: 'color',
-		align: 'text-align',
-		matop: 'margin-top',
-		maleft: 'margin-left',
-		mabottom: 'margin-bottom',
-		maright: 'margin-right',
-		patop: 'padding-top',
-		paleft: 'padding-left',
-		pabottom: 'padding-bottom',
-		paright: 'padding-right',
-		rounding: 'border-radius',
-		w: 'width',
-		h: 'height',
-		fontSize: 'font-size',
-		fz: 'font-size',
-		family: 'font-family',
-		weight: 'font-weight',
-	};
-	let bg, fg;
-	if (isdef(styles.bg) || isdef(styles.fg)) {
-		[bg, fg] = getExtendedColors(styles.bg, styles.fg);
-	}
-	if (isdef(styles.vmargin) && isdef(styles.hmargin)) {
-		styles.margin = vmargin + unit + ' ' + hmargin + unit;
-	}
-	if (isdef(styles.vpadding) && isdef(styles.hpadding)) {
-		styles.padding = vpadding + unit + ' ' + hpadding + unit;
-	}
-	for (const k in styles) {
-		let val = styles[k];
-		let key = k;
-		if (isdef(paramDict[k])) key = paramDict[k];
-		else if (k == 'font' && !isString(val)) {
-			let fz = f.size; if (isNumber(fz)) fz = '' + fz + 'px';
-			let ff = f.family;
-			let fv = f.variant;
-			let fw = isdef(f.bold) ? 'bold' : isdef(f.light) ? 'light' : f.weight;
-			let fs = isdef(f.italic) ? 'italic' : f.style;
-			if (nundef(fz) || nundef(ff)) return null;
-			let s = fz + ' ' + ff;
-			if (isdef(fw)) s = fw + ' ' + s;
-			if (isdef(fv)) s = fv + ' ' + s;
-			if (isdef(fs)) s = fs + ' ' + s;
-			elem.style.setProperty(k, s);
-			continue;
-		} else if (k == 'border') {
-			if (val.indexOf(' ') < 0) val = 'solid 1px ' + val;
-		}
-		if (key == 'font-weight') { elem.style.setProperty(key, val); continue; }
-		else if (key == 'background-color') elem.style.background = bg;
-		else if (key == 'color') elem.style.color = fg;
-		else {
 			elem.style.setProperty(key, makeUnitString(val, unit));
 		}
 	}
@@ -5091,20 +5292,12 @@ function mergeOverride(base, drueber) { return _deepMerge(base, drueber, { array
 function mergeOverrideArrays(base, drueber) {
 	return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
 }
-function mixColors(color1, color2, weight) {
-	const hex1 = color1.substring(1);
-	const hex2 = color2.substring(1);
-	const r1 = parseInt(hex1.substring(0, 2), 16);
-	const g1 = parseInt(hex1.substring(2, 4), 16);
-	const b1 = parseInt(hex1.substring(4, 6), 16);
-	const r2 = parseInt(hex2.substring(0, 2), 16);
-	const g2 = parseInt(hex2.substring(2, 4), 16);
-	const b2 = parseInt(hex2.substring(4, 6), 16);
-	const r = Math.floor(r1 * (1 - weight) + r2 * weight);
-	const g = Math.floor(g1 * (1 - weight) + g2 * weight);
-	const b = Math.floor(b1 * (1 - weight) + b2 * weight);
-	const hex = colorHex({ r: r, g: g, b: b }); // '#' + r.toString(16) + g.toString(16) + b.toString(16);
-	return hex;
+function modifyStat(name, prop, val) {
+	let id = `stat_${name}_${prop}`;
+	console.log('id', id)
+	let ui = mBy(id);
+	console.log('ui', ui)
+	if (isdef(ui)) ui.innerHTML = val;
 }
 function name2id(name) { return 'd_' + name.split(' ').join('_'); }
 
@@ -5591,10 +5784,8 @@ async function onclickNewCollection(name) {
 async function onclickOpenToJoinGame() {
 	let options = collectOptions();
 	let players = collectPlayers();
-	//console.log('players', jsCopy(players));
 	mRemove('dGameMenu');
 	let t = createOpenTable(DA.gamename, players, options);
-	//console.log('table open', t)
 	let res = await mPostRoute('postTable', t);
 }
 async function onclickPlan() { await showCalendarApp(); }
@@ -5683,6 +5874,18 @@ async function onclickRenameCollection(oldname, newname) {
 	}
 	await collRename(oldname, newname);
 }
+async function onclickSettAddYourTheme() {
+	let name = await mGather(iDiv(UI.settAddYourTheme));
+	let o = {};
+	for (const s of ['color', 'bgImage', 'bgBlend', 'fg']) {
+		if (isdef(U[s])) o[s] = U[s];
+	}
+	o.name = name;
+	let themes = lookup(Serverdata.config, ['themes']);
+	let key = isdef(themes[name]) ? rUniqueId(6, 'th') : name;
+	Serverdata.config.themes[key] = o;
+	await mPostRoute('postConfig', Serverdata.config);
+}
 async function onclickSettBlendMode() {
 	if (isEmpty(U.bgImage)) {
 		showMessage('You need to set a Texture in order to set a Blend Mode!');
@@ -5716,6 +5919,8 @@ async function onclickSettSwapColoring() {
 }
 async function onclickSettTexture() { await showTextures(); }
 
+async function onclickSettTheme() { await showThemes(); }
+
 async function onclickStartGame() {
 	await saveDataFromPlayerOptionsUI(DA.gamename);
 	let options = collectOptions();
@@ -5727,7 +5932,6 @@ async function onclickStartTable(id) {
 	if (nundef(table)) table = await mGetRoute('table', { id });
 	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 	console.log('table', jsCopy(table));
-	//assertion(isdef(table), `table with id ${id} not in Serverdata!`);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
 }
@@ -5762,6 +5966,15 @@ async function onclickTexture(item) {
 	U.bgRepeat = item.bgRepeat;
 	await postUserChange();
 	setTheme(U);
+}
+async function onclickThemeSample(ev) {
+	let key = evToAttr(ev, 'theme');
+	console.log('key', key)
+	let theme = jsCopyExceptKeys(Serverdata.config.themes[key], ['name']);
+	console.log('theme', theme);
+	copyKeys(theme, U);
+	await postUserChange();
+	setTheme();
 }
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user), { w: 100, margin: 0 }, { content: 'username', align: 'br', placeholder: ' <username> ' });
@@ -5907,6 +6120,16 @@ function pSBCr(d) {
 	}
 	return x;
 }
+function playerStatCount(key, n, dParent, styles = {}, opts = {}) {
+	let sz = valf(styles.sz, 16);
+	addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'center', fz: sz, align: 'center' }, styles);
+	let d = mDiv(dParent, styles);
+	let o = M.superdi[key];
+	if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg: 'grey' }, true);
+	else mText(key, d, { h: sz, fz: sz, w: '100%' });
+	d.innerHTML += `<span ${isdef(opts.id) ? `id='${opts.id}'` : ''} style="font-weight:bold;color:inherit">${n}</span>`;
+	return d;
+}
 function polyPointsFrom(w, h, x, y, pointArr) {
 	x -= w / 2;
 	y -= h / 2;
@@ -6006,17 +6229,17 @@ function rChoose(arr, n = 1, func = null, exceptIndices = null) {
 	arrShuffle(indices);
 	return indices.slice(0, n).map(x => arr[x]);
 }
-function rColor(brightPerOrAlpha01 = 1, alpha01 = 1, hueVari = 60) {
+function rColor(lum100OrAlpha01 = 1, alpha01 = 1, hueVari = 60) {
 	let c;
-	if (brightPerOrAlpha01 <= 1) {
+	if (lum100OrAlpha01 <= 1) {
 		c = '#';
 		for (let i = 0; i < 6; i++) { c += rChoose(['f', 'c', '9', '6', '3', '0']); }
-		alpha01 = brightPerOrAlpha01;
+		alpha01 = lum100OrAlpha01;
 	} else {
 		let hue = rHue(hueVari);
 		let sat = 100;
-		let b = isNumber(brightPerOrAlpha01) ? brightPerOrAlpha01 : brightPerOrAlpha01 == 'dark' ? 25 : brightPerOrAlpha01 == 'light' ? 75 : 50;
-		c = colorFromHSL(hue, sat, b);
+		let b = isNumber(lum100OrAlpha01) ? lum100OrAlpha01 : lum100OrAlpha01 == 'dark' ? 25 : lum100OrAlpha01 == 'light' ? 75 : 50;
+		c = colorHsl360ArgsToHex79(hue, sat, b);
 	}
 	return alpha01 < 1 ? colorTrans(c, alpha01) : c;
 }
@@ -6508,6 +6731,23 @@ async function setPlayerPlaying(allPlItem, gamename) {
 	mPos(d1, x, y);
 	mButtonX(d1, ev => saveAndUpdatePlayerOptions(allPlItem, gamename), 18, 3, 'dimgray');
 }
+function setPlayersToMulti() {
+	for (const name in DA.allPlayers) {
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'human');
+		updateUserImageToBotHuman(name, 'human');
+	}
+	setRadioValue('playmode', 'human');
+}
+function setPlayersToSolo() {
+	for (const name in DA.allPlayers) {
+		if (name == getUname()) continue;
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'bot');
+		updateUserImageToBotHuman(name, 'bot');
+	}
+	let popup = mBy('dPlayerOptions');
+	if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
+	setRadioValue('playmode', 'bot');
+}
 function setRadioValue(prop, val) {
 	let input = mBy(`i_${prop}_${val}`);
 	if (nundef(input)) return;
@@ -6668,7 +6908,7 @@ async function showDashboard() {
 }
 function showDeck(keys, dParent, splay, w, h) {
 	let d = mDiv(dParent);
-	mStyleX(d, { display: 'block', position: 'relative', bg: 'green', padding: 25 });
+	mStyle(d, { display: 'block', position: 'relative', bg: 'green', padding: 25 });
 	let gap = 10;
 	let ovPercent = 20;
 	let overlap = w * ovPercent / 100;
@@ -6677,7 +6917,7 @@ function showDeck(keys, dParent, splay, w, h) {
 		let k = keys[i];
 		let c = zInno(k, d);
 		mAppend(d, c.div);
-		mStyleX(c.div, { position: 'absolute', left: x, top: y });
+		mStyle(c.div, { position: 'absolute', left: x, top: y });
 		c.row = 0;
 		c.col = i;
 		x += overlap;
@@ -6799,7 +7039,6 @@ function showGameover(table, dParent) {
 	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;
 	let d = showRibbon(dParent, msg);
 	updateTestButtonsLogin(table.playerNames);
-
 	mDom(d, { h: 12 }, { html: '<br>' })
 	mButton('PLAY AGAIN', () => onclickStartTable(table.id), d, { className: 'button', fz: 24 });
 }
@@ -6951,6 +7190,27 @@ function showRibbon(dParent, msg) {
 	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding: 10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
 	return d;
 }
+async function showTable(id) {
+	let me = getUname();
+	let table = await mGetRoute('table', { id });  //console.log('table',table)
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+	let func = DA.funcs[table.game];
+	T = table;
+	clearMain();
+	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
+	d = mDom('dMain'); mCenterFlex(d);
+	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
+	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);
+	func.stats(table);
+	let minTableSize = 400;
+	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
+	mCenterCenter(dTable);
+	let items = func.present(table);
+	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
+	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
+	await updateTestButtonsPlayers(table);
+	func.activate(table, items);
+}
 async function showTables(from) {
 	await updateTestButtonsLogin();
 	let me = getUname();
@@ -7022,6 +7282,32 @@ async function showTextures() {
 	}
 	return itemsTexture;
 }
+async function showThemes() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
+	let themes = lookup(Serverdata.config, ['themes']);
+	let bgImage, bgSize, bgRepeat, bgBlend, name, color, fg;
+	for (const key in themes) {
+		let th = themes[key];
+		if (isdef(th.bgImage)) {
+			bgImage = th.bgImage;
+			bgRepeat = (bgImage.includes('marble') || bgImage.includes('wall')) ? 'no-repeat' : 'repeat';
+			bgSize = (bgImage.includes('marble') || bgImage.includes('wall')) ? 'cover' : '';
+			bgBlend = isdef(th.bgBlend) ? th.bgBlend : (bgImage.includes('ttrans') ? 'normal' : bgImage.includes('marble_') ? 'luminosity' : 'multiply');
+		}
+		color = th.color;
+		if (isdef(th.fg)) fg = th.fg;
+		name = th.name;
+		let [realBg, bgContrast, bgNav, fgNew, fgContrast] = calculateGoodColors(color, fg)
+		let styles = { w: 300, h: 200, bg: realBg, fg: fgNew, border: `solid 1px ${getCSSVariable('--fgButton')}` };
+		if (isdef(bgImage)) addKeys({ bgImage, bgSize, bgRepeat }, styles);
+		if (isdef(bgBlend)) addKeys({ bgBlend }, styles);
+		let dsample = mDom(d1, styles, { theme: key });
+		let dnav = mDom(dsample, { bg: bgNav, padding: 10 }, { html: name.toUpperCase() });
+		let dmain = mDom(dsample, { padding: 10, fg: 'black', className: 'section' }, { html: getMotto() });
+		dsample.onclick = onclickThemeSample;
+	}
+}
 function showTitle(title, dParent = 'dTitle') {
 	mClear(dParent);
 	return mDom(dParent, { maleft: 20 }, { tag: 'h1', html: title, classes: 'title' });
@@ -7029,7 +7315,7 @@ function showTitle(title, dParent = 'dTitle') {
 function showTrick() {
 	let dZone = Zones.table.dData;
 	let d = mDiv(dZone);
-	mStyleX(d, { display: 'flex', position: 'relative' });
+	mStyle(d, { display: 'flex', position: 'relative' });
 	let zIndex = 1;
 	for (let i = 0; i < T.trick.length; i++) {
 		let c = T.trick[i];
@@ -7038,13 +7324,20 @@ function showTrick() {
 		let offset = { x: -35 + direction.x * displ, y: direction.y * displ };
 		let d1 = c.div;
 		mAppend(d, d1);
-		mStyleX(d1, { position: 'absolute', left: offset.x, top: offset.y, z: zIndex });
+		mStyle(d1, { position: 'absolute', left: offset.x, top: offset.y, z: zIndex });
 		zIndex += 1;
 	}
 }
 function showUserImage(uname, d, sz = 40) {
 	let u = Serverdata.users[uname];
 	return showim1(u.key, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 3px solid` });
+}
+function showValidMoves(table) {
+	if (nundef(table.moves)) { console.log('no moves yet!'); return; }
+	console.log('________', table.step)
+	for (const m of table.moves) {
+		console.log(`${m.step} ${m.name}: ${m.move.map(x => x.substring(0, 5)).join(',')} (${m.change})=>${m.score}`);
+	}
 }
 function showim(key, dParent, styles = {}, imgFit = 'fill', useSymbol = false) {
 	let o = M.superdi[key];
@@ -7190,7 +7483,6 @@ function squareTo(tool, sznew = 128) {
 	redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function startGame(gamename, players, options) {
-	//console.log('___startGame', gamename, players, options)
 	let table = createOpenTable(gamename, players, options);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
@@ -7615,7 +7907,7 @@ async function uiTypeCalendar(dParent) {
 		mClear(dGrid);
 		dDays.length = 0;
 		let c = getNavBg();
-		let dayColors = mimali(c, 43).map(x => colorHex(x))
+		let dayColors = mimali(c, 43).map(x => colorFrom(x))
 		for (const i of range(42)) {
 			let cell = mDiv(dGrid, outerStyles);
 			mStyle(cell, { bg: dayColors[i], fg: 'contrast' })
@@ -7747,7 +8039,7 @@ function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
 	let items = {};
 	for (const name of order) {
 		let pl = table.players[name];
-		styles['border-color'] = pl.color; //name == me ? pl.color: 'transparent'; //colorLighter(pl.color) : 'transparent'; //pl.color;
+		styles['border-color'] = pl.color;
 		let d = mDom(dOuter, styles, { id: name2id(name) })
 		let img = showUserImage(name, d, 40); mStyle(img, { box: true })
 		items[name] = { div: d, img, name };
@@ -7756,7 +8048,7 @@ function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
 }
 function uiTypeRadios(lst, d, styles = {}, opts = {}) {
 	let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-	let handler = x=>squareTo(cropper,x); // (_, x) => squareTo(cropper, x);
+	let handler = x => squareTo(cropper, x);
 	mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
 	for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 		mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
@@ -7780,6 +8072,14 @@ async function updateClientData() {
 function updateKeySettings(nMin) {
 	if (nundef(G)) return;
 	G.keys = setKeys({ nMin, lang: Settings.language, keysets: KeySets, key: Settings.vocab });
+}
+function updateUserImageToBotHuman(playername, value) {
+	function doit(checked, name, val) {
+		let du = mByAttr('username', playername);
+		let img = du.getElementsByTagName('img')[0]; //du.firstChild;
+		if (checked == true) if (val == 'human') mStyle(img, { round: true }); else mStyle(img, { rounding: 2 });
+	}
+	if (isdef(value)) doit(true, 0, value); else return doit;
 }
 async function uploadImg(img, unique, coll, name) {
 	return new Promise((resolve, reject) => {

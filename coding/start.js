@@ -1,7 +1,7 @@
 
 async function start() { await test7_integrate_bau4_ode(); } //test6_sortFunctionsOfAFile(); }
 async function start() { await test6_sortFunctionsOfAFile(); }
-async function start() { await integrate(`../ode/closure.js`,'../ode/baui.js'); }
+async function start() { await integrate(`../ode/newclosure.js`,'../ode/bau3.js'); }
 
 async function integrate(pathLarge,pathNew){
 	let keys;
