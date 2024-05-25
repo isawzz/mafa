@@ -2860,7 +2860,7 @@ function getBeautifulColors() {
 	let res = getColormapColors();
 	res = res.concat(colorSchemeRYB());
 	res = res.concat(levelColors.concat(modernColors.concat(Object.values(playerColors).concat(vibrantColors.concat(childrenRoomColors.concat(deepRichColors)))))).map(x => w3color(x));
-	res = res.filter(x => x.sat * 100 >= 50);
+	//res = res.filter(x => x.sat * 100 >= 50);
 	for (const o of res) o.hex = o.toHexString();
 	return res;
 }
@@ -6834,28 +6834,6 @@ function show(elem, isInline = false) {
 	}
 	return elem;
 }
-async function showBlendModes() {
-	let d = mBy('dSettingsColor'); mClear(d);
-	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
-	let bgImage = U.bgImage;
-	let bg = U.color;
-	let bgRepeat = bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
-	let bgSize = bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
-	let bgSizeItem = bgSize;
-	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-	let items = [];
-	for (const bgBlend of list) {
-		let d = mDom(dTheme, { align: 'center', border: 'red', bgBlend, bg, bgRepeat, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
-		mCenterCenterFlex(d);
-		let d1 = mDom(d, { className: 'no_events' })
-		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
-		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
-		let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
-		items.push(item);
-		d.onclick = async () => onclickBlendMode(item);
-	}
-	return items;
-}
 async function showCalendarApp() {
 	if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
 	showTitle('Calendar');
@@ -7176,13 +7154,19 @@ function showPalette(dParent, colors) {
 }
 function showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
+	let items = [];
 	for (var c of colors) {
 		let bg = c.hex;
 		let d2 = mDom(d1, { wmin: 250, bg, fg: colorIdealText(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
 		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
 		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
 		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html });
+		let item = jsCopy(c);
+		item.div = dmini;
+		item.dOuter = d2;
+		items.push(item)
 	}
+	return items;
 }
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();

@@ -1,3 +1,55 @@
+//#region 22.mai 24: ai canvas blend-mode
+async function createBlendedCanvas(parentDiv, imageSrc) {
+  // Create a canvas element
+  const cv = document.createElement('canvas');
+  cv.width = 500;
+  cv.height = 500;
+  const ctx = cv.getContext('2d');
+
+  // Append the canvas to the parent div
+  parentDiv.appendChild(cv);
+
+  // Fill the canvas with blue
+  ctx.fillStyle = 'blue';
+  ctx.fillRect(0, 0, cv.width, cv.height);
+
+  // Load the image
+  const img = new Image();
+  img.src = imageSrc;
+
+  // Return a promise that resolves when the image is loaded and drawn
+  return new Promise((resolve, reject) => {
+    img.onload = () => {
+      // Set the blend mode
+      ctx.globalCompositeOperation = 'multiply'; // Change to your desired blend mode
+
+      // Draw the image on top of the blue background
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+
+      // Resolve the promise with the canvas
+      resolve(cv);
+    };
+
+    img.onerror = () => {
+      reject(new Error('Failed to load the image.'));
+    };
+  });
+}
+
+// Example usage
+window.onload = async () => {
+  const parentDiv = document.getElementById('parentDiv');
+  const imageSrc = 'your-image-url.jpg'; // Replace with your image URL
+
+  try {
+    const canvas = await createBlendedCanvas(parentDiv, imageSrc);
+    console.log('Canvas created:', canvas);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+
 //#region 21.mai 24: voriges settings menu: colors, textures, blendmode samples
 async function getPaletteFromColorTextureBlend(color, texture, blend, dParent) {
   let elem = mDom(dParent, { w: 100, h: 100, border: 'red', position: 'absolute', top: 100, left: 800 });
@@ -16,7 +68,6 @@ function getRepeatAndSizeForTexture(t) {
   let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
   return [bgRepeat, bgSize];
 }
-
 async function onclickBlendSample(item, items) {
   //console.log('CLICK!!!');//,item)
   let texture = settingsGetSelectedTexture();

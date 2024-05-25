@@ -185,7 +185,7 @@ const STYLE_PARAMS = {
   align: 'text-align',
   aspectRatio: 'aspect-ratio',
   bg: 'background-color',
-  bgBlend: 'background-blend-mode',
+  bgBlend: 'background-blend-mode', //'mix-blend-mode', //
   bgImage: 'background-image',
   bgRepeat: 'background-repeat',
   bgSize: 'background-size',
