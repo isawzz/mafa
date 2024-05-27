@@ -1,7 +1,5 @@
 name: wolferl
 color: '#002e63'
-key: cat38
-bgImage: url('../assets/textures/marble_blue1.jpeg')
-bgBlend: normal
-bgSize: cover
-bgRepeat: no-repeat
+texture: ../assets/textures/marble_blue1.jpeg
+blendMode: normal
+imgKey: unknown_user

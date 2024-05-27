@@ -1,10 +1,5 @@
 name: felix
 color: '#2a52be'
-key: felix
-bgImage: url('../assets/textures/marble_meer1.jpg')
-bgBlend: normal
-bgSize: cover
-bgRepeat: no-repeat
-games:
-  setgame:
-    level: 7
+texture: ../assets/textures/marble_meer1.jpg
+blendMode: normal
+imgKey: felix

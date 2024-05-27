@@ -1,3 +1,195 @@
+//#region 26.mai 24
+async function onclickSettSwapColoring() {
+	if (isdef(U.swapColoring)) delete U.swapColoring;
+	else U.swapColoring = true;
+	await postUserChange(U, true);
+	setTheme();
+}
+async function showBlendModes() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
+	// let items = [];
+	// let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
+	for (const blendMode of list) { await showBlendMode(dTheme, blendMode); }
+	// 	let item = await showBlendMode(dTheme, blendMode); 
+	// 	items.push(item);
+	// }
+	// return items;
+}
+async function showBlendMode(dParent, blendCSS) {
+	let src = U.texture;
+	let fill = U.color;
+	let bgBlend = getBlendCanvas(blendCSS);
+
+	let d1 = mDom(dParent);
+	let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	palette.unshift(fill); palette.splice(8);
+	showPaletteMini(d1, palette);
+
+	//let item = { div: d1, palette, texture, bgRepeat, bgSize, blendCSS, isSelected: false };
+
+	d1.onclick = async () => {
+		U.palette = palette;
+		U.blendMode = blendCSS;
+		await updateUserTheme();
+	}
+	//return item;
+
+}
+function setUserTheme() {
+	setColors(U.color, U.fg);
+	setTexture(U);
+}
+function setTexture(item) {
+	let d = document.body;
+	let bgImage = valf(item.bgImage, bgImageFromPath(item.texture), '');
+	let bgBlend = valf(item.bgBlend, item.blendMode, '');
+	// let bgRepeat = bgImage == ''? '': bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
+	// let bgSize = bgImage == ''? '':bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
+	d.style.backgroundColor = valf(item.color, item.bg, '');
+	d.style.backgroundImage = bgImage;
+	d.style.backgroundSize = bgImage.includes('marble') || bgImage.includes('wall')? '100vw 100vh' : '';
+	d.style.backgroundRepeat = 'repeat'; 
+	d.style.backgroundBlendMode = bgBlend;
+}
+async function updateUserTheme() {
+	await postUserChange();
+	setUserTheme(U);
+}
+function setTheme(o) {
+	if (nundef(o)) o = U;
+	setColors(o.color, o.fg);
+	if (isdef(o.texture)) o.bgImage = bgImageFromPath(o.texture);
+	setTexture(o);
+}
+async function showBlendMode2(d, fill, bgImage, bgRepeat, bgSize, bgBlendCSS) {
+	let d1 = mDom(d);
+	let bgBlend = getBlendCanvas(bgBlendCSS);
+	let src = pathFromBgImage(bgImage);
+
+	mDom(d1, {}, { html: `${bgBlend}<br>${src}<br>` });
+	let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	//console.log(palette); 
+	palette.unshift(fill); palette.splice(8);
+	showPaletteMini(d1, palette);
+
+	let item = { div: d1, palette, bgImage, bgRepeat, bgSize, bgBlend, isSelected: false };
+	return item;
+}
+async function showBlendModes() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
+
+	let bgImage = bgImageFromPath(U.texture);
+	let bg = U.color;
+	let bgRepeat = bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
+	let bgSize = bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
+	//let bgSizeItem = bgSize;
+	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+	let items = [];
+	for (const bgBlend of list) { 
+		//let item = await showBlendMode(dTheme, bg, bgImage, bgRepeat, bgSize, bgBlend); 
+		let item = await showBlendMode2(dTheme, bg, bgImage, bgRepeat, bgSize, bgBlend); 
+		items.push(item);	
+	}
+	return items;
+}
+async function showBlendMode(dParent, bg, bgImage, bgRepeat, bgSize, bgBlend){
+	let d = mDom(dParent, { align: 'center', border: 'red', bgBlend, bg, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
+	mCenterCenterFlex(d);
+	let d1 = mDom(d, { className: 'no_events' })
+	mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
+	mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
+	let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
+	d.onclick = async () => onclickBlendMode(item);
+	return item;
+}
+async function showBlendModes() {
+	let d = mBy('dSettingsColor'); mClear(d); 
+	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
+	let bgImage = bgImageFromPath(U.texture);
+	let bg = U.color;
+	let bgRepeat = bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
+	let bgSize = bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
+	let bgSizeItem = bgSize;
+	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+	let items = [];
+	for (const bgBlend of list) {
+		let d = mDom(dTheme, { align: 'center', border: 'red', bgBlend, bg, bgRepeat, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
+		mCenterCenterFlex(d);
+		let d1 = mDom(d, { className: 'no_events' })
+		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
+		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
+		let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
+		items.push(item);
+		d.onclick = async () => onclickBlendMode(item);
+	}
+	return items;
+}
+async function onclickBlendMode(item) {
+	U.texture = pathFromBgImage(item.bgImage);
+	U.bgBlend = item.bgBlend;
+	U.bgSize = item.bgSize;
+	U.bgRepeat = item.bgRepeat;
+	U.palette = item.palette;
+	await postUserChange();
+	setTheme(U);
+}
+async function _showBlendModes() {
+	let d = mBy('dSettingsColor'); mClear(d);
+	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
+	let bgImage = bgImageFromPath(U.texture);
+	let bg = U.color;
+	let bgRepeat = bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
+	let bgSize = bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
+	let bgSizeItem = bgSize;
+	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+	let items = [];
+	for (const bgBlend of list) {
+		let d = mDom(dTheme, { align: 'center', border: 'red', bgBlend, bg, bgRepeat, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
+		mCenterCenterFlex(d);
+		let d1 = mDom(d, { className: 'no_events' })
+		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
+		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
+		let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
+		items.push(item);
+		d.onclick = async () => onclickBlendMode(item);
+	}
+	return items;
+}
+
+function showim(key, dParent, styles = {}, imgFit = 'fill', useSymbol = false) {
+	let o = M.superdi[key];
+	let h = valf(styles.h, styles.sz, 100);
+	let w = valf(styles.w, styles.sz, 'auto');
+	let fz = h * .9;
+	let hline = fz;
+	addKeys({ w, h, fz, hline }, styles);
+	let d1 = mDom(dParent, styles);
+	let el;
+	if (!useSymbol && isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: hline, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: hline, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoGame', bg: valf(styles.bg, 'beige'), fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+	return el;
+}
+function restVonShowBlendMode(){
+	let d = mDom(dParent, { align: 'center', border: 'red', bgBlend, bg, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
+	mCenterCenterFlex(d);
+	let d1 = mDom(d, { className: 'no_events' })
+	mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
+	mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
+	let item = { div: d, bgImage, bgRepeat, bgSize, bgBlend, isSelected: false };
+	d.onclick = async () => onclickBlendMode(item);
+	return item;
+}
+
+
 //#region 22.mai 24: ai canvas blend-mode
 async function createBlendedCanvas(parentDiv, imageSrc) {
   // Create a canvas element

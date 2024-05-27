@@ -1,8 +1,15 @@
 name: maya
-color: '#7eb6ff'
-key: bird14
-bgImage: url('../assets/textures/wall4.jpg')
-bgBlend: normal
-bgSize: cover
-bgRepeat: no-repeat
+color: '#4c2882'
 fg: '#ffffff'
+texture: ../assets/textures/marble_blue1.jpeg
+blendMode: lighten
+imgKey: unknown_user
+palette:
+  - '#4c2882'
+  - '#4c2c84'
+  - '#a07284'
+  - '#544784'
+  - '#655f84'
+  - '#744684'
+  - '#4c3484'
+  - '#4d3c84'

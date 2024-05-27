@@ -1,12 +1,5 @@
 name: mimi
 color: '#ffe4e1'
-key: mimi
-bgImage: url('../assets/textures/marble_rosa.jpeg')
-bgBlend: normal
-bgSize: cover
-bgRepeat: no-repeat
-games:
-  button96:
-    handicap: 2
-  setgame:
-    level: 3
+texture: ../assets/textures/marble_rosa.jpeg
+blendMode: normal
+imgKey: mimi

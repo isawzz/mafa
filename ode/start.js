@@ -1,8 +1,99 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; test90_integrateGetMyColors1(); }
+async function start() { TESTING = true; await test96_(); }
 
+async function test96_(){
+  await prelims();
+  await switchToUser('maya','settings'); 
+}
+async function test95_fixThemes(){
+  await prelims();
+  for(const key in Serverdata.config.themes){
+    let theme = Serverdata.config.themes[key];
+    theme.texture = pathFromBgImage(theme.bgImage); delete theme.bgImage;
+    theme.blendMode = theme.bgBlend; delete theme.bgBlend;
+  }
+  await mPostRoute('postConfig', Serverdata.config);
+  console.log('themes',Serverdata)
+}
+async function test95_fixUsers(){
+  await prelims();
+  for(const name in Serverdata.users){
+    let user = Serverdata.users[name];
+    if (nundef(user.imgKey)) user.imgKey = isdef(M.superdi[name])?name:'unknown_user';
+    delete user.key;
+    if (!isEmpty(user.bgBlend)){user.blendMode = user.bgBlend;}
+    delete user.bgBlend;
+    delete user.bgRepeat;
+    delete user.bgSize;
+    if (!isEmpty(user.bgImage)){user.texture = pathFromBgImage(user.bgImage);}
+    delete user.bgImage;
+    delete user.games;
+    let res = await postUserChange(user,true);
+    if (name == 'guest') console.log(res); else console.log(res.name,res.imgKey)
+  }
+}
+async function test94_showBlendModes(){
+  await prelims();
+  //await switchToUser('mimi','settings'); //console.log(mBy('dSettingsColor'))
+  //await onclickSettTexture();
+}
+async function test93_modUsersBgImageToTexture(){
+  await prelims();
+  for(const name in Serverdata.users){
+    let user = Serverdata.users[name];
+    if (isdef(user.bgImage)) {
+      user.texture = pathFromBgImage(user.bgImage);
+      delete user.bgImage;
+      user.blendMode = user.bgBlend;
+      delete user.bgBlend;
+      delete user.bgSize;
+      delete user.bgRepeat;
+    }
+    user.imgKey = user.key;
+    delete user.key;
+    await postUserChange(user,true);
+  }
+  let x=await mGetRoute('users');
+  console.log('users',x)
+}
+async function test92_showBlendModes() {
+  let d = clearBodyDiv({ gap: 4 }); mFlexWrap(d);
+  let tlist = await getTextures();
+  let [fill, src] = [rColor(), rTexture()]; console.log(fill, src);
+  //src='../assets/textures/ttranscircles.png';
+  for (const blendCSS of arrMinus(getBlendModesCSS(), ['saturation', 'color'])) {
+    let d1 = mDom(d);
+    let bgBlend = getBlendCanvas(blendCSS)
+    mDom(d1, {}, { html: `${bgBlend}<br>${src}<br>` });
+    let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+    let palette = await getPaletteFromCanvas(ca.cv);
+    //console.log(palette); 
+    palette.unshift(fill); palette.splice(8);
+    showPaletteMini(d1, palette);
+  }
+}
+
+async function test91_canvasCSSBlendModes() {
+  let d = clearBodyDiv({ gap: 4 }); mFlexWrap(d);
+  let tlist = await getTextures();
+  let [fill, src] = [rColor(), rTexture()]; console.log(fill, src);
+  //src='../assets/textures/ttranscircles.png';
+  for (const blendCSS of arrMinus(getBlendModesCSS(), ['saturation', 'color'])) {
+    let d1 = mDom(d);
+    let bgBlend = getBlendCanvas(blendCSS)
+    mDom(d1, {}, { html: `${bgBlend}<br>${src}<br>` });
+    let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+    let palette = await getPaletteFromCanvas(ca.cv);
+    //console.log(palette); 
+    palette.unshift(fill); palette.splice(8);
+    showPaletteMini(d1, palette);
+  }
+}
+
+
+//#region colors
 async function test90_integrateGetMyColors1(){
   await prelims();
   let dinew = jsCopy(M.dicolor);
@@ -80,7 +171,6 @@ async function test90_integrateGetMyColors2(){
   //sortDicolor(dinew); //das macht downloadAsYaml!!!
 
 }
-
 async function test89_colorlists() {
   await prelims();
   let dil = getListAndDictsForDicolors();
@@ -110,7 +200,6 @@ async function test89_colorlists() {
     mLinebreak(dParent)
   }
 }
-
 async function test88_colorlists() {
   await prelims();
   let dil = getListAndDictsForDicolors();
@@ -229,6 +318,9 @@ async function test85_superColors() {
   console.log('die beiden listen muessen gejoined werden irgendwie!')
 
 }
+//#endregion
+
+//#region canvas blend modes
 async function test84_canvasCSSBlendModes() {
   let d = clearBodyDiv({ gap: 4 }); mFlexWrap(d);
   let tlist = await getTextures();
@@ -295,6 +387,7 @@ async function test81_canvas() {
 
 
 }
+//#endregion
 
 async function test80() {
   await prelims();
@@ -339,7 +432,7 @@ async function prelims() {
     `;
   document.body.innerHTML = html;
   UI.nav = showNavbar();
-  UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
+  UI.user = mCommand(UI.nav.r, 'user'); iDiv(UI.user).classList.add('activeLink');
   await switchToUser(localStorage.getItem('username'), localStorage.getItem('menu'));
 
 }
@@ -394,3 +487,49 @@ async function updateTestButtonsPlayers(table) {
 
 }
 
+//wegwerf!!!
+function correctPastelRed(){
+  //doppelt: pastel_red
+  let di = jsCopy(M.dicolor);
+  di.red.pastel_red = '#ff6961';
+}
+function correctDarkLavender(){
+  //doppelt: dark_lavender
+  console.log('lilac',n1.darklilac,n1.dark_lilac)
+  let di = jsCopy(M.dicolor);
+  delete di.blue.dark_blue_gray;
+  di.bluemagenta.dark_lavender = n2.dark_lavender.hex;
+  di.bluemagenta.dark_lilac = n1.dark_lavender.hex;
+
+  downloadAsYaml(di,'dicolor')
+
+  // //let styles = { wmin: 250, padding: 20 };
+  // for (const list of [l1, l2, l3]) {
+  //   console.log('list',list.length)
+  //   showColorBoxes(list, 'name', dParent, { padding: 10 });
+  //   mLinebreak(dParent)
+  // }
+
+}
+function showHexDuplicates(int1,skeys,d1,styles,h1,h2,n1){
+  for(const k of int1){
+    //console.log('k',k, jsCopy(h1[k]), jsCopy(h2[k]))
+    let odi = h1[k];
+    let ofi = h2[k];
+    showColorBox(odi, skeys, d1, styles)
+    showColorBox(ofi, skeys, d1, styles)
+
+    //console.log('=',k, jsCopy(h1[k]), jsCopy(h2[k]))
+    let name = ofi.name;
+    let odiname = n1[name];
+    if (isdef(odiname) && odiname.hex != odi.hex){
+      console.log(odiname.hex,odi.hex)
+      showColorBox(odiname, skeys, d1, styles);
+      showColorBox(n1.lilac, skeys, d1, styles);
+    }
+
+    mLinebreak(d1)
+    //console.log(odi,ofi);
+  }
+
+}

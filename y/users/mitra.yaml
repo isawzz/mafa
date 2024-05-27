@@ -1,8 +1,6 @@
 name: mitra
 color: '#ed9121'
-key: mitra
-bgImage: url('../assets/textures/wall2.jpg')
-bgBlend: darken
-bgSize: cover
-bgRepeat: no-repeat
 fg: '#ffffff'
+texture: ../assets/textures/wall2.jpg
+blendMode: darken
+imgKey: mitra

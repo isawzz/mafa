@@ -1,7 +1,5 @@
 name: amanda
 color: '#2f7532'
-key: amanda
-bgImage: url('../assets/textures/marble_greenorange.jpeg')
-bgBlend: overlay
-bgSize: cover
-bgRepeat: no-repeat
+texture: ../assets/textures/marble_greenorange.jpeg
+blendMode: overlay
+imgKey: amanda

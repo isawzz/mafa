@@ -503,7 +503,9 @@ app.post('/postUser', (req, res) => {
 	let user = lookup(Session, ['users', name]);
 	let isNew = !user;
 	if (isNew) {
-		if (nundef(userdata.key) || nundef(M.superdi[userdata.key])) userdata.key = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';		
+		let imgKey = userdata.imgKey;
+		if (nundef(imgKey) || nundef(M.superdi[imgKey])) imgKey = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';		
+		//if (nundef(userdata.imgKey) || nundef(M.superdi[userdata.imgKey])) userdata.imgKey = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';		
 		user = userdata; 
 	}	else copyKeys(userdata, user);
 	saveUser(name, user);

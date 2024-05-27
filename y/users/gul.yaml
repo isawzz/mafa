@@ -1,12 +1,5 @@
 name: gul
 color: '#e6be8a'
-key: gul
-bgImage: url('../assets/textures/marble_beige1.jpeg')
-bgBlend: normal
-bgSize: cover
-bgRepeat: no-repeat
-games:
-  button96:
-    handicap: 3
-  setgame:
-    level: 7
+texture: ../assets/textures/marble_beige1.jpeg
+blendMode: normal
+imgKey: gul
