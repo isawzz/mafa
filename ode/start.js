@@ -1,10 +1,19 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test104_WTF(); }
+async function start() { TESTING = true; await test105_myhwb(); }
 
 async function test105_myhwb(){
-  
+  let hex = colorTrans('black',.5); //'black'; //'#ffffff'; //rColor(); //'#00ff80'; //
+  console.log(colorFrom(hex),hex)
+  let c = w3color(hex); console.log(c);
+  let hsl=c.toHslaString(); console.log('toHsl',hsl);
+  let hbw=c.toHwb(); console.log('toHwb',hbw);
+  let w3ncol=c.toNcol(); console.log('toNcol',w3ncol);
+
+  console.log(colorHueToNcol(hsl.h))
+
+
 }
 async function test104_WTF() {
   let hex = '#00ff80'; //rColor(); 

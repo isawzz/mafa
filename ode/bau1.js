@@ -12,6 +12,13 @@ function colorToHwb360Object(c){
 
 	return {h,w,b};
 }
+function colorHueToNcol(hue){
+	let x=Math.floor(hue/60);
+	let pure=['red','yellow','green','cyan','blue','magenta'];
+	let color=pure[x];
+	let inc=(hue%60)*100/60;
+	return {color,inc};
+}
 
 
 
