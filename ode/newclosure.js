@@ -3347,7 +3347,7 @@ function getListAndDicts(list) {
 	return [list].concat(lists);
 }
 function getListAndDictsForDicolors() {
-	let bucketlist = 'black yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
+	let bucketlist = Object.keys(M.dicolor); // 'black yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
 	bucketlist = arrCycle(bucketlist, 8);
 	let dicolorlist = [];
 	for (const bucket of bucketlist) {

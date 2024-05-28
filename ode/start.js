@@ -1,8 +1,21 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test105_myhwb(); }
+async function start() { TESTING = true; await test106_bucketCheck(); }
 
+async function test106_bucketCheck(){
+  await prelims();
+  [dicolorlist, byhex, byname]=getListAndDictsForDicolors();
+  //console.log('names',Object.keys(byname));
+  let d=clearFlex();
+  for(const i of range(3)){
+    let w3=rChoose(dicolorlist);
+    
+  }
+  let c='red';
+  c=colorFrom(c);
+  colorGetBucket(c);
+}
 async function test105_myhwb(){
   let hex = colorTrans('black',.5); //'black'; //'#ffffff'; //rColor(); //'#00ff80'; //
   console.log(colorFrom(hex),hex)

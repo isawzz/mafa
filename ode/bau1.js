@@ -1,23 +1,26 @@
 
-function colorToHwb360Object(c){
+function colorGetBucket(c){
+	let buckets='red orange yellow lime green greencyan cyan cyanblue blue bluemagenta magenta magentared black'.split(' ');
+	console.log('buckets',buckets);
 
 	c=colorFrom(c);
-	//rgb=colorHexToRgbObject(c);
-	let [r,g,blue]=colorHexToRgbArray(c);
+	let hsl=colorHexToHsl360Object(c);
+	let hue = hsl.h;
 
-	let [h,s,l] = colorHexToHsl01Array(c); h*=360;
+	//0 30 60 ...
+	//orange range 15-45
+	//yellow range 45-75
+	//lime range 75-105
+	//green range 105-135
+	
+	//hue+15:
+	//red ... 0-30
+	//orange ... 30-60
+	let hshift=(hue+15)%360;
+	let ib=Math.floor(360/hshift);
+	return buckets[ib];
 
-	let w = 100*Math.min(r, g, blue) / 255;
-	let b = 100*(1 - Math.max(r, g, blue) / 255);
-
-	return {h,w,b};
-}
-function colorHueToNcol(hue){
-	let x=Math.floor(hue/60);
-	let pure=['red','yellow','green','cyan','blue','magenta'];
-	let color=pure[x];
-	let inc=(hue%60)*100/60;
-	return {color,inc};
+	
 }
 
 
