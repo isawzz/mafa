@@ -6,6 +6,7 @@
 function mimali(c, n) {
   //das ding muss einfach nur n colors returnen!
   //ich koennt es so machen: nimm einfach random pixels auf dem background!
+	
 
 
   function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
@@ -20,7 +21,6 @@ function mimali(c, n) {
   wheel = arrd(c, diff, 0, 0, n);
   return wheel;
 }
-
 
 
 

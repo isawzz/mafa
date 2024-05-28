@@ -1,3 +1,167 @@
+
+//#region 27.mai 24 color-burn mode
+function hexToRgb(hex) {
+	hex = hex.replace(/^#/, '');
+	let bigint = parseInt(hex, 16);
+	let r = (bigint >> 16) & 255;
+	let g = (bigint >> 8) & 255;
+	let b = bigint & 255;
+	return [r, g, b];
+}
+
+function rgbToHex(r, g, b) {
+	return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+function colorBurn(base, blend) {
+	return (blend === 0) ? 0 : Math.max(0, 255 - Math.floor((255 - base) / blend));
+}
+
+function applyColorBurn(baseColor, blendColor) {
+	let [baseR, baseG, baseB] = hexToRgb(baseColor);
+	let [blendR, blendG, blendB] = hexToRgb(blendColor);
+
+	let resultR = colorBurn(baseR, blendR);
+	let resultG = colorBurn(baseG, blendG);
+	let resultB = colorBurn(baseB, blendB);
+
+	return rgbToHex(resultR, resultG, resultB);
+}
+
+// Example usage:
+let baseColor = "#ff5733";
+let blendColor = "#33ff57";
+let resultColor = applyColorBurn(baseColor, blendColor);
+
+console.log(`Base Color: ${baseColor}, Blend Color: ${blendColor}, Result Color: ${resultColor}`);
+
+
+//#region 27.mai 24
+function addColorDistance(c,palette){
+	let dist=10000,idx=0;
+	palette.forEach((c1,i)=>{
+		let distance = colorDistance(c,c1);
+		if (distance < dist){dist=distance;idx=i;}
+	});
+	return {dist,idx};
+
+}
+function colorMostSimilar(c,palette){
+	let dist=10000,idx=0;
+	palette.forEach((c1,i)=>{
+		let distance = colorDistance(c,c1);
+		if (distance < dist){dist=distance;idx=i;}
+	});
+	return {dist,idx};
+
+}
+
+//#region 27.mai 24: opposite hue color
+function hexToRgb(hex) {
+	hex = hex.replace(/^#/, '');
+	let bigint = parseInt(hex, 16);
+	let r = (bigint >> 16) & 255;
+	let g = (bigint >> 8) & 255;
+	let b = bigint & 255;
+	return [r, g, b];
+}
+
+function rgbToHex(r, g, b) {
+	return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+function rgbToHsl(r, g, b) {
+	r /= 255;
+	g /= 255;
+	b /= 255;
+	let max = Math.max(r, g, b), min = Math.min(r, g, b);
+	let h, s, l = (max + min) / 2;
+
+	if (max === min) {
+			h = s = 0; // achromatic
+	} else {
+			let d = max - min;
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+			switch (max) {
+					case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+					case g: h = (b - r) / d + 2; break;
+					case b: h = (r - g) / d + 4; break;
+			}
+			h /= 6;
+	}
+	return [h * 360, s, l];
+}
+
+function hslToRgb(h, s, l) {
+	let r, g, b;
+
+	if (s === 0) {
+			r = g = b = l; // achromatic
+	} else {
+			let hue2rgb = function(p, q, t) {
+					if (t < 0) t += 1;
+					if (t > 1) t -= 1;
+					if (t < 1 / 6) return p + (q - p) * 6 * t;
+					if (t < 1 / 2) return q;
+					if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+					return p;
+			};
+
+			let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+			let p = 2 * l - q;
+			h /= 360;
+			r = hue2rgb(p, q, h + 1 / 3);
+			g = hue2rgb(p, q, h);
+			b = hue2rgb(p, q, h - 1 / 3);
+	}
+
+	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+function getOppositeHueColor(hex) {
+	// Convert hex to RGB
+	let [r, g, b] = hexToRgb(hex);
+
+	// Convert RGB to HSL
+	let [h, s, l] = rgbToHsl(r, g, b);
+
+	// Calculate the opposite hue
+	h = (h + 180) % 360;
+
+	// Convert HSL back to RGB
+	let [newR, newG, newB] = hslToRgb(h, s, l);
+
+	// Convert RGB back to hex
+	return rgbToHex(newR, newG, newB);
+}
+
+// Example usage:
+let originalColor = "#ff5733";
+let oppositeHueColor = getOppositeHueColor(originalColor);
+
+console.log(`Original Color: ${originalColor}, Opposite Hue Color: ${oppositeHueColor}`);
+//#endregion
+
+//#region 27.mai 24
+function hexToRgb(hex) {
+	// Remove the hash at the start if it's there
+	hex = hex.replace(/^#/, '');
+
+	// Parse r, g, b values
+	let bigint = parseInt(hex, 16);
+	let r = (bigint >> 16) & 255;
+	let g = (bigint >> 8) & 255;
+	let b = bigint & 255;
+
+	return [r, g, b];
+}
+// Example usage:
+let color1 = "#ff5733";
+let color2 = "#ff8d1a";
+let similarity = colorDistance(color1, color2);
+console.log(`The similarity distance between ${color1} and ${color2} is ${similarity}`);
+//_#endregion
+
 //#region 26.mai 24
 async function onclickSettSwapColoring() {
 	if (isdef(U.swapColoring)) delete U.swapColoring;

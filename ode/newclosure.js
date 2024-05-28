@@ -1013,94 +1013,6 @@ function collectPlayers() {
 	for (const name of DA.playerList) { players[name] = allPlToPlayer(name); }
 	return players;
 }
-function colorBlendMode(c1, c2, blendMode) {
-	function blendColorDodge(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
-		let r = dodge(r1, r2);
-		let g = dodge(g1, g2);
-		let b = dodge(b1, b2);
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendColor(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
-		let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
-		return colorRgbArgsToHex79(...cfinal);
-	}
-	function blendDarken(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		let r = Math.min(r1, r2);
-		let g = Math.min(g1, g2);
-		let b = Math.min(b1, b2);
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendLighten(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		let r = Math.max(r1, r2);
-		let g = Math.max(g1, g2);
-		let b = Math.max(b1, b2);
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendLuminosity(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
-		let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendMultiply(color1, color2) {
-		let [r1, g1, b1] = colorHexToRgbArray(color1);
-		let [r2, g2, b2] = colorHexToRgbArray(color2);
-		let r = (r1 * r2) / 255;
-		let g = (g1 * g2) / 255;
-		let b = (b1 * b2) / 255;
-		return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
-	}
-	function blendNormal(baseColor, blendColor) {
-		return blendColor;
-	}
-	function blendOverlay(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
-		let r = overlayCalculate(r1, r2);
-		let g = overlayCalculate(g1, g2);
-		let b = overlayCalculate(b1, b2);
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	function blendSaturation(baseColor, blendColor) {
-		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
-		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
-		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
-		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
-		let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
-		return colorRgbArgsToHex79(...cfinal);
-	}
-	function blendScreen(color1, color2) {
-		let [r1, g1, b1] = colorHexToRgbArray(color1);
-		let [r2, g2, b2] = colorHexToRgbArray(color2);
-		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
-		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
-		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
-		return colorRgbArgsToHex79(r, g, b);
-	}
-	let di = {
-		darken: blendDarken, lighten: blendLighten, color: blendColor, colorDodge: blendColorDodge, luminosity: blendLuminosity, multiply: blendMultiply, normal: blendNormal, overlay: blendOverlay,
-		saturation: blendSaturation, screen: blendScreen
-	};
-	let func = di[blendMode]; if (nundef(di)) { console.log('blendMode', blendMode); return c1; }
-	c1hex = colorFrom(c1);
-	c2hex = colorFrom(c2);
-	let res = func(c1hex, c2hex);
-	return res;
-}
 function colorCalculator(p, c0, c1, l) {
 	function pSBCr(d) {
 		let i = parseInt, m = Math.round, a = typeof c1 == 'string';
@@ -1183,8 +1095,8 @@ function colorGetContrast(c1, c2) {
 	var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
 	var brightest = Math.max(lum1, lum2);
 	var darkest = Math.min(lum1, lum2);
-	return (brightest + 0.05)
-		/ (darkest + 0.05);
+	let res = (brightest + 0.05) / (darkest + 0.05);
+	return res.toFixed(3);
 }
 function colorGetHue(c) { return colorGetHue01(c) * 360; }
 
@@ -2873,7 +2785,15 @@ function getBeautifulColors() {
 	for (const o of res) o.hex = o.toHexString();
 	return res;
 }
-function getBlendCanvas(bgBlend = 'normal') {
+function getBlendCSS(blcanvas) {
+	const blendModes = {
+		'source-over':'normal',
+		'lighter':'normal',
+		'copy':'normal'
+	};
+	return valf(blendModes[blcanvas],blcanvas);
+}
+function getBlendCanvas(blendMode = 'normal') {
 	const blendModeMapping = {
 		'normal': 'source-over',       // Default blending mode
 		'multiply': 'multiply',
@@ -2887,7 +2807,7 @@ function getBlendCanvas(bgBlend = 'normal') {
 		'luminosity': 'luminosity',
 		'pass-through': 'source-over' // This is a made-up value for cases where no blending is applied
 	};
-	return blendModeMapping[bgBlend];
+	return valf(blendModeMapping[blendMode],blendMode);
 }
 function getBlendModesCSS() {
 	return 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');

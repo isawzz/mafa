@@ -1,47 +1,210 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test96_(); }
+async function start() { TESTING = true; await test104_WTF(); }
 
-async function test96_(){
-  await prelims();
-  await switchToUser('maya','settings'); 
+async function test105_myhwb(){
+  
 }
-async function test95_fixThemes(){
+async function test104_WTF() {
+  let hex = '#00ff80'; //rColor(); 
+  console.log(colorFrom(hex),hex)
+  let c = w3color(hex); console.log(c);
+  let x=c.toCmyk(); console.log('toCmyk',x);
+  x=c.toCmykString(); console.log('toCmykString',x);
+  x=c.toHsl(); console.log('toHsl',x);
+  x=c.toHslString(); console.log('toHslString',x);
+  x=c.toHslStringDecimal(); console.log('toHslStringDecimal',x);
+  x=c.toHwb(); console.log('toHwb',x);
+  x=c.toHwbString(); console.log('toHwbString',x);
+  x=c.toHwbStringDecimal(); console.log('toHwbStringDecimal',x);
+  x=c.toName(); console.log('toName',x);
+  x=c.toNcol(); console.log('toNcol',x);
+  x=c.toNcolString(); console.log('toNcolString',x);
+  x=c.toNcolStringDecimal(); console.log('toNcolStringDecimal',x);
+  x=c.toRgb(); console.log('toRgb',x);
+  x=c.toRgbString(); console.log('toRgbString',x);
+  return;
+  let nearestColor = c.toNcol();
+  console.log(`The nearest named color to ${hex} is`, nearestColor);
+}
+async function test103_w3colorNcol() {
+
+  function findNearestNamedColor(hex) {
+    let color = w3color(hex);
+    let nearestColor = color.toNcol();
+    console.log(`The nearest named color to ${hex} is ${nearestColor}`);
+  }
+  findNearestNamedColor("#ff5733");
+  findNearestNamedColor("#3498db");
+  findNearestNamedColor("#aabbcc");
+
+}
+async function test102() {
   await prelims();
-  for(const key in Serverdata.config.themes){
+  let namedColors = colorGetDicolorList(); console.log('namedColors', namedColors.length);
+  let dp = clearBodyDiv({ bg: 'white', h: '100vh', padding: 10 });
+  let d = mDom(dp, { gap: 10 }); mFlexWrap(d);
+
+  let c = rColor(); console.log('c', c); showColor(d, c);
+  mLinebreak(d);
+
+  console.log('________ nearest')
+  let named = colorNearestNamed(c, namedColors); showColor(d, named);
+  console.log('________ nearest 2')
+  let named2 = findNearestNamedColor(c, namedColors); showColor(d, named2);
+
+  console.log('________ nearest 2')
+  let named3 = w3color(c).toName(); console.log(named3); //showColor(d, named3);
+
+  mLinebreak(d); return;
+
+  console.log('________ farest')
+  let contrast = colorFarestNamed(c, namedColors);
+  let contrastToAlg1 = colorGetContrast(c, contrast.hex);
+
+  let d1 = showColor(d, contrast); d1.innerHTML += `<br>${contrastToAlg1}`;
+
+  console.log('________ farest 2')
+  let contrast2 = findFarestNamedColor(c, namedColors);
+  let contrastToAlg2 = colorGetContrast(c, contrast2.hex)
+
+  d1 = showColor(d, contrast2); d1.innerHTML += `<br>${contrastToAlg2}`;
+
+  mLinebreak(d);
+  let compl = colorComplement(c); showColor(d, compl);
+  let contrastToComplement = colorGetContrast(c, compl)
+  let complNamed = colorNearestNamed(compl, namedColors);
+
+  d1 = showColor(d, compl); d1.innerHTML += `<br>${contrastToComplement}`;
+
+  mLinebreak(d);
+  showText(d, colorGetContrast(c, 'white'), 'white')
+  showText(d, colorGetContrast(c, 'black'), 'black')
+
+}
+async function test101_blendModesAppliedToColors() {
+  d = mDom(document.body); let d2 = mDom(d, { gap: 10 }); mFlexWrap(d2);
+
+  let color1 = rColor();
+  let color2 = rColor();
+  mDom(d2, { align: 'center', wmin: 120, padding: 2, bg: color1, fg: colorIdealText(color1) }, { html: color1 });
+  mDom(d2, { align: 'center', wmin: 120, padding: 2, bg: color2, fg: colorIdealText(color2) }, { html: color2 });
+  mLinebreak(d2);
+  for (const blc of getBlendModesCanvas()) {
+    let bl = getBlendCSS(blc); console.log(bl)
+    let c = colorBlendMode(color1, color2, bl);
+    mDom(d2, { align: 'center', wmin: 120, padding: 2, bg: c, fg: colorIdealText(c) }, { html: bl });
+  }
+
+}
+async function test100_enrichColorBlendModes() {
+  const blendModes = [
+    'source-over',
+    'lighter',
+    'copy',
+    'multiply',
+    'screen',
+    'overlay',
+    'darken',
+    'lighten',
+    'color-dodge',
+    'color-burn',
+    'hard-light',
+    'soft-light',
+    'difference',
+    'exclusion',
+    'hue',
+    'saturation',
+    'color',
+    'luminosity'
+  ];
+
+}
+async function test99_calcPaletteForUser() {
+  await prelims();
+  //await switchToUser('maya','settings'); 
+  let d = clearBodyDiv({ bg: 'white', h: '100vh', padding: 10 });
+  mFlexWrap(d);
+  await analyseColorsForUser(d, 'lauren');
+}
+async function test98_rgb2hsl() {
+  function rgbToHsl(r, g, b) {
+    r /= 255;
+    g /= 255;
+    b /= 255;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      let d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+    }
+    return [h * 360, s, l];
+  }
+  let x = rgbToHsl(0, 0, 255);
+  console.log(x)
+}
+async function test97_calcPalette() {
+  await prelims();
+  //await switchToUser('maya','settings'); 
+  let d = clearBodyDiv({ bg: 'white', h: '100vh', padding: 10 });
+  mFlexWrap(d);
+  // showBlendMode(d,U.blendMode);
+  for (const name in Serverdata.users) {
+    let user = Serverdata.users[name];
+    let d1 = mDom(d, { align: 'center', bg: user.color, fg: valf(user.fg, colorIdealText(user.color)) });
+    mDom(d1, {}, { html: name });
+    let palette = await calcPalette(d1, user.texture, user.color, user.blendMode);
+  }
+}
+async function test96_() {
+  await prelims();
+  await switchToUser('maya', 'settings');
+}
+async function test95_fixThemes() {
+  await prelims();
+  for (const key in Serverdata.config.themes) {
     let theme = Serverdata.config.themes[key];
     theme.texture = pathFromBgImage(theme.bgImage); delete theme.bgImage;
     theme.blendMode = theme.bgBlend; delete theme.bgBlend;
   }
   await mPostRoute('postConfig', Serverdata.config);
-  console.log('themes',Serverdata)
+  console.log('themes', Serverdata)
 }
-async function test95_fixUsers(){
+async function test95_fixUsers() {
   await prelims();
-  for(const name in Serverdata.users){
+  for (const name in Serverdata.users) {
     let user = Serverdata.users[name];
-    if (nundef(user.imgKey)) user.imgKey = isdef(M.superdi[name])?name:'unknown_user';
+    if (nundef(user.imgKey)) user.imgKey = isdef(M.superdi[name]) ? name : 'unknown_user';
     delete user.key;
-    if (!isEmpty(user.bgBlend)){user.blendMode = user.bgBlend;}
+    if (!isEmpty(user.bgBlend)) { user.blendMode = user.bgBlend; }
     delete user.bgBlend;
     delete user.bgRepeat;
     delete user.bgSize;
-    if (!isEmpty(user.bgImage)){user.texture = pathFromBgImage(user.bgImage);}
+    if (!isEmpty(user.bgImage)) { user.texture = pathFromBgImage(user.bgImage); }
     delete user.bgImage;
     delete user.games;
-    let res = await postUserChange(user,true);
-    if (name == 'guest') console.log(res); else console.log(res.name,res.imgKey)
+    let res = await postUserChange(user, true);
+    if (name == 'guest') console.log(res); else console.log(res.name, res.imgKey)
   }
 }
-async function test94_showBlendModes(){
+async function test94_showBlendModes() {
   await prelims();
   //await switchToUser('mimi','settings'); //console.log(mBy('dSettingsColor'))
   //await onclickSettTexture();
 }
-async function test93_modUsersBgImageToTexture(){
+async function test93_modUsersBgImageToTexture() {
   await prelims();
-  for(const name in Serverdata.users){
+  for (const name in Serverdata.users) {
     let user = Serverdata.users[name];
     if (isdef(user.bgImage)) {
       user.texture = pathFromBgImage(user.bgImage);
@@ -53,10 +216,10 @@ async function test93_modUsersBgImageToTexture(){
     }
     user.imgKey = user.key;
     delete user.key;
-    await postUserChange(user,true);
+    await postUserChange(user, true);
   }
-  let x=await mGetRoute('users');
-  console.log('users',x)
+  let x = await mGetRoute('users');
+  console.log('users', x)
 }
 async function test92_showBlendModes() {
   let d = clearBodyDiv({ gap: 4 }); mFlexWrap(d);
@@ -74,7 +237,6 @@ async function test92_showBlendModes() {
     showPaletteMini(d1, palette);
   }
 }
-
 async function test91_canvasCSSBlendModes() {
   let d = clearBodyDiv({ gap: 4 }); mFlexWrap(d);
   let tlist = await getTextures();
@@ -92,9 +254,8 @@ async function test91_canvasCSSBlendModes() {
   }
 }
 
-
 //#region colors
-async function test90_integrateGetMyColors1(){
+async function test90_integrateGetMyColors1() {
   await prelims();
   let dinew = jsCopy(M.dicolor);
   let dil = getListAndDictsForDicolors();
@@ -109,23 +270,23 @@ async function test90_integrateGetMyColors1(){
   let dParent = clearBodyDiv(); let d1 = mDom(dParent, { gap: 12, padding: 12 }); mFlexWrap(d1);
 
   //dicolor anreichern mit neuen colors aus getMyColors2
-  let int1 = intersection(hk1,hk3); //hex colors 
-  console.log('intersection',int1)
-  let skeys = 'name hex bucket', styles={ padding: 10 };
-  for(const k of int1) removeInPlace(hk3,k);
-  console.log('neue colors',hk3); 
-  for(const k of hk3){
-    let ofi=h3[k];
-    showColorBox(h3[k],skeys,d1,styles);
-    let odiname=n1[ofi.name];
-    if (isdef(odiname)){
-      assertion(odiname.hex != ofi.hex,"WTF!!!!!!!!!!!!!!!!!");
-      console.log(odiname.hex,ofi.hex)
+  let int1 = intersection(hk1, hk3); //hex colors 
+  console.log('intersection', int1)
+  let skeys = 'name hex bucket', styles = { padding: 10 };
+  for (const k of int1) removeInPlace(hk3, k);
+  console.log('neue colors', hk3);
+  for (const k of hk3) {
+    let ofi = h3[k];
+    showColorBox(h3[k], skeys, d1, styles);
+    let odiname = n1[ofi.name];
+    if (isdef(odiname)) {
+      assertion(odiname.hex != ofi.hex, "WTF!!!!!!!!!!!!!!!!!");
+      console.log(odiname.hex, ofi.hex)
       showColorBox(odiname, skeys, d1, styles);
-    } else{
-      assertion(nundef(h1[k]),'WTF!!!!');
-      assertion(nundef(n1[ofi.name]),'WTF name!!!');
-      lookupSet(dinew,[ofi.bucket,ofi.name],k);
+    } else {
+      assertion(nundef(h1[k]), 'WTF!!!!');
+      assertion(nundef(n1[ofi.name]), 'WTF name!!!');
+      lookupSet(dinew, [ofi.bucket, ofi.name], k);
     }
     mLinebreak(d1)
   }
@@ -133,7 +294,7 @@ async function test90_integrateGetMyColors1(){
   //sortDicolor(dinew); //das macht downloadAsYaml!!!
 
 }
-async function test90_integrateGetMyColors2(){
+async function test90_integrateGetMyColors2() {
   await prelims();
   let dinew = jsCopy(M.dicolor);
   let dil = getListAndDictsForDicolors();
@@ -148,22 +309,22 @@ async function test90_integrateGetMyColors2(){
   let dParent = clearBodyDiv(); let d1 = mDom(dParent, { gap: 12, padding: 12 }); mFlexWrap(d1);
 
   //dicolor anreichern mit neuen colors aus getMyColors2
-  let int1 = intersection(hk1,hk2); //hex colors 
-  let skeys = 'name hex bucket', styles={ padding: 10 };
-  for(const k of int1) removeInPlace(hk2,k);
+  let int1 = intersection(hk1, hk2); //hex colors 
+  let skeys = 'name hex bucket', styles = { padding: 10 };
+  for (const k of int1) removeInPlace(hk2, k);
   console.log(hk2);
-  for(const k of hk2){
-    let ofi=h2[k];
-    showColorBox(h2[k],skeys,d1,styles);
-    let odiname=n1[ofi.name];
-    if (isdef(odiname)){
-      assertion(odiname.hex != ofi.hex,"WTF!!!!!!!!!!!!!!!!!");
-      console.log(odiname.hex,ofi.hex)
+  for (const k of hk2) {
+    let ofi = h2[k];
+    showColorBox(h2[k], skeys, d1, styles);
+    let odiname = n1[ofi.name];
+    if (isdef(odiname)) {
+      assertion(odiname.hex != ofi.hex, "WTF!!!!!!!!!!!!!!!!!");
+      console.log(odiname.hex, ofi.hex)
       showColorBox(odiname, skeys, d1, styles);
-    } else{
-      assertion(nundef(h1[k]),'WTF!!!!');
-      assertion(nundef(n1[ofi.name]),'WTF name!!!');
-      lookupSet(dinew,[ofi.bucket,ofi.name],k);
+    } else {
+      assertion(nundef(h1[k]), 'WTF!!!!');
+      assertion(nundef(n1[ofi.name]), 'WTF name!!!');
+      lookupSet(dinew, [ofi.bucket, ofi.name], k);
     }
     mLinebreak(d1)
   }
@@ -182,20 +343,20 @@ async function test89_colorlists() {
 
   //name overlappings: nur 1-2
   let [k1, k2, k3] = [Object.keys(h1), Object.keys(h2), Object.keys(h3)];
-  console.log('1-2',intersection(k1,k2)); 
-  console.log('1-3',intersection(k1,k3)); 
-  console.log('2-3',intersection(k2,k3)); 
-  
+  console.log('1-2', intersection(k1, k2));
+  console.log('1-3', intersection(k1, k3));
+  console.log('2-3', intersection(k2, k3));
+
   //hex overlappings: nur 1-2
   let [nk1, nk2, nk3] = [Object.keys(n1), Object.keys(n2), Object.keys(n3)];
-  console.log('1-2',intersection(nk1,nk2)); 
-  console.log('1-3',intersection(nk1,nk3)); 
-  console.log('2-3',intersection(nk2,nk3)); 
+  console.log('1-2', intersection(nk1, nk2));
+  console.log('1-3', intersection(nk1, nk3));
+  console.log('2-3', intersection(nk2, nk3));
 
   let dParent = clearBodyDiv();
   //let styles = { wmin: 250, padding: 20 };
   for (const list of [l1, l2, l3]) {
-    console.log('list',list.length)
+    console.log('list', list.length)
     showColorBoxes(list, 'name', dParent, { padding: 10 });
     mLinebreak(dParent)
   }
@@ -208,13 +369,13 @@ async function test88_colorlists() {
   let [l1, l2, l3] = [dil[0], unfi[0], beau[0]];
   let [h1, h2, h3] = [dil[1], unfi[1], beau[1]];
   let [k1, k2, k3] = [Object.keys(h1), Object.keys(h2), Object.keys(h3)];
-  console.log('1-2',intersection(k1,k2)); 
-  console.log('1-3',intersection(k1,k3)); 
-  console.log('2-3',intersection(k2,k3)); 
+  console.log('1-2', intersection(k1, k2));
+  console.log('1-3', intersection(k1, k3));
+  console.log('2-3', intersection(k2, k3));
   let dParent = clearBodyDiv();
   //let styles = { wmin: 250, padding: 20 };
   for (const list of [l1, l2, l3]) {
-    console.log('list',list.length)
+    console.log('list', list.length)
     showColorBoxes(list, 'name', dParent, { padding: 10 });
     mLinebreak(dParent)
   }
@@ -488,20 +649,20 @@ async function updateTestButtonsPlayers(table) {
 }
 
 //wegwerf!!!
-function correctPastelRed(){
+function correctPastelRed() {
   //doppelt: pastel_red
   let di = jsCopy(M.dicolor);
   di.red.pastel_red = '#ff6961';
 }
-function correctDarkLavender(){
+function correctDarkLavender() {
   //doppelt: dark_lavender
-  console.log('lilac',n1.darklilac,n1.dark_lilac)
+  console.log('lilac', n1.darklilac, n1.dark_lilac)
   let di = jsCopy(M.dicolor);
   delete di.blue.dark_blue_gray;
   di.bluemagenta.dark_lavender = n2.dark_lavender.hex;
   di.bluemagenta.dark_lilac = n1.dark_lavender.hex;
 
-  downloadAsYaml(di,'dicolor')
+  downloadAsYaml(di, 'dicolor')
 
   // //let styles = { wmin: 250, padding: 20 };
   // for (const list of [l1, l2, l3]) {
@@ -511,8 +672,8 @@ function correctDarkLavender(){
   // }
 
 }
-function showHexDuplicates(int1,skeys,d1,styles,h1,h2,n1){
-  for(const k of int1){
+function showHexDuplicates(int1, skeys, d1, styles, h1, h2, n1) {
+  for (const k of int1) {
     //console.log('k',k, jsCopy(h1[k]), jsCopy(h2[k]))
     let odi = h1[k];
     let ofi = h2[k];
@@ -522,8 +683,8 @@ function showHexDuplicates(int1,skeys,d1,styles,h1,h2,n1){
     //console.log('=',k, jsCopy(h1[k]), jsCopy(h2[k]))
     let name = ofi.name;
     let odiname = n1[name];
-    if (isdef(odiname) && odiname.hex != odi.hex){
-      console.log(odiname.hex,odi.hex)
+    if (isdef(odiname) && odiname.hex != odi.hex) {
+      console.log(odiname.hex, odi.hex)
       showColorBox(odiname, skeys, d1, styles);
       showColorBox(n1.lilac, skeys, d1, styles);
     }
