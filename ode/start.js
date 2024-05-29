@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test108_colorNatVersusW3(); }
+async function start() { TESTING = true; await test108_colorNatVersusW3_BROKEN(); }
 
 async function test108_colorNatVersusW3_BROKEN() {
   await prelims();
