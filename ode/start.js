@@ -1,28 +1,101 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test106_bucketCheck(); }
+async function start() { TESTING = true; await test108_colorNatVersusW3(); }
 
-async function test106_bucketCheck(){
+async function test108_colorNatVersusW3_BROKEN() {
   await prelims();
-  [dicolorlist, byhex, byname]=getListAndDictsForDicolors();
-  //console.log('names',Object.keys(byname));
-  let d=clearFlex();
-  for(const i of range(3)){
-    let w3=rChoose(dicolorlist);
-    
+  let d = clearFlex();
+  for (const i of range(20)) {
+    let w3 = rChoose(M.colorList);
+    let o = w3.toNcol(); console.log(w3.toRgb());
+    let c = colorFromNat(o.ncol, o.w * 100, o.b * 100);
+    console.log(w3.hex, c)
   }
-  let c='red';
-  c=colorFrom(c);
-  colorGetBucket(c);
 }
-async function test105_myhwb(){
-  let hex = colorTrans('black',.5); //'black'; //'#ffffff'; //rColor(); //'#00ff80'; //
-  console.log(colorFrom(hex),hex)
+async function test110_colorNatVersusW3() {
+  await prelims();
+  let d = clearFlex();
+  for (const i of range(103)) {
+    let c = rChoose(M.colorList); console.log('___', c.hue, c.sat * 100, Math.round(c.lightness * 100), c.hex);
+    let hex = c.hex;
+    let hsl = colorHexToHsl(hex); console.log(hsl)
+    assertion(hsl.h == c.hue && hsl.s == Math.round(c.sat * 100) && hsl.l == Math.round(c.lightness * 100), 'WTF')
+    //let hex = c.hex; console.log(hex)
+  }
+}
+async function test109_colorNatVersusW3() {
+  await prelims();
+  let d = clearFlex();
+  for (const i of range(103)) {
+    let c = rChoose(M.colorList); console.log('___', c.hue, c.sat * 100, Math.round(c.lightness * 100), c.hex);
+    let hex = c.hex;
+    let hsl = colorHexToHsl(hex); console.log(hsl)
+    assertion(hsl.h == c.hue && hsl.s == Math.round(c.sat * 100) && hsl.l == Math.round(c.lightness * 100), 'WTF')
+    //let hex = c.hex; console.log(hex)
+  }
+}
+async function test108_colorNatVersusW3() {
+  await prelims();
+  let d = clearFlex();
+  for (const i of range(105)) {
+    let c = rChoose(M.colorList); console.log(c.red, c.green, c.blue, c.hex);
+    let hex = c.hex;
+    let [r, g, b] = colorHexToRgbArray(hex); console.log(r, g, b)
+    assertion(r == c.red && g == c.green && b == c.blue, 'WTF');
+    //let hex = c.hex; console.log(hex)
+  }
+}
+async function test108_ncolHue() {
+  for (const i of range(20)) {
+    let ncol = colorHueToNcol(i); let hue = colorNcolToHue(ncol);
+    // console.log(`i:${i}, ncol:${ncol}, hue:${hue}`);
+    assertion(hue == i, `i:${i}, ncol:${ncol}, hue:${hue}`);
+  }
+}
+async function test107_hueTest() {
+  await prelims();
+  let d = clearFlex();
+  let list = [44, 45, 46, 0, 1, 2, 359, 360];
+  list.forEach(x => showColorFromHue(d, x))
+}
+function showColorFromHue(dParent, hue, s = 100, l = 50) {
+  let c = colorHsl360ArgsToHex79(hue, s, l);
+  let w3 = colorNearestNamed(c, M.colorList);
+  let d1 = showObject(w3, ['name', 'hex', 'bucket', 'hue'], dParent, { bg: w3.hex });
+  d1.innerHTML += colorGetBucket(w3.hex);
+}
+async function test106_hueCheck() {
+  await prelims();
+  let d = clearFlex();
+  //console.log('names',Object.keys(byname));
+  for (const i of range(1, 360, 5)) {
+    let c = colorHsl360ArgsToHex79(i, 100, 50);
+    let w3 = colorNearestNamed(c, M.colorList);
+    //let w3=rChoose(dicolorlist);
+    let d1 = showObject(w3, ['name', 'hex', 'bucket', 'hue'], d, { bg: w3.hex });
+    d1.innerHTML += colorGetBucket(w3.hex);
+  }
+}
+
+async function test106_bucketCheck() {
+  await prelims();
+  [dicolorlist, byhex, byname] = getListAndDictsForDicolors();
+  //console.log('names',Object.keys(byname));
+  let d = clearFlex();
+  for (const i of range(3)) {
+    let w3 = rChoose(dicolorlist);
+    let d1 = showObject(w3, ['name', 'hex', 'bucket', 'hue'], d, { bg: w3.hex });
+    d1.innerHTML += colorGetBucket(w3.hex);
+  }
+}
+async function test105_myhwb() {
+  let hex = colorTrans('black', .5); //'black'; //'#ffffff'; //rColor(); //'#00ff80'; //
+  console.log(colorFrom(hex), hex)
   let c = w3color(hex); console.log(c);
-  let hsl=c.toHslaString(); console.log('toHsl',hsl);
-  let hbw=c.toHwb(); console.log('toHwb',hbw);
-  let w3ncol=c.toNcol(); console.log('toNcol',w3ncol);
+  let hsl = c.toHslaString(); console.log('toHsl', hsl);
+  let hbw = c.toHwb(); console.log('toHwb', hbw);
+  let w3ncol = c.toNcol(); console.log('toNcol', w3ncol);
 
   console.log(colorHueToNcol(hsl.h))
 
@@ -30,22 +103,22 @@ async function test105_myhwb(){
 }
 async function test104_WTF() {
   let hex = '#00ff80'; //rColor(); 
-  console.log(colorFrom(hex),hex)
+  console.log(colorFrom(hex), hex)
   let c = w3color(hex); console.log(c);
-  let x=c.toCmyk(); console.log('toCmyk',x);
-  x=c.toCmykString(); console.log('toCmykString',x);
-  x=c.toHsl(); console.log('toHsl',x);
-  x=c.toHslString(); console.log('toHslString',x);
-  x=c.toHslStringDecimal(); console.log('toHslStringDecimal',x);
-  x=c.toHwb(); console.log('toHwb',x);
-  x=c.toHwbString(); console.log('toHwbString',x);
-  x=c.toHwbStringDecimal(); console.log('toHwbStringDecimal',x);
-  x=c.toName(); console.log('toName',x);
-  x=c.toNcol(); console.log('toNcol',x);
-  x=c.toNcolString(); console.log('toNcolString',x);
-  x=c.toNcolStringDecimal(); console.log('toNcolStringDecimal',x);
-  x=c.toRgb(); console.log('toRgb',x);
-  x=c.toRgbString(); console.log('toRgbString',x);
+  let x = c.toCmyk(); console.log('toCmyk', x);
+  x = c.toCmykString(); console.log('toCmykString', x);
+  x = c.toHsl(); console.log('toHsl', x);
+  x = c.toHslString(); console.log('toHslString', x);
+  x = c.toHslStringDecimal(); console.log('toHslStringDecimal', x);
+  x = c.toHwb(); console.log('toHwb', x);
+  x = c.toHwbString(); console.log('toHwbString', x);
+  x = c.toHwbStringDecimal(); console.log('toHwbStringDecimal', x);
+  x = c.toName(); console.log('toName', x);
+  x = c.toNcol(); console.log('toNcol', x);
+  x = c.toNcolString(); console.log('toNcolString', x);
+  x = c.toNcolStringDecimal(); console.log('toNcolStringDecimal', x);
+  x = c.toRgb(); console.log('toRgb', x);
+  x = c.toRgbString(); console.log('toRgbString', x);
   return;
   let nearestColor = c.toNcol();
   console.log(`The nearest named color to ${hex} is`, nearestColor);

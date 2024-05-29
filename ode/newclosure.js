@@ -1141,6 +1141,11 @@ function colorHexToHsl360Object(c) {
 	let arr = colorHexToHsl01Array(c);
 	return colorHsl01ArrayToHsl360Object(arr);
 }
+function colorHexToHsl(c) {
+	let arr = colorHexToHsl01Array(c);
+	let o = colorHsl01ArrayToHsl360Object(arr);
+	return {h:Math.round(o.h),s:Math.round(o.s),l:Math.round(o.l)};
+}
 function colorHexToHsl360String(c) {
 	let arr = colorHexToHsl01Array(c);
 	let o = colorHsl01ArrayToHsl360Object(arr);
@@ -1313,9 +1318,10 @@ function colorShades(color) {
 }
 function colorToHex79(c) {
 	if (colorIsHex79(c)) return c;
+	ColorDi = M.colorByName;
 	let tString = isString(c), tArr = isList(c), tObj = isDict(c);
 	if (tString && c[0] == '#') return colorHex45ToHex79(c);
-	else if (tString && isdef(ColorDi) && lookup(ColorDi, [c])) return ColorDi[c].c;
+	else if (tString && isdef(ColorDi) && lookup(ColorDi, [c])) return ColorDi[c].hex;
 	else if (tString && c.startsWith('rand')) {
 		let spec = capitalize(c.substring(4));
 		let func = window['color' + spec];
@@ -1325,7 +1331,7 @@ function colorToHex79(c) {
 	} else if (tString && (c.startsWith('linear') || c.startsWith('radial'))) return c;
 	else if (tString && c.startsWith('rgb')) return colorRgbStringToHex79(c);
 	else if (tString && c.startsWith('hsl')) return colorHsl360StringToHex79(c);
-	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.c; }
+	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.hex; }
 	else if (tArr && (c.length == 3 || c.length == 4) && isNumber(c[0])) return colorRgbArrayToHex79(c);
 	else if (tArr) return colorToHex79(rChoose(tArr));
 	else if (tObj && 'h' in c && c.h > 1) { return colorHsl360ObjectToHex79(c); } //console.log('!!!');
@@ -2118,52 +2124,52 @@ function ensureColorDict() {
 	let names = getColorNames();
 	let hexes = getColorHexes();
 	for (let i = 0; i < names.length; i++) {
-		ColorDi[names[i].toLowerCase()] = { c: '#' + hexes[i] };
+		ColorDi[names[i].toLowerCase()] = { hex: '#' + hexes[i] };
 	}
 	const newcolors = {
-		black: { c: '#000000', D: 'schwarz' },
-		blue: { c: '#0000ff', D: 'blau' },
-		BLUE: { c: '#4363d8', E: 'blue', D: 'blau' },
-		BLUEGREEN: { c: '#004054', E: 'bluegreen', D: 'blaugrün' },
-		BROWN: { c: '#96613d', E: 'brown', D: 'braun' },
-		deepyellow: { c: '#ffed01', E: 'yellow', D: 'gelb' },
-		FIREBRICK: { c: '#800000', E: 'darkred', D: 'rotbraun' },
-		gold: { c: 'gold', D: 'golden' },
-		green: { c: 'green', D: 'grün' },
-		GREEN: { c: '#3cb44b', E: 'green', D: 'grün' },
-		grey: { c: 'grey', D: 'grau' },
-		lightblue: { c: 'lightblue', D: 'hellblau' },
-		LIGHTBLUE: { c: '#42d4f4', E: 'lightblue', D: 'hellblau' },
-		lightgreen: { c: 'lightgreen', D: 'hellgrün' },
-		LIGHTGREEN: { c: '#afff45', E: 'lightgreen', D: 'hellgrün' },
-		lightyellow: { c: '#fff620', E: 'lightyellow', D: 'gelb' },
-		NEONORANGE: { c: '#ff6700', E: 'neonorange', D: 'neonorange' },
-		NEONYELLOW: { c: '#efff04', E: 'neonyellow', D: 'neongelb' },
-		olive: { c: 'olive', D: 'oliv' },
-		OLIVE: { c: '#808000', E: 'olive', D: 'oliv' },
-		orange: { c: 'orange', D: 'orange' },
-		ORANGE: { c: '#f58231', E: 'orange', D: 'orange' },
-		PINK: { c: 'deeppink', D: 'rosa' },
-		pink: { c: 'pink', D: 'rosa' },
-		purple: { c: 'purple', D: 'lila' },
-		PURPLE: { c: '#911eb4', E: 'purple', D: 'lila' },
-		red: { c: 'red', D: 'rot' },
-		RED: { c: '#e6194B', E: 'red', D: 'rot' },
-		skyblue: { c: 'skyblue', D: 'himmelblau' },
-		SKYBLUE: { c: 'deepskyblue', D: 'himmelblau' },
-		teal: { c: '#469990', D: 'blaugrün' },
-		TEAL: { c: '#469990', E: 'teal', D: 'blaugrün' },
-		transparent: { c: '#00000000', E: 'transparent', D: 'transparent' },
-		violet: { c: 'violet', E: 'violet', D: 'violett' },
-		VIOLET: { c: 'indigo', E: 'violet', D: 'violett' },
-		white: { c: 'white', D: 'weiss' },
-		yellow: { c: 'yellow', D: 'gelb' },
-		yelloworange: { c: '#ffc300', E: 'yellow', D: 'gelb' },
-		YELLOW: { c: '#ffe119', E: 'yellow', D: 'gelb' },
+		black: { hex: '#000000', D: 'schwarz' },
+		blue: { hex: '#0000ff', D: 'blau' },
+		BLUE: { hex: '#4363d8', E: 'blue', D: 'blau' },
+		BLUEGREEN: { hex: '#004054', E: 'bluegreen', D: 'blaugrün' },
+		BROWN: { hex: '#96613d', E: 'brown', D: 'braun' },
+		deepyellow: { hex: '#ffed01', E: 'yellow', D: 'gelb' },
+		FIREBRICK: { hex: '#800000', E: 'darkred', D: 'rotbraun' },
+		gold: { hex: 'gold', D: 'golden' },
+		green: { hex: 'green', D: 'grün' },
+		GREEN: { hex: '#3cb44b', E: 'green', D: 'grün' },
+		grey: { hex: 'grey', D: 'grau' },
+		lightblue: { hex: 'lightblue', D: 'hellblau' },
+		LIGHTBLUE: { hex: '#42d4f4', E: 'lightblue', D: 'hellblau' },
+		lightgreen: { hex: 'lightgreen', D: 'hellgrün' },
+		LIGHTGREEN: { hex: '#afff45', E: 'lightgreen', D: 'hellgrün' },
+		lightyellow: { hex: '#fff620', E: 'lightyellow', D: 'gelb' },
+		NEONORANGE: { hex: '#ff6700', E: 'neonorange', D: 'neonorange' },
+		NEONYELLOW: { hex: '#efff04', E: 'neonyellow', D: 'neongelb' },
+		olive: { hex: 'olive', D: 'oliv' },
+		OLIVE: { hex: '#808000', E: 'olive', D: 'oliv' },
+		orange: { hex: 'orange', D: 'orange' },
+		ORANGE: { hex: '#f58231', E: 'orange', D: 'orange' },
+		PINK: { hex: 'deeppink', D: 'rosa' },
+		pink: { hex: 'pink', D: 'rosa' },
+		purple: { hex: 'purple', D: 'lila' },
+		PURPLE: { hex: '#911eb4', E: 'purple', D: 'lila' },
+		red: { hex: 'red', D: 'rot' },
+		RED: { hex: '#e6194B', E: 'red', D: 'rot' },
+		skyblue: { hex: 'skyblue', D: 'himmelblau' },
+		SKYBLUE: { hex: 'deepskyblue', D: 'himmelblau' },
+		teal: { hex: '#469990', D: 'blaugrün' },
+		TEAL: { hex: '#469990', E: 'teal', D: 'blaugrün' },
+		transparent: { hex: '#00000000', E: 'transparent', D: 'transparent' },
+		violet: { hex: 'violet', E: 'violet', D: 'violett' },
+		VIOLET: { hex: 'indigo', E: 'violet', D: 'violett' },
+		white: { hex: 'white', D: 'weiss' },
+		yellow: { hex: 'yellow', D: 'gelb' },
+		yelloworange: { hex: '#ffc300', E: 'yellow', D: 'gelb' },
+		YELLOW: { hex: '#ffe119', E: 'yellow', D: 'gelb' },
 	};
 	for (const k in newcolors) {
 		let cnew = newcolors[k];
-		if (cnew.c[0] != '#' && isdef(ColorDi[cnew.c])) cnew.c = ColorDi[cnew.c].c;
+		if (cnew.hex[0] != '#' && isdef(ColorDi[k])) cnew.hex = ColorDi[k].hex;
 		ColorDi[k] = cnew;
 	}
 }
@@ -4229,6 +4235,7 @@ async function loadAssets() {
 	let textures = await mGetFiles(`../assets/textures`);
 	M.textures = textures.map(x => `../assets/textures/${x}`); //console.log('textures',M.textures)
 	M.dicolor = await mGetYaml(`../assets/dicolor.yaml`);
+	[M.colorList, M.colorByHex, M.colorByName]=getListAndDictsForDicolors();
 }
 async function loadImageAsync(src, img) {
 	return new Promise((resolve, reject) => {

@@ -1,5 +1,19 @@
+function colorHwb360ToRgbArray(h, w, b) {
+	// Convert HWB to HSL
+	let [r,g,blue] = colorHsl01ArgsToRgbArray(h/360, 1, 0.5);
+	
+	console.log(r,g,blue)
 
+	// Apply whiteness and blackness
+	let whiteness = w / 100;
+	let blackness = b / 100;
 
+	r = Math.round((r / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	g = Math.round((g / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	b = Math.round((blue / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+
+	return [r,g,b];
+}
 function colorToHwb360Object(c){
 
 	c=colorFrom(c);
@@ -13,12 +27,23 @@ function colorToHwb360Object(c){
 
 	return {h,w,b};
 }
+function colorGetWhite(c){return colorToHwb360Object(c).w;}
+function colorGetBlack(c){return colorToHwb360Object(c).b;}
 function colorHueToNcol(hue){
 	let x=Math.floor(hue/60);
 	let pure=['red','yellow','green','cyan','blue','magenta'];
 	let color=pure[x];
-	let inc=(hue%60)*100/60;
-	return {color,inc};
+	//let inc=hue%60; //(hue%60)*100/60;
+	let inc=Math.floor((hue%60)*100/60);
+	return color.toUpperCase()[0]+inc; // return as String, eg. G15 {color,inc};
+}
+function colorNcolToHue(ncol){
+	//let x=Math.floor(hue/60);
+	let pure=['red','yellow','green','cyan','blue','magenta'].map(x=>x.toUpperCase()[0]);
+	let [letter,num]=[ncol[0],Number(ncol.substring(1))];
+	let idx=pure.indexOf(letter);
+	let hue=idx*60+Math.ceil(num*60/100);
+	return hue;
 }
 
 //#region findNearest von chatGPT using LAB system
