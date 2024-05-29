@@ -6,7 +6,7 @@ async function start() { TESTING = true; await test108_colorNatVersusW3(); }
 async function test108_colorNatVersusW3_BROKEN() {
   await prelims();
   let d = clearFlex();
-  for (const i of range(20)) {
+  for (const i of range(3)) {
     let w3 = rChoose(M.colorList);
     let o = w3.toNcol(); console.log(w3.toRgb());
     let c = colorFromNat(o.ncol, o.w * 100, o.b * 100);
