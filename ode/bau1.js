@@ -1,50 +1,59 @@
 
-function colorGetBucket(c) {
-	let buckets = 'red orange yellow lime green greencyan cyan cyanblue blue bluemagenta magenta magentared black'.split(' ');
-	//console.log('buckets',buckets);
-
-	c = colorFrom(c);
-	let hsl = colorHexToHsl360Object(c);
-	let hue = hsl.h;
-
-	//0 30 60 ...
-	//orange range 15-45
-	//yellow range 45-75
-	//lime range 75-105
-	//green range 105-135
-
-	//hue+15:
-	//red ... 0-30
-	//orange ... 30-60
-	let hshift = (hue + 16) % 360;
-	let ib = Math.floor(hshift / 30);
-	return buckets[ib];
-
-
+function toNameValueList(any){
+	if (isEmpty(any)) return [];
+	let list=[];
+	if (isString(any)){
+		let words = toWords(any);
+		for(const w of words){list.push({name:w,value:w})};
+	}else if (isDict(any)){
+		for(const k in any){list.push({name:k,value:any[k]})};
+	}else if (isList(any) && !isDict(any[0])){
+		for(const el of any) list.push({name:el,value:el});
+	}else if (isList(any) && isdef(any[0].name)  && isdef(any[0].value)) {
+		list = any;
+	}else {
+		let el=any[0];
+		let keys = Object.keys(el);
+		let nameKey=keys[0];
+		let valueKey=keys[1];
+		for(const x of any){
+			list.push({name:x[nameKey],value:x[nameKey]});
+		}
+	}
+	return list;
 }
-function colorFromNat(ncol, wPercent, bPercent) { 
-	return colorFromNcol(ncol,wPercent,bPercent); 
-}
-function colorFromHwb(h,wPercent,bPercent){
-	let [r,g,b]=colorHwb360ToRgbArray(h,wPercent,bPercent); console.log(r,g,b)
-	return colorRgbArgsToHex79(r,g,b);
-}
-function colorFromNcol(ncol,wPercent,bPercent){
-	let h=colorNcolToHue(ncol);
-	return colorFromHwb(h,wPercent,bPercent);
-}
-function colorFromRgb(r, g, b) { return colorFrom({ r, g, b }); }
-function colorFromHsl(h, s = 100, l = 50) { return colorFrom({ h, s, l }); }
-function colorFromHue(h, s = 100, l = 50) { return colorFrom({ h, s, l }); }
-function colorFromRgbNamed(r, g, b) { let x = colorFrom({ r, g, b }); return colorNearestNamed(x); }
-function colorFromHslNamed(h, s = 100, l = 50) { let x = colorFrom({ h, s, l }); return colorNearestNamed(x); }
-function colorFromHueNamed(h, s = 100, l = 50) { return colorFromHslNamed(h, s, l); }
-function colorIsGrey(c, tolerance = 5) {
-	let { r, g, b } = colorHexToRgbObject(colorFrom(c));
-	return Math.abs(r - g) <= tolerance && Math.abs(r - b) <= tolerance && Math.abs(g - b) <= tolerance;
-}
+function uiTypeSelect(any, handler, form, styles = {}, opts = {}) {
 
+	let list=toNameValueList(any);
+	//console.log(list); //return;
 
+	let d = form; // mDom(dParent, { overy: 'auto' }); //hier drin kommt das select elem
+	let id = getUID();
+	let dselect = mDom(d, styles, { className: 'input', tag: 'select', id });
+	for(const el of list){
+		//console.log(el.name,el.value)
+		mDom(dselect, {}, { tag: 'option', html: el.name, value: el.value });
+	}
+	// dselect.onchange = ()=>isdef(opts.handler)??opts.handler(id); //ev=>console.log('changed',id,mBy(id).value);
+
+	if (nundef(handler)) handler = ()=>console.log(id,'value changed to',mBy(id).value)
+
+	dselect.onchange = ev=>{ev.preventDefault();handler(mBy(id).value);}// ()=>{form.setAttribute('proceed',mBy(id).value)}; //;form.submit(); } //console.log('changed',id,mBy(id).value);
+	return dselect;
+}
+function uiGadgetTypeSelect(form, content, styles = {}, opts = {}) {
+
+	mStyle(form,{bg:'red',padding:10}); //,wmin:'100vw',hmin:'100vh'});
+	let d=mDom(form);
+	let handler = selval=>{
+		form.setAttribute('proceed',selval);
+		//form.submit();
+	}
+	let select = uiTypeSelect(content,handler,d,styles,opts);
+	//mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	//return () => form.getAttribute('proceed');
+	return () => form.getAttribute('proceed');
+}
 
 
 

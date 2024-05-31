@@ -1,16 +1,85 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test108_colorNatVersusW3_BROKEN(); }
+async function start() { TESTING = true; await test112(); }
+
+async function test112(){
+  //wie mach ich ein gadget fuer colorname?
+  await prelims();
+  let d = clearFlex();
+
+  let title=mDom(d,{},{html:'pick color:'}); 
+  let res;
+
+  let content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  content={a:1,b:2,c:3};
+  content=[{a:1,b:2,c:3},{a:4,b:5}];
+  //content = ['das','ist','richtig']
+  //content = 'ich bin hier im jetzt';
+  res = await mGather(title,{},{content, type: 'select'}); 
+  // res = uiTypeSelect(content,d); //console.log(res)
+
+  return;
+
+  //res = await mGather(title,{},{content, type: 'select'}); 
+  console.log('you picked',res); 
+
+  //let name = await mGather(title); console.log('you picked',name); //OK
+
+  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  //res = await mGather(title,{},{content,type: 'checklist'}); console.log('you picked',res); 
+  
+  content = 'restart?'
+  //res = await mGather(title,{},{content,type: 'yesno'}); console.log('you picked',res); //OK true|false
+
+  content = [{name:'a',value:true},{name:'b',value:true},{name:'c',value:false}];
+  //res = await mGather(title,{},{content,type: 'checklistinput'}); console.log('you picked',res); //OK list of vals
+
+  content = {input1:'',input2:'',input3:''};
+  //res = await mGather(title,{},{content,type: 'multi'}); console.log('you picked',res); //OK object w/ new vals
+
+
+
+}
+async function test111(){
+  //console.log(colorDistance('black','white')); return;
+  await prelims();
+  let d = clearFlex();
+  for (const i of range(30)) {
+    let letter = rChoose(['R','G','Y','B','M','C']);
+    let num = rChoose(range(100));
+    for(let x=-90;x<100;x+=30){
+      let [w,b]=x<0?[-x,0]:x==0?[0,0]:[0,x]; //rChoose(range(100)),rChoose(range(100))];
+      let ncol = letter+num; console.log('___ my ncol',ncol,w,b)
+      let color = colorFromNcol(ncol,w,b);
+      let w3 = colorToW3Ext(color);
+      w3.myNcol=ncol;
+      let realColor = M.colorByName[w3.name];
+      let dist=w3.distance;
+      if (w3.distance > 20) w3.name=`[${w3.name}]`;
+      else w3.name+=dist<5?'***':dist<10?'**':dist<15?'*':'';
+      //w3.myBucket=colorGetBucket(w3.hex);
+      let d1 = showObject(w3, ['name', 'hex', 'distance', 'bucket', 'hue', 'ncol', 'myNcol'], d, { bg: w3.hex,wmin:233 });
+      showObject(realColor,['name','hex','bucket'],d,{bg:realColor.hex,wmin:233});
+      mLinebreak(d)
+    }
+    mLinebreak(d)
+  }
+
+
+}
 
 async function test108_colorNatVersusW3_BROKEN() {
   await prelims();
   let d = clearFlex();
-  for (const i of range(3)) {
+  for (const i of range(30)) {
     let w3 = rChoose(M.colorList);
-    let o = w3.toNcol(); console.log(w3.toRgb());
-    let c = colorFromNat(o.ncol, o.w * 100, o.b * 100);
-    console.log(w3.hex, c)
+    let hex = w3.hex;
+    let hwb = colorToHwbRounded(hex);
+    let ncol=colorHueToNcol(hwb.h); //console.log('my ncol',ncol)
+    console.log('___',w3.hue,w3.ncol,ncol,colorNcolToHue(ncol)); //w3.toNcol()); 
+    let nat = colorHueToNat(hwb.h);
+    console.log(w3.hue,nat,colorNatToHue(nat)); //w3.toNcol()); 
   }
 }
 async function test110_colorNatVersusW3() {
@@ -19,7 +88,7 @@ async function test110_colorNatVersusW3() {
   for (const i of range(103)) {
     let c = rChoose(M.colorList); console.log('___', c.hue, c.sat * 100, Math.round(c.lightness * 100), c.hex);
     let hex = c.hex;
-    let hsl = colorHexToHsl(hex); console.log(hsl)
+    let hsl = colorHexToHslRounded(hex); console.log(hsl)
     assertion(hsl.h == c.hue && hsl.s == Math.round(c.sat * 100) && hsl.l == Math.round(c.lightness * 100), 'WTF')
     //let hex = c.hex; console.log(hex)
   }
@@ -30,7 +99,7 @@ async function test109_colorNatVersusW3() {
   for (const i of range(103)) {
     let c = rChoose(M.colorList); console.log('___', c.hue, c.sat * 100, Math.round(c.lightness * 100), c.hex);
     let hex = c.hex;
-    let hsl = colorHexToHsl(hex); console.log(hsl)
+    let hsl = colorHexToHslRounded(hex); console.log(hsl)
     assertion(hsl.h == c.hue && hsl.s == Math.round(c.sat * 100) && hsl.l == Math.round(c.lightness * 100), 'WTF')
     //let hex = c.hex; console.log(hex)
   }

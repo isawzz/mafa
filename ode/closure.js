@@ -162,6 +162,12 @@ function alphaToHex(a01) {
 }
 function amIHuman(table) { return isPlayerHuman(table, getUname()); }
 
+async function analyseColorsForUser(d, name) {
+	let user = Serverdata.users[name];
+	let d1 = mDom(d, { align: 'center', bg: user.color, fg: valf(user.fg, colorIdealText(user.color)) });
+	mDom(d1, {}, { html: name });
+	let palette = await calcPalette(d1, user.texture, user.color, user.blendMode);
+}
 function animatedTitle(msg = 'DU BIST DRAN!!!!!') {
 	TO.titleInterval = setInterval(() => {
 		let corner = CORNERS[WhichCorner++ % CORNERS.length];
@@ -383,6 +389,39 @@ function calcHeightLeftUnder(div) {
 	let h = hwin - top;
 	return h;
 }
+async function calcPalette(dParent, src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d1 = mDom(dParent);
+	let ca = await getCanvasCtx(d1, { w: 310, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	palette.splice(8);
+	let dominant = palette[0];
+	let opal = [];
+	for (let i = 0; i < palette.length; i++) {
+		let c = palette[i];
+		let o = w3color(c);
+		o.hex = c;
+		o.distbg = colorDistance(c, fill);
+		o.distbg = colorDistance(c, dominant);
+		opal.push(o);
+	}
+	palette.unshift(fill);
+	showPaletteMini(d1, palette);
+	let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
+	showPaletteMini(d1, pal2);
+	let pal3 = [colorTurnHueBy(fill), colorTurnHueBy(dominant), colorTurnHueBy(fill, 120), colorTurnHueBy(dominant, 120), colorTurnHueBy(fill, 240), colorTurnHueBy(dominant, 240)];
+	showPaletteMini(d1, pal3);
+	let pal4 = [getBestContrastingColor(fill), getBestContrastingColor(dominant)];
+	showPaletteMini(d1, pal4);
+	let pal5 = [fill, colorTurnHueBy(fill), colorComplement(fill), getBestContrastingColor(fill), colorIdealText(fill)]
+	showPaletteMini(d1, pal5);
+	for (const c of pal5) {
+		console.log(c, colorDistance(fill, c));
+	}
+	console.log(src, opal)
+	return palette;
+}
 function calcRestHeight(dtop) {
 	let hwin = window.innerHeight;
 	let r = getRect(dtop);
@@ -499,6 +538,11 @@ function clearEvents() {
 }
 function clearFleetingMessage() {
 	if (isdef(dFleetingMessage)) { dFleetingMessage.remove(); dFleetingMessage = null; }
+}
+function clearFlex() {
+	let dp = clearBodyDiv({ bg: 'white', hmin: '100vh', padding: 10 });
+	let d = mDom(dp, { gap: 10 }); mFlexWrap(d);
+	return d;
 }
 function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); }
 
@@ -1013,6 +1057,172 @@ function collectPlayers() {
 	for (const name of DA.playerList) { players[name] = allPlToPlayer(name); }
 	return players;
 }
+function colorBlendMode(c1, c2, blendMode) {
+	function colorBurn(base, blend) {
+		return (blend === 0) ? 0 : Math.max(0, 255 - Math.floor((255 - base) / blend));
+	}
+	function blendColorBurn(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = colorBurn(baseR, blendR);
+		let resultG = colorBurn(baseG, blendG);
+		let resultB = colorBurn(baseB, blendB);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function blendColorDodge(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
+		let r = dodge(r1, r2);
+		let g = dodge(g1, g2);
+		let b = dodge(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendColor(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
+		return colorRgbArgsToHex79(...cfinal);
+	}
+	function blendDarken(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let r = Math.min(r1, r2);
+		let g = Math.min(g1, g2);
+		let b = Math.min(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function difference(a, b) {
+		return Math.abs(a - b);
+	}
+	function blendDifference(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = difference(baseR, blendR);
+		let resultG = difference(baseG, blendG);
+		let resultB = difference(baseB, blendB);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function exclusion(a, b) {
+		a /= 255;
+		b /= 255;
+		return (a + b - 2 * a * b) * 255;
+	}
+	function blendExclusion(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = Math.round(exclusion(baseR, blendR));
+		let resultG = Math.round(exclusion(baseG, blendG));
+		let resultB = Math.round(exclusion(baseB, blendB));
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function hardLight(a, b) {
+		a /= 255;
+		b /= 255;
+		return (b < 0.5) ? (2 * a * b) : (1 - 2 * (1 - a) * (1 - b));
+	}
+	function blendHardLight(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = Math.round(hardLight(baseR, blendR) * 255);
+		let resultG = Math.round(hardLight(baseG, blendG) * 255);
+		let resultB = Math.round(hardLight(baseB, blendB) * 255);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function blendHue(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let [baseH, baseS, baseL] = colorRgbArgsToHsl01Array(baseR, baseG, baseB);
+		let [blendH, blendS, blendL] = colorRgbArgsToHsl01Array(blendR, blendG, blendB);
+		let [resultR, resultG, resultB] = colorHsl01ArgsToRgbArray(blendH, baseS, baseL);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function blendLighten(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let r = Math.max(r1, r2);
+		let g = Math.max(g1, g2);
+		let b = Math.max(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendLuminosity(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendMultiply(color1, color2) {
+		let [r1, g1, b1] = colorHexToRgbArray(color1);
+		let [r2, g2, b2] = colorHexToRgbArray(color2);
+		let r = (r1 * r2) / 255;
+		let g = (g1 * g2) / 255;
+		let b = (b1 * b2) / 255;
+		return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
+	}
+	function blendNormal(baseColor, blendColor) {
+		return blendColor;
+	}
+	function blendOverlay(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
+		let r = overlayCalculate(r1, r2);
+		let g = overlayCalculate(g1, g2);
+		let b = overlayCalculate(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendSaturation(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
+		return colorRgbArgsToHex79(...cfinal);
+	}
+	function blendScreen(color1, color2) {
+		let [r1, g1, b1] = colorHexToRgbArray(color1);
+		let [r2, g2, b2] = colorHexToRgbArray(color2);
+		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
+		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
+		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function softLight(a, b) {
+		a /= 255;
+		b /= 255;
+		let result;
+		if (a < 0.5) {
+			result = (2 * a - 1) * (b - b * b) + b;
+		} else {
+			result = (2 * a - 1) * (Math.sqrt(b) - b) + b;
+		}
+		return Math.min(Math.max(result * 255, 0), 255);
+	}
+	function blendSoftLight(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = Math.round(softLight(baseR, blendR));
+		let resultG = Math.round(softLight(baseG, blendG));
+		let resultB = Math.round(softLight(baseB, blendB));
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	let di = {
+		darken: blendDarken, lighten: blendLighten, color: blendColor, colorBurn: blendColorBurn, colorDodge: blendColorDodge,
+		difference: blendDifference, exclusion: blendExclusion, hardLight: blendHardLight, hue: blendHue,
+		luminosity: blendLuminosity, multiply: blendMultiply, normal: blendNormal, overlay: blendOverlay,
+		saturation: blendSaturation, screen: blendScreen, softLight: blendSoftLight
+	};
+	if (blendMode.includes('-')) blendMode = stringCSSToCamelCase(blendMode);
+	let func = di[blendMode]; if (nundef(di)) { console.log('blendMode', blendMode); return c1; }
+	c1hex = colorFrom(c1);
+	c2hex = colorFrom(c2);
+	let res = func(c1hex, c2hex);
+	return res;
+}
 function colorCalculator(p, c0, c1, l) {
 	function pSBCr(d) {
 		let i = parseInt, m = Math.round, a = typeof c1 == 'string';
@@ -1050,6 +1260,13 @@ function colorCalculator(p, c0, c1, l) {
 	if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
 	else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
 }
+function colorComplement(color) {
+	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
+	let compR = 255 - r;
+	let compG = 255 - g;
+	let compB = 255 - b;
+	return colorRgbArgsToHex79(compR, compG, compB);
+}
 function colorContrastFromElem(elem, list = ['white', 'black']) {
 	let bg = mGetStyle(elem, 'bg');
 	return colorContrastPickFromList(bg, list);
@@ -1070,15 +1287,67 @@ function colorDark(c, percent = 50, log = true) {
 	let zero1 = -percent / 100;
 	return colorCalculator(zero1, c, undefined, !log);
 }
+function colorDistance(color1, color2) {
+	let [r1, g1, b1] = colorHexToRgbArray(colorFrom(color1));
+	let [r2, g2, b2] = colorHexToRgbArray(colorFrom(color2));
+	let distance = Math.sqrt(
+		Math.pow(r2 - r1, 2) +
+		Math.pow(g2 - g1, 2) +
+		Math.pow(b2 - b1, 2)
+	);
+	return distance;
+}
+function colorFarestNamed(inputColor, namedColors) {
+	let maxDistance = 0;
+	let nearestColor = null;
+	namedColors.forEach(namedColor => {
+		let distance = colorDistance(inputColor, namedColor.hex);
+		if (distance > maxDistance) {
+			maxDistance = distance;
+			nearestColor = namedColor;
+		}
+	});
+	return nearestColor;
+}
 function colorFrom(c, a) {
 	c = colorToHex79(c);
 	if (nundef(a)) return c;
 	return c.substring(0, 7) + (a < 1 ? alphaToHex(a) : '');
 }
-function colorFromHsl(h, s, l, a) { return colorHsl360ArgsToHex79(h, s, l, a); }
+function colorFromHsl(h, s = 100, l = 50) { return colorFrom({ h, s, l }); }
 
-function colorFromRgb(r, g, b, a) { return colorRgbArgsToHex79(r, g, b, a); }
+function colorFromHslNamed(h, s = 100, l = 50) { let x = colorFrom({ h, s, l }); return colorNearestNamed(x); }
 
+function colorFromHue(h, s = 100, l = 50) { return colorFrom({ h, s, l }); }
+
+function colorFromHueNamed(h, s = 100, l = 50) { return colorFromHslNamed(h, s, l); }
+
+function colorFromHwb(h, wPercent, bPercent) {
+	let [r, g, b] = colorHwb360ToRgbArray(h, wPercent, bPercent);
+	return colorRgbArgsToHex79(r, g, b);
+}
+function colorFromNat(ncol, wPercent, bPercent) {
+	return colorFromNcol(ncol, wPercent, bPercent);
+}
+function colorFromNcol(ncol, wPercent, bPercent) {
+	let h = colorNcolToHue(ncol); console.log('hue', h);
+	return colorFromHwb(h, wPercent, bPercent);
+}
+function colorFromRgb(r, g, b) { return colorFrom({ r, g, b }); }
+
+function colorFromRgbNamed(r, g, b) { let x = colorFrom({ r, g, b }); return colorNearestNamed(x); }
+
+function colorGetBlack(c) { return colorToHwb360Object(c).b; }
+
+function colorGetBucket(c) {
+	let buckets = 'red orange yellow lime green greencyan cyan cyanblue blue bluemagenta magenta magentared black'.split(' ');
+	c = colorFrom(c);
+	let hsl = colorHexToHsl360Object(c);
+	let hue = hsl.h;
+	let hshift = (hue + 16) % 360;
+	let ib = Math.floor(hshift / 30);
+	return buckets[ib];
+}
 function colorGetContrast(c1, c2) {
 	function luminance(r, g, b) {
 		var a = [r, g, b].map(function (v) {
@@ -1097,6 +1366,18 @@ function colorGetContrast(c1, c2) {
 	var darkest = Math.min(lum1, lum2);
 	let res = (brightest + 0.05) / (darkest + 0.05);
 	return res.toFixed(3);
+}
+function colorGetDicolorList() {
+	let di = M.dicolor;
+	let list = [];
+	for (const k in di) {
+		let bucket = di[k];
+		for (const name in bucket) {
+			let o = { name, bucket: k, hex: bucket[name] };
+			list.push(o);
+		}
+	}
+	return list;
 }
 function colorGetHue(c) { return colorGetHue01(c) * 360; }
 
@@ -1119,6 +1400,8 @@ function colorGetSat01(c) {
 	let hsl = colorHexToHsl01Array(hex);
 	return hsl[1];
 }
+function colorGetWhite(c) { return colorToHwb360Object(c).w; }
+
 function colorHex45ToHex79(c) {
 	let r = c[1];
 	let g = c[2];
@@ -1141,16 +1424,16 @@ function colorHexToHsl360Object(c) {
 	let arr = colorHexToHsl01Array(c);
 	return colorHsl01ArrayToHsl360Object(arr);
 }
-function colorHexToHsl(c) {
-	let arr = colorHexToHsl01Array(c);
-	let o = colorHsl01ArrayToHsl360Object(arr);
-	return {h:Math.round(o.h),s:Math.round(o.s),l:Math.round(o.l)};
-}
 function colorHexToHsl360String(c) {
 	let arr = colorHexToHsl01Array(c);
 	let o = colorHsl01ArrayToHsl360Object(arr);
 	if (nundef(o.a)) return `hsl(${o.h},${o.s}%,${o.l}%)`;
 	return `hsla(${o.h},${o.s}%,${o.l}%,${o.a})`;
+}
+function colorHexToHslRounded(c) {
+	let arr = colorHexToHsl01Array(c);
+	let o = colorHsl01ArrayToHsl360Object(arr);
+	return { h: Math.round(o.h), s: Math.round(o.s), l: Math.round(o.l) };
 }
 function colorHexToRgbArray(c) {
 	if (c.length < 7) c = colorHex45ToHex79(c);
@@ -1228,6 +1511,29 @@ function colorHsl360StringToHsl360Object(c) {
 	if (isdef(a) && a > 1) a /= 10;
 	return { h, s, l, a };
 }
+function colorHueToNat(hue) {
+	let x = Math.floor(hue / 60);
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
+	let color = pure[x];
+	let inc = hue % 60;
+	return color.toUpperCase()[0] + inc;
+}
+function colorHueToNcol(hue) {
+	let x = Math.floor(hue / 60);
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
+	let color = pure[x];
+	let inc = (hue % 60) / 0.6;
+	return color.toUpperCase()[0] + toPercent(hue % 60, 60);
+}
+function colorHwb360ToRgbArray(h, w, b) {
+	let [r, g, blue] = colorHsl01ArgsToRgbArray(h / 360, 1, 0.5);
+	let whiteness = w / 100;
+	let blackness = b / 100;
+	r = Math.round((r / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	g = Math.round((g / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	b = Math.round((blue / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	return [r, g, b];
+}
 function colorIdealText(bg, grayPreferred = false, nThreshold = 105) {
 	let rgb = colorHexToRgbObject(colorFrom(bg));
 	let r = rgb.r;
@@ -1238,6 +1544,10 @@ function colorIdealText(bg, grayPreferred = false, nThreshold = 105) {
 	if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
 	return foreColor;
 }
+function colorIsGrey(c, tolerance = 5) {
+	let { r, g, b } = colorHexToRgbObject(colorFrom(c));
+	return Math.abs(r - g) <= tolerance && Math.abs(r - b) <= tolerance && Math.abs(g - b) <= tolerance;
+}
 function colorIsHex79(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
 
 function colorLight(c, percent = 20, log = true) {
@@ -1246,6 +1556,33 @@ function colorLight(c, percent = 20, log = true) {
 	} else c = colorFrom(c);
 	let zero1 = percent / 100;
 	return colorCalculator(zero1, c, undefined, !log);
+}
+function colorNatToHue(ncol) {
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'].map(x => x.toUpperCase()[0]);
+	let [letter, num] = [ncol[0], Number(ncol.substring(1))];
+	let idx = pure.indexOf(letter);
+	let hue = idx * 60 + num;
+	return hue;
+}
+function colorNcolToHue(ncol) {
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'].map(x => x.toUpperCase()[0]);
+	let [letter, num] = [ncol[0], Number(ncol.substring(1))];
+	let idx = pure.indexOf(letter);
+	let hue = idx * 60 + fromPercent(num, 60);
+	return hue;
+}
+function colorNearestNamed(inputColor, namedColors) {
+	if (nundef(namedColors)) namedColors = M.colorList;
+	let minDistance = Infinity;
+	let nearestColor = null;
+	namedColors.forEach(namedColor => {
+		let distance = colorDistance(inputColor, namedColor.hex);
+		if (distance < minDistance) {
+			minDistance = distance;
+			nearestColor = namedColor;
+		}
+	});
+	return nearestColor;
 }
 function colorPalette(color, type = 'shade') { return colorShades(colorFrom(color)); }
 
@@ -1339,6 +1676,30 @@ function colorToHex79(c) {
 	else if (tObj && 'r' in c) return colorRgbArgsToHex79(c.r, c.g, c.b, c.a);
 	assertion(false, `NO COLOR FOUND FOR ${c}`);
 }
+function colorToHwb360Object(c) {
+	c = colorFrom(c);
+	let [r, g, blue] = colorHexToRgbArray(c);
+	let [h, s, l] = colorHexToHsl01Array(c); h *= 360;
+	let w = 100 * Math.min(r, g, blue) / 255;
+	let b = 100 * (1 - Math.max(r, g, blue) / 255);
+	return { h, w, b };
+}
+function colorToHwbRounded(c) {
+	let o = colorToHwb360Object(c);
+	return { h: Math.round(o.h), w: Math.round(o.w), b: Math.round(o.b) };
+}
+function colorToW3Ext(c) {
+	let hex = colorFrom(c);
+	let o = w3color(hex);
+	let named = colorNearestNamed(hex);
+	let distance = Math.round(colorDistance(named.hex, hex));
+	console.log('distance to', named.name, distance);
+	o.name = named.name;
+	o.distance = distance;
+	o.bucket = colorGetBucket(hex);
+	o.hex = hex;
+	return o;
+}
 function colorTrans(cAny, alpha = 0.5) { return colorFrom(cAny, alpha); }
 
 function colorTransPalette(n = 9) {
@@ -1358,6 +1719,13 @@ function colorTransPalette(n = 9) {
 	}
 	pal.push(c);
 	return pal;
+}
+function colorTurnHueBy(color, inc = 180) {
+	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
+	let [h, s, l] = colorRgbArgsToHsl01Array(r, g, b); h *= 360;
+	h = (h + inc) % 360;
+	let [newR, newG, newB] = colorHsl01ArgsToRgbArray(h / 360, s, l);
+	return colorRgbArgsToHex79(newR, newG, newB);
 }
 function colormapAsString() {
 	let html = `
@@ -2597,6 +2965,8 @@ function formatLegend(key) {
 }
 function from01ToPercent(x) { return Math.round(Number(x) * 100); }
 
+function fromPercent(n, total) { return Math.round(n * total / 100); }
+
 function fromPercentTo01(x, nDecimals = 2) { return (Number(x) / 100).toFixed(nDecimals); }
 
 function gBg(g, color) { g.setAttribute('fill', color); }
@@ -2791,13 +3161,18 @@ function getBeautifulColors() {
 	for (const o of res) o.hex = o.toHexString();
 	return res;
 }
+function getBestContrastingColor(color) {
+	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
+	let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+	return (yiq >= 128) ? '#000000' : '#FFFFFF';
+}
 function getBlendCSS(blcanvas) {
 	const blendModes = {
-		'source-over':'normal',
-		'lighter':'normal',
-		'copy':'normal'
+		'source-over': 'normal',
+		'lighter': 'normal',
+		'copy': 'normal'
 	};
-	return valf(blendModes[blcanvas],blcanvas);
+	return valf(blendModes[blcanvas], blcanvas);
 }
 function getBlendCanvas(blendMode = 'normal') {
 	const blendModeMapping = {
@@ -2813,7 +3188,7 @@ function getBlendCanvas(blendMode = 'normal') {
 		'luminosity': 'luminosity',
 		'pass-through': 'source-over' // This is a made-up value for cases where no blending is applied
 	};
-	return valf(blendModeMapping[blendMode],blendMode);
+	return valf(blendModeMapping[blendMode], blendMode);
 }
 function getBlendModesCSS() {
 	return 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
@@ -3353,7 +3728,7 @@ function getListAndDicts(list) {
 	return [list].concat(lists);
 }
 function getListAndDictsForDicolors() {
-	let bucketlist = Object.keys(M.dicolor); // 'black yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
+	let bucketlist = Object.keys(M.dicolor);
 	bucketlist = arrCycle(bucketlist, 8);
 	let dicolorlist = [];
 	for (const bucket of bucketlist) {
@@ -4235,7 +4610,7 @@ async function loadAssets() {
 	let textures = await mGetFiles(`../assets/textures`);
 	M.textures = textures.map(x => `../assets/textures/${x}`); //console.log('textures',M.textures)
 	M.dicolor = await mGetYaml(`../assets/dicolor.yaml`);
-	[M.colorList, M.colorByHex, M.colorByName]=getListAndDictsForDicolors();
+	[M.colorList, M.colorByHex, M.colorByName] = getListAndDictsForDicolors();
 }
 async function loadImageAsync(src, img) {
 	return new Promise((resolve, reject) => {
@@ -4842,42 +5217,6 @@ function mGadget(name, styles = {}, opts = {}) {
 	let inp = mDom(form, { outline: 'none', w: 130 }, { className: 'input', name: name, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${name}>`) });
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return { name, dialog, form, inp }
-}
-async function mGather(dAnchor, styles = {}, opts = {}) {
-	return new Promise((resolve, _) => {
-		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
-		let d = document.body;
-		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
-		let rect = dAnchor.getBoundingClientRect();
-		let [v, h] = [align[0], align[1]];
-		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
-		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
-		let formStyles = { position: 'absolute' };
-		addKeys(vPos, formStyles);
-		addKeys(hPos, formStyles);
-		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
-		dialog.addEventListener('mouseup', ev => {
-			if (isPointOutsideOf(form, ev.clientX, ev.clientY)) {
-				resolve(null);
-				dialog.remove();
-			}
-		});
-		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
-		let evalFunc;
-		if (type == 'multi') evalFunc = uiGadgetTypeMulti(form, content, styles, opts);
-		else if (type == 'text') evalFunc = uiGadgetTypeText(form, content, styles, opts);
-		else if (type == 'yesno') evalFunc = uiGadgetTypeYesNo(form, content, styles, opts);
-		else if (type == 'select') evalFunc = uiGadgetTypeSelect(form, content, styles, opts);
-		else if (type == 'checklist') evalFunc = uiGadgetTypeCheckList(form, content, styles, opts);
-		else if (type == 'checklistinput') evalFunc = uiGadgetTypeCheckListInput(form, content, styles, opts);
-		dialog.showModal();
-		form.onsubmit = (ev) => {
-			ev.preventDefault();
-			let val = evalFunc();
-			dialog.remove();
-			resolve(val);
-		};
-	});
 }
 async function mGetFiles(dir) {
 	let server = getServerurl();
@@ -7170,6 +7509,10 @@ function showChatWindow() {
 		ev.target.value = '';
 	});
 }
+function showColor(dParent, c) {
+	let [bg, name, bucket] = isDict(c) ? [c.hex, c.name, c.bucket] : [c, c, c];
+	return mDom(dParent, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html: name + (bg != name ? `<br>${bg}` : '') });
+}
 function showColorBox(c, skeys = 'name hex hue sat lum', dParent = null, styles = {}) {
 	let bg = c.hex;
 	let fg = colorIdealText(bg);
@@ -7491,6 +7834,14 @@ function showNavbar() {
 	nav.commands = commands;
 	return nav;
 }
+function showObject(o, keys, dParent, styles = {}) {
+	let bg = valf(styles.bg, 'dimgray');
+	addKeys({ align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, styles);
+	let html = '';
+	for (const k of keys) { html += o[k] + '<br>'; }
+	let d = mDom(dParent, styles, { html });
+	return d;
+}
 function showPalette(dParent, colors) {
 	let d1 = mDom(dParent, { display: 'flex', dir: 'column', wrap: true, gap: 2, hmax: '100vh' });
 	for (var c of colors) {
@@ -7598,6 +7949,9 @@ async function showTables(from) {
 		let h = hFunc('delete', 'onclickDeleteTable', id); let c = mAppend(r, mCreate('td')); c.innerHTML = h;
 		if (ri.o.status == 'open') { let h1 = hFunc('start', 'onclickStartTable', id); let c1 = mAppend(r, mCreate('td')); c1.innerHTML = h1; }
 	}
+}
+function showText(dParent, text, bg = 'black') {
+	return mDom(dParent, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html: text });
 }
 async function showTextColors() {
 	let d = mBy('dSettingsColor'); mClear(d);
@@ -7949,6 +8303,12 @@ function stringBeforeLast(sFull, sSub) {
 function stringBetween(sFull, sStart, sEnd) {
 	return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
 }
+function stringCSSToCamelCase(s) {
+	let parts = s.split('-');
+	let res = parts[0];
+	for (let i = 1; i < parts.length; i++) { res += capitalize(parts[i]) }
+	return res;
+}
 function stringCount(s, sSub, caseInsensitive = true) {
 	let n = 0;
 	for (let i = 0; i < s.length; i++) {
@@ -8091,6 +8451,8 @@ function toElem(d) { return isString(d) ? mBy(d) : d; }
 
 function toLetters(s) { return [...s]; }
 
+function toPercent(n, total) { return Math.round(n * 100 / total); }
+
 function toWords(s, allow_ = false) {
 	let arr = allow_ ? s.split(/[\W]+/) : s.split(/[\W|_]+/);
 	return arr.filter(x => !isEmpty(x));
@@ -8179,18 +8541,6 @@ function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
 		inputs.map(x => di[x.name] = x.inp.value);
 		return di;
 	};
-}
-function uiGadgetTypeSelect(form, dict, styles = {}, opts = {}) {
-	let select = DA.select = mDom(form, styles, { className: 'input', tag: 'select' });
-	if (isList(dict)) dict = list2dict(dict);
-	mDom(select, {}, { tag: 'option', html: '' });
-	for (const k in dict) {
-		let [content, val] = [k, dict[k]];
-		mDom(select, {}, { tag: 'option', html: content, value: val });
-	}
-	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	select.addEventListener('change', () => form.submit());
-	return () => { console.log('selected', DA.select, DA.select.value); return DA.select.value; }
 }
 function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
 	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });

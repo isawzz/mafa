@@ -633,7 +633,7 @@
   window.w3color = w3color;
 
 })();
-
+//const w3color = window.w3color;
 function w3SetColorsByAttribute() {
   var z, i, att;
   z = document.getElementsByTagName("*");
