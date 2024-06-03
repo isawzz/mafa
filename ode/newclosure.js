@@ -4814,11 +4814,26 @@ function mCols100(dParent, spec, gap = 4) {
 function mCommand(dParent, key, html, opts = {}) {
 	if (nundef(html)) html = capitalize(key);
 	let close = valf(opts.close, () => { console.log('close', key) });
+	// let closeHandler = valf(opts.close, () => { console.log('close', key) });
+	// let close = null;
+	// if (opts.save) {
+	// 	close = async () => { 
+	// 		localStorage.setItem('settingsMenu', key); 
+	// 		console.log('saved submenu',key)
+	// 		await closeHandler(); 
+	// 	}
+	// }else close = closeHandler;
 	let save = valf(opts.save, false);
-	let openHandler = valf(opts.open, window[`onclick${capitalize(key)}`]);
-	let open = null;
-	if (opts.save) open = async () => { localStorage.setItem('settingsMenu', key); await openHandler(); }
-	else open = openHandler;
+	let open = valf(opts.open, window[`onclick${capitalize(key)}`]);
+	// let openHandler = valf(opts.open, window[`onclick${capitalize(key)}`]);
+	// let open = null;
+	// if (opts.save) {
+	// 	open = async () => { 
+	// 		localStorage.setItem('settingsMenu', key); 
+	// 		console.log('saved submenu',key)
+	// 		await openHandler(); 
+	// 	}
+	// }else open = openHandler;
 	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
 	let a = mDom(d, {}, { key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
 	return { dParent, elem: d, div: a, key, open, close, save };
@@ -6524,12 +6539,17 @@ async function onclickSettBlendMode() {
 		showMessage('You need to set a Texture in order to set a Blend Mode!');
 		return;
 	}
+	localStorage.setItem('settingsMenu','settBlendMode')
 	showBlendModes();
 }
-async function onclickSettColor() { await showColors(); }
-
-async function onclickSettFg() { await showTextColors(); }
-
+async function onclickSettColor() { 
+	localStorage.setItem('settingsMenu','settColor')
+	await showColors(); 
+}
+async function onclickSettFg() { 
+	localStorage.setItem('settingsMenu','settFg')
+	await showTextColors(); 
+}
 async function onclickSettRemoveTexture() {
 	if (isEmpty(U.texture)) return;
 	for (const prop of ['texture', 'palette', 'blendMode', 'bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
@@ -6543,10 +6563,14 @@ async function onclickSettResetAll() {
 	setUserTheme();
 	await settingsOpen();
 }
-async function onclickSettTexture() { await showTextures(); }
-
-async function onclickSettTheme() { await showThemes(); }
-
+async function onclickSettTexture() { 
+	localStorage.setItem('settingsMenu','settTexture')
+	await showTextures(); 
+}
+async function onclickSettTheme() { 
+	localStorage.setItem('settingsMenu','settTheme')
+	await showThemes(); 
+}
 async function onclickStartGame() {
 	await saveDataFromPlayerOptionsUI(DA.gamename);
 	let options = collectOptions();
@@ -7434,6 +7458,7 @@ async function settingsOpen() {
 	mClear('dMain');
 	let d = mDom('dMain', { padding: 0, overy: 'auto', hmax: calcRestHeight('dMain') }, { id: 'dSettingsColor' });
 	let submenu = valf(localStorage.getItem('settingsMenu'), 'settTheme');
+	console.log('submenu',submenu)
 	settingsSidebar();
 	await UI[submenu].open();
 }
@@ -7442,7 +7467,8 @@ function settingsSidebar() {
 	mStyle('dLeft', { wmin: wmin });
 	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
 	let gap = 5;
-	UI.settTheme = mCommand(d, 'settTheme', 'Theme', { save: true }); mNewline(d, gap);
+	UI.settMyTheme = mCommand(d, 'settMyTheme', 'My Theme', { save: true }); mNewline(d, gap);
+	UI.settTheme = mCommand(d, 'settTheme', 'Themes', { save: true }); mNewline(d, gap);
 	UI.settColor = mCommand(d, 'settColor', 'Color', { save: true }); mNewline(d, gap);
 	UI.settFg = mCommand(d, 'settFg', 'Text Color', { save: true }); mNewline(d, gap);
 	UI.settTexture = mCommand(d, 'settTexture', 'Texture', { save: true }); mNewline(d, gap);
@@ -7477,9 +7503,9 @@ async function showBlendMode(dParent, blendCSS) {
 }
 async function showBlendModes() {
 	let d = mBy('dSettingsColor'); mClear(d);
-	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
+	let dParent = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dParent);
 	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
-	for (const blendMode of list) { await showBlendMode(dTheme, blendMode); }
+	for (const blendMode of list) { await showBlendMode(dParent, blendMode); }
 }
 async function showCalendarApp() {
 	if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
@@ -8330,7 +8356,7 @@ async function switchToUser(uname, menu) {
 	if (isEmpty(uname)) uname = 'guest';
 	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
-	localStorage.removeItem('settingsMenu');
+	//localStorage.removeItem('settingsMenu');
 	localStorage.setItem('username', uname);
 	iDiv(UI.user).innerHTML = uname;
 	setUserTheme();

@@ -1,3 +1,269 @@
+//#region 3.6.24
+async function showPaletteFor_messy(src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let dParent = mPopup();
+	let d = mDom(dParent, { gap: 4 }); mFlexWrap(d);
+
+	let palette = [color];
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(d, { w: 310, h: 200, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		//make a palette with color and other shades of that color
+		palette = arrCycle(paletteShades(color), 4);
+	}
+
+	let dominant = palette[0];
+
+	// let dfunc = colorDistanceHue;
+
+	// let opal = paletteAddDistanceTo(palette, fill, 'bg', dfunc);
+	// paletteAddDistanceTo(opal, dominant, 'dom', dfunc);
+	// opal.map(x => showObject(x, ['hex', 'hue', 'dist_bg', 'dist_dom'], d, { bg: x.hex, wmin: 50 }));
+	// mLinebreak(d);
+
+	// let best = arrMinMax(opal, x => Math.min(x.dist_bg, x.dist_dom)).imax;
+	// let obest = opal[best];
+	// showObject(obest, ['hue'], d, { bg: obest.hex, wmin: 50 }); mLinebreak(d);
+	//console.log('===>best',opal[best]); 
+
+	//console.log('opal',opal.map(x=>x.hex)); 
+	// let p1 = palettePureHue(opal);
+	// p1.map(x => showObject(x, ['hue'], d, { bg: x.hex, wmin: 50 }));	//showPaletteMini(d1, p1); 
+	// mLinebreak(d);
+
+	// let o = paletteGetBestContrasting(p1, fill, dominant);
+	// showObject(o.best, ['hue'], d, { bg: o.best.hex, wmin: 50 });
+	// mLinebreak(d);
+
+	let p2 = paletteContrastVariety(palette);
+	// p2.map(x => showObject(x, ['hue'], d, { bg: x.hex, wmin: 50 }));
+	// mLinebreak(d);
+
+	showPaletteMini(d, p2);
+	mLinebreak(d);
+
+	return;
+	//do NOT add color if distance is too close to one that is already in the array
+	console.log('_______________')
+	let palContrast = p2.slice(0, 2);//	console.log(p2);
+	let sorted = colorSortByLightness(p2.slice(2)); //console.log('===>',sorted);
+	showPaletteMini(d, sorted);
+	mLinebreak(d);
+
+	let i = 0;
+	while (i < sorted.length) {
+		let hex = sorted[i];
+		let ok = true;
+		for (const h1 of palContrast) {
+			let d = colorDistance(hex, h1);//console.log(d);
+			if (d < 70) { ok = false; break; }
+		}
+		if (ok) palContrast.push(hex);
+		i++;
+	}
+
+	showPaletteMini(d, palContrast);
+	mLinebreak(d);
+
+	//console.log(p3[0], p3[2], colorDistance(p3[0], p3[2]))
+	return [palette.map(x=>colorO(x)),palContrast];
+
+	// //showPaletteMini(d1, palette);
+	// let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
+	// showPaletteMini(d, pal2); mLinebreak(d);
+	// let pal3 = [colorTurnHueBy(fill), colorTurnHueBy(dominant), colorTurnHueBy(fill, 120), colorTurnHueBy(dominant, 120), colorTurnHueBy(fill, 240), colorTurnHueBy(dominant, 240)];
+	// showPaletteMini(d, pal3); mLinebreak(d);
+	// let pal4 = [getBestContrastingColor(fill), getBestContrastingColor(dominant)];
+	// showPaletteMini(d, pal4); mLinebreak(d);
+	// let pal5 = [fill, colorTurnHueBy(fill), colorComplement(fill), getBestContrastingColor(fill), colorIdealText(fill)]
+	// showPaletteMini(d, pal5); mLinebreak(d);
+	// for (const c of pal5) {
+	// 	console.log(c, colorDistance(fill, c));
+	// }
+
+	// console.log(src, opal)
+	// return palette;
+}
+async function showPaletteFor(src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let dParent = mPopup();
+	let d = mDom(dParent, { gap: 4 }); mFlexWrap(d);
+
+	let palette = [color];
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(d, { w: 310, h: 200, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		//make a palette with color and other shades of that color
+		palette = arrCycle(paletteShades(color), 4);
+	}
+
+	let dominant = palette[0];
+	let dfunc = colorDistanceHue;
+
+	let opal = paletteAddDistanceTo(palette, fill, 'bg', dfunc);
+	paletteAddDistanceTo(opal, dominant, 'dom', dfunc);
+	opal.map(x => showObject(x, ['hex', 'hue', 'dist_bg', 'dist_dom'], d, { bg: x.hex, wmin: 50 }));
+	mLinebreak(d);
+
+	let best = arrMinMax(opal, x => Math.min(x.dist_bg, x.dist_dom)).imax;
+	let obest = opal[best];
+	showObject(obest, ['hue'], d, { bg: obest.hex, wmin: 50 }); mLinebreak(d);
+	//console.log('===>best',opal[best]); 
+
+	//console.log('opal',opal.map(x=>x.hex)); 
+	let p1 = palettePureHue(opal);
+	p1.map(x => showObject(x, ['hue'], d, { bg: x.hex, wmin: 50 }));	//showPaletteMini(d1, p1); 
+	mLinebreak(d);
+
+	let o = paletteGetBestContrasting(p1, fill, dominant);
+	showObject(o.best, ['hue'], d, { bg: o.best.hex, wmin: 50 });
+	mLinebreak(d);
+
+	let p2 = paletteContrastVariety(opal);
+	p2.map(x => showObject(x, ['hue'], d, { bg: x.hex, wmin: 50 }));
+	mLinebreak(d);
+
+	res = p2.map(x => x.hex); res = arrRemoveDuplicates(res);
+	showPaletteMini(d, res);
+	mLinebreak(d);
+
+	//do NOT add color if distance is too close to one that is already in the array
+	console.log('_______________')
+	let p3 = res.slice(0, 2);
+	let i = 2;
+	while (i < res.length) {
+		let hex = res[i];
+		let ok = true;
+		for (const h1 of p3) {
+			let d = colorDistance(hex, h1);
+			//console.log(d);
+			if (d < 40) { ok = false; break; }
+		}
+		if (ok) p3.push(hex);
+		i++;
+	}
+
+	showPaletteMini(d, p3);
+	mLinebreak(d);
+
+	console.log(p3[0], p3[2], colorDistance(p3[0], p3[2]))
+	return;
+
+	//showPaletteMini(d1, palette);
+	let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
+	showPaletteMini(d, pal2); mLinebreak(d);
+	let pal3 = [colorTurnHueBy(fill), colorTurnHueBy(dominant), colorTurnHueBy(fill, 120), colorTurnHueBy(dominant, 120), colorTurnHueBy(fill, 240), colorTurnHueBy(dominant, 240)];
+	showPaletteMini(d, pal3); mLinebreak(d);
+	let pal4 = [getBestContrastingColor(fill), getBestContrastingColor(dominant)];
+	showPaletteMini(d, pal4); mLinebreak(d);
+	let pal5 = [fill, colorTurnHueBy(fill), colorComplement(fill), getBestContrastingColor(fill), colorIdealText(fill)]
+	showPaletteMini(d, pal5); mLinebreak(d);
+	for (const c of pal5) {
+		console.log(c, colorDistance(fill, c));
+	}
+
+	console.log(src, opal)
+	return palette;
+}
+async function calcUserPalette(name) {
+	if (nundef(name)) name = U.name;
+	let user = await getUser(name);
+	
+	let d = mPopup();
+	return await calcPalette(d, user.texture, user.color, user.blendMode);
+}
+async function calcPalette(dParent, src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d1 = mDom(dParent, { gap: 4 }); mFlexWrap(d1);
+
+	let palette = [color];
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(d1, { w: 310, h: 200, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		//make a palette with color and other shades of that color
+		palette = arrCycle(paletteShades(color), 4);
+	}
+
+	let dominant = palette[0];
+	let dfunc = colorDistanceHue;
+
+	let opal = paletteAddDistanceTo(palette, fill, 'bg', dfunc);
+	paletteAddDistanceTo(opal, dominant, 'dom', dfunc);
+	opal.map(x => showObject(x, ['hex', 'hue', 'dist_bg', 'dist_dom'], d1, { bg: x.hex, wmin: 50 }));
+	mLinebreak(d1);
+
+	let best = arrMinMax(opal, x => Math.min(x.dist_bg, x.dist_dom)).imax;
+	let obest = opal[best];
+	showObject(obest, ['hue'], d1, { bg: obest.hex, wmin: 50 }); mLinebreak(d1);
+	//console.log('===>best',opal[best]); 
+
+	//console.log('opal',opal.map(x=>x.hex)); 
+	let p1 = palettePureHue(opal);
+	p1.map(x => showObject(x, ['hue'], d1, { bg: x.hex, wmin: 50 }));	//showPaletteMini(d1, p1); 
+	mLinebreak(d1);
+
+	let o = paletteGetBestContrasting(p1, fill, dominant);
+	showObject(o.best, ['hue'], d1, { bg: o.best.hex, wmin: 50 });
+	mLinebreak(d1);
+
+	let p2 = paletteContrastVariety(opal);
+	p2.map(x => showObject(x, ['hue'], d1, { bg: x.hex, wmin: 50 }));
+	mLinebreak(d1);
+
+	res = p2.map(x => x.hex); res = arrRemoveDuplicates(res);
+	showPaletteMini(d1, res);
+	mLinebreak(d1);
+
+	//do NOT add color if distance is too close to one that is already in the array
+	console.log('_______________')
+	let p3 = res.slice(0, 2);
+	let i = 2;
+	while (i < res.length) {
+		let hex = res[i];
+		let ok = true;
+		for (const h1 of p3) {
+			let d = colorDistance(hex, h1);
+			//console.log(d);
+			if (d < 40) { ok = false; break; }
+		}
+		if (ok) p3.push(hex);
+		i++;
+	}
+
+	showPaletteMini(d1, p3);
+	mLinebreak(d1);
+
+	console.log(p3[0], p3[2], colorDistance(p3[0], p3[2]))
+	return;
+
+	//showPaletteMini(d1, palette);
+	let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
+	showPaletteMini(d1, pal2); mLinebreak(d1);
+	let pal3 = [colorTurnHueBy(fill), colorTurnHueBy(dominant), colorTurnHueBy(fill, 120), colorTurnHueBy(dominant, 120), colorTurnHueBy(fill, 240), colorTurnHueBy(dominant, 240)];
+	showPaletteMini(d1, pal3); mLinebreak(d1);
+	let pal4 = [getBestContrastingColor(fill), getBestContrastingColor(dominant)];
+	showPaletteMini(d1, pal4); mLinebreak(d1);
+	let pal5 = [fill, colorTurnHueBy(fill), colorComplement(fill), getBestContrastingColor(fill), colorIdealText(fill)]
+	showPaletteMini(d1, pal5); mLinebreak(d1);
+	for (const c of pal5) {
+		console.log(c, colorDistance(fill, c));
+	}
+
+	console.log(src, opal)
+	return palette;
+}
+
+//#endregion
+
 //#region 1.6.24
 function colorDistanceHue_ai(color1, color2) {
 	let hsl1 = hexToHSL(color1);
@@ -15,6 +281,7 @@ function colorDistanceHue_ai(color1, color2) {
 
 	return distance;
 }
+//#endregion
 
 //#region 1.6.24: eliminate analyseColorsForUseer, calcPalette orig!!!
 
@@ -61,7 +328,7 @@ async function analyseColorsForUser(d, name) {
 	mDom(d1, {}, { html: name });
 	let palette = await calcPalette(d1, user.texture, user.color, user.blendMode);
 }
-
+//#endregion
 
 //#region 1.6.24: uiGadgetType und uiType checkListInput
 function uiGadgetTypeCheckListInput(form, content, styles, opts) {
@@ -101,7 +368,7 @@ function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
 	inp.addEventListener('keypress', ev => inpToChecklist(ev, grid));
 	return { dg, inp, grid };
 }
-
+//#endregion
 
 //#region 1.6.24: uiGadgetType und uiTypeCheckList mit resolve
 function uiGadgetTypeCheckList(dParent, content, resolve, styles={}, opts={}) {
@@ -199,7 +466,7 @@ function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
 	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
 	return () => form.getAttribute('proceed') == 'yes';
 }
-
+//#endregion
 
 //#region 31.mai 24: neues mGather trial 1
 async function mGather(dAnchor, styles = {}, opts = {}) {
@@ -303,7 +570,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 	});
 }
 
-
+//#endregion
 
 //#region 28.mai 24 ai zeug
 function hexToRgb(hex) {
@@ -364,6 +631,7 @@ function hexToHwb(hex) {
 
 	return hwb;
 }
+//#endregion
 
 //#region 27.mai 24 color-burn mode
 function hexToRgb(hex) {
@@ -400,7 +668,7 @@ let blendColor = "#33ff57";
 let resultColor = applyColorBurn(baseColor, blendColor);
 
 console.log(`Base Color: ${baseColor}, Blend Color: ${blendColor}, Result Color: ${resultColor}`);
-
+//#endregion
 
 //#region 27.mai 24
 function addColorDistance(c,palette){
@@ -421,6 +689,7 @@ function colorMostSimilar(c,palette){
 	return {dist,idx};
 
 }
+//#endregion
 
 //#region 27.mai 24: opposite hue color
 function hexToRgb(hex) {
@@ -526,7 +795,7 @@ let color1 = "#ff5733";
 let color2 = "#ff8d1a";
 let similarity = colorDistance(color1, color2);
 console.log(`The similarity distance between ${color1} and ${color2} is ${similarity}`);
-//_#endregion
+//#endregion
 
 //#region 26.mai 24
 async function onclickSettSwapColoring() {
@@ -718,7 +987,7 @@ function restVonShowBlendMode(){
 	d.onclick = async () => onclickBlendMode(item);
 	return item;
 }
-
+//#endregion
 
 //#region 22.mai 24: ai canvas blend-mode
 async function createBlendedCanvas(parentDiv, imageSrc) {
@@ -770,7 +1039,7 @@ window.onload = async () => {
     console.error(error);
   }
 };
-
+//#endregion
 
 //#region 21.mai 24: voriges settings menu: colors, textures, blendmode samples
 async function getPaletteFromColorTextureBlend(color, texture, blend, dParent) {
@@ -2175,6 +2444,7 @@ function setgame() {
 
 	return { setup, resolvePending, present, stats, activate };
 }
+//#endregion
 
 //#region 19.mai 24: skip variante geht nicht!!! revert!
 async function showTable(id) {
@@ -2268,6 +2538,7 @@ function resolvePending(table) {
 	}
 	return skip;
 }
+//#endregion
 
 //#region 18.mai 24
 async function showThemeEditor(){
@@ -2719,7 +2990,7 @@ async function testOnclickDeck0() {
 function checkInterrupt(items) {
 	return isdef(T) && items[0] == T.items[0] && isdef(DA.Tprev) && T.items[0] == DA.Tprev.items[0];
 }
-
+//#endregion
 
 //#region 17.mai 24
 async function switchToUser(uname,menu) {
@@ -3233,7 +3504,7 @@ async function showTable(table) {
 	else return await func.activate(table, items);
 
 }
-
+//#endregion
 
 //region 14.mai 24
 async function showColors() {

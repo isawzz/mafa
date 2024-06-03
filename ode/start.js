@@ -7,8 +7,9 @@ async function test116_calcPalette() {
   await prelims();
 
   //console.log('???',typeof colorDistanceHue('red','black'));return;
-
-  await calcUserPalette('mac'); 
+  return;
+  let [pal,palContrast]=await calcUserPalette('mac'); 
+  let d=mPopup();  showPaletteMini(d,pal);mLinebreak(d);  showPaletteMini(d,palContrast);
 }
 async function test115_calcPaletteForUser() {
   await prelims();
@@ -26,7 +27,7 @@ async function test115_calcPaletteForUser_no() {
   let user = Serverdata.users['lauren'];
   let d = clearFlex({h:'100vh',w:'100vw',bg:user.color});
   mDom(d,{fg:'white'},{html:user.name});
-  let palette = await calcPalette(d, user.texture, user.color, user.blendMode);
+  let palette = await showPaletteFor(d, user.texture, user.color, user.blendMode);
 }
 
 //#region mGather refactoring!
@@ -407,7 +408,7 @@ async function test97_calcPalette() {
     let user = Serverdata.users[name];
     let d1 = mDom(d, { align: 'center', bg: user.color, fg: valf(user.fg, colorIdealText(user.color)) });
     mDom(d1, {}, { html: name });
-    let palette = await calcPalette(d1, user.texture, user.color, user.blendMode);
+    let palette = await showPaletteFor(d1, user.texture, user.color, user.blendMode);
   }
 }
 async function test96_() {
