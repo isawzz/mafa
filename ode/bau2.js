@@ -2,12 +2,19 @@
 async function onclickSettMyTheme(){
 	localStorage.setItem('settingsMenu','settMyTheme')
 
-	let d = mBy('dSettingsColor'); mClear(d); 
-	let dParent = mDom(d); mFlex(dParent);
-	let dOuter=mDom(dParent, {bg:'white',padding:25}); // { padding: 10, gap: 10, margin:'auto', w:500, align:'center', bg:'white' }); //mCenterFlex(dParent);
+	let dSettings = mBy('dSettingsMenu'); mClear(dSettings); 
+	console.log(getRect(dSettings))
+	console.log(dSettings); //return;
+	let d=mDom(dSettings,{h:'100vh',bg:U.color})
+	//let dParent = mDom(d,{h:2000,bg:U.color}); mFlex(dParent);
+
+	//return;
+
+	let dOuter=mDom(d, {padding:25}); // { padding: 10, gap: 10, margin:'auto', w:500, align:'center', bg:'white' }); //mCenterFlex(dParent);
 	mCenterFlex(dOuter)
 
-	showPaletteFor(dOuter,U.texture,U.color,U.blendMode);
+	let ui = await uiTypePalette(dOuter,U.texture,U.color,U.blendMode);
+	//mDom(dText,{fg:'white',fz:30,h:200},{html:'hallo'})
 	return;
 
 	let d1 = mDom(dParent);

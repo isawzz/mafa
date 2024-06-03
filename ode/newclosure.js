@@ -7456,7 +7456,7 @@ function setUserTheme() {
 async function settingsOpen() {
 	DA.settings = jsCopy(U);
 	mClear('dMain');
-	let d = mDom('dMain', { padding: 0, overy: 'auto', hmax: calcRestHeight('dMain') }, { id: 'dSettingsColor' });
+	let d = mDom('dMain',{},{id:'dSettingsMenu'}); // { padding: 0, overy: 'auto', hmax: '100vh' }, { id: 'dSettingsMenu' }); //,calcRestHeight('dMain') }, { id: 'dSettingsMenu' });
 	let submenu = valf(localStorage.getItem('settingsMenu'), 'settTheme');
 	console.log('submenu',submenu)
 	settingsSidebar();
@@ -7502,7 +7502,7 @@ async function showBlendMode(dParent, blendCSS) {
 	}
 }
 async function showBlendModes() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let dParent = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dParent);
 	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
 	for (const blendMode of list) { await showBlendMode(dParent, blendMode); }
@@ -7565,7 +7565,7 @@ function showColorBoxes(w3extlist, skeys, dParent, styles = {}) {
 	return items;
 }
 async function showColors() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let di = M.dicolor;
 	let bucketlist = 'yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
 	bucketlist = arrCycle(bucketlist, 8);
@@ -7973,7 +7973,7 @@ function showText(dParent, text, bg = 'black') {
 	return mDom(dParent, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html: text });
 }
 async function showTextColors() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
 	let colors = ['white', 'silver', 'dimgray', 'black'].map(x => w3color(x)); //, getCSSVariable('--fgButton'), getCSSVariable('--fgButtonHover')].map(x => w3color(x));
 	for (var c of colors) {
@@ -7990,7 +7990,7 @@ async function showTextColors() {
 	}
 }
 async function showTextures() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let dTheme = mDom(d, { padding: 12, gap: 10 }); mFlexWrap(dTheme);
 	let list = M.textures;
 	if (colorGetLum(U.color) > 75) list = list.filter(x => !x.includes('ttrans'));
@@ -8008,7 +8008,7 @@ async function showTextures() {
 	return itemsTexture;
 }
 async function showThemes() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
 	let themes = lookup(Serverdata.config, ['themes']);
 	let bgImage, bgSize, bgRepeat, bgBlend, name, color, fg;

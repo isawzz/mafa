@@ -444,7 +444,7 @@ async function test95_fixUsers() {
 }
 async function test94_showBlendModes() {
   await prelims();
-  //await switchToUser('mimi','settings'); //console.log(mBy('dSettingsColor'))
+  //await switchToUser('mimi','settings'); //console.log(mBy('dSettingsMenu'))
   //await onclickSettTexture();
 }
 async function test93_modUsersBgImageToTexture() {

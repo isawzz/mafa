@@ -9,15 +9,16 @@ async function calcUserPalette(name) {
 async function showPaletteFor(dParent,src, color, blendMode) {
 	let fill = color;
 	let bgBlend = getBlendCanvas(blendMode);
-	let d = mDom(dParent, { bg:'green', gap: 4, 'justify-items':'center' }); //mCenterFlex(d);
+	let d = mDom(dParent, { w100:true, gap: 4 }); mCenterFlex(d);
 
 	let palette = [color];
 	if (isdef(src)) {
-		let ca = await getCanvasCtx(d, { w100:true, h: 300, fill, bgBlend }, { src });
+		let ca = await getCanvasCtx(d, { w:500, h: 300, fill, bgBlend }, { src });
 		palette = await getPaletteFromCanvas(ca.cv);
 		palette.unshift(fill);
 	} else {
 		//make a palette with color and other shades of that color
+		let ca = mDom(d,{w:500,h:300});
 		palette = arrCycle(paletteShades(color), 4);
 	}
 
