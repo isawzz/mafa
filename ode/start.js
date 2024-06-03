@@ -1,14 +1,98 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test112(); }
+async function start() { TESTING = true; await test116_calcPalette(); }
 
+async function test116_calcPalette() {
+  await prelims();
+
+  //console.log('???',typeof colorDistanceHue('red','black'));return;
+
+  await calcUserPalette('mac'); 
+}
+async function test115_calcPaletteForUser() {
+  await prelims();
+
+  let x=colorDistanceHueLum('#ffffff','#000000'); console.log(x); //return;
+  x=colorDistanceHueLum('#ff0000','#00ffff'); console.log(x); //return;
+  x=colorDistanceHueLum('#ffff00','#000000'); console.log(x); //return;
+  x=colorDistanceHueLum('#006c7f','#8e846a'); console.log(x); //return;
+
+  //await switchToUser('maya','settings'); 
+  await calcUserPalette('lauren'); 
+}
+async function test115_calcPaletteForUser_no() {
+  await prelims();
+  let user = Serverdata.users['lauren'];
+  let d = clearFlex({h:'100vh',w:'100vw',bg:user.color});
+  mDom(d,{fg:'white'},{html:user.name});
+  let palette = await calcPalette(d, user.texture, user.color, user.blendMode);
+}
+
+//#region mGather refactoring!
+async function test114_mGatherCheckListInput(){
+  await prelims(); 
+  return;
+  await switchToMainMenu('collections'); 
+  await onclickCollSelectAll();
+  await onclickEditCategories();
+  let d = clearFlex(); let dAnchor=mDom(d,{matop:100,bg:'green',padding:10,align:'center'},{html:'Anchor'}); 
+  let content,res;  
+
+  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  // content={a:true,b:false,c:true};
+  // content = ['das','ist','richtig']
+  // content = 'ich bin hier im jetzt';
+  res = await mGather(dAnchor,{ hmax: 510, wmax: 200, pabottom: 10, box: true },{content, type: 'checkList'}); 
+  console.log('res', res)
+
+
+}
+async function test114_mGatherCheckList(){
+  await prelims(); 
+  await switchToMainMenu('collections'); return;
+  let d = clearFlex(); let dAnchor=mDom(d,{matop:100,bg:'green',padding:10,align:'center'},{html:'Anchor'}); 
+  let content,res;  
+
+  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  // content={a:true,b:false,c:true};
+  // content = ['das','ist','richtig']
+  // content = 'ich bin hier im jetzt';
+  res = await mGather(dAnchor,{ hmax: 510, wmax: 200, pabottom: 10, box: true },{content, type: 'checkList'}); 
+  console.log('res', res)
+
+
+}
+async function test113_mGather(){
+  await prelims(); 
+  
+  // return;
+  let d = clearFlex(); let dAnchor=mDom(d,{matop:100,bg:'green',padding:10,align:'center'},{html:'Anchor'}); 
+  let content,res;  
+  //let name = await mGather(dAnchor); console.log('you picked',name); //OK
+
+  content = {input1:'',input2:'',input3:''};
+  //res = await mGather(dAnchor,{},{content,type: 'multi'}); console.log('you picked',res); //OK object w/ new vals
+
+  content = 'are you happy?';
+  //res = await mGather(dAnchor,{},{content,type: 'yesNo'}); console.log('you picked',res); //OK true|false
+
+  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  content={a:1,b:2,c:3};
+  content=[{a:1,b:2,c:3},{a:4,b:5}];
+  //content = ['das','ist','richtig']
+  //content = 'ich bin hier im jetzt';
+  res = await mGather(dAnchor,{},{content, type: 'select'}); 
+  console.log('res', res)
+
+
+}
 async function test112(){
   //wie mach ich ein gadget fuer colorname?
   await prelims();
   let d = clearFlex();
 
-  let title=mDom(d,{},{html:'pick color:'}); 
+  let dAnchor=mDom(d,{matop:100,bg:'green',w:200,padding:10,align:'center'},{html:'Anchor'}); 
   let res;
 
   let content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
@@ -16,7 +100,8 @@ async function test112(){
   content=[{a:1,b:2,c:3},{a:4,b:5}];
   //content = ['das','ist','richtig']
   //content = 'ich bin hier im jetzt';
-  res = await mGather(title,{},{content, type: 'select'}); 
+  res = await mGather(dAnchor,{},{content, type: 'select'}); 
+  console.log('res', res)
   // res = uiTypeSelect(content,d); //console.log(res)
 
   return;
@@ -27,13 +112,13 @@ async function test112(){
   //let name = await mGather(title); console.log('you picked',name); //OK
 
   content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
-  //res = await mGather(title,{},{content,type: 'checklist'}); console.log('you picked',res); 
+  //res = await mGather(title,{},{content,type: 'checkList'}); console.log('you picked',res); 
   
   content = 'restart?'
   //res = await mGather(title,{},{content,type: 'yesno'}); console.log('you picked',res); //OK true|false
 
   content = [{name:'a',value:true},{name:'b',value:true},{name:'c',value:false}];
-  //res = await mGather(title,{},{content,type: 'checklistinput'}); console.log('you picked',res); //OK list of vals
+  //res = await mGather(title,{},{content,type: 'checkListInput'}); console.log('you picked',res); //OK list of vals
 
   content = {input1:'',input2:'',input3:''};
   //res = await mGather(title,{},{content,type: 'multi'}); console.log('you picked',res); //OK object w/ new vals
@@ -52,7 +137,7 @@ async function test111(){
       let [w,b]=x<0?[-x,0]:x==0?[0,0]:[0,x]; //rChoose(range(100)),rChoose(range(100))];
       let ncol = letter+num; console.log('___ my ncol',ncol,w,b)
       let color = colorFromNcol(ncol,w,b);
-      let w3 = colorToW3Ext(color);
+      let w3 = colorO(color);
       w3.myNcol=ncol;
       let realColor = M.colorByName[w3.name];
       let dist=w3.distance;
@@ -68,7 +153,9 @@ async function test111(){
 
 
 }
+//#endregion
 
+//#region colors, palette, ...
 async function test108_colorNatVersusW3_BROKEN() {
   await prelims();
   let d = clearFlex();
@@ -128,12 +215,6 @@ async function test107_hueTest() {
   let list = [44, 45, 46, 0, 1, 2, 359, 360];
   list.forEach(x => showColorFromHue(d, x))
 }
-function showColorFromHue(dParent, hue, s = 100, l = 50) {
-  let c = colorHsl360ArgsToHex79(hue, s, l);
-  let w3 = colorNearestNamed(c, M.colorList);
-  let d1 = showObject(w3, ['name', 'hex', 'bucket', 'hue'], dParent, { bg: w3.hex });
-  d1.innerHTML += colorGetBucket(w3.hex);
-}
 async function test106_hueCheck() {
   await prelims();
   let d = clearFlex();
@@ -146,7 +227,6 @@ async function test106_hueCheck() {
     d1.innerHTML += colorGetBucket(w3.hex);
   }
 }
-
 async function test106_bucketCheck() {
   await prelims();
   [dicolorlist, byhex, byname] = getListAndDictsForDicolors();
@@ -417,6 +497,7 @@ async function test91_canvasCSSBlendModes() {
     showPaletteMini(d1, palette);
   }
 }
+//#endregion
 
 //#region colors
 async function test90_integrateGetMyColors1() {

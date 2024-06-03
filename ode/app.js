@@ -490,6 +490,39 @@ app.post('/postUpdateItem', (req, res) => {
 		res.json(`item ${key} updated successfully!`);
 	}
 });
+app.post('/postUpdateSuperdi', (req, res) => {
+	let partialdi = req.body.di;
+	let toBeDeleted = valf(req.body.deletedKeys, []);
+	let collname = req.body.collname;
+	let deleteCollection = req.body.deleteCollection; //true when deleting a collection entirely!
+	console.log('<== postUpdateSuperdi')
+	console.log('to be deleted', toBeDeleted);
+	console.log('to be updated:', Object.keys(partialdi));
+	for (const k of toBeDeleted) {
+		//image needs to be deleted as well!!!!
+		let item = M.superdi[k];
+		if (nundef(item.img) || item.colls.length > 1) {
+			console.log('!!!no image!!!', k)
+			continue;
+		}
+		let path1 = path.join(__dirname, item.img);
+		console.assert(path1.includes(collname), '!!!!!!!!!!!!!!!!!!');
+		console.log('!!!!!!!!!!!!!deleting', path1);
+		if (fs.existsSync(path1)) fs.unlinkSync(path1); else console.log('NO', path1)
+		delete M.superdi[k];
+	}
+	for (const k in partialdi) {
+		M.superdi[k] = partialdi[k];
+	}
+	if (deleteCollection == true) {
+		let p = path.join(assetsDirectory, 'img', collname);
+		if (fs.existsSync(p)) fs.rmdirSync(p);
+	}
+	let y = yaml.dump(M);
+	fs.writeFileSync(superdiFile, y, 'utf8');
+	io.emit('superdi', partialdi);
+	res.json(`Superdi updated successfully!`);
+});
 app.post('/overrideUser', (req, res) => {
 	let name = req.body.name;
 	let data = req.body;

@@ -162,12 +162,6 @@ function alphaToHex(a01) {
 }
 function amIHuman(table) { return isPlayerHuman(table, getUname()); }
 
-async function analyseColorsForUser(d, name) {
-	let user = Serverdata.users[name];
-	let d1 = mDom(d, { align: 'center', bg: user.color, fg: valf(user.fg, colorIdealText(user.color)) });
-	mDom(d1, {}, { html: name });
-	let palette = await calcPalette(d1, user.texture, user.color, user.blendMode);
-}
 function animatedTitle(msg = 'DU BIST DRAN!!!!!') {
 	TO.titleInterval = setInterval(() => {
 		let corner = CORNERS[WhichCorner++ % CORNERS.length];
@@ -389,39 +383,6 @@ function calcHeightLeftUnder(div) {
 	let h = hwin - top;
 	return h;
 }
-async function calcPalette(dParent, src, color, blendMode) {
-	let fill = color;
-	let bgBlend = getBlendCanvas(blendMode);
-	let d1 = mDom(dParent);
-	let ca = await getCanvasCtx(d1, { w: 310, h: 200, fill, bgBlend }, { src });
-	let palette = await getPaletteFromCanvas(ca.cv);
-	palette.splice(8);
-	let dominant = palette[0];
-	let opal = [];
-	for (let i = 0; i < palette.length; i++) {
-		let c = palette[i];
-		let o = w3color(c);
-		o.hex = c;
-		o.distbg = colorDistance(c, fill);
-		o.distbg = colorDistance(c, dominant);
-		opal.push(o);
-	}
-	palette.unshift(fill);
-	showPaletteMini(d1, palette);
-	let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
-	showPaletteMini(d1, pal2);
-	let pal3 = [colorTurnHueBy(fill), colorTurnHueBy(dominant), colorTurnHueBy(fill, 120), colorTurnHueBy(dominant, 120), colorTurnHueBy(fill, 240), colorTurnHueBy(dominant, 240)];
-	showPaletteMini(d1, pal3);
-	let pal4 = [getBestContrastingColor(fill), getBestContrastingColor(dominant)];
-	showPaletteMini(d1, pal4);
-	let pal5 = [fill, colorTurnHueBy(fill), colorComplement(fill), getBestContrastingColor(fill), colorIdealText(fill)]
-	showPaletteMini(d1, pal5);
-	for (const c of pal5) {
-		console.log(c, colorDistance(fill, c));
-	}
-	console.log(src, opal)
-	return palette;
-}
 function calcRestHeight(dtop) {
 	let hwin = window.innerHeight;
 	let r = getRect(dtop);
@@ -539,9 +500,10 @@ function clearEvents() {
 function clearFleetingMessage() {
 	if (isdef(dFleetingMessage)) { dFleetingMessage.remove(); dFleetingMessage = null; }
 }
-function clearFlex() {
-	let dp = clearBodyDiv({ bg: 'white', hmin: '100vh', padding: 10 });
-	let d = mDom(dp, { gap: 10 }); mFlexWrap(d);
+function clearFlex(styles={}) {
+	let dp = clearBodyDiv({ bg: 'white', hmin: '100vh', padding: 0 });
+	addKeys({ gap: 10, padding:10 },styles)
+	let d = mDom(dp, styles); mFlexWrap(d);
 	return d;
 }
 function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); }
@@ -1014,7 +976,7 @@ async function collShowImageInCell(cell, src) {
 function collSidebar() {
 	let wmin = 170;
 	mStyle('dLeft', { wmin: wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 100, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
 	let gap = 5;
 	UI.collSelectAll = mCommand(d, 'collSelectAll', 'Select All'); mNewline(d, gap);
 	UI.collSelectPage = mCommand(d, 'collSelectPage', 'Select Page'); mNewline(d, gap);
@@ -1295,7 +1257,7 @@ function colorDistance(color1, color2) {
 		Math.pow(g2 - g1, 2) +
 		Math.pow(b2 - b1, 2)
 	);
-	return distance;
+	return Number(distance.toFixed(2));
 }
 function colorFarestNamed(inputColor, namedColors) {
 	let maxDistance = 0;
@@ -1365,7 +1327,7 @@ function colorGetContrast(c1, c2) {
 	var brightest = Math.max(lum1, lum2);
 	var darkest = Math.min(lum1, lum2);
 	let res = (brightest + 0.05) / (darkest + 0.05);
-	return res.toFixed(3);
+	return Number(res.toFixed(3));
 }
 function colorGetDicolorList() {
 	let di = M.dicolor;
@@ -1668,6 +1630,7 @@ function colorToHex79(c) {
 	} else if (tString && (c.startsWith('linear') || c.startsWith('radial'))) return c;
 	else if (tString && c.startsWith('rgb')) return colorRgbStringToHex79(c);
 	else if (tString && c.startsWith('hsl')) return colorHsl360StringToHex79(c);
+	else if (tString && c == 'transparent') return '#00000000';
 	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.hex; }
 	else if (tArr && (c.length == 3 || c.length == 4) && isNumber(c[0])) return colorRgbArrayToHex79(c);
 	else if (tArr) return colorToHex79(rChoose(tArr));
@@ -1688,12 +1651,13 @@ function colorToHwbRounded(c) {
 	let o = colorToHwb360Object(c);
 	return { h: Math.round(o.h), w: Math.round(o.w), b: Math.round(o.b) };
 }
-function colorToW3Ext(c) {
+function colorO(c) {
+	if (isDict(c)) return c;
 	let hex = colorFrom(c);
 	let o = w3color(hex);
-	let named = colorNearestNamed(hex);
+	let named = colorNearestNamed(hex); //console.log('named',hex,named)
 	let distance = Math.round(colorDistance(named.hex, hex));
-	console.log('distance to', named.name, distance);
+	//console.log('distance to', named.name, distance);
 	o.name = named.name;
 	o.distance = distance;
 	o.bucket = colorGetBucket(hex);
@@ -1702,24 +1666,6 @@ function colorToW3Ext(c) {
 }
 function colorTrans(cAny, alpha = 0.5) { return colorFrom(cAny, alpha); }
 
-function colorTransPalette(n = 9) {
-	let c = colorHex('white');
-	let pal = [c];
-	let [iw, ib] = [Math.floor(n / 2) - 1, Math.floor((n - 1) / 2) - 1];
-	let [incw, incb] = [1 / (iw + 1), 1 / (ib + 1)];
-	for (let i = 1; i < iw; i++) {
-		let alpha = i * incw;
-		pal.push(colorTrans(c, alpha));
-	}
-	pal.push('transparent');
-	c = colorHex('black');
-	for (let i = 1; i < ib; i++) {
-		let alpha = i * incb;
-		pal.push(colorTrans(c, alpha));
-	}
-	pal.push(c);
-	return pal;
-}
 function colorTurnHueBy(color, inc = 180) {
 	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
 	let [h, s, l] = colorRgbArgsToHsl01Array(r, g, b); h *= 360;
@@ -2967,7 +2913,7 @@ function from01ToPercent(x) { return Math.round(Number(x) * 100); }
 
 function fromPercent(n, total) { return Math.round(n * total / 100); }
 
-function fromPercentTo01(x, nDecimals = 2) { return (Number(x) / 100).toFixed(nDecimals); }
+function fromPercentTo01(x, nDecimals = 2) { return Number((Number(x) / 100).toFixed(nDecimals)); }
 
 function gBg(g, color) { g.setAttribute('fill', color); }
 
@@ -4701,6 +4647,17 @@ function lookupSetOverride(dict, keys, val) {
 	}
 	return d;
 }
+function mAnchorTo(elem, dAnchor, align = 'bl') {
+	let rect = dAnchor.getBoundingClientRect();
+	let drect = elem.getBoundingClientRect();
+	let [v, h] = [align[0], align[1]];
+	let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { top: rect.top - drect.height };
+	let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+	let posStyles = { position: 'absolute' };
+	addKeys(vPos, posStyles);
+	addKeys(hPos, posStyles);
+	mStyle(elem, posStyles);
+}
 function mAnimate(elem, prop, valist, callback, msDuration = 1000, easing = 'cubic-bezier(1,-0.03,.86,.68)', delay = 0, forwards = 'none') {
 	let kflist = [];
 	for (const perc in valist) {
@@ -4726,12 +4683,14 @@ function mButton(caption, handler, dParent, styles, classes, id) {
 	if (isdef(id)) x.id = id;
 	return x;
 }
-function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
+function mButtonX(dParent, handler = null, sz = 22, offset = 5, color = 'contrast') {
 	mIfNotRelative(dParent);
 	let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
-	bx.onclick = ev => { evNoBubble(ev); handler(ev); }
+	bx.onclick = ev => { evNoBubble(ev); if (!handler) dParent.remove(); else handler(ev); }
 	let o = M.superdi.xmark;
-	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: color, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	let bg = mGetStyle(dParent,'bg');
+	let fg = color == 'contrast'?colorIdealText(bg,true):color;
+	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
 function mBy(id) { return document.getElementById(id); }
 
@@ -5218,6 +5177,33 @@ function mGadget(name, styles = {}, opts = {}) {
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return { name, dialog, form, inp }
 }
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; //defaults
+		let dbody = document.body;
+		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog', id: 'dDialog' });
+		let d = mDom(dDialog);
+		let funcName = `uiGadgetType${capitalize(type)}`; console.log(funcName)
+		let uiFunc = window[funcName];
+		let dx = uiFunc(d, content, x => { dDialog.remove(); resolve(x) }, styles, opts);
+		dDialog.addEventListener('mouseup', ev => {
+			if (opts.type != 'select' && isPointOutsideOf(dx, ev.clientX, ev.clientY)) {
+				console.log('RESOLVE NULL POINTER OUTSIDE!!!', ev.clientX, ev.clientY)
+				resolve(null);
+				dDialog.remove();
+			}
+		});
+		dDialog.addEventListener('keydown', ev => {
+			if (ev.key === 'Escape') {
+				dDialog.remove();
+				console.log('RESOLVE NULL ESCAPE');
+				resolve(null);
+			}
+		});
+		dDialog.showModal();
+		mAnchorTo(dx, dAnchor, opts.align);
+	});
+}
 async function mGetFiles(dir) {
 	let server = getServerurl();
 	let data = await mGetJsonCors(`${server}/filenames?directory=${dir}`);
@@ -5367,12 +5353,21 @@ function mMenu(dParent, key) { let [d, l, m, r] = mLMR(dParent); return { dParen
 
 function mNewline(d, gap = 1) { mDom(d, { h: gap }); }
 
-function mOnEnter(elem, setter) {
+function mOnEnter(elem, handler) {
 	elem.addEventListener('keydown', ev => {
 		if (ev.key == 'Enter') {
 			ev.preventDefault();
 			mDummyFocus();
-			if (setter) setter(ev);
+			if (handler) handler(ev);
+		}
+	});
+}
+function mOnEnterInput(elem, handler) {
+	elem.addEventListener('keydown', ev => {
+		if (ev.key == 'Enter') {
+			ev.preventDefault();
+			mDummyFocus();
+			if (handler) handler(ev.target.value);
 		}
 	});
 }
@@ -6001,7 +5996,7 @@ async function onclickAddCategory() {
 	let selist = UI.selectedImages;
 	let keys = selist.map(x => stringBefore(x, '@'));
 	let catlist = M.categories.map(x => ({ name: x, value: false }));
-	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checkList' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
@@ -6028,7 +6023,7 @@ async function onclickAddSelected() {
 	let selist = UI.selectedImages;
 	let keys = selist.map(x => stringBefore(x, '@'));
 	let collist = M.collections.filter(x => !collLocked(x)).map(x => ({ name: x, value: false }));
-	let colls = await mGather(iDiv(UI.addSelected), {}, { content: collist, type: 'checklist' });
+	let colls = await mGather(iDiv(UI.addSelected), {}, { content: collist, type: 'checkList' });
 	if (!colls) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	colls = colls.split('@');
 	colls = colls.filter(x => !isEmptyOrWhiteSpace(x))
@@ -6086,8 +6081,6 @@ async function onclickBot() {
 	olist.push({ keys: ['players', name, 'playmode'], val: 'bot' });
 	let res = await sendMergeTable({ id, name, olist });
 }
-async function onclickCatListDone(ui) { ui.setAttribute('proceed', getCheckedNames(ui).join('@')); }
-
 function onclickClear(inp, grid) {
 	inp.value = '';
 	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
@@ -6218,7 +6211,7 @@ async function onclickDeleteCollection(name) {
 	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
 	if (!name) return;
 	if (collLocked(name)) { showMessage(`collection ${name} cannot be deleted!!!!`); return; }
-	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });
+	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesNo', content: `delete collection ${name}?` });
 	if (proceed) await collDelete(name);
 	if (UI.collSecondary.isOpen && UI.collSecondary.name == name) collCloseSecondary();
 	if (UI.collPrimary.name == name) { UI.collPrimary.name = 'all'; collOpenPrimary(); }
@@ -6258,7 +6251,7 @@ async function onclickEditCategories() {
 	let lst = unionOfArrays(arrs);
 	let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
 	sortByDescending(catlist, 'value');
-	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
+	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checkListInput' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
 	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
@@ -6284,7 +6277,7 @@ async function onclickEditCollItem() {
 	let item = M.superdi[key];
 	let catlist = M.categories.map(x => ({ name: x, value: item.cats.includes(x) }));
 	sortByDescending(catlist, 'value');
-	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklistinput' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checkListInput' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x));
@@ -6440,7 +6433,7 @@ async function onclickRemoveCategory() {
 	let arrs = keys.map(x => M.superdi[x].cats);
 	let lst = unionOfArrays(arrs); lst.sort();
 	let catlist = lst.map(x => ({ name: x, value: false }));
-	let cats = await mGather(iDiv(UI.removeCategory), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.removeCategory), {}, { content: catlist, type: 'checkList' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
@@ -6700,9 +6693,9 @@ function openPopup(name = 'dPopup') {
 	closePopup();
 	let popup = document.createElement('div');
 	popup.id = name;
-	let defStyle = { padding: 25, bg: 'white', fg: 'black', zIndex: 1000, rounding: 12, position: 'fixed', boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)', wmin: 300, hmin: 100, border: '1px solid #ccc', };
+	let defStyle = { padding: 25, bg: 'white', fg: 'black', zIndex: 100000, rounding: 12, position: 'fixed', boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)', wmin: 300, hmin: 100, border: '1px solid #ccc', };
 	mStyle(popup, defStyle);
-	mButtonX(popup, 25, 4);
+	mButtonX(popup, null, 25, 4);
 	document.body.appendChild(popup);
 	return popup;
 }
@@ -7836,7 +7829,7 @@ function showNavbar() {
 }
 function showObject(o, keys, dParent, styles = {}) {
 	let bg = valf(styles.bg, 'dimgray');
-	addKeys({ align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, styles);
+	addKeys({ align: 'center', padding: 2, bg, fg: colorIdealText(bg) }, styles);
 	let html = '';
 	for (const k of keys) { html += o[k] + '<br>'; }
 	let d = mDom(dParent, styles, { html });
@@ -8451,6 +8444,29 @@ function toElem(d) { return isString(d) ? mBy(d) : d; }
 
 function toLetters(s) { return [...s]; }
 
+function toNameValueList(any) {
+	if (isEmpty(any)) return [];
+	let list = [];
+	if (isString(any)) {
+		let words = toWords(any);
+		for (const w of words) { list.push({ name: w, value: w }) };
+	} else if (isDict(any)) {
+		for (const k in any) { list.push({ name: k, value: any[k] }) };
+	} else if (isList(any) && !isDict(any[0])) {
+		for (const el of any) list.push({ name: el, value: el });
+	} else if (isList(any) && isdef(any[0].name) && isdef(any[0].value)) {
+		list = any;
+	} else {
+		let el = any[0];
+		let keys = Object.keys(el);
+		let nameKey = keys[0];
+		let valueKey = keys[1];
+		for (const x of any) {
+			list.push({ name: x[nameKey], value: x[nameKey] });
+		}
+	}
+	return list;
+}
 function toPercent(n, total) { return Math.round(n * 100 / total); }
 
 function toWords(s, allow_ = false) {
@@ -8512,49 +8528,59 @@ function turtle() {
 		else if (x == ']') pop();
 	}
 }
-function uiGadgetTypeCheckList(form, content, styles, opts) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
-	let dOuter = mDom(form, styles)
-	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
-	let ui = uiTypeCheckList(content, dParent, styles, opts);
-	mButton('done', () => onclickCatListDone(form), dOuter, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
-	return () => form.getAttribute('proceed');
+function uiGadgetTypeCheckList(dParent, content, resolve, styles = {}, opts = {}) {
+	addKeys({ hmax: 500, wmax: 200, bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(dParent, styles);
+	let hmax = styles.hmax - 193, wmax = styles.wmax;
+	let innerStyles = { hmax, wmax, box: true };
+	let ui = uiTypeCheckList(content, dOuter, innerStyles, opts);
+	let handler = () => resolve(getCheckedNames(ui).join('@'));
+	mButton('done', handler, dOuter, { classes: 'input', margin: 10 });
+	return dOuter;
 }
-function uiGadgetTypeCheckListInput(form, content, styles, opts) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
-	let dOuter = mDom(form, styles)
-	let dParent = mDom(dOuter, { pabottom: 10, box: true });
-	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
-	return () => DA.formResult;
+function uiGadgetTypeCheckListInput(form, content, resolve, styles, opts) {
+	addKeys({ wmax: '100vw', hmax: 500, bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles);
+	opts.handler = resolve;
+	let ui = uiTypeCheckListInput(content, dOuter, styles, opts);
+	return dOuter;
 }
-function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
+function uiGadgetTypeMulti(dParent, dict, resolve, styles = {}, opts = {}) {
 	let inputs = [];
+	let form = mDom(dParent, {}, { tag: 'form', method: null, action: "javascript:void(0)" })
 	for (const k in dict) {
 		let [content, val] = [k, dict[k]];
-		let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
+		let inp = mDom(form, styles, { autocomplete: 'off', className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
 		inputs.push({ name: content, inp: inp });
 		mNewline(form)
 	}
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	return () => {
+	form.onsubmit = ev => {
+		ev.preventDefault();
 		let di = {};
 		inputs.map(x => di[x.name] = x.inp.value);
-		return di;
-	};
+		resolve(di);
+	}
+	return form;
 }
-function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
-	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
-	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	return () => inp.value;
+function uiGadgetTypeSelect(dParent, content, resolve, styles = {}, opts = {}) {
+	let dSelect = uiTypeSelect(content, dParent, styles, opts);
+	dSelect.onchange = ev => resolve(ev.target.value);
+	return dSelect;
 }
-function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
-	let dOuter = mDom(form, styles)
+function uiGadgetTypeText(dParent, content, resolve, styles = {}, opts = {}) {
+	let inp = mDom(dParent, styles, { autocomplete: 'off', className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mOnEnterInput(inp, resolve);
+	return inp;
+}
+function uiGadgetTypeYesNo(dParent, content, resolve, styles = {}, opts = {}) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(dParent, styles)
 	let dq = mDom(dOuter, { mabottom: 7 }, { html: capitalize(content) });
 	let db = mDom(dOuter, { w100: true, box: true, display: 'flex', 'justify-content': 'space-between', gap: 10 })
-	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => form.setAttribute('proceed', 'yes') })
-	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
-	return () => form.getAttribute('proceed') == 'yes';
+	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => resolve('yes') })
+	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => resolve('no') })
+	return dOuter;
 }
 async function uiTypeCalendar(dParent) {
 	const [wcell, hcell, gap] = [120, 100, 10];
@@ -8664,46 +8690,41 @@ async function uiTypeCalendar(dParent) {
 	await setDate(currentDate.getMonth() + 1, currentDate.getFullYear());
 	return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
 }
-function uiTypeCheckList(lst, dParent, styles = {}, opts = {}) {
-	let d = mDom(dParent, { overy: 'auto' }); //hier drin kommt die liste!
+function uiTypeCheckList(any, dParent, styles = {}, opts = {}) {
+	let lst = toNameValueList(any); lst.map(x => { if (x.value !== true) x.value = false; });
+	addKeys({ overy: 'auto' }, styles)
+	let d = mDom(dParent, styles, opts);
 	lst.forEach((o, index) => {
 		let [text, value] = [o.name, o.value];
 		let dcheck = mDom(d, {}, { tag: 'input', type: 'checkbox', name: text, value: text, id: `ch_${index}`, checked: value });
 		let dlabel = mDom(d, {}, { tag: 'label', for: dcheck.id, html: text });
 		mNewline(d, 0);
 	});
-	let r = getRect(d);
-	let rp = getRect(dParent);
-	let hParent = rp.h;
-	if (hParent == 0) hParent = mGetStyle(dParent, 'max-height');
-	let p = mGetStyle(dParent, 'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
-	let h = hParent - r.y;
-	mStyle(d, { hmax: h });//,pabottom:10,box:true});
 	return d;
 }
-function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
-	mStyle(dParent, { w: 1000 })
+function uiTypeCheckListInput(any, dParent, styles = {}, opts = {}) {
 	let dg = mDom(dParent);
-	let list = lst;
+	let list = toNameValueList(any); list.map(x => { if (x.value !== true) x.value = false; });
 	let items = [];
 	for (const o of list) {
 		let div = mCheckbox(dg, o.name, o.value);
 		items.push({ nam: o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
 	}
 	let wmax = arrMax(items, 'w'); //console.log('wmax',wmax); //measure max width of items
-	let cols = 3;
+	let cols = 4;
 	let wgrid = wmax * cols + 100;
 	dg.remove();
 	dg = mDom(dParent);
 	let inp = mDom(dg, { w100: true, box: true, mabottom: 10 }, { className: 'input', tag: 'input', type: 'text' });
 	let db = mDom(dg, { w100: true, box: true, align: 'right', mabottom: 4 });
-	mButton('cancel', () => DA.formResult = null, db, {}, 'input');
-	mButton('clear', ev => { ev.preventDefault(); onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
-	mButton('done', () => DA.formResult = extractWords(inp.value, ' '), db, { maleft: 10 }, 'input');
+	mButton('cancel', () => opts.handler(null), db, {}, 'input');
+	mButton('clear', ev => { onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
+	mButton('done', () => opts.handler(extractWords(inp.value, ' ')), db, { maleft: 10 }, 'input');
 	mStyle(dg, { w: wgrid, box: true, padding: 10 }); //, w: wgrid })
-	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax: 500 });
+	let hmax = isdef(styles.hmax) ? styles.hmax - 150 : 300;
+	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax });
 	items.map(x => mAppend(grid, iDiv(x)));
-	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]'));
 	for (const chk of chks) {
 		chk.addEventListener('click', ev => checkToInput(ev, inp, grid))
 	}
@@ -8761,6 +8782,14 @@ function uiTypeRadios(lst, d, styles = {}, opts = {}) {
 		mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
 	}
 	return rg;
+}
+function uiTypeSelect(any, dParent, styles = {}, opts = {}) {
+	let list = toNameValueList(any);
+	addKeys({ className: 'input', tag: 'select' }, opts);
+	let dselect = mDom(dParent, styles, opts);
+	for (const el of list) { mDom(dselect, {}, { tag: 'option', html: el.name, value: el.value }); }
+	dselect.value = '';
+	return dselect;
 }
 function uid() {
 	UID += 1;

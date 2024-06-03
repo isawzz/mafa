@@ -1,3 +1,200 @@
+//#region integrate 1.6.24 bau4.js =>newclosure.js
+
+function uiGadgetTypeCheckList(dParent, content, resolve, styles = {}, opts = {}) {
+	addKeys({ hmax: 500, wmax: 200, bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(dParent, styles);
+	
+	let hmax = styles.hmax-193,wmax=styles.wmax;
+	let innerStyles = {hmax,wmax,box:true};
+	let ui = uiTypeCheckList(content, dOuter, innerStyles, opts);
+	let handler = () => resolve(getCheckedNames(ui).join('@'));
+
+	mButton('done', handler, dOuter, { classes: 'input', margin: 10 });
+	return dOuter;
+}
+function uiTypeCheckList(any, dParent, styles = {}, opts = {}) {
+	let lst = toNameValueList(any); lst.map(x => { if (x.value !== true) x.value = false; });
+	addKeys({ overy: 'auto' },styles)
+	let d = mDom(dParent, styles, opts); //hier drin kommt die liste!
+	lst.forEach((o, index) => {
+		let [text, value] = [o.name, o.value];
+		let dcheck = mDom(d, {}, { tag: 'input', type: 'checkbox', name: text, value: text, id: `ch_${index}`, checked: value });
+		let dlabel = mDom(d, {}, { tag: 'label', for: dcheck.id, html: text });
+		mNewline(d, 0);
+	});
+	return d;
+}
+
+
+function uiGadgetTypeSelect(dParent, content, resolve, styles = {}, opts = {}) {
+	let dSelect = uiTypeSelect(content, dParent, styles, opts);
+	dSelect.onchange = ev=>resolve(ev.target.value); //console.log('onchange',ev.target,ev.target.value)
+	return dSelect;
+}
+function uiTypeSelect(any, dParent, styles = {}, opts = {}) {
+	let list = toNameValueList(any);
+	addKeys({ className: 'input', tag: 'select' }, opts);
+	let dselect = mDom(dParent, styles, opts);
+	for (const el of list) { mDom(dselect, {}, { tag: 'option', html: el.name, value: el.value }); }
+	dselect.value = '';
+	return dselect;
+}
+
+
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; //defaults
+		let dbody = document.body;
+		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog', id: 'dDialog' });
+
+		let d = mDom(dDialog);
+
+		let funcName=`uiGadgetType${capitalize(type)}`; console.log(funcName)
+		let uiFunc = window[funcName];
+
+		let dx=uiFunc(d, content, x=>{dDialog.remove();resolve(x)}, styles, opts);
+		dDialog.addEventListener('mouseup', ev => {
+			if (opts.type != 'select' && isPointOutsideOf(dx, ev.clientX, ev.clientY)) {
+				console.log('RESOLVE NULL POINTER OUTSIDE!!!', ev.clientX, ev.clientY)
+				resolve(null);
+				dDialog.remove();
+			}
+		});
+		dDialog.addEventListener('keydown', ev => {
+			if (ev.key === 'Escape') {
+				dDialog.remove(); 
+				console.log('RESOLVE NULL ESCAPE');
+				resolve(null);
+			}
+		});
+
+
+		dDialog.showModal();
+		mAnchorTo(dx,dAnchor,opts.align);//calc alignment to anchor element
+	});
+}
+
+function uiGadgetTypeCheckListInput(form, content, resolve,  styles, opts) {
+	addKeys({ wmax:'100vw', hmax:500, bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles);
+	opts.handler = resolve;
+	let ui = uiTypeCheckListInput(content, dOuter, styles, opts);
+	return dOuter;
+}
+function uiTypeCheckListInput(any, dParent, styles = {}, opts = {}) {
+	let dg = mDom(dParent);
+	let list = toNameValueList(any); list.map(x => { if (x.value !== true) x.value = false; });
+	let items = [];
+	for (const o of list) {
+		let div = mCheckbox(dg, o.name, o.value);
+		items.push({ nam: o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
+	}
+	let wmax = arrMax(items, 'w'); //console.log('wmax',wmax); //measure max width of items
+	let cols = 4;
+	let wgrid = wmax * cols + 100;
+	dg.remove();
+
+	dg = mDom(dParent);
+	let inp = mDom(dg, { w100: true, box: true, mabottom: 10 }, { className: 'input', tag: 'input', type: 'text' });
+	let db = mDom(dg, { w100: true, box: true, align: 'right', mabottom: 4 });
+	mButton('cancel', () => opts.handler(null), db, {}, 'input');
+	mButton('clear', ev => { onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
+	mButton('done', () => opts.handler(extractWords(inp.value, ' ')), db, { maleft: 10 }, 'input');
+	mStyle(dg, { w: wgrid, box: true, padding: 10 }); //, w: wgrid })
+
+	let hmax = isdef(styles.hmax)?styles.hmax-150:300;
+	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax });
+	items.map(x => mAppend(grid, iDiv(x)));
+	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]')); 
+	for (const chk of chks) {
+		chk.addEventListener('click', ev => checkToInput(ev, inp, grid))
+	}
+	inp.value = list.filter(x => x.value).map(x => x.name).join(', ');
+	inp.addEventListener('keypress', ev => inpToChecklist(ev, grid));
+	return { dg, inp, grid };
+}
+
+
+function mAnchorTo(elem,dAnchor,align='bl'){
+	let rect = dAnchor.getBoundingClientRect();
+	let drect = elem.getBoundingClientRect(); //console.log(drect)
+	let [v, h] = [align[0], align[1]];
+	let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { top: rect.top-drect.height };
+	let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth-rect.right };
+	let posStyles = { position: 'absolute' };
+	addKeys(vPos, posStyles);
+	addKeys(hPos, posStyles);
+	mStyle(elem,posStyles);
+}
+function toNameValueList(any){
+	if (isEmpty(any)) return [];
+	let list=[];
+	if (isString(any)){
+		let words = toWords(any);
+		for(const w of words){list.push({name:w,value:w})};
+	}else if (isDict(any)){
+		for(const k in any){list.push({name:k,value:any[k]})};
+	}else if (isList(any) && !isDict(any[0])){
+		for(const el of any) list.push({name:el,value:el});
+	}else if (isList(any) && isdef(any[0].name)  && isdef(any[0].value)) {
+		list = any;
+	}else {
+		let el=any[0];
+		let keys = Object.keys(el);
+		let nameKey=keys[0];
+		let valueKey=keys[1];
+		for(const x of any){
+			list.push({name:x[nameKey],value:x[nameKey]});
+		}
+	}
+	return list;
+}
+function uiGadgetTypeYesNo(dParent, content, resolve, styles = {}, opts = {}) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(dParent, styles)
+	let dq = mDom(dOuter, { mabottom: 7 }, { html: capitalize(content) });
+	let db = mDom(dOuter, { w100: true, box: true, display: 'flex', 'justify-content': 'space-between', gap: 10 })
+	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => resolve('yes') })
+	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => resolve('no') })
+	return dOuter;
+}
+function uiGadgetTypeText(dParent, content, resolve, styles = {}, opts = {}) {
+	let inp = mDom(dParent, styles, { autocomplete:'off', className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mOnEnterInput(inp,resolve);
+	return inp;
+}
+function uiGadgetTypeMulti(dParent, dict, resolve, styles = {}, opts = {}) {
+	let inputs = [];
+	let form=mDom(dParent,{},{tag:'form',method:null, action:"javascript:void(0)" })
+	for (const k in dict) {
+		let [content, val] = [k, dict[k]];
+		let inp = mDom(form, styles, { autocomplete:'off', className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
+		inputs.push({ name: content, inp: inp });
+		mNewline(form)
+	}
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	form.onsubmit = ev => {
+		ev.preventDefault();
+		let di = {};
+		inputs.map(x => di[x.name] = x.inp.value);
+		resolve(di);
+	}
+	return form;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//#endregion
+
 //#region integrate 31.mai 24 bau4.js =>closure.js
 function colorGetBucket(c) {
 	let buckets = 'red orange yellow lime green greencyan cyan cyanblue blue bluemagenta magenta magentared black'.split(' ');
@@ -503,7 +700,7 @@ function stringCSSToCamelCase(s) {
 }
 
 
-
+//#endregion
 
 //#region integrate 26.mai 24 bau4.js
 async function showBlendModes() {

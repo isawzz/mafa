@@ -1,3 +1,309 @@
+//#region 1.6.24
+function colorDistanceHue_ai(color1, color2) {
+	let hsl1 = hexToHSL(color1);
+	let hsl2 = hexToHSL(color2);
+
+	// Calculate hue distance
+	let hueDiff = Math.abs(c1,hue - c2.hue);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180; // Normalize to [0, 1]
+
+	// Calculate lightness distance
+	let lightnessDistance = Math.abs(hsl1.l - hsl2.l) / 100; // Normalize to [0, 1]
+
+	// Combine distances, prioritizing hue
+	let distance = hueDistance + 0.5 * lightnessDistance;
+
+	return distance;
+}
+
+//#region 1.6.24: eliminate analyseColorsForUseer, calcPalette orig!!!
+
+async function calcPalette(dParent, src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d1 = mDom(dParent);
+	let ca = await getCanvasCtx(d1, { w: 310, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	//palette.splice(8);
+	let dominant = palette[0];
+	
+	let opal = [];
+	for (let i = 0; i < palette.length; i++) {
+		let c = palette[i];
+		let o = w3color(c);
+		o.hex = c;
+		o.distbg = colorDistance(c, fill);
+		o.distbg = colorDistance(c, dominant);
+		opal.push(o);
+	}
+	palette.unshift(fill);
+	showPaletteMini(d1, palette);
+	let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
+	showPaletteMini(d1, pal2);
+	let pal3 = [colorTurnHueBy(fill), colorTurnHueBy(dominant), colorTurnHueBy(fill, 120), colorTurnHueBy(dominant, 120), colorTurnHueBy(fill, 240), colorTurnHueBy(dominant, 240)];
+	showPaletteMini(d1, pal3);
+	let pal4 = [getBestContrastingColor(fill), getBestContrastingColor(dominant)];
+	showPaletteMini(d1, pal4);
+	let pal5 = [fill, colorTurnHueBy(fill), colorComplement(fill), getBestContrastingColor(fill), colorIdealText(fill)]
+	showPaletteMini(d1, pal5);
+	for (const c of pal5) {
+		console.log(c, colorDistance(fill, c));
+	}
+
+	console.log(src, opal)
+	return palette;
+}
+
+
+async function analyseColorsForUser(d, name) {
+	let user = Serverdata.users[name];
+	let d1 = mDom(d, { align: 'center', bg: user.color, fg: valf(user.fg, colorIdealText(user.color)) });
+	mDom(d1, {}, { html: name });
+	let palette = await calcPalette(d1, user.texture, user.color, user.blendMode);
+}
+
+
+//#region 1.6.24: uiGadgetType und uiType checkListInput
+function uiGadgetTypeCheckListInput(form, content, styles, opts) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dParent = mDom(dOuter, { pabottom: 10, box: true });
+	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
+	return () => DA.formResult;
+}
+function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
+	mStyle(dParent, { w: 1000 })
+	let dg = mDom(dParent);
+	let list = lst;
+	let items = [];
+	for (const o of list) {
+		let div = mCheckbox(dg, o.name, o.value);
+		items.push({ nam: o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
+	}
+	let wmax = arrMax(items, 'w'); //console.log('wmax',wmax); //measure max width of items
+	let cols = 3;
+	let wgrid = wmax * cols + 100;
+	dg.remove();
+	dg = mDom(dParent);
+	let inp = mDom(dg, { w100: true, box: true, mabottom: 10 }, { className: 'input', tag: 'input', type: 'text' });
+	let db = mDom(dg, { w100: true, box: true, align: 'right', mabottom: 4 });
+	mButton('cancel', () => DA.formResult = null, db, {}, 'input');
+	mButton('clear', ev => { ev.preventDefault(); onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
+	mButton('done', () => DA.formResult = extractWords(inp.value, ' '), db, { maleft: 10 }, 'input');
+	mStyle(dg, { w: wgrid, box: true, padding: 10 }); //, w: wgrid })
+	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax: 500 });
+	items.map(x => mAppend(grid, iDiv(x)));
+	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	for (const chk of chks) {
+		chk.addEventListener('click', ev => checkToInput(ev, inp, grid))
+	}
+	inp.value = list.filter(x => x.value).map(x => x.name).join(', ');
+	inp.addEventListener('keypress', ev => inpToChecklist(ev, grid));
+	return { dg, inp, grid };
+}
+
+
+//#region 1.6.24: uiGadgetType und uiTypeCheckList mit resolve
+function uiGadgetTypeCheckList(dParent, content, resolve, styles={}, opts={}) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
+	let dOuter = mDom(dParent, styles)
+	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
+	let ui = uiTypeCheckList(content, dParent, styles, opts);
+	mButton('done', () => onclickCatListDone(dParent), dOuter, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
+	return () => dParent.getAttribute('proceed');
+}
+function uiTypeCheckList(lst, dParent, styles = {}, opts = {}) {
+	let d = mDom(dParent, { overy: 'auto' }); //hier drin kommt die liste!
+	lst.forEach((o, index) => {
+		let [text, value] = [o.name, o.value];
+		let dcheck = mDom(d, {}, { tag: 'input', type: 'checkbox', name: text, value: text, id: `ch_${index}`, checked: value });
+		let dlabel = mDom(d, {}, { tag: 'label', for: dcheck.id, html: text });
+		mNewline(d, 0);
+	});
+	let r = getRect(d);
+	let rp = getRect(dParent);
+	let hParent = rp.h;
+	if (hParent == 0) hParent = mGetStyle(dParent, 'max-height');
+	let p = mGetStyle(dParent, 'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
+	let h = hParent - r.y;
+	mStyle(d, { hmax: h });//,pabottom:10,box:true});
+	return d;
+}
+async function onclickCatListDone(ui) { ui.setAttribute('proceed', getCheckedNames(ui).join('@')); }
+
+//#endregion
+
+//#region 1.6.24: uiGadgetTypeChecklist origs
+function uiGadgetTypeCheckList(form, content, styles, opts) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
+	let ui = uiTypeCheckList(content, dParent, styles, opts);
+	mButton('done', () => onclickCatListDone(form), dOuter, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
+	return () => form.getAttribute('proceed');
+}
+function uiGadgetTypeCheckListInput(form, content, styles, opts) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dParent = mDom(dOuter, { pabottom: 10, box: true });
+	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
+	return () => DA.formResult;
+}
+
+//#endregion
+
+//#region 31.mai 24: uiGadgetType Originals!!!!!
+function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
+	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return () => inp.value;
+}
+
+
+function uiGadgetTypeCheckList(form, content, styles, opts) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
+	let ui = uiTypeCheckList(content, dParent, styles, opts);
+	mButton('done', () => onclickCatListDone(form), dOuter, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
+	return () => form.getAttribute('proceed');
+}
+function uiGadgetTypeCheckListInput(form, content, styles, opts) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dParent = mDom(dOuter, { pabottom: 10, box: true });
+	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
+	return () => DA.formResult;
+}
+function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
+	let inputs = [];
+	for (const k in dict) {
+		let [content, val] = [k, dict[k]];
+		let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
+		inputs.push({ name: content, inp: inp });
+		mNewline(form)
+	}
+	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	return () => {
+		let di = {};
+		inputs.map(x => di[x.name] = x.inp.value);
+		return di;
+	};
+}
+function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
+	let dOuter = mDom(form, styles)
+	let dq = mDom(dOuter, { mabottom: 7 }, { html: capitalize(content) });
+	let db = mDom(dOuter, { w100: true, box: true, display: 'flex', 'justify-content': 'space-between', gap: 10 })
+	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => form.setAttribute('proceed', 'yes') })
+	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
+	return () => form.getAttribute('proceed') == 'yes';
+}
+
+
+//#region 31.mai 24: neues mGather trial 1
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; //defaults
+		let dbody = document.body;
+		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog',id:'dDialog' });
+
+		let d = mDom(dDialog);
+		let uiFunc = window[`uiGadgetType${capitalize(type)}`];
+		uiFunc(d, content, resolve, styles, opts);
+		dDialog.showModal();
+	});
+}
+function uiGadgetTypeSelect(dParent, content, resolve, styles = {}, opts = {}) {
+
+	//resolve('hallo'); mBy('dDialog').remove(); return;
+	let d=mDom(dParent);
+
+	let handler = (ev,selval)=>{
+		ev.preventDefault();
+		dParent.setAttribute('proceed',selval);
+		console.log('form',dParent)
+		dParent.submit();
+	}
+	let select = uiTypeSelect(content,handler,d,styles,opts);
+	//mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
+	//return () => form.getAttribute('proceed');
+
+	let rect = getRect(select);
+	mStyle(dParent,{bg:'red',padding:10, wmin:rect.w, hmin:(1+content.length)*25}); //,wmin:'100vw',hmin:'100vh'});
+
+
+	return () => dParent.getAttribute('proceed');
+}
+function uiTypeSelect(any, handler, form, styles = {}, opts = {}) {
+
+	let list=toNameValueList(any);
+	//console.log(list); //return;
+
+	let d = form; // mDom(dParent, { overy: 'auto' }); //hier drin kommt das select elem
+	let id = getUID();
+	let dselect = mDom(d, {bg:'blue'}, { className: 'input', tag: 'select', id });
+	for(const el of list){
+		//console.log(el.name,el.value)
+		mDom(dselect, {}, { tag: 'option', html: el.name, value: el.value });
+	}
+	// dselect.onchange = ()=>isdef(opts.handler)??opts.handler(id); //ev=>console.log('changed',id,mBy(id).value);
+
+	if (nundef(handler)) handler = ()=>console.log(id,'value changed to',mBy(id).value)
+
+
+	dselect.onchange = ev=>handler(ev,mBy(id).value)// ()=>{form.setAttribute('proceed',mBy(id).value)}; //;form.submit(); } //console.log('changed',id,mBy(id).value);
+	return dselect;
+}
+//#endregion
+
+//region 31.mai 24: mGather original
+async function mGather(dAnchor, styles = {}, opts = {}) {
+	return new Promise((resolve, _) => {
+		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
+		let d = document.body;
+		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
+		let rect = dAnchor.getBoundingClientRect();
+		let [v, h] = [align[0], align[1]];
+		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
+		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+		let formStyles = { position: 'absolute' };
+		addKeys(vPos, formStyles);
+		addKeys(hPos, formStyles);
+		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
+		dialog.addEventListener('mouseup', ev => {
+			if (opts.type != 'select' && isPointOutsideOf(form, ev.clientX, ev.clientY)) {
+				console.log('RESOLVE NULL POINTER OUTSIDE!!!',form, ev.clientX, ev.clientY)
+				resolve(null);
+				dialog.remove();
+			}
+		});
+		dialog.addEventListener('keydown', ev => {
+			if (ev.key === 'Escape') {
+				dialog.remove(); 
+				console.log('RESOLVE NULL ESCAPE');
+				resolve(null);
+			}
+		});
+		let evalFunc;
+		if (type == 'multi') evalFunc = uiGadgetTypeMulti(form, content, styles, opts);
+		else if (type == 'yesno') evalFunc = uiGadgetTypeYesNo(form, content, styles, opts);
+		else if (type == 'select') evalFunc = uiGadgetTypeSelect(form, content, styles, opts);
+		else if (type == 'checklist') evalFunc = uiGadgetTypeCheckList(form, content, styles, opts);
+		else if (type == 'checklistinput') evalFunc = uiGadgetTypeCheckListInput(form, content, styles, opts);
+		else if (type == 'text') evalFunc = uiGadgetTypeText(form, content, styles, opts);
+		dialog.showModal();
+		form.onsubmit = (ev) => {
+			console.log('SUBMIT!!! val', ev)
+			ev.preventDefault();
+			let val = evalFunc();
+			//dialog.remove();
+			resolve(val);
+		};
+	});
+}
+
+
 
 //#region 28.mai 24 ai zeug
 function hexToRgb(hex) {
