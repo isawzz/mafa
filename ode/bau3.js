@@ -24,7 +24,6 @@ async function uiTypePalette(dParent,src, color, blendMode){
 	let fgItems = showPaletteMini(d, palContrast);
 	mLinebreak(d);
 
-
 	mIfNotRelative(dParent);
 	let dText = mDom(dParent, { align:'center', fg: 'white', fz: 30, position: 'absolute', top: 0, left: 0, w100: true, h100: true });
 	mCenterFlex(dText);
