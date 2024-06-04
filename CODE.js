@@ -1,4 +1,31 @@
 //#region 3.6.24
+function mCommand(dParent, key, html, opts = {}) {
+	if (nundef(html)) html = capitalize(key);
+	let close = valf(opts.close, () => { console.log('close', key) });
+	// let closeHandler = valf(opts.close, () => { console.log('close', key) });
+	// let close = null;
+	// if (opts.save) {
+	// 	close = async () => { 
+	// 		localStorage.setItem('settingsMenu', key); 
+	// 		console.log('saved submenu',key)
+	// 		await closeHandler(); 
+	// 	}
+	// }else close = closeHandler;
+	let save = valf(opts.save, false);
+	let open = valf(opts.open, window[`onclick${capitalize(key)}`]);
+	// let openHandler = valf(opts.open, window[`onclick${capitalize(key)}`]);
+	// let open = null;
+	// if (opts.save) {
+	// 	open = async () => { 
+	// 		localStorage.setItem('settingsMenu', key); 
+	// 		console.log('saved submenu',key)
+	// 		await openHandler(); 
+	// 	}
+	// }else open = openHandler;
+	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
+	let a = mDom(d, {}, { key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
+	return { dParent, elem: d, div: a, key, open, close, save };
+}
 async function showPaletteFor_messy(src, color, blendMode) {
 	let fill = color;
 	let bgBlend = getBlendCanvas(blendMode);

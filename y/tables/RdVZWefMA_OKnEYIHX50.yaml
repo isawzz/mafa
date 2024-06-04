@@ -1,22 +1,16 @@
 status: started
 id: RdVZWefMA_OKnEYIHX50
 fen:
-  deck:
-    - red_oval_1_striped
-    - green_oval_1_open
-    - purple_oval_3_open
+  deck: []
   cards:
     - green_diamond_2_striped
-    - green_oval_2_striped
     - purple_oval_3_solid
     - red_squiggle_3_solid
     - red_oval_3_solid
-    - green_diamond_2_open
+    - green_oval_1_open
     - red_squiggle_3_open
     - green_squiggle_1_open
-    - red_oval_1_solid
     - purple_diamond_3_open
-    - purple_squiggle_3_solid
     - purple_diamond_2_solid
 game: setgame
 owner: mimi
@@ -32,7 +26,7 @@ players:
     bgRepeat: no-repeat
     level: 3
     playmode: human
-    score: 1
+    score: 4
   felix:
     name: felix
     color: '#2a52be'
@@ -51,7 +45,7 @@ options:
   use_level: 'yes'
   numCards: 12
   gamemode: multi
-step: 22
+step: 25
 moves:
   - step: 0
     name: felix
@@ -235,6 +229,28 @@ moves:
       - green_diamond_3_solid
     change: '+1'
     score: 20
+  - step: 22
+    name: mimi
+    move:
+      - noSet
+    change: '+1'
+    score: 2
+  - step: 23
+    name: mimi
+    move:
+      - green_diamond_2_open
+      - purple_squiggle_3_solid
+      - red_oval_1_striped
+    change: '+1'
+    score: 3
+  - step: 24
+    name: mimi
+    move:
+      - green_oval_2_striped
+      - red_oval_1_solid
+      - purple_oval_3_open
+    change: '+1'
+    score: 4
 plorder:
   - mimi
   - felix

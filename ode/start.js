@@ -1,8 +1,13 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test116_calcPalette(); }
+async function start() { TESTING = true; await test117(); }
 
+async function test117(){
+  await prelims();
+}
+
+//#region settings
 async function test116_calcPalette() {
   await prelims();
 
@@ -29,6 +34,7 @@ async function test115_calcPaletteForUser_no() {
   mDom(d,{fg:'white'},{html:user.name});
   let palette = await showPaletteFor(d, user.texture, user.color, user.blendMode);
 }
+//#endregion
 
 //#region mGather refactoring!
 async function test114_mGatherCheckListInput(){

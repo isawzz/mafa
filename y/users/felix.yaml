@@ -1,5 +1,5 @@
 name: felix
-color: '#2a52be'
+color: '#0e1e76'
 texture: ../assets/textures/marble_meer1.jpg
 blendMode: normal
 imgKey: felix

@@ -1,5 +1,10 @@
 name: guest
-color: '#446ccf'
-texture: ../assets/textures/wall6.JPG
+color: '#2771c9'
+texture: ../assets/textures/marble_water.jpg
 imgKey: guest
-blendMode: multiply
+blendMode: normal
+bg: '#55bc41'
+games:
+  setgame:
+    level: 7
+fg: '#ffffff'

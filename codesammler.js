@@ -1,3 +1,440 @@
+//#region integrate 4.6.24 =>closure (bau4.js)
+async function onclickSettMyTheme(){
+	localStorage.setItem('settingsMenu','settMyTheme')
+
+	let dSettings = mBy('dSettingsMenu'); mClear(dSettings); 
+	//console.log(getRect(dSettings))
+	//console.log(dSettings); //return;
+	let d=mDom(dSettings,{h:'100vh',bg:U.color})
+	//let dParent = mDom(d,{h:2000,bg:U.color}); mFlex(dParent);
+
+	//return;
+
+	let dOuter=mDom(d, {padding:25}); // { padding: 10, gap: 10, margin:'auto', w:500, align:'center', bg:'white' }); //mCenterFlex(dParent);
+	mCenterFlex(dOuter)
+
+	let ui = await uiTypePalette(dOuter,U.color,U.fg,U.texture,U.blendMode);
+	//mDom(dText,{fg:'white',fz:30,h:200},{html:'hallo'})
+	return;
+
+	let d1 = mDom(dParent);
+	let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	palette.unshift(fill); palette.splice(8);
+	showPaletteMini(d1, palette);
+	d1.onclick = async () => {
+		U.palette = palette;
+		U.blendMode = blendCSS;
+		await updateUserTheme();
+	}
+
+
+	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
+	for (const blendMode of list) { await showBlendMode(dParent, blendMode); }
+}
+
+async function uiTypePalette(dParent, color, fg, src, blendMode) {
+
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d = mDom(dParent, { w100: true, gap: 4 }); mCenterFlex(d);
+	let NewValues = { fg, bg: color };
+
+	let palette = [color];
+	let dContainer = mDom(d, { w: 500, h: 300 });
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(dContainer, { w: 500, h: 300, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		//make a palette with color and other shades of that color
+
+		palette = arrCycle(paletteShades(color), 4);
+	}
+
+	let dominant = palette[0];
+	let palContrast = paletteContrastVariety(palette, palette.length);
+	mLinebreak(d);
+	let bgItems = showPaletteMini(d, palette);
+	mLinebreak(d);
+	let fgItems = showPaletteMini(d, palContrast);
+	mLinebreak(d);
+
+	mIfNotRelative(dParent);
+	let dText = mDom(dParent, { 'pointer-events': 'none', align: 'center', fg: 'white', fz: 30, position: 'absolute', top: 0, left: 0, w100: true, h100: true });
+	mCenterFlex(dText);
+	dText.innerHTML = `<br>HALLO<br>das<br>ist ein Text`
+
+	for (const item of fgItems) {
+		let div = iDiv(item);
+		//console.log(div)
+		mStyle(div, { cursor: 'pointer' });
+		// div.onclick = async () => onclickTextColor(item.bg);
+
+		div.onclick = ()=>{
+			mStyle(dText, { fg: item.bg });
+			NewValues.fg=item.bg;
+			console.log('NewValues',NewValues);
+		}
+	}
+	for (const item of bgItems) {
+		let div = iDiv(item);
+		//console.log(div)
+		mStyle(div, { cursor: 'pointer' });
+		div.onclick = async () => {
+			if (isdef(src)) {
+				mClear(dContainer);
+				let fill = item.bg;
+				await getCanvasCtx(dContainer, { w: 500, h: 300, fill, bgBlend }, { src });
+			}
+			mStyle(dParent, { bg: item.bg });
+			NewValues.bg = item.bg;
+		}
+	}
+	async function onclickSaveMyTheme() {
+		if (U.fg == NewValues.fg && U.color == NewValues.bg) return;
+
+		U.fg = NewValues.fg;
+		U.color = NewValues.bg;
+		await updateUserTheme();
+		await onclickSettMyTheme();
+		// await postUserChange();
+		// setUserTheme();
+		// await settingsOpen();
+
+	}
+
+	mButton('Save', onclickSaveMyTheme, dParent,{matop:10,className:'button'})
+
+	return { pal: palette.map(x => colorO(x)), palContrast };
+}
+
+
+function isLiteral(x) { return isString(x) || isNumber(x); }
+function settingsCheck(){
+	if (isdef(DA.settings)){
+		//console.log(iDiv(UI.settResetAll))
+		cmdDisable(UI.settResetAll.key); //console.log('disabled!')
+		for(const k in DA.settings){
+			if (isLiteral(U[k]) && DA.settings[k] != U[k]) {
+				//console.log('k',k,'different: enable!')
+				cmdEnable(UI.settResetAll.key);break;}
+		}
+		//console.log(iDiv(UI.settResetAll))
+	}
+}
+async function updateUserTheme() {
+	await postUserChange();
+	setUserTheme(U);
+	settingsCheck();
+}
+async function onclickSettResetAll() {
+	assertion(isdef(DA.settings), "NO DA.settings!!!!!!!!!!!!!!!")
+	if (JSON.stringify(U) == JSON.stringify(DA.settings)) return;
+	U = jsCopy(DA.settings);
+	await postUserChange(U, true);
+	setUserTheme();
+	await settingsOpen();
+	settingsCheck();
+}
+async function settingsOpen() {
+	DA.settings = jsCopy(U);
+	mClear('dMain');
+	let d = mDom('dMain',{},{id:'dSettingsMenu'}); // { padding: 0, overy: 'auto', hmax: '100vh' }, { id: 'dSettingsMenu' }); //,calcRestHeight('dMain') }, { id: 'dSettingsMenu' });
+	let submenu = valf(localStorage.getItem('settingsMenu'), 'settTheme');
+	//console.log('submenu',submenu)
+	settingsSidebar();
+	await UI[submenu].open();
+	settingsCheck();
+}
+function setUserTheme() {
+	setColors(U.color, U.fg);
+	setTexture(U);
+	settingsCheck();
+
+}
+function settingsSidebar() {
+	let wmin = 170;
+	mStyle('dLeft', { wmin: wmin });
+	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let gap = 5;
+	UI.settMyTheme = mCommand(d, 'settMyTheme', 'My Theme', { save: true }); mNewline(d, gap);
+	UI.settTheme = mCommand(d, 'settTheme', 'Themes', { save: true }); mNewline(d, gap);
+	UI.settColor = mCommand(d, 'settColor', 'Color', { save: true }); mNewline(d, gap);
+	UI.settFg = mCommand(d, 'settFg', 'Text Color', { save: true }); mNewline(d, gap);
+	UI.settTexture = mCommand(d, 'settTexture', 'Texture', { save: true }); mNewline(d, gap);
+	UI.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode', { save: true }); mNewline(d, 2 * gap);
+	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
+	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
+	UI.settAddYourTheme = mCommand(d, 'settAddYourTheme', 'Add Your Theme'); mNewline(d, gap);
+	// settingsCheck();
+}
+
+async function calcUserPalette(name) {
+	if (nundef(name)) name = U.name;
+	let user = await getUser(name);
+
+	let dParent = mPopup(null,{opacity:0});
+	return await showPaletteFor(dParent,user.texture, user.color, user.blendMode);
+}
+async function showPaletteFor(dParent,src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d = mDom(dParent, { w100:true, gap: 4 }); mCenterFlex(d);
+
+	let palette = [color];
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(d, { w:500, h: 300, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		//make a palette with color and other shades of that color
+		let ca = mDom(d,{w:500,h:300});
+		palette = arrCycle(paletteShades(color), 4);
+	}
+
+	let dominant = palette[0];
+	let palContrast = paletteContrastVariety(palette,palette.length);
+	mLinebreak(d);
+	showPaletteMini(d, palette);
+	mLinebreak(d);
+	showPaletteMini(d, palContrast);
+	mLinebreak(d);
+
+	return [palette.map(x=>colorO(x)),palContrast];
+}
+
+function colorSortByLightness(list){
+	let ext=list.map(x=>colorO(x));
+	let sorted = sortByDescending(ext,'lightness').map(x=>x.hex);
+	return sorted;
+}
+
+function colorGetPureHue(c) { c = colorO(c); return c.hue == 0 ? c.hex : colorFromHsl(c.hue, 100, 50); }
+function palettePureHue(pal) {
+	//let xb=w3color('black');console.log(xb)
+	//console.log(pal.map(x=>x.hex))
+	let p2 = pal.map(x => colorGetPureHue(x));
+	//console.log(p2)
+	return pal.map(x => colorO(colorGetPureHue(x)));
+}
+function paletteGetBestContrasting(pal) {
+	let clist = Array.from(arguments).slice(1).map(x => colorO(x)); //console.log(clist)
+	pal = pal.map(x => colorO(x));
+	let best = null, dbest = 0;
+	for (const p of pal) {
+		let arr = clist.map(x => colorDistanceHue(p, x)); //console.log(arr)
+		let dmax = arrMinMax(arr).min; //console.log(dmax,dbest,p.hue)
+		if (dmax > dbest) {
+			//console.log('new best',p.hue,dmax,'beats',dbest)
+			best = p; dbest = dmax;
+		}
+	}
+	if (dbest == 0) best = pal[4];
+	return { best, dbest };
+}
+function paletteContrastVariety(pal, n = 20) {
+	//return a palette of good contrasting colors to pal
+	pal = pal.map(x => colorO(x));
+	let res = [];
+
+	//add white and black
+	['white', 'black'].map(x => res.push(colorO(x)));
+
+	let o = paletteGetBestContrasting(pal, pal[0], pal[1]).best;
+	res.push(o)
+	let pal2 = jsCopy(pal).filter(x => x.hex != o.hex);
+	res.push(colorO(colorGetPureHue(o)));
+
+	let o2 = paletteGetBestContrasting(pal2, pal[0], pal[1]).best;
+	res.push(o2)
+	res.push(colorO(colorGetPureHue(o2)))
+
+	//res.push(colorO('#eea37b')); mimi
+	//push complement
+	res.push(colorO(colorComplement(pal[0].hex)));
+	res.push(colorO(colorComplement(pal[1].hex)));
+
+	[60, 120, 180, 240, 300].map(x => {
+		res.push(colorO(colorTurnHueBy(pal[0].hex, x)));
+		res.push(colorO(colorTurnHueBy(pal[1].hex, x)));
+	});
+
+	['silver', 'dimgray', '#ff0000', '#ffff00'].map(x => res.push(colorO(x)));
+	//console.log(res.map(x=>x.hex));
+
+	res = res.map(x => x.hex); res = arrRemoveDuplicates(res);
+	let palContrast = res.slice(0, 2);	//console.log(palContrast);
+	let sorted = colorSortByLightness(res.slice(2)); //console.log('===>',sorted);
+	let i = 0;
+	while (i < sorted.length) {
+		let hex = sorted[i];
+		let ok = true;
+		for (const h1 of palContrast) {
+			let d = colorDistance(hex, h1);//console.log(d);
+			if (d < 70) { ok = false; break; }
+		}
+		if (ok) palContrast.push(hex);
+		i++;
+	}
+
+
+	if (n < palContrast.length) palContrast = palContrast.slice(0, n)
+	return palContrast;
+
+}
+function paletteShades(color, from = -0.8, to = 0.8, step = 0.2) {
+	let res = [];
+	for (let frac = from; frac <= to; frac += step) {
+		let c = colorCalculator(frac, color, undefined, true);
+		res.push(c);
+	}
+	return res;
+}
+function paletteShadesQuad(color, from = -0.5, to = 0.5, step = 0.5) {
+	let tri = [color, colorTurnHueBy(color, 90), colorTurnHueBy(color, 180), colorTurnHueBy(color, 270)];
+	let res = jsCopy(tri);
+	for (const c1 of tri) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res,c);
+		}
+	}
+	return res;
+}
+function paletteShadesTri(color, from = -0.5, to = 0.5, step = 0.5) {
+	let tri = [color, colorTurnHueBy(color, 120), colorTurnHueBy(color, 240)];
+	let res = jsCopy(tri);
+	for (const c1 of tri) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res,c);
+		}
+	}
+	return res;
+}
+function paletteShadesBi(color, turnHueBy = 180, from = -0.8, to = 0.8, step = 0.4) {
+	let bi = [color, colorTurnHueBy(color, turnHueBy)];
+	let res = jsCopy(bi);
+	for (const c1 of bi) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res,c);
+		}
+	}
+	return res;
+}
+function paletteShadesHues(color, n=2, turnHueBy = 30, from = -0.5, to = 0.5, step = 0.5) {
+	let list=[color];
+	for(let i=1;i<n;i++) list.push(colorTurnHueBy(color, i*turnHueBy))
+	let res = jsCopy(list);
+	// a palette should have 8-10 colors
+	if (n==2){from=-.8;to=.8;step=.4;}
+	for (const c1 of list) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res,c);
+		}
+	}
+	return res;
+}
+function paletteTrans(color, from = 0.1, to = 1, step = 0.2) {
+	let res = [];
+	for (let frac = from; frac <= to; frac += step) {
+		let c = colorTrans(color, frac);
+		res.push(c);
+	}
+	return res;
+}
+function paletteTransWhiteBlack(n = 9) {
+	let c = colorHex('white');
+	let pal = [c];
+	let [iw, ib] = [Math.floor(n / 2) - 1, Math.floor((n - 1) / 2) - 1];
+	let [incw, incb] = [1 / (iw + 1), 1 / (ib + 1)];
+	for (let i = 1; i < iw; i++) {
+		let alpha = i * incw;
+		pal.push(colorTrans(c, alpha));
+	}
+	pal.push('transparent');
+	c = colorHex('black');
+	for (let i = 1; i < ib; i++) {
+		let alpha = i * incb;
+		pal.push(colorTrans(c, alpha));
+	}
+	pal.push(c);
+	return pal;
+}
+
+
+function colorDistanceHue(color1,color2){
+	let c1=colorO(color1);
+	let c2=colorO(color2);
+	let hueDiff = Math.abs(c1.hue-c2.hue);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180; // Normalize to [0, 1]
+	let num = (hueDistance*100).toFixed(2);
+	return Number(num);
+}
+function colorDistanceHueLum(color1,color2){
+	let c1=colorO(color1);
+	let c2=colorO(color2);
+	// console.log('color1',c1.hex,c1.hue,c1.lightness)
+	// console.log('color2',c2.hex,c2.hue,c2.lightness)
+	let hueDiff = Math.abs(c1.hue-c2.hue);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180; // Normalize to [0, 1]
+	let lightnessDistance = Math.abs(c1.lightness - c2.lightness); // Normalize to [0, 1]
+	// console.log('===>',hueDistance,lightnessDistance)
+	let distance = hueDistance + lightnessDistance; //koennte .5*lightnessDistance machen!
+	return Number((distance*100).toFixed(2));
+}
+function colorDistanceHSL(color1, color2) {
+	let hsl1 = hexToHSL(color1);
+	let hsl2 = hexToHSL(color2);
+
+	let hueDiff = Math.abs(hsl1.h - hsl2.h);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180; // Normalize to [0, 1]
+
+	let lightnessDistance = Math.abs(hsl1.l - hsl2.l) / 100; // Normalize to [0, 1]
+
+	let distance = hueDistance + 0.5 * lightnessDistance;
+	return distance;
+}
+function mPopup(dParent, styles={}, opts={}) {
+  if (nundef(dParent)) dParent = document.body;
+  if (isdef(mBy(opts.id))) mRemove(opts.id);
+  mIfNotRelative(dParent);
+  let animation = 'diamond-in-center .5s ease-in-out'; let transition = 'opacity .5s ease-in-out';
+  addKeys({ animation, bg:'white', fg:'black', padding:20, rounding:12, top: 50, left: '50%', transform: 'translateX(-50%)', position:'absolute' },styles);
+  let popup = mDom(dParent, styles, opts);
+  mButtonX(popup); //, null, 25, 4, 'silver');
+  return popup;
+}
+function paletteAddDistanceTo(pal,color,key,distfunc=colorGetContrast){
+	let opal = isDict(pal[0])?pal:paletteToObjects(pal);
+	for (let i = 0; i < pal.length; i++) {
+		let o = opal[i];
+		o[`dist_${key}`] = distfunc(o.hex, color);
+	}
+	return opal;
+}
+function paletteToObjects(pal){return pal.map(x=>colorO(x));}
+function showColorFromHue(dParent, hue, s = 100, l = 50) {
+  let c = colorHsl360ArgsToHex79(hue, s, l);
+  let w3 = colorNearestNamed(c, M.colorList);
+  let d1 = showObject(w3, ['name', 'hex', 'bucket', 'hue'], dParent, { bg: w3.hex,wmin:120 });
+  d1.innerHTML += colorGetBucket(w3.hex);
+}
+
+
+
+
+
+
+
+
+
+
+//#endregion
+
 //#region integrate 1.6.24 bau4.js =>newclosure.js
 
 function uiGadgetTypeCheckList(dParent, content, resolve, styles = {}, opts = {}) {

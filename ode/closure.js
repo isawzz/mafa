@@ -397,6 +397,12 @@ function calcScoreSum(table) {
 	}
 	return res;
 }
+async function calcUserPalette(name) {
+	if (nundef(name)) name = U.name;
+	let user = await getUser(name);
+	let dParent = mPopup(null, { opacity: 0 });
+	return await showPaletteFor(dParent, user.texture, user.color, user.blendMode);
+}
 function calculateGoodColors(bg, fg) {
 	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
 	let bgIsDark = colorIdealText(bg) == 'white';
@@ -500,9 +506,9 @@ function clearEvents() {
 function clearFleetingMessage() {
 	if (isdef(dFleetingMessage)) { dFleetingMessage.remove(); dFleetingMessage = null; }
 }
-function clearFlex(styles={}) {
+function clearFlex(styles = {}) {
 	let dp = clearBodyDiv({ bg: 'white', hmin: '100vh', padding: 0 });
-	addKeys({ gap: 10, padding:10 },styles)
+	addKeys({ gap: 10, padding: 10 }, styles)
 	let d = mDom(dp, styles); mFlexWrap(d);
 	return d;
 }
@@ -553,9 +559,9 @@ function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }
 
 function closePopup(name = 'dPopup') { if (isdef(mBy(name))) mBy(name).remove(); }
 
-function cmdDisable(cmd) { mClass(iDiv(cmd), 'disabled') }
+function cmdDisable(key) { mClass(mBy(key), 'disabled') }
 
-function cmdEnable(cmd) { mClassRemove(iDiv(cmd), 'disabled') }
+function cmdEnable(key) { mClassRemove(mBy(key), 'disabled') }
 
 function codeParseBlock(lines, i) {
 	let l = lines[i];
@@ -675,7 +681,7 @@ function collCloseSecondary() {
 	mClear(d);
 	mStyle(d, { w: 0, wmin: 0, border: 'transparent' });
 	UI.collSecondary.isOpen = false;
-	cmdEnable(UI.asSecondary);
+	cmdEnable(UI.asSecondary.key);
 }
 async function collDelete(collname) {
 	if (collLocked(collname) || !collExists(collname)) return;
@@ -714,32 +720,32 @@ async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 function collDisableItemCommands() {
 	for (const cmd of [UI.asAvatar, UI.editCollItem]) {
 		if (nundef(cmd)) continue;
-		cmdDisable(cmd);
+		cmdDisable(cmd.key);
 	}
 }
 function collDisableListCommands() {
 	for (const cmd of [UI.collClearSelections, UI.deleteSelected, UI.addSelected, UI.removeSelected, UI.editCategories, UI.addCategory, UI.removeCategory]) {
 		if (nundef(cmd)) continue;
-		cmdDisable(cmd);
+		cmdDisable(cmd.key);
 	}
 }
 function collEnableItemCommands() {
 	for (const cmd of [UI.asAvatar, UI.editCollItem]) {
 		if (nundef(cmd)) continue;
-		cmdEnable(cmd);
+		cmdEnable(cmd.key);
 	}
 }
 function collEnableListCommands() {
 	for (const cmd of [UI.collClearSelections, UI.addSelected, UI.editCategories, UI.addCategory, UI.removeCategory]) {
 		if (nundef(cmd)) continue;
-		cmdEnable(cmd);
+		cmdEnable(cmd.key);
 	}
 	let selist = UI.selectedImages;
 	let colls = selist.filter(x => !collLocked(stringAfter(x, '@')));
 	if (isEmpty(colls)) return;
 	for (const cmd of [UI.deleteSelected, UI.removeSelected,]) {
 		if (nundef(cmd)) continue;
-		cmdEnable(cmd);
+		cmdEnable(cmd.key);
 	}
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
@@ -900,7 +906,7 @@ function collOpenSecondary(rows, cols) {
 	let grid = coll.grid;
 	mStyle(grid, { bg: '#00000030' })
 	enableImageOrItemDrop(grid, collOnDropImage);
-	cmdDisable(UI.asSecondary);
+	cmdDisable(UI.asSecondary.key);
 }
 function collPostReload() {
 	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
@@ -1259,6 +1265,32 @@ function colorDistance(color1, color2) {
 	);
 	return Number(distance.toFixed(2));
 }
+function colorDistanceHSL(color1, color2) {
+	let hsl1 = hexToHSL(color1);
+	let hsl2 = hexToHSL(color2);
+	let hueDiff = Math.abs(hsl1.h - hsl2.h);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180;
+	let lightnessDistance = Math.abs(hsl1.l - hsl2.l) / 100;
+	let distance = hueDistance + 0.5 * lightnessDistance;
+	return distance;
+}
+function colorDistanceHue(color1, color2) {
+	let c1 = colorO(color1);
+	let c2 = colorO(color2);
+	let hueDiff = Math.abs(c1.hue - c2.hue);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180;
+	let num = (hueDistance * 100).toFixed(2);
+	return Number(num);
+}
+function colorDistanceHueLum(color1, color2) {
+	let c1 = colorO(color1);
+	let c2 = colorO(color2);
+	let hueDiff = Math.abs(c1.hue - c2.hue);
+	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180;
+	let lightnessDistance = Math.abs(c1.lightness - c2.lightness);
+	let distance = hueDistance + lightnessDistance;
+	return Number((distance * 100).toFixed(2));
+}
 function colorFarestNamed(inputColor, namedColors) {
 	let maxDistance = 0;
 	let nearestColor = null;
@@ -1355,6 +1387,8 @@ function colorGetLum01(c) {
 	let hsl = colorHexToHsl01Array(hex);
 	return hsl[2];
 }
+function colorGetPureHue(c) { c = colorO(c); return c.hue == 0 ? c.hex : colorFromHsl(c.hue, 100, 50); }
+
 function colorGetSat(c) { return colorGetSat01(c) * 100; }
 
 function colorGetSat01(c) {
@@ -1546,6 +1580,18 @@ function colorNearestNamed(inputColor, namedColors) {
 	});
 	return nearestColor;
 }
+function colorO(c) {
+	if (isDict(c)) return c;
+	let hex = colorFrom(c);
+	let o = w3color(hex);
+	let named = colorNearestNamed(hex);
+	let distance = Math.round(colorDistance(named.hex, hex));
+	o.name = named.name;
+	o.distance = distance;
+	o.bucket = colorGetBucket(hex);
+	o.hex = hex;
+	return o;
+}
 function colorPalette(color, type = 'shade') { return colorShades(colorFrom(color)); }
 
 function colorPaletteFromImage(img) {
@@ -1615,6 +1661,11 @@ function colorShades(color) {
 	}
 	return res;
 }
+function colorSortByLightness(list) {
+	let ext = list.map(x => colorO(x));
+	let sorted = sortByDescending(ext, 'lightness').map(x => x.hex);
+	return sorted;
+}
 function colorToHex79(c) {
 	if (colorIsHex79(c)) return c;
 	ColorDi = M.colorByName;
@@ -1650,19 +1701,6 @@ function colorToHwb360Object(c) {
 function colorToHwbRounded(c) {
 	let o = colorToHwb360Object(c);
 	return { h: Math.round(o.h), w: Math.round(o.w), b: Math.round(o.b) };
-}
-function colorO(c) {
-	if (isDict(c)) return c;
-	let hex = colorFrom(c);
-	let o = w3color(hex);
-	let named = colorNearestNamed(hex); //console.log('named',hex,named)
-	let distance = Math.round(colorDistance(named.hex, hex));
-	//console.log('distance to', named.name, distance);
-	o.name = named.name;
-	o.distance = distance;
-	o.bucket = colorGetBucket(hex);
-	o.hex = hex;
-	return o;
 }
 function colorTrans(cAny, alpha = 0.5) { return colorFrom(cAny, alpha); }
 
@@ -4393,6 +4431,8 @@ function isLightBeforeV(ctx, x, y) {
 }
 function isList(arr) { return Array.isArray(arr); }
 
+function isLiteral(x) { return isString(x) || isNumber(x); }
+
 function isMergeableObject(val) {
 	var nonNullObject = val && typeof val === 'object'
 	return nonNullObject
@@ -4688,8 +4728,8 @@ function mButtonX(dParent, handler = null, sz = 22, offset = 5, color = 'contras
 	let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
 	bx.onclick = ev => { evNoBubble(ev); if (!handler) dParent.remove(); else handler(ev); }
 	let o = M.superdi.xmark;
-	let bg = mGetStyle(dParent,'bg');
-	let fg = color == 'contrast'?colorIdealText(bg,true):color;
+	let bg = mGetStyle(dParent, 'bg');
+	let fg = color == 'contrast' ? colorIdealText(bg, true) : color;
 	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
 function mBy(id) { return document.getElementById(id); }
@@ -4814,28 +4854,10 @@ function mCols100(dParent, spec, gap = 4) {
 function mCommand(dParent, key, html, opts = {}) {
 	if (nundef(html)) html = capitalize(key);
 	let close = valf(opts.close, () => { console.log('close', key) });
-	// let closeHandler = valf(opts.close, () => { console.log('close', key) });
-	// let close = null;
-	// if (opts.save) {
-	// 	close = async () => { 
-	// 		localStorage.setItem('settingsMenu', key); 
-	// 		console.log('saved submenu',key)
-	// 		await closeHandler(); 
-	// 	}
-	// }else close = closeHandler;
 	let save = valf(opts.save, false);
 	let open = valf(opts.open, window[`onclick${capitalize(key)}`]);
-	// let openHandler = valf(opts.open, window[`onclick${capitalize(key)}`]);
-	// let open = null;
-	// if (opts.save) {
-	// 	open = async () => { 
-	// 		localStorage.setItem('settingsMenu', key); 
-	// 		console.log('saved submenu',key)
-	// 		await openHandler(); 
-	// 	}
-	// }else open = openHandler;
 	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
-	let a = mDom(d, {}, { key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
+	let a = mDom(d, {}, { id: `${key}`, key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
 	return { dParent, elem: d, div: a, key, open, close, save };
 }
 function mCreate(tag, styles, id) { let d = document.createElement(tag); if (isdef(id)) d.id = id; if (isdef(styles)) mStyle(d, styles); return d; }
@@ -5417,6 +5439,16 @@ function mPlace(elem, pos, offx, offy) {
 	let di = { t: 'top', b: 'bottom', r: 'right', l: 'left' };
 	elem.style.position = 'absolute';
 	elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
+}
+function mPopup(dParent, styles = {}, opts = {}) {
+	if (nundef(dParent)) dParent = document.body;
+	if (isdef(mBy(opts.id))) mRemove(opts.id);
+	mIfNotRelative(dParent);
+	let animation = 'diamond-in-center .5s ease-in-out'; let transition = 'opacity .5s ease-in-out';
+	addKeys({ animation, bg: 'white', fg: 'black', padding: 20, rounding: 12, top: 50, left: '50%', transform: 'translateX(-50%)', position: 'absolute' }, styles);
+	let popup = mDom(dParent, styles, opts);
+	mButtonX(popup);
+	return popup;
 }
 function mPos(d, x, y, unit = 'px') { mStyle(d, { left: x, top: y, position: 'absolute' }, unit); }
 
@@ -6539,16 +6571,37 @@ async function onclickSettBlendMode() {
 		showMessage('You need to set a Texture in order to set a Blend Mode!');
 		return;
 	}
-	localStorage.setItem('settingsMenu','settBlendMode')
+	localStorage.setItem('settingsMenu', 'settBlendMode')
 	showBlendModes();
 }
-async function onclickSettColor() { 
-	localStorage.setItem('settingsMenu','settColor')
-	await showColors(); 
+async function onclickSettColor() {
+	localStorage.setItem('settingsMenu', 'settColor')
+	await showColors();
 }
-async function onclickSettFg() { 
-	localStorage.setItem('settingsMenu','settFg')
-	await showTextColors(); 
+async function onclickSettFg() {
+	localStorage.setItem('settingsMenu', 'settFg')
+	await showTextColors();
+}
+async function onclickSettMyTheme() {
+	localStorage.setItem('settingsMenu', 'settMyTheme')
+	let dSettings = mBy('dSettingsMenu'); mClear(dSettings);
+	let d = mDom(dSettings, { h: '100vh', bg: U.color })
+	let dOuter = mDom(d, { padding: 25 }); // { padding: 10, gap: 10, margin:'auto', w:500, align:'center', bg:'white' }); //mCenterFlex(dParent);
+	mCenterFlex(dOuter)
+	let ui = await uiTypePalette(dOuter, U.color, U.fg, U.texture, U.blendMode);
+	return;
+	let d1 = mDom(dParent);
+	let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	palette.unshift(fill); palette.splice(8);
+	showPaletteMini(d1, palette);
+	d1.onclick = async () => {
+		U.palette = palette;
+		U.blendMode = blendCSS;
+		await updateUserTheme();
+	}
+	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
+	for (const blendMode of list) { await showBlendMode(dParent, blendMode); }
 }
 async function onclickSettRemoveTexture() {
 	if (isEmpty(U.texture)) return;
@@ -6562,14 +6615,15 @@ async function onclickSettResetAll() {
 	await postUserChange(U, true);
 	setUserTheme();
 	await settingsOpen();
+	settingsCheck();
 }
-async function onclickSettTexture() { 
-	localStorage.setItem('settingsMenu','settTexture')
-	await showTextures(); 
+async function onclickSettTexture() {
+	localStorage.setItem('settingsMenu', 'settTexture')
+	await showTextures();
 }
-async function onclickSettTheme() { 
-	localStorage.setItem('settingsMenu','settTheme')
-	await showThemes(); 
+async function onclickSettTheme() {
+	localStorage.setItem('settingsMenu', 'settTheme')
+	await showThemes();
 }
 async function onclickStartGame() {
 	await saveDataFromPlayerOptionsUI(DA.gamename);
@@ -6761,6 +6815,149 @@ function pSBCr(d) {
 		else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
 	}
 	return x;
+}
+function paletteAddDistanceTo(pal, color, key, distfunc = colorGetContrast) {
+	let opal = isDict(pal[0]) ? pal : paletteToObjects(pal);
+	for (let i = 0; i < pal.length; i++) {
+		let o = opal[i];
+		o[`dist_${key}`] = distfunc(o.hex, color);
+	}
+	return opal;
+}
+function paletteContrastVariety(pal, n = 20) {
+	pal = pal.map(x => colorO(x));
+	let res = [];
+	['white', 'black'].map(x => res.push(colorO(x)));
+	let o = paletteGetBestContrasting(pal, pal[0], pal[1]).best;
+	res.push(o)
+	let pal2 = jsCopy(pal).filter(x => x.hex != o.hex);
+	res.push(colorO(colorGetPureHue(o)));
+	let o2 = paletteGetBestContrasting(pal2, pal[0], pal[1]).best;
+	res.push(o2)
+	res.push(colorO(colorGetPureHue(o2)))
+	res.push(colorO(colorComplement(pal[0].hex)));
+	res.push(colorO(colorComplement(pal[1].hex)));
+	[60, 120, 180, 240, 300].map(x => {
+		res.push(colorO(colorTurnHueBy(pal[0].hex, x)));
+		res.push(colorO(colorTurnHueBy(pal[1].hex, x)));
+	});
+	['silver', 'dimgray', '#ff0000', '#ffff00'].map(x => res.push(colorO(x)));
+	res = res.map(x => x.hex); res = arrRemoveDuplicates(res);
+	let palContrast = res.slice(0, 2);
+	let sorted = colorSortByLightness(res.slice(2));
+	let i = 0;
+	while (i < sorted.length) {
+		let hex = sorted[i];
+		let ok = true;
+		for (const h1 of palContrast) {
+			let d = colorDistance(hex, h1);
+			if (d < 70) { ok = false; break; }
+		}
+		if (ok) palContrast.push(hex);
+		i++;
+	}
+	if (n < palContrast.length) palContrast = palContrast.slice(0, n)
+	return palContrast;
+}
+function paletteGetBestContrasting(pal) {
+	let clist = Array.from(arguments).slice(1).map(x => colorO(x));
+	pal = pal.map(x => colorO(x));
+	let best = null, dbest = 0;
+	for (const p of pal) {
+		let arr = clist.map(x => colorDistanceHue(p, x));
+		let dmax = arrMinMax(arr).min;
+		if (dmax > dbest) {
+			best = p; dbest = dmax;
+		}
+	}
+	if (dbest == 0) best = pal[4];
+	return { best, dbest };
+}
+function palettePureHue(pal) {
+	let p2 = pal.map(x => colorGetPureHue(x));
+	return pal.map(x => colorO(colorGetPureHue(x)));
+}
+function paletteShades(color, from = -0.8, to = 0.8, step = 0.2) {
+	let res = [];
+	for (let frac = from; frac <= to; frac += step) {
+		let c = colorCalculator(frac, color, undefined, true);
+		res.push(c);
+	}
+	return res;
+}
+function paletteShadesBi(color, turnHueBy = 180, from = -0.8, to = 0.8, step = 0.4) {
+	let bi = [color, colorTurnHueBy(color, turnHueBy)];
+	let res = jsCopy(bi);
+	for (const c1 of bi) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res, c);
+		}
+	}
+	return res;
+}
+function paletteShadesHues(color, n = 2, turnHueBy = 30, from = -0.5, to = 0.5, step = 0.5) {
+	let list = [color];
+	for (let i = 1; i < n; i++) list.push(colorTurnHueBy(color, i * turnHueBy))
+	let res = jsCopy(list);
+	if (n == 2) { from = -.8; to = .8; step = .4; }
+	for (const c1 of list) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res, c);
+		}
+	}
+	return res;
+}
+function paletteShadesQuad(color, from = -0.5, to = 0.5, step = 0.5) {
+	let tri = [color, colorTurnHueBy(color, 90), colorTurnHueBy(color, 180), colorTurnHueBy(color, 270)];
+	let res = jsCopy(tri);
+	for (const c1 of tri) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res, c);
+		}
+	}
+	return res;
+}
+function paletteShadesTri(color, from = -0.5, to = 0.5, step = 0.5) {
+	let tri = [color, colorTurnHueBy(color, 120), colorTurnHueBy(color, 240)];
+	let res = jsCopy(tri);
+	for (const c1 of tri) {
+		for (let frac = from; frac <= to; frac += step) {
+			let c = colorCalculator(frac, c1, undefined, true);
+			addIf(res, c);
+		}
+	}
+	return res;
+}
+function paletteToObjects(pal) { return pal.map(x => colorO(x)); }
+
+function paletteTrans(color, from = 0.1, to = 1, step = 0.2) {
+	let res = [];
+	for (let frac = from; frac <= to; frac += step) {
+		let c = colorTrans(color, frac);
+		res.push(c);
+	}
+	return res;
+}
+function paletteTransWhiteBlack(n = 9) {
+	let c = colorHex('white');
+	let pal = [c];
+	let [iw, ib] = [Math.floor(n / 2) - 1, Math.floor((n - 1) / 2) - 1];
+	let [incw, incb] = [1 / (iw + 1), 1 / (ib + 1)];
+	for (let i = 1; i < iw; i++) {
+		let alpha = i * incw;
+		pal.push(colorTrans(c, alpha));
+	}
+	pal.push('transparent');
+	c = colorHex('black');
+	for (let i = 1; i < ib; i++) {
+		let alpha = i * incb;
+		pal.push(colorTrans(c, alpha));
+	}
+	pal.push(c);
+	return pal;
 }
 function pathFromBgImage(bgImage) { return bgImage.substring(5, bgImage.length - 2); }
 
@@ -7452,15 +7649,26 @@ function setTexture(item) {
 function setUserTheme() {
 	setColors(U.color, U.fg);
 	setTexture(U);
+	settingsCheck();
+}
+function settingsCheck() {
+	if (isdef(DA.settings)) {
+		cmdDisable(UI.settResetAll.key);
+		for (const k in DA.settings) {
+			if (isLiteral(U[k]) && DA.settings[k] != U[k]) {
+				cmdEnable(UI.settResetAll.key); break;
+			}
+		}
+	}
 }
 async function settingsOpen() {
 	DA.settings = jsCopy(U);
 	mClear('dMain');
-	let d = mDom('dMain',{},{id:'dSettingsMenu'}); // { padding: 0, overy: 'auto', hmax: '100vh' }, { id: 'dSettingsMenu' }); //,calcRestHeight('dMain') }, { id: 'dSettingsMenu' });
+	let d = mDom('dMain', {}, { id: 'dSettingsMenu' }); // { padding: 0, overy: 'auto', hmax: '100vh' }, { id: 'dSettingsMenu' }); //,calcRestHeight('dMain') }, { id: 'dSettingsMenu' });
 	let submenu = valf(localStorage.getItem('settingsMenu'), 'settTheme');
-	console.log('submenu',submenu)
 	settingsSidebar();
 	await UI[submenu].open();
+	settingsCheck();
 }
 function settingsSidebar() {
 	let wmin = 170;
@@ -7563,6 +7771,12 @@ function showColorBoxes(w3extlist, skeys, dParent, styles = {}) {
 		items.push(item);
 	}
 	return items;
+}
+function showColorFromHue(dParent, hue, s = 100, l = 50) {
+	let c = colorHsl360ArgsToHex79(hue, s, l);
+	let w3 = colorNearestNamed(c, M.colorList);
+	let d1 = showObject(w3, ['name', 'hex', 'bucket', 'hue'], dParent, { bg: w3.hex, wmin: 120 });
+	d1.innerHTML += colorGetBucket(w3.hex);
 }
 async function showColors() {
 	let d = mBy('dSettingsMenu'); mClear(d);
@@ -7868,6 +8082,28 @@ function showPalette(dParent, colors) {
 		let html = `${c}<br>hue:${w3color(c).hue}<br>sat:${Math.round(w3color(c).sat * 100)}<br>lum:${Math.round(w3color(c).lightness * 100)}`
 		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: colorIdealText(c) }, { html });
 	}
+}
+async function showPaletteFor(dParent, src, color, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d = mDom(dParent, { w100: true, gap: 4 }); mCenterFlex(d);
+	let palette = [color];
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(d, { w: 500, h: 300, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		let ca = mDom(d, { w: 500, h: 300 });
+		palette = arrCycle(paletteShades(color), 4);
+	}
+	let dominant = palette[0];
+	let palContrast = paletteContrastVariety(palette, palette.length);
+	mLinebreak(d);
+	showPaletteMini(d, palette);
+	mLinebreak(d);
+	showPaletteMini(d, palContrast);
+	mLinebreak(d);
+	return [palette.map(x => colorO(x)), palContrast];
 }
 function showPaletteMini(dParent, colors, sz = 30) {
 	let d1 = mDom(dParent, { display: 'flex', wrap: true, gap: 2 }); //, hmax: '100vh', dir: 'column' });
@@ -8356,7 +8592,6 @@ async function switchToUser(uname, menu) {
 	if (isEmpty(uname)) uname = 'guest';
 	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
-	//localStorage.removeItem('settingsMenu');
 	localStorage.setItem('username', uname);
 	iDiv(UI.user).innerHTML = uname;
 	setUserTheme();
@@ -8783,6 +9018,63 @@ function uiTypeExtraWorker(w) {
 	let select = selectExtraWorker;
 	return { itemtype: 'worker', a: s, key: `worker_${res}`, o: { res: res, n: n }, friendly: s, present, select }
 }
+async function uiTypePalette(dParent, color, fg, src, blendMode) {
+	let fill = color;
+	let bgBlend = getBlendCanvas(blendMode);
+	let d = mDom(dParent, { w100: true, gap: 4 }); mCenterFlex(d);
+	let NewValues = { fg, bg: color };
+	let palette = [color];
+	let dContainer = mDom(d, { w: 500, h: 300 });
+	if (isdef(src)) {
+		let ca = await getCanvasCtx(dContainer, { w: 500, h: 300, fill, bgBlend }, { src });
+		palette = await getPaletteFromCanvas(ca.cv);
+		palette.unshift(fill);
+	} else {
+		palette = arrCycle(paletteShades(color), 4);
+	}
+	let dominant = palette[0];
+	let palContrast = paletteContrastVariety(palette, palette.length);
+	mLinebreak(d);
+	let bgItems = showPaletteMini(d, palette);
+	mLinebreak(d);
+	let fgItems = showPaletteMini(d, palContrast);
+	mLinebreak(d);
+	mIfNotRelative(dParent);
+	let dText = mDom(dParent, { 'pointer-events': 'none', align: 'center', fg: 'white', fz: 30, position: 'absolute', top: 0, left: 0, w100: true, h100: true });
+	mCenterFlex(dText);
+	dText.innerHTML = `<br>HALLO<br>das<br>ist ein Text`
+	for (const item of fgItems) {
+		let div = iDiv(item);
+		mStyle(div, { cursor: 'pointer' });
+		div.onclick = () => {
+			mStyle(dText, { fg: item.bg });
+			NewValues.fg = item.bg;
+			console.log('NewValues', NewValues);
+		}
+	}
+	for (const item of bgItems) {
+		let div = iDiv(item);
+		mStyle(div, { cursor: 'pointer' });
+		div.onclick = async () => {
+			if (isdef(src)) {
+				mClear(dContainer);
+				let fill = item.bg;
+				await getCanvasCtx(dContainer, { w: 500, h: 300, fill, bgBlend }, { src });
+			}
+			mStyle(dParent, { bg: item.bg });
+			NewValues.bg = item.bg;
+		}
+	}
+	async function onclickSaveMyTheme() {
+		if (U.fg == NewValues.fg && U.color == NewValues.bg) return;
+		U.fg = NewValues.fg;
+		U.color = NewValues.bg;
+		await updateUserTheme();
+		await onclickSettMyTheme();
+	}
+	mButton('Save', onclickSaveMyTheme, dParent, { matop: 10, className: 'button' })
+	return { pal: palette.map(x => colorO(x)), palContrast };
+}
 function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
 	let dOuter = mDom(dParent); dOuter.setAttribute('inert', true); //console.log(dOuter)
 	if (layout == 'rowflex') mStyle(dOuter, { display: 'flex', justify: 'center' });
@@ -8846,6 +9138,7 @@ function updateUserImageToBotHuman(playername, value) {
 async function updateUserTheme() {
 	await postUserChange();
 	setUserTheme(U);
+	settingsCheck();
 }
 async function uploadImg(img, unique, coll, name) {
 	return new Promise((resolve, reject) => {

@@ -5,7 +5,7 @@ function _showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { padding: 10, gap: 4 }); mFlexWrap(d1);
 	for (var c of colors) {
 		let bg = c.hex;
-		let html = `${c.name}`; 
+		let html = `${c.name}`;
 		let dmini = mDom(d1, { padding: 10, bg, fg: colorIdealText(bg) }, { html, class: 'colorbox', dataColor: bg });
 	}
 }
@@ -60,7 +60,7 @@ function addToolX(cropper, d) {
 	let img = cropper.img;
 	function createCropTool() {
 		let rg = mRadioGroup(d, {}, 'rSizes', 'Select crop area: '); mClass(rg, 'input');
-		let handler = cropper.setSize; //(_, x) => cropper.setSize(x);
+		let handler = cropper.setSize;
 		mRadio('manual', [0, 0], 'rSizes', rg, {}, handler, 'rSizes', true)
 		let [w, h] = [img.offsetWidth, img.offsetHeight];
 		if (w >= 128 && h >= 128) mRadio('128 x 128 (emo)', [128, 128], 'rSizes', rg, {}, handler, 'rSizes', false)
@@ -87,8 +87,7 @@ function addToolX(cropper, d) {
 	}
 	function createSquareTool() {
 		let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-		let handler = x=>squareTo(cropper,x); //(_, x) => squareTo(cropper, x);
-		//mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, (_, x) => cropper.crop(x), 'rSquare', false)
+		let handler = x => squareTo(cropper, x);
 		mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
 		for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 			mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
@@ -208,6 +207,11 @@ function arrClear(arr) { arr.length = 0; return arr; }
 
 function arrCycle(arr, count) { return arrRotate(arr, count); }
 
+function arrDisjoint(ad1, ad2, prop) {
+	console.log(isDict(ad1), isDict(ad2))
+	if (isDict(ad1) && isDict(ad2)) return Object.keys(ad1).find(x => x in ad2);
+	else return ad1.map(x => x[prop]).find(el => ad2.map(x => x[prop]) == el);
+}
 function arrLast(arr) { return arr.length > 0 ? arr[arr.length - 1] : null; }
 
 function arrMax(arr, f) { return arrMinMax(arr, f).max; }
@@ -283,6 +287,8 @@ function assertion(cond) {
 		throw new Error('TERMINATING!!!')
 	}
 }
+function bgImageFromPath(path) { return isdef(path) ? `url('${path}')` : null; }
+
 function buyProgressCard(ev) {
 	let o = evToAttrElem(ev, 'key');
 	console.log('player buys', o.val);
@@ -391,6 +397,27 @@ function calcScoreSum(table) {
 	}
 	return res;
 }
+function calculateGoodColors(bg, fg) {
+	let fgIsLight = isdef(fg) ? colorIdealText(fg) == 'black' : colorIdealText(bg) == 'white';
+	let bgIsDark = colorIdealText(bg) == 'white';
+	if (nundef(fg)) fg = colorIdealText(bg);
+	let bgNav = bg;
+	fg = colorToHex79(fg);
+	if (fgIsLight) {
+		if (isEmpty(U.texture)) { bgNav = '#00000040'; }
+		else if (bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorDark(bg, 50), .8); }
+	} else {
+		if (isEmpty(U.texture)) { bgNav = '#ffffff40'; }
+		else if (!bgIsDark) { bgNav = colorTrans(bg, .8); }
+		else { bgNav = colorTrans(colorLight(bg, 50), .8); }
+	}
+	let realBg = bg;
+	if (bgNav == realBg) bgNav = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let bgContrast = fgIsLight ? colorDark(bgNav, .2) : colorLight(bgNav, .2);
+	let fgContrast = fgIsLight ? '#ffffff80' : '#00000080';
+	return [realBg, bgContrast, bgNav, fg, fgContrast];
+}
 function canAct() { return (aiActivated || uiActivated) && !auxOpen; }
 
 function capitalize(s) {
@@ -473,6 +500,12 @@ function clearEvents() {
 function clearFleetingMessage() {
 	if (isdef(dFleetingMessage)) { dFleetingMessage.remove(); dFleetingMessage = null; }
 }
+function clearFlex(styles={}) {
+	let dp = clearBodyDiv({ bg: 'white', hmin: '100vh', padding: 0 });
+	addKeys({ gap: 10, padding:10 },styles)
+	let d = mDom(dp, styles); mFlexWrap(d);
+	return d;
+}
 function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); }
 
 function clearParent(ev) { mClear(ev.target.parentNode); }
@@ -520,9 +553,9 @@ function closeLeftSidebar() { mClear('dLeft'); mStyle('dLeft', { w: 0, wmin: 0 }
 
 function closePopup(name = 'dPopup') { if (isdef(mBy(name))) mBy(name).remove(); }
 
-function cmdDisable(cmd) { mClass(iDiv(cmd), 'disabled') }
+function cmdDisable(key) { mClass(mBy(key), 'disabled') }
 
-function cmdEnable(cmd) { mClassRemove(iDiv(cmd), 'disabled') }
+function cmdEnable(key) { mClassRemove(mBy(key), 'disabled') }
 
 function codeParseBlock(lines, i) {
 	let l = lines[i];
@@ -642,7 +675,7 @@ function collCloseSecondary() {
 	mClear(d);
 	mStyle(d, { w: 0, wmin: 0, border: 'transparent' });
 	UI.collSecondary.isOpen = false;
-	cmdEnable(UI.asSecondary);
+	cmdEnable(UI.asSecondary.key);
 }
 async function collDelete(collname) {
 	if (collLocked(collname) || !collExists(collname)) return;
@@ -681,32 +714,32 @@ async function collDeleteOrRemove(k, collname, di, deletedKeys) {
 function collDisableItemCommands() {
 	for (const cmd of [UI.asAvatar, UI.editCollItem]) {
 		if (nundef(cmd)) continue;
-		cmdDisable(cmd);
+		cmdDisable(cmd.key);
 	}
 }
 function collDisableListCommands() {
 	for (const cmd of [UI.collClearSelections, UI.deleteSelected, UI.addSelected, UI.removeSelected, UI.editCategories, UI.addCategory, UI.removeCategory]) {
 		if (nundef(cmd)) continue;
-		cmdDisable(cmd);
+		cmdDisable(cmd.key);
 	}
 }
 function collEnableItemCommands() {
 	for (const cmd of [UI.asAvatar, UI.editCollItem]) {
 		if (nundef(cmd)) continue;
-		cmdEnable(cmd);
+		cmdEnable(cmd.key);
 	}
 }
 function collEnableListCommands() {
 	for (const cmd of [UI.collClearSelections, UI.addSelected, UI.editCategories, UI.addCategory, UI.removeCategory]) {
 		if (nundef(cmd)) continue;
-		cmdEnable(cmd);
+		cmdEnable(cmd.key);
 	}
 	let selist = UI.selectedImages;
 	let colls = selist.filter(x => !collLocked(stringAfter(x, '@')));
 	if (isEmpty(colls)) return;
 	for (const cmd of [UI.deleteSelected, UI.removeSelected,]) {
 		if (nundef(cmd)) continue;
-		cmdEnable(cmd);
+		cmdEnable(cmd.key);
 	}
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
@@ -867,7 +900,7 @@ function collOpenSecondary(rows, cols) {
 	let grid = coll.grid;
 	mStyle(grid, { bg: '#00000030' })
 	enableImageOrItemDrop(grid, collOnDropImage);
-	cmdDisable(UI.asSecondary);
+	cmdDisable(UI.asSecondary.key);
 }
 function collPostReload() {
 	if (UI.collPrimary.isOpen) { collInitCollection(UI.collPrimary.name, UI.collPrimary); }
@@ -943,7 +976,7 @@ async function collShowImageInCell(cell, src) {
 function collSidebar() {
 	let wmin = 170;
 	mStyle('dLeft', { wmin: wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 100, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
 	let gap = 5;
 	UI.collSelectAll = mCommand(d, 'collSelectAll', 'Select All'); mNewline(d, gap);
 	UI.collSelectPage = mCommand(d, 'collSelectPage', 'Select Page'); mNewline(d, gap);
@@ -986,6 +1019,172 @@ function collectPlayers() {
 	for (const name of DA.playerList) { players[name] = allPlToPlayer(name); }
 	return players;
 }
+function colorBlendMode(c1, c2, blendMode) {
+	function colorBurn(base, blend) {
+		return (blend === 0) ? 0 : Math.max(0, 255 - Math.floor((255 - base) / blend));
+	}
+	function blendColorBurn(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = colorBurn(baseR, blendR);
+		let resultG = colorBurn(baseG, blendG);
+		let resultB = colorBurn(baseB, blendB);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function blendColorDodge(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		const dodge = (a, b) => (b === 255) ? 255 : Math.min(255, ((a << 8) / (255 - b)));
+		let r = dodge(r1, r2);
+		let g = dodge(g1, g2);
+		let b = dodge(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendColor(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let cfinal = colorHsl01ArgsToRgbArray(h2, s1, l1);
+		return colorRgbArgsToHex79(...cfinal);
+	}
+	function blendDarken(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let r = Math.min(r1, r2);
+		let g = Math.min(g1, g2);
+		let b = Math.min(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function difference(a, b) {
+		return Math.abs(a - b);
+	}
+	function blendDifference(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = difference(baseR, blendR);
+		let resultG = difference(baseG, blendG);
+		let resultB = difference(baseB, blendB);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function exclusion(a, b) {
+		a /= 255;
+		b /= 255;
+		return (a + b - 2 * a * b) * 255;
+	}
+	function blendExclusion(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = Math.round(exclusion(baseR, blendR));
+		let resultG = Math.round(exclusion(baseG, blendG));
+		let resultB = Math.round(exclusion(baseB, blendB));
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function hardLight(a, b) {
+		a /= 255;
+		b /= 255;
+		return (b < 0.5) ? (2 * a * b) : (1 - 2 * (1 - a) * (1 - b));
+	}
+	function blendHardLight(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = Math.round(hardLight(baseR, blendR) * 255);
+		let resultG = Math.round(hardLight(baseG, blendG) * 255);
+		let resultB = Math.round(hardLight(baseB, blendB) * 255);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function blendHue(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let [baseH, baseS, baseL] = colorRgbArgsToHsl01Array(baseR, baseG, baseB);
+		let [blendH, blendS, blendL] = colorRgbArgsToHsl01Array(blendR, blendG, blendB);
+		let [resultR, resultG, resultB] = colorHsl01ArgsToRgbArray(blendH, baseS, baseL);
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	function blendLighten(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let r = Math.max(r1, r2);
+		let g = Math.max(g1, g2);
+		let b = Math.max(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendLuminosity(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let [r, g, b] = colorHsl01ArgsToRgbArray(h1, s1, l2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendMultiply(color1, color2) {
+		let [r1, g1, b1] = colorHexToRgbArray(color1);
+		let [r2, g2, b2] = colorHexToRgbArray(color2);
+		let r = (r1 * r2) / 255;
+		let g = (g1 * g2) / 255;
+		let b = (b1 * b2) / 255;
+		return colorRgbArgsToHex79(Math.round(r), Math.round(g), Math.round(b));
+	}
+	function blendNormal(baseColor, blendColor) {
+		return blendColor;
+	}
+	function blendOverlay(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		const overlayCalculate = (a, b) => (a <= 128) ? (2 * a * b / 255) : (255 - 2 * (255 - a) * (255 - b) / 255);
+		let r = overlayCalculate(r1, r2);
+		let g = overlayCalculate(g1, g2);
+		let b = overlayCalculate(b1, b2);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function blendSaturation(baseColor, blendColor) {
+		let [r1, g1, b1] = colorHexToRgbArray(baseColor);
+		let [r2, g2, b2] = colorHexToRgbArray(blendColor);
+		let [h1, s1, l1] = colorRgbArgsToHsl01Array(r1, g1, b1);
+		let [h2, s2, l2] = colorRgbArgsToHsl01Array(r2, g2, b2);
+		let cfinal = colorHsl01ArgsToRgbArray(h1, s2, l1);
+		return colorRgbArgsToHex79(...cfinal);
+	}
+	function blendScreen(color1, color2) {
+		let [r1, g1, b1] = colorHexToRgbArray(color1);
+		let [r2, g2, b2] = colorHexToRgbArray(color2);
+		let r = 255 - (((255 - r1) * (255 - r2)) / 255);
+		let g = 255 - (((255 - g1) * (255 - g2)) / 255);
+		let b = 255 - (((255 - b1) * (255 - b2)) / 255);
+		return colorRgbArgsToHex79(r, g, b);
+	}
+	function softLight(a, b) {
+		a /= 255;
+		b /= 255;
+		let result;
+		if (a < 0.5) {
+			result = (2 * a - 1) * (b - b * b) + b;
+		} else {
+			result = (2 * a - 1) * (Math.sqrt(b) - b) + b;
+		}
+		return Math.min(Math.max(result * 255, 0), 255);
+	}
+	function blendSoftLight(baseColor, blendColor) {
+		let [baseR, baseG, baseB] = colorHexToRgbArray(baseColor);
+		let [blendR, blendG, blendB] = colorHexToRgbArray(blendColor);
+		let resultR = Math.round(softLight(baseR, blendR));
+		let resultG = Math.round(softLight(baseG, blendG));
+		let resultB = Math.round(softLight(baseB, blendB));
+		return colorRgbArgsToHex79(resultR, resultG, resultB);
+	}
+	let di = {
+		darken: blendDarken, lighten: blendLighten, color: blendColor, colorBurn: blendColorBurn, colorDodge: blendColorDodge,
+		difference: blendDifference, exclusion: blendExclusion, hardLight: blendHardLight, hue: blendHue,
+		luminosity: blendLuminosity, multiply: blendMultiply, normal: blendNormal, overlay: blendOverlay,
+		saturation: blendSaturation, screen: blendScreen, softLight: blendSoftLight
+	};
+	if (blendMode.includes('-')) blendMode = stringCSSToCamelCase(blendMode);
+	let func = di[blendMode]; if (nundef(di)) { console.log('blendMode', blendMode); return c1; }
+	c1hex = colorFrom(c1);
+	c2hex = colorFrom(c2);
+	let res = func(c1hex, c2hex);
+	return res;
+}
 function colorCalculator(p, c0, c1, l) {
 	function pSBCr(d) {
 		let i = parseInt, m = Math.round, a = typeof c1 == 'string';
@@ -1023,19 +1222,147 @@ function colorCalculator(p, c0, c1, l) {
 	if (h) return 'rgb' + (f ? 'a(' : '(') + r + ',' + g + ',' + b + (f ? ',' + m(a * 1000) / 1000 : '') + ')';
 	else return '#' + (4294967296 + r * 16777216 + g * 65536 + b * 256 + (f ? m(a * 255) : 0)).toString(16).slice(1, f ? undefined : -2);
 }
+function colorComplement(color) {
+	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
+	let compR = 255 - r;
+	let compG = 255 - g;
+	let compB = 255 - b;
+	return colorRgbArgsToHex79(compR, compG, compB);
+}
+function colorContrastFromElem(elem, list = ['white', 'black']) {
+	let bg = mGetStyle(elem, 'bg');
+	return colorContrastPickFromList(bg, list);
+}
+function colorContrastPickFromList(color, colorlist = ['white', 'black']) {
+	let contrast = 0;
+	let result = null;
+	let rgb = colorHexToRgbArray(colorFrom(color));
+	for (c1 of colorlist) {
+		let x = colorHexToRgbArray(colorFrom(c1));
+		let c = colorGetContrast(rgb, x);
+		if (c > contrast) { contrast = c; result = c1; }
+	}
+	return result;
+}
 function colorDark(c, percent = 50, log = true) {
 	if (nundef(c)) c = rColor(); else c = colorFrom(c);
 	let zero1 = -percent / 100;
 	return colorCalculator(zero1, c, undefined, !log);
+}
+function colorDistance(color1, color2) {
+	let [r1, g1, b1] = colorHexToRgbArray(colorFrom(color1));
+	let [r2, g2, b2] = colorHexToRgbArray(colorFrom(color2));
+	let distance = Math.sqrt(
+		Math.pow(r2 - r1, 2) +
+		Math.pow(g2 - g1, 2) +
+		Math.pow(b2 - b1, 2)
+	);
+	return Number(distance.toFixed(2));
+}
+function colorFarestNamed(inputColor, namedColors) {
+	let maxDistance = 0;
+	let nearestColor = null;
+	namedColors.forEach(namedColor => {
+		let distance = colorDistance(inputColor, namedColor.hex);
+		if (distance > maxDistance) {
+			maxDistance = distance;
+			nearestColor = namedColor;
+		}
+	});
+	return nearestColor;
 }
 function colorFrom(c, a) {
 	c = colorToHex79(c);
 	if (nundef(a)) return c;
 	return c.substring(0, 7) + (a < 1 ? alphaToHex(a) : '');
 }
-function colorFromHsl(h,s,l,a){return colorHsl360ArgsToHex79(h,s,l,a);}
+function colorFromHsl(h, s = 100, l = 50) { return colorFrom({ h, s, l }); }
 
-function colorFromRgb(r,g,b,a){return colorRgbArgsToHex79(r,g,b,a);}
+function colorFromHslNamed(h, s = 100, l = 50) { let x = colorFrom({ h, s, l }); return colorNearestNamed(x); }
+
+function colorFromHue(h, s = 100, l = 50) { return colorFrom({ h, s, l }); }
+
+function colorFromHueNamed(h, s = 100, l = 50) { return colorFromHslNamed(h, s, l); }
+
+function colorFromHwb(h, wPercent, bPercent) {
+	let [r, g, b] = colorHwb360ToRgbArray(h, wPercent, bPercent);
+	return colorRgbArgsToHex79(r, g, b);
+}
+function colorFromNat(ncol, wPercent, bPercent) {
+	return colorFromNcol(ncol, wPercent, bPercent);
+}
+function colorFromNcol(ncol, wPercent, bPercent) {
+	let h = colorNcolToHue(ncol); console.log('hue', h);
+	return colorFromHwb(h, wPercent, bPercent);
+}
+function colorFromRgb(r, g, b) { return colorFrom({ r, g, b }); }
+
+function colorFromRgbNamed(r, g, b) { let x = colorFrom({ r, g, b }); return colorNearestNamed(x); }
+
+function colorGetBlack(c) { return colorToHwb360Object(c).b; }
+
+function colorGetBucket(c) {
+	let buckets = 'red orange yellow lime green greencyan cyan cyanblue blue bluemagenta magenta magentared black'.split(' ');
+	c = colorFrom(c);
+	let hsl = colorHexToHsl360Object(c);
+	let hue = hsl.h;
+	let hshift = (hue + 16) % 360;
+	let ib = Math.floor(hshift / 30);
+	return buckets[ib];
+}
+function colorGetContrast(c1, c2) {
+	function luminance(r, g, b) {
+		var a = [r, g, b].map(function (v) {
+			v /= 255;
+			return v <= 0.03928
+				? v / 12.92
+				: Math.pow((v + 0.055) / 1.055, 2.4);
+		});
+		return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+	}
+	let rgb1 = colorHexToRgbArray(colorFrom(c1));
+	let rgb2 = colorHexToRgbArray(colorFrom(c2));
+	var lum1 = luminance(rgb1[0], rgb1[1], rgb1[2]);
+	var lum2 = luminance(rgb2[0], rgb2[1], rgb2[2]);
+	var brightest = Math.max(lum1, lum2);
+	var darkest = Math.min(lum1, lum2);
+	let res = (brightest + 0.05) / (darkest + 0.05);
+	return Number(res.toFixed(3));
+}
+function colorGetDicolorList() {
+	let di = M.dicolor;
+	let list = [];
+	for (const k in di) {
+		let bucket = di[k];
+		for (const name in bucket) {
+			let o = { name, bucket: k, hex: bucket[name] };
+			list.push(o);
+		}
+	}
+	return list;
+}
+function colorGetHue(c) { return colorGetHue01(c) * 360; }
+
+function colorGetHue01(c) {
+	let hex = colorFrom(c);
+	let hsl = colorHexToHsl01Array(hex);
+	return hsl[0];
+}
+function colorGetLum(c) { return colorGetLum01(c) * 100; }
+
+function colorGetLum01(c) {
+	let hex = colorFrom(c);
+	let hsl = colorHexToHsl01Array(hex);
+	return hsl[2];
+}
+function colorGetSat(c) { return colorGetSat01(c) * 100; }
+
+function colorGetSat01(c) {
+	let hex = colorFrom(c);
+	let hsl = colorHexToHsl01Array(hex);
+	return hsl[1];
+}
+function colorGetWhite(c) { return colorToHwb360Object(c).w; }
 
 function colorHex45ToHex79(c) {
 	let r = c[1];
@@ -1064,6 +1391,11 @@ function colorHexToHsl360String(c) {
 	let o = colorHsl01ArrayToHsl360Object(arr);
 	if (nundef(o.a)) return `hsl(${o.h},${o.s}%,${o.l}%)`;
 	return `hsla(${o.h},${o.s}%,${o.l}%,${o.a})`;
+}
+function colorHexToHslRounded(c) {
+	let arr = colorHexToHsl01Array(c);
+	let o = colorHsl01ArrayToHsl360Object(arr);
+	return { h: Math.round(o.h), s: Math.round(o.s), l: Math.round(o.l) };
 }
 function colorHexToRgbArray(c) {
 	if (c.length < 7) c = colorHex45ToHex79(c);
@@ -1141,6 +1473,43 @@ function colorHsl360StringToHsl360Object(c) {
 	if (isdef(a) && a > 1) a /= 10;
 	return { h, s, l, a };
 }
+function colorHueToNat(hue) {
+	let x = Math.floor(hue / 60);
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
+	let color = pure[x];
+	let inc = hue % 60;
+	return color.toUpperCase()[0] + inc;
+}
+function colorHueToNcol(hue) {
+	let x = Math.floor(hue / 60);
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'];
+	let color = pure[x];
+	let inc = (hue % 60) / 0.6;
+	return color.toUpperCase()[0] + toPercent(hue % 60, 60);
+}
+function colorHwb360ToRgbArray(h, w, b) {
+	let [r, g, blue] = colorHsl01ArgsToRgbArray(h / 360, 1, 0.5);
+	let whiteness = w / 100;
+	let blackness = b / 100;
+	r = Math.round((r / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	g = Math.round((g / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	b = Math.round((blue / 255 * (1 - whiteness - blackness) + whiteness) * 255);
+	return [r, g, b];
+}
+function colorIdealText(bg, grayPreferred = false, nThreshold = 105) {
+	let rgb = colorHexToRgbObject(colorFrom(bg));
+	let r = rgb.r;
+	let g = rgb.g;
+	let b = rgb.b;
+	var bgDelta = r * 0.299 + g * 0.587 + b * 0.114;
+	var foreColor = 255 - bgDelta < nThreshold ? 'black' : 'white';
+	if (grayPreferred) foreColor = 255 - bgDelta < nThreshold ? 'dimgray' : 'snow';
+	return foreColor;
+}
+function colorIsGrey(c, tolerance = 5) {
+	let { r, g, b } = colorHexToRgbObject(colorFrom(c));
+	return Math.abs(r - g) <= tolerance && Math.abs(r - b) <= tolerance && Math.abs(g - b) <= tolerance;
+}
 function colorIsHex79(c) { return isString(c) && c[0] == '#' && (c.length == 7 || c.length == 9); }
 
 function colorLight(c, percent = 20, log = true) {
@@ -1149,6 +1518,44 @@ function colorLight(c, percent = 20, log = true) {
 	} else c = colorFrom(c);
 	let zero1 = percent / 100;
 	return colorCalculator(zero1, c, undefined, !log);
+}
+function colorNatToHue(ncol) {
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'].map(x => x.toUpperCase()[0]);
+	let [letter, num] = [ncol[0], Number(ncol.substring(1))];
+	let idx = pure.indexOf(letter);
+	let hue = idx * 60 + num;
+	return hue;
+}
+function colorNcolToHue(ncol) {
+	let pure = ['red', 'yellow', 'green', 'cyan', 'blue', 'magenta'].map(x => x.toUpperCase()[0]);
+	let [letter, num] = [ncol[0], Number(ncol.substring(1))];
+	let idx = pure.indexOf(letter);
+	let hue = idx * 60 + fromPercent(num, 60);
+	return hue;
+}
+function colorNearestNamed(inputColor, namedColors) {
+	if (nundef(namedColors)) namedColors = M.colorList;
+	let minDistance = Infinity;
+	let nearestColor = null;
+	namedColors.forEach(namedColor => {
+		let distance = colorDistance(inputColor, namedColor.hex);
+		if (distance < minDistance) {
+			minDistance = distance;
+			nearestColor = namedColor;
+		}
+	});
+	return nearestColor;
+}
+function colorPalette(color, type = 'shade') { return colorShades(colorFrom(color)); }
+
+function colorPaletteFromImage(img) {
+	if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
+	return ColorThiefObject.getPalette(img).map(x => colorFrom(x));
+}
+function colorPaletteFromUrl(path) {
+	let img = mCreateFrom(`<img src='${path}' />`);
+	let pal = colorPaletteFromImage(img);
+	return pal;
 }
 function colorRgbArgsToHex79(r, g, b, a) {
 	r = Math.round(r).toString(16).padStart(2, '0');
@@ -1200,11 +1607,20 @@ function colorSchemeRYB() {
 		console.log(cw.hue, cw.sat, cw.lightness, cw.ncol);
 	}
 }
+function colorShades(color) {
+	let res = [];
+	for (let frac = -0.8; frac <= 0.8; frac += 0.2) {
+		let c = colorCalculator(frac, color, undefined, true);
+		res.push(c);
+	}
+	return res;
+}
 function colorToHex79(c) {
 	if (colorIsHex79(c)) return c;
+	ColorDi = M.colorByName;
 	let tString = isString(c), tArr = isList(c), tObj = isDict(c);
 	if (tString && c[0] == '#') return colorHex45ToHex79(c);
-	else if (tString && isdef(ColorDi) && lookup(ColorDi, [c])) return ColorDi[c].c;
+	else if (tString && isdef(ColorDi) && lookup(ColorDi, [c])) return ColorDi[c].hex;
 	else if (tString && c.startsWith('rand')) {
 		let spec = capitalize(c.substring(4));
 		let func = window['color' + spec];
@@ -1214,13 +1630,48 @@ function colorToHex79(c) {
 	} else if (tString && (c.startsWith('linear') || c.startsWith('radial'))) return c;
 	else if (tString && c.startsWith('rgb')) return colorRgbStringToHex79(c);
 	else if (tString && c.startsWith('hsl')) return colorHsl360StringToHex79(c);
-	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.c; }
+	else if (tString && c == 'transparent') return '#00000000';
+	else if (tString) { ensureColorDict(); let c1 = ColorDi[c]; assertion(isdef(c1), `UNKNOWN color ${c}`); return c1.hex; }
 	else if (tArr && (c.length == 3 || c.length == 4) && isNumber(c[0])) return colorRgbArrayToHex79(c);
 	else if (tArr) return colorToHex79(rChoose(tArr));
 	else if (tObj && 'h' in c && c.h > 1) { return colorHsl360ObjectToHex79(c); } //console.log('!!!');
 	else if (tObj && 'h' in c) return colorHsl01ObjectToHex79(c);
 	else if (tObj && 'r' in c) return colorRgbArgsToHex79(c.r, c.g, c.b, c.a);
 	assertion(false, `NO COLOR FOUND FOR ${c}`);
+}
+function colorToHwb360Object(c) {
+	c = colorFrom(c);
+	let [r, g, blue] = colorHexToRgbArray(c);
+	let [h, s, l] = colorHexToHsl01Array(c); h *= 360;
+	let w = 100 * Math.min(r, g, blue) / 255;
+	let b = 100 * (1 - Math.max(r, g, blue) / 255);
+	return { h, w, b };
+}
+function colorToHwbRounded(c) {
+	let o = colorToHwb360Object(c);
+	return { h: Math.round(o.h), w: Math.round(o.w), b: Math.round(o.b) };
+}
+function colorO(c) {
+	if (isDict(c)) return c;
+	let hex = colorFrom(c);
+	let o = w3color(hex);
+	let named = colorNearestNamed(hex); //console.log('named',hex,named)
+	let distance = Math.round(colorDistance(named.hex, hex));
+	//console.log('distance to', named.name, distance);
+	o.name = named.name;
+	o.distance = distance;
+	o.bucket = colorGetBucket(hex);
+	o.hex = hex;
+	return o;
+}
+function colorTrans(cAny, alpha = 0.5) { return colorFrom(cAny, alpha); }
+
+function colorTurnHueBy(color, inc = 180) {
+	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
+	let [h, s, l] = colorRgbArgsToHsl01Array(r, g, b); h *= 360;
+	h = (h + inc) % 360;
+	let [newR, newG, newB] = colorHsl01ArgsToRgbArray(h / 360, s, l);
+	return colorRgbArgsToHex79(newR, newG, newB);
 }
 function colormapAsString() {
 	let html = `
@@ -1485,6 +1936,19 @@ function colormapAsStringOrig() {
     <area style='cursor:pointer' shape='poly' coords='171,180,180,184,180,195,171,199,162,195,162,184' onclick='clickColor("#993333",-20,162)' onmouseover='mouseOverColor("#993333")' alt='#993333' />
    `;
 	return html;
+}
+function colorsFromBFA(bg, fg, alpha) {
+	if (fg == 'contrast') {
+		if (bg != 'inherit') bg = colorFrom(bg, alpha);
+		fg = colorIdealText(bg);
+	} else if (bg == 'contrast') {
+		fg = colorFrom(fg);
+		bg = colorIdealText(fg);
+	} else {
+		if (isdef(bg) && bg != 'inherit') bg = colorFrom(bg, alpha);
+		if (isdef(fg) && fg != 'inherit') fg = colorFrom(fg);
+	}
+	return [bg, fg];
 }
 function conslog(s) { console.log(s, window[s]) }
 
@@ -1974,52 +2438,52 @@ function ensureColorDict() {
 	let names = getColorNames();
 	let hexes = getColorHexes();
 	for (let i = 0; i < names.length; i++) {
-		ColorDi[names[i].toLowerCase()] = { c: '#' + hexes[i] };
+		ColorDi[names[i].toLowerCase()] = { hex: '#' + hexes[i] };
 	}
 	const newcolors = {
-		black: { c: '#000000', D: 'schwarz' },
-		blue: { c: '#0000ff', D: 'blau' },
-		BLUE: { c: '#4363d8', E: 'blue', D: 'blau' },
-		BLUEGREEN: { c: '#004054', E: 'bluegreen', D: 'blaugrün' },
-		BROWN: { c: '#96613d', E: 'brown', D: 'braun' },
-		deepyellow: { c: '#ffed01', E: 'yellow', D: 'gelb' },
-		FIREBRICK: { c: '#800000', E: 'darkred', D: 'rotbraun' },
-		gold: { c: 'gold', D: 'golden' },
-		green: { c: 'green', D: 'grün' },
-		GREEN: { c: '#3cb44b', E: 'green', D: 'grün' },
-		grey: { c: 'grey', D: 'grau' },
-		lightblue: { c: 'lightblue', D: 'hellblau' },
-		LIGHTBLUE: { c: '#42d4f4', E: 'lightblue', D: 'hellblau' },
-		lightgreen: { c: 'lightgreen', D: 'hellgrün' },
-		LIGHTGREEN: { c: '#afff45', E: 'lightgreen', D: 'hellgrün' },
-		lightyellow: { c: '#fff620', E: 'lightyellow', D: 'gelb' },
-		NEONORANGE: { c: '#ff6700', E: 'neonorange', D: 'neonorange' },
-		NEONYELLOW: { c: '#efff04', E: 'neonyellow', D: 'neongelb' },
-		olive: { c: 'olive', D: 'oliv' },
-		OLIVE: { c: '#808000', E: 'olive', D: 'oliv' },
-		orange: { c: 'orange', D: 'orange' },
-		ORANGE: { c: '#f58231', E: 'orange', D: 'orange' },
-		PINK: { c: 'deeppink', D: 'rosa' },
-		pink: { c: 'pink', D: 'rosa' },
-		purple: { c: 'purple', D: 'lila' },
-		PURPLE: { c: '#911eb4', E: 'purple', D: 'lila' },
-		red: { c: 'red', D: 'rot' },
-		RED: { c: '#e6194B', E: 'red', D: 'rot' },
-		skyblue: { c: 'skyblue', D: 'himmelblau' },
-		SKYBLUE: { c: 'deepskyblue', D: 'himmelblau' },
-		teal: { c: '#469990', D: 'blaugrün' },
-		TEAL: { c: '#469990', E: 'teal', D: 'blaugrün' },
-		transparent: { c: '#00000000', E: 'transparent', D: 'transparent' },
-		violet: { c: 'violet', E: 'violet', D: 'violett' },
-		VIOLET: { c: 'indigo', E: 'violet', D: 'violett' },
-		white: { c: 'white', D: 'weiss' },
-		yellow: { c: 'yellow', D: 'gelb' },
-		yelloworange: { c: '#ffc300', E: 'yellow', D: 'gelb' },
-		YELLOW: { c: '#ffe119', E: 'yellow', D: 'gelb' },
+		black: { hex: '#000000', D: 'schwarz' },
+		blue: { hex: '#0000ff', D: 'blau' },
+		BLUE: { hex: '#4363d8', E: 'blue', D: 'blau' },
+		BLUEGREEN: { hex: '#004054', E: 'bluegreen', D: 'blaugrün' },
+		BROWN: { hex: '#96613d', E: 'brown', D: 'braun' },
+		deepyellow: { hex: '#ffed01', E: 'yellow', D: 'gelb' },
+		FIREBRICK: { hex: '#800000', E: 'darkred', D: 'rotbraun' },
+		gold: { hex: 'gold', D: 'golden' },
+		green: { hex: 'green', D: 'grün' },
+		GREEN: { hex: '#3cb44b', E: 'green', D: 'grün' },
+		grey: { hex: 'grey', D: 'grau' },
+		lightblue: { hex: 'lightblue', D: 'hellblau' },
+		LIGHTBLUE: { hex: '#42d4f4', E: 'lightblue', D: 'hellblau' },
+		lightgreen: { hex: 'lightgreen', D: 'hellgrün' },
+		LIGHTGREEN: { hex: '#afff45', E: 'lightgreen', D: 'hellgrün' },
+		lightyellow: { hex: '#fff620', E: 'lightyellow', D: 'gelb' },
+		NEONORANGE: { hex: '#ff6700', E: 'neonorange', D: 'neonorange' },
+		NEONYELLOW: { hex: '#efff04', E: 'neonyellow', D: 'neongelb' },
+		olive: { hex: 'olive', D: 'oliv' },
+		OLIVE: { hex: '#808000', E: 'olive', D: 'oliv' },
+		orange: { hex: 'orange', D: 'orange' },
+		ORANGE: { hex: '#f58231', E: 'orange', D: 'orange' },
+		PINK: { hex: 'deeppink', D: 'rosa' },
+		pink: { hex: 'pink', D: 'rosa' },
+		purple: { hex: 'purple', D: 'lila' },
+		PURPLE: { hex: '#911eb4', E: 'purple', D: 'lila' },
+		red: { hex: 'red', D: 'rot' },
+		RED: { hex: '#e6194B', E: 'red', D: 'rot' },
+		skyblue: { hex: 'skyblue', D: 'himmelblau' },
+		SKYBLUE: { hex: 'deepskyblue', D: 'himmelblau' },
+		teal: { hex: '#469990', D: 'blaugrün' },
+		TEAL: { hex: '#469990', E: 'teal', D: 'blaugrün' },
+		transparent: { hex: '#00000000', E: 'transparent', D: 'transparent' },
+		violet: { hex: 'violet', E: 'violet', D: 'violett' },
+		VIOLET: { hex: 'indigo', E: 'violet', D: 'violett' },
+		white: { hex: 'white', D: 'weiss' },
+		yellow: { hex: 'yellow', D: 'gelb' },
+		yelloworange: { hex: '#ffc300', E: 'yellow', D: 'gelb' },
+		YELLOW: { hex: '#ffe119', E: 'yellow', D: 'gelb' },
 	};
 	for (const k in newcolors) {
 		let cnew = newcolors[k];
-		if (cnew.c[0] != '#' && isdef(ColorDi[cnew.c])) cnew.c = ColorDi[cnew.c].c;
+		if (cnew.hex[0] != '#' && isdef(ColorDi[k])) cnew.hex = ColorDi[k].hex;
 		ColorDi[k] = cnew;
 	}
 }
@@ -2354,7 +2818,7 @@ function findPointsBoth(ctx, x1, x2, y1, y2, cgoal, delta = 10) {
 	let resy = [], resx = [];
 	for (let y = y1; y < y2; y++) {
 		for (let x = x1; x < x2; x++) {
-			p = isPix(ctx, x, y, cgoal, delta); // or isPixDark(ctx, x, y)
+			p = isPix(ctx, x, y, cgoal, delta);
 			if (p) {
 				let l = isLightBeforeV(ctx, x, y);
 				let d = isLightAfterV(ctx, x, y);
@@ -2445,6 +2909,12 @@ function formatLegend(key) {
 	return key.includes('per') ? stringBefore(key, '_') + '/' + stringAfterLast(key, '_')
 		: key.includes('_') ? replaceAll(key, '_', ' ') : key;
 }
+function from01ToPercent(x) { return Math.round(Number(x) * 100); }
+
+function fromPercent(n, total) { return Math.round(n * total / 100); }
+
+function fromPercentTo01(x, nDecimals = 2) { return Number((Number(x) / 100).toFixed(nDecimals)); }
+
 function gBg(g, color) { g.setAttribute('fill', color); }
 
 function gCanvas(area, w, h, color, originInCenter = true) {
@@ -2580,6 +3050,17 @@ function gStroke(g, color, thickness) { g.setAttribute('stroke', color); if (thi
 
 function gSvg() { return gCreate('svg'); }
 
+async function gameoverScore(table) {
+	table.winners = getPlayersWithMaxScore(table);
+	table.status = 'over';
+	table.turn = [];
+	let id = table.id;
+	let name = getUname();
+	let step = table.step;
+	let stepIfValid = step + 1;
+	let o = { id, name, step, stepIfValid, table };
+	let res = await mPostRoute('table', o); //console.log(res);
+}
 function generateArrayColors(startColor, endColor, numSteps) {
 	const colors = [];
 	let step = 0;
@@ -2623,9 +3104,63 @@ function getBeautifulColors() {
 	let res = getColormapColors();
 	res = res.concat(colorSchemeRYB());
 	res = res.concat(levelColors.concat(modernColors.concat(Object.values(playerColors).concat(vibrantColors.concat(childrenRoomColors.concat(deepRichColors)))))).map(x => w3color(x));
-	res = res.filter(x => x.sat * 100 >= 50);
 	for (const o of res) o.hex = o.toHexString();
 	return res;
+}
+function getBestContrastingColor(color) {
+	let [r, g, b] = colorHexToRgbArray(colorFrom(color));
+	let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+	return (yiq >= 128) ? '#000000' : '#FFFFFF';
+}
+function getBlendCSS(blcanvas) {
+	const blendModes = {
+		'source-over': 'normal',
+		'lighter': 'normal',
+		'copy': 'normal'
+	};
+	return valf(blendModes[blcanvas], blcanvas);
+}
+function getBlendCanvas(blendMode = 'normal') {
+	const blendModeMapping = {
+		'normal': 'source-over',       // Default blending mode
+		'multiply': 'multiply',
+		'screen': 'screen',
+		'overlay': 'overlay',
+		'darken': 'darken',
+		'lighten': 'lighten',
+		'color-dodge': 'color-dodge',
+		'saturation': 'saturation',
+		'color': 'color',
+		'luminosity': 'luminosity',
+		'pass-through': 'source-over' // This is a made-up value for cases where no blending is applied
+	};
+	return valf(blendModeMapping[blendMode], blendMode);
+}
+function getBlendModesCSS() {
+	return 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+}
+function getBlendModesCanvas() {
+	const blendModes = [
+		'source-over',
+		'lighter',
+		'copy',
+		'multiply',
+		'screen',
+		'overlay',
+		'darken',
+		'lighten',
+		'color-dodge',
+		'color-burn',
+		'hard-light',
+		'soft-light',
+		'difference',
+		'exclusion',
+		'hue',
+		'saturation',
+		'color',
+		'luminosity'
+	];
+	return blendModes;
 }
 function getBrowser() {
 	var userAgent = navigator.userAgent;
@@ -2656,6 +3191,31 @@ function getButtonId(key) { return 'b' + capitalize(key); }
 
 function getCSSVariable(varname) { return getCssVar(varname); }
 
+async function getCanvasCtx(d, styles = {}, opts = {}) {
+	opts.tag = 'canvas';
+	let cv = mDom(d, styles, opts);
+	let ctx = cv.getContext('2d');
+	let fill = valf(styles.fill, styles.bg);
+	if (fill) {
+		ctx.fillStyle = fill;
+		ctx.fillRect(0, 0, cv.width, cv.height);
+	}
+	let bgBlend = styles.bgBlend;
+	if (bgBlend) ctx.globalCompositeOperation = bgBlend;
+	let src = valf(opts.src, opts.path);
+	if (src) {
+		let isRepeat = src.includes('ttrans');
+		let imgStyle = isRepeat ? {} : { w: cv.width, h: cv.height };
+		let img = await imgAsync(null, imgStyle, { src });
+		if (bgBlend) ctx.globalCompositeOperation = bgBlend;
+		if (isRepeat) {
+			const pattern = ctx.createPattern(img, 'repeat');
+			ctx.fillStyle = pattern;
+			ctx.fillRect(0, 0, cv.width, cv.height);
+		} else ctx.drawImage(img, 0, 0, cv.width, cv.height);
+	}
+	return { cv, ctx };
+}
 function getCheckedNames(dParent) {
 	let checks = Array.from(dParent.querySelectorAll('input[type="checkbox"]')); //dParent.getElementsByTagName('input'));
 	let res = [];
@@ -3106,8 +3666,41 @@ function getLine(ctx, list, val) {
 	for (const s of segments) { if (s.length > len) { len = s.length; best = s } }
 	return best;
 }
+function getListAndDicts(list) {
+	let dicts = {}, lists = [];
+	for (const arg of Array.from(arguments).slice(1)) {
+		lists.push(list2dict(list, arg));
+	}
+	return [list].concat(lists);
+}
+function getListAndDictsForDicolors() {
+	let bucketlist = Object.keys(M.dicolor);
+	bucketlist = arrCycle(bucketlist, 8);
+	let dicolorlist = [];
+	for (const bucket of bucketlist) {
+		let list = dict2list(M.dicolor[bucket]);
+		for (const c of list) {
+			let o = w3color(c.value);
+			o.name = c.id;
+			o.hex = c.value;
+			o.bucket = bucket;
+			dicolorlist.push(o);
+		}
+	}
+	let byhex = list2dict(dicolorlist, 'hex');
+	let byname = list2dict(dicolorlist, 'name');
+	return [dicolorlist, byhex, byname];
+}
 function getMenu() { return isdef(Menu) ? Menu.key : null; }
 
+function getMotto() {
+	let list = [
+		`Let's play!`, 'Enjoy this beautiful space!', 'First vacation day!', 'No place like home!',
+		'You are free!', 'Nothing to do here!', `Don't worry, be happy!`, `Good times ahead!`,
+		'Right here, right now', 'Life is a dream', 'Dream away!', 'Airport forever'
+	];
+	return rChoose(list);
+}
 function getMouseCoordinates(event) {
 	const image = event.target;
 	const offsetX = event.clientX +
@@ -3125,10 +3718,277 @@ function getMouseCoordinatesRelativeToElement(ev, elem) {
 	const y = ev.clientY - rect.top;
 	return { x, y };
 }
+function getMyColors1() {
+	const colors = [
+		{ hex: '#336699', name: 'Dark Slate Blue', bucket: 'blue' },
+		{ hex: '#3366cc', name: 'Royal Blue', bucket: 'blue' },
+		{ hex: '#000099', name: 'Dark Blue', bucket: 'blue' },
+		{ hex: '#0000cc', name: 'Medium Blue', bucket: 'blue' },
+		{ hex: '#000066', name: 'Navy Blue', bucket: 'blue' },
+		{ hex: '#006666', name: 'Medium Teal', bucket: 'cyanblue' },
+		{ hex: '#006699', name: 'Sea Bluegreen', bucket: 'cyanblue' },
+		{ hex: '#0099cc', name: 'Deep Sky Blue', bucket: 'cyanblue' },
+		{ hex: '#0066cc', name: 'Dodger Blue', bucket: 'cyanblue' },
+		{ hex: '#0033cc', name: 'Bright Blue', bucket: 'blue' },
+		{ hex: '#3333ff', name: 'Electric Blue', bucket: 'blue' },
+		{ hex: '#009999', name: 'Strong Cyan', bucket: 'cyan' },
+		{ hex: '#33cccc', name: 'Sea Sky', bucket: 'cyan' },
+		{ hex: '#0099ff', name: 'Spring Sky', bucket: 'cyanblue' },
+		{ hex: '#0066ff', name: 'Brilliant Blue', bucket: 'cyanblue' },
+		{ hex: '#3366ff', name: 'Summer Sky', bucket: 'blue' },
+		{ hex: '#3333cc', name: 'Indigo Sky', bucket: 'blue' },
+		{ hex: '#339966', name: 'Sea Green', bucket: 'greencyan' },
+		{ hex: '#00ffcc', name: 'Aquagreen', bucket: 'cyan' },
+		{ hex: '#33ccff', name: 'Light Sky Blue', bucket: 'cyanblue' },
+		{ hex: '#6699ff', name: 'Light Royal Blue', bucket: 'blue' },
+		{ hex: '#6600ff', name: 'Vivid Violet', bucket: 'bluemagenta' },
+		{ hex: '#6600cc', name: 'Deep Purple', bucket: 'bluemagenta' },
+		{ hex: '#339933', name: 'Forest Green', bucket: 'green' },
+		{ hex: '#00cc66', name: 'Medium Spring Green', bucket: 'greencyan' },
+		{ hex: '#00ff99', name: 'Spring Green', bucket: 'greencyan' },
+		{ hex: '#66ffcc', name: 'Light Aqua', bucket: 'cyan' },
+		{ hex: '#66ffff', name: 'bleach', bucket: 'cyan' },
+		{ hex: '#66ccff', name: 'Light Azure', bucket: 'cyanblue' },
+		{ hex: '#99ccff', name: 'Pale Sky Blue', bucket: 'cyanblue' },
+		{ hex: '#9999ff', name: 'Pale Lilac', bucket: 'bluemagenta' },
+		{ hex: '#9966ff', name: 'Medium Violet', bucket: 'bluemagenta' },
+		{ hex: '#9933ff', name: 'Electric Lilac', bucket: 'bluemagenta' },
+		{ hex: '#9900ff', name: 'Bright Violet', bucket: 'bluemagenta' },
+		{ hex: '#00cc00', name: 'Lime Green', bucket: 'green' },
+		{ hex: '#66ff99', name: 'Spearmint', bucket: 'greencyan' },
+		{ hex: '#99ffcc', name: 'Pale Mint', bucket: 'greencyan' },
+		{ hex: '#ccffff', name: 'Very Pale Cyan', bucket: 'cyan' },
+		{ hex: '#cc66ff', name: 'Medium Orchid', bucket: 'magenta' },
+		{ hex: '#cc33ff', name: 'Bright Orchid', bucket: 'magenta' },
+		{ hex: '#9900cc', name: 'Dark Violet', bucket: 'bluemagenta' },
+		{ hex: '#003300', name: 'Dark Green', bucket: 'green' },
+		{ hex: '#009933', name: 'Jungle Green', bucket: 'green' },
+		{ hex: '#33cc33', name: 'Light Green', bucket: 'green' },
+		{ hex: '#99ff99', name: 'Pale Green', bucket: 'green' },
+		{ hex: '#ccffcc', name: 'Very Pale Green', bucket: 'green' },
+		{ hex: '#ffccff', name: 'Rosa', bucket: 'magenta' },
+		{ hex: '#ffcccc', name: 'Pale Pink', bucket: 'magenta' },
+		{ hex: '#ff99ff', name: 'Light Pink', bucket: 'magenta' },
+		{ hex: '#ff66ff', name: 'Magentapink', bucket: 'magenta' },
+		{ hex: '#660066', name: 'Purple', bucket: 'magenta' },
+		{ hex: '#336600', name: 'Young Olive', bucket: 'green' },
+		{ hex: '#009900', name: 'Strong Green', bucket: 'green' },
+		{ hex: '#66ff33', name: 'Spring Leaf', bucket: 'yellowgreen' },
+		{ hex: '#99ff66', name: 'Light Lime', bucket: 'yellowgreen' },
+		{ hex: '#ccff99', name: 'Very Light Green', bucket: 'yellowgreen' },
+		{ hex: '#cc0099', name: 'Strong Magenta', bucket: 'magenta' },
+		{ hex: '#993399', name: 'Dark Magenta', bucket: 'magenta' },
+		{ hex: '#333300', name: 'Very Dark Olive', bucket: 'green' },
+		{ hex: '#669900', name: 'Olive Drab', bucket: 'yellowgreen' },
+		{ hex: '#99ff33', name: 'Light Chartreuse', bucket: 'yellowgreen' },
+		{ hex: '#ccff66', name: 'Pale Yellow Green', bucket: 'yellowgreen' },
+		{ hex: '#ff6699', name: 'Light Red Violet', bucket: 'magenta' },
+		{ hex: '#ff3399', name: 'Deep Pink', bucket: 'magenta' },
+		{ hex: '#cc3399', name: 'Medium Red Violet', bucket: 'magenta' },
+		{ hex: '#990099', name: 'Dark Red Violet', bucket: 'magenta' },
+		{ hex: '#99cc00', name: 'Lime', bucket: 'yellowgreen' },
+		{ hex: '#ccff33', name: 'Light Lime Green', bucket: 'yellowgreen' },
+		{ hex: '#ffcc66', name: 'Light Orange', bucket: 'orangeyellow' },
+		{ hex: '#ff6666', name: 'Dark Salmon', bucket: 'red' },
+		{ hex: '#ff0066', name: 'Hot Pink', bucket: 'magenta' },
+		{ hex: '#cc6699', name: 'Medium Pink', bucket: 'magenta' },
+		{ hex: '#993366', name: 'Dark Mauve', bucket: 'magenta' },
+		{ hex: '#ff5050', name: 'Strawberry', bucket: 'red' },
+		{ hex: '#cc0066', name: 'Vivid Raspberry', bucket: 'magenta' },
+		{ hex: '#660033', name: 'Dark Red', bucket: 'red' },
+		{ hex: '#996633', name: 'Medium Brown', bucket: 'orange' },
+		{ hex: '#cc6600', name: 'Orange Brown', bucket: 'orange' },
+		{ hex: '#ff3300', name: 'Red Orange', bucket: 'orangered' },
+		{ hex: '#cc0000', name: 'Jolly Red', bucket: 'red' },
+		{ hex: '#990033', name: 'Dark Crimson', bucket: 'red' },
+		{ hex: '#663300', name: 'Darkbrown', bucket: 'orange' },
+		{ hex: '#cc3300', name: 'Carrot', bucket: 'orangered' },
+		{ hex: '#993333', name: 'Indian Red', bucket: 'red' },
+		{ hex: '#fc600a', name: 'Tangerine', bucket: 'orange' },
+		{ hex: '#fccc1a', name: 'Bright Yellow', bucket: 'yellow' },
+		{ hex: '#b2d732', name: 'Lime Green', bucket: 'yellowgreen' },
+		{ hex: '#4424d6', name: 'Violetblue', bucket: 'bluemagenta' },
+		{ hex: '#c21460', name: 'Raspberry', bucket: 'magenta' },
+		{ hex: '#afff45', name: 'Apple Green', bucket: 'yellowgreen' },
+		{ hex: '#42d4f4', name: 'Sky Blue', bucket: 'cyanblue' },
+		{ hex: '#ffe119', name: 'Sunshine Yellow', bucket: 'yellow' },
+		{ hex: '#e6194b', name: 'Deep Raspberry', bucket: 'red' },
+		{ hex: '#3cb44b', name: 'Pleasant Green', bucket: 'green' },
+		{ hex: '#4363d8', name: 'Cobalt Blue', bucket: 'blue' },
+		{ hex: '#911eb4', name: 'Violet', bucket: 'bluemagenta' },
+		{ hex: '#fff620', name: 'Buttercup Yellow', bucket: 'yellow' },
+		{ hex: '#f58231', name: 'Orange', bucket: 'orange' },
+		{ hex: '#ffd8b1', name: 'Peach', bucket: 'orangeyellow' },
+		{ hex: '#000075', name: 'Deep Blue', bucket: 'blue' },
+		{ hex: '#ff6f61', name: 'Watermelon', bucket: 'orangered' },
+		{ hex: '#c68e17', name: 'Caramel', bucket: 'yellow' },
+		{ hex: '#f7cac9', name: 'Light Pink', bucket: 'magenta' },
+		{ hex: '#009b77', name: 'Seaglass', bucket: 'cyan' },
+		{ hex: '#dd4124', name: 'Rust Red', bucket: 'orangered' },
+		{ hex: '#d65076', name: 'Blush', bucket: 'magenta' },
+		{ hex: '#efc050', name: 'Goldenrod', bucket: 'orangeyellow' },
+		{ hex: '#9b2335', name: 'Carmine', bucket: 'red' },
+		{ hex: '#e15d44', name: 'Terracotta', bucket: 'orangered' },
+		{ hex: '#bc243c', name: 'Red', bucket: 'red' },
+		{ hex: '#c3447a', name: 'Berry Pink', bucket: 'magenta' },
+		{ hex: '#ffd662', name: 'Banana', bucket: 'orangeyellow' },
+		{ hex: '#f4b9b8', name: 'Pale Blush', bucket: 'magenta' },
+		{ hex: '#ff968a', name: 'Light Coral', bucket: 'orangered' },
+		{ hex: '#83781b', name: 'Olive', bucket: 'yellowgreen' },
+		{ hex: '#d01013', name: 'Scarlet', bucket: 'red' },
+		{ hex: '#58a813', name: 'Lawn Green', bucket: 'yellowgreen' },
+		{ hex: '#fad302', name: 'Golden Yellow', bucket: 'yellow' },
+		{ hex: '#55038c', name: 'Deep Violet', bucket: 'bluemagenta' },
+		{ hex: '#ed527a', name: 'Raspberry Pink', bucket: 'magenta' },
+		{ hex: '#d99559', name: 'Sand', bucket: 'orange' },
+		{ hex: '#049dd9', name: 'Ocean Blue', bucket: 'cyanblue' },
+		{ hex: '#ff4057', name: 'Salmon Pink', bucket: 'orangered' },
+		{ hex: '#00b8a9', name: 'Sea Green', bucket: 'greencyan' },
+		{ hex: '#f46036', name: 'Orange Red', bucket: 'orangered' },
+		{ hex: '#e71d36', name: 'Crimson Red', bucket: 'red' },
+		{ hex: '#2ec4b6', name: 'Aqua', bucket: 'cyan' },
+		{ hex: '#ffd166', name: 'Apricot', bucket: 'orangeyellow' },
+		{ hex: '#06d6a0', name: 'Medium Spring Green', bucket: 'greencyan' },
+		{ hex: '#ef476f', name: 'Pale Red', bucket: 'orangered' },
+		{ hex: '#26547c', name: 'Winter Blue', bucket: 'blue' },
+		{ hex: '#ff9f1c', name: 'Vivid Orange', bucket: 'orange' },
+		{ hex: '#00bbf9', name: 'Bright Sky Blue', bucket: 'cyanblue' },
+		{ hex: '#118ab2', name: 'Blue Green', bucket: 'cyanblue' },
+		{ hex: '#073b4c', name: 'Dark Teal', bucket: 'cyanblue' },
+		{ hex: '#ffd32d', name: 'Bright Yellow', bucket: 'yellow' },
+		{ hex: '#8338ec', name: 'Bright Purple', bucket: 'bluemagenta' },
+		{ hex: '#fb5607', name: 'Bright Orange Red', bucket: 'orangered' },
+		{ hex: '#ff006e', name: 'Hot Magenta', bucket: 'magenta' },
+		{ hex: '#3a86ff', name: 'Bright Blue', bucket: 'blue' },
+		{ hex: '#ffbe0b', name: 'Bright Yellow Orange', bucket: 'orangeyellow' },
+		{ hex: '#ff006e', name: 'Hot Magenta', bucket: 'magenta' },
+		{ hex: '#f94144', name: 'Strong Red', bucket: 'red' },
+		{ hex: '#f3722c', name: 'Deep Orange', bucket: 'orangered' },
+		{ hex: '#9b5de5', name: 'Bright Violet', bucket: 'bluemagenta' },
+		{ hex: '#f15bb5', name: 'Light Magenta', bucket: 'magenta' },
+		{ hex: '#fee440', name: 'Bright Yellow', bucket: 'yellow' },
+		{ hex: '#00f5d4', name: 'Bright Aqua', bucket: 'cyan' },
+		{ hex: '#7209b7', name: 'Dark Purple', bucket: 'bluemagenta' },
+		{ hex: '#ff9aa2', name: 'Light Pink', bucket: 'magenta' },
+		{ hex: '#ffb7b2', name: 'Light Blush', bucket: 'magenta' },
+		{ hex: '#ffdac1', name: 'Peach Puff', bucket: 'orangeyellow' },
+		{ hex: '#e2f0cb', name: 'Pale Green', bucket: 'yellowgreen' },
+		{ hex: '#b5ead7', name: 'Mint Green', bucket: 'greencyan' },
+		{ hex: '#fddb3a', name: 'Bright Yellow', bucket: 'yellow' },
+		{ hex: '#f49ac2', name: 'Orchid Pink', bucket: 'magenta' },
+		{ hex: '#836fff', name: 'Medium Slate Blue', bucket: 'bluemagenta' },
+		{ hex: '#ffd1dc', name: 'Pale Blush Pink', bucket: 'magenta' },
+		{ hex: '#a23bec', name: 'Bright Purple', bucket: 'bluemagenta' },
+		{ hex: '#450920', name: 'Dark Crimson', bucket: 'red' },
+		{ hex: '#004346', name: 'Dark Cyan', bucket: 'cyan' },
+		{ hex: '#540b0e', name: 'Dark Maroon', bucket: 'red' },
+		{ hex: '#0b132b', name: 'Dark Blue', bucket: 'blue' },
+		{ hex: '#3c1874', name: 'Deep Purple', bucket: 'bluemagenta' },
+		{ hex: '#08415c', name: 'Dark Cyan Blue', bucket: 'cyanblue' },
+		{ hex: '#650d1b', name: 'Deep Red', bucket: 'red' },
+		{ hex: '#005f73', name: 'Teal Blue', bucket: 'cyanblue' },
+		{ hex: '#6622cc', name: 'Bright Violet', bucket: 'bluemagenta' },
+		{ hex: '#6a040f', name: 'Dark Red', bucket: 'red' },
+		{ hex: '#230c33', name: 'Dark Purple', bucket: 'bluemagenta' },
+		{ hex: '#3a0ca3', name: 'Dark Violet', bucket: 'bluemagenta' },
+		{ hex: '#240046', name: 'Very Dark Violet', bucket: 'bluemagenta' },
+		{ hex: '#10002b', name: 'Midnight Purple', bucket: 'bluemagenta' }
+	];
+	let res = [];
+	for (const c of colors) {
+		let o = w3color(c.hex);
+		o.name = transformColorName(c.name);
+		o.bucket = c.bucket;
+		o.hex = c.hex;
+		res.push(o)
+	}
+	return res;
+}
+function getMyColors2() {
+	const colors = [
+		{ hex: '#669999', name: 'Desaturated Cyan', bucket: 'cyan' },
+		{ hex: '#666699', name: 'Dark Lavender', bucket: 'bluemagenta' },
+		{ hex: '#ffffff', name: 'White', bucket: 'black' },
+		{ hex: '#a9a9a9', name: 'Dark Gray', bucket: 'blue' },
+		{ hex: '#000000', name: 'Black', bucket: 'black' },
+		{ hex: '#cb99c9', name: 'Lavender Pink', bucket: 'magenta' },
+		{ hex: '#aec6cf', name: 'Pastel Blue', bucket: 'cyanblue' },
+		{ hex: '#dea5a4', name: 'Pastel Red', bucket: 'red' },
+		{ hex: '#779ecb', name: 'Periwinkle', bucket: 'bluemagenta' },
+		{ hex: '#b39eb5', name: 'Pastel Purple', bucket: 'bluemagenta' },
+		{ hex: '#cfcfc4', name: 'Light Gray', bucket: 'black' },
+		{ hex: '#666633', name: 'Dark Olive Green', bucket: 'yellowgreen' },
+		{ hex: '#999966', name: 'Pale Olive', bucket: 'yellowgreen' },
+		{ hex: '#347c98', name: 'Steel Blue', bucket: 'cyanblue' },
+		{ hex: '#469990', name: 'Teal', bucket: 'cyan' },
+		{ hex: '#6b5b95', name: 'Royal Purple', bucket: 'bluemagenta' },
+		{ hex: '#88b04b', name: 'Lime Green', bucket: 'yellowgreen' },
+		{ hex: '#92a8d1', name: 'Pale Blue', bucket: 'cyanblue' },
+		{ hex: '#955251', name: 'Rosewood', bucket: 'red' },
+		{ hex: '#b565a7', name: 'Orchid', bucket: 'magenta' },
+		{ hex: '#45b8ac', name: 'Medium Turquoise', bucket: 'cyan' },
+		{ hex: '#5b5ea6', name: 'Medium Blue', bucket: 'blue' },
+		{ hex: '#dfcfbe', name: 'Beige Grey', bucket: 'yellow' },
+		{ hex: '#55b4b0', name: 'Dark Turquoise', bucket: 'cyan' },
+		{ hex: '#7fcdcd', name: 'Light Cyan', bucket: 'cyan' },
+		{ hex: '#98b4d4', name: 'Pale Blue', bucket: 'cyanblue' },
+		{ hex: '#8d9440', name: 'Olive', bucket: 'yellowgreen' },
+		{ hex: '#a4b086', name: 'Sage Green', bucket: 'yellowgreen' },
+		{ hex: '#774d8e', name: 'Purple', bucket: 'bluemagenta' },
+		{ hex: '#6e81a0', name: 'Slate Blue', bucket: 'cyanblue' },
+		{ hex: '#5a7247', name: 'Military Green', bucket: 'yellowgreen' },
+		{ hex: '#d2c29d', name: 'Pale Tan', bucket: 'yellow' },
+		{ hex: '#f2e2e0', name: 'Very Pale Pink', bucket: 'magenta' },
+		{ hex: '#e1ede9', name: 'Very Pale Cyan', bucket: 'cyan' },
+		{ hex: '#5e3d26', name: 'Dark Brown', bucket: 'orange' },
+		{ hex: '#a65f46', name: 'Copper Brown', bucket: 'orange' },
+		{ hex: '#48bf84', name: 'Light Emerald', bucket: 'greencyan' },
+		{ hex: '#90be6d', name: 'Light Olive Green', bucket: 'yellowgreen' },
+		{ hex: '#577590', name: 'Airforce Greyblue', bucket: 'blue' },
+		{ hex: '#c7ceea', name: 'Lavender Blue', bucket: 'bluemagenta' },
+		{ hex: '#2b2d42', name: 'Gun Grey', bucket: 'blue' },
+		{ hex: '#3f3351', name: 'Dark Lavender', bucket: 'bluemagenta' },
+		{ hex: '#423629', name: 'Dark Taupe', bucket: 'orange' },
+		{ hex: '#283618', name: 'Dark Olive', bucket: 'yellowgreen' },
+		{ hex: '#462255', name: 'Purple', bucket: 'bluemagenta' },
+		{ hex: '#1b263b', name: 'Prussian Blue', bucket: 'blue' },
+		{ hex: '#353535', name: 'Dark Gray', bucket: 'black' },
+		{ hex: '#101820', name: 'Eerie Black', bucket: 'black' },
+		{ hex: '#1a1423', name: 'Raisin Black', bucket: 'black' },
+		{ hex: '#4a4e69', name: 'Independence2', bucket: 'bluemagenta' },
+		{ hex: '#264653', name: 'Greengrey', bucket: 'cyanblue' }
+	];
+	let res = [];
+	for (const c of colors) {
+		let o = w3color(c.hex);
+		o.name = transformColorName(c.name);
+		o.bucket = c.bucket;
+		o.hex = c.hex;
+		res.push(o)
+	}
+	return res;
+}
+function getNavBg() { return mGetStyle('dNav', 'bg'); }
+
 function getNow() { return Date.now(); }
 
 function getO(n, R) { let oid = n.oid; if (isdef(oid)) return R.getO(oid); else return null; }
 
+async function getPaletteFromCanvas(canvas) {
+	if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
+	const dataUrl = canvas.toDataURL();
+	const img = new Image();
+	img.src = dataUrl;
+	return new Promise((resolve, reject) => {
+		img.onload = () => {
+			const palette = ColorThiefObject.getPalette(img);
+			resolve(palette ? palette.map(x => colorFrom(x)) : ['black', 'white']);
+		};
+		img.onerror = () => {
+			reject(new Error('Failed to load the image from canvas.'));
+		};
+	});
+}
 function getParams(areaName, oSpec, oid) {
 	let params = oSpec.params ? oSpec.params : {};
 	let panels = oSpec.panels ? oSpec.panels : [];
@@ -3234,6 +4094,17 @@ function getStyleProp(elem, prop) { return getComputedStyle(elem).getPropertyVal
 
 function getTable() { assertion(!Tid, `getTable!!! ${T.id} !!! ${Tid}`); return T; }
 
+function getTextureStyle(bg, t) {
+	let bgRepeat = t.includes('marble_') || t.includes('wall') ? 'no-repeat' : 'repeat';
+	let bgSize = t.includes('marble_') || t.includes('wall') ? `cover` : t.includes('ttrans') ? '' : 'auto';
+	let bgImage = `url('${t}')`;
+	let bgBlend = t.includes('ttrans') ? 'normal' : (t.includes('marble_') || t.includes('wall')) ? 'luminosity' : 'multiply';
+	return { bg, bgImage, bgSize, bgRepeat, bgBlend };
+}
+async function getTextures() {
+	M.textures = (await mGetFiles(`../assets/textures`)).map(x => `../assets/textures/${x}`);
+	return M.textures;
+}
 function getThemeDark() { return getCSSVariable('--bgNav'); }
 
 function getThemeFg() { return getCSSVariable('--fgButton'); }
@@ -3685,6 +4556,7 @@ async function loadAssets() {
 	let textures = await mGetFiles(`../assets/textures`);
 	M.textures = textures.map(x => `../assets/textures/${x}`); //console.log('textures',M.textures)
 	M.dicolor = await mGetYaml(`../assets/dicolor.yaml`);
+	[M.colorList, M.colorByHex, M.colorByName] = getListAndDictsForDicolors();
 }
 async function loadImageAsync(src, img) {
 	return new Promise((resolve, reject) => {
@@ -3775,6 +4647,17 @@ function lookupSetOverride(dict, keys, val) {
 	}
 	return d;
 }
+function mAnchorTo(elem, dAnchor, align = 'bl') {
+	let rect = dAnchor.getBoundingClientRect();
+	let drect = elem.getBoundingClientRect();
+	let [v, h] = [align[0], align[1]];
+	let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { top: rect.top - drect.height };
+	let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
+	let posStyles = { position: 'absolute' };
+	addKeys(vPos, posStyles);
+	addKeys(hPos, posStyles);
+	mStyle(elem, posStyles);
+}
 function mAnimate(elem, prop, valist, callback, msDuration = 1000, easing = 'cubic-bezier(1,-0.03,.86,.68)', delay = 0, forwards = 'none') {
 	let kflist = [];
 	for (const perc in valist) {
@@ -3800,15 +4683,22 @@ function mButton(caption, handler, dParent, styles, classes, id) {
 	if (isdef(id)) x.id = id;
 	return x;
 }
-function mButtonX(dParent, handler, sz = 30, offset = 0, color = 'white') {
+function mButtonX(dParent, handler = null, sz = 22, offset = 5, color = 'contrast') {
 	mIfNotRelative(dParent);
 	let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
-	bx.onclick = ev => { evNoBubble(ev); handler(ev); }
+	bx.onclick = ev => { evNoBubble(ev); if (!handler) dParent.remove(); else handler(ev); }
 	let o = M.superdi.xmark;
-	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg: color, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	let bg = mGetStyle(dParent,'bg');
+	let fg = color == 'contrast'?colorIdealText(bg,true):color;
+	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
 function mBy(id) { return document.getElementById(id); }
 
+function mByAttr(key, val) {
+	const selector = val ? `[${key}="${val}"]` : `[${key}]`;
+	let list = Array.from(document.querySelectorAll(selector));
+	return (list.length == 1) ? list[0] : list;
+}
 function mCenterCenter(d, gap) { mCenterCenterFlex(d, gap); }
 
 function mCenterCenterFlex(d, gap) { mCenterFlex(d, true, true, true, gap); }
@@ -3921,13 +4811,14 @@ function mCols100(dParent, spec, gap = 4) {
 	}
 	return res;
 }
-function mCommand(dParent, key, html, open, close) {
+function mCommand(dParent, key, html, opts = {}) {
 	if (nundef(html)) html = capitalize(key);
-	if (nundef(open)) open = window[`onclick${capitalize(key)}`];
-	if (nundef(close)) close = () => { console.log('close', key) }
+	let close = valf(opts.close, () => { console.log('close', key) });
+	let save = valf(opts.save, false);
+	let open = valf(opts.open, window[`onclick${capitalize(key)}`]);
 	let d = mDom(dParent, { display: 'inline-block' }, { key: key });
-	let a = mDom(d, {}, { key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
-	return { dParent, elem: d, div: a, key, open, close };
+	let a = mDom(d, {}, { id:`${key}`, key: `${key}`, tag: 'a', href: '#', html: html, className: 'nav-link', onclick: onclickCommand })
+	return { dParent, elem: d, div: a, key, open, close, save };
 }
 function mCreate(tag, styles, id) { let d = document.createElement(tag); if (isdef(id)) d.id = id; if (isdef(styles)) mStyle(d, styles); return d; }
 
@@ -4285,38 +5176,29 @@ function mGadget(name, styles = {}, opts = {}) {
 }
 async function mGather(dAnchor, styles = {}, opts = {}) {
 	return new Promise((resolve, _) => {
-		let [content, type, align] = [valf(opts.content, 'name'), valf(opts.type, 'text'), valf(opts.align, 'bl')];
-		let d = document.body;
-		let dialog = mDom(d, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog' });
-		let rect = dAnchor.getBoundingClientRect();
-		let [v, h] = [align[0], align[1]];
-		let vPos = v == 'b' ? { top: rect.bottom } : v == 'c' ? { top: rect.top } : { bottom: rect.top };
-		let hPos = h == 'l' ? { left: rect.left } : v == 'c' ? { left: rect.left } : { right: window.innerWidth - rect.right };
-		let formStyles = { position: 'absolute' };
-		addKeys(vPos, formStyles);
-		addKeys(hPos, formStyles);
-		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
-		dialog.addEventListener('mouseup', ev => {
-			if (isPointOutsideOf(form, ev.clientX, ev.clientY)) {
+		let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; //defaults
+		let dbody = document.body;
+		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog', id: 'dDialog' });
+		let d = mDom(dDialog);
+		let funcName = `uiGadgetType${capitalize(type)}`; console.log(funcName)
+		let uiFunc = window[funcName];
+		let dx = uiFunc(d, content, x => { dDialog.remove(); resolve(x) }, styles, opts);
+		dDialog.addEventListener('mouseup', ev => {
+			if (opts.type != 'select' && isPointOutsideOf(dx, ev.clientX, ev.clientY)) {
+				console.log('RESOLVE NULL POINTER OUTSIDE!!!', ev.clientX, ev.clientY)
 				resolve(null);
-				dialog.remove();
+				dDialog.remove();
 			}
 		});
-		dialog.addEventListener('keydown', ev => { if (ev.key === 'Escape') { dialog.remove(); resolve(null); } });
-		let evalFunc;
-		if (type == 'multi') evalFunc = uiGadgetTypeMulti(form, content, styles, opts);
-		else if (type == 'text') evalFunc = uiGadgetTypeText(form, content, styles, opts);
-		else if (type == 'yesno') evalFunc = uiGadgetTypeYesNo(form, content, styles, opts);
-		else if (type == 'select') evalFunc = uiGadgetTypeSelect(form, content, styles, opts);
-		else if (type == 'checklist') evalFunc = uiGadgetTypeCheckList(form, content, styles, opts);
-		else if (type == 'checklistinput') evalFunc = uiGadgetTypeCheckListInput(form, content, styles, opts);
-		dialog.showModal();
-		form.onsubmit = (ev) => {
-			ev.preventDefault();
-			let val = evalFunc();
-			dialog.remove();
-			resolve(val);
-		};
+		dDialog.addEventListener('keydown', ev => {
+			if (ev.key === 'Escape') {
+				dDialog.remove();
+				console.log('RESOLVE NULL ESCAPE');
+				resolve(null);
+			}
+		});
+		dDialog.showModal();
+		mAnchorTo(dx, dAnchor, opts.align);
 	});
 }
 async function mGetFiles(dir) {
@@ -4468,12 +5350,21 @@ function mMenu(dParent, key) { let [d, l, m, r] = mLMR(dParent); return { dParen
 
 function mNewline(d, gap = 1) { mDom(d, { h: gap }); }
 
-function mOnEnter(elem, setter) {
+function mOnEnter(elem, handler) {
 	elem.addEventListener('keydown', ev => {
 		if (ev.key == 'Enter') {
 			ev.preventDefault();
 			mDummyFocus();
-			if (setter) setter(ev);
+			if (handler) handler(ev);
+		}
+	});
+}
+function mOnEnterInput(elem, handler) {
+	elem.addEventListener('keydown', ev => {
+		if (ev.key == 'Enter') {
+			ev.preventDefault();
+			mDummyFocus();
+			if (handler) handler(ev.target.value);
 		}
 	});
 }
@@ -4537,6 +5428,29 @@ async function mPrompt(gadget) {
 			gadget.dialog.close();
 		};
 	});
+}
+function mRadio(label, val, name, dParent, styles = {}, onchangeHandler, group_id, is_on) {
+	let cursor = styles.cursor; delete styles.cursor;
+	let d = mDiv(dParent, styles, group_id + '_' + val);
+	let id = isdef(group_id) ? `i_${group_id}_${val}` : getUID();
+	let type = isdef(group_id) ? 'radio' : 'checkbox';
+	let checked = isdef(is_on) ? is_on : false;
+	let inp = mCreateFrom(`<input class='radio' id='${id}' type="${type}" name="${name}" value="${val}">`);
+	if (checked) inp.checked = true;
+	let text = mCreateFrom(`<label for='${inp.id}'>${label}</label>`);
+	if (isdef(cursor)) { inp.style.cursor = text.style.cursor = cursor; }
+	mAppend(d, inp);
+	mAppend(d, text);
+	if (isdef(onchangeHandler)) {
+		inp.onchange = ev => {
+			ev.cancelBubble = true;
+			if (onchangeHandler == 'toggle') {
+			} else if (isdef(onchangeHandler)) {
+				onchangeHandler(ev.target.checked, name, val);
+			}
+		};
+	}
+	return d;
 }
 function mRadioGroup(dParent, styles, id, legend, legendstyles) {
 	let f = mCreate('fieldset');
@@ -4937,7 +5851,7 @@ async function menuCloseSettings() { delete DA.settings; closeLeftSidebar(); cle
 function menuCloseTable() { if (T) Tid = T.id; T = null; delete DA.pendingChanges; clearMain(); }
 
 function menuCommand(dParent, menuKey, key, html, open, close) {
-	let cmd = mCommand(dParent, key, html, open, close);
+	let cmd = mCommand(dParent, key, html, { open, close });
 	let a = iDiv(cmd);
 	a.setAttribute('key', `${menuKey}_${key}`);
 	a.onclick = onclickMenu;
@@ -5019,6 +5933,13 @@ function mergeOverride(base, drueber) { return _deepMerge(base, drueber, { array
 function mergeOverrideArrays(base, drueber) {
 	return deepmerge(base, drueber, { arrayMerge: overwriteMerge });
 }
+function modifyStat(name, prop, val) {
+	let id = `stat_${name}_${prop}`;
+	console.log('id', id)
+	let ui = mBy(id);
+	console.log('ui', ui)
+	if (isdef(ui)) ui.innerHTML = val;
+}
 function name2id(name) { return 'd_' + name.split(' ').join('_'); }
 
 function nextBar(ctx, rest, color) {
@@ -5072,7 +5993,7 @@ async function onclickAddCategory() {
 	let selist = UI.selectedImages;
 	let keys = selist.map(x => stringBefore(x, '@'));
 	let catlist = M.categories.map(x => ({ name: x, value: false }));
-	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checkList' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
@@ -5099,7 +6020,7 @@ async function onclickAddSelected() {
 	let selist = UI.selectedImages;
 	let keys = selist.map(x => stringBefore(x, '@'));
 	let collist = M.collections.filter(x => !collLocked(x)).map(x => ({ name: x, value: false }));
-	let colls = await mGather(iDiv(UI.addSelected), {}, { content: collist, type: 'checklist' });
+	let colls = await mGather(iDiv(UI.addSelected), {}, { content: collist, type: 'checkList' });
 	if (!colls) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	colls = colls.split('@');
 	colls = colls.filter(x => !isEmptyOrWhiteSpace(x))
@@ -5147,14 +6068,6 @@ async function onclickAsSecondary(ev) {
 	collOpenSecondary(4, 3);
 	collOpenPrimary(4, 3);
 }
-async function onclickBlendMode(item) {
-	U.bgImage = item.bgImage;
-	U.bgBlend = item.bgBlend;
-	U.bgSize = item.bgSize;
-	U.bgRepeat = item.bgRepeat;
-	await postUserChange();
-	setTheme(U);
-}
 async function onclickBot() {
 	let name = getUname();
 	let table = T;
@@ -5165,8 +6078,6 @@ async function onclickBot() {
 	olist.push({ keys: ['players', name, 'playmode'], val: 'bot' });
 	let res = await sendMergeTable({ id, name, olist });
 }
-async function onclickCatListDone(ui) { ui.setAttribute('proceed', getCheckedNames(ui).join('@')); }
-
 function onclickClear(inp, grid) {
 	inp.value = '';
 	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
@@ -5274,8 +6185,7 @@ async function onclickCollections() {
 async function onclickColor(color) {
 	let hex = colorToHex79(color);
 	U.color = hex; delete U.fg;
-	await postUserChange(U, true);
-	setTheme(U);
+	await updateUserTheme()
 }
 async function onclickCommand(ev) {
 	let key = evToAttr(ev, 'key');
@@ -5298,7 +6208,7 @@ async function onclickDeleteCollection(name) {
 	if (nundef(name)) name = await mGather(iDiv(UI.deleteCollection), 'name');
 	if (!name) return;
 	if (collLocked(name)) { showMessage(`collection ${name} cannot be deleted!!!!`); return; }
-	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesno', content: `delete collection ${name}?` });
+	let proceed = await mGather(iDiv(UI.deleteCollection), {}, { type: 'yesNo', content: `delete collection ${name}?` });
 	if (proceed) await collDelete(name);
 	if (UI.collSecondary.isOpen && UI.collSecondary.name == name) collCloseSecondary();
 	if (UI.collPrimary.name == name) { UI.collPrimary.name = 'all'; collOpenPrimary(); }
@@ -5338,7 +6248,7 @@ async function onclickEditCategories() {
 	let lst = unionOfArrays(arrs);
 	let catlist = M.categories.map(x => ({ name: x, value: lst.includes(x) }));
 	sortByDescending(catlist, 'value');
-	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checklistinput' });
+	let cats = await mGather(iDiv(UI.editCategories), {}, { content: catlist, type: 'checkListInput' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
 	if (isEmpty(cats)) { console.log('nothing removed'); collClearSelections(); return; }
@@ -5364,7 +6274,7 @@ async function onclickEditCollItem() {
 	let item = M.superdi[key];
 	let catlist = M.categories.map(x => ({ name: x, value: item.cats.includes(x) }));
 	sortByDescending(catlist, 'value');
-	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checklistinput' });
+	let cats = await mGather(iDiv(UI.addCategory), {}, { content: catlist, type: 'checkListInput' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x));
@@ -5504,10 +6414,8 @@ async function onclickNewCollection(name) {
 async function onclickOpenToJoinGame() {
 	let options = collectOptions();
 	let players = collectPlayers();
-	//console.log('players', jsCopy(players));
 	mRemove('dGameMenu');
 	let t = createOpenTable(DA.gamename, players, options);
-	//console.log('table open', t)
 	let res = await mPostRoute('postTable', t);
 }
 async function onclickPlan() { await showCalendarApp(); }
@@ -5522,7 +6430,7 @@ async function onclickRemoveCategory() {
 	let arrs = keys.map(x => M.superdi[x].cats);
 	let lst = unionOfArrays(arrs); lst.sort();
 	let catlist = lst.map(x => ({ name: x, value: false }));
-	let cats = await mGather(iDiv(UI.removeCategory), {}, { content: catlist, type: 'checklist' });
+	let cats = await mGather(iDiv(UI.removeCategory), {}, { content: catlist, type: 'checkList' });
 	if (!cats) { console.log('CANCELLED!!!'); collClearSelections(); return; }
 	cats = cats.split('@');
 	cats = cats.filter(x => !isEmptyOrWhiteSpace(x))
@@ -5596,39 +6504,47 @@ async function onclickRenameCollection(oldname, newname) {
 	}
 	await collRename(oldname, newname);
 }
+async function onclickSettAddYourTheme() {
+	let name = await mGather(iDiv(UI.settAddYourTheme));
+	let o = {};
+	for (const s of ['color', 'texture', 'blendMode', 'fg']) {
+		if (isdef(U[s])) o[s] = U[s];
+	}
+	o.name = name;
+	let themes = lookup(Serverdata.config, ['themes']);
+	let key = isdef(themes[name]) ? rUniqueId(6, 'th') : name;
+	Serverdata.config.themes[key] = o;
+	await mPostRoute('postConfig', Serverdata.config);
+}
 async function onclickSettBlendMode() {
-	if (isEmpty(U.bgImage)) {
+	if (isEmpty(U.texture)) {
 		showMessage('You need to set a Texture in order to set a Blend Mode!');
 		return;
 	}
+	localStorage.setItem('settingsMenu','settBlendMode')
 	showBlendModes();
 }
-async function onclickSettColor() { await showColors(); }
-
-async function onclickSettFg() { await showTextColors(); }
-
+async function onclickSettColor() { 
+	localStorage.setItem('settingsMenu','settColor')
+	await showColors(); 
+}
+async function onclickSettFg() { 
+	localStorage.setItem('settingsMenu','settFg')
+	await showTextColors(); 
+}
 async function onclickSettRemoveTexture() {
-	if (isEmpty(U.bgImage)) return;
-	for (const prop of ['bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
-	await postUserChange(U, true)
-	setTheme();
+	if (isEmpty(U.texture)) return;
+	for (const prop of ['texture', 'palette', 'blendMode', 'bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
+	await updateUserTheme();
 }
-async function onclickSettResetAll() {
-	assertion(isdef(DA.settings), "NO DA.settings!!!!!!!!!!!!!!!")
-	if (JSON.stringify(U) == JSON.stringify(DA.settings)) return;
-	U = jsCopy(DA.settings);
-	await postUserChange(U, true);
-	setTheme();
-	await onclickSettColor();
+async function onclickSettTexture() { 
+	localStorage.setItem('settingsMenu','settTexture')
+	await showTextures(); 
 }
-async function onclickSettSwapColoring() {
-	if (isdef(U.swapColoring)) delete U.swapColoring;
-	else U.swapColoring = true;
-	await postUserChange(U, true);
-	setTheme();
+async function onclickSettTheme() { 
+	localStorage.setItem('settingsMenu','settTheme')
+	await showThemes(); 
 }
-async function onclickSettTexture() { await showTextures(); }
-
 async function onclickStartGame() {
 	await saveDataFromPlayerOptionsUI(DA.gamename);
 	let options = collectOptions();
@@ -5640,7 +6556,6 @@ async function onclickStartTable(id) {
 	if (nundef(table)) table = await mGetRoute('table', { id });
 	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 	console.log('table', jsCopy(table));
-	//assertion(isdef(table), `table with id ${id} not in Serverdata!`);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
 }
@@ -5665,16 +6580,17 @@ async function onclickTest() { console.log('nations!!!!'); }
 async function onclickTextColor(fg) {
 	let hex = colorToHex79(fg);
 	U.fg = hex;
-	await postUserChange();
-	setTheme(U);
+	await updateUserTheme();
 }
 async function onclickTexture(item) {
-	U.bgImage = item.bgImage;
-	U.bgBlend = item.bgBlend;
-	U.bgSize = item.bgSize;
-	U.bgRepeat = item.bgRepeat;
-	await postUserChange();
-	setTheme(U);
+	U.texture = pathFromBgImage(item.bgImage);
+	await updateUserTheme();
+}
+async function onclickThemeSample(ev) {
+	let key = evToAttr(ev, 'theme');
+	let theme = jsCopyExceptKeys(Serverdata.config.themes[key], ['name']);
+	copyKeys(theme, U);
+	await updateUserTheme();
 }
 async function onclickUser() {
 	let uname = await mGather(iDiv(UI.user), { w: 100, margin: 0 }, { content: 'username', align: 'br', placeholder: ' <username> ' });
@@ -5734,7 +6650,7 @@ function onleaveHex(item, board) {
 }
 async function onsockConfig(x) {
 	console.log('SOCK::config', x)
-	Serverdata.config = x;
+	Serverdata.config = x; console.log(Serverdata.config);
 }
 async function onsockEvent(x) {
 	console.log('SOCK::event', x)
@@ -5775,9 +6691,9 @@ function openPopup(name = 'dPopup') {
 	closePopup();
 	let popup = document.createElement('div');
 	popup.id = name;
-	let defStyle = { padding: 25, bg: 'white', fg: 'black', zIndex: 1000, rounding: 12, position: 'fixed', boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)', wmin: 300, hmin: 100, border: '1px solid #ccc', };
+	let defStyle = { padding: 25, bg: 'white', fg: 'black', zIndex: 100000, rounding: 12, position: 'fixed', boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)', wmin: 300, hmin: 100, border: '1px solid #ccc', };
 	mStyle(popup, defStyle);
-	mButtonX(popup, 25, 4);
+	mButtonX(popup, null, 25, 4);
 	document.body.appendChild(popup);
 	return popup;
 }
@@ -5819,6 +6735,18 @@ function pSBCr(d) {
 		else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
 	}
 	return x;
+}
+function pathFromBgImage(bgImage) { return bgImage.substring(5, bgImage.length - 2); }
+
+function playerStatCount(key, n, dParent, styles = {}, opts = {}) {
+	let sz = valf(styles.sz, 16);
+	addKeys({ display: 'flex', margin: 4, dir: 'column', hmax: 2 * sz, 'align-content': 'center', fz: sz, align: 'center' }, styles);
+	let d = mDiv(dParent, styles);
+	let o = M.superdi[key];
+	if (isdef(o)) showImage(key, d, { h: sz, 'line-height': sz, w: '100%', fg: 'grey' }, true);
+	else mText(key, d, { h: sz, fz: sz, w: '100%' });
+	d.innerHTML += `<span ${isdef(opts.id) ? `id='${opts.id}'` : ''} style="font-weight:bold;color:inherit">${n}</span>`;
+	return d;
 }
 function polyPointsFrom(w, h, x, y, pointArr) {
 	x -= w / 2;
@@ -5905,6 +6833,12 @@ function proceed(nextLevel) {
 	} else if (LevelChange) startLevel(nextLevel);
 	else startRound();
 }
+function rBlend() { return rBlendCanvas(); }
+
+function rBlendCSS() { return rChoose(getBlendModesCSS()); }
+
+function rBlendCanvas() { return rChoose(getBlendModesCanvas()); }
+
 function rChoose(arr, n = 1, func = null, exceptIndices = null) {
 	if (isDict(arr)) arr = dict2list(arr, 'key');
 	let indices = arrRange(0, arr.length - 1);
@@ -5945,6 +6879,8 @@ function rLetters(n, except = []) {
 function rNumber(min = 0, max = 100) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+function rTexture() { return rChoose(valf(M.textures, [])); }
+
 function rUniqueId(n = 10, prefix = '') { return prefix + rChoose(toLetters('0123456789abcdefghijklmnopqABCDEFGHIJKLMNOPQRSTUVWXYZ_'), n).join(''); }
 
 function rWord(n = 6) { return rLetters(n).join(''); }
@@ -6421,6 +7357,23 @@ async function setPlayerPlaying(allPlItem, gamename) {
 	mPos(d1, x, y);
 	mButtonX(d1, ev => saveAndUpdatePlayerOptions(allPlItem, gamename), 18, 3, 'dimgray');
 }
+function setPlayersToMulti() {
+	for (const name in DA.allPlayers) {
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'human');
+		updateUserImageToBotHuman(name, 'human');
+	}
+	setRadioValue('playmode', 'human');
+}
+function setPlayersToSolo() {
+	for (const name in DA.allPlayers) {
+		if (name == getUname()) continue;
+		lookupSetOverride(DA.allPlayers, [name, 'playmode'], 'bot');
+		updateUserImageToBotHuman(name, 'bot');
+	}
+	let popup = mBy('dPlayerOptions');
+	if (isdef(popup) && popup.firstChild.innerHTML.includes(getUname())) return;
+	setRadioValue('playmode', 'bot');
+}
 function setRadioValue(prop, val) {
 	let input = mBy(`i_${prop}_${val}`);
 	if (nundef(input)) return;
@@ -6462,41 +7415,13 @@ function setTableToStarted(table) {
 }
 function setTexture(item) {
 	let d = document.body;
-	let bgImage = valf(item.bgImage, '');
-	let bgRepeat = valf(item.bgRepeat, '');
-	let bgBlend = valf(item.bgBlend, '');
-	let bgSize = valf(item.bgSize, '');
-	d.style.backgroundColor = U.color;
+	let bgImage = valf(item.bgImage, bgImageFromPath(item.texture), '');
+	let bgBlend = valf(item.bgBlend, item.blendMode, '');
+	d.style.backgroundColor = valf(item.color, item.bg, '');
 	d.style.backgroundImage = bgImage;
-	d.style.backgroundSize = bgSize == 'cover' ? '100vw 100vh' : bgSize;
-	d.style.backgroundRepeat = 'repeat'; //bgRepeat;
+	d.style.backgroundSize = bgImage.includes('marble') || bgImage.includes('wall') ? '100vw 100vh' : '';
+	d.style.backgroundRepeat = 'repeat';
 	d.style.backgroundBlendMode = bgBlend;
-}
-function setTheme(o) {
-	if (nundef(o)) o = U;
-	setColors(o.color, o.fg);
-	setTexture(o);
-}
-async function settingsOpen() {
-	DA.settings = jsCopy(U);
-	mClear('dMain');
-	let d = mDom('dMain', { padding: 0, overy: 'auto', hmax: calcRestHeight('dMain') }, { id: 'dSettingsColor' });
-	await showColors()
-	settingsSidebar();
-}
-function settingsSidebar() {
-	let wmin = 170;
-	mStyle('dLeft', { wmin: wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
-	let gap = 5;
-	UI.settTheme = mCommand(d, 'settTheme', 'Theme'); mNewline(d, gap);
-	UI.settColor = mCommand(d, 'settColor', 'Color'); mNewline(d, gap);
-	UI.settFg = mCommand(d, 'settFg', 'Text Color'); mNewline(d, gap);
-	UI.settTexture = mCommand(d, 'settTexture', 'Texture'); mNewline(d, gap);
-	UI.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode'); mNewline(d, 2 * gap);
-	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
-	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
-	UI.settAddYourTheme = mCommand(d, 'settAddYourTheme', 'Add Your Theme'); mNewline(d, gap);
 }
 function show(elem, isInline = false) {
 	if (isString(elem)) elem = document.getElementById(elem);
@@ -6507,27 +7432,26 @@ function show(elem, isInline = false) {
 	}
 	return elem;
 }
-async function showBlendModes() {
-	let d = mBy('dSettingsColor'); mClear(d);
-	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
-	let bgImage = U.bgImage;
-	let bg = U.color;
-	let bgRepeat = bgImage.includes('marble') || bgImage.includes('wall') ? 'no-repeat' : 'repeat';
-	let bgSize = bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
-	let bgSizeItem = bgSize;
-	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-	let items = [];
-	for (const bgBlend of list) {
-		let d = mDom(dTheme, { align: 'center', border: 'red', bgBlend, bg, bgRepeat, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
-		mCenterCenterFlex(d);
-		let d1 = mDom(d, { className: 'no_events' })
-		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'white' }, { html: bgBlend })
-		mDom(d1, { fz: 30, weight: 'bold', align: 'center', fg: 'black' }, { html: bgBlend })
-		let item = { div: d, bgImage, bgRepeat, bgSize: bgSizeItem, bgBlend, isSelected: false };
-		items.push(item);
-		d.onclick = async () => onclickBlendMode(item);
+async function showBlendMode(dParent, blendCSS) {
+	let src = U.texture;
+	let fill = U.color;
+	let bgBlend = getBlendCanvas(blendCSS);
+	let d1 = mDom(dParent);
+	let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
+	let palette = await getPaletteFromCanvas(ca.cv);
+	palette.unshift(fill); palette.splice(8);
+	showPaletteMini(d1, palette);
+	d1.onclick = async () => {
+		U.palette = palette;
+		U.blendMode = blendCSS;
+		await updateUserTheme();
 	}
-	return items;
+}
+async function showBlendModes() {
+	let d = mBy('dSettingsMenu'); mClear(d);
+	let dParent = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dParent);
+	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
+	for (const blendMode of list) { await showBlendMode(dParent, blendMode); }
 }
 async function showCalendarApp() {
 	if (!U) { console.log('you have to be logged in to use this menu!!!'); return; }
@@ -6550,8 +7474,44 @@ function showChatWindow() {
 		ev.target.value = '';
 	});
 }
+function showColor(dParent, c) {
+	let [bg, name, bucket] = isDict(c) ? [c.hex, c.name, c.bucket] : [c, c, c];
+	return mDom(dParent, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html: name + (bg != name ? `<br>${bg}` : '') });
+}
+function showColorBox(c, skeys = 'name hex hue sat lum', dParent = null, styles = {}) {
+	let bg = c.hex;
+	let fg = colorIdealText(bg);
+	let keys = toWords(skeys);
+	let st = jsCopy(styles)
+	addKeys({ bg, fg, align: 'center' }, st);
+	let textStyles = { weight: 'bold' };
+	let d2 = mDom(dParent, st, { class: 'colorbox', dataColor: bg });
+	mDom(d2, textStyles, { html: c[keys[0]] });
+	let html = '';
+	for (let i = 1; i < keys.length; i++) {
+		let key = keys[i];
+		let val = c[key];
+		if (isNumber(val)) val = Number(val);
+		if (val <= 1) val = from01ToPercent(val);
+		html += `${key}:${val}<br>`;
+	}
+	let dmini = mDom(d2, {}, { html });
+	let item = jsCopy(c);
+	item.div = dmini;
+	item.dOuter = d2;
+	return item;
+}
+function showColorBoxes(w3extlist, skeys, dParent, styles = {}) {
+	let d1 = mDom(dParent, { gap: 12, padding: 12 }); mFlexWrap(d1);
+	let items = [];
+	for (var c of w3extlist) {
+		let item = showColorBox(c, skeys, d1, styles); items.push(item);
+		items.push(item);
+	}
+	return items;
+}
 async function showColors() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let di = M.dicolor;
 	let bucketlist = 'yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
 	bucketlist = arrCycle(bucketlist, 8);
@@ -6712,7 +7672,6 @@ function showGameover(table, dParent) {
 	let msg = winners.length > 1 ? `GAME OVER - The winners are ${winners.join(', ')}!!!` : `GAME OVER - The winner is ${winners[0]}!!!`;
 	let d = showRibbon(dParent, msg);
 	updateTestButtonsLogin(table.playerNames);
-
 	mDom(d, { h: 12 }, { html: '<br>' })
 	mButton('PLAY AGAIN', () => onclickStartTable(table.id), d, { className: 'button', fz: 24 });
 }
@@ -6840,6 +7799,14 @@ function showNavbar() {
 	nav.commands = commands;
 	return nav;
 }
+function showObject(o, keys, dParent, styles = {}) {
+	let bg = valf(styles.bg, 'dimgray');
+	addKeys({ align: 'center', padding: 2, bg, fg: colorIdealText(bg) }, styles);
+	let html = '';
+	for (const k of keys) { html += o[k] + '<br>'; }
+	let d = mDom(dParent, styles, { html });
+	return d;
+}
 function showPalette(dParent, colors) {
 	let d1 = mDom(dParent, { display: 'flex', dir: 'column', wrap: true, gap: 2, hmax: '100vh' });
 	for (var c of colors) {
@@ -6848,21 +7815,68 @@ function showPalette(dParent, colors) {
 		let dmini = mDom(d1, { wmin: 40, hmin: 40, padding: 2, bg: c, fg: colorIdealText(c) }, { html });
 	}
 }
+function showPaletteMini(dParent, colors, sz = 30) {
+	let d1 = mDom(dParent, { display: 'flex', wrap: true, gap: 2 }); //, hmax: '100vh', dir: 'column' });
+	let items = [];
+	for (var c of colors) {
+		if (isDict(c)) c = c.hex;
+		let fg = 'dimgray'; //colorIdealText(c); if (fg == 'white') fg='silver';
+		let dc = mDom(d1, { w: sz, h: sz, bg: c, fg, border: `${fg} solid 3px` });
+		items.push({ div: dc, bg: c })
+	}
+	return items;
+}
 function showPaletteNames(dParent, colors) {
 	let d1 = mDom(dParent, { gap: 12 }); mFlexWrap(d1);
+	let items = [];
 	for (var c of colors) {
 		let bg = c.hex;
 		let d2 = mDom(d1, { wmin: 250, bg, fg: colorIdealText(bg), padding: 20 }, { class: 'colorbox', dataColor: bg });
 		mDom(d2, { weight: 'bold', align: 'center' }, { html: c.name });
 		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
 		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html });
+		let item = jsCopy(c);
+		item.div = dmini;
+		item.dOuter = d2;
+		items.push(item)
 	}
+	return items;
+}
+function showPaletteText(dParent, list) {
+	let d1 = mDom(dParent, { display: 'flex', wrap: true, gap: 2 }); //, hmax: '100vh', dir: 'column' });
+	let items = [];
+	for (var c of list) {
+		let dc = mDom(d1, { bg: 'black', fg: 'white' }, { html: c });
+		items.push({ div: dc, text: c })
+	}
+	return items;
 }
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
 	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding: 10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
 	return d;
+}
+async function showTable(id) {
+	let me = getUname();
+	let table = await mGetRoute('table', { id });  //console.log('table',table)
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+	let func = DA.funcs[table.game];
+	T = table;
+	clearMain();
+	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
+	d = mDom('dMain'); mCenterFlex(d);
+	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
+	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);
+	func.stats(table);
+	let minTableSize = 400;
+	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
+	mCenterCenter(dTable);
+	let items = func.present(table);
+	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
+	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
+	await updateTestButtonsPlayers(table);
+	func.activate(table, items);
 }
 async function showTables(from) {
 	await updateTestButtonsLogin();
@@ -6901,8 +7915,11 @@ async function showTables(from) {
 		if (ri.o.status == 'open') { let h1 = hFunc('start', 'onclickStartTable', id); let c1 = mAppend(r, mCreate('td')); c1.innerHTML = h1; }
 	}
 }
+function showText(dParent, text, bg = 'black') {
+	return mDom(dParent, { align: 'center', wmin: 120, padding: 2, bg, fg: colorIdealText(bg) }, { html: text });
+}
 async function showTextColors() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
 	let colors = ['white', 'silver', 'dimgray', 'black'].map(x => w3color(x)); //, getCSSVariable('--fgButton'), getCSSVariable('--fgButtonHover')].map(x => w3color(x));
 	for (var c of colors) {
@@ -6919,9 +7936,10 @@ async function showTextColors() {
 	}
 }
 async function showTextures() {
-	let d = mBy('dSettingsColor'); mClear(d);
+	let d = mBy('dSettingsMenu'); mClear(d);
 	let dTheme = mDom(d, { padding: 12, gap: 10 }); mFlexWrap(dTheme);
 	let list = M.textures;
+	if (colorGetLum(U.color) > 75) list = list.filter(x => !x.includes('ttrans'));
 	let itemsTexture = [];
 	for (const t of list) {
 		let bgRepeat = t.includes('marble_') || t.includes('wall') ? 'no-repeat' : 'repeat';
@@ -6934,6 +7952,32 @@ async function showTextures() {
 		dc.onclick = async () => onclickTexture(item, itemsTexture);
 	}
 	return itemsTexture;
+}
+async function showThemes() {
+	let d = mBy('dSettingsMenu'); mClear(d);
+	let d1 = mDom(d, { gap: 12, padding: 10 }); mFlexWrap(d1);
+	let themes = lookup(Serverdata.config, ['themes']);
+	let bgImage, bgSize, bgRepeat, bgBlend, name, color, fg;
+	for (const key in themes) {
+		let th = themes[key];
+		if (isdef(th.texture)) {
+			bgImage = bgImageFromPath(th.texture);
+			bgRepeat = (bgImage.includes('marble') || bgImage.includes('wall')) ? 'no-repeat' : 'repeat';
+			bgSize = (bgImage.includes('marble') || bgImage.includes('wall')) ? 'cover' : '';
+			bgBlend = isdef(th.blendMode) ? th.blendMode : (bgImage.includes('ttrans') ? 'normal' : bgImage.includes('marble_') ? 'luminosity' : 'multiply');
+		}
+		color = th.color;
+		if (isdef(th.fg)) fg = th.fg;
+		name = th.name;
+		let [realBg, bgContrast, bgNav, fgNew, fgContrast] = calculateGoodColors(color, fg)
+		let styles = { w: 300, h: 200, bg: realBg, fg: fgNew, border: `solid 1px ${getCSSVariable('--fgButton')}` };
+		if (isdef(bgImage)) addKeys({ bgImage, bgSize, bgRepeat }, styles);
+		if (isdef(bgBlend)) addKeys({ bgBlend }, styles);
+		let dsample = mDom(d1, styles, { theme: key });
+		let dnav = mDom(dsample, { bg: bgNav, padding: 10 }, { html: name.toUpperCase() });
+		let dmain = mDom(dsample, { padding: 10, fg: 'black', className: 'section' }, { html: getMotto() });
+		dsample.onclick = onclickThemeSample;
+	}
 }
 function showTitle(title, dParent = 'dTitle') {
 	mClear(dParent);
@@ -6957,27 +8001,17 @@ function showTrick() {
 }
 function showUserImage(uname, d, sz = 40) {
 	let u = Serverdata.users[uname];
-	return showim1(u.key, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 3px solid` });
+	return showim1(u.imgKey, d, { 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `${u.color} 3px solid` });
 }
-function showim(key, dParent, styles = {}, imgFit = 'fill', useSymbol = false) {
-	let o = M.superdi[key];
-	let h = valf(styles.h, styles.sz, 100);
-	let w = valf(styles.w, styles.sz, 'auto');
-	let fz = h * .9;
-	let hline = fz;
-	addKeys({ w, h, fz, hline }, styles);
-	let d1 = mDom(dParent, styles);
-	let el;
-	if (!useSymbol && isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
-	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: hline, family: 'emoNoto', fg: fg, display: 'inline' }, { html: o.text });
-	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz - 2, hline: hline, family: 'fa6', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoFa', bg: 'transparent', fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: hline, family: 'pictoGame', bg: valf(styles.bg, 'beige'), fg: fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-	else if (isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
-	return el;
+function showValidMoves(table) {
+	if (nundef(table.moves)) { console.log('no moves yet!'); return; }
+	console.log('________', table.step)
+	for (const m of table.moves) {
+		console.log(`${m.step} ${m.name}: ${m.move.map(x => x.substring(0, 5)).join(',')} (${m.change})=>${m.score}`);
+	}
 }
-function showim1(key, d, styles = {}, opts = {}) {
-	let src = M.superdi[key].img;
+function showim1(imgKey, d, styles = {}, opts = {}) {
+	let src = M.superdi[imgKey].img;
 	let img = mDom(d, styles, { tag: 'img', src });
 	return img;
 }
@@ -7077,6 +8111,23 @@ function sortCheckboxes(grid) {
 	for (const d of chyes) { mAppend(grid, d) }
 	for (const d of chno) { mAppend(grid, d) }
 }
+function sortDicolor(di) {
+	if (nundef(di)) di = jsCopy(M.dicolor);
+	let dinew = {};
+	let kbucket = Object.keys(di);
+	kbucket.sort();
+	for (const k of kbucket) {
+		let o = di[k];
+		let di_bucket_new = {};
+		let kc = Object.keys(o);
+		kc.sort(); console.log(kc);
+		for (const k1 of kc) {
+			di_bucket_new[k1] = o[k1];
+		}
+		dinew[k] = di_bucket_new;
+	}
+	downloadAsYaml(dinew, 'dicolor')
+}
 function splitAtAnyOf(s, sep) {
 	let arr = [], w = '';
 	for (let i = 0; i < s.length; i++) {
@@ -7103,7 +8154,6 @@ function squareTo(tool, sznew = 128) {
 	redrawImage(img, dParent, x1, y1, sz, sz, sznew, sznew, () => tool.setRect(0, 0, sznew, sznew))
 }
 async function startGame(gamename, players, options) {
-	//console.log('___startGame', gamename, players, options)
 	let table = createOpenTable(gamename, players, options);
 	table = setTableToStarted(table);
 	let res = await mPostRoute('postTable', table);
@@ -7218,6 +8268,12 @@ function stringBeforeLast(sFull, sSub) {
 function stringBetween(sFull, sStart, sEnd) {
 	return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
 }
+function stringCSSToCamelCase(s) {
+	let parts = s.split('-');
+	let res = parts[0];
+	for (let i = 1; i < parts.length; i++) { res += capitalize(parts[i]) }
+	return res;
+}
 function stringCount(s, sSub, caseInsensitive = true) {
 	let n = 0;
 	for (let i = 0; i < s.length; i++) {
@@ -7246,11 +8302,12 @@ async function switchToUser(uname, menu) {
 	if (isEmpty(uname)) uname = 'guest';
 	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
+	//localStorage.removeItem('settingsMenu');
 	localStorage.setItem('username', uname);
 	iDiv(UI.user).innerHTML = uname;
-	setTheme(U);
+	setUserTheme();
 	menu = valf(menu, getMenu(), localStorage.getItem('menu'), 'home');
-	switchToMainMenu(menu);
+	await switchToMainMenu(menu);
 }
 function tableLayoutMR(dParent, m = 7, r = 1) {
 	let ui = UI; ui.players = {};
@@ -7359,6 +8416,31 @@ function toElem(d) { return isString(d) ? mBy(d) : d; }
 
 function toLetters(s) { return [...s]; }
 
+function toNameValueList(any) {
+	if (isEmpty(any)) return [];
+	let list = [];
+	if (isString(any)) {
+		let words = toWords(any);
+		for (const w of words) { list.push({ name: w, value: w }) };
+	} else if (isDict(any)) {
+		for (const k in any) { list.push({ name: k, value: any[k] }) };
+	} else if (isList(any) && !isDict(any[0])) {
+		for (const el of any) list.push({ name: el, value: el });
+	} else if (isList(any) && isdef(any[0].name) && isdef(any[0].value)) {
+		list = any;
+	} else {
+		let el = any[0];
+		let keys = Object.keys(el);
+		let nameKey = keys[0];
+		let valueKey = keys[1];
+		for (const x of any) {
+			list.push({ name: x[nameKey], value: x[nameKey] });
+		}
+	}
+	return list;
+}
+function toPercent(n, total) { return Math.round(n * 100 / total); }
+
 function toWords(s, allow_ = false) {
 	let arr = allow_ ? s.split(/[\W]+/) : s.split(/[\W|_]+/);
 	return arr.filter(x => !isEmpty(x));
@@ -7389,6 +8471,10 @@ function toggleSelectionOfPicture(elem, selkey, selectedPics, className = 'frame
 		selectedPics.push(selkey); collSelect(elem);
 	}
 }
+function transformColorName(s) {
+	let res = replaceAll(s, ' ', '_');
+	return res.toLowerCase();
+}
 function trim(str) {
 	return str.replace(/^\s+|\s+$/gm, '');
 }
@@ -7414,61 +8500,59 @@ function turtle() {
 		else if (x == ']') pop();
 	}
 }
-function uiGadgetTypeCheckList(form, content, styles, opts) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
-	let dOuter = mDom(form, styles)
-	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
-	let ui = uiTypeCheckList(content, dParent, styles, opts);
-	mButton('done', () => onclickCatListDone(form), dOuter, { classes: 'input', margin: 10 }); //da muss noch ein button dazu
-	return () => form.getAttribute('proceed');
+function uiGadgetTypeCheckList(dParent, content, resolve, styles = {}, opts = {}) {
+	addKeys({ hmax: 500, wmax: 200, bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(dParent, styles);
+	let hmax = styles.hmax - 193, wmax = styles.wmax;
+	let innerStyles = { hmax, wmax, box: true };
+	let ui = uiTypeCheckList(content, dOuter, innerStyles, opts);
+	let handler = () => resolve(getCheckedNames(ui).join('@'));
+	mButton('done', handler, dOuter, { classes: 'input', margin: 10 });
+	return dOuter;
 }
-function uiGadgetTypeCheckListInput(form, content, styles, opts) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
-	let dOuter = mDom(form, styles)
-	let dParent = mDom(dOuter, { pabottom: 10, box: true });
-	let ui = uiTypeCheckListInput(content, dParent, styles, opts);
-	return () => DA.formResult;
+function uiGadgetTypeCheckListInput(form, content, resolve, styles, opts) {
+	addKeys({ wmax: '100vw', hmax: 500, bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(form, styles);
+	opts.handler = resolve;
+	let ui = uiTypeCheckListInput(content, dOuter, styles, opts);
+	return dOuter;
 }
-function uiGadgetTypeMulti(form, dict, styles = {}, opts = {}) {
+function uiGadgetTypeMulti(dParent, dict, resolve, styles = {}, opts = {}) {
 	let inputs = [];
+	let form = mDom(dParent, {}, { tag: 'form', method: null, action: "javascript:void(0)" })
 	for (const k in dict) {
 		let [content, val] = [k, dict[k]];
-		let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
+		let inp = mDom(form, styles, { autocomplete: 'off', className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
 		inputs.push({ name: content, inp: inp });
 		mNewline(form)
 	}
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	return () => {
+	form.onsubmit = ev => {
+		ev.preventDefault();
 		let di = {};
 		inputs.map(x => di[x.name] = x.inp.value);
-		return di;
-	};
-}
-function uiGadgetTypeSelect(form, dict, styles = {}, opts = {}) {
-	let select = DA.select = mDom(form, styles, { className: 'input', tag: 'select' });
-	if (isList(dict)) dict = list2dict(dict);
-	mDom(select, {}, { tag: 'option', html: '' });
-	for (const k in dict) {
-		let [content, val] = [k, dict[k]];
-		mDom(select, {}, { tag: 'option', html: content, value: val });
+		resolve(di);
 	}
-	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	select.addEventListener('change', () => form.submit());
-	return () => { console.log('selected', DA.select, DA.select.value); return DA.select.value; }
+	return form;
 }
-function uiGadgetTypeText(form, content, styles = {}, opts = {}) {
-	let inp = mDom(form, styles, { className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
-	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
-	return () => inp.value;
+function uiGadgetTypeSelect(dParent, content, resolve, styles = {}, opts = {}) {
+	let dSelect = uiTypeSelect(content, dParent, styles, opts);
+	dSelect.onchange = ev => resolve(ev.target.value);
+	return dSelect;
 }
-function uiGadgetTypeYesNo(form, content, styles = {}, opts = {}) {
-	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
-	let dOuter = mDom(form, styles)
+function uiGadgetTypeText(dParent, content, resolve, styles = {}, opts = {}) {
+	let inp = mDom(dParent, styles, { autocomplete: 'off', className: 'input', name: content, tag: 'input', type: 'text', placeholder: valf(opts.placeholder, `<enter ${content}>`) });
+	mOnEnterInput(inp, resolve);
+	return inp;
+}
+function uiGadgetTypeYesNo(dParent, content, resolve, styles = {}, opts = {}) {
+	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, box: true }, styles)
+	let dOuter = mDom(dParent, styles)
 	let dq = mDom(dOuter, { mabottom: 7 }, { html: capitalize(content) });
 	let db = mDom(dOuter, { w100: true, box: true, display: 'flex', 'justify-content': 'space-between', gap: 10 })
-	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => form.setAttribute('proceed', 'yes') })
-	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => form.setAttribute('proceed', 'no') })
-	return () => form.getAttribute('proceed') == 'yes';
+	let bYes = mDom(db, { w: 70, classes: 'input' }, { html: 'Yes', tag: 'button', onclick: () => resolve('yes') })
+	let bNo = mDom(db, { w: 70, classes: 'input' }, { html: 'No', tag: 'button', onclick: () => resolve('no') })
+	return dOuter;
 }
 async function uiTypeCalendar(dParent) {
 	const [wcell, hcell, gap] = [120, 100, 10];
@@ -7578,46 +8662,41 @@ async function uiTypeCalendar(dParent) {
 	await setDate(currentDate.getMonth() + 1, currentDate.getFullYear());
 	return { container, date: currentDate, dDate, dGrid, dMonth, dYear, info, getDayDiv, refreshEvents, setDate, populate }
 }
-function uiTypeCheckList(lst, dParent, styles = {}, opts = {}) {
-	let d = mDom(dParent, { overy: 'auto' }); //hier drin kommt die liste!
+function uiTypeCheckList(any, dParent, styles = {}, opts = {}) {
+	let lst = toNameValueList(any); lst.map(x => { if (x.value !== true) x.value = false; });
+	addKeys({ overy: 'auto' }, styles)
+	let d = mDom(dParent, styles, opts);
 	lst.forEach((o, index) => {
 		let [text, value] = [o.name, o.value];
 		let dcheck = mDom(d, {}, { tag: 'input', type: 'checkbox', name: text, value: text, id: `ch_${index}`, checked: value });
 		let dlabel = mDom(d, {}, { tag: 'label', for: dcheck.id, html: text });
 		mNewline(d, 0);
 	});
-	let r = getRect(d);
-	let rp = getRect(dParent);
-	let hParent = rp.h;
-	if (hParent == 0) hParent = mGetStyle(dParent, 'max-height');
-	let p = mGetStyle(dParent, 'pabottom'); //console.log('pb',p,mGetStyle(dParent,'padding'))
-	let h = hParent - r.y;
-	mStyle(d, { hmax: h });//,pabottom:10,box:true});
 	return d;
 }
-function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
-	mStyle(dParent, { w: 1000 })
+function uiTypeCheckListInput(any, dParent, styles = {}, opts = {}) {
 	let dg = mDom(dParent);
-	let list = lst;
+	let list = toNameValueList(any); list.map(x => { if (x.value !== true) x.value = false; });
 	let items = [];
 	for (const o of list) {
 		let div = mCheckbox(dg, o.name, o.value);
 		items.push({ nam: o.name, div, w: mGetStyle(div, 'w'), h: mGetStyle(div, 'h') });
 	}
 	let wmax = arrMax(items, 'w'); //console.log('wmax',wmax); //measure max width of items
-	let cols = 3;
+	let cols = 4;
 	let wgrid = wmax * cols + 100;
 	dg.remove();
 	dg = mDom(dParent);
 	let inp = mDom(dg, { w100: true, box: true, mabottom: 10 }, { className: 'input', tag: 'input', type: 'text' });
 	let db = mDom(dg, { w100: true, box: true, align: 'right', mabottom: 4 });
-	mButton('cancel', () => DA.formResult = null, db, {}, 'input');
-	mButton('clear', ev => { ev.preventDefault(); onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
-	mButton('done', () => DA.formResult = extractWords(inp.value, ' '), db, { maleft: 10 }, 'input');
+	mButton('cancel', () => opts.handler(null), db, {}, 'input');
+	mButton('clear', ev => { onclickClear(inp, grid) }, db, { maleft: 10 }, 'input');
+	mButton('done', () => opts.handler(extractWords(inp.value, ' ')), db, { maleft: 10 }, 'input');
 	mStyle(dg, { w: wgrid, box: true, padding: 10 }); //, w: wgrid })
-	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax: 500 });
+	let hmax = isdef(styles.hmax) ? styles.hmax - 150 : 300;
+	let grid = mGrid(null, cols, dg, { w100: true, gap: 10, matop: 4, hmax });
 	items.map(x => mAppend(grid, iDiv(x)));
-	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]')); //chks=items.map(x=>iDiv(x).firstChild);
+	let chks = Array.from(dg.querySelectorAll('input[type="checkbox"]'));
 	for (const chk of chks) {
 		chk.addEventListener('click', ev => checkToInput(ev, inp, grid))
 	}
@@ -7660,7 +8739,7 @@ function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
 	let items = {};
 	for (const name of order) {
 		let pl = table.players[name];
-		styles['border-color'] = pl.color; 
+		styles['border-color'] = pl.color;
 		let d = mDom(dOuter, styles, { id: name2id(name) })
 		let img = showUserImage(name, d, 40); mStyle(img, { box: true })
 		items[name] = { div: d, img, name };
@@ -7669,12 +8748,20 @@ function uiTypePlayerStats(table, me, dParent, layout, styles = {}) {
 }
 function uiTypeRadios(lst, d, styles = {}, opts = {}) {
 	let rg = mRadioGroup(d, {}, 'rSquare', 'Resize (cropped area) to height: '); mClass(rg, 'input');
-	let handler = x=>squareTo(cropper,x); // (_, x) => squareTo(cropper, x);
+	let handler = x => squareTo(cropper, x);
 	mRadio(`${'just crop'}`, 0, 'rSquare', rg, {}, cropper.crop, 'rSquare', false)
 	for (const h of [128, 200, 300, 400, 500, 600, 700, 800]) {
 		mRadio(`${h}`, h, 'rSquare', rg, {}, handler, 'rSquare', false)
 	}
 	return rg;
+}
+function uiTypeSelect(any, dParent, styles = {}, opts = {}) {
+	let list = toNameValueList(any);
+	addKeys({ className: 'input', tag: 'select' }, opts);
+	let dselect = mDom(dParent, styles, opts);
+	for (const el of list) { mDom(dselect, {}, { tag: 'option', html: el.name, value: el.value }); }
+	dselect.value = '';
+	return dselect;
 }
 function uid() {
 	UID += 1;
@@ -7693,6 +8780,14 @@ async function updateClientData() {
 function updateKeySettings(nMin) {
 	if (nundef(G)) return;
 	G.keys = setKeys({ nMin, lang: Settings.language, keysets: KeySets, key: Settings.vocab });
+}
+function updateUserImageToBotHuman(playername, value) {
+	function doit(checked, name, val) {
+		let du = mByAttr('username', playername);
+		let img = du.getElementsByTagName('img')[0]; //du.firstChild;
+		if (checked == true) if (val == 'human') mStyle(img, { round: true }); else mStyle(img, { rounding: 2 });
+	}
+	if (isdef(value)) doit(true, 0, value); else return doit;
 }
 async function uploadImg(img, unique, coll, name) {
 	return new Promise((resolve, reject) => {

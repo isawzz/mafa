@@ -1,36 +1,25 @@
 
-async function calcUserPalette(name) {
-	if (nundef(name)) name = U.name;
-	let user = await getUser(name);
+function mimali(c, n) {
+  //das ding muss einfach nur n colors returnen!
+  //ich koennt es so machen: nimm einfach random pixels auf dem background!
+	//just return n colors!
+	console.log('___mimali n',n)
 
-	let dParent = mPopup(null,{opacity:0});
-	return await showPaletteFor(dParent,user.texture, user.color, user.blendMode);
-}
-async function showPaletteFor(dParent,src, color, blendMode) {
-	let fill = color;
-	let bgBlend = getBlendCanvas(blendMode);
-	let d = mDom(dParent, { w100:true, gap: 4 }); mCenterFlex(d);
+	//why 43?
+	
 
-	let palette = [color];
-	if (isdef(src)) {
-		let ca = await getCanvasCtx(d, { w:500, h: 300, fill, bgBlend }, { src });
-		palette = await getPaletteFromCanvas(ca.cv);
-		palette.unshift(fill);
-	} else {
-		//make a palette with color and other shades of that color
-		let ca = mDom(d,{w:500,h:300});
-		palette = arrCycle(paletteShades(color), 4);
-	}
 
-	let dominant = palette[0];
-	let palContrast = paletteContrastVariety(palette,palette.length);
-	mLinebreak(d);
-	showPaletteMini(d, palette);
-	mLinebreak(d);
-	showPaletteMini(d, palContrast);
-	mLinebreak(d);
-
-	return [palette.map(x=>colorO(x)),palContrast];
+  // function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
+  // function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
+  // function cinc(c, hinc, sinc, linc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, clamp(hsl.s * 100 + sinc, 0, 100), clamp(hsl.l * 100 + linc, 0, 100)); }
+  // function arrd(c, hinc, sinc, linc, n) { let r = []; for (let i = 0; i < n; i++) { r.push(cinc(c, hinc * i, sinc * i, linc * i)); } return r; }
+  // function light(c, lper = 75) { let hsl = colorHSL(c, true); return colorHSLBuild(hsl.h, hsl.s * 100, lper); }
+  // function sat(c, sper = 100) { let hsl = colorHSL(c, true); return colorHSLBuild(sper, hsl.s * 100, hsl.l * 100); }
+  // function hue(c, hdeg) { let hsl = colorHSL(c, true); return colorHSLBuild(hdeg, hsl.s * 100, hsl.l * 100); }
+  // c = light(c, 75);
+  // let diff = Math.round(360 / n)
+  // wheel = arrd(c, diff, 0, 0, n);
+  // return wheel;
 }
 
 

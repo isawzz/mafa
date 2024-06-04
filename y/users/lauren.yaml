@@ -12,3 +12,6 @@ palette:
   - '#b6d6e2'
   - '#566a79'
   - '#6c848e'
+games:
+  setgame:
+    level: 7
