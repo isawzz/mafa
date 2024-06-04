@@ -6,6 +6,16 @@ function mimali(c, n) {
 	console.log('___mimali n',n)
 
 	//why 43?
+  let colors = paletteShadesBi(c,60);
+  console.log('colors',colors);
+  let wheel=[];//'blue'];
+  for(const x of colors){
+    let pal1=paletteShades(x);
+    //wheel=wheel.concat(pal1);
+    for(const i of range(7)) wheel.push(pal1[i+2]);
+  }
+  console.log('wheel',wheel.length)
+  return wheel;
 	
 
 
