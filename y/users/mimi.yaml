@@ -3,3 +3,8 @@ color: '#ffe4e1'
 texture: ../assets/textures/marble_rosa.jpeg
 blendMode: normal
 imgKey: mimi
+games:
+  setgame:
+    level: 1
+  button96:
+    handicap: 3

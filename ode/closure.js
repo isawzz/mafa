@@ -3099,7 +3099,7 @@ async function gameoverScore(table) {
 	let o = { id, name, step, stepIfValid, table };
 	let res = await mPostRoute('table', o); //console.log(res);
 }
-function generateArrayColors(startColor, endColor, numSteps) {
+function paletteMix(startColor, endColor, numSteps) {
 	const colors = [];
 	let step = 0;
 	while (step < numSteps) {
@@ -5503,6 +5503,7 @@ function mRadio(label, val, name, dParent, styles = {}, onchangeHandler, group_i
 	return d;
 }
 function mRadioGroup(dParent, styles, id, legend, legendstyles) {
+	let dOuter = mDom(dParent,{bg:'white',rounding:10, margin:4})
 	let f = mCreate('fieldset');
 	f.id = id;
 	if (isdef(styles)) mStyle(f, styles);
@@ -5512,7 +5513,7 @@ function mRadioGroup(dParent, styles, id, legend, legendstyles) {
 		mAppend(f, l);
 		if (isdef(legendstyles)) { mStyle(l, legendstyles); }
 	}
-	mAppend(dParent, f);
+	mAppend(dOuter, f);
 	return f;
 }
 function mRemove(elem) {
@@ -6099,7 +6100,7 @@ async function onclickAsAvatar(ev) {
 	let o = collKeyCollnameFromSelkey(item);
 	let key = o.key;
 	let m = M.superdi[key];
-	U.key = key;
+	U.imgKey = key;
 	let res = await postUserChange(U);
 	console.log('res', res)
 }
@@ -7948,7 +7949,7 @@ function showGames(ms = 500) {
 	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
 	let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = ['button96', 'setgame']; //'button99','button98','button97','setgame']
+	gamelist = ['setgame']; //'button99','button98','button97','setgame']
 	for (const gname of gamelist) {
 		let g = getGameConfig(gname);
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
@@ -8146,27 +8147,6 @@ function showRibbon(dParent, msg) {
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
 	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding: 10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
 	return d;
-}
-async function showTable(id) {
-	let me = getUname();
-	let table = await mGetRoute('table', { id });  //console.log('table',table)
-	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-	let func = DA.funcs[table.game];
-	T = table;
-	clearMain();
-	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
-	d = mDom('dMain'); mCenterFlex(d);
-	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
-	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);
-	func.stats(table);
-	let minTableSize = 400;
-	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
-	mCenterCenter(dTable);
-	let items = func.present(table);
-	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
-	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
-	await updateTestButtonsPlayers(table);
-	func.activate(table, items);
 }
 async function showTables(from) {
 	await updateTestButtonsLogin();
@@ -8901,7 +8881,7 @@ async function uiTypeCalendar(dParent) {
 		mClear(dGrid);
 		dDays.length = 0;
 		let c = getNavBg();
-		let dayColors = mimali(c, 43).map(x => colorFrom(x))
+		let dayColors = mimali(c, m).map(x => colorFrom(x))
 		for (const i of range(42)) {
 			let cell = mDiv(dGrid, outerStyles);
 			mStyle(cell, { bg: dayColors[i], fg: 'contrast' })

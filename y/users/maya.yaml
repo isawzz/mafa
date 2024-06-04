@@ -3,7 +3,7 @@ color: '#4c2882'
 fg: '#ffffff'
 texture: ../assets/textures/marble_blue1.jpeg
 blendMode: lighten
-imgKey: unknown_user
+imgKey: bee2
 palette:
   - '#4c2882'
   - '#4c2c84'
@@ -13,3 +13,6 @@ palette:
   - '#744684'
   - '#4c3484'
   - '#4d3c84'
+games:
+  setgame:
+    level: 7

@@ -2,4 +2,7 @@ name: wolferl
 color: '#002e63'
 texture: ../assets/textures/marble_blue1.jpeg
 blendMode: normal
-imgKey: unknown_user
+imgKey: bear5
+games:
+  setgame:
+    level: 7
