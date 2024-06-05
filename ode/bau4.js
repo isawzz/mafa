@@ -1,4 +1,18 @@
 
+function scaleAnimation(elem) {
+	elem = toElem(elem);
+  let ani = elem.animate([
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.3)' },
+  ], {
+    duration: 1000,
+    easing: 'ease-in-out',
+    iterations: 2,
+    direction: 'alternate'
+  });
+  return ani;
+}
+
 function mimali(c, m) {
 	let seasonColors = 'winter_blue midnightblue light_azure capri spring_frost light_green deep_green summer_sky yellow_pantone orange pale_fallen_leaves timberwolf'.split(' ');
 	let c2=seasonColors[m-1];

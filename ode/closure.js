@@ -2294,7 +2294,7 @@ function dict2list(d, keyName = 'id') {
 	}
 	return res;
 }
-function disableButton(b) { mClass(b, 'disabled') }
+function disableButton(b) { mClass(toElem(b), 'disabled') }
 
 function disableUI() { mShield('dGameDiv'); }
 
