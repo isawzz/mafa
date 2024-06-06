@@ -271,14 +271,8 @@ themes:
     name: cave
     texture: ../assets/textures/marble_blue1.jpeg
     blendMode: normal
-  water:
-    color: '#2771c9'
-    texture: ../assets/textures/marble_water.jpg
-    blendMode: normal
-    fg: '#ffffff'
-    name: water
   forest:
-    color: '#046307'
+    color: '#ffe4e1'
     texture: ../assets/textures/wall1.jpg
-    blendMode: overlay
+    blendMode: darken
     name: forest

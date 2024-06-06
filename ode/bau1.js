@@ -1,25 +1,36 @@
 
-async function showTable(id) {
-	let me = getUname();
-	let table = await mGetRoute('table', { id });  //console.log('table',table)
-	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-	let func = DA.funcs[table.game];
-	T = table;
-	clearMain();
-	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
-	d = mDom('dMain'); mCenterFlex(d);
-	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
-	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);
-	func.stats(table);
-	let minTableSize = 400;
-	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
-	mCenterCenter(dTable);
-	let items = func.present(table);
-	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
-	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
-	await updateTestButtonsPlayers(table);
-	func.activate(table, items);
+function clearMain() { staticTitle(); clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
+
+
+async function instructionStandard(table,instruction){
+	let myTurn = isMyTurn(table);
+
+	let styleInstruction = { display: 'flex', 'justify-content': 'center', 'align-items': 'center' };
+	let dinst = mBy('dInstruction'); mClear(dinst);
+
+	if (!myTurn) {
+		mDom(dinst, styleInstruction, { html: `waiting for: ${getTurnPlayers(table)}` });
+		staticTitle(table);
+		return;
+	} else animatedTitle();
+
+	if (nundef(instruction)) return;
+
+	styleInstruction.maleft = -30;
+	//let instruction = 'must click a card';
+	html = `
+			${get_waiting_html()}
+			<span style="color:red;font-weight:bold;max-height:25px">You</span>
+			&nbsp;${instruction};
+			`;
+	mDom(dinst, styleInstruction, { html });
+
 }
+function lastWord(s){return arrLast(toWords(s));}
+
+
+
+
 
 
 

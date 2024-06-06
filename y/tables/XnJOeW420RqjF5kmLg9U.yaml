@@ -1,0 +1,183 @@
+status: started
+id: XnJOeW420RqjF5kmLg9U
+fen:
+  cards:
+    - 4
+    - 5
+    - 6
+  deck:
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 25
+    - 26
+    - 27
+    - 28
+    - 29
+    - 30
+    - 31
+    - 32
+    - 33
+    - 34
+    - 35
+    - 36
+    - 37
+    - 38
+    - 39
+    - 40
+    - 41
+    - 42
+    - 43
+    - 44
+    - 45
+    - 46
+    - 47
+    - 48
+    - 49
+    - 50
+    - 51
+    - 52
+    - 53
+    - 54
+    - 55
+    - 56
+    - 57
+    - 58
+    - 59
+    - 60
+    - 61
+    - 62
+    - 63
+    - 64
+    - 65
+    - 66
+    - 67
+    - 68
+    - 69
+    - 70
+    - 71
+    - 72
+    - 73
+    - 74
+    - 75
+    - 76
+    - 77
+    - 78
+    - 79
+    - 80
+    - 81
+    - 82
+    - 83
+    - 84
+    - 85
+    - 86
+    - 87
+    - 88
+    - 89
+    - 90
+    - 91
+    - 92
+    - 93
+    - 94
+    - 95
+    - 96
+    - 97
+    - 98
+    - 99
+    - 100
+game: button96
+owner: mimi
+friendly: festival of Kampala
+players:
+  mimi:
+    name: mimi
+    color: '#ffe4e1'
+    texture: ../assets/textures/marble_rosa.jpeg
+    blendMode: normal
+    imgKey: mimi
+    handicap: 3
+    playmode: human
+    score: 0
+  felix:
+    name: felix
+    color: '#0e1e76'
+    texture: ../assets/textures/marble_meer1.jpg
+    blendMode: normal
+    imgKey: felix
+    handicap: 3
+    playmode: human
+    score: -3
+playerNames:
+  - mimi
+  - felix
+options:
+  numCards: 100
+  gamemode: multi
+step: 3
+moves:
+  - step: 0
+    name: felix
+    move: 1
+    change: '+1'
+    score: 1
+  - step: 1
+    name: felix
+    move: 2
+    change: '+1'
+    score: 2
+  - step: 2
+    name: felix
+    move: 5
+    change: '-1'
+    score: 1
+  - step: 2
+    name: felix
+    move: 5
+    change: '-1'
+    score: 0
+  - step: 2
+    name: felix
+    move: 5
+    change: '-1'
+    score: -1
+  - step: 2
+    name: felix
+    move: 4
+    change: '-1'
+    score: -2
+  - step: 2
+    name: felix
+    move: 4
+    change: '-1'
+    score: -3
+  - step: 2
+    name: felix
+    move: 4
+    change: '-1'
+    score: -4
+  - step: 2
+    name: felix
+    move: 3
+    change: '+1'
+    score: -3
+plorder:
+  - mimi
+  - felix
+turn:
+  - mimi
+  - felix

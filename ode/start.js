@@ -3,6 +3,12 @@ onload = start;
 async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; await test117(); }
 
+async function test118_deleteTheme(){
+  await prelims();
+  delete Serverdata.config.themes.forest;
+  await mPostRoute('postConfig',Serverdata.config)
+}
+
 async function test117(){
   await prelims();
 
@@ -846,9 +852,9 @@ async function prelims() {
     `;
   document.body.innerHTML = html;
   UI.nav = showNavbar();
+  staticTitle(); 
   UI.user = mCommand(UI.nav.r, 'user'); iDiv(UI.user).classList.add('activeLink');
   await switchToUser(localStorage.getItem('username'), localStorage.getItem('menu'));
-
 }
 function defaultGameFunc() {
   function setup(table) { let fen = { players: table.players, turn: [table.owner] }; delete table.players; }

@@ -512,8 +512,6 @@ function clearFlex(styles = {}) {
 	let d = mDom(dp, styles); mFlexWrap(d);
 	return d;
 }
-function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
-
 function clearMessage(){ mStyle('dMessage', { h: 0 }); }
 function clearParent(ev) { mClear(ev.target.parentNode); }
 
@@ -6537,7 +6535,10 @@ async function onclickRenameCollection(oldname, newname) {
 	await collRename(oldname, newname);
 }
 async function onclickSettAddYourTheme() {
-	let name = await mGather(iDiv(UI.settAddYourTheme));
+	let nameEntered = await mGather(iDiv(UI.settAddYourTheme));
+	let name = normalizeString(nameEntered);
+	let ohne = replaceAll(name,'_','');
+	if (isEmpty(ohne)) {showMessage(`name ${nameEntered} is not valid!`); return;}
 	let o = {};
 	for (const s of ['color', 'texture', 'blendMode', 'fg']) {
 		if (isdef(U[s])) o[s] = U[s];
@@ -6547,6 +6548,9 @@ async function onclickSettAddYourTheme() {
 	let key = isdef(themes[name]) ? rUniqueId(6, 'th') : name;
 	Serverdata.config.themes[key] = o;
 	await mPostRoute('postConfig', Serverdata.config);
+	await onclickSettTheme();
+
+	
 }
 async function onclickSettBlendMode() {
 	if (isEmpty(U.texture)) {
@@ -6560,6 +6564,14 @@ async function onclickSettColor() {
 	localStorage.setItem('settingsMenu', 'settColor')
 	await showColors();
 }
+async function onclickSettDeleteTheme() {
+	let nameEntered = await mGather(iDiv(UI.settDeleteTheme));
+	let name = normalizeString(nameEntered);
+	if (!lookup(Serverdata.config,['themes',name])){showMessage(`theme ${name} does not exist!`); return;}
+	delete Serverdata.config.themes[name];
+	await mPostRoute('postConfig', Serverdata.config);
+	await onclickSettTheme();
+}
 async function onclickSettFg() {
 	localStorage.setItem('settingsMenu', 'settFg')
 	await showTextColors();
@@ -6571,19 +6583,6 @@ async function onclickSettMyTheme() {
 	let dOuter = mDom(d, { padding: 25 }); // { padding: 10, gap: 10, margin:'auto', w:500, align:'center', bg:'white' }); //mCenterFlex(dParent);
 	mCenterFlex(dOuter)
 	let ui = await uiTypePalette(dOuter, U.color, U.fg, U.texture, U.blendMode);
-	return;
-	let d1 = mDom(dParent);
-	let ca = await getCanvasCtx(d1, { w: 300, h: 200, fill, bgBlend }, { src });
-	let palette = await getPaletteFromCanvas(ca.cv);
-	palette.unshift(fill); palette.splice(8);
-	showPaletteMini(d1, palette);
-	d1.onclick = async () => {
-		U.palette = palette;
-		U.blendMode = blendCSS;
-		await updateUserTheme();
-	}
-	let list = arrMinus(getBlendModesCSS(), ['saturation', 'color']);
-	for (const blendMode of list) { await showBlendMode(dParent, blendMode); }
 }
 async function onclickSettRemoveTexture() {
 	if (isEmpty(U.texture)) return;
@@ -7631,6 +7630,7 @@ function settingsSidebar() {
 	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
 	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
 	UI.settAddYourTheme = mCommand(d, 'settAddYourTheme', 'Add Your Theme'); mNewline(d, gap);
+	UI.settDeleteTheme = mCommand(d, 'settDeleteTheme', 'Delete Theme'); mNewline(d, gap);
 }
 function show(elem, isInline = false) {
 	if (isString(elem)) elem = document.getElementById(elem);
@@ -8444,9 +8444,9 @@ function staticArea(areaName, oSpec) {
 function staticTitle(table) {
 	clearInterval(TO.titleInterval);
 	let url = window.location.href;
-	let loc = url.includes('vidulus') ? 'remote' : 'local';
-	let game = isdef(Z) ? stringAfter(table.friendly, 'of ') : '♠ GAMES ♠';
-	document.title = `(${loc}) ${game}`;
+	let loc = url.includes('vidulus') ? '' : '(local)';
+	let game = isdef(table) ? lastWord(table.friendly) : '♠ Moxito ♠';
+	document.title = `${loc} ${game}`;
 }
 function stdRowsColsContainer(dParent, cols, styles = {}) {
 	addKeys({

@@ -1,8 +1,8 @@
 name: guest
-color: '#2771c9'
-texture: ../assets/textures/marble_water.jpg
+color: '#046307'
+texture: ../assets/textures/wall1.jpg
 imgKey: guest
-blendMode: normal
+blendMode: overlay
 bg: '#55bc41'
 games:
   setgame:
@@ -10,3 +10,12 @@ games:
   button96:
     handicap: 3
 fg: '#ffffff'
+palette:
+  - '#046307'
+  - '#041104'
+  - '#045104'
+  - '#043f04'
+  - '#047704'
+  - '#041c04'
+  - '#042404'
+  - '#042c04'
