@@ -3,12 +3,13 @@ function fishgame() {
 
 	function setup(table) {
 		let fen = {};
+		fen.deck = rChoose(M.byCat.animal,170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
 		for (const name in table.players) {
 			let pl = table.players[name];
 			pl.score = 0;
+			pl.cards = deckDeal(fen.deck,5);
 		}
-		fen.cards = [1, 2, 3];
-		fen.deck = range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
+		//fen.cards = [1, 2, 3];
 		table.plorder = jsCopy(table.playerNames);
 		table.turn = jsCopy(table.playerNames);
 		return fen;
@@ -27,8 +28,30 @@ function fishgame() {
 	}
 	function present(table) {
 		let fen = table.fen;
-		mBy('dTable').remove(); return;
-		
+		let d=mBy('dTable');
+		d.style='';
+		d.className = '';
+
+		mStyle(d, { hmin:500, w:'90%',margin:20, bg:'#ffffffaa'}); // bgImage:`url('../assets/textures/marble_water.jpg')` });
+		d.innerHTML = ' ';
+
+		let me = getUname();
+		let pl = table.players[me];
+
+		let dCards=mDom(d);mCenterFlex(dCards);
+		for(const c of pl.cards){
+			showImage(c, dCards, styles = {}, useSymbol = false)			//let img=mDom(dCards,{},{tag:'img',src:})
+		}
+		//mach eine animal card
+		//wie geht das?
+		console.log(M.byCat.animal)
+
+
+
+		//mBy('dTable').remove(); 
+		//let dTable = 
+	}
+	function restPresent(table){
 		let dTable = mBy(dTable); mClassRemove(dTable,'wood');
 		mStyle('dTable', { padding: 25, w: 400, h: 400, rounding:0}); //, bgImage:'../assets/textures/' });
 		let d = mDom('dTable', { gap: 10, padding: 0 }); mCenterFlex(d);
@@ -41,7 +64,7 @@ function fishgame() {
 		return items;
 	}
 	async function activate(table, items) {
-
+		return;
 		await instructionStandard(table); //browser tab and instruction if any
 
 		if (!isMyTurn(table)) { return; } //console.log('table.turn',table.turn); 

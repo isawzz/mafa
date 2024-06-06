@@ -1,0 +1,40 @@
+status: started
+id: 8REKWfIYFh69e71MkSpc
+fen:
+  cards:
+    - 1
+    - 2
+    - 3
+  deck:
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+game: fishgame
+owner: mimi
+friendly: battle of Moroni
+players:
+  mimi:
+    name: mimi
+    color: '#ffe4e1'
+    texture: ../assets/textures/marble_rosa.jpeg
+    blendMode: normal
+    imgKey: mimi
+    playmode: human
+    score: 0
+playerNames:
+  - mimi
+options:
+  numCards: 12
+  gamemode: solo
+step: 0
+moves: []
+plorder:
+  - mimi
+turn:
+  - mimi
