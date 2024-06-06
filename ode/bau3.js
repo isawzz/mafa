@@ -27,7 +27,7 @@ function button96() {
 	}
 	function present(table) {
 		let fen = table.fen;
-		mStyle('dTable', { padding:25, w: 400, h:400 });
+		mStyle('dTable', { padding: 25, w: 400, h: 400 });
 		let d = mDom('dTable', { gap: 10, padding: 0 }); mCenterFlex(d);
 		let items = [];
 		for (const card of fen.cards) {
@@ -39,9 +39,9 @@ function button96() {
 	}
 	async function activate(table, items) {
 
-    await instructionStandard(table,'must click a card');
+		await instructionStandard(table, 'must click a card'); //browser tab and instruction if any
 
-    if (!isMyTurn(table)) {return;} //console.log('table.turn',table.turn); 
+		if (!isMyTurn(table)) { return; } //console.log('table.turn',table.turn); 
 
 		for (const item of items) {
 			let d = iDiv(item);
@@ -49,31 +49,32 @@ function button96() {
 			d.onclick = ev => onclickCard(table, item, items);
 		}
 
+		//check end condition
 		if (isEmpty(table.fen.cards)) return gameoverScore(table);
 
+		//bot move activation: in solo mode OR if user is a bot
 		if (amIHuman(table) && table.options.gamemode == 'multi') return;
 
-		//bot move activation: in solo mode one of the bots will move
-		let name = amIHuman(table) && table.options.gamemode == 'solo'?someOtherPlayerName(table):getUname();
+		let name = amIHuman(table) && table.options.gamemode == 'solo' ? someOtherPlayerName(table) : getUname();
 		if (nundef(name)) return; //console.log('bot name',name)
 
-		await botMove(name,table,items);
+		await botMove(name, table, items);
 	}
-	async function botMove(name, table,items){
-		let ms = rChoose(range(2000,5000));
+	async function botMove(name, table, items) {
+		let ms = rChoose(range(2000, 5000));
 
 		TO.bot = setTimeout(async () => {
 			let item = rChoose(items);
 			toggleItemSelection(item);
 			TO.bot1 = setTimeout(async () => await evalMove(name, table, item.key), 500);
-			
-		}, rNumber(ms,ms+2000));
+
+		}, rNumber(ms, ms + 2000));
 
 	}
 
 	async function onclickCard(table, item, items) {
 		toggleItemSelection(item);
-		try { await mSleep(200); } catch (err) { return; } 
+		try { await mSleep(200); } catch (err) { return; }
 		await evalMove(getUname(), table, item.key);
 	}
 	async function evalMove(name, table, key) {
@@ -89,18 +90,18 @@ function button96() {
 
 			//calc how to replace cards from set
 			let fen = table.fen;
-			let newCards = deckDeal(fen.deck, 1); 
-			if (newCards.length>0) arrReplace1(fen.cards, key, newCards[0]); else removeInPlace(fen.cards, key);
+			let newCards = deckDeal(fen.deck, 1);
+			if (newCards.length > 0) arrReplace1(fen.cards, key, newCards[0]); else removeInPlace(fen.cards, key);
 		} else {
 			table.players[name].score -= 1;
 		}
-		lookupAddToList(table, ['moves'], { step, name, move:key, change: succeed ? '+1' : '-1', score: table.players[name].score });
+		lookupAddToList(table, ['moves'], { step, name, move: key, change: succeed ? '+1' : '-1', score: table.players[name].score });
 
 		let o = { id, name, step, table };
 
 		if (succeed) o.stepIfValid = step + 1;
 
-		let res = await mPostRoute('table', o); 
+		let res = await mPostRoute('table', o);
 	}
 	return { setup, present, stats, activate };
 

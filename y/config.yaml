@@ -105,6 +105,15 @@ games:
       playmode: bot,human
     options:
       gamemode: solo,multi
+  fishgame:
+    friendly: Fish
+    logo: blowfish
+    color: water
+    ploptions:
+      playmode: bot,human
+    options:
+      numCards: 6,9,15,12
+      gamemode: solo,multi
   fritz:
     friendly: A L'Honneur!
     logo: fencing

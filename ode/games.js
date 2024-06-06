@@ -52,7 +52,8 @@ function setgame() {
 	}
 	async function activate(table, items) {
 
-		if (!isMyTurn(table)) {console.log('table.turn',table.turn); return;}
+		instructionStandard(table);
+		if (!isMyTurn(table)) {return;}
 
 		for (const item of items) {
 			let d = iDiv(item);
@@ -61,12 +62,11 @@ function setgame() {
 		}
 
 		//show no set button
-		let dParent = mBy('dTable').parentNode;
-		mIfNotRelative(dParent);
-
+		let dParent = mBy('dTable').parentNode;		mIfNotRelative(dParent);
 		let bNoSet = mButton('No Set', () => onclickNoSet(getUname(), table, items), dParent, {},'button','bNoSet'); 
 		mPos(bNoSet, window.innerWidth / 2 + 180, 110);
 
+		//show hint button for levels up to 2
 		if (amIHuman(table) && getGameOption('use_level')=='yes' && getPlayerProp('level')<=2){
 			let bHint = mButton('Hint', () => onclickHint(table, items), dParent, {},'button','bHint');
 			mPos(bHint, window.innerWidth / 2 - 200 - 80, 110);

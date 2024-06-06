@@ -6,7 +6,7 @@ async function showTable(id) {
 	let func = DA.funcs[table.game];
 	T = table;
 	clearMain();
-	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
+	let d = mBy('dExtraLeft'); d.innerHTML = `<h2><span style="font-family:emoNoto"${getGameProp('friendly').toUpperCase()}: ${table.friendly} (${table.step})</h2>`; // title
 	d = mDom('dMain'); mCenterFlex(d);
 	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
 	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);

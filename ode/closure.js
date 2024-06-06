@@ -7895,7 +7895,7 @@ function showGames(ms = 500) {
 	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
 	let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = ['setgame', 'button96']; //'button99','button98','button97','setgame']
+	gamelist = ['setgame', 'fishgame', 'button96']; 
 	for (const gname of gamelist) {
 		let g = getGameConfig(gname);
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];

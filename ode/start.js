@@ -827,7 +827,7 @@ async function prelims() {
   let t5 = performance.now();
   window.onkeydown = keyDownHandler;
   window.onkeyup = keyUpHandler;
-  DA.funcs = { setgame: setgame(), button96: button96() }; //implemented games!
+  DA.funcs = { setgame: setgame(), fishgame: fishgame(), button96: button96() }; //implemented games!
   for (const gname in Serverdata.config.games) {
     if (isdef(DA.funcs[gname])) continue;
     DA.funcs[gname] = defaultGameFunc();

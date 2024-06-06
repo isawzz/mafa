@@ -6,3 +6,5 @@ imgKey: amanda
 games:
   setgame:
     level: 2
+  button96:
+    handicap: 3

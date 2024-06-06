@@ -1,0 +1,60 @@
+status: started
+id: FJ9GCjXUdm_fT3YHRSbA
+fen:
+  cards:
+    - 1
+    - 2
+    - 3
+  deck:
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+game: fishgame
+owner: lauren
+friendly: tournament of Gitega
+players:
+  lauren:
+    name: lauren
+    color: '#006c7f'
+    texture: ../assets/textures/marble_blue2.jpeg
+    blendMode: normal
+    imgKey: lauren
+    palette:
+      - '#006c7f'
+      - '#7caac1'
+      - '#39688b'
+      - '#cddbe0'
+      - '#abc3cd'
+      - '#b6d6e2'
+      - '#566a79'
+      - '#6c848e'
+    playmode: human
+    score: 0
+  amanda:
+    name: amanda
+    color: '#2f7532'
+    texture: ../assets/textures/marble_greenorange.jpeg
+    blendMode: overlay
+    imgKey: amanda
+    playmode: human
+    score: 0
+playerNames:
+  - lauren
+  - amanda
+options:
+  numCards: 12
+  gamemode: multi
+step: 0
+moves: []
+plorder:
+  - lauren
+  - amanda
+turn:
+  - lauren
+  - amanda
