@@ -512,8 +512,9 @@ function clearFlex(styles = {}) {
 	let d = mDom(dp, styles); mFlexWrap(d);
 	return d;
 }
-function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); }
+function clearMain() { clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
 
+function clearMessage(){ mStyle('dMessage', { h: 0 }); }
 function clearParent(ev) { mClear(ev.target.parentNode); }
 
 function clearTimeouts() {
@@ -6119,16 +6120,6 @@ async function onclickAsSecondary(ev) {
 	collOpenSecondary(4, 3);
 	collOpenPrimary(4, 3);
 }
-async function onclickBot() {
-	let name = getUname();
-	let table = T;
-	let plmode = table.players[name].playmode;
-	if (plmode == 'bot') return;
-	let id = table.id;
-	let olist = [];
-	olist.push({ keys: ['players', name, 'playmode'], val: 'bot' });
-	let res = await sendMergeTable({ id, name, olist });
-}
 function onclickClear(inp, grid) {
 	inp.value = '';
 	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
@@ -6355,16 +6346,6 @@ function onclickHex(item, board) {
 }
 async function onclickHome() { UI.nav.activate(); await showDashboard(); }
 
-async function onclickHuman() {
-	let name = getUname();
-	let table = T;
-	let plmode = table.players[name].playmode;
-	if (plmode == 'human') return;
-	let id = table.id;
-	let olist = [];
-	olist.push({ keys: ['players', name, 'playmode'], val: 'human' });
-	let res = await sendMergeTable({ id, name, olist });
-}
 async function onclickJoinTable(id) {
 	let table = Serverdata.tables.find(x => x.id == id);
 	let me = getUname();
@@ -7414,41 +7395,6 @@ function selectText(el) {
 		}
 	}
 }
-async function sendMergeTable(o, cond = 'merge') {
-	if (nundef(o)) {
-		let table = Cliendata.table;
-		let name = getUname();
-		let id = table.id;
-		o = { name, id, table };
-	} else if (nundef(o.name)) {
-		let table = o;
-		let name = getUname();
-		let id = table.id;
-		o = { name, id, table };
-	}
-	let table = await mPostRoute(`${cond}Table`, o);
-	if (!isDict(table)) { console.log('from server', table); } //INVALID!!!
-	else await showTable(table);
-}
-async function sendRaceError(table, name, errors = 1) {
-	let data = {
-		id: table.id,
-		name,
-		errors,
-		olist: [
-			{ keys: ['players', name, 'score'], val: table.players[name].score - errors },
-			{ keys: ['players', name, 'errors'], val: valf(table.players[name].errors, 0) + errors }
-		]
-	}
-	let res = await sendMergeTable(data, 'race');
-}
-async function sendRaceStepScore(table, name, score = 1, olist = []) {
-	let step = table.step + 1;
-	olist.push({ keys: ['step'], val: step });
-	olist.push({ keys: ['players', name, 'score'], val: table.players[name].score + score });
-	let data = { id: table.id, name, step, olist };
-	let res = await sendMergeTable(data, 'race');
-}
 function setColors(bg, fg) {
 	let [realBg, bgContrast, bgNav, fgNew, fgContrast] = calculateGoodColors(bg, fg);
 	setCssVar('--bgBody', realBg);
@@ -7949,7 +7895,7 @@ function showGames(ms = 500) {
 	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
 	let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = ['setgame']; //'button99','button98','button97','setgame']
+	gamelist = ['setgame', 'button96']; //'button99','button98','button97','setgame']
 	for (const gname of gamelist) {
 		let g = getGameConfig(gname);
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
@@ -8054,7 +8000,7 @@ function showMessage(msg, ms = 3000) {
 	mStyle(d, { h: 21, bg: 'red', fg: 'yellow' });
 	d.innerHTML = msg;
 	clearTimeout(TO.message);
-	TO.message = setTimeout(() => mStyle('dMessage', { h: 0 }), ms)
+	TO.message = setTimeout(clearMessage, ms)
 }
 function showNavbar() {
 	let nav = mMenu('dNav');

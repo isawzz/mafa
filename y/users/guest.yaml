@@ -7,4 +7,6 @@ bg: '#55bc41'
 games:
   setgame:
     level: 7
+  button96:
+    handicap: 3
 fg: '#ffffff'

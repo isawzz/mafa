@@ -1,7 +1,6 @@
 function button96() {
 
 	function setup(table) {
-		//console.log('setup',table)
 		let fen = {};
 		for (const name in table.players) {
 			let pl = table.players[name];
@@ -13,41 +12,6 @@ function button96() {
 		table.turn = jsCopy(table.playerNames);
 		return fen;
 	}
-	function resolvePending(table) {
-		let [fen, players] = [table.fen, table.players];
-		let pending = table.pending; delete table.pending;
-		let [name, move] = [pending.name, pending.move];
-
-		let best = arrMinMax(fen.cards).min; //check if the card is the best
-		if (move == best) {
-			players[name].score += 1;
-			removeInPlace(fen.cards, move);
-			let cardlist = deckDeal(fen.deck, 1); 
-			if (isEmpty(cardlist)) {
-				table.winners = getPlayersWithMaxScore(table);
-				table.status = 'over';
-				table.turn = [];
-			} else {
-				fen.cards.push(cardlist[0]);
-				DA.pendingChanges = [['players', name, 'score'], ['fen']];
-			}
-		} else {
-			players[name].score -= 1;
-			DA.pendingChanges = [['players', name, 'score']];
-		}
-	}
-	function present(table) {
-		let fen = table.fen;
-		let d = mDom('dTable', { gap: 10, padding: 10 }); mCenterFlex(d);
-		let items = [];
-		for (const card of fen.cards) {
-			let item = cNumber(card);
-			mAppend(d, iDiv(item));
-			items.push(item);
-			item.feno = card;
-		}
-		return items;
-	}
 	function stats(table) {
 		let [me, players] = [getUname(), table.players];
 		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
@@ -57,76 +21,86 @@ function button96() {
 			let item = player_stat_items[plname];
 			if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
 			let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
-			playerStatCount('star', pl.score, d);
+			playerStatCount('star', pl.score, d); //, {}, {id:`stat_${plname}_score`});
 		}
 	}
-	async function activate(table, items) {
-		let myTurn = isMyTurn(table);
-
-		let styleInstruction = { display: 'flex', 'justify-content': 'center', 'align-items': 'center' };
-		let dinst = mBy('dInstruction'); mClear(dinst);
-
-		if (!myTurn) {
-			mDom(dinst, styleInstruction, { html: `waiting for: ${getTurnPlayers(table)}` });
-			return;
+	function present(table) {
+		let fen = table.fen;
+		mStyle('dTable', { padding:25, w: 400, h:400 });
+		let d = mDom('dTable', { gap: 10, padding: 0 }); mCenterFlex(d);
+		let items = [];
+		for (const card of fen.cards) {
+			let item = cNumber(card);
+			mAppend(d, iDiv(item));
+			items.push(item);
 		}
+		return items;
+	}
+	async function activate(table, items) {
 
-		styleInstruction.maleft = -30;
-		let instruction = 'must click a card';
-		html = `
-				${get_waiting_html()}
-				<span style="color:red;font-weight:bold;max-height:25px">You</span>
-				&nbsp;${instruction};
-				`;
-		mDom(dinst, styleInstruction, { html });
+		if (!isMyTurn(table)) {console.log('table.turn',table.turn); return;}
 
 		for (const item of items) {
 			let d = iDiv(item);
 			mStyle(d, { cursor: 'pointer' });
-			d.onclick = ev => onclickCard(table, item);
+			d.onclick = ev => onclickCard(table, item, items);
 		}
 
-		if (amIHuman(table)) return;
+		if (isEmpty(table.fen.cards)) return gameoverScore(table);
 
-		//bot move activation
-		TO.bot = setInterval(async () => {
-			//console.log('BOT!!!',table.step);
-			let list = sortBy(items, x => x.feno); //console.log(list);
-			let item = list[0]; //rChoose(items);
-			await onclickCard(table, item);
-		}, rNumber(1000, 4000));
+		if (amIHuman(table) && table.options.gamemode == 'multi') return;
+
+		//bot move activation: in solo mode one of the bots will move
+		let name = amIHuman(table) && table.options.gamemode == 'solo'?someOtherPlayerName(table):getUname();
+		if (nundef(name)) return; //console.log('bot name',name)
+
+		await botMove(name,table,items);
+	}
+	async function botMove(name, table,items){
+		let ms = rChoose(range(2000,5000));
+
+		TO.bot = setTimeout(async () => {
+			let item = rChoose(items);
+			toggleItemSelection(item);
+			TO.bot1 = setTimeout(async () => await evalMove(name, table, item.key), 500);
+			
+		}, rNumber(ms,ms+2000));
 
 	}
 
-	async function onclickCard(table, item) {
+	async function onclickCard(table, item, items) {
+		toggleItemSelection(item);
+		try { await mSleep(200); } catch (err) { return; } 
+		await evalMove(getUname(), table, item.key);
+	}
+	async function evalMove(name, table, key) {
+		clearEvents();
 		mShield('dTable', { bg: 'transparent' });
-
-		//highlight clicked card
-		let d = iDiv(item);
-		let ms = rChoose(range(300, 400));
-		mClass(d, 'framedPicture'); TO.hallo = setTimeout(() => mClassRemove(d, 'framedPicture'), ms);
-		try { await mSleep(ms); } catch (err) { return; } //console.log("ERR", err); 
-
 		let id = table.id;
-		let name = getUname();
-		let move = item.feno;
 		let step = table.step;
-		let olist = [			{ keys: ['pending'], val: { name, move } },		];
-		if (isdef(DA.pendingChanges)) {
-			for (const klist of DA.pendingChanges) {
-				olist.push({ keys: klist, val: lookup(table, klist) });
-			}
-		}
 
-		let o = { id, name, olist, step };
 		let best = arrMinMax(table.fen.cards).min;
+		let succeed = key == best;
+		if (succeed) {
+			table.players[name].score += 1;
 
-		if (move == best) o.stepIfValid = step + 1; // nur 1 kann punkt kriegen pro runde
+			//calc how to replace cards from set
+			let fen = table.fen;
+			let newCards = deckDeal(fen.deck, 1); 
+			if (newCards.length>0) arrReplace1(fen.cards, key, newCards[0]); else removeInPlace(fen.cards, key);
+		} else {
+			table.players[name].score -= 1;
+		}
+		lookupAddToList(table, ['moves'], { step, name, move:key, change: succeed ? '+1' : '-1', score: table.players[name].score });
 
-		let res = await mPostRoute('olist', o); //console.log(res);
+		let o = { id, name, step, table };
+
+		if (succeed) o.stepIfValid = step + 1;
+
+		let res = await mPostRoute('table', o); 
 	}
+	return { setup, present, stats, activate };
 
-	return { setup, resolvePending, present, stats, activate }; 
 }
 
 

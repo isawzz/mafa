@@ -1,3 +1,62 @@
+//#region 7.6.24 elim lauter route calls
+async function onclickBot() {
+	let name = getUname();
+	let table = T;
+	let plmode = table.players[name].playmode;
+	if (plmode == 'bot') return;
+	let id = table.id;
+	let olist = [];
+	olist.push({ keys: ['players', name, 'playmode'], val: 'bot' });
+	let res = await sendMergeTable({ id, name, olist });
+}
+async function onclickHuman() {
+	let name = getUname();
+	let table = T;
+	let plmode = table.players[name].playmode;
+	if (plmode == 'human') return;
+	let id = table.id;
+	let olist = [];
+	olist.push({ keys: ['players', name, 'playmode'], val: 'human' });
+	let res = await sendMergeTable({ id, name, olist });
+}
+async function sendMergeTable(o, cond = 'merge') {
+	if (nundef(o)) {
+		let table = Cliendata.table;
+		let name = getUname();
+		let id = table.id;
+		o = { name, id, table };
+	} else if (nundef(o.name)) {
+		let table = o;
+		let name = getUname();
+		let id = table.id;
+		o = { name, id, table };
+	}
+	let table = await mPostRoute(`${cond}Table`, o);
+	if (!isDict(table)) { console.log('from server', table); } //INVALID!!!
+	else await showTable(table);
+}
+async function sendRaceError(table, name, errors = 1) {
+	let data = {
+		id: table.id,
+		name,
+		errors,
+		olist: [
+			{ keys: ['players', name, 'score'], val: table.players[name].score - errors },
+			{ keys: ['players', name, 'errors'], val: valf(table.players[name].errors, 0) + errors }
+		]
+	}
+	let res = await sendMergeTable(data, 'race');
+}
+async function sendRaceStepScore(table, name, score = 1, olist = []) {
+	let step = table.step + 1;
+	olist.push({ keys: ['step'], val: step });
+	olist.push({ keys: ['players', name, 'score'], val: table.players[name].score + score });
+	let data = { id: table.id, name, step, olist };
+	let res = await sendMergeTable(data, 'race');
+}
+
+
+
 //#region 5.6.24
 function button96() {
 
