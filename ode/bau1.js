@@ -1,13 +1,27 @@
 
+function getAnimals() {
+	const animals = `
+		
+Earwig,Cockroach,Grasshopper,Silverfish,Moth
+Mosquito
+Fly
+Bee
+Wasp
+Beetle
+	`;
+}
+
+
+
 function fishgame() {
 
 	function setup(table) {
 		let fen = {};
-		fen.deck = rChoose(M.byCat.animal,170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
+		fen.deck = rChoose(M.byCollection.animals, 170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
 		for (const name in table.players) {
 			let pl = table.players[name];
 			pl.score = 0;
-			pl.cards = deckDeal(fen.deck,5);
+			pl.cards = deckDeal(fen.deck, 5);
 		}
 		//fen.cards = [1, 2, 3];
 		table.plorder = jsCopy(table.playerNames);
@@ -28,32 +42,33 @@ function fishgame() {
 	}
 	function present(table) {
 		let fen = table.fen;
-		let d=mBy('dTable');
-		d.style='';
+		let d = mBy('dTable');
+		d.style = '';
 		d.className = '';
 
-		mStyle(d, { hmin:500, w:'90%',margin:20, bg:'#ffffffaa'}); // bgImage:`url('../assets/textures/marble_water.jpg')` });
+		mStyle(d, { hmin: 500, w: '90%', margin: 20 }); //, bg:'#ffffffaa'}); // bgImage:`url('../assets/textures/marble_water.jpg')` });
 		d.innerHTML = ' ';
 
 		let me = getUname();
 		let pl = table.players[me];
 
-		let dCards=mDom(d);mCenterFlex(dCards);
-		for(const c of pl.cards){
-			showImage(c, dCards, styles = {}, useSymbol = false)			//let img=mDom(dCards,{},{tag:'img',src:})
+		let dCards = mDom(d, { gap: 8 }); mCenterFlex(dCards);
+		for (const c of pl.cards) {
+			//let d1=mDom(dCards, {w:100,h:100,bg:U.color})
+			showImageCard(c, dCards, { bg: U.color }); //, {sz:100,border:})
 		}
 		//mach eine animal card
 		//wie geht das?
-		console.log(M.byCat.animal)
+		//console.log(M.byCat.animal)
 
 
 
 		//mBy('dTable').remove(); 
 		//let dTable = 
 	}
-	function restPresent(table){
-		let dTable = mBy(dTable); mClassRemove(dTable,'wood');
-		mStyle('dTable', { padding: 25, w: 400, h: 400, rounding:0}); //, bgImage:'../assets/textures/' });
+	function restPresent(table) {
+		let dTable = mBy(dTable); mClassRemove(dTable, 'wood');
+		mStyle('dTable', { padding: 25, w: 400, h: 400, rounding: 0 }); //, bgImage:'../assets/textures/' });
 		let d = mDom('dTable', { gap: 10, padding: 0 }); mCenterFlex(d);
 		let items = [];
 		for (const card of fen.cards) {

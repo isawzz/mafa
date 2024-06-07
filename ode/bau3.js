@@ -1,108 +1,196 @@
-
-function button96() {
-
-	function setup(table) {
-		let fen = {};
-		for (const name in table.players) {
-			let pl = table.players[name];
-			pl.score = 0;
-		}
-		fen.cards = [1, 2, 3];
-		fen.deck = range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
-		table.plorder = jsCopy(table.playerNames);
-		table.turn = jsCopy(table.playerNames);
-		return fen;
-	}
-	function stats(table) {
-		let [me, players] = [getUname(), table.players];
-		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
-		let player_stat_items = uiTypePlayerStats(table, me, 'dStats', 'rowflex', style)
-		for (const plname in players) {
-			let pl = players[plname];
-			let item = player_stat_items[plname];
-			if (pl.playmode == 'bot') { mStyle(item.img, { rounding: 0 }); }
-			let d = iDiv(item); mCenterFlex(d); mLinebreak(d); mIfNotRelative(d);
-			playerStatCount('star', pl.score, d); //, {}, {id:`stat_${plname}_score`});
-		}
-	}
-	function present(table) {
-		let fen = table.fen;
-		mStyle('dTable', { padding: 25, w: 400, h: 400 });
-		let d = mDom('dTable', { gap: 10, padding: 0 }); mCenterFlex(d);
-		let items = [];
-		for (const card of fen.cards) {
-			let item = cNumber(card);
-			mAppend(d, iDiv(item));
-			items.push(item);
-		}
-		return items;
-	}
-	async function activate(table, items) {
-
-		await instructionStandard(table, 'must click a card'); //browser tab and instruction if any
-
-		if (!isMyTurn(table)) { return; } //console.log('table.turn',table.turn); 
-
-		for (const item of items) {
-			let d = iDiv(item);
-			mStyle(d, { cursor: 'pointer' });
-			d.onclick = ev => onclickCard(table, item, items);
-		}
-
-		//check end condition
-		if (isEmpty(table.fen.cards)) return gameoverScore(table);
-
-		//bot move activation: in solo mode OR if user is a bot
-		if (amIHuman(table) && table.options.gamemode == 'multi') return;
-
-		let name = amIHuman(table) && table.options.gamemode == 'solo' ? someOtherPlayerName(table) : getUname();
-		if (nundef(name)) return; //console.log('bot name',name)
-
-		await botMove(name, table, items);
-	}
-	async function botMove(name, table, items) {
-		let ms = rChoose(range(2000, 5000));
-
-		TO.bot = setTimeout(async () => {
-			let item = rChoose(items);
-			toggleItemSelection(item);
-			TO.bot1 = setTimeout(async () => await evalMove(name, table, item.key), 500);
-
-		}, rNumber(ms, ms + 2000));
-
-	}
-
-	async function onclickCard(table, item, items) {
-		toggleItemSelection(item);
-		try { await mSleep(200); } catch (err) { return; }
-		await evalMove(getUname(), table, item.key);
-	}
-	async function evalMove(name, table, key) {
-		clearEvents();
-		mShield('dTable', { bg: 'transparent' });
-		let id = table.id;
-		let step = table.step;
-
-		let best = arrMinMax(table.fen.cards).min;
-		let succeed = key == best;
-		if (succeed) {
-			table.players[name].score += 1;
-
-			//calc how to replace cards from set
-			let fen = table.fen;
-			let newCards = deckDeal(fen.deck, 1);
-			if (newCards.length > 0) arrReplace1(fen.cards, key, newCards[0]); else removeInPlace(fen.cards, key);
-		} else {
-			table.players[name].score -= 1;
-		}
-		lookupAddToList(table, ['moves'], { step, name, move: key, change: succeed ? '+1' : '-1', score: table.players[name].score });
-
-		let o = { id, name, step, table };
-
-		if (succeed) o.stepIfValid = step + 1;
-
-		let res = await mPostRoute('table', o);
-	}
-	return { setup, present, stats, activate };
-
-}
+var animalDetails = {
+	sphynx_cat: {
+		name: "Sphynx Cat",
+		lifespan: "8-14 years",
+		habitat: "Domestic",
+		avgGrownupWeight: "3-5 kg",
+		avgSize: "30-40 cm in length",
+		preferredFood: "Carnivorous: commercial cat food, meat",
+		species: "Felis catus",
+		color: "Varies: often appears hairless with skin pigmentation",
+		reproduction: "Viviparous",
+		avgNumberOfOffsprings: "4-6 kittens per litter",
+		class: "Mammal"
+	},
+	chameleon: {
+		name: "Common Chameleon",
+		lifespan: "2-10 years depending on species",
+		habitat: "Tropical and subtropical forests, savannas",
+		avgGrownupWeight: "100-200 g",
+		avgSize: "15-25 cm",
+		preferredFood: "Insectivorous: insects, small invertebrates",
+		species: "Chamaeleo chamaeleon",
+		color: "Varies: green, brown, can change color for camouflage and communication",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "20-40 eggs per clutch",
+		class: "Reptile"
+	},
+	bengal_cat: {
+		name: "Bengal Cat",
+		lifespan: "12-16 years",
+		habitat: "Domestic",
+		avgGrownupWeight: "4-7 kg",
+		avgSize: "35-45 cm in length",
+		preferredFood: "Carnivorous: commercial cat food, meat",
+		species: "Felis catus",
+		color: "Spotted or marbled coat with a variety of colors",
+		reproduction: "Viviparous",
+		avgNumberOfOffsprings: "4-6 kittens per litter",
+		class: "Mammal"
+	},
+	barn_owl: {
+		name: "Barn Owl",
+		lifespan: "4-10 years in the wild, up to 20 years in captivity",
+		habitat: "Open countryside, farmlands, woodlands",
+		avgGrownupWeight: "400-700 g",
+		avgSize: "33-39 cm in length, wingspan 80-95 cm",
+		preferredFood: "Carnivorous: small mammals, birds, insects",
+		species: "Tyto alba",
+		color: "Pale, heart-shaped face with a mix of white, golden-brown, and gray feathers",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "4-7 eggs per clutch",
+		class: "Bird"
+	},
+	cattle_egret: {
+		name: "Cattle Egret",
+		lifespan: "10-15 years",
+		habitat: "Grasslands, agricultural fields, wetlands",
+		avgGrownupWeight: "300-400 g",
+		avgSize: "46-56 cm in length, wingspan 88-96 cm",
+		preferredFood: "Insectivorous: insects, especially grasshoppers, and other small invertebrates",
+		species: "Bubulcus ibis",
+		color: "White with yellow or orange bill and legs, can have buff patches during breeding season",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "3-4 eggs per clutch",
+		class: "Bird"
+	},
+	main_coon_cat: {
+		name: "Maine Coon Cat",
+		lifespan: "12-15 years",
+		habitat: "Domestic",
+		avgGrownupWeight: "5-8 kg (males can be larger)",
+		avgSize: "48-100 cm in length including tail",
+		preferredFood: "Carnivorous: commercial cat food, meat",
+		species: "Felis catus",
+		color: "Variety of colors and patterns, including tabby, solid, bicolor, and more",
+		reproduction: "Viviparous",
+		avgNumberOfOffsprings: "4-6 kittens per litter",
+		class: "Mammal"
+	},
+	ojos_azules_cat: {
+		name: "Ojos Azules Cat",
+		lifespan: "12-15 years",
+		habitat: "Domestic",
+		avgGrownupWeight: "3-5 kg",
+		avgSize: "30-40 cm in length",
+		preferredFood: "Carnivorous: commercial cat food, meat",
+		species: "Felis catus",
+		color: "Variety of colors, notable for striking blue eyes",
+		reproduction: "Viviparous",
+		avgNumberOfOffsprings: "4-6 kittens per litter",
+		class: "Mammal"
+	},
+	scarlet_tanager: {
+		name: "Scarlet Tanager",
+		lifespan: "3-5 years in the wild",
+		habitat: "Deciduous and mixed woodlands, forests",
+		avgGrownupWeight: "23-38 g",
+		avgSize: "16-19 cm in length, wingspan 25-30 cm",
+		preferredFood: "Omnivorous: insects, fruits, berries",
+		species: "Piranga olivacea",
+		color: "Bright red with black wings and tail (males), yellowish-green with darker wings (females)",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "3-5 eggs per clutch",
+		class: "Bird"
+	}, 
+	southern_festoon: {
+		name: "Southern Festoon",
+		lifespan: "2-3 weeks as adults",
+		habitat: "Grasslands, meadows, and open woodlands in Southern Europe",
+		avgGrownupWeight: "0.5-1 g",
+		avgSize: "5-7 cm wingspan",
+		preferredFood: "Herbivorous: larvae feed on Aristolochia plants, adults feed on nectar",
+		species: "Zerynthia polyxena",
+		color: "Yellow with black, red, and blue markings",
+		reproduction: "Egg-laying",
+		avgNumberOfOffsprings: "Several dozen eggs laid on host plants",
+		class: "Insect"
+	},
+	khao_manee_cat: {
+		name: "Khao Manee Cat",
+		lifespan: "10-15 years",
+		habitat: "Domestic",
+		avgGrownupWeight: "3-5 kg",
+		avgSize: "30-40 cm in length",
+		preferredFood: "Carnivorous: commercial cat food, meat",
+		species: "Felis catus",
+		color: "Pure white with striking blue, green, or odd-colored eyes",
+		reproduction: "Viviparous",
+		avgNumberOfOffsprings: "4-6 kittens per litter",
+		class: "Mammal"
+	},
+	toucan: {
+		name: "Toucan",
+		lifespan: "15-20 years",
+		habitat: "Tropical and subtropical rainforests in Central and South America",
+		avgGrownupWeight: "300-700 g depending on species",
+		avgSize: "29-63 cm in length including bill",
+		preferredFood: "Omnivorous: fruits, insects, small reptiles, and eggs",
+		species: "Ramphastidae family",
+		color: "Brightly colored plumage with a large, colorful bill",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "2-4 eggs per clutch",
+		class: "Bird"
+	}, 
+	bald_eagle: {
+		name: "Bald Eagle",
+		lifespan: "20-30 years in the wild",
+		habitat: "Near large bodies of open water such as lakes, rivers, and coastal regions in North America",
+		avgGrownupWeight: "3-6.3 kg",
+		avgSize: "70-102 cm in length, wingspan 180-230 cm",
+		preferredFood: "Carnivorous: primarily fish, but also small mammals, birds, and carrion",
+		species: "Haliaeetus leucocephalus",
+		color: "Dark brown body with a white head and tail, yellow beak and feet",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "1-3 eggs per clutch",
+		class: "Bird"
+	},
+	Axolotl: {
+		name: "Axolotl",
+		lifespan: "10-15 years in captivity",
+		habitat: "Freshwater lakes and canals in Mexico, particularly Lake Xochimilco",
+		avgGrownupWeight: "60-200 g",
+		avgSize: "15-45 cm",
+		preferredFood: "Carnivorous: worms, insects, small fish, and other small aquatic animals",
+		species: "Ambystoma mexicanum",
+		color: "Varies: wild types are usually dark with speckling, while captive-bred can be white, pink, or gold",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "100-300 eggs per clutch",
+		class: "Amphibian"
+	},
+	macaw: {
+		name: "Macaw",
+		lifespan: "30-50 years, some species up to 75 years in captivity",
+		habitat: "Tropical rainforests, savannas, and woodlands of Central and South America",
+		avgGrownupWeight: "900-1200 g depending on species",
+		avgSize: "76-100 cm in length including tail",
+		preferredFood: "Omnivorous: seeds, nuts, fruits, leaves, and occasionally insects",
+		species: "Ara genus",
+		color: "Brightly colored plumage, often in shades of blue, red, green, and yellow",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "2-4 eggs per clutch",
+		class: "Bird"
+	},
+	blue_tit: {
+		lifespan: "2-3 years in the wild, up to 15 years in captivity",
+		habitat: "Woodlands, gardens, hedgerows, and parks throughout Europe and western Asia",
+		avgGrownupWeight: "9-12 g",
+		avgSize: "12 cm in length, wingspan 17-20 cm",
+		preferredFood: "Omnivorous: insects, seeds, nuts, and berries",
+		species: "Cyanistes caeruleus",
+		color: "Blue cap, wings, and tail with yellow underparts and greenish back",
+		reproduction: "Oviparous",
+		avgNumberOfOffsprings: "7-12 eggs per clutch",
+		class: "Bird"
+	},
+};

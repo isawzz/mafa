@@ -783,7 +783,7 @@ async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inp
 	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
 	let friendly = inpFriendly.value;
 	let cats = extractWords(valf(inpCats.value, ''));
-	let filename = (isdef(M.superdi[friendly]) ? 'i' + get_timestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
 	let o = { image: dataUrl, coll: coll.name, path: filename };
 	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
 	let key = stringBefore(filename, '.');
@@ -4580,6 +4580,7 @@ async function loadAndScaleImage(imageUrl) {
 }
 async function loadAssets() {
 	M = await mGetYaml('../y/m.yaml');
+	M.superdi = await mGetYaml('../y/superdi.yaml');
 	let [di, byColl, byFriendly, byCat] = [M.superdi, {}, {}, {}];
 	for (const k in di) {
 		let o = di[k];

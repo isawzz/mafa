@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Card</title>
+    <style>
+        .animal-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 300px;
+            margin: 10px;
+            padding: 10px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+        }
+        .animal-card img {
+            max-width: 100%;
+            border-radius: 8px 8px 0 0;
+        }
+        .animal-card .details {
+            padding: 10px;
+        }
+        .animal-card .details h3 {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+        .animal-card .details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="animal-cards-container"></div>
+
+    <script>
+        function createAnimalCard(animal) {
+            // Create the main card div
+            const card = document.createElement('div');
+            card.className = 'animal-card';
+
+            // Create the image element
+            const img = document.createElement('img');
+            img.src = animal.image;
+            img.alt = animal.name;
+
+            // Create the details div
+            const details = document.createElement('div');
+            details.className = 'details';
+
+            // Create the name element
+            const name = document.createElement('h3');
+            name.textContent = animal.name;
+
+            // Create the numeric data elements
+            const age = document.createElement('p');
+            age.textContent = `Age: ${animal.age}`;
+
+            const weight = document.createElement('p');
+            weight.textContent = `Weight: ${animal.weight} kg`;
+
+            const height = document.createElement('p');
+            height.textContent = `Height: ${animal.height} cm`;
+
+            // Append elements to the details div
+            details.appendChild(name);
+            details.appendChild(age);
+            details.appendChild(weight);
+            details.appendChild(height);
+
+            // Append image and details to the card
+            card.appendChild(img);
+            card.appendChild(details);
+
+            // Append the card to the container
+            document.getElementById('animal-cards-container').appendChild(card);
+        }
+
+        // Example usage:
+        const animal = {
+            name: 'Lion',
+            image: 'https://images.unsplash.com/photo-1519066629443-56dc844f38d2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80', //'https://example.com/lion.jpg',
+            age: 5,
+            weight: 190,
+            height: 120
+        };
+
+        createAnimalCard(animal);
+    </script>
+</body>
+</html>

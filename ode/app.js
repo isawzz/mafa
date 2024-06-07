@@ -14,7 +14,8 @@ const dbDirectory = path.join(__dirname, '..', 'y', 'dbyaml');
 const configFile = path.join(uploadDirectory, 'config.yaml');
 const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
-const superdiFile = path.join(uploadDirectory, 'm.yaml');
+const mFile = path.join(uploadDirectory, 'm.yaml');
+const superdiFile = path.join(uploadDirectory, 'superdi.yaml');
 const tablesDir = path.join(uploadDirectory, 'tables');
 const tablesFile = path.join(uploadDirectory, 'tableinfo.yaml');
 const usersDir = path.join(uploadDirectory, 'users');
@@ -369,7 +370,7 @@ app.post('/deleteItem', (req, res) => {
 		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
 	} else {
 		delete M.superdi[key];
-		let y = yaml.dump(M);
+		let y = yaml.dump(M.superdi);
 		fs.writeFileSync(superdiFile, y, 'utf8');
 		io.emit('superdi', key);
 		res.json(`item ${key} deleted successfully!`);
@@ -453,7 +454,7 @@ app.post('/postNewItem', (req, res) => {
 	let item = req.body.item;
 	if (nundef(M.superdi[key])) {
 		M.superdi[key] = item;
-		let y = yaml.dump(M);
+		let y = yaml.dump(M.superdi);
 		fs.writeFileSync(superdiFile, y, 'utf8');
 		item.key = key;
 		io.emit('superdi', item);
@@ -483,7 +484,7 @@ app.post('/postUpdateItem', (req, res) => {
 		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
 	} else {
 		M.superdi[key] = item;
-		let y = yaml.dump(M);
+		let y = yaml.dump(M.superdi);
 		fs.writeFileSync(superdiFile, y, 'utf8');
 		item.key = key;
 		io.emit('superdi', item);
@@ -518,7 +519,7 @@ app.post('/postUpdateSuperdi', (req, res) => {
 		let p = path.join(assetsDirectory, 'img', collname);
 		if (fs.existsSync(p)) fs.rmdirSync(p);
 	}
-	let y = yaml.dump(M);
+	let y = yaml.dump(M.superdi);
 	fs.writeFileSync(superdiFile, y, 'utf8');
 	io.emit('superdi', partialdi);
 	res.json(`Superdi updated successfully!`);
@@ -643,8 +644,10 @@ async function init() {
 
 	yamlFile = fs.readFileSync(eventsFile, 'utf8');
 	Session.events = valf(yaml.load(yamlFile), {});
-	yamlFile = fs.readFileSync(superdiFile, 'utf8');
+	yamlFile = fs.readFileSync(mFile, 'utf8');
 	M = valf(yaml.load(yamlFile), {});
+	yamlFile = fs.readFileSync(superdiFile, 'utf8');
+	M.superdi = valf(yaml.load(yamlFile), {});
 	Session.tables = {};
 	let tablefiles = await fsp.readdir(tablesDir);
 	for (const f of tablefiles) {

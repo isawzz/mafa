@@ -1,0 +1,132 @@
+- name: Lion
+  lifespan: 10-14 years
+  habitat: Savanna
+  avg_grownup_weight: 180 kg
+  avg_size_cm: 190 cm
+  preferred_food: Carnivore (meat)
+  species: Panthera leo
+  color: Golden brown
+  reproduction: Viviparous
+  avg_offsprings: 2-4 cubs
+  class: Mammal
+
+- name: Dolphin
+  lifespan: 20-50 years
+  habitat: Sea (marine)
+  avg_grownup_weight: 150 kg
+  avg_size_cm: 200 cm
+  preferred_food: Carnivore (fish, squid)
+  species: Delphinidae
+  color: Gray
+  reproduction: Viviparous
+  avg_offsprings: 1 calf
+  class: Mammal
+
+- name: Penguin
+  lifespan: 15-20 years
+  habitat: Antarctic (sea ice)
+  avg_grownup_weight: 4-5 kg
+  avg_size_cm: 70 cm
+  preferred_food: Carnivore (fish, krill)
+  species: Spheniscidae
+  color: Black and white
+  reproduction: Oviparous (lay eggs)
+  avg_offsprings: 1-2 chicks
+  class: Bird
+
+- name: Giraffe
+  lifespan: 20-25 years (in the wild)
+  habitat: Savanna, grasslands
+  avg_grownup_weight: 800-1,200 kg
+  avg_size_cm: 400-600 cm (neck length)
+  preferred_food: Herbivore (leaves, twigs)
+  species: Giraffa camelopardalis
+  color: Irregular brown patches on light background
+  reproduction: Viviparous
+  avg_offsprings: 1 calf
+  class: Mammal
+
+- name: Elephant
+  lifespan: 60-70 years (African bush elephants), 60-80 years (Asian elephants)
+  habitat: African savanna, Asian forests
+  avg_grownup_weight: 4,500-6,800 kg (African bush elephants), 3,000-5,000 kg (Asian elephants)
+  avg_size_cm: 250-350 cm (shoulder height)
+  preferred_food: Herbivore (grasses, leaves, bark)
+  species: Loxodonta africana (African bush elephants), Elephas maximus (Asian elephants)
+  color: Gray
+  reproduction: Viviparous
+  avg_offsprings: 1 calf
+  class: Mammal
+
+- name: Jellyfish
+  lifespan: Varies by species (some live for a few months, others for several years)
+  habitat: Oceans, seas
+  avg_grownup_weight: Varies (mostly composed of water)
+  avg_size_cm: Varies (from a few centimeters to several meters)
+  preferred_food: Carnivore (plankton, small fish)
+  species: Various (e.g., Aurelia aurita, Chrysaora fuscescens)
+  color: Transparent or translucent
+  reproduction: Oviparous (release eggs into water)
+  avg_offsprings: Varies by species
+  class: Cnidaria (jellyfish)
+
+- name: Koala
+  lifespan: 10-15 years (in the wild)
+  habitat: Eucalyptus forests (Australia)
+  avg_grownup_weight: 4-15 kg
+  avg_size_cm: 60-85 cm (body length)
+  preferred_food: Herbivore (eucalyptus leaves)
+  species: Phascolarctos cinereus
+  color: Gray with white patches
+  reproduction: Viviparous
+  avg_offsprings: 1 joey
+  class: Mammal
+
+- name: Narwhal
+  lifespan: 30-50 years
+  habitat: Arctic and subarctic waters
+  avg_grownup_weight: 800-1,600 kg
+  avg_size_cm: 4-5 m (tusk included)
+  preferred_food: Carnivore (fish, squid)
+  species: Monodon monoceros
+  color: Grayish-blue
+  reproduction: Viviparous
+  avg_offsprings: 1 calf
+  class: Mammal
+
+- name: Quokka
+  lifespan: 3-6 years (in the wild)
+  habitat: Rottnest Island (Australia)
+  avg_grownup_weight: 2.5-5 kg
+  avg_size_cm: 40-54 cm (body length)
+  preferred_food: Herbivore (grass, leaves)
+  species: Setonix brachyurus
+  color: Brown with a smiling face
+  reproduction: Viviparous
+  avg_offsprings: 1 joey
+  class: Mammal
+
+- name: X-ray Tetra
+  lifespan: 2-4 years
+  habitat: Amazon River basin (South America)
+  avg_grownup_weight: 1-2 g
+  avg_size_cm: 3-4 cm
+  preferred_food: Omnivore (small insects, algae)
+  species: Pristella maxillaris
+  color: Transparent with a silver stripe
+  reproduction: Oviparous (lay eggs)
+  avg_offsprings: Hundreds of eggs
+  class: Fish
+
+- name: Zebra
+  lifespan: 20-30 years (in the wild)
+  habitat: Grasslands, savannas
+  avg_grownup_weight: 200-450 kg
+  avg_size_cm: 120-140 cm (shoulder height)
+  preferred_food: Herbivore (grasses)
+  species: Equus zebra
+  color: Black and white stripes
+  reproduction: Viviparous
+  avg_offsprings: 1 foal
+  class: Mammal
+
