@@ -3734,7 +3734,8 @@ function getMotto() {
 	let list = [
 		`Let's play!`, 'Enjoy this beautiful space!', 'First vacation day!', 'No place like home!',
 		'You are free!', 'Nothing to do here!', `Don't worry, be happy!`, `Good times ahead!`,
-		'Right here, right now', 'Life is a dream', 'Dream away!', 'Airport forever'
+		'Right here, right now', 'Life is a dream', 'Dream away!', 'Airport forever', 'All is well',
+		`Let the world spin!`
 	];
 	return rChoose(list);
 }

@@ -1,8 +1,8 @@
 name: guest
-color: '#046307'
-texture: ../assets/textures/wall1.jpg
+color: '#002e63'
+texture: ../assets/textures/marble_blue1.jpeg
 imgKey: guest
-blendMode: overlay
+blendMode: normal
 bg: '#55bc41'
 games:
   setgame:
