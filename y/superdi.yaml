@@ -50553,7 +50553,7 @@ bear1:
     - earth
     - animal
   img: ../assets/img/animals/earth/bear1.png
-  friendly: brown bear
+  friendly: Grizzly bear
   colls:
     - animals
   key: bear1
@@ -50638,6 +50638,7 @@ bee1:
   colls:
     - animals
     - critters
+    - tierspiel
   key: bee1
 bee2:
   cats:
@@ -51568,7 +51569,7 @@ bock4:
     - earth
     - animal
   img: ../assets/img/animals/earth/bock4.png
-  friendly: bock
+  friendly: alpine_ibex
   colls:
     - animals
   key: bock4
@@ -51577,7 +51578,7 @@ buffalo1:
     - earth
     - animal
   img: ../assets/img/animals/earth/buffalo1.png
-  friendly: buffalo
+  friendly: Domestic water buffalo
   colls:
     - animals
   key: buffalo1
@@ -51595,7 +51596,7 @@ butterfly1:
     - insect
     - animal
   img: ../assets/img/animals/insect/butterfly1.png
-  friendly: butterfly
+  friendly: Giant Swallowtail
   colls:
     - animals
     - critters
@@ -51605,7 +51606,7 @@ butterfly2:
     - insect
     - animal
   img: ../assets/img/animals/insect/butterfly2.png
-  friendly: butterfly
+  friendly: Blue morpho
   colls:
     - animals
     - critters
@@ -51897,7 +51898,7 @@ cat31:
     - cat
     - animal
   img: ../assets/img/animals/cat/cat31.png
-  friendly: cat
+  friendly: Tabby cat
   colls:
     - animals
   key: cat31
@@ -51933,7 +51934,7 @@ cat35:
     - cat
     - animal
   img: ../assets/img/animals/cat/cat35.png
-  friendly: cat
+  friendly: Persian cat
   colls:
     - animals
   key: cat35
@@ -52149,7 +52150,7 @@ dog4:
     - earth
     - animal
   img: ../assets/img/animals/earth/dog4.png
-  friendly: dog
+  friendly: Siberian Husky
   colls:
     - animals
   key: dog4
@@ -52213,7 +52214,7 @@ dragon7:
     - earth
     - animal
   img: ../assets/img/animals/earth/dragon7.png
-  friendly: dragon
+  friendly: Intellagama lesueurii
   colls:
     - animals
   key: dragon7
@@ -52222,7 +52223,7 @@ elefant1:
     - earth
     - animal
   img: ../assets/img/animals/earth/elefant1.png
-  friendly: elefant
+  friendly: African bush elephant
   colls:
     - animals
   key: elefant1
@@ -52258,9 +52259,10 @@ fish1:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish1.png
-  friendly: fish
+  friendly: Yellow tang
   colls:
     - animals
+  key: fish1
 fish10:
   cats:
     - sea
@@ -52298,9 +52300,10 @@ fish14:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish14.png
-  friendly: fish
+  friendly: Siamese fighting fish
   colls:
     - animals
+  key: fish14
 fish15:
   cats:
     - sea
@@ -52330,33 +52333,37 @@ fish18:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish18.png
-  friendly: fish
+  friendly: Spinner dolphin
   colls:
     - animals
+  key: fish18
 fish19:
   cats:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish19.png
-  friendly: fish
+  friendly: Siamese fighting fish
   colls:
     - animals
+  key: fish19
 fish2:
   cats:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish2.png
-  friendly: fish
+  friendly: Pacific orange-spine unicornfish
   colls:
     - animals
+  key: fish2
 fish20:
   cats:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish20.png
-  friendly: fish
+  friendly: Ocellaris clownfish
   colls:
     - animals
+  key: fish20
 fish21:
   cats:
     - sea
@@ -52395,9 +52402,10 @@ fish25:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish25.png
-  friendly: fish
+  friendly: Sandbar shark
   colls:
     - animals
+  key: fish25
 fish26:
   cats:
     - sea
@@ -52463,17 +52471,19 @@ fish33:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish33.png
-  friendly: fish
+  friendly: Chinese alligator
   colls:
     - animals
+  key: fish33
 fish34:
   cats:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish34.png
-  friendly: fish
+  friendly: Nile crocodile
   colls:
     - animals
+  key: fish34
 fish35:
   cats:
     - sea
@@ -52523,9 +52533,10 @@ fish5:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish5.png
-  friendly: fish
+  friendly: Red lionfish
   colls:
     - animals
+  key: fish5
 fish6:
   cats:
     - sea
@@ -52539,17 +52550,19 @@ fish7:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish7.png
-  friendly: fish
+  friendly: Callanthiidae
   colls:
     - animals
+  key: fish7
 fish8:
   cats:
     - sea
     - animal
   img: ../assets/img/animals/sea/fish8.png
-  friendly: fish
+  friendly: Copperband butterflyfish
   colls:
     - animals
+  key: fish8
 fish9:
   cats:
     - sea
@@ -56589,5 +56602,97 @@ alpaca:
   img: ../assets/img/tierspiel/alpaca.png
   cats:
     - animal
+  colls:
+    - tierspiel
+hare:
+  key: hare
+  friendly: hare
+  img: ../assets/img/tierspiel/hare.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+i1717791990660:
+  key: i1717791990660
+  friendly: Camargue horse
+  img: ../assets/img/tierspiel/i1717791990660.png
+  cats: []
+  colls:
+    - tierspiel
+i1717792221568:
+  key: i1717792221568
+  friendly: Cotentin Donkey
+  img: ../assets/img/tierspiel/i1717792221568.png
+  cats: []
+  colls:
+    - tierspiel
+i1717792345110:
+  key: i1717792345110
+  friendly: Mule
+  img: ../assets/img/tierspiel/i1717792345110.png
+  cats: []
+  colls:
+    - tierspiel
+i1717792635327:
+  key: i1717792635327
+  friendly: Northern giraffe
+  img: ../assets/img/tierspiel/i1717792635327.png
+  cats: []
+  colls:
+    - tierspiel
+i1717792790874:
+  key: i1717792790874
+  friendly: African leopard
+  img: ../assets/img/tierspiel/i1717792790874.png
+  cats: []
+  colls:
+    - tierspiel
+i1717792922943:
+  key: i1717792922943
+  friendly: Barbary lion
+  img: ../assets/img/tierspiel/i1717792922943.png
+  cats: []
+  colls:
+    - tierspiel
+i1717793117268:
+  key: i1717793117268
+  friendly: Bengal tiger
+  img: ../assets/img/tierspiel/i1717793117268.png
+  cats: []
+  colls:
+    - tierspiel
+i1717793500689:
+  key: i1717793500689
+  friendly: Jewel bug
+  img: ../assets/img/tierspiel/i1717793500689.png
+  cats: []
+  colls:
+    - tierspiel
+i1717793626167:
+  key: i1717793626167
+  friendly: Hoplia
+  img: ../assets/img/tierspiel/i1717793626167.png
+  cats: []
+  colls:
+    - tierspiel
+i1717793762328:
+  key: i1717793762328
+  friendly: Asian lady beetle
+  img: ../assets/img/tierspiel/i1717793762328.png
+  cats: []
+  colls:
+    - tierspiel
+red beetle:
+  key: red beetle
+  friendly: Scarlet lily beetle
+  img: ../assets/img/tierspiel/red beetle.png
+  cats: []
+  colls:
+    - tierspiel
+rhino:
+  key: rhino
+  friendly: Southern black rhinoceros
+  img: ../assets/img/tierspiel/rhino.png
+  cats: []
   colls:
     - tierspiel
