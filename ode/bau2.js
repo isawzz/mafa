@@ -1,6 +1,95 @@
 
 function getAnimalDetails() {
+	const NEWDETAILS = {
+
+	};
+	return NEWDETAILS;
 	const animalDetails = {
+		british_shorthair: {
+			lifespan: "12-20 years on average",
+			habitat: "Domesticated; commonly found in homes, originating from the United Kingdom",
+			weight: "4-8 kg",
+			size: "56-64 cm in length including tail, 30-36 cm in height at the shoulders",
+			food: "Carnivorous: primarily feeds on commercially prepared cat food, small mammals, and birds",
+			species: "Felis catus (British Shorthair breed)",
+			color: "Varies widely; common colors include blue (gray), black, white, red, cream, and various patterns such as tabby, bicolor, and tortoiseshell",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 kittens per litter after a gestation period of about 64-67 days",
+			class: "Mammal"
+		},
+		american_bobtail: {
+			lifespan: "13-15 years on average",
+			habitat: "Domesticated; commonly found in homes, originating from North America",
+			weight: "3-7 kg",
+			size: "30-38 cm in length excluding tail, 25-30 cm in height at the shoulders",
+			food: "Carnivorous: primarily feeds on commercially prepared cat food, small mammals, and birds",
+			species: "Felis catus (American Bobtail breed)",
+			color: "Varies widely; common colors include brown, black, white, blue, red, and various patterns such as tabby, calico, and bicolor",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 kittens per litter after a gestation period of about 64-67 days",
+			class: "Mammal"
+		},
+		siberian_cat: {
+			lifespan: "12-15 years on average",
+			habitat: "Domesticated; commonly found in homes and rural areas, originating from Russia's Siberian forests",
+			weight: "3.5-8 kg",
+			size: "23-30 cm in height at the shoulders, 38-46 cm in body length excluding tail",
+			food: "Carnivorous: primarily feeds on commercially prepared cat food, small mammals, and birds",
+			species: "Felis catus (Siberian Cat breed)",
+			color: "Varies widely; common colors include white, black, blue, red, and various patterns such as tabby, tortoiseshell, and bicolor",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 kittens per litter after a gestation period of about 64-67 days",
+			class: "Mammal"
+		},
+
+		norwegian_forest_cat: {
+			lifespan: "14-16 years on average",
+			habitat: "Domesticated; commonly found in homes, farms, and rural areas; native to Norway's forests",
+			weight: "4.5-9 kg",
+			size: "30-46 cm in body length, excluding tail; 23-30 cm in height at the shoulders",
+			food: "Carnivorous: primarily feeds on commercially prepared cat food, small mammals, and birds",
+			species: "Felis catus (Norwegian Forest Cat breed)",
+			color: "Varies widely; common colors include white, black, blue, red, and various patterns such as tabby, tortoiseshell, and bicolor",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 kittens per litter after a gestation period of about 64-67 days",
+			class: "Mammal"
+		},
+		domestic_cat: {
+			lifespan: "12-15 years on average, with some living over 20 years",
+			habitat: "Found worldwide in various habitats including homes, farms, urban, and rural areas",
+			weight: "3.6-4.5 kg on average, but can range from 2.5-7 kg or more depending on the breed",
+			size: "23-25 cm in height at the shoulders, 46-51 cm in body length excluding tail",
+			food: "Carnivorous: primarily feeds on small mammals, birds, and commercially prepared cat food",
+			species: "Felis catus",
+			color: "Varies widely; common colors include black, white, gray, orange, and various patterns such as tabby, calico, and tortoiseshell",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 kittens per litter after a gestation period of about 64-67 days",
+			class: "Mammal"
+		},
+		pallas_cat: {
+			lifespan: "12-14 years in the wild",
+			habitat: "Found in montane grasslands and shrublands of Central Asia, including Mongolia, China, and the Himalayas",
+			weight: "2.5-4.5 kg",
+			size: "46-65 cm in length, not including the tail",
+			food: "Carnivorous: primarily feeds on small mammals, birds, and insects",
+			species: "Otocolobus manul",
+			color: "Dense, long fur with a gray to reddish-brown coat; has dark vertical bars on the torso and legs",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 kittens per litter after a gestation period of about 66-75 days",
+			class: "Mammal"
+		},
+		eastern_rosella: {
+			lifespan: "15-20 years in the wild, longer in captivity",
+			habitat: "Found in open woodlands, gardens, parks, and forests in southeastern Australia and Tasmania",
+			weight: "90-120 grams",
+			size: "30-33 cm in length",
+			food: "Seeds, fruits, berries, nuts, flowers, and insects",
+			species: "Platycercus eximius",
+			color: "Bright red head and chest, white cheek patches, yellow-green underparts, and a combination of blue, green, and black on the wings and back",
+			reproduction: "Oviparous",
+			offsprings: "Females lay 4-8 eggs per clutch; incubation period is about 19-21 days",
+			class: "Bird"
+		},
 		"Sparkling Violetear": {
 			lifespan: "3-4 years in the wild, potentially longer in captivity",
 			habitat: "Found in high-altitude forests, gardens, and shrublands in the Andes Mountains of South America",

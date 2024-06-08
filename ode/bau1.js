@@ -84,6 +84,7 @@ function showDetailsAndMagnify(elem){
 	let d=mPopup(null,{},{id:'hallo'});
 	let o=M.superdi[key];
 	addKeys(M.details[key],o);
+	addKeys(M.details[o.friendly],o)
 	console.log(o);
 
 	//title is friendly name or name
@@ -91,11 +92,11 @@ function showDetailsAndMagnify(elem){
 	mDom(d,{},{tag:'h1',html:title});
 	mDom(d,{},{tag:'img',src:valf(o.photo,o.img)});
 	for(const k in o){
-		if ('img photo text key friendly'.includes(k)) continue;
+		if ('cats colls fa fa6 img photo text key friendly ga name'.includes(k)) continue;
 		let val = o[k];
 
 		if (!isLiteral(val)) continue;
-		mDom(d,{},{html:`!!!${k}:${val}`})
+		mDom(d,{},{html:`${k}:${val}`})
 	}
 
 	// showObject(o,)	

@@ -836,19 +836,6 @@ bed:
   colls:
     - emo
   fa6: f236
-bee:
-  friendly: bee
-  img: ../assets/img/tierspiel/bee.png
-  ga: E39D
-  text: '&#128029;'
-  cats:
-    - animal
-    - insect
-    - best
-  colls:
-    - emo
-    - tierspiel
-  key: bee
 beer_mug:
   friendly: beer_mug
   img: ../assets/img/emo/beer-mug.png
@@ -3721,20 +3708,6 @@ electric_plug:
     - object
   colls:
     - emo
-elephant:
-  friendly: elephant
-  img: ../assets/img/emo/elephant.png
-  ga: E36C
-  text: '&#128024;'
-  cats:
-    - animal
-    - mammal
-    - object
-    - best
-    - nature
-  colls:
-    - emo
-  key: elephant
 elevator:
   friendly: elevator
   img: ../assets/img/emo/elevator.png
@@ -4749,16 +4722,6 @@ flushed_face:
     - emotion
   colls:
     - emo
-fly:
-  friendly: fly
-  img: ../assets/img/emo/fly.png
-  ga: E408
-  text: '&#129712;'
-  cats:
-    - animal
-    - insect
-  colls:
-    - emo
 flying_disc:
   friendly: flying_disc
   img: ../assets/img/emo/flying-disc.png
@@ -4980,19 +4943,6 @@ fried_shrimp:
     - food
   colls:
     - emo
-frog:
-  friendly: frog
-  img: ../assets/img/emo/frog.png
-  ga: E3B6
-  fa: f52e
-  text: '&#128056;'
-  cats:
-    - animal
-    - amphibian
-    - nature
-  colls:
-    - emo
-  fa6: f52e
 front_facing_baby_chick:
   friendly: front_facing_baby_chick
   img: ../assets/img/emo/front-facing-baby-chick.png
@@ -5168,16 +5118,6 @@ ginger_root:
   img: ../assets/img/emo/ginger-root.png
   cats:
     - vegetable
-  colls:
-    - emo
-giraffe:
-  friendly: giraffe
-  img: ../assets/img/emo/giraffe.png
-  text: '&#129426;'
-  cats:
-    - animal
-    - mammal
-    - nature
   colls:
     - emo
 girl:
@@ -5785,19 +5725,6 @@ heavy_equals_sign:
     - symbol
   colls:
     - emo
-hedgehog:
-  friendly: hedgehog
-  img: ../assets/img/emo/hedgehog.png
-  text: '&#129428;'
-  cats:
-    - animal
-    - mammal
-    - object
-    - best
-    - nature
-  colls:
-    - emo
-  key: hedgehog
 helicopter:
   friendly: helicopter
   img: ../assets/img/emo/helicopter.png
@@ -5887,16 +5814,6 @@ hindu_temple:
     - building
   colls:
     - emo
-hippopotamus:
-  friendly: hippopotamus
-  img: ../assets/img/emo/hippopotamus.png
-  text: '&#129435;'
-  cats:
-    - animal
-    - mammal
-    - nature
-  colls:
-    - emo
 holding_hands:
   friendly: holding_hands
   img: ../assets/img/emo/woman-and-man-holding-hands.png
@@ -5959,18 +5876,6 @@ horizontal_traffic_light:
     - object
   colls:
     - emo
-horse:
-  friendly: horse
-  img: ../assets/img/emo/horse.png
-  fa: f6f0
-  text: '&#128014;'
-  cats:
-    - animal
-    - mammal
-    - nature
-  colls:
-    - emo
-  fa6: f6f0
 horse_face:
   friendly: horse_face
   img: ../assets/img/emo/horse-face.png
@@ -6882,20 +6787,6 @@ lady_beetle:
     - insect
   colls:
     - emo
-ladybug:
-  friendly: ladybug
-  ga: E40A
-  text: '&#128030;'
-  cats:
-    - animal
-    - bug
-    - object
-    - best
-    - nature
-    - insect
-  colls:
-    - emo
-  key: ladybug
 laptop:
   friendly: laptop
   fa: f109
@@ -7078,16 +6969,6 @@ lemon:
     - emo
   fa6: f094
   key: lemon
-leopard:
-  friendly: leopard
-  img: ../assets/img/emo/leopard.png
-  text: '&#128006;'
-  cats:
-    - animal
-    - mammal
-    - nature
-  colls:
-    - emo
 level_slider:
   friendly: level_slider
   img: ../assets/img/emo/level-slider.png
@@ -11793,22 +11674,6 @@ speedboat:
     - travel
   colls:
     - emo
-spider:
-  friendly: spider
-  img: ../assets/img/emo/spider.png
-  fa: f717
-  text: '&#128375;'
-  cats:
-    - animal
-    - bug
-    - object
-    - best
-    - nature
-    - arachnid
-  colls:
-    - emo
-  fa6: f717
-  key: spider
 spider_web:
   friendly: spider_web
   img: ../assets/img/emo/spider-web.png
@@ -12682,20 +12547,6 @@ ticket:
   colls:
     - emo
   fa6: f145
-tiger:
-  friendly: tiger
-  img: ../assets/img/emo/tiger.png
-  ga: E38E
-  text: '&#128005;'
-  cats:
-    - animal
-    - mammal
-    - object
-    - best
-    - nature
-  colls:
-    - emo
-  key: tiger
 tiger_face:
   friendly: tiger_face
   img: ../assets/img/emo/tiger-face.png
@@ -22930,14 +22781,6 @@ donate:
     - action
   colls:
     - icon
-donkey:
-  friendly: donkey
-  img: ../assets/img/emo/donkey.png
-  ga: E3FA
-  cats:
-    - mammal
-  colls:
-    - icon
 donut:
   friendly: donut
   ga: E009
@@ -23114,13 +22957,6 @@ dragon_spiral:
   ga: E4F6
   cats:
     - mythical
-  colls:
-    - icon
-dragonfly:
-  friendly: dragonfly
-  ga: E3AF
-  cats:
-    - insect
   colls:
     - icon
 drakkar:
@@ -28305,14 +28141,6 @@ hills:
     - place
   colls:
     - icon
-hippo:
-  friendly: hippo
-  fa: f6ed
-  cats:
-    - animal
-  colls:
-    - icon
-  fa6: f6ed
 histogram:
   friendly: histogram
   ga: EB3E
@@ -30606,14 +30434,6 @@ linked_rings:
   ga: E8A1
   cats:
     - symbol
-  colls:
-    - icon
-lion:
-  friendly: lion
-  img: ../assets/img/emo/lion.png
-  ga: E3C3
-  cats:
-    - mammal
   colls:
     - icon
 lips:
@@ -50767,15 +50587,6 @@ bird24:
     - animals
     - owls
   key: bird24
-bird25:
-  cats:
-    - bird
-    - animal
-  img: ../assets/img/animals/bird/bird25.png
-  friendly: bald_eagle
-  colls:
-    - animals
-  key: bird25
 bird26:
   cats:
     - bird
@@ -51151,15 +50962,6 @@ bird62:
   colls:
     - animals
   key: bird62
-bird63:
-  cats:
-    - bird
-    - animal
-  img: ../assets/img/animals/bird/bird63.png
-  friendly: american_bald_eagle
-  colls:
-    - animals
-  key: bird63
 bird64:
   cats:
     - bird
@@ -51333,35 +51135,6 @@ bird80:
   colls:
     - animals
   key: bird80
-bird81:
-  cats:
-    - bird
-    - animal
-  img: ../assets/img/animals/bird/bird81.png
-  friendly: scarlet_tanager
-  colls:
-    - animals
-    - tierspiel
-  key: bird81
-bird82:
-  cats:
-    - bird
-    - animal
-  img: ../assets/img/animals/bird/bird82.png
-  friendly: bird
-  colls:
-    - animals
-  key: bird82
-bird83:
-  cats:
-    - bird
-    - animal
-  img: ../assets/img/animals/bird/bird83.png
-  friendly: cattle_egret
-  colls:
-    - animals
-    - tierspiel
-  key: bird83
 bird84:
   cats:
     - bird
@@ -51727,15 +51500,6 @@ cat18:
     - animals
     - tierspiel
   key: cat18
-cat19:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat19.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat19
 cat2:
   cats:
     - cat
@@ -51755,34 +51519,6 @@ cat20:
     - animals
     - tierspiel
   key: cat20
-cat21:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat21.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat21
-cat22:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat22.png
-  friendly: khao_manee_cat
-  colls:
-    - animals
-    - tierspiel
-  key: cat22
-cat23:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat23.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat23
 cat24:
   cats:
     - cat
@@ -51792,15 +51528,6 @@ cat24:
   colls:
     - animals
   key: cat24
-cat25:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat25.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat25
 cat26:
   cats:
     - cat
@@ -51810,34 +51537,6 @@ cat26:
   colls:
     - animals
   key: cat26
-cat27:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat27.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat27
-cat28:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat28.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat28
-cat29:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat29.png
-  friendly: bengal_cat
-  colls:
-    - animals
-    - tierspiel
-  key: cat29
 cat3:
   cats:
     - cat
@@ -51847,60 +51546,6 @@ cat3:
   colls:
     - animals
   key: cat3
-cat30:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat30.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat30
-cat31:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat31.png
-  friendly: tabby_cat
-  colls:
-    - animals
-  key: cat31
-cat32:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat32.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat32
-cat33:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat33.png
-  friendly: cat
-  colls:
-    - animals
-  key: cat33
-cat34:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat34.png
-  friendly: british_shorthair_cat
-  colls:
-    - animals
-  key: cat34
-cat35:
-  cats:
-    - cat
-    - animal
-  img: ../assets/img/animals/cat/cat35.png
-  friendly: persian_cat
-  colls:
-    - animals
-  key: cat35
 cat36:
   cats:
     - cat
@@ -52558,132 +52203,12 @@ fox3:
   friendly: fox
   colls:
     - animals
-frog1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog1.png
-  friendly: frog
-  colls:
-    - animals
-frog10:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog10.png
-  friendly: frog
-  colls:
-    - animals
-frog2:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog2.png
-  friendly: frog
-  colls:
-    - animals
-frog3:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog3.png
-  friendly: frog
-  colls:
-    - animals
-frog4:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog4.png
-  friendly: frog
-  colls:
-    - animals
-frog5:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog5.png
-  friendly: frog
-  colls:
-    - animals
-frog6:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog6.png
-  friendly: frog
-  colls:
-    - animals
-frog7:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog7.png
-  friendly: frog
-  colls:
-    - animals
-frog8:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog8.png
-  friendly: frog
-  colls:
-    - animals
-frog9:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/frog9.png
-  friendly: frog
-  colls:
-    - animals
 gecko1:
   cats:
     - earth
     - animal
   img: ../assets/img/animals/earth/gecko1.png
   friendly: gecko
-  colls:
-    - animals
-giraffe1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/giraffe1.png
-  friendly: giraffe
-  colls:
-    - animals
-giraffe2:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/giraffe2.png
-  friendly: giraffe
-  colls:
-    - animals
-giraffe3:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/giraffe3.png
-  friendly: giraffe
-  colls:
-    - animals
-giraffe4:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/giraffe4.png
-  friendly: giraffe
-  colls:
-    - animals
-giraffe5:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/giraffe5.png
-  friendly: giraffe
   colls:
     - animals
 gorilla1:
@@ -52718,60 +52243,12 @@ hamster1:
   friendly: hamster
   colls:
     - animals
-hedgehog1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/hedgehog1.png
-  friendly: hedgehog
-  colls:
-    - animals
 hen1:
   cats:
     - earth
     - animal
   img: ../assets/img/animals/earth/hen1.png
   friendly: hen
-  colls:
-    - animals
-hippo1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/hippo1.png
-  friendly: hippo
-  colls:
-    - animals
-horse1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/horse1.png
-  friendly: horse
-  colls:
-    - animals
-horse2:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/horse2.png
-  friendly: horse
-  colls:
-    - animals
-horse3:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/horse3.png
-  friendly: horse
-  colls:
-    - animals
-horse4:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/horse4.png
-  friendly: horse
   colls:
     - animals
 iguana1:
@@ -52894,100 +52371,12 @@ lamb1:
   friendly: lamb
   colls:
     - animals
-leopard1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard1.png
-  friendly: leopard
-  colls:
-    - animals
-leopard2:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard2.png
-  friendly: leopard
-  colls:
-    - animals
-leopard3:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard3.png
-  friendly: leopard
-  colls:
-    - animals
-leopard4:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard4.png
-  friendly: leopard
-  colls:
-    - animals
-leopard5:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard5.png
-  friendly: leopard
-  colls:
-    - animals
-leopard6:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard6.png
-  friendly: leopard
-  colls:
-    - animals
-leopard7:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/leopard7.png
-  friendly: leopard
-  colls:
-    - animals
 libelle1:
   cats:
     - insect
     - animal
   img: ../assets/img/animals/insect/libelle1.png
   friendly: libelle
-  colls:
-    - animals
-lion1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/lion1.png
-  friendly: lion
-  colls:
-    - animals
-lion2:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/lion2.png
-  friendly: lion
-  colls:
-    - animals
-lion3:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/lion3.png
-  friendly: lion
-  colls:
-    - animals
-lion4:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/lion4.png
-  friendly: lion
   colls:
     - animals
 lizard1:
@@ -53385,30 +52774,6 @@ squirrel7:
     - animal
   img: ../assets/img/animals/earth/squirrel7.png
   friendly: squirrel
-  colls:
-    - animals
-tiger1:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/tiger1.png
-  friendly: tiger
-  colls:
-    - animals
-tiger2:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/tiger2.png
-  friendly: tiger
-  colls:
-    - animals
-tiger3:
-  cats:
-    - earth
-    - animal
-  img: ../assets/img/animals/earth/tiger3.png
-  friendly: tiger
   colls:
     - animals
 tortoise1:
@@ -56552,91 +55917,6 @@ owls1:
   img: ../assets/img/owls/owls1.png
   cats: []
   colls: []
-hare:
-  key: hare
-  friendly: hare
-  img: ../assets/img/tierspiel/hare.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-i1717791990660:
-  key: i1717791990660
-  friendly: camargue_horse
-  img: ../assets/img/tierspiel/i1717791990660.png
-  cats: []
-  colls:
-    - tierspiel
-i1717792221568:
-  key: i1717792221568
-  friendly: cotentin_donkey
-  img: ../assets/img/tierspiel/i1717792221568.png
-  cats: []
-  colls:
-    - tierspiel
-i1717792345110:
-  key: i1717792345110
-  friendly: mule
-  img: ../assets/img/tierspiel/i1717792345110.png
-  cats: []
-  colls:
-    - tierspiel
-i1717792635327:
-  key: i1717792635327
-  friendly: northern_giraffe
-  img: ../assets/img/tierspiel/i1717792635327.png
-  cats: []
-  colls:
-    - tierspiel
-i1717792790874:
-  key: i1717792790874
-  friendly: african_leopard
-  img: ../assets/img/tierspiel/i1717792790874.png
-  cats: []
-  colls:
-    - tierspiel
-i1717792922943:
-  key: i1717792922943
-  friendly: barbary_lion
-  img: ../assets/img/tierspiel/i1717792922943.png
-  cats: []
-  colls:
-    - tierspiel
-i1717793117268:
-  key: i1717793117268
-  friendly: bengal_tiger
-  img: ../assets/img/tierspiel/i1717793117268.png
-  cats: []
-  colls:
-    - tierspiel
-i1717793500689:
-  key: i1717793500689
-  friendly: jewel_bug
-  img: ../assets/img/tierspiel/i1717793500689.png
-  cats:
-    - bug
-    - insect
-  colls:
-    - tierspiel
-i1717793626167:
-  key: i1717793626167
-  friendly: hoplia
-  img: ../assets/img/tierspiel/i1717793626167.png
-  cats:
-    - bug
-    - insect
-  colls:
-    - tierspiel
-i1717793762328:
-  key: i1717793762328
-  friendly: asian_lady_beetle
-  img: ../assets/img/tierspiel/i1717793762328.png
-  cats:
-    - animal
-    - bug
-    - insect
-  colls:
-    - tierspiel
 red beetle:
   key: red beetle
   friendly: scarlet_lily_beetle
@@ -56653,45 +55933,10 @@ rhino:
   cats: []
   colls:
     - tierspiel
-i1717794411131:
-  key: i1717794411131
-  friendly: wallum_sedge_frog
-  img: ../assets/img/tierspiel/i1717794411131.png
-  cats: []
-  colls:
-    - tierspiel
-tierspiel1:
-  key: tierspiel1
-  friendly: tierspiel1
-  img: ../assets/img/tierspiel/tierspiel1.png
-  cats: []
-  colls:
-    - tierspiel
-e1:
-  key: e1
-  friendly: dragonfly
-  img: ../assets/img/tierspiel/e1.png
-  cats: []
-  colls:
-    - tierspiel
-f1:
-  key: f1
-  friendly: variegated_ladybug
-  img: ../assets/img/tierspiel/f1.png
-  cats: []
-  colls:
-    - tierspiel
 z1:
   key: z1
   friendly: caterpillar
   img: ../assets/img/tierspiel/z1.png
-  cats: []
-  colls:
-    - tierspiel
-i1717813500541:
-  key: i1717813500541
-  friendly: grasshopper
-  img: ../assets/img/tierspiel/i1717813500541.png
   cats: []
   colls:
     - tierspiel
@@ -56737,55 +55982,6 @@ tierspiel6:
   cats: []
   colls:
     - tierspiel
-white_lipped_tree_frog:
-  key: white_lipped_tree_frog
-  friendly: white_lipped_tree_frog
-  img: ../assets/img/tierspiel/tree_frog.png
-  cats: []
-  colls:
-    - tierspiel
-blue_poison_dart_frog:
-  key: blue_poison_dart_frog
-  friendly: blue_poison_dart_frog
-  img: ../assets/img/tierspiel/blue_frog.png
-  cats: []
-  colls:
-    - tierspiel
-european_garden_spider:
-  key: european_garden_spider
-  friendly: european_garden_spider
-  img: ../assets/img/tierspiel/tierspiel2.png
-  cats: []
-  colls:
-    - tierspiel
-barn_spider:
-  key: barn_spider
-  friendly: barn_spider
-  img: ../assets/img/tierspiel/barn_spider.png
-  cats: []
-  colls:
-    - tierspiel
-housefly:
-  key: housefly
-  friendly: housefly
-  img: ../assets/img/tierspiel/housefly.png
-  cats: []
-  colls:
-    - tierspiel
-variegated_ladybug:
-  key: variegated_ladybug
-  friendly: variegated_ladybug
-  img: ../assets/img/tierspiel/f1.png
-  cats: []
-  colls:
-    - tierspiel
-grasshopper:
-  key: grasshopper
-  friendly: grasshopper
-  img: ../assets/img/tierspiel/i1717813500541.png
-  cats: []
-  colls:
-    - tierspiel
 european_rhinoceros_beetle:
   key: european_rhinoceros_beetle
   friendly: european_rhinoceros_beetle
@@ -56814,13 +56010,6 @@ tierspiel7:
   cats: []
   colls:
     - tierspiel
-tierspiel8:
-  key: tierspiel8
-  friendly: african_bush_elephant
-  img: ../assets/img/tierspiel/tierspiel8.png
-  cats: []
-  colls:
-    - tierspiel
 ibex:
   key: ibex
   friendly: ibex
@@ -56828,38 +56017,10 @@ ibex:
   cats: []
   colls:
     - tierspiel
-bald_eagle:
-  key: bald_eagle
-  friendly: bald_eagle
-  img: ../assets/img/tierspiel/bald_eagle.png
-  cats: []
-  colls:
-    - tierspiel
-bengal_cat:
-  key: bengal_cat
-  friendly: bengal_cat
-  img: ../assets/img/tierspiel/bengal_cat.png
-  cats: []
-  colls:
-    - tierspiel
-grizzly_bear:
-  key: grizzly_bear
-  friendly: grizzly_bear
-  img: ../assets/img/tierspiel/grizzly_bear.png
-  cats: []
-  colls:
-    - tierspiel
 red_panda:
   key: red_panda
   friendly: red_panda
   img: ../assets/img/tierspiel/red_panda.png
-  cats: []
-  colls:
-    - tierspiel
-i1717852922324:
-  key: i1717852922324
-  friendly: bengal_cat
-  img: ../assets/img/tierspiel/i1717852922324.png
   cats: []
   colls:
     - tierspiel
@@ -57022,7 +56183,7 @@ alpaca:
 eagle:
   friendly: eagle
   img: ../assets/img/emo/eagle.png
-  photo: ../assets/img/tierspiel/bald_eagle.png
+  photo: ../assets/img/tierspiel/eagle.png
   text: '&#129413;'
   cats:
     - animal
@@ -57039,4 +56200,375 @@ eagle_head:
     - bird
   colls:
     - icon
+    - tierspiel
+elephant:
+  friendly: elephant
+  img: ../assets/img/emo/elephant.png
+  photo: ../assets/img/tierspiel/elephant.png
+  ga: E36C
+  text: '&#128024;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+leopard:
+  friendly: leopard
+  img: ../assets/img/emo/leopard.png
+  photo: ../assets/img/tierspiel/leopard.png
+  text: '&#128006;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+barn_spider:
+  friendly: barn_spider
+  img: ../assets/img/tierspiel/barn_spider.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+bee:
+  friendly: bee
+  img: ../assets/img/tierspiel/bee.png
+  ga: E39D
+  text: '&#128029;'
+  cats:
+    - animal
+    - insect
+  colls:
+    - emo
+    - tierspiel
+  key: bee
+bengal_cat:
+  key: bengal_cat
+  friendly: bengal_cat
+  img: ../assets/img/tierspiel/bengal_cat.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+scarlet_tanager:
+  cats:
+    - bird
+    - animal
+  img: ../assets/img/tierspiel/scarlet_tanager.png
+  friendly: scarlet_tanager
+  colls:
+    - tierspiel
+eastern_rosella:
+  cats:
+    - bird
+    - animal
+  img: ../assets/img/tierspiel/eastern_rosella.png
+  friendly: eastern_rosella
+  colls:
+    - tierspiel
+cattle_egret:
+  cats:
+    - bird
+    - animal
+  img: ../assets/img/tierspiel/cattle_egret.png
+  friendly: cattle_egret
+  colls:
+    - tierspiel
+blue_poison_dart_frog:
+  key: blue_poison_dart_frog
+  friendly: blue_poison_dart_frog
+  img: ../assets/img/tierspiel/blue_frog.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+pallas_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/pallas_cat.png
+  friendly: pallas_cat
+  colls:
+    - tierspiel
+cat21:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/cat21.png
+  friendly: bengal_cat
+  colls:
+    - tierspiel
+khao_manee_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/khao_manee_cat.png
+  friendly: khao_manee_cat
+  colls:
+    - tierspiel
+kittens:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/kittens.png
+  friendly: domestic_cat
+  colls:
+    - animals
+sphynx_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/sphynx_cat.png
+  friendly: sphynx_cat
+  colls:
+    - tierspiel
+tabby_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/tabby_cat.png
+  friendly: tabby_cat
+  colls:
+    - tierspiel
+norwegian_forest_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/norwegian_forest_cat.png
+  friendly: norwegian_forest_cat
+  colls:
+    - tierspiel
+siberian_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/siberian_cat.png
+  friendly: siberian_cat
+  colls:
+    - tierspiel
+cat31:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/cat31.png
+  friendly: siberian_cat
+  colls:
+    - tierspiel
+cat32:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/cat32.png
+  friendly: tabby_cat
+  colls:
+    - tierspiel
+american_bobtail:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/american_bobtail.png
+  friendly: american_bobtail
+  colls:
+    - tierspiel
+british_shorthair:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/british_shorthair.png
+  friendly: british_shorthair_cat
+  colls:
+    - tierspiel
+persian_cat:
+  cats:
+    - cat
+    - animal
+  img: ../assets/img/tierspiel/persian_cat.png
+  friendly: persian_cat
+  colls:
+    - tierspiel
+dragonfly:
+  friendly: dragonfly
+  img: ../assets/img/tierspiel/dragonfly.png
+  ga: E3AF
+  cats:
+    - animal
+  colls:
+    - icon
+    - tierspiel
+ladybug:
+  friendly: ladybug
+  img: ../assets/img/tierspiel/ladybug.png
+  ga: E40A
+  text: '&#128030;'
+  cats:
+    - animal
+    - insect
+  colls:
+    - tierspiel
+    - emo
+grizzly_bear:
+  friendly: grizzly_bear
+  img: ../assets/img/tierspiel/grizzly_bear.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+hare:
+  friendly: hare
+  img: ../assets/img/tierspiel/hare.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+hippopotamus:
+  friendly: hippopotamus
+  img: ../assets/img/emo/hippopotamus.png
+  photo: ../assets/img/tierspiel/hippo.png
+  fa: f6ed
+  fa6: f6ed
+  text: '&#129435;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - icon
+    - tierspiel
+spider:
+  friendly: spider
+  img: ../assets/img/emo/spider.png
+  photo: ../assets/img/tierspiel/garden_spider.png
+  fa: f717
+  text: '&#128375;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+  fa6: f717
+horse:
+  friendly: horse
+  img: ../assets/img/emo/horse.png
+  photo: ../assets/img/tierspiel/camargue_horse.png
+  fa: f6f0
+  text: '&#128014;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+  fa6: f6f0
+donkey:
+  friendly: donkey
+  img: ../assets/img/emo/donkey.png
+  photo: ../assets/img/tierspiel/cotentin_donkey.png
+  ga: E3FA
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - icon
+mule:
+  friendly: mule
+  img: ../assets/img/tierspiel/mule.png
+  cats: []
+  colls:
+    - tierspiel
+giraffe:
+  friendly: giraffe
+  img: ../assets/img/emo/giraffe.png
+  photo: ../assets/img/tierspiel/northern_giraffe.png
+  text: '&#129426;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+fly:
+  friendly: fly
+  img: ../assets/img/emo/fly.png
+  photo: ../assets/img/tierspiel/housefly.png
+  ga: E408
+  text: '&#129712;'
+  cats:
+    - animal
+    - insect
+  colls:
+    - emo
+    - tierspiel
+lion:
+  friendly: lion
+  img: ../assets/img/emo/lion.png
+  photo: ../assets/img/tierspiel/barbary_lion.png
+  ga: E3C3
+  cats:
+    - mammal
+  colls:
+    - icon
+    - tierspiel
+tiger:
+  friendly: tiger
+  img: ../assets/img/emo/tiger.png
+  photo: ../assets/img/tierspiel/bengal_tiger.png
+  ga: E38E
+  text: '&#128005;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+jewel_bug:
+  friendly: jewel_bug
+  img: ../assets/img/tierspiel/jewel_bug.png
+  cats:
+    - animal
+    - insect
+  colls:
+    - tierspiel
+hoplia:
+  key: hoplia
+  friendly: hoplia
+  img: ../assets/img/tierspiel/hoplia.png
+  cats:
+    - bug
+    - insect
+  colls:
+    - tierspiel
+hedgehog:
+  friendly: hedgehog
+  img: ../assets/img/emo/hedgehog.png
+  photo: ../assets/img/tierspiel/daurian_hedgehog.png
+  text: '&#129428;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
+frog:
+  friendly: frog
+  img: ../assets/img/emo/frog.png
+  photo: ../assets/img/tierspiel/tree_frog.png
+  ga: E3B6
+  fa: f52e
+  text: '&#128056;'
+  cats:
+    - animal
+    - amphibian
+  colls:
+    - emo
+    - tierspiel
+  fa6: f52e
+wallum_sedge_frog:
+  friendly: wallum_sedge_frog
+  img: ../assets/img/tierspiel/wallum_sedge_frog.png
+  cats:
+    - animal
+    - amphibian
+  colls:
+    - emo
+    - tierspiel
+grasshopper:
+  friendly: grasshopper
+  img: ../assets/img/tierspiel/grasshopper.png
+  cats:
+    - animal
+  colls:
     - tierspiel
