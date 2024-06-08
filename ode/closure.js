@@ -4503,12 +4503,6 @@ function jsCopyExceptKeys(o, keys = []) {
 	for (const k in o) { if (keys.includes(k)) continue; onew[k] = o[k]; }
 	return JSON.parse(JSON.stringify(onew));
 }
-function keyUpHandler(ev) {
-	if (ev.key == 'Control') {
-		IsControlKeyDown = false;
-		mMagnifyOff();
-	}
-}
 function last(arr) {
 	return arr.length > 0 ? arr[arr.length - 1] : null;
 }

@@ -63,14 +63,50 @@ function keyDownHandler(ev) {
 		if (isdef(cand)) showDetailsAndMagnify(cand);
 	}
 }
-function showDetailsAndMagnify(elem){
-	//console.log(elem.firstChild);
-	mMagnify(elem);
-	let key = elem.firstChild.getAttribute('key')
-	console.log('key',key)
-	if (isdef(M.details[key])){
-		console.log('details',M.details[key]);
+function keyUpHandler(ev) {
+	if (ev.key == 'Control') {
+		IsControlKeyDown = false;
+		mMagnifyOff();
+		if (isdef(mBy('hallo'))) mBy('hallo').remove();
 	}
+}
+function fromNormalized(s){
+	let x=replaceAll(s,'_',' ');
+	let words = toWords(x).map(x=>capitalize(x)).join(' ');
+	return words;
+}
+function showDetailsAndMagnify(elem){
+
+	//show details soll besser werden!
+	let key = elem.firstChild.getAttribute('key')
+	if (nundef(key)){mMagnify(elem);return;}
+	MAGNIFIER_IMAGE = elem;
+	let d=mPopup(null,{},{id:'hallo'});
+	let o=M.superdi[key];
+	addKeys(M.details[key],o);
+	console.log(o);
+
+	//title is friendly name or name
+	let title=fromNormalized(valf(o.name,o.friendly));
+	mDom(d,{},{tag:'h1',html:title});
+	mDom(d,{},{tag:'img',src:valf(o.photo,o.img)});
+	for(const k in o){
+		if ('img photo text key friendly'.includes(k)) continue;
+		let val = o[k];
+
+		if (!isLiteral(val)) continue;
+		mDom(d,{},{html:`!!!${k}:${val}`})
+	}
+
+	// showObject(o,)	
+
+
+	// //console.log(elem.firstChild);
+	// mMagnify(elem);
+	// console.log('key',key)
+	// if (isdef(M.details[key])){
+	// 	console.log('details',M.details[key]);
+	// }
 }
 
 
