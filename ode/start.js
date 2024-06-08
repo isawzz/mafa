@@ -1,15 +1,81 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test117(); }
+async function start() { TESTING = true; await test119_animalDetails(); }
 
-async function test118_deleteTheme(){
+async function test120_normalizeFriendly(){
+  await prelims(); 
+  for(const k in M.superdi){
+    let o=M.superdi[k];
+    o.friendly = normalizeString(o.friendly);
+  }
+
+  downloadAsYaml(M.superdi,'superdi');
+}
+async function test119_animalDetails() {
+  await prelims(); 
+  let ad = getAnimalDetails();
+  let di = {};
+  let diDetail = {}, deletedKeys = [], collname = 'tierspiel';
+  for (const k in ad) {
+    let knew = normalizeString(k);
+    let lastWord = stringAfterLast(knew, '_');
+    let f1 = M.byFriendly[k];
+    let f2 = M.byFriendly[knew];
+    let m1 = M.superdi[k];
+    let m2 = M.superdi[knew];
+    let m3 = M.superdi[lastWord];
+    diDetail[knew] = ad[k];
+    if (isdef(m2)) {console.log('already have',knew,m2); continue; }
+
+    console.log('___', k);
+    if (k != knew && isdef(m1)) console.log(`m1: ${k} in superdi`, m1);
+    if (isdef(m2)) console.log(`m2: ${knew} in superdi`, m2);
+    if (k != knew && isdef(f1)) console.log(`f1: ${k} in friendly`, f1, M.superdi[f1[0]]);
+    if (isdef(f2)) console.log(`f2: ${knew} in friendly`, f2, M.superdi[f2[0]]);
+
+    assertion(nundef(f1),"HALLO DA SIND IMMER NOCH non-normalized friendly strings!!!");
+
+    if (isdef(m1) && m1.colls.includes(collname) && knew != k) { addIf(deletedKeys, k); di[knew] = di[k]; }
+    else if (isdef(f2) && nundef(m2)) {
+      let kbloed = f2[0];
+      let o = M.superdi[kbloed];
+      addIf(deletedKeys, kbloed);
+      o.friendly = knew;
+      let kfinal = nundef(M.superdi[lastWord]) ? lastWord : knew;
+      o.key = kfinal;
+      console.log('add', o, 'as', kfinal);
+      di[kfinal] = o;
+    } else if (isdef(f2) && nundef(m1)) {
+      let kbloed = f2[0];
+      let o = M.superdi[kbloed];
+      o.friendly = knew;
+      let kfinal = nundef(M.superdi[lastWord]) ? lastWord : kbloed;
+      console.log('add', o, 'as', kfinal);
+      if (kfinal != kbloed) addIf(deletedKeys, kbloed);
+      di[kfinal] = o;
+    }
+
+
+    break;
+    //if (isdef(m1) && m1.colls.includes(collname) && knew!=k) {addIf(deletedKeys,k);di[knew]=di[k];}
+  }
+
+  console.log('delete:',deletedKeys)
+  // let res = await mPostRoute('postUpdateSuperdi', { di });
+  // await loadAssets();
+  // collPostReload();
+
+  //diDetail = sortDictionary(diDetail);
+  //downloadAsYaml(diDetail,'diDetail');
+}
+async function test118_deleteTheme() {
   await prelims();
   delete Serverdata.config.themes.forest;
-  await mPostRoute('postConfig',Serverdata.config)
+  await mPostRoute('postConfig', Serverdata.config)
 }
 
-async function test117(){
+async function test117() {
   await prelims();
 
 }
@@ -20,146 +86,146 @@ async function test116_calcPalette() {
 
   //console.log('???',typeof colorDistanceHue('red','black'));return;
   return;
-  let [pal,palContrast]=await calcUserPalette('mac'); 
-  let d=mPopup();  showPaletteMini(d,pal);mLinebreak(d);  showPaletteMini(d,palContrast);
+  let [pal, palContrast] = await calcUserPalette('mac');
+  let d = mPopup(); showPaletteMini(d, pal); mLinebreak(d); showPaletteMini(d, palContrast);
 }
 async function test115_calcPaletteForUser() {
   await prelims();
 
-  let x=colorDistanceHueLum('#ffffff','#000000'); console.log(x); //return;
-  x=colorDistanceHueLum('#ff0000','#00ffff'); console.log(x); //return;
-  x=colorDistanceHueLum('#ffff00','#000000'); console.log(x); //return;
-  x=colorDistanceHueLum('#006c7f','#8e846a'); console.log(x); //return;
+  let x = colorDistanceHueLum('#ffffff', '#000000'); console.log(x); //return;
+  x = colorDistanceHueLum('#ff0000', '#00ffff'); console.log(x); //return;
+  x = colorDistanceHueLum('#ffff00', '#000000'); console.log(x); //return;
+  x = colorDistanceHueLum('#006c7f', '#8e846a'); console.log(x); //return;
 
   //await switchToUser('maya','settings'); 
-  await calcUserPalette('lauren'); 
+  await calcUserPalette('lauren');
 }
 async function test115_calcPaletteForUser_no() {
   await prelims();
   let user = Serverdata.users['lauren'];
-  let d = clearFlex({h:'100vh',w:'100vw',bg:user.color});
-  mDom(d,{fg:'white'},{html:user.name});
+  let d = clearFlex({ h: '100vh', w: '100vw', bg: user.color });
+  mDom(d, { fg: 'white' }, { html: user.name });
   let palette = await showPaletteFor(d, user.texture, user.color, user.blendMode);
 }
 //#endregion
 
 //#region mGather refactoring!
-async function test114_mGatherCheckListInput(){
-  await prelims(); 
+async function test114_mGatherCheckListInput() {
+  await prelims();
   return;
-  await switchToMainMenu('collections'); 
+  await switchToMainMenu('collections');
   await onclickCollSelectAll();
   await onclickEditCategories();
-  let d = clearFlex(); let dAnchor=mDom(d,{matop:100,bg:'green',padding:10,align:'center'},{html:'Anchor'}); 
-  let content,res;  
+  let d = clearFlex(); let dAnchor = mDom(d, { matop: 100, bg: 'green', padding: 10, align: 'center' }, { html: 'Anchor' });
+  let content, res;
 
-  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  content = [{ name: 'a', value: true }, { name: 'b', value: false }, { name: 'c', value: false }]; //OK 'a@b@c'|[options join @]
   // content={a:true,b:false,c:true};
   // content = ['das','ist','richtig']
   // content = 'ich bin hier im jetzt';
-  res = await mGather(dAnchor,{ hmax: 510, wmax: 200, pabottom: 10, box: true },{content, type: 'checkList'}); 
+  res = await mGather(dAnchor, { hmax: 510, wmax: 200, pabottom: 10, box: true }, { content, type: 'checkList' });
   console.log('res', res)
 
 
 }
-async function test114_mGatherCheckList(){
-  await prelims(); 
+async function test114_mGatherCheckList() {
+  await prelims();
   await switchToMainMenu('collections'); return;
-  let d = clearFlex(); let dAnchor=mDom(d,{matop:100,bg:'green',padding:10,align:'center'},{html:'Anchor'}); 
-  let content,res;  
+  let d = clearFlex(); let dAnchor = mDom(d, { matop: 100, bg: 'green', padding: 10, align: 'center' }, { html: 'Anchor' });
+  let content, res;
 
-  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  content = [{ name: 'a', value: true }, { name: 'b', value: false }, { name: 'c', value: false }]; //OK 'a@b@c'|[options join @]
   // content={a:true,b:false,c:true};
   // content = ['das','ist','richtig']
   // content = 'ich bin hier im jetzt';
-  res = await mGather(dAnchor,{ hmax: 510, wmax: 200, pabottom: 10, box: true },{content, type: 'checkList'}); 
+  res = await mGather(dAnchor, { hmax: 510, wmax: 200, pabottom: 10, box: true }, { content, type: 'checkList' });
   console.log('res', res)
 
 
 }
-async function test113_mGather(){
-  await prelims(); 
-  
+async function test113_mGather() {
+  await prelims();
+
   // return;
-  let d = clearFlex(); let dAnchor=mDom(d,{matop:100,bg:'green',padding:10,align:'center'},{html:'Anchor'}); 
-  let content,res;  
+  let d = clearFlex(); let dAnchor = mDom(d, { matop: 100, bg: 'green', padding: 10, align: 'center' }, { html: 'Anchor' });
+  let content, res;
   //let name = await mGather(dAnchor); console.log('you picked',name); //OK
 
-  content = {input1:'',input2:'',input3:''};
+  content = { input1: '', input2: '', input3: '' };
   //res = await mGather(dAnchor,{},{content,type: 'multi'}); console.log('you picked',res); //OK object w/ new vals
 
   content = 'are you happy?';
   //res = await mGather(dAnchor,{},{content,type: 'yesNo'}); console.log('you picked',res); //OK true|false
 
-  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
-  content={a:1,b:2,c:3};
-  content=[{a:1,b:2,c:3},{a:4,b:5}];
+  content = [{ name: 'a', value: true }, { name: 'b', value: false }, { name: 'c', value: false }]; //OK 'a@b@c'|[options join @]
+  content = { a: 1, b: 2, c: 3 };
+  content = [{ a: 1, b: 2, c: 3 }, { a: 4, b: 5 }];
   //content = ['das','ist','richtig']
   //content = 'ich bin hier im jetzt';
-  res = await mGather(dAnchor,{},{content, type: 'select'}); 
+  res = await mGather(dAnchor, {}, { content, type: 'select' });
   console.log('res', res)
 
 
 }
-async function test112(){
+async function test112() {
   //wie mach ich ein gadget fuer colorname?
   await prelims();
   let d = clearFlex();
 
-  let dAnchor=mDom(d,{matop:100,bg:'green',w:200,padding:10,align:'center'},{html:'Anchor'}); 
+  let dAnchor = mDom(d, { matop: 100, bg: 'green', w: 200, padding: 10, align: 'center' }, { html: 'Anchor' });
   let res;
 
-  let content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
-  content={a:1,b:2,c:3};
-  content=[{a:1,b:2,c:3},{a:4,b:5}];
+  let content = [{ name: 'a', value: true }, { name: 'b', value: false }, { name: 'c', value: false }]; //OK 'a@b@c'|[options join @]
+  content = { a: 1, b: 2, c: 3 };
+  content = [{ a: 1, b: 2, c: 3 }, { a: 4, b: 5 }];
   //content = ['das','ist','richtig']
   //content = 'ich bin hier im jetzt';
-  res = await mGather(dAnchor,{},{content, type: 'select'}); 
+  res = await mGather(dAnchor, {}, { content, type: 'select' });
   console.log('res', res)
   // res = uiTypeSelect(content,d); //console.log(res)
 
   return;
 
   //res = await mGather(title,{},{content, type: 'select'}); 
-  console.log('you picked',res); 
+  console.log('you picked', res);
 
   //let name = await mGather(title); console.log('you picked',name); //OK
 
-  content = [{name:'a',value:true},{name:'b',value:false},{name:'c',value:false}]; //OK 'a@b@c'|[options join @]
+  content = [{ name: 'a', value: true }, { name: 'b', value: false }, { name: 'c', value: false }]; //OK 'a@b@c'|[options join @]
   //res = await mGather(title,{},{content,type: 'checkList'}); console.log('you picked',res); 
-  
+
   content = 'restart?'
   //res = await mGather(title,{},{content,type: 'yesno'}); console.log('you picked',res); //OK true|false
 
-  content = [{name:'a',value:true},{name:'b',value:true},{name:'c',value:false}];
+  content = [{ name: 'a', value: true }, { name: 'b', value: true }, { name: 'c', value: false }];
   //res = await mGather(title,{},{content,type: 'checkListInput'}); console.log('you picked',res); //OK list of vals
 
-  content = {input1:'',input2:'',input3:''};
+  content = { input1: '', input2: '', input3: '' };
   //res = await mGather(title,{},{content,type: 'multi'}); console.log('you picked',res); //OK object w/ new vals
 
 
 
 }
-async function test111(){
+async function test111() {
   //console.log(colorDistance('black','white')); return;
   await prelims();
   let d = clearFlex();
   for (const i of range(30)) {
-    let letter = rChoose(['R','G','Y','B','M','C']);
+    let letter = rChoose(['R', 'G', 'Y', 'B', 'M', 'C']);
     let num = rChoose(range(100));
-    for(let x=-90;x<100;x+=30){
-      let [w,b]=x<0?[-x,0]:x==0?[0,0]:[0,x]; //rChoose(range(100)),rChoose(range(100))];
-      let ncol = letter+num; console.log('___ my ncol',ncol,w,b)
-      let color = colorFromNcol(ncol,w,b);
+    for (let x = -90; x < 100; x += 30) {
+      let [w, b] = x < 0 ? [-x, 0] : x == 0 ? [0, 0] : [0, x]; //rChoose(range(100)),rChoose(range(100))];
+      let ncol = letter + num; console.log('___ my ncol', ncol, w, b)
+      let color = colorFromNcol(ncol, w, b);
       let w3 = colorO(color);
-      w3.myNcol=ncol;
+      w3.myNcol = ncol;
       let realColor = M.colorByName[w3.name];
-      let dist=w3.distance;
-      if (w3.distance > 20) w3.name=`[${w3.name}]`;
-      else w3.name+=dist<5?'***':dist<10?'**':dist<15?'*':'';
+      let dist = w3.distance;
+      if (w3.distance > 20) w3.name = `[${w3.name}]`;
+      else w3.name += dist < 5 ? '***' : dist < 10 ? '**' : dist < 15 ? '*' : '';
       //w3.myBucket=colorGetBucket(w3.hex);
-      let d1 = showObject(w3, ['name', 'hex', 'distance', 'bucket', 'hue', 'ncol', 'myNcol'], d, { bg: w3.hex,wmin:233 });
-      showObject(realColor,['name','hex','bucket'],d,{bg:realColor.hex,wmin:233});
+      let d1 = showObject(w3, ['name', 'hex', 'distance', 'bucket', 'hue', 'ncol', 'myNcol'], d, { bg: w3.hex, wmin: 233 });
+      showObject(realColor, ['name', 'hex', 'bucket'], d, { bg: realColor.hex, wmin: 233 });
       mLinebreak(d)
     }
     mLinebreak(d)
@@ -177,10 +243,10 @@ async function test108_colorNatVersusW3_BROKEN() {
     let w3 = rChoose(M.colorList);
     let hex = w3.hex;
     let hwb = colorToHwbRounded(hex);
-    let ncol=colorHueToNcol(hwb.h); //console.log('my ncol',ncol)
-    console.log('___',w3.hue,w3.ncol,ncol,colorNcolToHue(ncol)); //w3.toNcol()); 
+    let ncol = colorHueToNcol(hwb.h); //console.log('my ncol',ncol)
+    console.log('___', w3.hue, w3.ncol, ncol, colorNcolToHue(ncol)); //w3.toNcol()); 
     let nat = colorHueToNat(hwb.h);
-    console.log(w3.hue,nat,colorNatToHue(nat)); //w3.toNcol()); 
+    console.log(w3.hue, nat, colorNatToHue(nat)); //w3.toNcol()); 
   }
 }
 async function test110_colorNatVersusW3() {
@@ -852,7 +918,7 @@ async function prelims() {
     `;
   document.body.innerHTML = html;
   UI.nav = showNavbar();
-  staticTitle(); 
+  staticTitle();
   UI.user = mCommand(UI.nav.r, 'user'); iDiv(UI.user).classList.add('activeLink');
   await switchToUser(localStorage.getItem('username'), localStorage.getItem('menu'));
 }

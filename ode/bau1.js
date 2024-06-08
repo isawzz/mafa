@@ -11,7 +11,23 @@ Beetle
 	`;
 }
 
+async function updateSuperdi(di){
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
 
+}
+function strSameCaseInsensitive(s1,s2){return s1.toLowerCase() == s2.toLowerCase();}
+function sortDictionary(di){
+	let keys = Object.keys(di);
+	keys.sort();
+	let newdi={};
+	for(const k of keys){
+		newdi[k] = di[k];
+	}
+	return newdi;
+}
 
 function fishgame() {
 

@@ -6063,10 +6063,7 @@ async function onclickAddCategory() {
 	}
 	if (!changed) { console.log('nothing added'); collClearSelections(); return; }
 	console.log('items changed:', Object.keys(di));
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+	await updateSuperdi(di);
 }
 async function onclickAddSelected() {
 	let selist = UI.selectedImages;
@@ -6090,10 +6087,7 @@ async function onclickAddSelected() {
 	}
 	if (!changed) { console.log('nothing added'); collClearSelections(); return; }
 	console.log('items changed:', Object.keys(di));
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+	await updateSuperdi(di);
 }
 async function onclickAsAvatar(ev) {
 	let item = UI.selectedImages[0];
@@ -6305,10 +6299,7 @@ async function onclickEditCategories() {
 	}
 	if (!changed) { console.log('categories unchanged!', cats); collClearSelections(); return; }
 	console.log('items changed:', Object.keys(di));
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+	await updateSuperdi(di);
 }
 async function onclickEditCollItem() {
 	let selist = UI.selectedImages;
@@ -6324,10 +6315,7 @@ async function onclickEditCollItem() {
 	console.log(`cats of item ${key} set to`, cats);
 	item.cats = cats;
 	let di = {}; di[key] = item;
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+	await updateSuperdi(di);
 }
 function onclickExistingEvent(ev) { evNoBubble(ev); showEventOpen(evToId(ev)); }
 
@@ -6482,10 +6470,7 @@ async function onclickRemoveCategory() {
 	}
 	if (!changed) { console.log('ERROR: none of selected elements has cat in', remolist); collClearSelections(); return; }
 	console.log('items changed:', Object.keys(di));
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+	await updateSuperdi(di);
 }
 async function onclickRemoveSelected() {
 	let selist = UI.selectedImages;
@@ -6504,10 +6489,7 @@ async function onclickRemoveSelected() {
 		collClearSelections();
 		return;
 	}
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	collPostReload();
+	await updateSuperdi(di);
 }
 async function onclickRenameCollection(oldname, newname) {
 	if (nundef(oldname)) oldname = UI.collSecondary.isOpen ? UI.collSecondary.name : collLocked(UI.collPrimary.name) ? null : UI.collPrimary.name;
@@ -8316,7 +8298,8 @@ function sortByMultipleProperties(list) {
 	});
 }
 function sortCaseInsensitive(list) {
-	list.sort((a, b) => { return a.toLowerCase().localeCompare(b.toLowerCase()); });
+	//list.sort((a, b) => { return a.toLowerCase().localeCompare(b.toLowerCase()); });
+	list.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
 	return list;
 }
 function sortCheckboxes(grid) {

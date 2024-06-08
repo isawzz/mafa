@@ -1,0 +1,1806 @@
+aardvark:
+  name: Aardvark
+  lifespan: 23 years
+  habitat: 'Savannahs, grasslands, woodlands'
+  avgGrownupWeight: 60 kg
+  avgSize: 1.3 m
+  preferredFood: Ants and termites
+  species: Orycteropus afer
+  color: Pale yellow or grey
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+african_bush_elephant:
+  lifespan: Up to 60-70 years in the wild
+  habitat: >-
+    Various habitats including savannas, forests, and deserts in sub-Saharan
+    Africa
+  avgGrownupWeight: 'Up to 6,000 kg (male), up to 3,000-4,000 kg (female)'
+  avgSize: '2.5-4 m tall at the shoulder, 6-7 m in length'
+  preferredFood: 'Herbivorous: primarily grasses, leaves, fruits, and bark'
+  species: Loxodonta africana
+  color: Gray to brownish-gray skin
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf every 2-4 years
+  class: Mammal
+african_leopard:
+  lifespan: '12-17 years in the wild, up to 23 years in captivity'
+  habitat: >-
+    Varies widely across sub-Saharan Africa, including forests, savannas, and
+    mountainous regions
+  avgGrownupWeight: 30-70 kg
+  avgSize: '1.5-2.1 m in length, with a tail length of 0.6-1.1 m'
+  preferredFood: >-
+    Carnivorous: hunts a variety of prey including antelopes, gazelles, and
+    smaller mammals
+  species: Panthera pardus
+  color: >-
+    Yellow to gold with black rosettes and spots; the coloration helps provide
+    camouflage in different habitats
+  reproduction: Viviparous
+  avgNumberOfOffsprings: >-
+    2-3 cubs per litter, born after a gestation period of approximately 90-105
+    days
+  class: Mammal
+alpaca:
+  name: Alpaca
+  lifespan: 15-20 years
+  habitat: Mountainous regions of South America
+  avgGrownupWeight: 55-65 kg
+  avgSize: 90-100 cm tall
+  preferredFood: 'Grasses, hay, and sometimes grains'
+  species: Vicugna pacos
+  color: 'Various colors including white, brown, and black'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 cria (baby alpaca)
+  class: Mammal
+alpine_ibex:
+  lifespan: 10-14 years in the wild
+  habitat: Mountainous regions in the European Alps
+  avgGrownupWeight: '65-100 kg (males), 45-55 kg (females)'
+  avgSize: '1.3-1.5 m in length, 70-90 cm at shoulder height'
+  preferredFood: 'Herbivorous: grasses, herbs, and leaves'
+  species: Capra ibex
+  color: 'Brownish-gray with lighter underparts and large, backward-curving horns'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-2 kids per birth
+  class: Mammal
+ant:
+  name: Ant
+  lifespan: Several weeks to several years depending on species
+  habitat: 'Various terrestrial habitats including forests, grasslands, and urban areas'
+  avgGrownupWeight: 0.1-5 mg depending on species
+  avgSize: 1-50 mm depending on species
+  preferredFood: 'Omnivorous: scavenges for dead insects, nectar, seeds, fungi'
+  species: Formicidae family
+  color: 'Varies by species: black, brown, red, or yellow'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: from a few to thousands of eggs per queen'
+  class: Insect
+arctic_fox:
+  lifespan: '3-6 years in the wild, up to 14 years in captivity'
+  habitat: >-
+    Found in Arctic and subarctic regions, including tundra, coastal areas, and
+    mountains
+  avgGrownupWeight: 3-8 kg
+  avgSize: '46-68 cm in length, not including tail'
+  preferredFood: 'Omnivorous: feeds on small mammals, birds, eggs, fish, berries, and carrion'
+  species: Vulpes lagopus
+  color: >-
+    White or blue-gray in winter for Arctic populations, brown or gray in
+    summer; transitional phases also occur
+  reproduction: Ovoviviparous
+  avgNumberOfOffsprings: >-
+    Females give birth to 5-8 pups in spring; pups are cared for in underground
+    dens
+  class: Mammal
+armadillo:
+  name: Armadillo
+  lifespan: '4-30 years, depending on species'
+  habitat: 'Grasslands, forests, and semi-deserts'
+  avgGrownupWeight: '0.5-6 kg, depending on species'
+  avgSize: '15-75 cm, depending on species'
+  preferredFood: 'Insects, small vertebrates, plants'
+  species: Dasypodidae
+  color: 'Brown, grey, or pinkish'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1-12, depending on species'
+  class: Mammal
+asian_lady_beetle:
+  lifespan: 1-3 years
+  habitat: >-
+    Found in various habitats including gardens, agricultural fields, forests,
+    and urban areas
+  avgGrownupWeight: Less than 1 gram
+  avgSize: 5-8 mm in length
+  preferredFood: >-
+    Omnivorous: feeds on aphids, scale insects, and other soft-bodied insects,
+    as well as pollen and nectar
+  species: Harmonia axyridis
+  color: >-
+    Highly variable; typically orange to red with black spots, but can also be
+    yellow to black or even melanistic (black with red spots)
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 'Females can lay up to 1,500 eggs in their lifetime'
+  class: Insect
+axolotl:
+  name: Axolotl
+  lifespan: 10-15 years in captivity
+  habitat: 'Freshwater lakes and canals in Mexico, particularly Lake Xochimilco'
+  avgGrownupWeight: 60-200 g
+  avgSize: 15-45 cm
+  preferredFood: 'Carnivorous: worms, insects, small fish, and other small aquatic animals'
+  species: Ambystoma mexicanum
+  color: >-
+    Varies: wild types are usually dark with speckling, while captive-bred can
+    be white, pink, or gold
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 100-300 eggs per clutch
+  class: Amphibian
+badger:
+  name: Badger
+  lifespan: '4-10 years in the wild, up to 14 years in captivity'
+  habitat: 'Forests, grasslands, deserts'
+  avgGrownupWeight: 5-15 kg
+  avgSize: 0.6-0.9 m long
+  preferredFood: 'Omnivorous: insects, small mammals, birds, fruits, roots'
+  species: Meles and Taxidea genera
+  color: Gray to black with distinctive white facial markings
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-5 cubs per litter
+  class: Mammal
+bald_eagle:
+  name: Bald Eagle
+  lifespan: 20-30 years in the wild
+  habitat: >-
+    Near large bodies of open water such as lakes, rivers, and coastal regions
+    in North America
+  avgGrownupWeight: 3-6.3 kg
+  avgSize: '70-102 cm in length, wingspan 180-230 cm'
+  preferredFood: 'Carnivorous: primarily fish, but also small mammals, birds, and carrion'
+  species: Haliaeetus leucocephalus
+  color: 'Dark brown body with a white head and tail, yellow beak and feet'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 1-3 eggs per clutch
+  class: Bird
+barbary_lion:
+  lifespan: >-
+    Estimated to be similar to other lion subspecies, around 10-14 years in the
+    wild
+  habitat: >-
+    Historically found in North Africa, particularly in the Atlas Mountains and
+    surrounding regions
+  avgGrownupWeight: '200-250 kg for males, slightly smaller for females'
+  avgSize: '2.5-3.3 m in length, including tail'
+  preferredFood: 'Carnivorous: hunts large mammals such as gazelles, zebras, and buffalo'
+  species: Panthera leo leo
+  color: >-
+    Similar to other lion subspecies; tawny yellow to reddish-brown coat with a
+    mane that varies in color from dark to blond
+  reproduction: Viviparous
+  avgNumberOfOffsprings: >-
+    2-4 cubs per litter, born after a gestation period of approximately 100-110
+    days
+  class: Mammal
+barn_owl:
+  name: Barn Owl
+  lifespan: '4-10 years in the wild, up to 20 years in captivity'
+  habitat: 'Open countryside, farmlands, woodlands'
+  avgGrownupWeight: 400-700 g
+  avgSize: '33-39 cm in length, wingspan 80-95 cm'
+  preferredFood: 'Carnivorous: small mammals, birds, insects'
+  species: Tyto alba
+  color: 'Pale, heart-shaped face with a mix of white, golden-brown, and gray feathers'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 4-7 eggs per clutch
+  class: Bird
+barn_spider:
+  lifespan: 1 year
+  habitat: 'Barns, sheds, gardens, and areas near human habitation across North America'
+  avgGrownupWeight: Approximately 1 gram
+  avgSize: 'Females: 14-20 mm, Males: 10-13 mm'
+  preferredFood: >-
+    Carnivorous: primarily feeds on flying insects such as flies, moths, and
+    beetles
+  species: Araneus cavaticus
+  color: Varies from brown to orange with white and dark markings on the abdomen
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay several hundred eggs in a silk sac; eggs hatch into spiderlings
+    in the spring
+  class: Arachnid
+beaver:
+  name: Beaver
+  lifespan: '10-15 years in the wild, up to 20 years in captivity'
+  habitat: 'Rivers, streams, lakes, and ponds'
+  avgGrownupWeight: 16-32 kg
+  avgSize: 0.9-1.4 m long including tail
+  preferredFood: 'Herbivorous: bark, twigs, leaves, aquatic plants'
+  species: Castor genus
+  color: Brown fur with webbed hind feet and flat tail
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-4 kits per litter
+  class: Mammal
+bee:
+  lifespan: Varies among species; typically several weeks to a few months
+  habitat: >-
+    Varies widely; bees are found on every continent except Antarctica,
+    predominantly in gardens, forests, and agricultural areas
+  avgGrownupWeight: Approximately 0.1-1 gram
+  avgSize: Approximately 0.8-2.5 cm in length
+  preferredFood: 'Herbivorous: primarily feeds on nectar and pollen collected from flowers'
+  species: >-
+    There are over 20,000 known species of bees, belonging to the superfamily
+    Apoidea
+  color: >-
+    Varies among species; commonly yellow and black striped, but can range from
+    metallic blue-green to solid black
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Varies among species; a single queen bee can lay up to 2,000 eggs per day in
+    peak season
+  class: Insect
+bengal_cat:
+  name: Bengal Cat
+  lifespan: 12-16 years
+  habitat: Domestic
+  avgGrownupWeight: 4-7 kg
+  avgSize: 35-45 cm in length
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: Spotted or marbled coat with a variety of colors
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 kittens per litter
+  class: Mammal
+bengal_tiger:
+  lifespan: '10-15 years in the wild, up to 20-25 years in captivity'
+  habitat: >-
+    Varies across India, Bangladesh, Nepal, Bhutan, and Myanmar; habitats
+    include tropical and subtropical forests, mangroves, and grasslands
+  avgGrownupWeight: '180-258 kg for males, 100-160 kg for females'
+  avgSize: '2.4-3 m in length, including tail'
+  preferredFood: >-
+    Carnivorous: hunts large prey such as deer, wild boar, and occasionally
+    smaller mammals and birds
+  species: Panthera tigris tigris
+  color: >-
+    Orange to yellow coat with black stripes; the pattern of stripes is unique
+    to each tiger, serving as camouflage in their habitat
+  reproduction: Viviparous
+  avgNumberOfOffsprings: >-
+    2-4 cubs per litter, born after a gestation period of approximately 100-110
+    days
+  class: Mammal
+bison:
+  name: Bison
+  lifespan: 15-20 years
+  habitat: 'Grasslands, prairies, forests'
+  avgGrownupWeight: 500-1000 kg
+  avgSize: 1.5-2 m tall at the shoulder
+  preferredFood: 'Grasses, herbs, shrubs'
+  species: Bison bison (American bison)
+  color: Dark brown to black
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf
+  class: Mammal
+blue_morpho:
+  lifespan: 115 days (about 4 months) from egg to adult
+  habitat: Tropical rainforests in Central and South America
+  avgGrownupWeight: 0.3-0.5 g
+  avgSize: 15-20 cm wingspan
+  preferredFood: >-
+    Herbivorous: larvae feed on leaves, adults feed on rotting fruit, fungi, and
+    tree sap
+  species: Morpho menelaus
+  color: 'Brilliant blue upper wings, brown underside with eyespots for camouflage'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Several hundred eggs laid singly on host plants
+  class: Insect
+blue_morpho_butterfly:
+  name: Blue Morpho Butterfly
+  lifespan: 2-3 weeks as adults
+  habitat: Tropical rainforests of Central and South America
+  avgGrownupWeight: 0.5-0.7 g
+  avgSize: 12-20 cm wingspan
+  preferredFood: 'Herbivorous: primarily feeds on rotting fruits, tree sap, and nectar'
+  species: Morpho genus
+  color: Iridescent blue wings with brown undersides
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Hundreds of eggs laid individually on host plants
+  class: Insect
+blue_poison_dart_frog:
+  lifespan: '4-6 years in the wild, up to 12 years in captivity'
+  habitat: >-
+    Tropical rainforests of Suriname and northern Brazil, usually found near
+    streams and moist areas
+  avgGrownupWeight: 3-5 grams
+  avgSize: 3-5 cm in length
+  preferredFood: >-
+    Insectivorous: primarily feeds on ants, termites, and other small
+    invertebrates
+  species: Dendrobates tinctorius 'azureus'
+  color: >-
+    Bright blue with black spots or patches; coloration serves as a warning to
+    predators about its toxicity
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay 5-10 eggs in moist, protected areas; tadpoles are carried to
+    water by the male where they continue development
+  class: Amphibian
+blue_tit:
+  lifespan: '2-3 years in the wild, up to 15 years in captivity'
+  habitat: 'Woodlands, gardens, hedgerows, and parks throughout Europe and western Asia'
+  avgGrownupWeight: 9-12 g
+  avgSize: '12 cm in length, wingspan 17-20 cm'
+  preferredFood: 'Omnivorous: insects, seeds, nuts, and berries'
+  species: Cyanistes caeruleus
+  color: 'Blue cap, wings, and tail with yellow underparts and greenish back'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 7-12 eggs per clutch
+  class: Bird
+bobcat:
+  name: Bobcat
+  lifespan: '10-12 years in the wild, up to 25 years in captivity'
+  habitat: 'Forests, swamps, deserts, and urban areas'
+  avgGrownupWeight: 6-12 kg
+  avgSize: 0.5-0.8 m long
+  preferredFood: 'Carnivorous: small mammals, birds, rabbits, and rodents'
+  species: Lynx rufus
+  color: 'Spotted or streaked coat, usually brownish-red to grayish-brown'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-6 kittens per litter
+  class: Mammal
+british_shorthair_cat:
+  lifespan: 12-20 years
+  habitat: Domesticated; found in households and occasionally in breeding facilities
+  avgGrownupWeight: 'Male: 4.5-7 kg, Female: 3.6-5.4 kg'
+  avgSize: 'Medium to large size, with males typically larger than females'
+  preferredFood: 'Omnivorous: commercial cat food, meat, and occasionally vegetables'
+  species: Felis catus
+  color: >-
+    Wide variety of colors and patterns including solid blue, black, white,
+    tabby, and more
+  reproduction: Viviparous
+  avgNumberOfOffsprings: Varies; a typical litter size ranges from 3-6 kittens
+  class: Mammal
+buffalo:
+  name: Buffalo
+  lifespan: 10-20 years
+  habitat: 'Grasslands, savannas, woodlands'
+  avgGrownupWeight: 500-900 kg
+  avgSize: 1.5-1.8 m tall at the shoulder
+  preferredFood: 'Grasses, herbs, shrubs'
+  species: Syncerus caffer (Cape buffalo)
+  color: Dark brown to black
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf
+  class: Mammal
+bumblebee:
+  name: Bumblebee
+  lifespan: '4-6 weeks for worker bees, several months for queen bees'
+  habitat: 'Varied habitats including gardens, meadows, and forests'
+  avgGrownupWeight: Approximately 300 mg
+  avgSize: 10-23 mm depending on species
+  preferredFood: 'Herbivorous: collects pollen and nectar from flowers'
+  species: Bombus genus
+  color: 'Varies by species: black and yellow stripes, or orange and black'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: up to hundreds of eggs per queen'
+  class: Insect
+callanthiidae:
+  lifespan: Varies among species
+  habitat: 'Deep-sea environments, typically found on continental slopes and seamounts'
+  avgGrownupWeight: Varies among species
+  avgSize: Varies among species
+  preferredFood: 'Carnivorous: feeds on small fish, crustaceans, and mollusks'
+  species: Various species within the Callanthiidae family
+  color: 'Varies among species, often brightly colored with distinctive patterns'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Varies among species
+  class: Fish
+camargue_horse:
+  lifespan: 20-30 years
+  habitat: >-
+    Camargue region in the south of France, primarily found in wetlands,
+    marshes, and salt flats
+  avgGrownupWeight: 400-500 kg
+  avgSize: 130-150 cm at the withers
+  preferredFood: >-
+    Herbivorous: primarily feeds on grasses, reeds, and other vegetation found
+    in its habitat
+  species: Equus ferus caballus
+  color: >-
+    Gray to white coat, known for its light coloration which helps with heat
+    reflection in its hot and sunny habitat
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 foal per birth
+  class: Mammal
+camel:
+  name: Camel
+  lifespan: 40-50 years
+  habitat: 'Deserts, arid regions'
+  avgGrownupWeight: 400-600 kg
+  avgSize: 1.8-2.2 m tall at the shoulder
+  preferredFood: 'Grasses, grains, leaves'
+  species: Camelus
+  color: Light brown to dark brown
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf
+  class: Mammal
+capybara:
+  name: Capybara
+  lifespan: '8-10 years in the wild, up to 12 years in captivity'
+  habitat: 'Semi-aquatic: rivers, lakes, marshes, and forests'
+  avgGrownupWeight: 35-65 kg
+  avgSize: 0.5-0.6 m tall at the shoulder
+  preferredFood: 'Herbivorous: grasses, aquatic plants, fruits'
+  species: Hydrochoerus hydrochaeris
+  color: Brownish-gray fur with a stout body and webbed feet
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-8 pups per litter
+  class: Mammal
+caterpillar:
+  lifespan: Several weeks to months (larval stage)
+  habitat: >-
+    Found in various habitats including forests, fields, gardens, and meadows
+    worldwide
+  avgGrownupWeight: >-
+    Varies widely; can range from a few milligrams to several grams depending on
+    the species
+  avgSize: >-
+    Varies widely; typically ranges from a few millimeters to over 10 cm in
+    length depending on the species
+  preferredFood: >-
+    Herbivorous: primarily feeds on leaves of various plants; some species may
+    have specific host plants
+  species: Numerous species across the Order Lepidoptera
+  color: >-
+    Varies widely among species; can be green, brown, yellow, black, and often
+    with patterns and markings for camouflage or warning
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay hundreds to thousands of eggs depending on the species; eggs
+    hatch into larvae (caterpillars) which then undergo several molts
+  class: Insect
+cattle_egret:
+  name: Cattle Egret
+  lifespan: 10-15 years
+  habitat: 'Grasslands, agricultural fields, wetlands'
+  avgGrownupWeight: 300-400 g
+  avgSize: '46-56 cm in length, wingspan 88-96 cm'
+  preferredFood: >-
+    Insectivorous: insects, especially grasshoppers, and other small
+    invertebrates
+  species: Bubulcus ibis
+  color: >-
+    White with yellow or orange bill and legs, can have buff patches during
+    breeding season
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 3-4 eggs per clutch
+  class: Bird
+chameleon:
+  name: Common Chameleon
+  lifespan: 2-10 years depending on species
+  habitat: 'Tropical and subtropical forests, savannas'
+  avgGrownupWeight: 100-200 g
+  avgSize: 15-25 cm
+  preferredFood: 'Insectivorous: insects, small invertebrates'
+  species: Chamaeleo chamaeleon
+  color: 'Varies: green, brown, can change color for camouflage and communication'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 20-40 eggs per clutch
+  class: Reptile
+cheetah:
+  name: Cheetah
+  lifespan: 10-12 years
+  habitat: 'Grasslands, savannas'
+  avgGrownupWeight: 50 kg
+  avgSize: 1.2 m
+  preferredFood: 'Gazelles, wildebeests calves, impalas'
+  species: Acinonyx jubatus
+  color: Golden with black spots
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 3-5
+  class: Mammal
+chimpanzee:
+  name: Chimpanzee
+  lifespan: 33-40 years
+  habitat: Tropical forests
+  avgGrownupWeight: 40-70 kg
+  avgSize: 1.2 m
+  preferredFood: 'Fruit, nuts, seeds, insects'
+  species: Pan troglodytes
+  color: Black
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+chinese_alligator:
+  lifespan: '50-70 years in the wild, up to 80 years in captivity'
+  habitat: 'Freshwater habitats such as rivers, streams, and marshes in eastern China'
+  avgGrownupWeight: 20-45 kg
+  avgSize: 1.5-2.1 m in length
+  preferredFood: 'Carnivorous: fish, amphibians, small mammals, and birds'
+  species: Alligator sinensis
+  color: >-
+    Dark olive-green with lighter underbelly and distinct bony plates on the
+    head
+  reproduction: Oviparous
+  avgNumberOfOffsprings: '10-50 eggs per nest, depending on environmental conditions'
+  class: Reptile
+cockroach:
+  name: Cockroach
+  lifespan: 6 months to 2 years depending on species
+  habitat: 'Found worldwide in warm environments, often in homes and buildings'
+  avgGrownupWeight: 3-50 g depending on species
+  avgSize: 10-50 mm depending on species
+  preferredFood: 'Omnivorous: scavenges on organic matter, food scraps, and even glue'
+  species: Blattodea order
+  color: 'Varies by species: typically brown or black'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: can produce several hundred to thousands of eggs'
+  class: Insect
+copperband_butterflyfish:
+  lifespan: 5-7 years in the wild
+  habitat: Tropical coral reefs and lagoons in the Indo-Pacific region
+  avgGrownupWeight: Up to 100 g
+  avgSize: 15-20 cm in length
+  preferredFood: 'Omnivorous: feeds primarily on coral polyps, small invertebrates, and algae'
+  species: Chelmon rostratus
+  color: >-
+    White body with black vertical bands and a prominent coppery-orange band
+    across its face
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Eggs are released into the water and develop into larvae
+  class: Fish
+cotentin_donkey:
+  lifespan: 25-35 years
+  habitat: >-
+    Originally from the Cotentin Peninsula in Normandy, France; found in various
+    habitats including pastures and meadows
+  avgGrownupWeight: 300-400 kg
+  avgSize: 110-130 cm at the withers
+  preferredFood: 'Herbivorous: primarily feeds on grasses, hay, and other vegetation'
+  species: Equus africanus asinus
+  color: 'Gray to brown coat, often with a lighter underbelly'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 foal per birth
+  class: Mammal
+cricket:
+  name: Cricket
+  lifespan: 1-2 years depending on species
+  habitat: 'Grasslands, forests, and urban areas'
+  avgGrownupWeight: 0.5-3 g depending on species
+  avgSize: 2-5 cm
+  preferredFood: 'Omnivorous: eats plants, fungi, and occasionally other insects'
+  species: Gryllidae family
+  color: 'Varies by species: typically brown or black'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Up to 150 eggs laid in soil or vegetation
+  class: Insect
+domestic_water_buffalo:
+  lifespan: 18-25 years
+  habitat: 'Wetlands, swamps, and agricultural lands in tropical and subtropical regions'
+  avgGrownupWeight: '400-900 kg (females), 700-1200 kg (males)'
+  avgSize: '2.4-3 m in length, 1.5-1.8 m at shoulder height'
+  preferredFood: 'Herbivorous: grasses, aquatic plants, and crop residues'
+  species: Bubalus bubalis
+  color: Generally dark gray to black
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf per birth
+  class: Mammal
+dragonfly:
+  lifespan: Several months to several years (including larval stage)
+  habitat: >-
+    Found near freshwater habitats like ponds, lakes, rivers, and wetlands
+    worldwide
+  avgGrownupWeight: 0.2-0.5 grams
+  avgSize: 2-5 inches (5-12.5 cm) in wingspan
+  preferredFood: >-
+    Carnivorous: primarily feeds on other insects, including mosquitoes, flies,
+    and small aquatic organisms during the larval stage
+  species: 'Suborder Anisoptera, encompassing numerous genera and species'
+  color: >-
+    Varies widely among species; often bright and iridescent with colors such as
+    blue, green, red, and yellow
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay hundreds to thousands of eggs in or near water; eggs hatch into
+    aquatic larvae (nymphs) which eventually metamorphose into adults
+  class: Insect
+earwig:
+  name: Earwig
+  lifespan: 1-3 years depending on species
+  habitat: 'Moist areas such as gardens, under rocks, and in rotting wood'
+  avgGrownupWeight: 0.1-1 g depending on species
+  avgSize: 10-50 mm including pincers
+  preferredFood: 'Omnivorous: feeds on plants, insects, and decaying organic matter'
+  species: Dermaptera order
+  color: Dark brown or black with reddish-brown appendages
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Up to 80 eggs laid in soil or debris
+  class: Insect
+elephant:
+  name: Elephant
+  lifespan: 60-70 years
+  habitat: Savannah and forest
+  avgGrownupWeight: 6000 kg
+  avgSize: 3 m
+  preferredFood: 'Grass, leaves'
+  species: Loxodonta
+  color: Grey
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+european_garden_spider:
+  lifespan: 1-2 years
+  habitat: >-
+    Gardens, woodlands, grasslands, and human structures throughout Europe and
+    parts of North America
+  avgGrownupWeight: 0.5-2 grams
+  avgSize: 'Females: 6.5-20 mm, Males: 5.5-13 mm'
+  preferredFood: >-
+    Carnivorous: primarily feeds on flying insects such as flies, mosquitoes,
+    and moths
+  species: Araneus diadematus
+  color: >-
+    Varies from pale yellow to dark brown, with a distinctive white cross
+    pattern on the abdomen
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay up to 300-800 eggs in a silk sac; eggs hatch into spiderlings
+    after several weeks
+  class: Arachnid
+european_mantis:
+  lifespan: 1-2 years in the wild
+  habitat: >-
+    Found in various habitats including gardens, meadows, and shrublands across
+    Europe, Asia, and North America
+  avgGrownupWeight: 2-5 grams
+  avgSize: 5-7 cm in length
+  preferredFood: >-
+    Carnivorous: feeds primarily on insects such as flies, moths, and smaller
+    insects
+  species: Mantis religiosa
+  color: >-
+    Typically green or brown with long, slender bodies and triangular heads;
+    front legs adapted for grasping prey
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay a foamy egg case called an ootheca containing up to 200 eggs;
+    nymphs hatch from eggs and resemble miniature adults
+  class: Insect
+european_rhinoceros_beetle:
+  lifespan: 3-5 years (including larval stage)
+  habitat: >-
+    Woodlands, forests, gardens, and areas with decaying wood or compost piles
+    across Europe and parts of Asia
+  avgGrownupWeight: 4-10 grams
+  avgSize: 20-40 mm in length
+  preferredFood: >-
+    Larvae feed on decaying wood and organic matter; adults feed on plant sap
+    and fruit
+  species: Oryctes nasicornis
+  color: Shiny dark brown to black
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay 50-100 eggs in decaying wood or compost; eggs hatch into larvae
+    that undergo several molts before pupating and emerging as adults
+  class: Insect
+fire_ant:
+  name: Fire Ant
+  lifespan: 1-3 years
+  habitat: 'Mostly in warm climates, often found in urban areas and agricultural lands'
+  avgGrownupWeight: 0.5-6 mg depending on species
+  avgSize: 2-6 mm
+  preferredFood: 'Omnivorous: feeds on plant matter, seeds, insects, and other small animals'
+  species: Solenopsis genus
+  color: Reddish-brown to black
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by colony size: can produce thousands of eggs per queen'
+  class: Insect
+flamingo:
+  name: Flamingo
+  lifespan: '20-30 years in the wild, up to 60 years in captivity'
+  habitat: 'Shallow lakes, lagoons, and coastal mudflats'
+  avgGrownupWeight: 2-4 kg
+  avgSize: 1.1-1.5 m tall
+  preferredFood: 'Algae, crustaceans, small fish'
+  species: Phoenicopteridae
+  color: Pink to reddish-orange
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 1 chick
+  class: Bird
+flea:
+  name: Flea
+  lifespan: 2-3 months
+  habitat: 'Found worldwide, often in homes, on pets, and in wildlife habitats'
+  avgGrownupWeight: 'Varies by species, typically less than 1 mg'
+  avgSize: 1-4 mm
+  preferredFood: 'Parasitic: blood of mammals and birds'
+  species: Siphonaptera order
+  color: Dark brown to reddish-brown
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Several hundred eggs laid in bedding or host animal fur
+  class: Insect
+florida_panther:
+  lifespan: 8-15 years in the wild
+  habitat: 'Found in swamps, forests, and prairies of southern Florida, USA'
+  avgGrownupWeight: 'Female: 29-45 kg, Male: 45-72 kg'
+  avgSize: 'Length: 180-210 cm including tail, Height: 60-70 cm at the shoulders'
+  preferredFood: >-
+    Carnivorous: primarily feeds on white-tailed deer, but also small mammals,
+    birds, and occasionally livestock
+  species: Puma concolor coryi
+  color: >-
+    Tawny or reddish-brown with lighter underparts; kittens have spots that fade
+    with age
+  reproduction: Viviparous
+  avgNumberOfOffsprings: >-
+    Females give birth to 1-4 kittens per litter; kittens stay with their mother
+    for up to 2 years
+  class: Mammal
+fox:
+  name: Fox
+  lifespan: '2-5 years in the wild, up to 15 years in captivity'
+  habitat: 'Varied habitats including forests, grasslands, mountains, and urban areas'
+  avgGrownupWeight: 3-14 kg depending on species
+  avgSize: 0.3-0.5 m tall at the shoulder
+  preferredFood: 'Small mammals, birds, insects, fruits, and berries'
+  species: Vulpes genus
+  color: 'Red, gray, brown, white, or black depending on species'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-5 pups per litter
+  class: Mammal
+giant_swallowtail:
+  lifespan: 6-14 days as adults
+  habitat: 'Woodlands, fields, gardens, and citrus groves in North and Central America'
+  avgGrownupWeight: 0.5-1 g
+  avgSize: 10-16 cm wingspan
+  preferredFood: >-
+    Herbivorous: larvae feed on leaves of citrus plants, adults feed on nectar
+    from flowers
+  species: Papilio cresphontes
+  color: >-
+    Black wings with yellow bands and spots, underside is yellow with blue and
+    red spots
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Several hundred eggs laid singly on host plants
+  class: Insect
+giraffe:
+  name: Giraffe
+  lifespan: 20-25 years
+  habitat: Savannah
+  avgGrownupWeight: 1200 kg
+  avgSize: 4.8 m
+  preferredFood: 'Leaves, twigs'
+  species: Giraffa camelopardalis
+  color: Yellow with brown spots
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+gorilla:
+  name: Gorilla
+  lifespan: 35-40 years
+  habitat: Forests
+  avgGrownupWeight: 160 kg
+  avgSize: 1.7 m
+  preferredFood: 'Leaves, shoots, fruit'
+  species: Gorilla beringei
+  color: 'Black, grey'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+grasshopper:
+  name: Grasshopper
+  lifespan: 1 year or more depending on species
+  habitat: 'Grasslands, meadows, and agricultural fields'
+  avgGrownupWeight: Up to 2 g depending on species
+  avgSize: 2-11 cm depending on species
+  preferredFood: 'Herbivorous: primarily eats grasses, leaves, and crops'
+  species: Caelifera suborder
+  color: 'Varies by species: typically green, brown, or gray camouflage'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: can lay dozens to hundreds of eggs'
+  class: Insect
+grizzly_bear:
+  lifespan: '20-25 years in the wild, up to 30 years in captivity'
+  habitat: 'Forests, alpine meadows, and tundra in North America'
+  avgGrownupWeight: '180-360 kg (males), 130-200 kg (females)'
+  avgSize: '1.8-2.4 m in length, 1-1.2 m at shoulder height'
+  preferredFood: 'Omnivorous: berries, roots, salmon, small mammals, and carrion'
+  species: Ursus arctos horribilis
+  color: Brown with grizzled (gray-tipped) fur
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-4 cubs per litter
+  class: Mammal
+hare:
+  lifespan: '1-9 years, depending on species and environmental factors'
+  habitat: >-
+    Varies widely; found in grasslands, meadows, woodlands, and tundra regions
+    across Europe, Asia, Africa, and North America
+  avgGrownupWeight: 2-5 kg
+  avgSize: 40-70 cm in length
+  preferredFood: 'Herbivorous: primarily feeds on grasses, herbs, and twigs'
+  species: Several species within the genus Lepus
+  color: >-
+    Varies among species; typically shades of brown or gray, with some species
+    exhibiting seasonal color changes
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1-8 leverets per litter, depending on species and environmental conditions'
+  class: Mammal
+hedgehog:
+  name: Hedgehog
+  lifespan: '2-5 years in the wild, up to 7 years in captivity'
+  habitat: 'Forests, grasslands, urban gardens'
+  avgGrownupWeight: 0.4-1.2 kg
+  avgSize: 15-30 cm long
+  preferredFood: 'Insectivorous: insects, worms, small vertebrates'
+  species: Erinaceidae family
+  color: Spiny coat ranging from brown to white
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-7 hoglets per litter
+  class: Mammal
+hippopotamus:
+  name: Hippopotamus
+  lifespan: 40-50 years
+  habitat: 'Rivers, lakes'
+  avgGrownupWeight: 1500 kg
+  avgSize: 1.5 m at the shoulder
+  preferredFood: Grasses
+  species: Hippopotamus amphibius
+  color: Greyish
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+hoplia:
+  lifespan: Varies among species; typically several weeks to a few months
+  habitat: >-
+    Found in various habitats with flowering plants, including gardens, meadows,
+    and grasslands
+  avgGrownupWeight: Varies among species; generally less than 1 gram
+  avgSize: Approximately 1-2 cm in length
+  preferredFood: 'Herbivorous: feeds primarily on pollen, nectar, and petals of flowers'
+  species: 'Genus Hoplia, which includes numerous species of flower beetles'
+  color: >-
+    Varies among species; often metallic green, blue, or brown with patterns of
+    spots or stripes
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 'Varies among species; eggs laid near flowers, larvae feed on plant material'
+  class: Insect
+housefly:
+  lifespan: 15-30 days
+  habitat: >-
+    Found worldwide in a variety of environments, especially in close
+    association with human habitation
+  avgGrownupWeight: 10-15 milligrams
+  avgSize: 6-7 mm in length
+  preferredFood: >-
+    Omnivorous: feeds on a wide range of organic matter, including food waste,
+    feces, and decaying organic material
+  species: Musca domestica
+  color: >-
+    Gray thorax with four dark longitudinal stripes; the abdomen is yellowish
+    with a central dark stripe
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females can lay up to 500 eggs in several batches over their lifetime; eggs
+    hatch into larvae (maggots) which then pupate and emerge as adult flies
+  class: Insect
+hyena:
+  name: Hyena
+  lifespan: 10-25 years
+  habitat: 'Savannas, grasslands, and woodlands'
+  avgGrownupWeight: 50-80 kg
+  avgSize: 0.7-1.3 m tall at the shoulder
+  preferredFood: 'Scavenger: carrion, but also hunt small to medium-sized animals'
+  species: Hyaenidae family
+  color: 'Spotted or striped coats, varying in color from light grey to dark brown'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-3 cubs per litter
+  class: Mammal
+ibex:
+  name: Ibex
+  lifespan: 10-15 years
+  habitat: 'Mountainous regions, cliffs, and rocky slopes'
+  avgGrownupWeight: 30-120 kg depending on species
+  avgSize: 0.8-1.2 m tall at the shoulder
+  preferredFood: 'Herbivorous: grasses, herbs, leaves'
+  species: Capra genus
+  color: 'Brownish-gray fur with long, curved horns'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 kid
+  class: Mammal
+imago:
+  name: Imago
+  lifespan: Several days to several weeks depending on species
+  habitat: Varied habitats depending on the insect species
+  avgGrownupWeight: Varies by species
+  avgSize: Varies by species
+  preferredFood: 'Varies by species: could be nectar, pollen, or other plant parts'
+  species: Varies by insect species
+  color: Varies by species
+  reproduction: 'Varies by species: can reproduce sexually or asexually'
+  avgNumberOfOffsprings: Varies by species
+  class: Insect
+intellagama_lesueurii:
+  lifespan: '10-20 years in the wild, up to 30 years in captivity'
+  habitat: >-
+    Eastern Australia, inhabiting forests, woodlands, and near water sources
+    such as rivers and lakes
+  avgGrownupWeight: 300-600 grams
+  avgSize: '60-80 cm in length, including the tail'
+  preferredFood: 'Omnivorous: diet includes insects, small mammals, fish, and vegetation'
+  species: Intellagama lesueurii
+  color: >-
+    Varies; typically green to brown with dark bands and markings, juveniles
+    often have brighter colors
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 6-18 eggs per clutch
+  class: Reptile
+jewel_bug:
+  lifespan: Varies among species; typically several months to a year
+  habitat: >-
+    Found in tropical and subtropical regions worldwide, often on plants,
+    bushes, and trees
+  avgGrownupWeight: Varies among species; generally less than 1 gram
+  avgSize: Approximately 1-2 cm in length
+  preferredFood: 'Herbivorous: feeds on plant sap, often from seeds, flowers, and stems'
+  species: 'Family Scutelleridae, which includes numerous genera and species'
+  color: >-
+    Highly variable and often vibrant, with metallic or iridescent hues of
+    green, blue, red, and orange
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Varies among species; eggs laid on plants and undergo several nymphal stages
+    before reaching adulthood
+  class: Insect
+kangaroo:
+  name: Kangaroo
+  lifespan: 20 years
+  habitat: 'Grasslands, forests, savannahs'
+  avgGrownupWeight: 85 kg
+  avgSize: 1.6 m
+  preferredFood: 'Grasses, leaves'
+  species: Macropus
+  color: 'Brown, grey'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+katydid:
+  name: Katydid
+  lifespan: 1-2 years depending on species
+  habitat: 'Tropical and temperate regions, often in trees and shrubs'
+  avgGrownupWeight: 1-5 g depending on species
+  avgSize: 2-6 cm depending on species
+  preferredFood: 'Herbivorous: primarily eats leaves, flowers, and fruits'
+  species: Tettigoniidae family
+  color: 'Varies by species: green, brown, or leaf-like camouflage'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: can lay dozens to hundreds of eggs'
+  class: Insect
+khao_manee_cat:
+  name: Khao Manee Cat
+  lifespan: 10-15 years
+  habitat: Domestic
+  avgGrownupWeight: 3-5 kg
+  avgSize: 30-40 cm in length
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Pure white with striking blue, green, or odd-colored eyes'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 kittens per litter
+  class: Mammal
+koala:
+  name: Koala
+  lifespan: 13-18 years
+  habitat: Forest
+  avgGrownupWeight: 14 kg
+  avgSize: 85 cm
+  preferredFood: Eucalyptus leaves
+  species: Phascolarctos cinereus
+  color: Grey
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+ladybug:
+  name: Ladybug
+  lifespan: 1-2 years
+  habitat: 'Gardens, meadows, forests, and agricultural fields'
+  avgGrownupWeight: Approximately 10 mg
+  avgSize: 5-8 mm
+  preferredFood: 'Carnivorous: aphids, scale insects, and other small insects'
+  species: Coccinellidae family
+  color: 'Red or orange with black spots, or black with red spots'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Up to hundreds of eggs
+  class: Insect
+leopard:
+  name: Leopard
+  lifespan: 12-17 years
+  habitat: 'Forests, savannas, mountains, and grasslands'
+  avgGrownupWeight: 60 kg
+  avgSize: 1.3 m
+  preferredFood: 'Deer, antelopes, rodents'
+  species: Panthera pardus
+  color: Golden with black spots
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-3
+  class: Mammal
+lion:
+  name: Lion
+  lifespan: '10-14 years in the wild, up to 20 years in captivity'
+  habitat: 'Grasslands, savannas, dense scrub, and open woodlands'
+  avgGrownupWeight: '190 kg for males, 130 kg for females'
+  avgSize: 1.2 m at the shoulder
+  preferredFood: 'Large ungulates such as zebras, antelopes, and wildebeests'
+  species: Panthera leo
+  color: Tawny yellow coat
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-3 cubs
+  class: Mammal
+llama:
+  name: Llama
+  lifespan: 15-25 years
+  habitat: Mountainous regions of South America
+  avgGrownupWeight: 130-200 kg
+  avgSize: 1.7-1.8 m tall
+  preferredFood: 'Grasses, hay, and occasionally grains'
+  species: Lama glama
+  color: 'Various colors including white, brown, and black'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 cria (baby llama)
+  class: Mammal
+lynx:
+  name: Lynx
+  lifespan: '10-15 years in the wild, up to 25 years in captivity'
+  habitat: 'Forests, tundra, and mountainous regions'
+  avgGrownupWeight: 8-18 kg depending on species
+  avgSize: 0.5-0.8 m tall at the shoulder
+  preferredFood: 'Carnivorous: small to medium-sized mammals, birds'
+  species: Lynx genus
+  color: Light brown to gray fur with tufted ears and short tail
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-4 kittens per litter
+  class: Mammal
+macaw:
+  name: Macaw
+  lifespan: '30-50 years, some species up to 75 years in captivity'
+  habitat: 'Tropical rainforests, savannas, and woodlands of Central and South America'
+  avgGrownupWeight: 900-1200 g depending on species
+  avgSize: 76-100 cm in length including tail
+  preferredFood: 'Omnivorous: seeds, nuts, fruits, leaves, and occasionally insects'
+  species: Ara genus
+  color: 'Brightly colored plumage, often in shades of blue, red, green, and yellow'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 2-4 eggs per clutch
+  class: Bird
+main_coon_cat:
+  name: Maine Coon Cat
+  lifespan: 12-15 years
+  habitat: Domestic
+  avgGrownupWeight: 5-8 kg (males can be larger)
+  avgSize: 48-100 cm in length including tail
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Variety of colors and patterns, including tabby, solid, bicolor, and more'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 kittens per litter
+  class: Mammal
+meerkat:
+  name: Meerkat
+  lifespan: 12-14 years in captivity
+  habitat: 'Open, arid habitats like savannas and grasslands'
+  avgGrownupWeight: 0.7-1 kg
+  avgSize: 25-35 cm
+  preferredFood: 'Insects, small vertebrates, eggs, roots'
+  species: Suricata suricatta
+  color: Greyish to tan with darker bands
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-5 pups per litter
+  class: Mammal
+mongoose:
+  name: Mongoose
+  lifespan: '6-10 years in the wild, up to 20 years in captivity'
+  habitat: 'Various habitats including forests, savannas, and grasslands'
+  avgGrownupWeight: 0.3-5 kg depending on species
+  avgSize: 0.2-0.6 m long
+  preferredFood: 'Omnivorous: insects, small mammals, birds, eggs, fruits'
+  species: Herpestidae family
+  color: 'Brown, gray, or yellowish fur'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-4 pups per litter
+  class: Mammal
+moth:
+  name: Moth
+  lifespan: 1-2 months depending on species
+  habitat: 'Varied habitats including forests, gardens, and urban areas'
+  avgGrownupWeight: 'Varies by species, typically less than 1 g'
+  avgSize: 1-5 cm wingspan depending on species
+  preferredFood: 'Herbivorous: larvae feed on plant material, adults primarily seek nectar'
+  species: Lepidoptera order
+  color: 'Varies by species: wide range of colors and patterns'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: can lay hundreds of eggs'
+  class: Insect
+mule:
+  lifespan: 25-30 years
+  habitat: >-
+    Varies widely depending on human activity; found in agricultural settings,
+    ranches, and sometimes wild environments
+  avgGrownupWeight: 350-500 kg
+  avgSize: 140-160 cm at the withers
+  preferredFood: 'Herbivorous: primarily feeds on grasses, hay, and grains'
+  species: Equus asinus x Equus caballus hybrid
+  color: >-
+    Varies widely depending on the parent species; can be any color found in
+    horses or donkeys
+  reproduction: Sterile hybrid; mules are typically sterile and cannot reproduce
+  avgNumberOfOffsprings: >-
+    Mules do not reproduce; they are the offspring of a male donkey (jack) and a
+    female horse (mare)
+  class: Mammal
+narwhal:
+  name: Narwhal
+  lifespan: 50-60 years
+  habitat: 'Arctic waters near Canada, Greenland, and Russia'
+  avgGrownupWeight: '1,500-1,800 kg'
+  avgSize: '4-5 m long, including tusk'
+  preferredFood: 'Carnivorous: fish, squid, shrimp'
+  species: Monodon monoceros
+  color: Mottled grayish-brown skin with a distinctive spiral tusk
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf
+  class: Mammal
+nile_crocodile:
+  lifespan: '40-50 years in the wild, up to 80-100 years in captivity'
+  habitat: 'Freshwater habitats such as rivers, lakes, and marshes in sub-Saharan Africa'
+  avgGrownupWeight: Up to 225-550 kg
+  avgSize: '3.5-5 m in length, with some individuals reaching up to 6 m'
+  preferredFood: 'Carnivorous: fish, reptiles, birds, and mammals'
+  species: Crocodylus niloticus
+  color: Dark bronze-green with black spots and bands on the body and tail
+  reproduction: Oviparous
+  avgNumberOfOffsprings: '20-80 eggs per nest, with hatchlings cared for by the female'
+  class: Reptile
+northern_giraffe:
+  lifespan: '20-25 years in the wild, up to 30 years in captivity'
+  habitat: >-
+    Savannas, woodlands, and dry forests in parts of sub-Saharan Africa,
+    including countries like Kenya, Uganda, and South Sudan
+  avgGrownupWeight: '800-1,400 kg'
+  avgSize: '5-6 m tall at the shoulder, with males taller than females'
+  preferredFood: >-
+    Herbivorous: primarily feeds on leaves, shoots, and fruits from acacia and
+    other trees
+  species: Giraffa camelopardalis
+  color: >-
+    Yellowish to brown coat with irregular patches of darker spots; northern
+    giraffes have lighter coats than their southern counterparts
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 'Usually one calf per birth, after a gestation period of about 15 months'
+  class: Mammal
+ocellaris_clownfish:
+  lifespan: '6-10 years in the wild, up to 20 years in captivity'
+  habitat: Coral reefs and lagoons in the Indo-Pacific region
+  avgGrownupWeight: Up to 100 g
+  avgSize: 7-12 cm in length
+  preferredFood: 'Omnivorous: algae, zooplankton, and small crustaceans'
+  species: Amphiprion ocellaris
+  color: Bright orange with white bands outlined in black
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 'Hundreds of eggs per clutch, cared for by the male'
+  class: Fish
+ojos_azules_cat:
+  name: Ojos Azules Cat
+  lifespan: 12-15 years
+  habitat: Domestic
+  avgGrownupWeight: 3-5 kg
+  avgSize: 30-40 cm in length
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Variety of colors, notable for striking blue eyes'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 kittens per litter
+  class: Mammal
+orangutan:
+  name: Orangutan
+  lifespan: '35-45 years in the wild, up to 55 years in captivity'
+  habitat: Tropical rainforests of Borneo and Sumatra
+  avgGrownupWeight: 30-90 kg depending on species
+  avgSize: 1.2-1.5 m tall
+  preferredFood: 'Primarily frugivorous: fruits, leaves, insects'
+  species: Pongo genus
+  color: Orange to reddish-brown fur
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 infant
+  class: Mammal
+ostrich:
+  name: Ostrich
+  lifespan: 30-40 years
+  habitat: 'Savannas, grasslands, and semi-desert areas'
+  avgGrownupWeight: 100-130 kg
+  avgSize: 2-2.8 m tall
+  preferredFood: 'Plants, seeds, and occasionally insects'
+  species: Struthio camelus
+  color: Mainly brown and white
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-8 eggs per clutch
+  class: Bird
+otter:
+  name: Otter
+  lifespan: '10-15 years in the wild, up to 25 years in captivity'
+  habitat: 'Rivers, lakes, coastal areas'
+  avgGrownupWeight: 5-14 kg
+  avgSize: 0.6-1.3 m long
+  preferredFood: 'Carnivorous: fish, crustaceans, amphibians'
+  species: Lutrinae family
+  color: Brown fur with lighter underparts
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-5 pups per litter
+  class: Mammal
+pacific_orange_spine_unicornfish:
+  lifespan: Unknown (varies among species)
+  habitat: >-
+    Coral reefs and rocky areas in the Pacific Ocean, particularly around Hawaii
+    and French Polynesia
+  avgGrownupWeight: Up to 1 kg
+  avgSize: 30-50 cm in length
+  preferredFood: 'Herbivorous: primarily algae and small invertebrates'
+  species: Naso lituratus (also includes other species in the Naso genus)
+  color: >-
+    Bright blue body with orange spots, a distinctive horn-like projection from
+    its forehead
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Varies depending on species
+  class: Fish
+panda:
+  name: Panda
+  lifespan: 20 years
+  habitat: Temperate broadleaf and mixed forests
+  avgGrownupWeight: 100 kg
+  avgSize: 1.5 m
+  preferredFood: Bamboo
+  species: Ailuropoda melanoleuca
+  color: Black and white
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-2
+  class: Mammal
+penguin:
+  name: Penguin
+  lifespan: 15-20 years
+  habitat: Marine and coastal
+  avgGrownupWeight: 25 kg
+  avgSize: 70 cm
+  preferredFood: 'Fish, squid'
+  species: Aptenodytes forsteri
+  color: Black and white
+  reproduction: Oviparous
+  avgNumberOfOffsprings: '2'
+  class: Bird
+persian_cat:
+  lifespan: '10-15 years on average, some live up to 20 years'
+  habitat: Domestic
+  avgGrownupWeight: '3.6-6.8 kg (males), 3.2-5.4 kg (females)'
+  avgSize: '25-30 cm in height, 30-50 cm in length'
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Varies: long-haired breed with various coat colors and patterns'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 3-4 kittens per litter on average
+  class: Mammal
+platypus:
+  name: Platypus
+  lifespan: '15-20 years in the wild, up to 17 years in captivity'
+  habitat: 'Freshwater rivers, streams, and lakes in eastern Australia and Tasmania'
+  avgGrownupWeight: 0.7-2.4 kg
+  avgSize: 30-40 cm long
+  preferredFood: 'Carnivorous: aquatic insects, larvae, and small crustaceans'
+  species: Ornithorhynchus anatinus
+  color: Dark brown fur with a duck-like bill and webbed feet
+  reproduction: Oviparous (egg-laying)
+  avgNumberOfOffsprings: 1-3 eggs per clutch
+  class: Mammal
+porcupine:
+  name: Porcupine
+  lifespan: 15-20 years
+  habitat: 'Forests, deserts, and grasslands'
+  avgGrownupWeight: 18 kg
+  avgSize: 80 cm
+  preferredFood: 'Bark, leaves, fruit'
+  species: Erethizon dorsatum
+  color: Brown or black with sharp spines
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-2
+  class: Mammal
+raccoon:
+  name: Raccoon
+  lifespan: '2-3 years in the wild, up to 20 years in captivity'
+  habitat: 'Forests, wetlands, urban areas'
+  avgGrownupWeight: 5-12 kg
+  avgSize: 0.3-0.6 m long
+  preferredFood: 'Omnivorous: fruits, nuts, insects, small vertebrates, eggs, garbage'
+  species: Procyon lotor
+  color: Grayish-brown fur with black facial mask and ringed tail
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-5 kits per litter
+  class: Mammal
+red_lionfish:
+  lifespan: 5-10 years in the wild
+  habitat: >-
+    Coral reefs and rocky crevices in the Indo-Pacific region, also found in the
+    Atlantic Ocean
+  avgGrownupWeight: Up to 1 kg
+  avgSize: 25-38 cm in length
+  preferredFood: 'Carnivorous: feeds on small fish, crustaceans, and mollusks'
+  species: Pterois volitans (and Pterois miles for some similar species)
+  color: Red to dark brown with white stripes and spines
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Several thousands of eggs released into the water column
+  class: Fish
+red_panda:
+  name: Red Panda
+  lifespan: '8-12 years in the wild, up to 14 years in captivity'
+  habitat: Temperate forests in the Himalayas
+  avgGrownupWeight: 3-6 kg
+  avgSize: 0.5-0.6 m long including tail
+  preferredFood: 'Herbivorous: bamboo leaves, berries, fruits'
+  species: Ailurus fulgens
+  color: Reddish-brown fur with white face markings and ringed tail
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1-4 cubs per litter
+  class: Mammal
+rhinoceros:
+  name: Rhinoceros
+  lifespan: 35-50 years
+  habitat: 'Grasslands, savannahs'
+  avgGrownupWeight: 2300 kg
+  avgSize: 1.8 m
+  preferredFood: 'Grasses, leaves, branches'
+  species: Rhinocerotidae
+  color: Grey
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+sandbar_shark:
+  lifespan: 20-30 years
+  habitat: >-
+    Temperate and tropical waters worldwide, typically found near continental
+    and insular shelves
+  avgGrownupWeight: 'Up to 159 kg (males), up to 91 kg (females)'
+  avgSize: 2-2.5 m in length
+  preferredFood: 'Carnivorous: fish, rays, crustaceans, and cephalopods'
+  species: Carcharhinus plumbeus
+  color: Gray to brownish-gray upper body with a white underside
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1-14 pups per litter, with a 1-3 year reproductive cycle'
+  class: Fish
+scarlet_lily_beetle:
+  lifespan: 1-2 years
+  habitat: >-
+    Found in gardens, parks, and other areas where lilies and fritillaries are
+    cultivated
+  avgGrownupWeight: Less than 1 gram
+  avgSize: Approximately 6-8 mm in length
+  preferredFood: >-
+    Herbivorous: feeds on the leaves, stems, and flowers of lilies and
+    fritillaries
+  species: Lilioceris lilii
+  color: 'Bright scarlet red with black legs, head, antennae, and undersides'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Females lay clusters of bright orange eggs on the undersides of lily leaves
+  class: Insect
+scarlet_tanager:
+  name: Scarlet Tanager
+  lifespan: 3-5 years in the wild
+  habitat: 'Deciduous and mixed woodlands, forests'
+  avgGrownupWeight: 23-38 g
+  avgSize: '16-19 cm in length, wingspan 25-30 cm'
+  preferredFood: 'Omnivorous: insects, fruits, berries'
+  species: Piranga olivacea
+  color: >-
+    Bright red with black wings and tail (males), yellowish-green with darker
+    wings (females)
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 3-5 eggs per clutch
+  class: Bird
+sea_lion:
+  name: Sea Lion
+  lifespan: 20-30 years
+  habitat: Marine
+  avgGrownupWeight: 300 kg
+  avgSize: 2.5 m
+  preferredFood: 'Fish, squid'
+  species: Zalophus californianus
+  color: Brown
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+seal:
+  name: Seal
+  lifespan: 20-30 years
+  habitat: Coastal waters and ice floes of the Arctic and Antarctic
+  avgGrownupWeight: 85-300 kg depending on species
+  avgSize: 1.5-3 m long
+  preferredFood: 'Carnivorous: fish, squid, and crustaceans'
+  species: Phocidae family
+  color: 'Varies by species: gray, brown, or spotted patterns'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 pup
+  class: Mammal
+siamese_fighting_fish:
+  lifespan: 2-5 years on average
+  habitat: >-
+    Freshwater habitats such as rice paddies, shallow ponds, and slow-moving
+    streams in Southeast Asia
+  avgGrownupWeight: Up to 15 g
+  avgSize: 6-8 cm in length
+  preferredFood: 'Carnivorous: primarily insects, larvae, and small crustaceans'
+  species: Betta splendens
+  color: >-
+    Vibrant colors and elaborate fins, including shades of blue, red, green, and
+    white
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Up to several hundred eggs laid in bubble nests by the male
+  class: Fish
+siberian_husky:
+  lifespan: 12-15 years on average
+  habitat: Domestic
+  avgGrownupWeight: '20-27 kg (males), 16-23 kg (females)'
+  avgSize: '50-60 cm in height, 50-60 cm in length'
+  preferredFood: 'Omnivorous: commercial dog food, meat'
+  species: Canis lupus familiaris
+  color: >-
+    Varies: commonly black, white, gray, or a mix with distinctive facial
+    markings
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 puppies per litter on average
+  class: Mammal
+silverfish:
+  name: Silverfish
+  lifespan: 2-8 years depending on species
+  habitat: 'Dark and damp areas such as basements, kitchens, and bathrooms'
+  avgGrownupWeight: Up to 1 g
+  avgSize: 10-20 mm including antennae and tail
+  preferredFood: >-
+    Detritivorous: feeds on starches, cellulose, and sugars found in paper,
+    books, and fabrics
+  species: Lepisma saccharina
+  color: Silvery-gray or bluish-silver scales covering elongated body
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Up to 60 eggs laid in cracks and crevices
+  class: Insect
+skunk:
+  name: Skunk
+  lifespan: '2-4 years in the wild, up to 10 years in captivity'
+  habitat: 'Forests, grasslands, urban areas'
+  avgGrownupWeight: 1.5-4.5 kg
+  avgSize: 0.3-0.4 m long
+  preferredFood: 'Omnivorous: insects, small vertebrates, fruits, plants'
+  species: Mephitidae family
+  color: Black with white stripes down the back
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-10 kits per litter
+  class: Mammal
+sloth:
+  name: Sloth
+  lifespan: 20-30 years
+  habitat: Tropical rainforests
+  avgGrownupWeight: 8 kg
+  avgSize: 60 cm
+  preferredFood: 'Leaves, fruits, insects'
+  species: Bradypus
+  color: Brown
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+southern_black_rhinoceros:
+  lifespan: '30-35 years in the wild, up to 45 years in captivity'
+  habitat: >-
+    Found in savannas and semi-arid areas of southern Africa, including
+    countries like Namibia, South Africa, Zimbabwe, and Kenya
+  avgGrownupWeight: '800-1,400 kg'
+  avgSize: 1.4-1.8 m tall at the shoulder
+  preferredFood: >-
+    Herbivorous: primarily feeds on leaves, branches, and twigs of shrubs and
+    trees
+  species: Diceros bicornis bicornis
+  color: >-
+    Gray to brownish-gray in color, with two distinctive horns on the snout;
+    horns are made of keratin and used for defense and dominance
+  reproduction: Viviparous
+  avgNumberOfOffsprings: >-
+    Usually one calf per birth, after a gestation period of approximately 15-16
+    months
+  class: Mammal
+southern_festoon:
+  name: Southern Festoon
+  lifespan: 2-3 weeks as adults
+  habitat: 'Grasslands, meadows, and open woodlands in Southern Europe'
+  avgGrownupWeight: 0.5-1 g
+  avgSize: 5-7 cm wingspan
+  preferredFood: 'Herbivorous: larvae feed on Aristolochia plants, adults feed on nectar'
+  species: Zerynthia polyxena
+  color: 'Yellow with black, red, and blue markings'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: Several dozen eggs laid on host plants
+  class: Insect
+sphynx_cat:
+  name: Sphynx Cat
+  lifespan: 8-14 years
+  habitat: Domestic
+  avgGrownupWeight: 3-5 kg
+  avgSize: 30-40 cm in length
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Varies: often appears hairless with skin pigmentation'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 kittens per litter
+  class: Mammal
+spinner_dolphin:
+  lifespan: 20-25 years on average
+  habitat: >-
+    Tropical and subtropical waters worldwide, often near continental shelves
+    and islands
+  avgGrownupWeight: Up to 80-100 kg
+  avgSize: 1.7-2.3 m in length
+  preferredFood: 'Carnivorous: primarily fish, squid, and small crustaceans'
+  species: Stenella longirostris
+  color: >-
+    Gray with a distinct three-part color pattern: dark gray on top, light gray
+    on the sides, and white underside
+  reproduction: Viviparous
+  avgNumberOfOffsprings: Usually 1 calf per birth
+  class: Mammal
+stag_beetle:
+  lifespan: 1-7 years depending on the species
+  habitat: >-
+    Found in forests, woodlands, and gardens across Europe, Asia, and North
+    America
+  avgGrownupWeight: 5-35 grams depending on the species
+  avgSize: 5-12 cm in length depending on the species
+  preferredFood: >-
+    Larvae feed on decaying wood; adults primarily feed on tree sap and fruit
+    juices
+  species: 'Lucanidae family, encompassing numerous genera and species'
+  color: >-
+    Varies among species; typically brown to black with shiny, smooth
+    exoskeletons; males have enlarged mandibles resembling deer antlers
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay eggs in decaying wood; larvae hatch and develop within the wood,
+    often taking several years to mature before pupating into adults
+  class: Insect
+stick_insect:
+  name: Stick Insect
+  lifespan: 1-3 years depending on species
+  habitat: 'Forests, grasslands, and gardens'
+  avgGrownupWeight: 0.5-50 g depending on species
+  avgSize: 2-30 cm depending on species
+  preferredFood: 'Herbivorous: primarily eats leaves and foliage'
+  species: Phasmatodea order
+  color: 'Varies by species: brown, green, or mottled to blend with surroundings'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Varies by species: can lay hundreds of eggs'
+  class: Insect
+tabby_cat:
+  lifespan: 12-15 years on average
+  habitat: Domestic
+  avgGrownupWeight: '3.6-7.2 kg (males), 3.2-5.4 kg (females)'
+  avgSize: '23-25 cm in height, 46-51 cm in length'
+  preferredFood: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Varies: distinct coat pattern with stripes, swirls, or spots'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 3-5 kittens per litter on average
+  class: Mammal
+tapir:
+  name: Tapir
+  lifespan: 25-30 years
+  habitat: 'Rainforests, grasslands, and mountains'
+  avgGrownupWeight: 300 kg
+  avgSize: 2 m
+  preferredFood: 'Leaves, twigs, fruit'
+  species: Tapirus
+  color: 'Varies (typically dark brown, black, or grey)'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
+termite:
+  name: Termite
+  lifespan: Several years depending on the caste
+  habitat: 'Woodlands, forests, and urban areas'
+  avgGrownupWeight: 'Varies by species and caste, typically less than 1 g for workers'
+  avgSize: 3-20 mm depending on species and caste
+  preferredFood: 'Cellulose-rich materials like wood, paper, and plant debris'
+  species: Isoptera order
+  color: 'Varies by species: white, cream, brown, or black'
+  reproduction: Egg-laying
+  avgNumberOfOffsprings: 'Millions of eggs per colony, laid by the queen'
+  class: Insect
+tiger:
+  name: Tiger
+  lifespan: 10-15 years
+  habitat: Forest
+  avgGrownupWeight: 200 kg
+  avgSize: 3 m
+  preferredFood: 'Deer, wild boars'
+  species: Panthera tigris
+  color: Orange with black stripes
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-4
+  class: Mammal
+toucan:
+  name: Toucan
+  lifespan: 15-20 years
+  habitat: Tropical and subtropical rainforests in Central and South America
+  avgGrownupWeight: 300-700 g depending on species
+  avgSize: 29-63 cm in length including bill
+  preferredFood: 'Omnivorous: fruits, insects, small reptiles, and eggs'
+  species: Ramphastidae family
+  color: 'Brightly colored plumage with a large, colorful bill'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 2-4 eggs per clutch
+  class: Bird
+variegated_ladybug:
+  lifespan: 1-2 years
+  habitat: >-
+    Found in various habitats including gardens, fields, forests, and meadows
+    across Europe, Asia, Africa, and introduced to North America and Australia
+  avgGrownupWeight: Less than 1 gram
+  avgSize: 4-7 mm in length
+  preferredFood: >-
+    Carnivorous: primarily feeds on aphids, but also consumes other soft-bodied
+    insects and mites
+  species: Hippodamia variegata
+  color: >-
+    Typically orange to red with black spots; some individuals may have a more
+    yellowish or tan hue
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay clusters of 10-50 eggs on plants near aphid colonies; eggs hatch
+    into larvae that feed voraciously on aphids
+  class: Insect
+wallum_sedge_frog:
+  lifespan: Up to 5 years
+  habitat: >-
+    Found in wetlands, swamps, and heathlands with acidic sandy soils, primarily
+    in eastern Australia
+  avgGrownupWeight: Less than 10 grams
+  avgSize: 3-4 cm in length
+  preferredFood: >-
+    Insectivorous: feeds on small insects and other invertebrates found in its
+    habitat
+  species: Litoria olongburensis
+  color: >-
+    Variable; typically ranges from light brown to green with darker markings;
+    may change color based on environment and temperature
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Several hundred eggs laid in shallow water, tadpoles undergo metamorphosis
+    to become adult frogs
+  class: Amphibian
+walrus:
+  name: Walrus
+  lifespan: '20-30 years in the wild, up to 40 years in captivity'
+  habitat: 'Arctic and subarctic regions, often found on ice floes'
+  avgGrownupWeight: '800-1,700 kg'
+  avgSize: 2.2-3.6 m long
+  preferredFood: 'Carnivorous: benthic invertebrates such as clams and snails'
+  species: Odobenus rosmarus
+  color: Brown or pinkish skin with large tusks and whiskers
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 calf
+  class: Mammal
+warthog:
+  name: Warthog
+  lifespan: 15 years
+  habitat: 'Grasslands, savanna, and woodlands'
+  avgGrownupWeight: 100 kg
+  avgSize: 85 cm at the shoulder
+  preferredFood: 'Grass, roots, berries'
+  species: Phacochoerus africanus
+  color: Grey with sparse hair
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 2-6
+  class: Mammal
+wasp:
+  lifespan: Several weeks to months depending on the species
+  habitat: >-
+    Found worldwide in various habitats including gardens, forests, fields, and
+    urban areas
+  avgGrownupWeight: >-
+    Varies widely among species; typically ranges from a few milligrams to
+    several grams
+  avgSize: >-
+    Varies widely among species; typically ranges from a few millimeters to
+    several centimeters in length
+  preferredFood: >-
+    Varies among species; carnivorous or omnivorous diets including insects,
+    nectar, fruit, and other food sources
+  species: >-
+    Numerous species across various families including Vespidae, Apidae, and
+    others
+  color: >-
+    Varies widely among species; can be black, yellow, brown, or metallic with
+    various patterns and markings
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Varies among species; queens lay eggs in nests or cells, and eggs hatch into
+    larvae that are cared for until they pupate and emerge as adults
+  class: Insect
+white_lipped_tree_frog:
+  lifespan: 'Up to 10 years in the wild, longer in captivity'
+  habitat: >-
+    Tropical rainforests, mangroves, and wet sclerophyll forests in northern
+    Australia, New Guinea, and surrounding islands
+  avgGrownupWeight: 50-90 grams
+  avgSize: 'Up to 14 cm in length, making it the largest tree frog in the world'
+  preferredFood: >-
+    Insectivorous: primarily feeds on insects, spiders, and other small
+    invertebrates; occasionally consumes smaller frogs and lizards
+  species: Litoria infrafrenata
+  color: >-
+    Bright green with a distinctive white stripe along the lower lip and
+    extending to the shoulders; some may exhibit white spots on their sides
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay hundreds to thousands of eggs in temporary pools of water,
+    tadpoles metamorphose into frogs over several weeks
+  class: Amphibian
+white_peacock_butterfly:
+  lifespan: 2-4 weeks (adult stage)
+  habitat: >-
+    Found in open, sunny areas including meadows, fields, gardens, and parks
+    across the Americas
+  avgGrownupWeight: 'Varies, typically less than 1 gram'
+  avgSize: Wingspan of 4-5 cm
+  preferredFood: >-
+    Herbivorous: feeds primarily on nectar from various flowers, particularly
+    those in the aster family (Asteraceae)
+  species: Anartia jatrophae
+  color: >-
+    White wings with black and orange patterns; males and females have similar
+    wing patterns
+  reproduction: Oviparous
+  avgNumberOfOffsprings: >-
+    Females lay eggs on host plants of the passionflower family
+    (Passifloraceae); eggs hatch into caterpillars which pupate and eventually
+    emerge as adult butterflies
+  class: Insect
+wolf:
+  name: Wolf
+  lifespan: '6-8 years in the wild, up to 16 years in captivity'
+  habitat: 'Forests, mountains, grasslands, and arctic tundra'
+  avgGrownupWeight: 20-80 kg depending on species
+  avgSize: 0.6-0.9 m tall at the shoulder
+  preferredFood: 'Hunts large ungulates such as deer and elk, also small mammals'
+  species: Canis lupus
+  color: 'Gray, brown, black, or white'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 4-6 pups per litter
+  class: Mammal
+yellow_tang:
+  lifespan: '7-10 years in the wild, up to 20 years in captivity'
+  habitat: >-
+    Reef environments and shallow lagoons in the Pacific Ocean, particularly
+    around Hawaii
+  avgGrownupWeight: Up to 100 g
+  avgSize: 12-15 cm in length
+  preferredFood: 'Herbivorous: primarily algae and small invertebrates'
+  species: Zebrasoma flavescens
+  color: Vibrant yellow body with a white spine along the base of the tail fin
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Eggs hatch into larvae which eventually settle and develop into adults
+  class: Fish
+zebra:
+  name: Zebra
+  lifespan: 25 years
+  habitat: 'Grasslands, savannahs'
+  avgGrownupWeight: 450 kg
+  avgSize: 1.3 m at the shoulder
+  preferredFood: Grasses
+  species: Equus quagga
+  color: Black and white stripes
+  reproduction: Viviparous
+  avgNumberOfOffsprings: '1'
+  class: Mammal
