@@ -649,21 +649,6 @@ async function codebaseFromFiles(files, bykey, bytype, list) {
 }
 function coin(percent = 50) { return Math.random() * 100 < percent; }
 
-async function collAddItem(coll, key, item) {
-	if (nundef(M.superdi[key])) {
-		M.superdi[key] = item;
-		let res = await mPostRoute('postNewItem', { key: key, item: item });
-	} else {
-		addIf(item.colls, coll.name);
-		let res = await mPostRoute('postUpdateItem', { key: key, item: item });
-	}
-	for (const cat of item.cats) lookupAddIfToList(M.byCat, [cat], key);
-	for (const coll of item.colls) lookupAddIfToList(M.byCollection, [coll], key);
-	lookupAddIfToList(M.byFriendly, [item.friendly], key)
-	M.categories = Object.keys(M.byCat); M.categories.sort();
-	M.collections = Object.keys(M.byCollection); M.collections.sort();
-	M.names = Object.keys(M.byFriendly); M.names.sort();
-}
 function collCancelEditing(d) { d.remove(); }
 
 function collClearSelections() {
@@ -793,7 +778,7 @@ async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inp
 	await collOnDroppedItem(item, coll);
 }
 function collFromElement(elem) {
-	let id = findAttributeInAncestors(elem, 'id'); //console.log('ancestor is',id);//find Ancestor with id collPrimary or collSecondary
+	let id = findAttributeInAncestors(elem, 'id'); 
 	let coll = id == 'collPrimary' ? UI.collPrimary : id == 'collSecondary' ? UI.collSecondary : null;
 	return coll;
 }
@@ -830,7 +815,7 @@ function collInitCollection(name, coll) {
 	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>", value: coll.filter });
 	dlCat.inpElem.oninput = oninputCollFilter;
 	d = mDom(dMenu, { gap: 10, align: 'right' });
-	if (coll.cols < 6) mStyle(d, { w100: true });
+	//if (coll.cols < 6) mStyle(d, { w100: true });
 	if (coll == UI.collSecondary) mButton('done', onclickCollDone, d, { w: 70, margin: 0, maleft: 10 }, 'input');
 	mButton('prev', onclickCollPrev, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
 	mButton('next', onclickCollNext, d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
@@ -854,14 +839,8 @@ async function collOnDropImage(url, dDrop) {
 	if (isdef(item)) return await collOnDroppedItem(item, coll);
 	else return await collOnDroppedUrl(url, coll);
 }
-async function collOnDroppedItem(item, coll) {
-	assertion(isdef(item.key), 'NO KEY!!!!!');
-	await collAddItem(coll, item.key, item);
-	collOpenSecondary(4, 3);
-	showImageBatch(coll, -1);
-}
 async function collOnDroppedUrl(url, coll) {
-	let m = await imgMeasure(url); console.log('sz', m);
+	let m = await imgMeasure(url); console.log('collOnDroppedUrl!!! sz', m);
 	let dPopup = mDom(document.body, { position: 'fixed', top: 0, left: 0, wmin: 400, hmin: 400, bg: 'pink' });
 	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 300];
 	let d = mDom(dPopup, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
@@ -891,14 +870,14 @@ async function collOnDroppedUrl(url, coll) {
 	mButton('cancel', () => collCancelEditing(dPopup), db2, { w: 70 }, 'input');
 	mButton('OK', () => collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, coll), db2, { w: 70 }, 'input');
 }
-function collOpenPrimary(rows, cols) {
+function collOpenPrimary(rows, cols=4) {
 	collPresent(UI.collPrimary, rows, cols);
 	UI.collPrimary.isOpen = true;
 }
-function collOpenSecondary(rows, cols) {
+function collOpenSecondary(rows, cols=2) {
 	let coll = UI.collSecondary;
 	let d = iDiv(coll);
-	mStyle(d, { wmin: 450, border: 'white' });
+	mStyle(d, { wmin: 300, border: 'white' });
 	collPresent(coll, rows, cols);
 	coll.isOpen = true;
 	coll.dInstruction.innerHTML = '* drag images into the shaded area *'
@@ -4524,15 +4503,6 @@ function jsCopyExceptKeys(o, keys = []) {
 	for (const k in o) { if (keys.includes(k)) continue; onew[k] = o[k]; }
 	return JSON.parse(JSON.stringify(onew));
 }
-function keyDownHandler(ev) {
-	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
-	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
-		IsControlKeyDown = true;
-		let hoveredElements = document.querySelectorAll(":hover");
-		let cand = Array.from(hoveredElements).find(x => mHasClass(x, 'magnifiable'));
-		if (isdef(cand)) mMagnify(cand);
-	}
-}
 function keyUpHandler(ev) {
 	if (ev.key == 'Control') {
 		IsControlKeyDown = false;
@@ -4581,6 +4551,7 @@ async function loadAndScaleImage(imageUrl) {
 async function loadAssets() {
 	M = await mGetYaml('../y/m.yaml');
 	M.superdi = await mGetYaml('../y/superdi.yaml');
+	M.details = await mGetYaml('../y/animalDetails.yaml');
 	let [di, byColl, byFriendly, byCat] = [M.superdi, {}, {}, {}];
 	for (const k in di) {
 		let o = di[k];
@@ -5366,6 +5337,7 @@ function mLinebreak(dParent, gap) {
 function mMagnify(elem, scale = 5) {
 	elem.classList.add(`topmost`);
 	MAGNIFIER_IMAGE = elem;
+	//console.log(elem)
 	const rect = elem.getBoundingClientRect();
 	let [w, h] = [rect.width * scale, rect.height * scale];
 	let [cx, cy] = [rect.width / 2 + rect.left, rect.height / 2 + rect.top];
@@ -6099,21 +6071,6 @@ async function onclickAsAvatar(ev) {
 	let res = await postUserChange(U);
 	console.log('res', res)
 }
-async function onclickAsSecondary(ev) {
-	let name = UI.collPrimary.name;
-	if (name == 'all' || collLocked(name)) {
-		showMessage(`ERROR! collection ${name} cannot be altered!`);
-		return;
-	}
-	if (nundef(M.byCollection[name])) {
-		showMessage(`ERROR! collection ${name} not found!`);
-		return;
-	}
-	UI.collSecondary.name = name;
-	UI.collPrimary.name = 'all';
-	collOpenSecondary(4, 3);
-	collOpenPrimary(4, 3);
-}
 function onclickClear(inp, grid) {
 	inp.value = '';
 	let checklist = Array.from(grid.querySelectorAll('input[type="checkbox"]'));
@@ -6213,10 +6170,10 @@ async function onclickCollections() {
 	let dPrimary = mDom(dPanes, {}, { id: 'collPrimary' }); //mFlexWrap(d1);
 	collSidebar();
 	let collName = localStorage.getItem('collection');
-	if (nundef(collName) || !M.collections.includes(collName)) collName = 'animals'
+	if (nundef(collName) || !M.collections.includes(collName)) collName = 'tierspiel'
 	UI.collPrimary = { div: dPrimary, name: collName };
 	UI.collSecondary = { div: dSecondary, name: null };
-	collOpenPrimary(5, 7);
+	collOpenPrimary(5);
 }
 async function onclickColor(color) {
 	let hex = colorToHex79(color);
@@ -6226,7 +6183,7 @@ async function onclickColor(color) {
 async function onclickCommand(ev) {
 	let key = evToAttr(ev, 'key');
 	assertion(isdef(UI[key]), `command ${key} not in UI!!!`)
-	let cmd = UI[key];
+	let cmd = UI[key];console.log('key',key)
 	await cmd.open();
 }
 function onclickDay(d, styles) {
@@ -6414,22 +6371,6 @@ async function onclickNATIONS() {
 			d.onclick = () => selectCivSpot(d);
 		}
 	}
-}
-async function onclickNewCollection(name) {
-	if (nundef(name)) name = await mGather(iDiv(UI.newCollection));
-	if (!name) return;
-	if (isEmpty(name)) {
-		showMessage(`ERROR! you need to enter a valid name!!!!`);
-		return;
-	}
-	if (collLocked(name)) {
-		showMessage(`collection ${name} is Read-Only!`);
-		return;
-	}
-	M.collections.push(name); M.collections.sort();
-	UI.collSecondary.name = name;
-	collOpenSecondary(4, 3);
-	collOpenPrimary(4, 3);
 }
 async function onclickOpenToJoinGame() {
 	let options = collectOptions();
@@ -7935,7 +7876,7 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 		let d = coll.cells[i];
 		mStyle(d, { opacity: 1 });
 		mClass(d, 'magnifiable')
-		let d1 = showImageInBatch(list[i], d);
+		let d1 = showImageInBatch(list[i], d, {}, {prefer:coll.name == 'emo'?'img':'photo'});
 		d1.setAttribute('collname', coll.name);
 		let selkey = collGenSelkey(list[i], coll.name);
 		if (isList(UI.selectedImages) && UI.selectedImages.includes(selkey)) collSelect(d1);
@@ -7948,7 +7889,7 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	if (maxPage == 1) { mClass(dPrev, 'disabled'); mClass(dNext, 'disabled'); }
 	else { mClassRemove(dPrev, 'disabled'); mClassRemove(dNext, 'disabled'); }
 }
-function showImageInBatch(key, dParent, styles = {}) {
+function showImageInBatch(key, dParent, styles = {}, opts={}) {
 	let o = M.superdi[key]; o.key = key;
 	addKeys({ bg: rColor() }, styles);
 	mClear(dParent);
@@ -7958,11 +7899,12 @@ function showImageInBatch(key, dParent, styles = {}) {
 	mCenterCenterFlex(d1)
 	let el = null;
 	if (isdef(o.img)) {
+		let src= (opts.prefer == 'photo' && isdef(o.photo))?o.photo:o.img; 
 		if (o.cats.includes('card')) {
-			el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+			el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src});
 			mDom(d1, { h: 1, w: '100%' })
 		} else {
-			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src });
 		}
 	}
 	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });

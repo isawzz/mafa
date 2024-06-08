@@ -1,5 +1,5 @@
 aardvark:
-  name: Aardvark
+  name: aardvark
   lifespan: 23 years
   habitat: 'Savannahs, grasslands, woodlands'
   avgGrownupWeight: 60 kg
@@ -10,19 +10,44 @@ aardvark:
   reproduction: Viviparous
   avgNumberOfOffsprings: '1'
   class: Mammal
-african_bush_elephant:
-  lifespan: Up to 60-70 years in the wild
-  habitat: >-
-    Various habitats including savannas, forests, and deserts in sub-Saharan
-    Africa
-  avgGrownupWeight: 'Up to 6,000 kg (male), up to 3,000-4,000 kg (female)'
-  avgSize: '2.5-4 m tall at the shoulder, 6-7 m in length'
-  preferredFood: 'Herbivorous: primarily grasses, leaves, fruits, and bark'
+elephant:
+  name: african_bush_elephant
+  lifespan: 60-70 years
+  habitat: Savannah and forest
+  avgGrownupWeight: 6000 kg
+  avgSize: 3 m
+  preferredFood: 'Grass, leaves'
   species: Loxodonta africana
-  color: Gray to brownish-gray skin
+  color: Grey
   reproduction: Viviparous
   avgNumberOfOffsprings: 1 calf every 2-4 years
   class: Mammal
+alpaca:
+  name: alpaca
+  lifespan: 15-20 years
+  habitat: Mountainous regions of South America
+  avgGrownupWeight: 55-65 kg
+  avgSize: 90-100 cm tall
+  preferredFood: 'Grasses, hay, and sometimes grains'
+  species: Vicugna pacos
+  color: 'Various colors including white, brown, and black'
+  reproduction: Viviparous
+  avgNumberOfOffsprings: 1 cria (baby alpaca)
+  class: Mammal
+eagle:
+  name: bald_eagle
+  lifespan: 20-30 years in the wild
+  habitat: >-
+    Near large bodies of open water such as lakes, rivers, and coastal regions
+    in North America
+  avgGrownupWeight: 3-6.3 kg
+  avgSize: '70-102 cm in length, wingspan 180-230 cm'
+  preferredFood: 'Carnivorous: primarily fish, but also small mammals, birds, and carrion'
+  species: Haliaeetus leucocephalus
+  color: 'Dark brown body with a white head and tail, yellow beak and feet'
+  reproduction: Oviparous
+  avgNumberOfOffsprings: 1-3 eggs per clutch
+  class: Bird
 african_leopard:
   lifespan: '12-17 years in the wild, up to 23 years in captivity'
   habitat: >-
@@ -41,18 +66,6 @@ african_leopard:
   avgNumberOfOffsprings: >-
     2-3 cubs per litter, born after a gestation period of approximately 90-105
     days
-  class: Mammal
-alpaca:
-  name: Alpaca
-  lifespan: 15-20 years
-  habitat: Mountainous regions of South America
-  avgGrownupWeight: 55-65 kg
-  avgSize: 90-100 cm tall
-  preferredFood: 'Grasses, hay, and sometimes grains'
-  species: Vicugna pacos
-  color: 'Various colors including white, brown, and black'
-  reproduction: Viviparous
-  avgNumberOfOffsprings: 1 cria (baby alpaca)
   class: Mammal
 alpine_ibex:
   lifespan: 10-14 years in the wild
@@ -149,20 +162,6 @@ badger:
   reproduction: Viviparous
   avgNumberOfOffsprings: 1-5 cubs per litter
   class: Mammal
-bald_eagle:
-  name: Bald Eagle
-  lifespan: 20-30 years in the wild
-  habitat: >-
-    Near large bodies of open water such as lakes, rivers, and coastal regions
-    in North America
-  avgGrownupWeight: 3-6.3 kg
-  avgSize: '70-102 cm in length, wingspan 180-230 cm'
-  preferredFood: 'Carnivorous: primarily fish, but also small mammals, birds, and carrion'
-  species: Haliaeetus leucocephalus
-  color: 'Dark brown body with a white head and tail, yellow beak and feet'
-  reproduction: Oviparous
-  avgNumberOfOffsprings: 1-3 eggs per clutch
-  class: Bird
 barbary_lion:
   lifespan: >-
     Estimated to be similar to other lion subspecies, around 10-14 years in the
@@ -619,18 +618,6 @@ earwig:
   reproduction: Egg-laying
   avgNumberOfOffsprings: Up to 80 eggs laid in soil or debris
   class: Insect
-elephant:
-  name: Elephant
-  lifespan: 60-70 years
-  habitat: Savannah and forest
-  avgGrownupWeight: 6000 kg
-  avgSize: 3 m
-  preferredFood: 'Grass, leaves'
-  species: Loxodonta
-  color: Grey
-  reproduction: Viviparous
-  avgNumberOfOffsprings: '1'
-  class: Mammal
 european_garden_spider:
   lifespan: 1-2 years
   habitat: >-
@@ -1524,6 +1511,21 @@ southern_festoon:
   reproduction: Egg-laying
   avgNumberOfOffsprings: Several dozen eggs laid on host plants
   class: Insect
+sparkling_violetear:
+  lifespan: '3-4 years in the wild, potentially longer in captivity'
+  habitat: >-
+    Found in high-altitude forests, gardens, and shrublands in the Andes
+    Mountains of South America
+  avgGrownupWeight: 6-7 grams
+  avgSize: 13-15 cm in length
+  preferredFood: 'Nectar from flowers, small insects, and spiders'
+  species: Colibri coruscans
+  color: >-
+    Iridescent green with a violet-blue patch on the throat and chest, and
+    blue-violet ear tufts
+  reproduction: Oviparous
+  avgNumberOfOffsprings: Females lay 2 eggs per clutch; incubation period is about 17-18 days
+  class: Bird
 sphynx_cat:
   name: Sphynx Cat
   lifespan: 8-14 years

@@ -1,8 +1,43 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test119_animalDetails(); }
+async function start() { TESTING = true; await test121_tierbilderbesser(); }
 
+async function test121_tierbilderbesser(){
+  await prelims(); return;
+  let tierfiles = await mGetFiles('../assets/img/tierspiel');
+  //console.log(tierfiles);
+  let d=clearFlex();
+  let keys = M.byCollection.animals;
+  let newkeys = M.byCollection.tierspiel;
+
+  let di={};
+  for(const k of keys){
+    let old=M.superdi[k];
+    let img =old.img;
+    if (tierfiles.some(x=>img.includes(x))) {
+      console.log('___found',k);
+      if (newkeys.includes(k)) {
+        console.log('IS in tierspiel!',old); 
+
+      }
+
+    }
+  }
+}
+async function test120_animalDetailsYaml(){
+  let ad = getAnimalDetails();
+  let di={};
+  for (const k in ad) {
+    let o = ad[k];
+    let knew = normalizeString(k);
+    //let lastWord = stringAfterLast(knew, '_');
+    di[knew]=o;
+  }
+  di = sortDictionary(di);
+  downloadAsYaml(di,'diDetails');
+    
+}
 async function test120_normalizeFriendly(){
   await prelims(); 
   for(const k in M.superdi){

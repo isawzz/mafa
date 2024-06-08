@@ -1,6 +1,18 @@
 
 function getAnimalDetails() {
 	const animalDetails = {
+		"Sparkling Violetear": {
+			lifespan: "3-4 years in the wild, potentially longer in captivity",
+			habitat: "Found in high-altitude forests, gardens, and shrublands in the Andes Mountains of South America",
+			avgGrownupWeight: "6-7 grams",
+			avgSize: "13-15 cm in length",
+			preferredFood: "Nectar from flowers, small insects, and spiders",
+			species: "Colibri coruscans",
+			color: "Iridescent green with a violet-blue patch on the throat and chest, and blue-violet ear tufts",
+			reproduction: "Oviparous",
+			avgNumberOfOffsprings: "Females lay 2 eggs per clutch; incubation period is about 17-18 days",
+			class: "Bird"
+		},
 		"White-lipped Tree Frog": {
 			lifespan: "Up to 10 years in the wild, longer in captivity",
 			habitat: "Tropical rainforests, mangroves, and wet sclerophyll forests in northern Australia, New Guinea, and surrounding islands",
