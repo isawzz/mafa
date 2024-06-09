@@ -20,6 +20,19 @@ async function test124(){
   di=sortDictionary(di);
   // downloadAsYaml(di,'superdi');
 }
+async function test124_animalDetailsYaml(){
+  let ad = getAnimalDetails();
+  let di={};
+  for (const k in ad) {
+    let o = ad[k];
+    let knew = normalizeString(k);
+    //let lastWord = stringAfterLast(knew, '_');
+    di[knew]=o;
+  }
+  di = sortDictionary(di);
+  downloadAsYaml(di,'diDetails');
+    
+}
 async function test123(){
   await prelims(); 
   let di={};
@@ -82,19 +95,6 @@ async function test121_tierbilderbesser(){
 
     }
   }
-}
-async function test120_animalDetailsYaml(){
-  let ad = getAnimalDetails();
-  let di={};
-  for (const k in ad) {
-    let o = ad[k];
-    let knew = normalizeString(k);
-    //let lastWord = stringAfterLast(knew, '_');
-    di[knew]=o;
-  }
-  di = sortDictionary(di);
-  downloadAsYaml(di,'diDetails');
-    
 }
 async function test120_normalizeFriendly(){
   await prelims(); 

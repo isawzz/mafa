@@ -2,7 +2,7 @@ name: diana
 color: '#4c2882'
 texture: ../assets/textures/marble_violet1.jpeg
 blendMode: luminosity
-imgKey: bird15
+imgKey: barn_owl
 games:
   setgame:
     level: 7

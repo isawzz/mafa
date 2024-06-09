@@ -4742,21 +4742,6 @@ beanstalk:
     - plant
   colls:
     - icon
-bear:
-  friendly: bear
-  img: ../assets/img/emo/bear.png
-  text: '&#128059;'
-  cats:
-    - animal
-  colls:
-    - emo
-bear7:
-  cats:
-    - animal
-  img: ../assets/img/animals/earth/bear7.png
-  friendly: bear
-  colls:
-    - tierspiel
 bear_face:
   friendly: bear_face
   ga: E400
@@ -5157,90 +5142,6 @@ biplane:
     - transport
   colls:
     - icon
-bird:
-  friendly: bird
-  img: ../assets/img/emo/bird.png
-  text: '&#128038;'
-  cats:
-    - animal
-  colls:
-    - emo
-bird11:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird11.png
-  friendly: sparkling_violetear
-  colls:
-    - tierspiel
-bird18:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird18.png
-  friendly: bird
-  colls: []
-bird24:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird24.png
-  friendly: bird
-  colls: []
-bird33:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird33.png
-  friendly: bird
-  colls: []
-bird35:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird35.png
-  friendly: bird
-  colls: []
-bird52:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird52.png
-  friendly: blue_tit
-  colls:
-    - tierspiel
-bird53:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird53.png
-  friendly: bird
-  colls: []
-bird54:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird54.png
-  friendly: bird
-  colls: []
-bird59:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird59.png
-  friendly: bird
-  colls: []
-bird76:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird76.png
-  friendly: toucan
-  colls:
-    - tierspiel
-bird78:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird78.png
-  friendly: bird
-  colls: []
-bird86:
-  cats:
-    - animal
-  img: ../assets/img/animals/bird/bird86.png
-  friendly: barn_owl
-  colls:
-    - tierspiel
 bird_claw:
   friendly: bird_claw
   ga: E678
@@ -5701,13 +5602,6 @@ bob:
   img: ../assets/img/users/bob.jpg
   colls:
     - users
-bock4:
-  cats:
-    - animal
-  img: ../assets/img/animals/earth/bock4.png
-  friendly: alpine_ibex
-  colls:
-    - tierspiel
 body_balance:
   friendly: body_balance
   ga: E848
@@ -7372,59 +7266,6 @@ butter:
     - food
   colls:
     - emo
-butterfly:
-  friendly: butterfly
-  img: ../assets/img/emo/butterfly.png
-  ga: E3A3
-  text: '&#129419;'
-  cats:
-    - animal
-  colls:
-    - emo
-butterfly1:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly1.png
-  friendly: giant_swallowtail
-  colls: []
-butterfly2:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly2.png
-  friendly: blue_morpho
-  colls: []
-butterfly3:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly3.png
-  friendly: butterfly
-  colls: []
-butterfly4:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly4.png
-  friendly: butterfly
-  colls: []
-butterfly5:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly5.png
-  friendly: plain_tiger_butterfly
-  colls:
-    - tierspiel
-butterfly6:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly6.png
-  friendly: southern_festoon
-  colls:
-    - tierspiel
-butterfly7:
-  cats:
-    - animal
-  img: ../assets/img/animals/insect/butterfly7.png
-  friendly: butterfly
-  colls: []
 butterfly_knife:
   friendly: butterfly_knife
   ga: ED2A
@@ -8693,52 +8534,6 @@ castle_ruins:
   cats: []
   colls:
     - icon
-cat:
-  friendly: cat
-  img: ../assets/img/emo/cat.png
-  ga: E3A4
-  fa: f6be
-  text: '&#128008;'
-  cats:
-    - animal
-  colls:
-    - emo
-  fa6: f6be
-cat15:
-  cats:
-    - animal
-  img: ../assets/img/animals/cat/cat15.png
-  friendly: ojos_azules_cat
-  colls:
-    - tierspiel
-cat18:
-  cats:
-    - animal
-  img: ../assets/img/animals/cat/cat18.png
-  friendly: maine_coon_cat
-  colls:
-    - tierspiel
-cat20:
-  cats:
-    - animal
-  img: ../assets/img/animals/cat/cat20.png
-  friendly: sphynx_cat
-  colls:
-    - tierspiel
-cat31:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/cat31.png
-  friendly: siberian_cat
-  colls:
-    - tierspiel
-cat32:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/cat32.png
-  friendly: tabby_cat
-  colls:
-    - tierspiel
 cat_face:
   friendly: cat_face
   img: ../assets/img/emo/cat-face.png
@@ -13724,13 +13519,6 @@ dragon:
   colls:
     - emo
   fa6: f6d5
-dragon2:
-  cats:
-    - animal
-  img: ../assets/img/animals/earth/dragon2.png
-  friendly: common_chameleon
-  colls:
-    - tierspiel
 dragon_balls:
   friendly: dragon_balls
   ga: ED0E
@@ -22488,12 +22276,6 @@ hypodermic_test:
   cats: []
   colls:
     - icon
-ibex:
-  friendly: ibex
-  img: ../assets/img/tierspiel/ibex.png
-  cats: []
-  colls:
-    - tierspiel
 icarus:
   friendly: icarus
   ga: E5BF
@@ -23767,7 +23549,7 @@ keycap:
   cats: []
   colls:
     - emo
-'keycap_#':
+keycap_#:
   friendly: keycap__
   text: '&#35;&#65039;&#8419;'
   cats: []
@@ -42418,12 +42200,6 @@ totem_mask:
   cats: []
   colls:
     - icon
-toucan:
-  friendly: toucan
-  ga: E390
-  cats: []
-  colls:
-    - icon
 tower_bridge:
   friendly: tower_bridge
   ga: E750
@@ -46572,3 +46348,115 @@ i_cursor:
   colls:
     - fa6
   fa6: f246
+ibex:
+  friendly: ibex
+  img: ../assets/img/tierspiel/ibex.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+barn_owl:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/barn_owl.png
+  friendly: barn_owl
+  colls:
+    - tierspiel
+toucan:
+  friendly: toucan
+  img: ../assets/img/tierspiel/toucan.png
+  ga: E390
+  cats:
+    - animal
+  colls:
+    - icon
+    - tierspiel
+bear:
+  friendly: bear
+  img: ../assets/img/emo/bear.png
+  photo: ../assets/img/tierspiel/brown_bear.png
+  text: '&#128059;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+bird:
+  friendly: bird
+  img: ../assets/img/emo/bird.png
+  text: '&#128038;'
+  cats:
+    - animal
+  colls:
+    - emo
+colibri:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/sparkling_violetear.png
+  friendly: colibri
+  colls:
+    - tierspiel
+blue_tit:
+  friendly: blue_tit
+  img: ../assets/img/tierspiel/blue_tit.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+chameleon:
+  friendly: chameleon
+  img: ../assets/img/tierspiel/chameleon.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+maine_coon_cat:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/maine_coon.png
+  friendly: maine_coon_cat
+  colls:
+    - tierspiel
+cat:
+  friendly: cat
+  img: ../assets/img/emo/cat.png
+  photo: ../assets/img/tierspiel/minou.png
+  ga: E3A4
+  fa: f6be
+  text: '&#128008;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+  fa6: f6be
+cat31:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/cat31.png
+  friendly: siberian_cat
+  colls:
+    - tierspiel
+cat32:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/cat32.png
+  friendly: tabby_cat
+  colls:
+    - tierspiel
+butterfly:
+  friendly: butterfly
+  img: ../assets/img/emo/butterfly.png
+  ga: E3A3
+  text: '&#129419;'
+  cats:
+    - animal
+  colls:
+    - emo
+ojos_azules_cat:
+  friendly: ojos_azules_cat
+  img: ../assets/img/tierspiel/ojos_azules_cat.png
+  cats:
+    - animal
+  colls:
+    - tierspiel

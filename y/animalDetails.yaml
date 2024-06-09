@@ -1,6 +1,180 @@
 
 
-
+ojos_azules_cat:
+  name: Ojos Azules Cat
+  lifespan: 12-15 years
+  habitat: Domestic
+  weight: 3-5 kg
+  size: 30-40 cm in length
+  food: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Variety of colors, notable for striking blue eyes'
+  reproduction: Viviparous
+  offsprings: 4-6 kittens per litter
+  class: Mammal
+main_coon_cat:
+  name: Maine Coon Cat
+  lifespan: 12-15 years
+  habitat: Domestic
+  weight: 5-8 kg (males can be larger)
+  size: 48-100 cm in length including tail
+  food: 'Carnivorous: commercial cat food, meat'
+  species: Felis catus
+  color: 'Variety of colors and patterns, including tabby, solid, bicolor, and more'
+  reproduction: Viviparous
+  offsprings: 4-6 kittens per litter
+  class: Mammal
+chameleon:
+  name: common_chameleon
+  lifespan: 2-10 years depending on species
+  habitat: 'Tropical and subtropical forests, savannas'
+  weight: 100-200 g
+  size: 15-25 cm
+  food: 'Insectivorous: insects, small invertebrates'
+  species: Chamaeleo chamaeleon
+  color: 'Varies: green, brown, can change color for camouflage and communication'
+  reproduction: Oviparous
+  offsprings: 20-40 eggs per clutch
+  class: Reptile
+bear:
+  name: eurasian_brown_bear
+  lifespan: '20-30 years in the wild, up to 50 years in captivity'
+  habitat: 'Forests, mountains, and tundra across Europe and northern Asia'
+  weight: 'Females: 100-250 kg, Males: 135-390 kg'
+  size: '1.2-2.2 meters in length, 0.7-1.5 meters in height at the shoulders'
+  food: >-
+    Omnivorous: feeds on a wide variety of foods including fruits, nuts,
+    berries, insects, small mammals, fish, and carrion
+  species: Ursus arctos arctos
+  color: >-
+    Varies from pale brown to dark brown; occasionally black or with blonde
+    highlights
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 1-4 cubs per litter after a gestation period of about
+    8 months, with delayed implantation
+  class: Mammal
+gray_squirrel:
+  name: eastern_gray_squirrel
+  lifespan: '6-12 years in the wild, up to 20 years in captivity'
+  habitat: >-
+    Deciduous and mixed forests, urban and suburban areas in eastern North
+    America
+  weight: 400-600 grams
+  size: '23-30 cm in body length, with a tail length of 15-25 cm'
+  food: >-
+    Omnivorous: primarily feeds on nuts, seeds, fruits, fungi, and occasionally
+    insects and bird eggs
+  species: Sciurus carolinensis
+  color: Gray fur with a white underside; variations can include black or brown fur
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 2-6 young per litter after a gestation period of about
+    44-45 days
+  class: Mammal
+mandrill:
+  lifespan: '20-30 years in the wild, up to 40 years in captivity'
+  habitat: >-
+    Tropical rainforests and occasionally savannas in Central Africa, primarily
+    in countries like Gabon, Cameroon, and Congo
+  weight: 'Females: 11-14 kg, Males: 19-37 kg'
+  size: >-
+    Females: 55-66 cm in body length, Males: 75-95 cm in body length; both sexes
+    have tails about 5-10 cm long
+  food: >-
+    Omnivorous: feeds on fruits, seeds, leaves, insects, small mammals, and
+    occasionally fungi
+  species: Mandrillus sphinx
+  color: >-
+    Distinctive colorful face with blue and red markings; olive green or dark
+    gray fur; males have more vibrant colors
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 1 offspring per litter after a gestation period of
+    about 6 months
+  class: Mammal
+monkey:
+  lifespan: 15-30 years depending on the species
+  habitat: >-
+    Various habitats including tropical rainforests, savannas, mountains, and
+    grasslands worldwide
+  weight: 0.3-40 kg depending on the species
+  size: '25-100 cm in body length, not including the tail'
+  food: 'Omnivorous: feeds on fruits, leaves, seeds, nuts, insects, and small animals'
+  species: Various species within the infraorder Simiiformes
+  color: 'Varies widely; common colors include brown, black, gray, and golden'
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 1-2 offspring per litter after a gestation period of
+    4-8 months depending on the species
+  class: Mammal
+squirrel:
+  name: american_red_squirrel
+  lifespan: '6-12 years in the wild, up to 20 years in captivity'
+  habitat: >-
+    Found in coniferous and mixed forests of Eastern Europe and Asia,
+    particularly in Siberia
+  weight: 250-400 grams
+  size: '19-23 cm in body length, with a tail length of 15-20 cm'
+  food: >-
+    Omnivorous: feeds on seeds, nuts, fruits, fungi, and occasionally insects
+    and bird eggs
+  species: Sciurus vulgaris ognevi
+  color: >-
+    Reddish-brown fur with a white or cream-colored underside; winter coat may
+    be grayer
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 2-6 young per litter after a gestation period of about
+    38-39 days
+  class: Mammal
+blue_tit:
+  lifespan: '2-3 years in the wild, up to 15 years in captivity'
+  habitat: 'Woodlands, gardens, hedgerows, and parks throughout Europe and western Asia'
+  weight: 9-12 g
+  size: '12 cm in length, wingspan 17-20 cm'
+  food: 'Omnivorous: insects, seeds, nuts, and berries'
+  species: Cyanistes caeruleus
+  color: 'Blue cap, wings, and tail with yellow underparts and greenish back'
+  reproduction: Oviparous
+  offsprings: 7-12 eggs per clutch
+  class: Bird
+toucan:
+  name: Toucan
+  lifespan: 15-20 years
+  habitat: Tropical and subtropical rainforests in Central and South America
+  weight: 300-700 g depending on species
+  size: 29-63 cm in length including bill
+  food: 'Omnivorous: fruits, insects, small reptiles, and eggs'
+  species: Ramphastidae family
+  color: 'Brightly colored plumage with a large, colorful bill'
+  reproduction: Oviparous
+  offsprings: 2-4 eggs per clutch
+  class: Bird
+barn_owl:
+  name: barn_owl
+  lifespan: '4-10 years in the wild, up to 20 years in captivity'
+  habitat: 'Open countryside, farmlands, woodlands'
+  weight: 400-700 g
+  size: '33-39 cm in length, wingspan 80-95 cm'
+  food: 'Carnivorous: small mammals, birds, insects'
+  species: Tyto alba
+  color: 'Pale, heart-shaped face with a mix of white, golden-brown, and gray feathers'
+  reproduction: Oviparous
+  offsprings: 4-7 eggs per clutch
+  class: Bird
+ibex:
+  name: alpine_ibex
+  lifespan: 10-15 years
+  habitat: 'Mountainous regions, cliffs, and rocky slopes'
+  weight: 30-120 kg depending on species
+  size: 0.8-1.2 m tall at the shoulder
+  food: 'Herbivorous: grasses, herbs, leaves'
+  species: Capra genus
+  color: 'Brownish-gray fur with long, curved horns'
+  reproduction: Viviparous
+  offsprings: 1 kid
+  class: Mammal
 armadillo:
   name: Armadillo
   lifespan: '4-30 years, depending on species'
@@ -845,18 +1019,6 @@ badger:
   reproduction: Viviparous
   offsprings: 1-5 cubs per litter
   class: Mammal
-barn_owl:
-  name: Barn Owl
-  lifespan: '4-10 years in the wild, up to 20 years in captivity'
-  habitat: 'Open countryside, farmlands, woodlands'
-  weight: 400-700 g
-  size: '33-39 cm in length, wingspan 80-95 cm'
-  food: 'Carnivorous: small mammals, birds, insects'
-  species: Tyto alba
-  color: 'Pale, heart-shaped face with a mix of white, golden-brown, and gray feathers'
-  reproduction: Oviparous
-  offsprings: 4-7 eggs per clutch
-  class: Bird
 beaver:
   name: Beaver
   lifespan: '10-15 years in the wild, up to 20 years in captivity'
@@ -906,17 +1068,6 @@ blue_morpho_butterfly:
   reproduction: Egg-laying
   offsprings: Hundreds of eggs laid individually on host plants
   class: Insect
-blue_tit:
-  lifespan: '2-3 years in the wild, up to 15 years in captivity'
-  habitat: 'Woodlands, gardens, hedgerows, and parks throughout Europe and western Asia'
-  weight: 9-12 g
-  size: '12 cm in length, wingspan 17-20 cm'
-  food: 'Omnivorous: insects, seeds, nuts, and berries'
-  species: Cyanistes caeruleus
-  color: 'Blue cap, wings, and tail with yellow underparts and greenish back'
-  reproduction: Oviparous
-  offsprings: 7-12 eggs per clutch
-  class: Bird
 bobcat:
   name: Bobcat
   lifespan: '10-12 years in the wild, up to 25 years in captivity'
@@ -1001,18 +1152,6 @@ capybara:
   reproduction: Viviparous
   offsprings: 2-8 pups per litter
   class: Mammal
-chameleon:
-  name: Common Chameleon
-  lifespan: 2-10 years depending on species
-  habitat: 'Tropical and subtropical forests, savannas'
-  weight: 100-200 g
-  size: 15-25 cm
-  food: 'Insectivorous: insects, small invertebrates'
-  species: Chamaeleo chamaeleon
-  color: 'Varies: green, brown, can change color for camouflage and communication'
-  reproduction: Oviparous
-  offsprings: 20-40 eggs per clutch
-  class: Reptile
 cheetah:
   name: Cheetah
   lifespan: 10-12 years
@@ -1209,18 +1348,6 @@ hyena:
   reproduction: Viviparous
   offsprings: 1-3 cubs per litter
   class: Mammal
-ibex:
-  name: Ibex
-  lifespan: 10-15 years
-  habitat: 'Mountainous regions, cliffs, and rocky slopes'
-  weight: 30-120 kg depending on species
-  size: 0.8-1.2 m tall at the shoulder
-  food: 'Herbivorous: grasses, herbs, leaves'
-  species: Capra genus
-  color: 'Brownish-gray fur with long, curved horns'
-  reproduction: Viviparous
-  offsprings: 1 kid
-  class: Mammal
 imago:
   name: Imago
   lifespan: Several days to several weeks depending on species
@@ -1320,18 +1447,6 @@ macaw:
   reproduction: Oviparous
   offsprings: 2-4 eggs per clutch
   class: Bird
-main_coon_cat:
-  name: Maine Coon Cat
-  lifespan: 12-15 years
-  habitat: Domestic
-  weight: 5-8 kg (males can be larger)
-  size: 48-100 cm in length including tail
-  food: 'Carnivorous: commercial cat food, meat'
-  species: Felis catus
-  color: 'Variety of colors and patterns, including tabby, solid, bicolor, and more'
-  reproduction: Viviparous
-  offsprings: 4-6 kittens per litter
-  class: Mammal
 meerkat:
   name: Meerkat
   lifespan: 12-14 years in captivity
@@ -1402,18 +1517,6 @@ ocellaris_clownfish:
   reproduction: Oviparous
   offsprings: 'Hundreds of eggs per clutch, cared for by the male'
   class: Fish
-ojos_azules_cat:
-  name: Ojos Azules Cat
-  lifespan: 12-15 years
-  habitat: Domestic
-  weight: 3-5 kg
-  size: 30-40 cm in length
-  food: 'Carnivorous: commercial cat food, meat'
-  species: Felis catus
-  color: 'Variety of colors, notable for striking blue eyes'
-  reproduction: Viviparous
-  offsprings: 4-6 kittens per litter
-  class: Mammal
 orangutan:
   name: Orangutan
   lifespan: '35-45 years in the wild, up to 55 years in captivity'
@@ -1711,7 +1814,8 @@ southern_festoon:
   reproduction: Egg-laying
   offsprings: Several dozen eggs laid on host plants
   class: Insect
-sparkling_violetear:
+colibri:
+  name: sparkling_violetear
   lifespan: '3-4 years in the wild, potentially longer in captivity'
   habitat: >-
     Found in high-altitude forests, gardens, and shrublands in the Andes
@@ -1777,18 +1881,6 @@ termite:
   reproduction: Egg-laying
   offsprings: 'Millions of eggs per colony, laid by the queen'
   class: Insect
-toucan:
-  name: Toucan
-  lifespan: 15-20 years
-  habitat: Tropical and subtropical rainforests in Central and South America
-  weight: 300-700 g depending on species
-  size: 29-63 cm in length including bill
-  food: 'Omnivorous: fruits, insects, small reptiles, and eggs'
-  species: Ramphastidae family
-  color: 'Brightly colored plumage with a large, colorful bill'
-  reproduction: Oviparous
-  offsprings: 2-4 eggs per clutch
-  class: Bird
 walrus:
   name: Walrus
   lifespan: '20-30 years in the wild, up to 40 years in captivity'

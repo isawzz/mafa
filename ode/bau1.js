@@ -44,8 +44,25 @@ async function updateSuperdi(di,key){
 
 
 }
-
 async function collAddItem(coll, key, item) {
+	if (nundef(M.superdi[key])) {
+		// M.superdi[key] = item;
+		// let res = await mPostRoute('postNewItem', { key: key, item: item });
+	} else {
+		addIf(item.colls, coll.name);
+		// let res = await mPostRoute('postUpdateItem', { key: key, item: item });
+	}
+	let di = {}; di[key]=item;
+	await updateSuperdi(di);
+	// for (const cat of item.cats) lookupAddIfToList(M.byCat, [cat], key);
+	// for (const coll of item.colls) lookupAddIfToList(M.byCollection, [coll], key);
+	// lookupAddIfToList(M.byFriendly, [item.friendly], key)
+	// M.categories = Object.keys(M.byCat); M.categories.sort();
+	// M.collections = Object.keys(M.byCollection); M.collections.sort();
+	// M.names = Object.keys(M.byFriendly); M.names.sort();
+}
+
+async function orig_collAddItem(coll, key, item) {
 	if (nundef(M.superdi[key])) {
 		M.superdi[key] = item;
 		let res = await mPostRoute('postNewItem', { key: key, item: item });
