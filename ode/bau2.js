@@ -1,7 +1,69 @@
 
 function getAnimalDetails() {
 	const NEWDETAILS = {
-
+		armadillo: {
+			lifespan: "4-30 years, depending on species",
+			habitat: "Grasslands, forests, and semi-deserts",
+			weight: "0.5-6 kg, depending on species",
+			size: "15-75 cm, depending on species",
+			food: "Insects, small vertebrates, plants",
+			species: "Dasypodidae",
+			color: "Brown, grey, or pinkish",
+			reproduction: "Viviparous",
+			offsprings: "1-12, depending on species",
+			class: "Mammal"
+		},
+		gray_squirrel: {
+				name: eastern_gray_squirrel,
+        lifespan: "6-12 years in the wild, up to 20 years in captivity",
+        habitat: "Deciduous and mixed forests, urban and suburban areas in eastern North America",
+        weight: "400-600 grams",
+        size: "23-30 cm in body length, with a tail length of 15-25 cm",
+        food: "Omnivorous: primarily feeds on nuts, seeds, fruits, fungi, and occasionally insects and bird eggs",
+        species: "Sciurus carolinensis",
+        color: "Gray fur with a white underside; variations can include black or brown fur",
+        reproduction: "Viviparous",
+        offsprings: "Females give birth to 2-6 young per litter after a gestation period of about 44-45 days",
+        class: "Mammal"
+    },
+		mandrill: {
+        lifespan: "20-30 years in the wild, up to 40 years in captivity",
+        habitat: "Tropical rainforests and occasionally savannas in Central Africa, primarily in countries like Gabon, Cameroon, and Congo",
+        weight: "Females: 11-14 kg, Males: 19-37 kg",
+        size: "Females: 55-66 cm in body length, Males: 75-95 cm in body length; both sexes have tails about 5-10 cm long",
+        food: "Omnivorous: feeds on fruits, seeds, leaves, insects, small mammals, and occasionally fungi",
+        species: "Mandrillus sphinx",
+        color: "Distinctive colorful face with blue and red markings; olive green or dark gray fur; males have more vibrant colors",
+        reproduction: "Viviparous",
+        offsprings: "Females give birth to 1 offspring per litter after a gestation period of about 6 months",
+        class: "Mammal"
+    },
+		monkey: {
+        lifespan: "15-30 years depending on the species",
+        habitat: "Various habitats including tropical rainforests, savannas, mountains, and grasslands worldwide",
+        weight: "0.3-40 kg depending on the species",
+        size: "25-100 cm in body length, not including the tail",
+        food: "Omnivorous: feeds on fruits, leaves, seeds, nuts, insects, and small animals",
+        species: "Various species within the infraorder Simiiformes",
+        color: "Varies widely; common colors include brown, black, gray, and golden",
+        reproduction: "Viviparous",
+        offsprings: "Females give birth to 1-2 offspring per litter after a gestation period of 4-8 months depending on the species",
+        class: "Mammal"
+    },
+		squirrel:
+		{
+			name: american_red_squirrel,
+			lifespan: "6-12 years in the wild, up to 20 years in captivity",
+			habitat: "Found in coniferous and mixed forests of Eastern Europe and Asia, particularly in Siberia",
+			weight: "250-400 grams",
+			size: "19-23 cm in body length, with a tail length of 15-20 cm",
+			food: "Omnivorous: feeds on seeds, nuts, fruits, fungi, and occasionally insects and bird eggs",
+			species: "Sciurus vulgaris ognevi",
+			color: "Reddish-brown fur with a white or cream-colored underside; winter coat may be grayer",
+			reproduction: "Viviparous",
+			offsprings: "Females give birth to 2-6 young per litter after a gestation period of about 38-39 days",
+			class: "Mammal"
+		}
 	};
 	return NEWDETAILS;
 	const animalDetails = {
@@ -332,19 +394,6 @@ function getAnimalDetails() {
 			reproduction: "Egg-laying",
 			offsprings: "Varies by species: from a few to thousands of eggs per queen",
 			class: "Insect"
-		},
-		Armadillo: {
-			name: "Armadillo",
-			lifespan: "4-30 years, depending on species",
-			habitat: "Grasslands, forests, and semi-deserts",
-			weight: "0.5-6 kg, depending on species",
-			size: "15-75 cm, depending on species",
-			food: "Insects, small vertebrates, plants",
-			species: "Dasypodidae",
-			color: "Brown, grey, or pinkish",
-			reproduction: "Viviparous",
-			offsprings: "1-12, depending on species",
-			class: "Mammal"
 		},
 		badger: {
 			name: "Badger",

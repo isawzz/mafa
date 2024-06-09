@@ -1,6 +1,177 @@
 
 
 
+armadillo:
+  name: Armadillo
+  lifespan: '4-30 years, depending on species'
+  habitat: 'Grasslands, forests, and semi-deserts'
+  weight: '0.5-6 kg, depending on species'
+  size: '15-75 cm, depending on species'
+  food: 'Insects, small vertebrates, plants'
+  species: Dasypodidae
+  color: 'Brown, grey, or pinkish'
+  reproduction: Viviparous
+  offsprings: '1-12, depending on species'
+  class: Mammal
+caterpillar:
+  lifespan: Several weeks to months (larval stage)
+  habitat: >-
+    Found in various habitats including forests, fields, gardens, and meadows
+    worldwide
+  weight: >-
+    Varies widely; can range from a few milligrams to several grams depending on
+    the species
+  size: >-
+    Varies widely; typically ranges from a few millimeters to over 10 cm in
+    length depending on the species
+  food: >-
+    Herbivorous: primarily feeds on leaves of various plants; some species may
+    have specific host plants
+  species: Numerous species across the Order Lepidoptera
+  color: >-
+    Varies widely among species; can be green, brown, yellow, black, and often
+    with patterns and markings for camouflage or warning
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay hundreds to thousands of eggs depending on the species; eggs
+    hatch into larvae (caterpillars) which then undergo several molts
+  class: Insect
+wasp:
+  lifespan: Several weeks to months depending on the species
+  habitat: >-
+    Found worldwide in various habitats including gardens, forests, fields, and
+    urban areas
+  weight: >-
+    Varies widely among species; typically ranges from a few milligrams to
+    several grams
+  size: >-
+    Varies widely among species; typically ranges from a few millimeters to
+    several centimeters in length
+  food: >-
+    Varies among species; carnivorous or omnivorous diets including insects,
+    nectar, fruit, and other food sources
+  species: >-
+    Numerous species across various families including Vespidae, Apidae, and
+    others
+  color: >-
+    Varies widely among species; can be black, yellow, brown, or metallic with
+    various patterns and markings
+  reproduction: Oviparous
+  offsprings: >-
+    Varies among species; queens lay eggs in nests or cells, and eggs hatch into
+    larvae that are cared for until they pupate and emerge as adults
+  class: Insect
+panther:
+  name: florida_panther
+  lifespan: 8-15 years in the wild
+  habitat: 'Found in swamps, forests, and prairies of southern Florida, USA'
+  weight: 'Female: 29-45 kg, Male: 45-72 kg'
+  size: 'Length: 180-210 cm including tail, Height: 60-70 cm at the shoulders'
+  food: >-
+    Carnivorous: primarily feeds on white-tailed deer, but also small mammals,
+    birds, and occasionally livestock
+  species: Puma concolor coryi
+  color: >-
+    Tawny or reddish-brown with lighter underparts; kittens have spots that fade
+    with age
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 1-4 kittens per litter; kittens stay with their mother
+    for up to 2 years
+  class: Mammal
+arctic_fox:
+  lifespan: '3-6 years in the wild, up to 14 years in captivity'
+  habitat: >-
+    Found in Arctic and subarctic regions, including tundra, coastal areas, and
+    mountains
+  weight: 3-8 kg
+  size: '46-68 cm in length, not including tail'
+  food: 'Omnivorous: feeds on small mammals, birds, eggs, fish, berries, and carrion'
+  species: Vulpes lagopus
+  color: >-
+    White or blue-gray in winter for Arctic populations, brown or gray in
+    summer; transitional phases also occur
+  reproduction: Ovoviviparous
+  offsprings: >-
+    Females give birth to 5-8 pups in spring; pups are cared for in underground
+    dens
+  class: Mammal
+mantis:
+  name: european_mantis
+  lifespan: 1-2 years in the wild
+  habitat: >-
+    Found in various habitats including gardens, meadows, and shrublands across
+    Europe, Asia, and North America
+  weight: 2-5 grams
+  size: 5-7 cm in length
+  food: >-
+    Carnivorous: feeds primarily on insects such as flies, moths, and smaller
+    insects
+  species: Mantis religiosa
+  color: >-
+    Typically green or brown with long, slender bodies and triangular heads;
+    front legs adapted for grasping prey
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay a foamy egg case called an ootheca containing up to 200 eggs;
+    nymphs hatch from eggs and resemble miniature adults
+  class: Insect
+stag_beetle:
+  lifespan: 1-7 years depending on the species
+  habitat: >-
+    Found in forests, woodlands, and gardens across Europe, Asia, and North
+    America
+  weight: 5-35 grams depending on the species
+  size: 5-12 cm in length depending on the species
+  food: >-
+    Larvae feed on decaying wood; adults primarily feed on tree sap and fruit
+    juices
+  species: 'Lucanidae family, encompassing numerous genera and species'
+  color: >-
+    Varies among species; typically brown to black with shiny, smooth
+    exoskeletons; males have enlarged mandibles resembling deer antlers
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay eggs in decaying wood; larvae hatch and develop within the wood,
+    often taking several years to mature before pupating into adults
+  class: Insect
+white_peacock_butterfly:
+  lifespan: 2-4 weeks (adult stage)
+  habitat: >-
+    Found in open, sunny areas including meadows, fields, gardens, and parks
+    across the Americas
+  weight: 'Varies, typically less than 1 gram'
+  size: Wingspan of 4-5 cm
+  food: >-
+    Herbivorous: feeds primarily on nectar from various flowers, particularly
+    those in the aster family (Asteraceae)
+  species: Anartia jatrophae
+  color: >-
+    White wings with black and orange patterns; males and females have similar
+    wing patterns
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay eggs on host plants of the passionflower family
+    (Passifloraceae); eggs hatch into caterpillars which pupate and eventually
+    emerge as adult butterflies
+  class: Insect
+rhinoceros_beetle:
+  lifespan: 3-5 years (including larval stage)
+  habitat: >-
+    Woodlands, forests, gardens, and areas with decaying wood or compost piles
+    across Europe and parts of Asia
+  weight: 4-10 grams
+  size: 20-40 mm in length
+  food: >-
+    Larvae feed on decaying wood and organic matter; adults feed on plant sap
+    and fruit
+  species: Oryctes nasicornis
+  color: Shiny dark brown to black
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay 50-100 eggs in decaying wood or compost; eggs hatch into larvae
+    that undergo several molts before pupating and emerging as adults
+  class: Insect
 frog:
   name: white_lipped_tree_frog
   lifespan: 'Up to 10 years'
@@ -648,35 +819,6 @@ ant:
   reproduction: Egg-laying
   offsprings: 'Varies by species: from a few to thousands of eggs per queen'
   class: Insect
-arctic_fox:
-  lifespan: '3-6 years in the wild, up to 14 years in captivity'
-  habitat: >-
-    Found in Arctic and subarctic regions, including tundra, coastal areas, and
-    mountains
-  weight: 3-8 kg
-  size: '46-68 cm in length, not including tail'
-  food: 'Omnivorous: feeds on small mammals, birds, eggs, fish, berries, and carrion'
-  species: Vulpes lagopus
-  color: >-
-    White or blue-gray in winter for Arctic populations, brown or gray in
-    summer; transitional phases also occur
-  reproduction: Ovoviviparous
-  offsprings: >-
-    Females give birth to 5-8 pups in spring; pups are cared for in underground
-    dens
-  class: Mammal
-armadillo:
-  name: Armadillo
-  lifespan: '4-30 years, depending on species'
-  habitat: 'Grasslands, forests, and semi-deserts'
-  weight: '0.5-6 kg, depending on species'
-  size: '15-75 cm, depending on species'
-  food: 'Insects, small vertebrates, plants'
-  species: Dasypodidae
-  color: 'Brown, grey, or pinkish'
-  reproduction: Viviparous
-  offsprings: '1-12, depending on species'
-  class: Mammal
 axolotl:
   name: Axolotl
   lifespan: 10-15 years in captivity
@@ -859,29 +1001,6 @@ capybara:
   reproduction: Viviparous
   offsprings: 2-8 pups per litter
   class: Mammal
-caterpillar:
-  lifespan: Several weeks to months (larval stage)
-  habitat: >-
-    Found in various habitats including forests, fields, gardens, and meadows
-    worldwide
-  weight: >-
-    Varies widely; can range from a few milligrams to several grams depending on
-    the species
-  size: >-
-    Varies widely; typically ranges from a few millimeters to over 10 cm in
-    length depending on the species
-  food: >-
-    Herbivorous: primarily feeds on leaves of various plants; some species may
-    have specific host plants
-  species: Numerous species across the Order Lepidoptera
-  color: >-
-    Varies widely among species; can be green, brown, yellow, black, and often
-    with patterns and markings for camouflage or warning
-  reproduction: Oviparous
-  offsprings: >-
-    Females lay hundreds to thousands of eggs depending on the species; eggs
-    hatch into larvae (caterpillars) which then undergo several molts
-  class: Insect
 chameleon:
   name: Common Chameleon
   lifespan: 2-10 years depending on species
@@ -991,42 +1110,6 @@ earwig:
   reproduction: Egg-laying
   offsprings: Up to 80 eggs laid in soil or debris
   class: Insect
-european_mantis:
-  lifespan: 1-2 years in the wild
-  habitat: >-
-    Found in various habitats including gardens, meadows, and shrublands across
-    Europe, Asia, and North America
-  weight: 2-5 grams
-  size: 5-7 cm in length
-  food: >-
-    Carnivorous: feeds primarily on insects such as flies, moths, and smaller
-    insects
-  species: Mantis religiosa
-  color: >-
-    Typically green or brown with long, slender bodies and triangular heads;
-    front legs adapted for grasping prey
-  reproduction: Oviparous
-  offsprings: >-
-    Females lay a foamy egg case called an ootheca containing up to 200 eggs;
-    nymphs hatch from eggs and resemble miniature adults
-  class: Insect
-european_rhinoceros_beetle:
-  lifespan: 3-5 years (including larval stage)
-  habitat: >-
-    Woodlands, forests, gardens, and areas with decaying wood or compost piles
-    across Europe and parts of Asia
-  weight: 4-10 grams
-  size: 20-40 mm in length
-  food: >-
-    Larvae feed on decaying wood and organic matter; adults feed on plant sap
-    and fruit
-  species: Oryctes nasicornis
-  color: Shiny dark brown to black
-  reproduction: Oviparous
-  offsprings: >-
-    Females lay 50-100 eggs in decaying wood or compost; eggs hatch into larvae
-    that undergo several molts before pupating and emerging as adults
-  class: Insect
 fire_ant:
   name: Fire Ant
   lifespan: 1-3 years
@@ -1063,23 +1146,6 @@ flea:
   reproduction: Egg-laying
   offsprings: Several hundred eggs laid in bedding or host animal fur
   class: Insect
-florida_panther:
-  lifespan: 8-15 years in the wild
-  habitat: 'Found in swamps, forests, and prairies of southern Florida, USA'
-  weight: 'Female: 29-45 kg, Male: 45-72 kg'
-  size: 'Length: 180-210 cm including tail, Height: 60-70 cm at the shoulders'
-  food: >-
-    Carnivorous: primarily feeds on white-tailed deer, but also small mammals,
-    birds, and occasionally livestock
-  species: Puma concolor coryi
-  color: >-
-    Tawny or reddish-brown with lighter underparts; kittens have spots that fade
-    with age
-  reproduction: Viviparous
-  offsprings: >-
-    Females give birth to 1-4 kittens per litter; kittens stay with their mother
-    for up to 2 years
-  class: Mammal
 fox:
   name: Fox
   lifespan: '2-5 years in the wild, up to 15 years in captivity'
@@ -1675,25 +1741,6 @@ spinner_dolphin:
   reproduction: Viviparous
   offsprings: Usually 1 calf per birth
   class: Mammal
-stag_beetle:
-  lifespan: 1-7 years depending on the species
-  habitat: >-
-    Found in forests, woodlands, and gardens across Europe, Asia, and North
-    America
-  weight: 5-35 grams depending on the species
-  size: 5-12 cm in length depending on the species
-  food: >-
-    Larvae feed on decaying wood; adults primarily feed on tree sap and fruit
-    juices
-  species: 'Lucanidae family, encompassing numerous genera and species'
-  color: >-
-    Varies among species; typically brown to black with shiny, smooth
-    exoskeletons; males have enlarged mandibles resembling deer antlers
-  reproduction: Oviparous
-  offsprings: >-
-    Females lay eggs in decaying wood; larvae hatch and develop within the wood,
-    often taking several years to mature before pupating into adults
-  class: Insect
 stick_insect:
   name: Stick Insect
   lifespan: 1-3 years depending on species
@@ -1766,51 +1813,6 @@ warthog:
   reproduction: Viviparous
   offsprings: 2-6
   class: Mammal
-wasp:
-  lifespan: Several weeks to months depending on the species
-  habitat: >-
-    Found worldwide in various habitats including gardens, forests, fields, and
-    urban areas
-  weight: >-
-    Varies widely among species; typically ranges from a few milligrams to
-    several grams
-  size: >-
-    Varies widely among species; typically ranges from a few millimeters to
-    several centimeters in length
-  food: >-
-    Varies among species; carnivorous or omnivorous diets including insects,
-    nectar, fruit, and other food sources
-  species: >-
-    Numerous species across various families including Vespidae, Apidae, and
-    others
-  color: >-
-    Varies widely among species; can be black, yellow, brown, or metallic with
-    various patterns and markings
-  reproduction: Oviparous
-  offsprings: >-
-    Varies among species; queens lay eggs in nests or cells, and eggs hatch into
-    larvae that are cared for until they pupate and emerge as adults
-  class: Insect
-white_peacock_butterfly:
-  lifespan: 2-4 weeks (adult stage)
-  habitat: >-
-    Found in open, sunny areas including meadows, fields, gardens, and parks
-    across the Americas
-  weight: 'Varies, typically less than 1 gram'
-  size: Wingspan of 4-5 cm
-  food: >-
-    Herbivorous: feeds primarily on nectar from various flowers, particularly
-    those in the aster family (Asteraceae)
-  species: Anartia jatrophae
-  color: >-
-    White wings with black and orange patterns; males and females have similar
-    wing patterns
-  reproduction: Oviparous
-  offsprings: >-
-    Females lay eggs on host plants of the passionflower family
-    (Passifloraceae); eggs hatch into caterpillars which pupate and eventually
-    emerge as adult butterflies
-  class: Insect
 wolf:
   name: Wolf
   lifespan: '6-8 years in the wild, up to 16 years in captivity'

@@ -5,6 +5,46 @@ async function collOnDroppedItem(item, coll) {
 	collOpenSecondary(4, 2);
 	showImageBatch(coll, 0);
 }
+async function onclickCollItemLabel(ev) {
+	evNoBubble(ev);
+	let o = evToAttrElem(ev, 'key');
+	if (!o) return;
+	let [key, elem] = [o.val, o.elem];
+	if (nundef(key)) { console.log('no key'); return; }
+	let collname = elem.getAttribute('collname');
+	console.log('clicked', key, collname);
+	let newfriendly = await mGather(ev.target);
+	if (!newfriendly) return;
+	if (isEmpty(newfriendly)) {
+		showMessage(`ERROR: name invalid: ${newfriendly}`);
+		return;
+	}
+	console.log('rename friendly to', newfriendly)
+	let item = M.superdi[key];
+	item.friendly = newfriendly;
+
+	let di={};
+	di[key]=item;
+	// await updateSuperdi(di,key)
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	// let resp = await mPostRoute('postUpdateItem', { key: key, item: item });
+	// console.log(resp);
+	ev.target.innerHTML = newfriendly;
+}
+async function updateSuperdi(di,key){
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+	collPostReload();
+
+	//er soll zu der page gehen wo key visible ist!
+
+
+
+}
+
 async function collAddItem(coll, key, item) {
 	if (nundef(M.superdi[key])) {
 		M.superdi[key] = item;
@@ -85,7 +125,7 @@ function showDetailsAndMagnify(elem){
 	let o=M.superdi[key];
 	addKeys(M.details[key],o);
 	addKeys(M.details[o.friendly],o)
-	console.log(o);
+	//console.log(o);
 
 	//title is friendly name or name
 	let title=fromNormalized(valf(o.name,o.friendly));

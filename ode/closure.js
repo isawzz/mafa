@@ -6106,27 +6106,6 @@ async function onclickCollItem(ev) {
 	if (nundef(key)) { console.log('no key'); return; }
 	await clickOnItem(elem, key);
 }
-async function onclickCollItemLabel(ev) {
-	evNoBubble(ev);
-	let o = evToAttrElem(ev, 'key');
-	if (!o) return;
-	let [key, elem] = [o.val, o.elem];
-	if (nundef(key)) { console.log('no key'); return; }
-	let collname = elem.getAttribute('collname');
-	console.log('clicked', key, collname);
-	let newfriendly = await mGather(ev.target);
-	if (!newfriendly) return;
-	if (isEmpty(newfriendly)) {
-		showMessage(`ERROR: name invalid: ${newfriendly}`);
-		return;
-	}
-	console.log('rename friendly to', newfriendly)
-	let item = M.superdi[key];
-	item.friendly = newfriendly;
-	let resp = await mPostRoute('postUpdateItem', { key: key, item: item });
-	console.log(resp);
-	ev.target.innerHTML = newfriendly;
-}
 async function onclickCollNext(ev) {
 	let coll = collFromElement(ev.target.parentNode)
 	showImageBatch(coll, 1);
@@ -7882,38 +7861,6 @@ function showImageBatch(coll, inc = 0, alertEmpty = false) {
 	let [dNext, dPrev] = [mBy('bNext'), mBy('bPrev')];
 	if (maxPage == 1) { mClass(dPrev, 'disabled'); mClass(dNext, 'disabled'); }
 	else { mClassRemove(dPrev, 'disabled'); mClassRemove(dNext, 'disabled'); }
-}
-function showImageInBatch(key, dParent, styles = {}, opts={}) {
-	let o = M.superdi[key]; o.key = key;
-	addKeys({ bg: rColor() }, styles);
-	mClear(dParent);
-	[w, h] = [dParent.offsetWidth, dParent.offsetHeight];
-	let [sz, fz] = [.9 * w, .8 * h];
-	let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding: 11, box: true });//overflow: 'hidden', 
-	mCenterCenterFlex(d1)
-	let el = null;
-	if (isdef(o.img)) {
-		let src= (opts.prefer == 'photo' && isdef(o.photo))?o.photo:o.img; 
-		if (o.cats.includes('card')) {
-			el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src});
-			mDom(d1, { h: 1, w: '100%' })
-		} else {
-			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src });
-		}
-	}
-	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
-	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-	assertion(el, 'PROBLEM mit' + key);
-	let label = mDom(d1, { fz: 11, cursor: 'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' });
-	label.onclick = onclickCollItemLabel;
-	mStyle(d1, { cursor: 'pointer' });
-	d1.onclick = onclickCollItem;
-	d1.setAttribute('key', key);
-	d1.setAttribute('draggable', true)
-	d1.ondragstart = () => { UI.draggedItem = o; };
-	return d1;
 }
 function showMessage(msg, ms = 3000) {
 	let d = mBy('dMessage');

@@ -1,8 +1,66 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test121_tierbilderbesser(); }
+async function start() { TESTING = true; await test124(); }
 
+async function test124(){
+  await prelims(); 
+  let di={};
+
+  for(const k in M.superdi){
+    let o=M.superdi[k];
+    assertion(isList(o.colls),`${k} does not have colls!`);
+    assertion(isList(o.cats),`${k} does not have cats!`);
+
+    if (isEmpty(o.colls)) console.log(`${k} NO MORE colls!!!`)
+    delete o.key;
+
+    di[k]=o;
+  }
+  di=sortDictionary(di);
+  // downloadAsYaml(di,'superdi');
+}
+async function test123(){
+  await prelims(); 
+  let di={};
+
+  for(const k in M.superdi){
+    let o=M.superdi[k];
+    // if (isdef(o.key)) console.log('has key!',o);
+    //assertion(nundef(o.key),`${k} still has a key!`);
+    assertion(isList(o.colls),`${k} does not have colls!`);
+    assertion(isList(o.cats),`${k} does not have cats!`);
+
+    for(const s of ['animals','critters','armadillos','owls']) {
+      removeInPlace(o.colls,s);
+    }
+    if (isEmpty(o.colls)) console.log(`${k} NO MORE colls!!!`)
+    let validcats = 'animal action building card clothing food emotion gesture wheather user transport sport plant';
+    o.cats=o.cats.filter(x=>validcats.includes(x));
+
+    delete o.key;
+
+    di[k]=o;
+  }
+  di=sortDictionary(di);
+  downloadAsYaml(di,'superdi');
+}
+async function test122(){
+  await prelims(); 
+  let di={};
+
+  for(const k in M.superdi){
+    let o=M.superdi[k];
+    delete o.key;
+    assertion(isdef(o.colls),`${k} does not have colls!`);
+    assertion(isdef(o.cats),`${k} does not have cats!`);
+    removeInPlace(o.cats,'best');
+    if (isEmpty(o.colls)) console.log(`${k} in NO collection`)
+    if (o.colls.length == 1 && o.colls[0]=='animals') continue;
+    di[k] = o;
+  }
+  //downloadAsYaml(di,'superdi');
+}
 async function test121_tierbilderbesser(){
   await prelims(); return;
   let tierfiles = await mGetFiles('../assets/img/tierspiel');

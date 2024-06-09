@@ -449,20 +449,6 @@ app.post('/postImage', (req, res) => {
 		fileName: fname,
 	});
 });
-app.post('/postNewItem', (req, res) => {
-	let key = req.body.key;
-	let item = req.body.item;
-	if (nundef(M.superdi[key])) {
-		M.superdi[key] = item;
-		let y = yaml.dump(M.superdi);
-		fs.writeFileSync(superdiFile, y, 'utf8');
-		item.key = key;
-		io.emit('superdi', item);
-		res.json(`item ${key} posted successfully!`);
-	} else {
-		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
-	}
-});
 app.post('/postUpdateEvent', (req, res) => {
 	let id = req.body.id;
 	let data = req.body;
@@ -477,7 +463,21 @@ app.post('/postUpdateEvent', (req, res) => {
 	res.json(`events updated successfully!`);
 	//res.json(data);
 });
-app.post('/postUpdateItem', (req, res) => {
+app.post('/postNewItem_', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key])) {
+		M.superdi[key] = item;
+		let y = yaml.dump(M.superdi);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key = key;
+		io.emit('superdi', item);
+		res.json(`item ${key} posted successfully!`);
+	} else {
+		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
+	}
+});
+app.post('/postUpdateItem_', (req, res) => {
 	let key = req.body.key;
 	let item = req.body.item;
 	if (nundef(M.superdi[key])) {
@@ -513,7 +513,10 @@ app.post('/postUpdateSuperdi', (req, res) => {
 		delete M.superdi[k];
 	}
 	for (const k in partialdi) {
-		M.superdi[k] = partialdi[k];
+		let o=partialdi[k];
+		//do NOT ever save 'key' in superdi
+		delete o.key;
+		M.superdi[k] = o;
 	}
 	if (deleteCollection == true) {
 		let p = path.join(assetsDirectory, 'img', collname);
