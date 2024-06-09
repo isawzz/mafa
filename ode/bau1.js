@@ -1,66 +1,79 @@
 
-
-async function onclickSimple() {
-	let collName = valf(localStorage.getItem('collection'),'tierspiel');
-
-	let div = mDom('dMain',{bg:'green',wmin:200,hmin:200});
-
+function mAdjustPage(){
 	let hwin = window.innerHeight;
 	let r = getRect('dBuffer'); 
 	let r2 = getRect('dExtra');
-	console.log(r,r2)
-	let [w,h]=[r.w,window.innerHeight - (r.h+r2.h) - 10];
-	mStyle(div,{w,h});
-	mStyle(document.body,{w,h});
+	//console.log(r,r2)
+	let [w,h]=[window.innerWidth,window.innerHeight - (r.h+r2.h)];
 	mStyle('dMain',{w,h});
+	mStyle('dPage',{w,h});
 }
-async function rest(){
-	//let top = r.h+r2.h; console.log('top',top)
-	//let hmax = hwin - top - 20;
+function rBgFor(){for(const d of Array.from(arguments)){mStyle(d,{bg:rColor()})}}
+function mDom100(dParent,styles={},opts={}){copyKeys({w100:true,h100:true,box:true},styles);return mDom(dParent,styles,opts);}
+async function onclickSimple() {
 
-	//mStyle(div,{bg:'green',h:hmax});
+	let name = valf(localStorage.getItem('collection'),'tierspiel'); //console.log(name);
 
-	let coll = UI.simple = {collName,div};
+	mAdjustPage();
+	let div = mDom100('dMain'); 
+	//window.onresize = onclickSimple;
 
-	return;
-	//collPresent(d,collName, rows, cols);
-	let d1 = iDiv(coll);
-	mClear(d1);
-	mStyle(d1,{w:window.innerWidth,h:'100vh',padding:10});
-	let d=mDom(d1,{w100:true,h100:true,box:true,bg:'blue'})
-	return;
-	
-	if (nundef(rows)) rows = coll.rows;
-	if (nundef(cols)) cols = coll.cols;
-	mClear(d1);
-	let w = coll.w = 140 * cols;
-	mStyle(d1, { wmax: w, w: w })
-	let dMenu = coll.dMenu = mDom(d1, { padding: 12, wmax: w, w: w }, { className: 'title' });
+	let coll = UI.simple = {name,div};
+
+	let [w,h,bg,fg]=[coll.w,coll.h,coll.bg,coll.fg] = [mGetStyle(div,'w'),mGetStyle(div,'h'),getNavBg(),getThemeFg()];
+
+	let d1=mDom(div);mCenterFlex(d1)
+
+	let dMenu = coll.dMenu = mDom(d1, { gap: 10, padding: 12 }, { className: 'title' });
 	mFlexVWrap(dMenu);
-	mStyle(dMenu, { gap: 10 });
-	let fg = getThemeFg();
-	let dInstruction = coll.dInstruction = mDom(d1, { align: 'center', fg: fg }, { html: '* press Control key when hovering to magnify image! *' })
-	coll.rows = rows; coll.cols = cols;
-	coll.grid = mGrid(coll.rows, coll.cols, d1, { maleft: 10, 'align-self': 'start' });
-	coll.cells = [];
-	let bg = getNavBg();
-	for (let i = 0; i < coll.rows * coll.cols; i++) {
-		let d = mDom(coll.grid, { bg: bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' });
-		mCenterCenterFlex(d);
-		coll.cells.push(d);
-	}
-	mStyle(dInstruction, { w: mGetStyle(coll.grid, 'w') });
-	coll.dPageIndex = mDom(d1, { fg: fg, padding: 10, align: 'right' });
-	collInitCollection(coll.name, coll);
 
+	let dInstruction = coll.dInstruction = mDom(d1, { w100:true, align: 'center', fg }, { html: '* press Control key when hovering to magnify image! *' })
+
+	let dBatch = coll.dBatch = mDom(d1);
+
+	let cellStyles = { bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' };
+	let o = createBatchGridCells(d1,w*.9,h*.9,cellStyles);
+	addKeys(o,coll);
+
+	mStyle(dInstruction, { w: mGetStyle(coll.dGrid, 'w') });
+
+	coll.dPageIndex = mDom(d1, { w100:true, fg: fg, padding: 10, align: 'right' },{html:'page X/XYZ'});
+
+	//console.log(coll);
+
+	collInit(name, coll);
+	
 	coll.isOpen = true;
 	coll.dInstruction.innerHTML = '* drag images into the shaded area *'
-	let grid = coll.grid;
+	let grid = coll.dGrid;
 	mStyle(grid, { bg: '#00000030' })
 	enableImageOrItemDrop(grid, collOnDropImage);
-	cmdDisable(UI.asSecondary.key);
+	//rBgFor(coll.div,coll.dMenu,coll.dBatch,coll.dGrid); //damit man sieht was der macht mit div sizing
 }
-function menuCloseSimple() { clearMain(); }
+function presentBatch(coll){
+}
+function createBatchGridCells(d,w,h,styles={},opts={}){
+	let cols = Math.floor((w-20)/140);
+	let rows = Math.floor((h-20)/140);
+	let dGrid = mGrid(rows,cols,d,{margin:'auto',gap:4})
+	let cells = [];
+	for (let i = 0; i < rows * cols; i++) {
+		let d = mDom(dGrid, styles,opts);
+		mCenterCenterFlex(d);
+		cells.push(d);
+	}
+	return {dGrid,cells,rows,cols};
+}
+function rest(coll){
+	collInitCollection(coll.name, coll);
+	coll.isOpen = true;
+	coll.dInstruction.innerHTML = '* drag images into the shaded area *'
+	let grid = coll.dGrid;
+	mStyle(grid, { bg: '#00000030' })
+	enableImageOrItemDrop(grid, collOnDropImage);
+	// cmdDisable(UI.asSecondary.key);
+}
+function menuCloseSimple() { clearMain(); } //	window.onresize = null;}
 
 
 
