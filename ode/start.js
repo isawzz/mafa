@@ -6,6 +6,7 @@ async function start() { TESTING = true; await test125(); }
 async function test125(){
   await prelims();
   await switchToUser('mitra');
+  await switchToMainMenu('simple')
   //was will ich genau?
 }
 
