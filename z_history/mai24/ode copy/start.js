@@ -1,15 +1,9 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test125(); }
+async function start() { TESTING = true; await test124(); }
 
-async function test125(){
-  await prelims();
-  await switchToUser('mitra');
-  //was will ich genau?
-}
-
-async function test124_superdiCollsCatsAlerts(){
+async function test124(){
   await prelims(); 
   let di={};
 
@@ -28,7 +22,6 @@ async function test124_superdiCollsCatsAlerts(){
   di=sortDictionary(di);
   // downloadAsYaml(di,'superdi');
 }
-//#region tierspiel
 async function test124_animalDetailsYaml(){
   let ad = getAnimalDetails();
   let di={};
@@ -171,18 +164,18 @@ async function test119_animalDetails() {
   //diDetail = sortDictionary(diDetail);
   //downloadAsYaml(diDetail,'diDetail');
 }
-//#endregion
-
-//#region settings
 async function test118_deleteTheme() {
   await prelims();
   delete Serverdata.config.themes.forest;
   await mPostRoute('postConfig', Serverdata.config)
 }
+
 async function test117() {
   await prelims();
 
 }
+
+//#region settings
 async function test116_calcPalette() {
   await prelims();
 

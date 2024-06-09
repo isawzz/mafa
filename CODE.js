@@ -1,3 +1,52 @@
+//#region 9.6.24 elim coll code alt
+async function collAddItem(coll, key, item) {
+	if (nundef(M.superdi[key])) {
+		M.superdi[key] = item;
+		let res = await mPostRoute('postNewItem', { key: key, item: item });
+	} else {
+		addIf(item.colls, coll.name);
+		let res = await mPostRoute('postUpdateItem', { key: key, item: item });
+	}
+	for (const cat of item.cats) lookupAddIfToList(M.byCat, [cat], key);
+	for (const coll of item.colls) lookupAddIfToList(M.byCollection, [coll], key);
+	lookupAddIfToList(M.byFriendly, [item.friendly], key)
+	M.categories = Object.keys(M.byCat); M.categories.sort();
+	M.collections = Object.keys(M.byCollection); M.collections.sort();
+	M.names = Object.keys(M.byFriendly); M.names.sort();
+}
+
+function showImageInBatch1(key, dParent, styles = {}) {
+	let o = M.superdi[key]; o.key = key;
+	addKeys({ bg: rColor() }, styles);
+	mClear(dParent);
+	[w, h] = [dParent.offsetWidth, dParent.offsetHeight];
+	let [sz, fz] = [.9 * w, .8 * h];
+	let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding: 11, box: true });//overflow: 'hidden', 
+	mCenterCenterFlex(d1)
+	let el = null;
+	if (isdef(o.img)) {
+		if (o.cats.includes('card')) {
+			el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+			mDom(d1, { h: 1, w: '100%' })
+		} else {
+			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
+		}
+	}
+	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	assertion(el, 'PROBLEM mit' + key);
+	let label = mDom(d1, { fz: 11, cursor: 'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' });
+	label.onclick = onclickCollItemLabel;
+	mStyle(d1, { cursor: 'pointer' });
+	d1.onclick = onclickCollItem;
+	d1.setAttribute('key', key);
+	d1.setAttribute('draggable', true)
+	d1.ondragstart = () => { UI.draggedItem = o; };
+	return d1;
+}
+
 //#region 7.6.24 elim lauter route calls
 async function onclickBot() {
 	let name = getUname();

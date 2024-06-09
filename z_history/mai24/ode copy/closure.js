@@ -7869,6 +7869,18 @@ function showMessage(msg, ms = 3000) {
 	clearTimeout(TO.message);
 	TO.message = setTimeout(clearMessage, ms)
 }
+function showNavbar() {
+	let nav = mMenu('dNav');
+	let commands = {};
+	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, menuCloseHome);
+	commands.settings = menuCommand(nav.l, 'nav', 'settings', null, settingsOpen, menuCloseSettings);
+	commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, menuCloseColl);
+	commands.play = menuCommand(nav.l, 'nav', 'play', 'Games', onclickPlay, menuCloseGames);
+	commands.table = menuCommand(nav.l, 'nav', 'table', 'Table', onclickTableMenu, menuCloseTable);
+	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, menuCloseCalendar);
+	nav.commands = commands;
+	return nav;
+}
 function showObject(o, keys, dParent, styles = {}) {
 	let bg = valf(styles.bg, 'dimgray');
 	addKeys({ align: 'center', padding: 2, bg, fg: colorIdealText(bg) }, styles);
