@@ -1,44 +1,53 @@
 
-//#region new coll code
-async function collAddItem(coll, key, item) {
-	if (isdef(M.superdi[key])) addIf(item.colls, coll.name);
-	let di = {}; di[key] = item;
-	await updateSuperdi(di);
+function showNavbar() {
+	let nav = mMenu('dNav');
+	let commands = {};
+	commands.home = menuCommand(nav.l, 'nav', 'home', 'HOME', showDashboard, menuCloseHome);
+	commands.settings = menuCommand(nav.l, 'nav', 'settings', null, settingsOpen, menuCloseSettings);
+	commands.simple = menuCommand(nav.l, 'nav', 'simple', null, onclickSimple, menuCloseSimple);
+	//commands.collections = menuCommand(nav.l, 'nav', 'collections', null, onclickCollections, menuCloseColl);
+	commands.play = menuCommand(nav.l, 'nav', 'play', 'Games', onclickPlay, menuCloseGames);
+	commands.table = menuCommand(nav.l, 'nav', 'table', 'Table', onclickTableMenu, menuCloseTable);
+	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, menuCloseCalendar);
+	nav.commands = commands;
+	return nav;
 }
-async function collOnDroppedItem(item, coll) {
-	assertion(isdef(item.key), 'NO KEY!!!!!');
-	await collAddItem(coll, item.key, item);
-	collOpenSecondary(4, 2);
-	showImageBatch(coll, 0);
-}
-async function onclickCollItemLabel(ev) {
-	evNoBubble(ev);
-	let o = evToAttrElem(ev, 'key');
-	if (!o) return;
-	let [key, elem] = [o.val, o.elem];
-	if (nundef(key)) { console.log('no key'); return; }
-	let collname = elem.getAttribute('collname');
-	console.log('clicked', key, collname);
-	let newfriendly = await mGather(ev.target);
-	if (!newfriendly) return;
-	if (isEmpty(newfriendly)) {
-		showMessage(`ERROR: name invalid: ${newfriendly}`);
-		return;
-	}
-	console.log('rename friendly to', newfriendly)
-	let item = M.superdi[key];
-	item.friendly = newfriendly;
 
-	let di = {};
-	di[key] = item;
-	// await updateSuperdi(di,key)
-	let res = await mPostRoute('postUpdateSuperdi', { di });
-	console.log('postUpdateSuperdi', res)
-	await loadAssets();
-	// let resp = await mPostRoute('postUpdateItem', { key: key, item: item });
-	// console.log(resp);
-	ev.target.innerHTML = newfriendly;
+//#region new simple code (teilweise used in coll also)
+function createBatchGridCells(d,w,h,styles={},opts={}){
+	let gap = valf(styles.gap,4);
+	if (nundef(styles.w)) styles.w=128;
+	if (nundef(styles.h)) styles.h=styles.w;
+	if (nundef(styles.margin)) styles.margin=gap;
+	let sz = styles.w+styles.margin;
+	let cols = Math.floor((w-20)/sz);
+	let rows = Math.floor((h-20)/sz);
+	let dGrid = mGrid(rows,cols,d,{margin:'auto',gap})
+	let cells = [];
+	for (let i = 0; i < rows * cols; i++) {
+		let d = mDom(dGrid, styles,opts);
+		mCenterCenterFlex(d);
+		cells.push(d);
+	}
+	return {dGrid,cells,rows,cols};
 }
+function mAdjustPage(wmargin){
+	let r = getRect('dBuffer'); 
+	let r2 = getRect('dExtra');
+	let [w,h]=[window.innerWidth-wmargin,window.innerHeight - (r.h+r2.h)];
+	mStyle('dMain',{w,h});
+	mStyle('dPage',{w,h});
+}
+function mDom100(dParent,styles={},opts={}){copyKeys({w100:true,h100:true,box:true},styles);return mDom(dParent,styles,opts);}
+function mClearAllSelections(){
+	let arr = Array.from(document.getElementsByClassName('framedPicture'));//find all visible uis for selected images
+	arr.forEach(mUnselect);
+	UI.selectedImages = [];
+
+}
+function mSelect(elem) { mClass(elem, 'framedPicture'); }
+function mUnselect(elem) { mClassRemove(elem, 'framedPicture'); }
+function rBgFor(){for(const d of Array.from(arguments)){mStyle(d,{bg:rColor()})}}
 function showDetailsAndMagnify(elem) {
 	let key = elem.firstChild.getAttribute('key')
 	if (nundef(key)) { mMagnify(elem); return; }
@@ -57,45 +66,12 @@ function showDetailsAndMagnify(elem) {
 		mDom(d, {}, { html: `${k}:${val}` })
 	}
 }
-function showImageInBatch(key, dParent, styles = {}, opts = {}) {
-	let o = M.superdi[key]; o.key = key;
-	addKeys({ bg: rColor() }, styles);
-	mClear(dParent);
-	[w, h] = [dParent.offsetWidth, dParent.offsetHeight];
-	let [sz, fz] = [.9 * w, .8 * h];
-	let d1 = mDiv(dParent, { position: 'relative', w: '100%', h: '100%', padding: 11, box: true });//overflow: 'hidden', 
-	mCenterCenterFlex(d1)
-	let el = null;
-	let src = (opts.prefer == 'photo' && isdef(o.photo)) ? o.photo : valf(o.img, null);
-	if (isdef(src)) {
-		if (o.cats.includes('card')) {
-			el = mDom(d1, { h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src });
-			mDom(d1, { h: 1, w: '100%' })
-		} else {
-			el = mDom(d1, { w: '100%', h: '100%', 'object-fit': 'cover', 'object-position': 'center center' }, { tag: 'img', src });
-		}
-	}
-	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
-	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
-	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
-	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
-	assertion(el, 'PROBLEM mit' + key);
-	let label = mDom(d1, { fz: 11, cursor: 'pointer' }, { html: o.friendly, className: 'ellipsis hoverHue' });
-	label.onclick = onclickCollItemLabel;
-	mStyle(d1, { cursor: 'pointer' });
-	d1.onclick = onclickCollItem;
-	d1.setAttribute('key', key);
-	d1.setAttribute('draggable', true)
-	d1.ondragstart = () => { UI.draggedItem = o; };
-	return d1;
-}
 async function updateSuperdi(di, key) {
 	let res = await mPostRoute('postUpdateSuperdi', { di });
 	console.log('postUpdateSuperdi', res)
 	await loadAssets();
-	collPostReload();
 }
-//#endregion
+
 
 //#region new functions
 function clearMain() { staticTitle(); clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }

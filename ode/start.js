@@ -5,6 +5,9 @@ async function start() { TESTING = true; await test125(); }
 
 async function test125(){
   await prelims();
+
+  //showim1('hallo','dMain',)
+  //let sz=100; showim1('halloss', 'dMain', { position:'absolute',top:0,left:0, 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `red 3px solid` });
   //await switchToUser('mitra');
   //await switchToMainMenu('simple')
   //was will ich genau?

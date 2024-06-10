@@ -1,79 +1,80 @@
 
-function mAdjustPage(){
-	let hwin = window.innerHeight;
-	let r = getRect('dBuffer'); 
-	let r2 = getRect('dExtra');
-	//console.log(r,r2)
-	let [w,h]=[window.innerWidth,window.innerHeight - (r.h+r2.h)];
-	mStyle('dMain',{w,h});
-	mStyle('dPage',{w,h});
-}
-function rBgFor(){for(const d of Array.from(arguments)){mStyle(d,{bg:rColor()})}}
-function mDom100(dParent,styles={},opts={}){copyKeys({w100:true,h100:true,box:true},styles);return mDom(dParent,styles,opts);}
-async function onclickSimple() {
 
-	let name = valf(localStorage.getItem('collection'),'tierspiel'); //console.log(name);
-
-	mAdjustPage();
-	let div = mDom100('dMain'); 
-	//window.onresize = onclickSimple;
-
-	let coll = UI.simple = {name,div};
-
-	let [w,h,bg,fg]=[coll.w,coll.h,coll.bg,coll.fg] = [mGetStyle(div,'w'),mGetStyle(div,'h'),getNavBg(),getThemeFg()];
-
-	let d1=mDom(div);mCenterFlex(d1)
-
-	let dMenu = coll.dMenu = mDom(d1, { gap: 10, padding: 12 }, { className: 'title' });
-	mFlexVWrap(dMenu);
-
-	let dInstruction = coll.dInstruction = mDom(d1, { w100:true, align: 'center', fg }, { html: '* press Control key when hovering to magnify image! *' })
-
-	let dBatch = coll.dBatch = mDom(d1);
-
-	let cellStyles = { bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' };
-	let o = createBatchGridCells(d1,w*.9,h*.9,cellStyles);
-	addKeys(o,coll);
-
-	mStyle(dInstruction, { w: mGetStyle(coll.dGrid, 'w') });
-
-	coll.dPageIndex = mDom(d1, { w100:true, fg: fg, padding: 10, align: 'right' },{html:'page X/XYZ'});
-
-	//console.log(coll);
-
-	collInit(name, coll);
-	
-	coll.isOpen = true;
-	coll.dInstruction.innerHTML = '* drag images into the shaded area *'
-	let grid = coll.dGrid;
-	mStyle(grid, { bg: '#00000030' })
-	enableImageOrItemDrop(grid, collOnDropImage);
-	//rBgFor(coll.div,coll.dMenu,coll.dBatch,coll.dGrid); //damit man sieht was der macht mit div sizing
-}
-function presentBatch(coll){
-}
-function createBatchGridCells(d,w,h,styles={},opts={}){
-	let cols = Math.floor((w-20)/140);
-	let rows = Math.floor((h-20)/140);
-	let dGrid = mGrid(rows,cols,d,{margin:'auto',gap:4})
-	let cells = [];
-	for (let i = 0; i < rows * cols; i++) {
-		let d = mDom(dGrid, styles,opts);
-		mCenterCenterFlex(d);
-		cells.push(d);
+async function simpleOnDropImage(data,file,elem) {
+	console.log('dropped',file,typeof file); 
+	if (isString(file) && isdef(M.superdi[file])){
+		console.log('YEAH!!!!!!!!!!!! ein key',file)
+	}else if (isDict(file) && isdef(M.allImages[file.name])) {
+		//hab ein eigenes item gedropped!!!!
+		//muss ueberhaupt kein item adden!
+		//nur in die neue collection integrieren!
+		console.log('YEAH!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
+	}else {
+		assetion(isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!',file)
 	}
-	return {dGrid,cells,rows,cols};
+	// return await simpleOnDroppedUrl(data, sisi);
 }
-function rest(coll){
-	collInitCollection(coll.name, coll);
-	coll.isOpen = true;
-	coll.dInstruction.innerHTML = '* drag images into the shaded area *'
-	let grid = coll.dGrid;
-	mStyle(grid, { bg: '#00000030' })
-	enableImageOrItemDrop(grid, collOnDropImage);
-	// cmdDisable(UI.asSecondary.key);
+
+function enableImageDrop(elem, onDropCallback) {
+	const originalBorderStyle = elem.style.border;
+	elem.addEventListener('dragover', ev=> { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
+	elem.addEventListener('dragenter', ev=> { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
+	//elem.addEventListener('dragleave', ev=>{ elem.style.border = originalBorderStyle; }); // Restore the original border if the item is dragged out without dropping
+
+	elem.addEventListener('drop', ev=>  {
+		ev.preventDefault();
+		elem.style.border = originalBorderStyle;
+		const files = ev.dataTransfer.files;
+		console.log('drop',ev.dataTransfer);
+		if (files.length > 0) {
+			const reader = new FileReader();
+			reader.onload = evReader => {
+				onDropCallback(evReader.target.result, files[0].name, elem);
+			};
+			reader.readAsDataURL(files[0]);
+		}else{
+			let data = ev.dataTransfer.getData('text/html');
+			onDropCallback(data,data,elem)
+		}
+	});
 }
-function menuCloseSimple() { clearMain(); } //	window.onresize = null;}
+
+
+
+async function onclickSimpleRemove() {
+	let selist = UI.selectedImages;
+	let di = {};
+	for (const k of selist) {
+		let o = collKeyCollnameFromSelkey(k);
+		let key = o.key;
+		let collname = o.collname;
+		if (collLocked(collname)) continue;
+		let item = M.superdi[key];
+		removeInPlace(item.colls, collname);
+		di[key] = item;
+	}
+	if (isEmpty(di)) {
+		showMessage(`ERROR: cannot delete selected items!!!`);
+		collClearSelections();
+		return;
+	}
+	await updateSuperdi(di);
+}
+async function onclickSimpleNew(name) {
+	if (nundef(name)) name = await mGather(iDiv(UI.simpleNew));
+	if (!name) return;
+	name = normalizeString(name);
+	if (isEmpty(name)) {
+		showMessage(`ERROR! you need to enter a valid name!!!!`);
+		return;
+	}
+	if (M.collections.includes(name)) {
+		showMessage(`collection ${name} already exists!`);
+	}
+	M.collections.push(name); M.collections.sort();
+	if (name != UI.simple) simpleInit(name,UI.simple);
+}
 
 
 

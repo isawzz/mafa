@@ -1,49 +1,33 @@
 
-function collInit(name, coll) {
-	let isReload = isdef(coll.index) && coll.name == name;
-	if (!isReload) { coll.index = 0; coll.pageIndex = 1; coll.name = name; coll.filter = null; }
-
-	let list = [];
-	if (name == 'all' || isEmpty(name)) { list = Object.keys(M.superdi); }
-	else if (isdef(M.byCollection[name])) { list = M.byCollection[name]; }
-	else list = [];
-	
-	localStorage.setItem('collection', name)
-
-	let dMenu = coll.dMenu;
-	mClear(dMenu);
-	let d = mDom(dMenu); mFlexV(d);
-	mDom(d, { fz: 24, weight: 'bold' }, { html: 'Collection:' });
-
-	let collNames = M.collections; 
-	let dlColl = mDatalist(d, collNames, { placeholder: "<select from list>" });
-	dlColl.inpElem.oninput = ev => {console.log(coll.name,ev.target.value);collInit(ev.target.value, coll);}
-	dlColl.inpElem.value = name;
-
-	list = sortByFunc(list, x => M.superdi[x].friendly);
-	coll.masterKeys = list;
-	coll.keys = coll.filter ? collFilterImages(coll, coll.filter) : list;
-	
-	let cats = collectCats(coll.keys);
-	cats.sort();
-	d = mDom(dMenu); mFlexV(d);
-	let wLabel = coll.cols < 6 ? 117 : 'auto';
-	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit: true, html: 'Filter:' });
-	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>", value: coll.filter });
-	dlCat.inpElem.oninput = ev =>{
-		let coll = UI.simple;
-		let s = ev.target.value.toLowerCase().trim();
-		let list = collFilterImages(coll, s);
-		coll.keys = list;
-		coll.filter = s;
-		coll.index = 0; coll.pageIndex = 1; collClearSelections();
-		showImageBatch(coll, 0, false);
-	};
-	
-	d = mDom(dMenu, { gap: 10, align: 'right' });
-	mButton('prev', ()=>showImageBatch(coll,-1), d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
-	mButton('next', ()=>showImageBatch(coll,1), d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
-	collClearSelections();
-	showImageBatch(coll);
+async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi) {
+	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); //console.log('dims', dims);
+	let wScale = img.width / wOrig;
+	let hScale = img.height / hOrig;
+	let d1 = mDom(document.body, { margin: 10 });
+	let canvas = mDom(d1, {}, { tag: 'canvas', width: dims.w, height: dims.h });
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, dims.left / wScale, dims.top / hScale, (dims.w) / wScale, img.height / hScale, 0, 0, dims.w, dims.h)
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
+	let friendly = inpFriendly.value;
+	let cats = extractWords(valf(inpCats.value, ''));
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let o = { image: dataUrl, coll: sisi.name, path: filename };
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
+	let key = stringBefore(filename, '.');
+	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
+	dPopup.remove();
+	await simpleOnDroppedItem(item, sisi);
 }
+async function simpleOnDroppedItem(item, sisi) {
+	let key = item.key;
+	assertion(isdef(key), 'NO KEY!!!!!');
+	if (isdef(M.superdi[key])) addIf(item.colls, sisi.name);
+	let di = {}; di[key] = item;
+	await updateSuperdi(di);
+	simpleShowImageBatch(sisi, 0);
+}
+
+
 
