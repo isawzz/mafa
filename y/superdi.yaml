@@ -23509,12 +23509,17 @@ kevlar_vest:
   colls:
     - icon
 key:
-  friendly: 1st_place_medal
-  img: ../assets/img/emo/1st-place-medal.png
-  text: '&#129351;'
-  cats: []
+  friendly: key
+  img: ../assets/img/emo/key.png
+  ga: EC98
+  fa: f084
+  text: '&#128273;'
+  cats:
+    - action
+    - object
   colls:
     - emo
+  fa6: f084
 key_2:
   friendly: key_2
   ga: EC9E

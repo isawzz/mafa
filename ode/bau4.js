@@ -244,9 +244,10 @@ function simpleShowImageInBatch(key, dParent, styles = {}, opts = {}) {
 	label.onclick = simpleOnclickLabel;
 	mStyle(d1, { cursor: 'pointer' });
 	d1.onclick = simpleOnclickItem;
+	//console.log('.......key',key)
 	d1.setAttribute('key', key);
 	d1.setAttribute('draggable', true)
-	d1.ondragstart = ev => { ev.dataTransfer.setData('text/html', key); }
+	d1.ondragstart = ev => { ev.dataTransfer.setData('itemKey', key); }
 	// d1.ondragstart = ev => { 
 	// 	ev.dataTransfer.setData('text/uri-list', draggableImage.src);
         

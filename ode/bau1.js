@@ -4,16 +4,19 @@ async function simpleOnDropImage(data,file,elem) {
 	console.log('dropped',file,typeof file); 
 	if (isString(file) && isdef(M.superdi[file])){
 		console.log('YEAH!!!!!!!!!!!! ein key',file)
+		await simpleOnDroppedItem(M.superdi[file], UI.simple)
 	}else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false,"DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
 		//hab ein eigenes item gedropped!!!!
 		//muss ueberhaupt kein item adden!
 		//nur in die neue collection integrieren!
-		console.log('YEAH!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
 	}else {
-		assetion(isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
-		console.log('from somewhere else!!!!',file)
+		assertion(isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!',file);
+		await simpleOnDroppedUrl(data, sisi);
 	}
-	// return await simpleOnDroppedUrl(data, sisi);
+	// return 
 }
 
 function enableImageDrop(elem, onDropCallback) {
@@ -25,17 +28,18 @@ function enableImageDrop(elem, onDropCallback) {
 	elem.addEventListener('drop', ev=>  {
 		ev.preventDefault();
 		elem.style.border = originalBorderStyle;
-		const files = ev.dataTransfer.files;
-		console.log('drop',ev.dataTransfer);
-		if (files.length > 0) {
-			const reader = new FileReader();
-			reader.onload = evReader => {
-				onDropCallback(evReader.target.result, files[0].name, elem);
-			};
-			reader.readAsDataURL(files[0]);
-		}else{
-			let data = ev.dataTransfer.getData('text/html');
-			onDropCallback(data,data,elem)
+		let data = ev.dataTransfer.getData('itemKey');
+		if (isdef(data)) onDropCallback(data,data,elem);
+		else{
+			const files = ev.dataTransfer.files;
+			console.log('drop',ev.dataTransfer);
+			if (files.length > 0) {
+				const reader = new FileReader();
+				reader.onload = evReader => {
+					onDropCallback(evReader.target.result, files[0].name, elem);
+				};
+				reader.readAsDataURL(files[0]);
+			}
 		}
 	});
 }

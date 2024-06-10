@@ -23,7 +23,12 @@ async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, i
 async function simpleOnDroppedItem(item, sisi) {
 	let key = item.key;
 	assertion(isdef(key), 'NO KEY!!!!!');
-	if (isdef(M.superdi[key])) addIf(item.colls, sisi.name);
+	let o=M.superdi[key];
+	assertion(nundef(o) || o == item,"DISPARITY!!!!!!!!!!!!!!!!!!!!!")
+	let list = item.colls;
+	if (isdef(o) && list.includes(sisi.name)) {console.log(`HA! ${key} already there`); return; }// dropped item into same collection!!!
+	lookupAddIfToList(item,['colls'],sisi.name);
+	addIf(item.colls,sis.name);
 	let di = {}; di[key] = item;
 	await updateSuperdi(di);
 	simpleShowImageBatch(sisi, 0);
