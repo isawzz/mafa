@@ -1,6 +1,52 @@
 
+async function simpleOnDropImage(ev,elem) {
+	let dt=ev.dataTransfer;
+	console.log('dropped',ev.dataTransfer); 
 
-async function simpleOnDropImage(data,file,elem) {
+	console.log('types',dt.types); 
+	console.log('items',dt.items); 
+	console.log('files',dt.files); 
+
+	if (dt.types.includes('itemKey')) {
+		let data = ev.dataTransfer.getData('itemKey');
+
+		console.log('itemKey',data)
+	}else {
+		const files = ev.dataTransfer.files;
+		console.log('drop',ev.dataTransfer);
+		if (files.length > 0) {
+			const reader = new FileReader();
+			reader.onload = async (evReader) => {
+				let data = evReader.target.result;
+				await simpleOnDroppedUrl(data, UI.simple);
+				//onDropCallback(, files[0].name, elem);
+			};
+			reader.readAsDataURL(files[0]);
+		}
+
+	}
+	//console.log('dropped',ev.dataTransfer); 
+
+	return;
+	if (isString(file) && isdef(M.superdi[file])){
+		console.log('YEAH!!!!!!!!!!!! ein key',file)
+		await simpleOnDroppedItem(M.superdi[file], UI.simple)
+	}else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false,"DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
+		//hab ein eigenes item gedropped!!!!
+		//muss ueberhaupt kein item adden!
+		//nur in die neue collection integrieren!
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
+	}else {
+		assertion(!isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!',file);
+
+		//await simpleOnDroppedUrl(data, UI.simple);
+	}
+	// return 
+}
+
+async function __simpleOnDropImage(data,file,elem) {
 	console.log('dropped',file,typeof file); 
 	if (isString(file) && isdef(M.superdi[file])){
 		console.log('YEAH!!!!!!!!!!!! ein key',file)
@@ -12,36 +58,12 @@ async function simpleOnDropImage(data,file,elem) {
 		//nur in die neue collection integrieren!
 		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
 	}else {
-		assertion(isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
+		assertion(!isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
 		console.log('from somewhere else!!!!',file);
-		await simpleOnDroppedUrl(data, sisi);
+
+		//await simpleOnDroppedUrl(data, UI.simple);
 	}
 	// return 
-}
-
-function enableImageDrop(elem, onDropCallback) {
-	const originalBorderStyle = elem.style.border;
-	elem.addEventListener('dragover', ev=> { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
-	elem.addEventListener('dragenter', ev=> { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
-	//elem.addEventListener('dragleave', ev=>{ elem.style.border = originalBorderStyle; }); // Restore the original border if the item is dragged out without dropping
-
-	elem.addEventListener('drop', ev=>  {
-		ev.preventDefault();
-		elem.style.border = originalBorderStyle;
-		let data = ev.dataTransfer.getData('itemKey');
-		if (isdef(data)) onDropCallback(data,data,elem);
-		else{
-			const files = ev.dataTransfer.files;
-			console.log('drop',ev.dataTransfer);
-			if (files.length > 0) {
-				const reader = new FileReader();
-				reader.onload = evReader => {
-					onDropCallback(evReader.target.result, files[0].name, elem);
-				};
-				reader.readAsDataURL(files[0]);
-			}
-		}
-	});
 }
 
 

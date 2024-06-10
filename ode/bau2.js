@@ -1,4 +1,36 @@
 
+function enableImageDrop(elem, onDropCallback) {
+	const originalBorderStyle = elem.style.border;
+	elem.addEventListener('dragover', ev=> { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
+	elem.addEventListener('dragenter', ev=> { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
+	//elem.addEventListener('dragleave', ev=>{ elem.style.border = originalBorderStyle; }); // Restore the original border if the item is dragged out without dropping
+
+	elem.addEventListener('drop', ev=>  {
+		ev.preventDefault();
+		elem.style.border = originalBorderStyle;
+		onDropCallback(ev,elem); return;
+		const files = ev.dataTransfer.files;
+
+		console.log('files',files.length);
+		let data = ev.dataTransfer.getData('itemKey');
+		if (isdef(data)) onDropCallback(data,data,elem);
+		else{
+			const files = ev.dataTransfer.files;
+			console.log('drop',ev.dataTransfer);
+			if (files.length > 0) {
+				const reader = new FileReader();
+				reader.onload = evReader => {
+					onDropCallback(evReader.target.result, files[0].name, elem);
+				};
+				reader.readAsDataURL(files[0]);
+			}
+		}
+	});
+}
+
+
+
+
 async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi) {
 	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); //console.log('dims', dims);
 	let wScale = img.width / wOrig;
@@ -28,10 +60,11 @@ async function simpleOnDroppedItem(item, sisi) {
 	let list = item.colls;
 	if (isdef(o) && list.includes(sisi.name)) {console.log(`HA! ${key} already there`); return; }// dropped item into same collection!!!
 	lookupAddIfToList(item,['colls'],sisi.name);
-	addIf(item.colls,sis.name);
+	addIf(item.colls,sisi.name);
 	let di = {}; di[key] = item;
 	await updateSuperdi(di);
-	simpleShowImageBatch(sisi, 0);
+	simpleInit(sisi.name,sisi)
+	//simpleShowImageBatch(sisi, 0);
 }
 
 

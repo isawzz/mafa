@@ -46465,3 +46465,33 @@ ojos_azules_cat:
     - animal
   colls:
     - tierspiel
+happiness:
+  friendly: happiness
+  img: ../assets/img/hallo/happiness.png
+  cats: []
+  colls:
+    - hallo
+wave:
+  friendly: wave
+  img: ../assets/img/hallo/wave.png
+  cats: []
+  colls:
+    - hallo
+b:
+  friendly: b
+  img: ../assets/img/hallo/b.png
+  cats: []
+  colls:
+    - hallo
+i1718045927834:
+  friendly: waves
+  img: ../assets/img/hallo/i1718045927834.png
+  cats: []
+  colls:
+    - hallo
+hallo1:
+  friendly: hallo1
+  img: ../assets/img/hallo/hallo1.png
+  cats: []
+  colls:
+    - hallo

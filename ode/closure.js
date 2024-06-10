@@ -3894,7 +3894,7 @@ async function imgMeasure(src) {
 		const img = new Image();
 		img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
 		img.onload = () => {
-			resolve({ img: img, w: img.width, h: img.height });
+			resolve({ img, w: img.width, h: img.height });
 		};
 		img.onerror = (error) => {
 			reject(error);
