@@ -14,6 +14,19 @@ function showNavbar() {
 }
 
 //#region new simple code (teilweise used in coll also)
+function collFilterImages(coll, s) {
+	let di = {};
+	for (const k of coll.masterKeys) { di[k] = true; }
+	let list = isEmpty(s) ? Object.keys(di) : isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
+	if (nundef(list) || isEmpty(list)) {
+		list = [];
+		for (const k of coll.masterKeys) {
+			let o = M.superdi[k];
+			if (k.includes(s) || o.friendly.toLowerCase().includes(s)) list.push(k);
+		}
+	}
+	return list;
+}
 function createBatchGridCells(d,w,h,styles={},opts={}){
 	let gap = valf(styles.gap,4);
 	if (nundef(styles.w)) styles.w=128;
@@ -30,6 +43,16 @@ function createBatchGridCells(d,w,h,styles={},opts={}){
 		cells.push(d);
 	}
 	return {dGrid,cells,rows,cols};
+}
+function enableDataDrop(elem, onDropCallback) {
+	const originalBorderStyle = elem.style.border;
+	elem.addEventListener('dragover', ev=> { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
+	elem.addEventListener('dragenter', ev=> { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
+	elem.addEventListener('drop', ev=>  {
+		ev.preventDefault();
+		elem.style.border = originalBorderStyle;
+		onDropCallback(ev,elem); 
+	});
 }
 function mAdjustPage(wmargin){
 	let r = getRect('dBuffer'); 
@@ -83,6 +106,29 @@ async function correctUsersDeleteKeyImageKey() {
 		delete u.imageKey;
 		await postUserChange(u, true);
 	}
+}
+function enableImageDrop(element, onDropCallback) {
+	const originalBorderStyle = element.style.border;
+	element.addEventListener('dragover', function (event) {
+		event.preventDefault();
+	});
+	element.addEventListener('dragenter', function (event) {
+		element.style.border = '2px solid red';
+	});
+	element.addEventListener('drop', function (event) {
+		event.preventDefault();
+		element.style.border = originalBorderStyle;
+		const files = event.dataTransfer.files;
+		if (files.length > 0) {
+			const file = files[0];
+			if (file.type.startsWith('image/')) { // Check if the dropped file is an image
+				onDropCallback(file);
+			}
+		}
+	});
+	element.addEventListener('dragleave', function (event) {
+		element.style.border = originalBorderStyle;
+	});
 }
 function fromNormalized(s) {
 	let x = replaceAll(s, '_', ' ');
@@ -2079,7 +2125,8 @@ async function showTable(id) {
 	let func = DA.funcs[table.game];
 	T = table;
 	clearMain();
-	let d = mBy('dExtraLeft'); d.innerHTML = `<h2><span style="font-family:emoNoto"${getGameProp('friendly').toUpperCase()}: ${table.friendly} (${table.step})</h2>`; // title
+	let d = mBy('dExtraLeft'); 
+	d.innerHTML = `<h2>${getGameProp('friendly').toUpperCase()}: ${table.friendly} (${table.step})</h2>`; // title
 	d = mDom('dMain'); mCenterFlex(d);
 	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
 	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);

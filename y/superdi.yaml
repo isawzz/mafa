@@ -3980,12 +3980,13 @@ bamboo:
     - plant
   colls:
     - icon
-bamboo weevil:
+bamboo_weevil:
   friendly: bamboo_weevil
-  img: ../assets/img/critters/bamboo weevil.png
+  img: ../assets/img/extra/bamboo_weevil.png
   cats:
     - animal
-  colls: []
+  colls:
+    - tierspiel
 bamboo_fountain:
   friendly: bamboo_fountain
   ga: E70D
@@ -6862,12 +6863,6 @@ buddha:
   img: ../assets/games/nations/cards/buddha.png
   colls:
     - nations
-buddies:
-  friendly: buddies
-  img: ../assets/img/owls/buddies.png
-  cats:
-    - animal
-  colls: []
 buddy:
   friendly: buddy
   cats:
@@ -14118,8 +14113,7 @@ eastern_rosella:
     - animal
   img: ../assets/img/tierspiel/eastern_rosella.png
   friendly: eastern_rosella
-  colls:
-    - tierspiel
+  colls: []
 eating:
   friendly: eating
   ga: E41E
@@ -30075,15 +30069,6 @@ pancakes:
     - food
   colls:
     - emo
-panda:
-  friendly: panda
-  img: ../assets/img/emo/panda.png
-  ga: E37D
-  text: '&#128060;'
-  cats:
-    - animal
-  colls:
-    - emo
 panorama:
   friendly: slalom
   cats:
@@ -33963,12 +33948,13 @@ rhino:
   cats: []
   colls:
     - tierspiel
-rhino beetle:
-  friendly: rhino_beetle
-  img: ../assets/img/critters/rhino beetle.png
+rhino_beetle:
+  friendly: rhinoceros_beetle
+  img: ../assets/img/extra/rhino_beetle.png
   cats:
     - animal
-  colls: []
+  colls:
+    - tierspiel
 rhinoceros:
   friendly: rhinoceros
   img: ../assets/img/emo/rhinoceros.png
@@ -33982,8 +33968,7 @@ rhinoceros_beetle:
   img: ../assets/img/tierspiel/rhinoceros_beetle.png
   cats:
     - animal
-  colls:
-    - tierspiel
+  colls: []
 rhinoceros_horn:
   friendly: rhinoceros_horn
   ga: E383
@@ -35587,20 +35572,6 @@ seagull:
   cats: []
   colls:
     - icon
-seahorse:
-  friendly: seahorse
-  ga: E387
-  cats: []
-  colls:
-    - icon
-seal:
-  friendly: seal
-  img: ../assets/img/emo/seal.png
-  text: '&#129453;'
-  cats:
-    - animal
-  colls:
-    - emo
 search:
   friendly: search
   fa: f002
@@ -37064,14 +37035,6 @@ skullcap:
     - action
   colls:
     - emo
-skunk:
-  friendly: skunk
-  img: ../assets/img/emo/skunk.png
-  text: '&#129448;'
-  cats:
-    - animal
-  colls:
-    - emo
 slalom:
   friendly: slalom
   ga: E209
@@ -37237,14 +37200,6 @@ slot_machine:
   text: '&#127920;'
   cats:
     - action
-  colls:
-    - emo
-sloth:
-  friendly: sloth
-  img: ../assets/img/emo/sloth.png
-  text: '&#129445;'
-  cats:
-    - animal
   colls:
     - emo
 slow_blob:
@@ -40295,8 +40250,8 @@ sweat_droplets:
   colls:
     - emo
 sweetie:
-  friendly: sweetie
-  img: ../assets/img/owls/sweetie.png
+  friendly: barn_owl
+  img: ../assets/img/extra/sweetie.png
   cats:
     - animal
   colls: []
@@ -46365,8 +46320,7 @@ barn_owl:
     - animal
   img: ../assets/img/tierspiel/barn_owl.png
   friendly: barn_owl
-  colls:
-    - tierspiel
+  colls: []
 toucan:
   friendly: toucan
   img: ../assets/img/tierspiel/toucan.png
@@ -46423,7 +46377,7 @@ maine_coon_cat:
   colls:
     - tierspiel
 cat:
-  friendly: cat
+  friendly: tabby_cat
   img: ../assets/img/emo/cat.png
   photo: ../assets/img/tierspiel/minou.png
   ga: E3A4
@@ -46465,33 +46419,78 @@ ojos_azules_cat:
     - animal
   colls:
     - tierspiel
-happiness:
-  friendly: happiness
-  img: ../assets/img/hallo/happiness.png
+moth:
+  friendly: moth
+  img: ../assets/img/tierspiel/moth.png
   cats: []
   colls:
-    - hallo
-wave:
-  friendly: wave
-  img: ../assets/img/hallo/wave.png
+    - tierspiel
+i1718063937394:
+  friendly: zebra
+  img: ../assets/img/tierspiel/i1718063937394.png
   cats: []
   colls:
-    - hallo
-b:
-  friendly: b
-  img: ../assets/img/hallo/b.png
+    - tierspiel
+walrus:
+  friendly: walrus
+  img: ../assets/img/tierspiel/walrus.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+skunk:
+  friendly: skunk
+  img: ../assets/img/emo/skunk.png
+  photo: ../assets/img/tierspiel/i1718064093225.png
+  text: '&#129448;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+warthog:
+  friendly: warthog
+  img: ../assets/img/tierspiel/warthog.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+sloth:
+  friendly: sloth
+  img: ../assets/img/emo/sloth.png
+  photo: ../assets/img/tierspiel/i1718073330517.png
+  text: '&#129445;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+seal:
+  friendly: seal
+  img: ../assets/img/emo/seal.png
+  photo: ../assets/img/tierspiel/i1718073695496.png
+  text: '&#129453;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+panda:
+  friendly: panda
+  img: ../assets/img/emo/panda.png
+  photo: ../assets/img/tierspiel/i1718074069755.png
+  ga: E37D
+  text: '&#128060;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+seahorse:
+  friendly: seahorse
+  img: ../assets/img/tierspiel/i1718074515267.png
+  ga: E387
   cats: []
   colls:
-    - hallo
-i1718045927834:
-  friendly: waves
-  img: ../assets/img/hallo/i1718045927834.png
-  cats: []
-  colls:
-    - hallo
-hallo1:
-  friendly: hallo1
-  img: ../assets/img/hallo/hallo1.png
-  cats: []
-  colls:
-    - hallo
+    - tierspiel
+    - icon

@@ -1,5 +1,111 @@
 
-
+seahorse:
+  lifespan: "1-5 years depending on the species"
+  habitat: "Shallow coastal waters, seagrass beds, coral reefs, and mangroves worldwide"
+  weight: "Varies widely depending on the species"
+  size: "1.5-35 cm in length depending on the species"
+  food: "Carnivorous: feeds on small crustaceans such as shrimp and plankton"
+  species: "Hippocampus spp."
+  color: "Varies widely; can include shades of yellow, orange, red, gray, and brown; many species can change color to blend in with their surroundings"
+  reproduction: "Ovoviviparous"
+  offsprings: "Males give birth to 50-1,500 fry per brood after carrying eggs in a brood pouch for 10 days to 6 weeks, depending on the species"
+  class: "Fish"
+panda:
+  name: giant_panda
+  lifespan: 20 years
+  habitat: Temperate broadleaf and mixed forests
+  weight: 100 kg
+  size: 1.5 m
+  food: Bamboo
+  species: Ailuropoda melanoleuca
+  color: Black and white
+  reproduction: Viviparous
+  offsprings: 1-2
+  class: Mammal
+seal:
+  name: harbor_seal
+  lifespan: "20-30 years in the wild, up to 35 years in captivity"
+  habitat: "Coastal waters, estuaries, and bays across the Northern Hemisphere"
+  weight: "55-170 kg"
+  size: "1.2-1.9 meters in length"
+  food: "Carnivorous: feeds on fish, squid, crustaceans, and mollusks"
+  species: "Phoca vitulina"
+  color: "Varies from brownish gray to silvery white with spots or rings"
+  reproduction: "Viviparous"
+  offsprings: 1 pup
+  class: "Mammal"
+sloth:
+  name: sloth
+  lifespan: 20-30 years
+  habitat: Tropical rainforests
+  weight: 8 kg
+  size: 60 cm
+  food: 'Leaves, fruits, insects'
+  species: Bradypus
+  color: Brown
+  reproduction: Viviparous
+  offsprings: '1'
+  class: Mammal
+skunk:
+  name: Skunk
+  lifespan: '2-4 years in the wild, up to 10 years in captivity'
+  habitat: 'Forests, grasslands, urban areas'
+  weight: 1.5-4.5 kg
+  size: 0.3-0.4 m long
+  food: 'Omnivorous: insects, small vertebrates, fruits, plants'
+  species: Mephitidae family
+  color: Black with white stripes down the back
+  reproduction: Viviparous
+  offsprings: 2-10 kits per litter
+  class: Mammal
+warthog:
+  name: Warthog
+  lifespan: 15 years
+  habitat: 'Grasslands, savanna, and woodlands'
+  weight: 100 kg
+  size: 85 cm at the shoulder
+  food: 'Grass, roots, berries'
+  species: Phacochoerus africanus
+  color: Grey with sparse hair
+  reproduction: Viviparous
+  offsprings: 2-6
+  class: Mammal
+walrus:
+  name: Walrus
+  lifespan: '20-30 years in the wild, up to 40 years in captivity'
+  habitat: 'Arctic and subarctic regions, often found on ice floes'
+  weight: '800-1,700 kg'
+  size: 2.2-3.6 m long
+  food: 'Carnivorous: benthic invertebrates such as clams and snails'
+  species: Odobenus rosmarus
+  color: Brown or pinkish skin with large tusks and whiskers
+  reproduction: Viviparous
+  offsprings: 1 calf
+  class: Mammal
+zebra:
+  name: Zebra
+  lifespan: 25 years
+  habitat: 'Grasslands, savannahs'
+  weight: 450 kg
+  size: 1.3 m at the shoulder
+  food: Grasses
+  species: Equus quagga
+  color: Black and white stripes
+  reproduction: Viviparous
+  offsprings: '1'
+  class: Mammal
+moth:
+  name: Moth
+  lifespan: 1-2 months depending on species
+  habitat: 'Varied habitats including forests, gardens, and urban areas'
+  weight: 'Varies by species, typically less than 1 g'
+  size: 1-5 cm wingspan depending on species
+  food: 'Herbivorous: larvae feed on plant material, adults primarily seek nectar'
+  species: Lepidoptera order
+  color: 'Varies by species: wide range of colors and patterns'
+  reproduction: Egg-laying
+  offsprings: 'Varies by species: can lay hundreds of eggs'
+  class: Insect
 ojos_azules_cat:
   name: Ojos Azules Cat
   lifespan: 12-15 years
@@ -1471,18 +1577,6 @@ mongoose:
   reproduction: Viviparous
   offsprings: 2-4 pups per litter
   class: Mammal
-moth:
-  name: Moth
-  lifespan: 1-2 months depending on species
-  habitat: 'Varied habitats including forests, gardens, and urban areas'
-  weight: 'Varies by species, typically less than 1 g'
-  size: 1-5 cm wingspan depending on species
-  food: 'Herbivorous: larvae feed on plant material, adults primarily seek nectar'
-  species: Lepidoptera order
-  color: 'Varies by species: wide range of colors and patterns'
-  reproduction: Egg-laying
-  offsprings: 'Varies by species: can lay hundreds of eggs'
-  class: Insect
 narwhal:
   name: Narwhal
   lifespan: 50-60 years
@@ -1568,18 +1662,6 @@ pacific_orange_spine_unicornfish:
   reproduction: Oviparous
   offsprings: Varies depending on species
   class: Fish
-panda:
-  name: Panda
-  lifespan: 20 years
-  habitat: Temperate broadleaf and mixed forests
-  weight: 100 kg
-  size: 1.5 m
-  food: Bamboo
-  species: Ailuropoda melanoleuca
-  color: Black and white
-  reproduction: Viviparous
-  offsprings: 1-2
-  class: Mammal
 penguin:
   name: Penguin
   lifespan: 15-20 years
@@ -1705,18 +1787,6 @@ sea_lion:
   reproduction: Viviparous
   offsprings: '1'
   class: Mammal
-seal:
-  name: Seal
-  lifespan: 20-30 years
-  habitat: Coastal waters and ice floes of the Arctic and Antarctic
-  weight: 85-300 kg depending on species
-  size: 1.5-3 m long
-  food: 'Carnivorous: fish, squid, and crustaceans'
-  species: Phocidae family
-  color: 'Varies by species: gray, brown, or spotted patterns'
-  reproduction: Viviparous
-  offsprings: 1 pup
-  class: Mammal
 siamese_fighting_fish:
   lifespan: 2-5 years on average
   habitat: >-
@@ -1759,30 +1829,6 @@ silverfish:
   reproduction: Egg-laying
   offsprings: Up to 60 eggs laid in cracks and crevices
   class: Insect
-skunk:
-  name: Skunk
-  lifespan: '2-4 years in the wild, up to 10 years in captivity'
-  habitat: 'Forests, grasslands, urban areas'
-  weight: 1.5-4.5 kg
-  size: 0.3-0.4 m long
-  food: 'Omnivorous: insects, small vertebrates, fruits, plants'
-  species: Mephitidae family
-  color: Black with white stripes down the back
-  reproduction: Viviparous
-  offsprings: 2-10 kits per litter
-  class: Mammal
-sloth:
-  name: Sloth
-  lifespan: 20-30 years
-  habitat: Tropical rainforests
-  weight: 8 kg
-  size: 60 cm
-  food: 'Leaves, fruits, insects'
-  species: Bradypus
-  color: Brown
-  reproduction: Viviparous
-  offsprings: '1'
-  class: Mammal
 southern_black_rhinoceros:
   lifespan: '30-35 years in the wild, up to 45 years in captivity'
   habitat: >-
@@ -1881,30 +1927,6 @@ termite:
   reproduction: Egg-laying
   offsprings: 'Millions of eggs per colony, laid by the queen'
   class: Insect
-walrus:
-  name: Walrus
-  lifespan: '20-30 years in the wild, up to 40 years in captivity'
-  habitat: 'Arctic and subarctic regions, often found on ice floes'
-  weight: '800-1,700 kg'
-  size: 2.2-3.6 m long
-  food: 'Carnivorous: benthic invertebrates such as clams and snails'
-  species: Odobenus rosmarus
-  color: Brown or pinkish skin with large tusks and whiskers
-  reproduction: Viviparous
-  offsprings: 1 calf
-  class: Mammal
-warthog:
-  name: Warthog
-  lifespan: 15 years
-  habitat: 'Grasslands, savanna, and woodlands'
-  weight: 100 kg
-  size: 85 cm at the shoulder
-  food: 'Grass, roots, berries'
-  species: Phacochoerus africanus
-  color: Grey with sparse hair
-  reproduction: Viviparous
-  offsprings: 2-6
-  class: Mammal
 wolf:
   name: Wolf
   lifespan: '6-8 years in the wild, up to 16 years in captivity'
@@ -1930,15 +1952,3 @@ yellow_tang:
   reproduction: Oviparous
   offsprings: Eggs hatch into larvae which eventually settle and develop into adults
   class: Fish
-zebra:
-  name: Zebra
-  lifespan: 25 years
-  habitat: 'Grasslands, savannahs'
-  weight: 450 kg
-  size: 1.3 m at the shoulder
-  food: Grasses
-  species: Equus quagga
-  color: Black and white stripes
-  reproduction: Viviparous
-  offsprings: '1'
-  class: Mammal

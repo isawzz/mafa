@@ -29,8 +29,24 @@ async function onclickSimple() {
 	sisi.dInstruction.innerHTML = '* drag images into the shaded area *'
 	let grid = sisi.dGrid;
 	mStyle(grid, { bg: '#00000030' })
-	enableImageDrop(grid, simpleOnDropImage)
+	enableDataDrop(grid, simpleOnDropImage)
 	//rBgFor(sisi.div,sisi.dMenu,sisi.dBatch,sisi.dGrid); //damit man sieht was der macht mit div sizing
+}
+async function onclickSimpleClearSelections(ev) { simpleClearSelections(); }
+
+async function onclickSimpleNew(name) {
+	if (nundef(name)) name = await mGather(iDiv(UI.simpleNew));
+	if (!name) return;
+	name = normalizeString(name);
+	if (isEmpty(name)) {
+		showMessage(`ERROR! you need to enter a valid name!!!!`);
+		return;
+	}
+	if (M.collections.includes(name)) {
+		showMessage(`collection ${name} already exists!`);
+	}
+	M.collections.push(name); M.collections.sort();
+	if (name != UI.simple) simpleInit(name,UI.simple);
 }
 async function onclickSimpleSelectAll(ev) {
 	let sisi = UI.simple;
@@ -53,14 +69,35 @@ async function onclickSimpleSelectPage(ev) {
 	}
 	simpleEnableListCommands();
 }
-async function onclickSimpleClearSelections(ev) { simpleClearSelections(); }
-
 async function onclickSetAvatar(ev) { await simpleSetAvatar(UI.selectedImages[0]); }
+
 function simpleClearSelections() {
 	mClearAllSelections();
 	simpleDisableListCommands();
 }
+async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi) {
+	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); //console.log('dims', dims);
+	let wScale = img.width / wOrig;
+	let hScale = img.height / hOrig;
+	let d1 = mDom(document.body, { margin: 10 });
+	let canvas = mDom(d1, {}, { tag: 'canvas', width: dims.w, height: dims.h });
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, dims.left / wScale, dims.top / hScale, (dims.w) / wScale, img.height / hScale, 0, 0, dims.w, dims.h)
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
+	let friendly = inpFriendly.value;
+	let cats = extractWords(valf(inpCats.value, ''));
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let o = { image: dataUrl, coll: sisi.name, path: filename };
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
+	let key = stringBefore(filename, '.');
+	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
+	dPopup.remove();
+	await simpleOnDroppedItem(item, sisi);
+}
 function simpleInit(name, sisi) {
+	if (nundef(name) && isdef(UI.simple)) {sisi=UI.simple;name=sisi.name;}
 	let isReload = isdef(sisi.index) && sisi.name == name;
 	if (!isReload) { sisi.index = 0; sisi.pageIndex = 1; sisi.name = name; sisi.filter = null; }
 
@@ -109,8 +146,8 @@ function simpleInit(name, sisi) {
 }
 async function simpleOnclickItem(ev) {
 	let id=evToId(ev);
-	let item = UI.simple.items[id];
-	console.log('clicked label of',item);
+	let item = UI.simple.items[id]; if (nundef(item)) return;
+	//console.log('clicked label of',item);
 	if (nundef(UI.selectedImages)) UI.selectedImages = [];
 	//let collname = item.name;
 	let selist = UI.selectedImages;
@@ -145,10 +182,101 @@ async function simpleOnclickLabel(ev) {
 	await loadAssets();
 	ev.target.innerHTML = newfriendly;
 }
+async function simpleOnDropImage(ev,elem) {
+	let dt=ev.dataTransfer;
+	console.log('dropped',ev.dataTransfer); 
+
+	console.log('types',dt.types); 
+	//console.log('items',dt.items); 
+	console.log('files',dt.files); 
+
+	if (dt.types.includes('itemkey')) {
+		let data = ev.dataTransfer.getData('itemkey');
+
+		console.log('itemkey',data)
+	}else {
+		const files = ev.dataTransfer.files;
+		console.log('drop',ev.dataTransfer);
+		if (files.length > 0) {
+			const reader = new FileReader();
+			reader.onload = async (evReader) => {
+				let data = evReader.target.result;
+				await simpleOnDroppedUrl(data, UI.simple);
+				//onDropCallback(, files[0].name, elem);
+			};
+			reader.readAsDataURL(files[0]);
+		}
+
+	}
+	//console.log('dropped',ev.dataTransfer); 
+
+	return;
+	if (isString(file) && isdef(M.superdi[file])){
+		console.log('YEAH!!!!!!!!!!!! ein key',file)
+		await simpleOnDroppedItem(M.superdi[file], UI.simple)
+	}else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false,"DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
+		//hab ein eigenes item gedropped!!!!
+		//muss ueberhaupt kein item adden!
+		//nur in die neue collection integrieren!
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
+	}else {
+		assertion(!isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!',file);
+
+		//await simpleOnDroppedUrl(data, UI.simple);
+	}
+	// return 
+}
+async function simpleOnDroppedItem(item, sisi) {
+	let key = item.key;
+	assertion(isdef(key), 'NO KEY!!!!!');
+	let o=M.superdi[key];
+	assertion(nundef(o) || o == item,"DISPARITY!!!!!!!!!!!!!!!!!!!!!")
+	let list = item.colls;
+	if (isdef(o) && list.includes(sisi.name)) {console.log(`HA! ${key} already there`); return; }// dropped item into same collection!!!
+	lookupAddIfToList(item,['colls'],sisi.name);
+	addIf(item.colls,sisi.name);
+	let di = {}; di[key] = item;
+	await updateSuperdi(di);
+	simpleInit(sisi.name,sisi)
+}
+async function simpleOnDroppedUrl(url, sisi) {
+	//console.log(url,sisi); //return;
+	let m = await imgMeasure(url); console.log('simpleOnDroppedUrl!!! sz', m);
+	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 400];
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz+80, hmin: sz+80, bg: 'pink' });
+	let d = mDom(dPopup, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	mIfNotRelative(d);
+	mStyle(img, { h: sz });
+	mAppend(d, img);
+	let [w0, h0] = [img.width, img.height];
+	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+	let db1 = mDom(dPopup, { bg: 'red', padding: 10, display: 'flex', gap: 10, 'justify-content': 'center' });
+	mButton('restart', () => imgReset(img, dc, sz, w0, h0), db1, { w: 70 }, 'input');
+	mButton('squish', () => imgSquish(img, dc, sz), db1, { w: 70 }, 'input');
+	mButton('expand', () => imgExpand(img, dc, sz), db1, { w: 70 }, 'input');
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`); }
+	defaultName = `${sisi.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+	mDom(dinp, { h: 1 });
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
+	mButton('OK', () => simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
+}
 async function simpleSetAvatar(key){
 	U.imgKey = key;
 	let res = await postUserChange(U);
-	console.log('res', res)
+	//console.log('res', res)
 }
 function simpleShowImageBatch(sisi, inc = 0, alertEmpty = false) {
 	let [keys, index, numCells] = [sisi.keys, sisi.index, sisi.rows * sisi.cols];
@@ -216,7 +344,7 @@ function simpleShowImageInBatch(key, dParent, styles = {}, opts = {}) {
 	//console.log('.......key',key)
 	d1.setAttribute('key', key);
 	d1.setAttribute('draggable', true)
-	d1.ondragstart = ev => { ev.dataTransfer.setData('itemKey', key); }
+	d1.ondragstart = ev => { ev.dataTransfer.setData('itemkey', key); }
 	// d1.ondragstart = ev => { 
 	// 	ev.dataTransfer.setData('text/uri-list', draggableImage.src);
         

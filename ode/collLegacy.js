@@ -231,19 +231,6 @@ function collEnableListCommands() {
 }
 function collExists(collname) { return isdef(M.byCollection[collname]); }
 
-function collFilterImages(coll, s) {
-	let di = {};
-	for (const k of coll.masterKeys) { di[k] = true; }
-	let list = isEmpty(s) ? Object.keys(di) : isdef(M.byCat[s]) ? M.byCat[s].filter(x => isdef(di[x])) : [];
-	if (nundef(list) || isEmpty(list)) {
-		list = [];
-		for (const k of coll.masterKeys) {
-			let o = M.superdi[k];
-			if (k.includes(s) || o.friendly.toLowerCase().includes(s)) list.push(k);
-		}
-	}
-	return list;
-}
 function collFindEmptyCell(coll) {
 	let cell = coll.cells.find(x => mGetStyle(x, 'opacity') == 0);
 	if (nundef(cell)) {

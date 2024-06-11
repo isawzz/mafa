@@ -5475,8 +5475,10 @@ function menuCloseCalendar() { closePopup(); delete DA.calendar; clearMain(); }
 
 function menuCloseCurrent(menu) {
 	let curKey = lookup(menu, ['cur']);
+	//console.log('curKey',curKey)
 	if (curKey) {
-		let cur = menu.commands[curKey];
+		let cur = menu.commands[curKey]; //console.log(cur);
+		if (nundef(cur)) return;
 		mClassRemove(iDiv(cur), 'activeLink'); //unselect cur command
 		cur.close();
 	}
@@ -5502,7 +5504,8 @@ function menuDisable(menu, key) { mClass(iDiv(menu.commands[key]), 'disabled') }
 function menuEnable(menu, key) { mClassRemove(iDiv(menu.commands[key]), 'disabled') }
 
 async function menuOpen(menu, key) {
-	let cmd = menu.commands[key];
+	let cmd = menu.commands[key]; 
+	if (nundef(cmd)) {console.log('abandon',key);await switchToMainMenu('settings');return;}
 	menu.cur = key;
 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
 	await updateExtra();
@@ -5513,13 +5516,13 @@ function mergeArrays(target, source) {
 	const merged = Array.from(target);
 	const keyMap = {};
 	target.forEach((item, index) => {
-		const itemKey = getKey(item);
-		if (itemKey) keyMap[itemKey] = index;
+		const k = getKey(item);
+		if (k) keyMap[k] = index;
 	});
 	source.forEach((item) => {
-		const itemKey = getKey(item);
-		if (itemKey && keyMap[itemKey] !== undefined) {
-			merged[keyMap[itemKey]] = deepMerge(target[keyMap[itemKey]], item);
+		const k = getKey(item);
+		if (k && keyMap[k] !== undefined) {
+			merged[keyMap[k]] = deepMerge(target[keyMap[k]], item);
 		} else {
 			merged.push(item);
 		}

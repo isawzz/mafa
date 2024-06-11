@@ -1,3 +1,25 @@
+//#region 10.6.24
+async function __simpleOnDropImage(data,file,elem) {
+	console.log('dropped',file,typeof file); 
+	if (isString(file) && isdef(M.superdi[file])){
+		console.log('YEAH!!!!!!!!!!!! ein key',file)
+		await simpleOnDroppedItem(M.superdi[file], UI.simple)
+	}else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false,"DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
+		//hab ein eigenes item gedropped!!!!
+		//muss ueberhaupt kein item adden!
+		//nur in die neue collection integrieren!
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
+	}else {
+		assertion(!isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!',file);
+
+		//await simpleOnDroppedUrl(data, UI.simple);
+	}
+	// return 
+}
+
+
 //#region 9.6.24 elim coll code alt
 async function collAddItem(coll, key, item) {
 	if (nundef(M.superdi[key])) {
