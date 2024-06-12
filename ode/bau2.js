@@ -1,19 +1,38 @@
 
-function adjustCropper1(img, dc, sz) {
-	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
-	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
-	mStyle(dc, { left: cx - radx, top: cy - rady, w: sz, h: sz });
+async function onclickZoomOut(o){
+	let [dc,wOrig,hOrig,img,src,wCrop,hCrop,sz,pad,dpad,d]=[o.dc,o.wOrig,o.hOrig,o.img,o.src,o.wCrop,o.hCrop,o.sz,o.pad,o.dpad,o.d];
+
+	//was genau will ich da?
+	//wenn komplett zoomed out will ich das img voll sehen koennen auch wenn es NICHT das dc covered
+	let [w,h]=[wCrop,hCrop];
+
+	if (wOrig == hOrig){
+
+	}
+
+
 }
 
-function showImagePart(dParent,src,x,y,wi,hi){
-	mClear(dParent);
-	let [w,h]=[mGetStyle(dParent,'w'),mGetStyle(dParent,'h')];
-	let canvas = mDom(dParent,{w,h,fill:'blue'},{tag:'canvas',width:w,height:h});
-	return;
+function showImagePartial(dParent,image, x, y, w, h, left,top,wShow, hShow) {
 
+	mClear(dParent)
+	let canvas = mDom(dParent,{},{tag:'canvas'});
+	//const canvas = document.getElementById('canvas');
+	const ctx = canvas.getContext('2d');
+
+	// Set canvas size to the specified width and height
+	canvas.width = wShow;
+	canvas.height = hShow;
+
+	// Draw the specified part of the image onto the canvas
+	ctx.drawImage(image, x, y, w, h, 10, 10, wShow, hShow);
 }
-function showImagePart(image, x, y, w, h) {
-	const canvas = document.getElementById('canvas');
+
+function showImagePart1(dParent,image, x, y, wShow, hShow) {
+
+	mClear(dParent)
+	let canvas = mDom(dParent,{},{tag:'canvas'});
+	//const canvas = document.getElementById('canvas');
 	const ctx = canvas.getContext('2d');
 
 	// Set canvas size to the specified width and height
@@ -24,23 +43,10 @@ function showImagePart(image, x, y, w, h) {
 	ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
 }
 
-function imgZoomOut(img, dc, sz,wOrig,hOrig) { 
-	let w = mGetStyle(dc, 'w'); 
-	let h = mGetStyle(dc, 'h'); 
-	console.log('__image',img.width,img.height);
-	console.log('sz',sz,'orig',wOrig,hOrig)
-	console.log(w,h)
 
-	return;
 
-	if (img.width == w || img.height == h) return; 
-	else { 
-		img.width = Math.max(img.width - 20, w); 
-		img.width = Math.max(img.width - 20, w); 
-		adjustCropper1(img, dc, sz); 
-		return [img.width, img.height]; 
-	} 
-}
+
+
 
 
 

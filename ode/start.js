@@ -6,11 +6,60 @@ async function start() { TESTING = true; await test125(); }
 async function test125(){
   await prelims();
 
-  //showim1('hallo','dMain',)
-  //let sz=100; showim1('halloss', 'dMain', { position:'absolute',top:0,left:0, 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `red 3px solid` });
-  //await switchToUser('mitra');
-  //await switchToMainMenu('simple')
-  //was will ich genau?
+  let dParent=clearFlex();
+  //let src="C:\\Users\\tawzz\\Pictures\\diana\\random114_003.png"; geht NICHT!!!!!!
+  let src='../ode/iport.png';
+  console.log('___',src);
+  //let img = await imgAsync(d,{},{src});
+	let m = await imgMeasure(src); 
+	let [img, wOrig, hOrig, sz, pad] = [m.img, m.w, m.h, 400, 50];
+  console.log('orig',wOrig,hOrig);
+  //img wurde NICHT gezeichnet
+
+	mIfNotRelative(dParent);
+	let dPopup = mDom(dParent, { position: 'fixed', top: 40, left: 0, bg: 'pink' });
+
+  let szCrop=sz+2*pad;
+  //let [wPart,hPart] = [wCrop,hCrop];
+  let d = mDom(dPopup, { bg: 'pink' }); //, w:wCrop,h:hCrop});//,padding:pad}); //, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	mIfNotRelative(d);
+
+  let isPortrait = hOrig>wOrig;
+  let fa=isPortrait?szCrop/hOrig:szCrop/wOrig; console.log('factor',fa)
+  let [xi,yi,wi,hi,wCrop,hCrop]=[0,0,wOrig,hOrig,wOrig*fa,hOrig*fa];
+  let dx=isPortrait?szCrop-wCrop/2:0;
+  let dy=isPortrait?szCrop-hCrop/2:0;
+  showImagePartial(d,img,xi,yi,wi,hi,dx,dy,wCrop,hCrop);
+
+  console.log(xi,yi,wi,hi,wCrop,hCrop)
+}
+function rest(){
+  return;
+  // let dc=mDom(d,{position:'absolute',left:2*pad,top:2*pad,w:sz,h:sz,border:'red solid 1px'});
+
+  // let o={dc,wOrig,hOrig,img,src,wPart,hPart,wCrop,hCrop,sz,pad,dpad:pad,d}
+  // o={src,dc,wOrig,hOrig,img,xi,yi,wi,hi,wc,hc,sz,pad,dpad:pad,d}
+
+  // mButton('zoom out',()=>onclickZoomOut(o),dParent)
+
+
+
+
+
+
+
+
+
+
+
+
+  // let b1=mButton('dummy',null,dParent,{opacity:0}); b1.focus();
+
+  // //showim1('hallo','dMain',)
+  // //let sz=100; showim1('halloss', 'dMain', { position:'absolute',top:0,left:0, 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `red 3px solid` });
+  // //await switchToUser('mitra');
+  // //await switchToMainMenu('simple')
+  // //was will ich genau?
 }
 
 async function test124_superdiCollsCatsAlerts(){

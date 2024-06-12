@@ -1317,6 +1317,7 @@ alpaca:
     - animal
   colls:
     - tierspiel
+    - test
 amanda:
   friendly: amanda
   cats:
@@ -2097,6 +2098,7 @@ american_bobtail:
   friendly: american_bobtail
   colls:
     - tierspiel
+    - test
 american_civil_war:
   friendly: american_civil_war
   cats:
