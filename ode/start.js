@@ -1023,6 +1023,7 @@ async function prelims() {
     
     `;
   document.body.innerHTML = html;
+  UI.commands = {};
   UI.nav = showNavbar();
   staticTitle();
   UI.user = mCommand(UI.nav.r, 'user'); iDiv(UI.user).classList.add('activeLink');

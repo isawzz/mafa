@@ -8585,6 +8585,7 @@ cattle_egret:
   friendly: cattle_egret
   colls:
     - tierspiel
+    - birds
 cauldron:
   friendly: cauldron
   ga: E8ED
@@ -13972,6 +13973,7 @@ eagle:
   colls:
     - emo
     - tierspiel
+    - birds
 eagle_emblem:
   friendly: eagle_emblem
   ga: E0C6
@@ -13987,6 +13989,7 @@ eagle_head:
   colls:
     - icon
     - tierspiel
+    - birds
 ear:
   friendly: ear
   img: ../assets/img/emo/ear.png
@@ -14113,7 +14116,8 @@ eastern_rosella:
     - animal
   img: ../assets/img/tierspiel/eastern_rosella.png
   friendly: eastern_rosella
-  colls: []
+  colls:
+    - birds
 eating:
   friendly: eating
   ga: E41E
@@ -17181,6 +17185,7 @@ flamingo:
     - animal
   colls:
     - emo
+    - birds
 flanged_mace:
   friendly: flanged_mace
   ga: E27B
@@ -35347,6 +35352,7 @@ scarlet_tanager:
   friendly: scarlet_tanager
   colls:
     - tierspiel
+    - birds
 school:
   friendly: school
   img: ../assets/img/emo/school.png
@@ -40254,7 +40260,8 @@ sweetie:
   img: ../assets/img/extra/sweetie.png
   cats:
     - animal
-  colls: []
+  colls:
+    - birds
 swimfins:
   friendly: swimfins
   ga: E555
@@ -46330,6 +46337,7 @@ toucan:
   colls:
     - icon
     - tierspiel
+    - birds
 bear:
   friendly: bear
   img: ../assets/img/emo/bear.png
@@ -46355,6 +46363,7 @@ colibri:
   friendly: colibri
   colls:
     - tierspiel
+    - birds
 blue_tit:
   friendly: blue_tit
   img: ../assets/img/tierspiel/blue_tit.png
@@ -46362,6 +46371,7 @@ blue_tit:
     - animal
   colls:
     - tierspiel
+    - birds
 chameleon:
   friendly: chameleon
   img: ../assets/img/tierspiel/chameleon.png
