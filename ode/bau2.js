@@ -5,7 +5,7 @@ function adjustCropper1(img, dc, sz) {
 	mStyle(dc, { left: cx - radx, top: cy - rady, w: sz, h: sz });
 }
 
-function showImagePart(dParent,src,x,y,w,h){
+function showImagePart(dParent,src,x,y,wi,hi){
 	mClear(dParent);
 	let [w,h]=[mGetStyle(dParent,'w'),mGetStyle(dParent,'h')];
 	let canvas = mDom(dParent,{w,h,fill:'blue'},{tag:'canvas',width:w,height:h});
