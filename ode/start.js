@@ -3,37 +3,52 @@ onload = start;
 async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; await test125(); }
 
-async function test125(){
+async function test125() {
   await prelims();
 
-  let dParent=clearFlex();
+  let dParent = clearFlex();
   //let src="C:\\Users\\tawzz\\Pictures\\diana\\random114_003.png"; geht NICHT!!!!!!
-  let src='../ode/iport.png';
-  console.log('___',src);
+  let src = '../ode/iport.png';
+  //console.log('___', src);
   //let img = await imgAsync(d,{},{src});
-	let m = await imgMeasure(src); 
-	let [img, wOrig, hOrig, sz, pad] = [m.img, m.w, m.h, 400, 50];
-  console.log('orig',wOrig,hOrig);
+  let m = await imgMeasure(src);
+  let [img, wOrig, hOrig, sz, pad] = [m.img, m.w, m.h, 400, 50];
+  //console.log('orig', wOrig, hOrig);
   //img wurde NICHT gezeichnet
 
-	mIfNotRelative(dParent);
-	let dPopup = mDom(dParent, { position: 'fixed', top: 40, left: 0, bg: 'pink' });
+  mIfNotRelative(dParent);
+  let dPopup = mDom(dParent, { position: 'fixed', top: 40, left: 0, bg: 'pink' });
 
-  let szCrop=sz+2*pad;
+  let szCrop = sz + 2 * pad;
   //let [wPart,hPart] = [wCrop,hCrop];
-  let d = mDom(dPopup, { bg: 'pink' }); //, w:wCrop,h:hCrop});//,padding:pad}); //, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
-	mIfNotRelative(d);
+  let d = mDom(dPopup, { w: szCrop, h: szCrop }); //, {  }); //, w:wCrop,h:hCrop});//,padding:pad}); //, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+  mIfNotRelative(d);
 
-  let isPortrait = hOrig>wOrig;
-  let fa=isPortrait?szCrop/hOrig:szCrop/wOrig; console.log('factor',fa)
-  let [xi,yi,wi,hi,wCrop,hCrop]=[0,0,wOrig,hOrig,wOrig*fa,hOrig*fa];
-  let dx=isPortrait?szCrop-wCrop/2:0;
-  let dy=isPortrait?szCrop-hCrop/2:0;
-  showImagePartial(d,img,xi,yi,wi,hi,dx,dy,wCrop,hCrop);
+  let isPortrait = hOrig > wOrig;
+  let fa = isPortrait ? szCrop / hOrig : szCrop / wOrig; //console.log('factor', fa);
 
-  console.log(xi,yi,wi,hi,wCrop,hCrop)
+  showImgCentered(d,img,wOrig,hOrig,szCrop,fa, fa);
+  mButton('zoom out', onclickZoomOut, dParent,{},'button','bZoomOut');
+  mButton('zoom in', onclickZoomIn, dParent,{},'button','bZoomIn');
+  mButton('save', onclickSaveCropData, dParent,{},'button','bZoomSave');
+
+
 }
-function rest(){
+function mist_zoomzeug(){
+  let [xi, yi, wi, hi, wCrop, hCrop] = [0, 0, wOrig, hOrig, wOrig * fa, hOrig * fa];
+  console.log('img', xi, yi, wi, hi, '\ncrop', Math.round(wCrop), Math.round(hCrop), szCrop)
+  let dx = isPortrait ? (szCrop - wCrop) / 2 : 0;
+  let dy = isPortrait ? (szCrop - hCrop) / 2 : 0;
+  let [wCanvas, hCanvas] = [szCrop, szCrop];
+  showImagePartial(d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+  //showImagePartial(d,img,xi,yi,wi,hi,dx,dy,wCrop,hCrop);
+
+  let o = UI.zoomo = { d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig, fa };
+
+
+
+}
+function rest() {
   return;
   // let dc=mDom(d,{position:'absolute',left:2*pad,top:2*pad,w:sz,h:sz,border:'red solid 1px'});
 
@@ -62,113 +77,113 @@ function rest(){
   // //was will ich genau?
 }
 
-async function test124_superdiCollsCatsAlerts(){
-  await prelims(); 
-  let di={};
+async function test124_superdiCollsCatsAlerts() {
+  await prelims();
+  let di = {};
 
-  for(const k in M.superdi){
-    let o=M.superdi[k];
-    assertion(isList(o.colls),`${k} does not have colls!`);
-    assertion(isList(o.cats),`${k} does not have cats!`);
+  for (const k in M.superdi) {
+    let o = M.superdi[k];
+    assertion(isList(o.colls), `${k} does not have colls!`);
+    assertion(isList(o.cats), `${k} does not have cats!`);
 
     if (isEmpty(o.colls)) {
-      console.log(`${k} NO MORE colls!!!`,o);
+      console.log(`${k} NO MORE colls!!!`, o);
     }
     delete o.key;
 
-    di[k]=o;
+    di[k] = o;
   }
-  di=sortDictionary(di);
+  di = sortDictionary(di);
   // downloadAsYaml(di,'superdi');
 }
 //#region tierspiel
-async function test124_animalDetailsYaml(){
+async function test124_animalDetailsYaml() {
   let ad = getAnimalDetails();
-  let di={};
+  let di = {};
   for (const k in ad) {
     let o = ad[k];
     let knew = normalizeString(k);
     //let lastWord = stringAfterLast(knew, '_');
-    di[knew]=o;
+    di[knew] = o;
   }
   di = sortDictionary(di);
-  downloadAsYaml(di,'diDetails');
-    
-}
-async function test123(){
-  await prelims(); 
-  let di={};
+  downloadAsYaml(di, 'diDetails');
 
-  for(const k in M.superdi){
-    let o=M.superdi[k];
+}
+async function test123() {
+  await prelims();
+  let di = {};
+
+  for (const k in M.superdi) {
+    let o = M.superdi[k];
     // if (isdef(o.key)) console.log('has key!',o);
     //assertion(nundef(o.key),`${k} still has a key!`);
-    assertion(isList(o.colls),`${k} does not have colls!`);
-    assertion(isList(o.cats),`${k} does not have cats!`);
+    assertion(isList(o.colls), `${k} does not have colls!`);
+    assertion(isList(o.cats), `${k} does not have cats!`);
 
-    for(const s of ['animals','critters','armadillos','owls']) {
-      removeInPlace(o.colls,s);
+    for (const s of ['animals', 'critters', 'armadillos', 'owls']) {
+      removeInPlace(o.colls, s);
     }
     if (isEmpty(o.colls)) console.log(`${k} NO MORE colls!!!`)
     let validcats = 'animal action building card clothing food emotion gesture wheather user transport sport plant';
-    o.cats=o.cats.filter(x=>validcats.includes(x));
+    o.cats = o.cats.filter(x => validcats.includes(x));
 
     delete o.key;
 
-    di[k]=o;
+    di[k] = o;
   }
-  di=sortDictionary(di);
-  downloadAsYaml(di,'superdi');
+  di = sortDictionary(di);
+  downloadAsYaml(di, 'superdi');
 }
-async function test122(){
-  await prelims(); 
-  let di={};
+async function test122() {
+  await prelims();
+  let di = {};
 
-  for(const k in M.superdi){
-    let o=M.superdi[k];
+  for (const k in M.superdi) {
+    let o = M.superdi[k];
     delete o.key;
-    assertion(isdef(o.colls),`${k} does not have colls!`);
-    assertion(isdef(o.cats),`${k} does not have cats!`);
-    removeInPlace(o.cats,'best');
+    assertion(isdef(o.colls), `${k} does not have colls!`);
+    assertion(isdef(o.cats), `${k} does not have cats!`);
+    removeInPlace(o.cats, 'best');
     if (isEmpty(o.colls)) console.log(`${k} in NO collection`)
-    if (o.colls.length == 1 && o.colls[0]=='animals') continue;
+    if (o.colls.length == 1 && o.colls[0] == 'animals') continue;
     di[k] = o;
   }
   //downloadAsYaml(di,'superdi');
 }
-async function test121_tierbilderbesser(){
+async function test121_tierbilderbesser() {
   await prelims(); return;
   let tierfiles = await mGetFiles('../assets/img/tierspiel');
   //console.log(tierfiles);
-  let d=clearFlex();
+  let d = clearFlex();
   let keys = M.byCollection.animals;
   let newkeys = M.byCollection.tierspiel;
 
-  let di={};
-  for(const k of keys){
-    let old=M.superdi[k];
-    let img =old.img;
-    if (tierfiles.some(x=>img.includes(x))) {
-      console.log('___found',k);
+  let di = {};
+  for (const k of keys) {
+    let old = M.superdi[k];
+    let img = old.img;
+    if (tierfiles.some(x => img.includes(x))) {
+      console.log('___found', k);
       if (newkeys.includes(k)) {
-        console.log('IS in tierspiel!',old); 
+        console.log('IS in tierspiel!', old);
 
       }
 
     }
   }
 }
-async function test120_normalizeFriendly(){
-  await prelims(); 
-  for(const k in M.superdi){
-    let o=M.superdi[k];
+async function test120_normalizeFriendly() {
+  await prelims();
+  for (const k in M.superdi) {
+    let o = M.superdi[k];
     o.friendly = normalizeString(o.friendly);
   }
 
-  downloadAsYaml(M.superdi,'superdi');
+  downloadAsYaml(M.superdi, 'superdi');
 }
 async function test119_animalDetails() {
-  await prelims(); 
+  await prelims();
   let ad = getAnimalDetails();
   let di = {};
   let diDetail = {}, deletedKeys = [], collname = 'tierspiel';
@@ -181,7 +196,7 @@ async function test119_animalDetails() {
     let m2 = M.superdi[knew];
     let m3 = M.superdi[lastWord];
     diDetail[knew] = ad[k];
-    if (isdef(m2)) {console.log('already have',knew,m2); continue; }
+    if (isdef(m2)) { console.log('already have', knew, m2); continue; }
 
     console.log('___', k);
     if (k != knew && isdef(m1)) console.log(`m1: ${k} in superdi`, m1);
@@ -189,7 +204,7 @@ async function test119_animalDetails() {
     if (k != knew && isdef(f1)) console.log(`f1: ${k} in friendly`, f1, M.superdi[f1[0]]);
     if (isdef(f2)) console.log(`f2: ${knew} in friendly`, f2, M.superdi[f2[0]]);
 
-    assertion(nundef(f1),"HALLO DA SIND IMMER NOCH non-normalized friendly strings!!!");
+    assertion(nundef(f1), "HALLO DA SIND IMMER NOCH non-normalized friendly strings!!!");
 
     if (isdef(m1) && m1.colls.includes(collname) && knew != k) { addIf(deletedKeys, k); di[knew] = di[k]; }
     else if (isdef(f2) && nundef(m2)) {
@@ -216,7 +231,7 @@ async function test119_animalDetails() {
     //if (isdef(m1) && m1.colls.includes(collname) && knew!=k) {addIf(deletedKeys,k);di[knew]=di[k];}
   }
 
-  console.log('delete:',deletedKeys)
+  console.log('delete:', deletedKeys)
   // let res = await mPostRoute('postUpdateSuperdi', { di });
   // await loadAssets();
   // collPostReload();
