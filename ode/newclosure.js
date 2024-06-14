@@ -7713,27 +7713,6 @@ function simpleClearSelections() {
 	mClearAllSelections();
 	simpleCheckCommands();
 }
-async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi) {
-	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); //console.log('dims', dims);
-	let wScale = img.width / wOrig;
-	let hScale = img.height / hOrig;
-	let d1 = mDom(document.body, { margin: 10 });
-	let canvas = mDom(d1, {}, { tag: 'canvas', width: dims.w, height: dims.h });
-	const ctx = canvas.getContext('2d');
-	ctx.drawImage(img, dims.left / wScale, dims.top / hScale, (dims.w) / wScale, img.height / hScale, 0, 0, dims.w, dims.h)
-	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
-	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
-	let friendly = inpFriendly.value;
-	let cats = extractWords(valf(inpCats.value, ''));
-	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
-	let o = { image: dataUrl, coll: sisi.name, path: filename };
-	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
-	let key = stringBefore(filename, '.');
-	let imgPath = `../assets/img/${sisi.name}/${filename}`;
-	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
-	dPopup.remove();
-	await simpleOnDroppedItem(item, sisi);
-}
 function simpleInit(name, sisi) {
 	if (nundef(name) && isdef(UI.simple)) { sisi = UI.simple; name = sisi.name; }
 	let isReload = isdef(sisi.index) && sisi.name == name;
@@ -7782,16 +7761,11 @@ function simpleLocked(collname) {
 }
 async function simpleOnDropImage(ev, elem) {
 	let dt = ev.dataTransfer;
-	console.log('dropped', ev.dataTransfer);
-	console.log('types', dt.types);
-	console.log('files', dt.files);
 	if (dt.types.includes('itemkey')) {
 		let data = ev.dataTransfer.getData('itemkey');
-		console.log('itemkey', data)
 		await simpleOnDroppedItem(data);
 	} else {
 		const files = ev.dataTransfer.files;
-		console.log('drop', ev.dataTransfer);
 		if (files.length > 0) {
 			const reader = new FileReader();
 			reader.onload = async (evReader) => {
@@ -7800,17 +7774,6 @@ async function simpleOnDropImage(ev, elem) {
 			};
 			reader.readAsDataURL(files[0]);
 		}
-	}
-	return;
-	if (isString(file) && isdef(M.superdi[file])) {
-		console.log('YEAH!!!!!!!!!!!! ein key', file)
-		await simpleOnDroppedItem(M.superdi[file], UI.simple)
-	} else if (isDict(file) && isdef(M.allImages[file.name])) {
-		assertion(false, "DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
-		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img', M.allImages[file.name])
-	} else {
-		assertion(!isDict(file), 'MUSS VON WO ANDERS KOMMEN!!!!!')
-		console.log('from somewhere else!!!!', file);
 	}
 }
 async function simpleOnDroppedItem(itemOrKey, sisi) {

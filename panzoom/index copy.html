@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pan and Zoom Image</title>
+    <style>
+        #canvas {
+            border: 1px solid black;
+            cursor: grab;
+        }
+        #canvas:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let image = new Image();
+        image.src = '../ode/iport.png'; // Replace with your image path
+
+        // Variables for panning and zooming
+        let scale = 1;
+        let originX = 0;
+        let originY = 0;
+        let startX = 0;
+        let startY = 0;
+        let isDragging = false;
+
+        image.onload = () => {
+            draw();
+        };
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(originX, originY);
+            ctx.scale(scale, scale);
+            ctx.drawImage(image, 0, 0);
+            ctx.restore();
+        }
+
+        // Mouse events for panning
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - originX;
+            startY = e.clientY - originY;
+            canvas.style.cursor = 'grabbing';
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                originX = e.clientX - startX;
+                originY = e.clientY - startY;
+                draw();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+
+        canvas.addEventListener('mouseout', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+
+        // Mouse wheel event for zooming
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoom = Math.exp(e.deltaY * -0.001);
+            scale *= zoom;
+
+            // Zoom relative to the mouse pointer
+            const mouseX = e.clientX - canvas.offsetLeft;
+            const mouseY = e.clientY - canvas.offsetTop;
+            originX = mouseX - (mouseX - originX) * zoom;
+            originY = mouseY - (mouseY - originY) * zoom;
+
+            draw();
+        });
+
+        // Touch events for mobile support
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                touchStartX = e.touches[0].clientX - originX;
+                touchStartY = e.touches[0].clientY - originY;
+                canvas.style.cursor = 'grabbing';
+            }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1 && isDragging) {
+                originX = e.touches[0].clientX - touchStartX;
+                originY = e.touches[0].clientY - touchStartY;
+                draw();
+            }
+        });
+
+        canvas.addEventListener('touchend', () => {
+            isDragging = false;
+            canvas.style.cursor = 'grab';
+        });
+    </script>
+</body>
+</html>

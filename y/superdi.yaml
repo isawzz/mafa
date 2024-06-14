@@ -1317,7 +1317,6 @@ alpaca:
     - animal
   colls:
     - tierspiel
-    - test
 amanda:
   friendly: amanda
   cats:
@@ -2096,9 +2095,23 @@ american_bobtail:
     - animal
   img: ../assets/img/tierspiel/american_bobtail.png
   friendly: american_bobtail
-  colls:
-    - tierspiel
-    - test
+  colls: []
+  lifespan: 13-15 years on average
+  habitat: Domesticated; commonly found in homes, originating from North America
+  weight: 3-7 kg
+  size: 30-38 cm in length excluding tail, 25-30 cm in height at the shoulders
+  food: >-
+    Carnivorous: primarily feeds on commercially prepared cat food, small
+    mammals, and birds
+  species: Felis catus (American Bobtail breed)
+  color: >-
+    Varies widely; common colors include brown, black, white, blue, red, and
+    various patterns such as tabby, calico, and bicolor
+  reproduction: Viviparous
+  offsprings: >-
+    Females give birth to 2-6 kittens per litter after a gestation period of
+    about 64-67 days
+  class: Mammal
 american_civil_war:
   friendly: american_civil_war
   cats:
@@ -46135,12 +46148,6 @@ zat_gun:
   cats: []
   colls:
     - icon
-zebra:
-  friendly: zebra
-  img: ../assets/img/emo/zebra.png
-  cats: []
-  colls:
-    - emo
 zebra_shield:
   friendly: zebra_shield
   ga: E066
@@ -46437,12 +46444,14 @@ moth:
   cats: []
   colls:
     - tierspiel
-i1718063937394:
+zebra:
   friendly: zebra
-  img: ../assets/img/tierspiel/i1718063937394.png
+  img: ../assets/img/emo/zebra.png
+  photo: ../assets/img/tierspiel/i1718063937394.png
   cats: []
   colls:
     - tierspiel
+    - emo
 walrus:
   friendly: walrus
   img: ../assets/img/tierspiel/walrus.png
@@ -46506,3 +46515,10 @@ seahorse:
   colls:
     - tierspiel
     - icon
+stellers_jay:
+  friendly: stellers_jay
+  img: ../assets/img/tierspiel/stellars_jay.png
+  cats:
+    - animal
+  colls:
+    - tierspiel

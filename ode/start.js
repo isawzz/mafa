@@ -1,8 +1,20 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test125(); }
+async function start() { TESTING = true; await test126(); }
 
+async function test126(){
+  await prelims(); 
+  //await simpleOnDroppedUrl_test('../ode/iport.png',UI.simple);
+  return;
+  let dParent = clearFlex();
+  let src='../ode/iport.png';
+  let canvas=createPanZoomCanvas(dParent, src, 400, 400);
+  mStyle(canvas,{border:'red'})
+  mLinebreak(dParent)
+  mButton('save', ()=>savePanZoomCanvas(canvas), dParent,{},'button');
+
+}
 async function test125() {
   await prelims();
 

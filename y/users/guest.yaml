@@ -1,7 +1,7 @@
 name: guest
 color: '#002e63'
 texture: ../assets/textures/marble_blue1.jpeg
-imgKey: bamboo_weevil
+imgKey: stellers_jay
 blendMode: normal
 bg: '#55bc41'
 games:

@@ -1,4 +1,16 @@
 
+stellers_jay:
+  name: stellers_jay
+  lifespan: "10-16 years in the wild"
+  habitat: "Coniferous and mixed forests, as well as suburban areas in western North America"
+  weight: "100-140 grams"
+  size: "30-34 cm in length, with a wingspan of 45-48 cm"
+  food: "Omnivorous: feeds on nuts, seeds, berries, insects, small animals, and occasionally eggs and nestlings of other birds"
+  species: "Cyanocitta stelleri"
+  color: "Black head and upper body, blue lower body and wings, with a distinctive blue crest"
+  reproduction: "Oviparous"
+  offsprings: "Females lay 2-6 eggs per clutch, with an incubation period of about 16-18 days"
+  class: "Bird"
 seahorse:
   lifespan: "1-5 years depending on the species"
   habitat: "Shallow coastal waters, seagrass beds, coral reefs, and mangroves worldwide"
@@ -1698,18 +1710,6 @@ porcupine:
   reproduction: Viviparous
   offsprings: 1-2
   class: Mammal
-raccoon:
-  name: Raccoon
-  lifespan: '2-3 years in the wild, up to 20 years in captivity'
-  habitat: 'Forests, wetlands, urban areas'
-  weight: 5-12 kg
-  size: 0.3-0.6 m long
-  food: 'Omnivorous: fruits, nuts, insects, small vertebrates, eggs, garbage'
-  species: Procyon lotor
-  color: Grayish-brown fur with black facial mask and ringed tail
-  reproduction: Viviparous
-  offsprings: 2-5 kits per litter
-  class: Mammal
 red_lionfish:
   lifespan: 5-10 years in the wild
   habitat: >-
@@ -1952,3 +1952,15 @@ yellow_tang:
   reproduction: Oviparous
   offsprings: Eggs hatch into larvae which eventually settle and develop into adults
   class: Fish
+raccoon:
+  name: raccoon
+  lifespan: '2-3 years in the wild, up to 20 years in captivity'
+  habitat: 'Forests, wetlands, urban areas'
+  weight: 5-12 kg
+  size: 0.3-0.6 m long
+  food: 'Omnivorous: fruits, nuts, insects, small vertebrates, eggs, garbage'
+  species: Procyon lotor
+  color: Grayish-brown fur with black facial mask and ringed tail
+  reproduction: Viviparous
+  offsprings: 2-5 kits per litter
+  class: Mammal

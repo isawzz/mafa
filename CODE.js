@@ -1,5 +1,159 @@
 
+//#region 13.6.24
+async function simpleOnDropImage(ev, elem) {
+	let dt = ev.dataTransfer;
+	//console.log('dropped', ev.dataTransfer);
+	//console.log('types', dt.types);
+	//console.log('files', dt.files);
+	if (dt.types.includes('itemkey')) {
+		let data = ev.dataTransfer.getData('itemkey');
+		//console.log('itemkey', data)
+		await simpleOnDroppedItem(data);
+	} else {
+		const files = ev.dataTransfer.files;
+		//console.log('drop', ev.dataTransfer);
+		if (files.length > 0) {
+			const reader = new FileReader();
+			reader.onload = async (evReader) => {
+				let data = evReader.target.result;
+				await simpleOnDroppedUrl(data, UI.simple);
+			};
+			reader.readAsDataURL(files[0]);
+		}
+	}
+	return;
+	if (isString(file) && isdef(M.superdi[file])) {
+		console.log('YEAH!!!!!!!!!!!! ein key', file)
+		await simpleOnDroppedItem(M.superdi[file], UI.simple)
+	} else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false, "DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img', M.allImages[file.name])
+	} else {
+		assertion(!isDict(file), 'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!', file);
+	}
+}
+
+async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi) {
+	let dims = mGetStyles(dc, ['left', 'top', 'w', 'h']); //console.log('dims', dims);
+	let wScale = img.width / wOrig;
+	let hScale = img.height / hOrig;
+	let d1 = mDom(document.body, { margin: 10 });
+	let canvas = mDom(d1, {}, { tag: 'canvas', width: dims.w, height: dims.h });
+	const ctx = canvas.getContext('2d');
+	ctx.drawImage(img, dims.left / wScale, dims.top / hScale, (dims.w) / wScale, img.height / hScale, 0, 0, dims.w, dims.h)
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
+	let friendly = inpFriendly.value;
+	let cats = extractWords(valf(inpCats.value, ''));
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let o = { image: dataUrl, coll: sisi.name, path: filename };
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
+	let key = stringBefore(filename, '.');
+	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
+	dPopup.remove();
+	await simpleOnDroppedItem(item, sisi);
+}
+
+async function simpleOnDroppedUrl(url, sisi) {
+	let m = await imgMeasure(url); console.log('simpleOnDroppedUrl!!! sz', m);
+	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 400];
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz + 80, hmin: sz + 80, bg: 'pink' });
+	let d = mDom(dPopup, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+	mIfNotRelative(d);
+
+	let zoom = 1;
+
+
+	mStyle(img, { h: sz });
+	
+	mAppend(d, img);
+	let [w0, h0] = [img.width, img.height];
+	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+	let db1 = mDom(dPopup, { bg: 'red', padding: 10, display: 'flex', gap: 10, 'justify-content': 'center' });
+	
+	mButton('restart', () => imgReset(img, dc, sz, w0, h0), db1, { w: 70 }, 'input');
+	mButton('squish', () => imgSquish(img, dc, sz), db1, { w: 70 }, 'input');
+	mButton('expand', () => imgExpand(img, dc, sz), db1, { w: 70 }, 'input');
+	mButton('zoom out', () => imgZoomOut(img, dc, sz,wOrig, hOrig), db1, { w: 70 }, 'input');
+	mButton('zoom in', () => imgZoomIn(img, dc, sz), db1, { w: 70 }, 'input');
+	
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`); }
+	defaultName = `${sisi.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+	mDom(dinp, { h: 1 });
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
+	mButton('OK', () => simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
+}
+
+
 //#region 11.6.24
+function _showImagePart1(dParent, image, x, y, wShow, hShow) {
+
+	mClear(dParent)
+	let canvas = mDom(dParent, {}, { tag: 'canvas' });
+	//const canvas = document.getElementById('canvas');
+	const ctx = canvas.getContext('2d');
+
+	// Set canvas size to the specified width and height
+	canvas.width = w;
+	canvas.height = h;
+
+	// Draw the specified part of the image onto the canvas
+	ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
+}
+async function _onclickZoomOut() {
+	let o = UI.zoomo;
+	let [d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig] = [o.d, o.img, o.xi, o.yi, o.wi, o.hi, o.dx, o.dy, o.wCrop, o.hCrop, o.wCanvas, o.hCanvas, o.wOrig, o.hOrig];
+	let fa = o.fa;
+
+	if (wi >= wOrig || hi >= hOrig) { console.log(`can't zoom out`); return; }
+
+	//wenn komplett zoomed out will ich das img voll sehen koennen auch wenn es NICHT das dc covered
+	let [w, h] = [wCrop, hCrop];
+}
+async function _onclickZoomIn() {
+	let o = UI.zoomo;
+	let [d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig] = [o.d, o.img, o.xi, o.yi, o.wi, o.hi, o.dx, o.dy, o.wCrop, o.hCrop, o.wCanvas, o.hCanvas, o.wOrig, o.hOrig];
+	let fa = o.fa;
+	if (wi <= wCrop || hi <= hCrop) { console.log(`can't zoom in`); return; }
+
+	console.log('fa',fa)
+	fa=Math.min(1,fa+.1);
+	let [wshow,hshow]=[wOrig*fa,hOrig*fa];
+	[xi, yi, wi, hi, wCrop, hCrop] = [0, 0, wOrig, hOrig, wOrig * fa, hOrig * fa];
+
+	//if (fa)
+	
+	showImagePartial(d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+
+}
+function mist(){	
+	let [d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig] = [o.d, o.img, o.xi, o.yi, o.wi, o.hi, o.dx, o.dy, o.wCrop, o.hCrop, o.wCanvas, o.hCanvas, o.wOrig, o.hOrig];
+	let fa = o.fa;
+	if (wi <= wCrop || hi <= hCrop) { console.log(`can't zoom in`); return; }
+
+	console.log('fa',fa)
+	fa=Math.min(1,fa+.1);
+	let [wshow,hshow]=[wOrig*fa,hOrig*fa];
+	[xi, yi, wi, hi, wCrop, hCrop] = [0, 0, wOrig, hOrig, wOrig * fa, hOrig * fa];
+
+	//if (fa)
+	
+	showImagePartial(d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+
+}
 
 
 //#region weitere tiere
