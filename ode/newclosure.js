@@ -1804,7 +1804,7 @@ function createScaledCanvasFromImage(src) {
 		img.src = src;
 	});
 }
-async function cropOrExpandImageAndGetDataUrl(imageSrc, x, y) {
+function cropOrExpandImageAndGetDataUrl(imageSrc, x, y) {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
 		img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
@@ -3674,7 +3674,7 @@ function getNow() { return Date.now(); }
 
 function getO(n, R) { let oid = n.oid; if (isdef(oid)) return R.getO(oid); else return null; }
 
-async function getPaletteFromCanvas(canvas) {
+function getPaletteFromCanvas(canvas) {
 	if (nundef(ColorThiefObject)) ColorThiefObject = new ColorThief();
 	const dataUrl = canvas.toDataURL();
 	const img = new Image();
@@ -3927,7 +3927,7 @@ async function imgAsIsInDiv(url, dParent) {
 	let scale = sz / img.height;
 	return [img, scale];
 }
-async function imgAsync(dParent, styles, opts) {
+function imgAsync(dParent, styles, opts) {
 	let path = opts.src;
 	delete opts.src;
 	addKeys({ tag: 'img' }, opts); //if forget
@@ -3958,7 +3958,7 @@ async function imgCrop(img, dc, wOrig, hOrig) {
 }
 function imgExpand(img, dc, sz) { img.width += 20; adjustCropper(img, dc, sz); return [img.width, img.height]; }
 
-async function imgMeasure(src) {
+function imgMeasure(src) {
 	return new Promise((resolve, reject) => {
 		const img = new Image();
 		img.crossOrigin = 'anonymous'; // CORS permission for cross-origin images
@@ -3996,7 +3996,7 @@ function imgToDataUrl(img) {
 }
 async function imgToServer(canvas, path) {
 	let dataUrl = canvas.toDataURL('image/png');
-	let o = { image: dataUrl, path: path };
+	let o = { image: dataUrl, filename: path };
 	console.log('...postImage o', o)
 	let resp = await mPostRoute('postImage', o);
 	return resp;
@@ -4263,7 +4263,7 @@ async function loadAndScaleImage(imageUrl) {
 async function loadAssets() {
 	M = await mGetYaml('../y/m.yaml');
 	M.superdi = await mGetYaml('../y/superdi.yaml');
-	M.details = await mGetYaml('../y/animalDetails.yaml');
+	M.details = await mGetYaml('../y/details.yaml');
 	let [di, byColl, byFriendly, byCat, allImages] = [M.superdi, {}, {}, {}, {}];
 	for (const k in di) {
 		let o = di[k];
@@ -4287,7 +4287,7 @@ async function loadAssets() {
 	M.dicolor = await mGetYaml(`../assets/dicolor.yaml`);
 	[M.colorList, M.colorByHex, M.colorByName] = getListAndDictsForDicolors();
 }
-async function loadImageAsync(src, img) {
+function loadImageAsync(src, img) {
 	return new Promise((resolve, reject) => {
 		img.onload = async () => {
 			resolve(img);
@@ -4919,18 +4919,19 @@ function mGadget(name, styles = {}, opts = {}) {
 	mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	return { name, dialog, form, inp }
 }
-async function mGather(dAnchor, styles = {}, opts = {}) {
+function mGather(dAnchor, styles = {}, opts = {}) {
 	return new Promise((resolve, _) => {
 		let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; //defaults
 		let dbody = document.body;
 		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog', id: 'dDialog' });
 		let d = mDom(dDialog);
-		let funcName = `uiGadgetType${capitalize(type)}`; console.log(funcName)
+		let funcName = `uiGadgetType${capitalize(type)}`; //console.log(funcName)
 		let uiFunc = window[funcName];
 		let dx = uiFunc(d, content, x => { dDialog.remove(); resolve(x) }, styles, opts);
+		if (isdef(opts.title)) mInsert(dx,mCreateFrom(`<h2>Details for ${opts.title}</h2>`))
 		dDialog.addEventListener('mouseup', ev => {
 			if (opts.type != 'select' && isPointOutsideOf(dx, ev.clientX, ev.clientY)) {
-				console.log('RESOLVE NULL POINTER OUTSIDE!!!', ev.clientX, ev.clientY)
+				//console.log('RESOLVE NULL POINTER OUTSIDE!!!', ev.clientX, ev.clientY)
 				resolve(null);
 				dDialog.remove();
 			}
@@ -5173,7 +5174,7 @@ async function mPostRoute(route, o = {}) {
 		return 'ERROR 1';
 	}
 }
-async function mPrompt(gadget) {
+function mPrompt(gadget) {
 	return new Promise((resolve, reject) => {
 		gadget.dialog.showModal();
 		gadget.form.onsubmit = (ev) => {
@@ -5282,7 +5283,7 @@ function mSizeSuccession(styles = {}, szDefault = 100, fromWidth = true) {
 	}
 	return [w, h];
 }
-async function mSleep(ms = 1000) {
+function mSleep(ms = 1000) {
 	return new Promise(
 		(res, rej) => {
 			if (ms > 10000) { ms = 10000; }
@@ -6487,7 +6488,7 @@ async function postEventChange(data) {
 }
 async function postImage(img, path) {
 	let dataUrl = imgToDataUrl(img);
-	let o = { image: dataUrl, path: path };
+	let o = { image: dataUrl, filename: path };
 	let resp = await mPostRoute('postImage', o);
 	console.log('resp', resp); //sollte path enthalten!
 }
@@ -7294,18 +7295,18 @@ function showDetailsAndMagnify(elem) {
 	if (nundef(key)) { mMagnify(elem); return; }
 	MAGNIFIER_IMAGE = elem;
 	let d = mPopup(null, {}, { id: 'hallo' });
-	let o = M.superdi[key];
-	addKeys(M.details[key], o);
-	addKeys(M.details[o.friendly], o)
+	let o = detailsForKey(key);
 	let title = fromNormalized(valf(o.name, o.friendly));
 	mDom(d, {}, { tag: 'h1', html: title });
 	mDom(d, {}, { tag: 'img', src: valf(o.photo, o.img) });
-	for (const k in o) {
-		if ('cats colls fa fa6 img photo text key friendly ga name'.includes(k)) continue;
-		let val = o[k];
-		if (!isLiteral(val)) continue;
-		mDom(d, {}, { html: `${k}:${val}` })
-	}
+	let di = detailsPresentDict(o);
+	for(const k in di) mDom(d, {}, { html: `${k}:${di[k]}` })
+	// for (const k in o) {
+	// 	if ('cats colls fa fa6 img photo text key friendly ga name'.includes(k)) continue;
+	// 	let val = o[k];
+	// 	if (!isLiteral(val)) continue;
+	// 	mDom(d, {}, { html: `${k}:${val}` })
+	// }
 }
 async function showDirPics(dir, dParent) {
 	let imgs = await mGetFiles(dir);
@@ -7426,7 +7427,7 @@ function showGames(ms = 500) {
 	mText(`<h2>start new game</h2>`, dParent, { maleft: 12 });
 	let d = mDiv(dParent, { fg: 'white' }, 'game_menu'); mFlexWrap(d);
 	let gamelist = 'accuse aristo bluff ferro nations spotit wise'; if (DA.TEST0) gamelist += ' a_game'; gamelist = toWords(gamelist);
-	gamelist = ['setgame', 'fishgame', 'button96'];
+	gamelist = ['setgame'];//, 'fishgame', 'button96'];
 	for (const gname of gamelist) {
 		let g = getGameConfig(gname);
 		let [sym, bg, color, id] = [M.superdi[g.logo], g.color, null, getUID()];
@@ -7775,23 +7776,6 @@ async function simpleOnDropImage(ev, elem) {
 			reader.readAsDataURL(files[0]);
 		}
 	}
-}
-async function simpleOnDroppedItem(itemOrKey, sisi) {
-	console.log(itemOrKey)
-	if (nundef(sisi)) sisi = UI.simple;
-	let item, key;
-	if (isString(itemOrKey)) { key = itemOrKey; item = M.superdi[key]; } else { item = itemOrKey; key = item.key; }
-	console.log(item, key)
-	assertion(isdef(key), 'NO KEY!!!!!');
-	let o = M.superdi[key]; console.log(key, item, o, sisi)
-	assertion(nundef(o) || o == item, "DISPARITY!!!!!!!!!!!!!!!!!!!!!")
-	let list = item.colls;
-	if (isdef(o) && list.includes(sisi.name)) { console.log(`HA! ${key} already there`); return; }// dropped item into same collection!!!
-	lookupAddIfToList(item, ['colls'], sisi.name);
-	addIf(item.colls, sisi.name);
-	let di = {}; di[key] = item;
-	await updateSuperdi(di);
-	simpleInit(sisi.name, sisi)
 }
 async function simpleOnclickItem(ev) {
 	let id = evToId(ev);
@@ -8395,7 +8379,7 @@ function uiGadgetTypeCheckList(dParent, content, resolve, styles = {}, opts = {}
 	let hmax = styles.hmax - 193, wmax = styles.wmax;
 	let innerStyles = { hmax, wmax, box: true };
 	let ui = uiTypeCheckList(content, dOuter, innerStyles, opts);
-	let handler = () => resolve(getCheckedNames(ui).join('@'));
+	let handler = () => resolve(getCheckedNames(ui)); //.join('@'));
 	mButton('done', handler, dOuter, { classes: 'input', margin: 10 });
 	return dOuter;
 }
@@ -8408,9 +8392,11 @@ function uiGadgetTypeCheckListInput(form, content, resolve, styles, opts) {
 }
 function uiGadgetTypeMulti(dParent, dict, resolve, styles = {}, opts = {}) {
 	let inputs = [];
-	let form = mDom(dParent, {}, { tag: 'form', method: null, action: "javascript:void(0)" })
+	let formStyles = opts.showLabels?{wmin:400,padding:10,bg:'white',fg:'black'}:{};
+	let form = mDom(dParent, formStyles, { tag: 'form', method: null, action: "javascript:void(0)" })
 	for (const k in dict) {
 		let [content, val] = [k, dict[k]];
+		if (opts.showLabels) mDom(form,{},{html:content});
 		let inp = mDom(form, styles, { autocomplete: 'off', className: 'input', name: content, tag: 'input', type: 'text', value: val, placeholder: `<enter ${content}>` });
 		inputs.push({ name: content, inp: inp });
 		mNewline(form)
@@ -8727,8 +8713,8 @@ function updateKeySettings(nMin) {
 	if (nundef(G)) return;
 	G.keys = setKeys({ nMin, lang: Settings.language, keysets: KeySets, key: Settings.vocab });
 }
-async function updateSuperdi(di, key) {
-	let res = await mPostRoute('postUpdateSuperdi', { di });
+async function updateDetails(di, key) {
+	let res = await mPostRoute('postUpdateDetails', { key, di });
 	console.log('postUpdateSuperdi', res)
 	await loadAssets();
 }
@@ -8745,7 +8731,7 @@ async function updateUserTheme() {
 	setUserTheme(U);
 	settingsCheck();
 }
-async function uploadImg(img, unique, coll, name) {
+function uploadImg(img, unique, coll, name) {
 	return new Promise((resolve, reject) => {
 		const canvas = document.createElement('canvas');
 		canvas.width = img.width;

@@ -16,6 +16,7 @@ const usersFile = path.join(dbDirectory, 'users.yaml');
 const eventsFile = path.join(dbDirectory, 'events.yaml');
 const mFile = path.join(uploadDirectory, 'm.yaml');
 const superdiFile = path.join(uploadDirectory, 'superdi.yaml');
+const detailsFile = path.join(uploadDirectory, 'details.yaml');
 const tablesDir = path.join(uploadDirectory, 'tables');
 const tablesFile = path.join(uploadDirectory, 'tableinfo.yaml');
 const usersDir = path.join(uploadDirectory, 'users');
@@ -92,7 +93,7 @@ function emitToPlayers(namelist, msgtype, o) {
 	for (const name of namelist) {
 		let idlist = byUsername[name]; //console.log('name', name, '\nid', idlist);
 		if (nundef(idlist)) continue;
-		console.log('ids for',name,idlist)
+		console.log('ids for', name, idlist)
 		for (const id of idlist) {
 			let client = clients[id]; //console.log(name, client.id); //isdef(client),Object.keys(client))
 			if (client) client.emit(msgtype, o);
@@ -117,6 +118,18 @@ function getTablesInfo() {
 		info.push(t);
 	}
 	return info;
+}
+function getUniquePath(fname, dir) {
+	let core = stringBefore(fname, '.');
+	let ext = '.' + stringAfter(fname, '.');
+	let name = core;
+	let i = 1;
+	while (true) {
+		if (!fs.existsSync(dir + name + ext)) break;
+		name = core + (i++);
+	}
+	return [name+ext,path.join(dir, name + ext)];
+
 }
 function getUserPath(name) { return path.join(usersDir, `${name}.yaml`); }
 function isdef(x) { return x !== null && x !== undefined; }
@@ -238,6 +251,27 @@ function saveUser(name, o) {
 	lookupSetOverride(Session, ['users', name], o);
 	let y = yaml.dump(Session.users[name]);
 	fs.writeFileSync(getUserPath(name), y, 'utf8');
+}
+function stringAfter(sFull, sSub) {
+	let idx = sFull.indexOf(sSub);
+	if (idx < 0) return '';
+	return sFull.substring(idx + sSub.length);
+}
+function stringAfterLast(sFull, sSub) {
+	let parts = sFull.split(sSub);
+	return arrLast(parts);
+}
+function stringBefore(sFull, sSub) {
+	let idx = sFull.indexOf(sSub);
+	if (idx < 0) return sFull;
+	return sFull.substring(0, idx);
+}
+function stringBeforeLast(sFull, sSub) {
+	let parts = sFull.split(sSub);
+	return sFull.substring(0, sFull.length - arrLast(parts).length - 1);
+}
+function stringBetween(sFull, sStart, sEnd) {
+	return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
 }
 // function saveUser(uname) {
 // 	let p = path.join(uploadDirectory, 'users', uname + '.yaml');
@@ -414,7 +448,7 @@ app.post('/postConfig', (req, res) => {
 	Session.config = req.body;
 	let y = yaml.dump(Session.config);
 	fs.writeFileSync(configFile, y, 'utf8');
-	io.emit('config',Session.config);
+	io.emit('config', Session.config);
 	res.json("config saved!");
 });
 app.post('/postEvent', (req, res) => {
@@ -432,21 +466,36 @@ app.post('/postEvent', (req, res) => {
 app.post('/postImage', (req, res) => {
 	console.log('<== post image')
 	const data = req.body;
-	let p = data.path;
+	let fname = data.filename;
 	let base64Data = data.image.replace(/^data:image\/png;base64,/, "");
-	let fname;
+	let p;
 	if (isdef(data.coll)) {
+
+		// let name = stringBefore(p, '.');
+		// console.log('name', name);
+
 		let dir = path.join(assetsDirectory, 'img', data.coll);
+		// console.log('dir', dir);
+
 		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-		fname = path.join(dir, p);
+
+		[fname,p] = getUniquePath(fname,dir);
+		// fname = path.join(dir, p);
+		// if (fs.existsSync(fname)) {
+		// 	console.log()
+		// 	res.json(`the file ${fname} already exists and nothing was saved!`);
+		// 	return;
+		// }
+
 	} else {
-		fname = path.join(__dirname, p);
+		fname = path.join(__dirname, fname);
 	}
-	console.log('fname', fname);
-	fs.writeFileSync(fname, base64Data, 'base64');
+	console.log('fname', fname, 'saved');
+	fs.writeFileSync(p, base64Data, 'base64');
 	res.json({
 		message: 'File uploaded successfully',
-		fileName: fname,
+		path: p,
+		filename:fname
 	});
 });
 app.post('/postUpdateEvent', (req, res) => {
@@ -462,34 +511,6 @@ app.post('/postUpdateEvent', (req, res) => {
 	io.emit('event', data);
 	res.json(`events updated successfully!`);
 	//res.json(data);
-});
-app.post('/postNewItem_', (req, res) => {
-	let key = req.body.key;
-	let item = req.body.item;
-	if (nundef(M.superdi[key])) {
-		M.superdi[key] = item;
-		let y = yaml.dump(M.superdi);
-		fs.writeFileSync(superdiFile, y, 'utf8');
-		item.key = key;
-		io.emit('superdi', item);
-		res.json(`item ${key} posted successfully!`);
-	} else {
-		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
-	}
-});
-app.post('/postUpdateItem_', (req, res) => {
-	let key = req.body.key;
-	let item = req.body.item;
-	if (nundef(M.superdi[key])) {
-		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
-	} else {
-		M.superdi[key] = item;
-		let y = yaml.dump(M.superdi);
-		fs.writeFileSync(superdiFile, y, 'utf8');
-		item.key = key;
-		io.emit('superdi', item);
-		res.json(`item ${key} updated successfully!`);
-	}
 });
 app.post('/postUpdateSuperdi', (req, res) => {
 	let partialdi = req.body.di;
@@ -513,10 +534,11 @@ app.post('/postUpdateSuperdi', (req, res) => {
 		delete M.superdi[k];
 	}
 	for (const k in partialdi) {
-		let o=partialdi[k];
+		let o = partialdi[k];
 		//do NOT ever save 'key' in superdi
 		delete o.key;
 		M.superdi[k] = o;
+		console.log(k,o);
 	}
 	if (deleteCollection == true) {
 		let p = path.join(assetsDirectory, 'img', collname);
@@ -526,6 +548,16 @@ app.post('/postUpdateSuperdi', (req, res) => {
 	fs.writeFileSync(superdiFile, y, 'utf8');
 	io.emit('superdi', partialdi);
 	res.json(`Superdi updated successfully!`);
+});
+app.post('/postUpdateDetails', (req, res) => {
+	let di = req.body.di;
+	let key = req.body.key;
+	console.log(key, di)
+	M.details[key] = di;
+	let y = yaml.dump(M.details);
+	fs.writeFileSync(detailsFile, y, 'utf8');
+	io.emit('details', { key, di });
+	res.json(di);
 });
 app.post('/overrideUser', (req, res) => {
 	let name = req.body.name;
@@ -541,10 +573,10 @@ app.post('/postUser', (req, res) => {
 	let isNew = !user;
 	if (isNew) {
 		let imgKey = userdata.imgKey;
-		if (nundef(imgKey) || nundef(M.superdi[imgKey])) imgKey = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';		
+		if (nundef(imgKey) || nundef(M.superdi[imgKey])) imgKey = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';
 		//if (nundef(userdata.imgKey) || nundef(M.superdi[userdata.imgKey])) userdata.imgKey = fs.existsSync(path.join(assetsDirectory, `img/users/${name}.jpg`)) ? name : 'unknown_user';		
-		user = userdata; 
-	}	else copyKeys(userdata, user);
+		user = userdata;
+	} else copyKeys(userdata, user);
 	saveUser(name, user);
 	let msg = `user posted: ${user.name} new:${isNew}`;
 	console.log(msg)
@@ -597,7 +629,7 @@ app.post('/olist', (req, res) => { //partial override using olist, emit+return i
 	}
 	for (const o of olist) lookupSetOverride(table, o.keys, o.val);
 	saveTable(id, table);
-	io.emit('pending',id);
+	io.emit('pending', id);
 	res.json(`YEAH!!!!`);
 });
 
@@ -613,7 +645,7 @@ app.post('/table', (req, res) => { //override & emit iff valid!
 	let version = lookupSet(Session, ['tableInfo', id, 'version'], step);
 	if (isdef(step) && step < version) { //data obsolete! table version has already been updated!
 		res.json(`INVALID!!!! step:${step} version:${version}`);
-		console.log('INVALID!!!',name,step);
+		console.log('INVALID!!!', name, step);
 		return;
 	}
 	if (isdef(stepIfValid)) {
@@ -622,7 +654,7 @@ app.post('/table', (req, res) => { //override & emit iff valid!
 		saveTableInfo();
 	}
 	saveTable(id, table);
-	io.emit('pending',id);
+	io.emit('pending', id);
 	res.json(`YEAH!!!!`);
 });
 
@@ -651,6 +683,8 @@ async function init() {
 	M = valf(yaml.load(yamlFile), {});
 	yamlFile = fs.readFileSync(superdiFile, 'utf8');
 	M.superdi = valf(yaml.load(yamlFile), {});
+	yamlFile = fs.readFileSync(detailsFile, 'utf8');
+	M.details = valf(yaml.load(yamlFile), {});
 	Session.tables = {};
 	let tablefiles = await fsp.readdir(tablesDir);
 	for (const f of tablefiles) {

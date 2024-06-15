@@ -1,10 +1,19 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test126(); }
+async function start() { TESTING = true; await test127(); }
 
+async function test127(){
+  await prelims();
+  return;
+  let data = await getImageData('../assets/img/tierspiel/bee.png');
+  //console.log('data',data); return;
+  let res = await mPostRoute('postImage',{coll:'tierspiel',filename:'zbee.png',image:data});
+  console.log('res',res);
+}
 async function test126(){
   await prelims(); 
+  //await editDetailsFor('bee',iDiv(UI.commands.simpleNew))
   //await simpleOnDroppedUrl_test('../ode/iport.png',UI.simple);
   return;
   let dParent = clearFlex();
@@ -18,6 +27,88 @@ async function test126(){
 async function test125() {
   await prelims();
 
+  async function onclickSaveCropData() {
+    let o = UI.zoomo;
+    let pd = UI.panData;
+    console.log(o,pd); return;
+    let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
+    if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
+    fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
+    showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+  
+  }
+  function showImgCentered(d,img,wOrig,hOrig,sz,fa,famin){
+    UI.zoomo={d,img,wOrig,hOrig,sz,fa,famin};
+    let wsc=wOrig*fa, hsc=hOrig*fa; console.log('fa',fa);
+  
+    let [xwo,ywo]=[(sz-wsc)/2,(sz-hsc)/2]
+  
+    showImagePartial(d, img, 0,0,wOrig,hOrig,xwo,ywo,wsc,hsc, sz, sz, wOrig,hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+    let szCrop = sz-100;
+    let dc = mDom(d, { position: 'absolute', left: (sz-szCrop) / 2, top: (sz-szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
+    dc.onmousedown = startPanning;
+  }
+  async function onclickZoomIn() {
+    let o = UI.zoomo;
+    let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
+    if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
+    fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
+    showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+  
+  }
+  async function onclickZoomOut() {
+    let o = UI.zoomo;
+    let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
+    if (fa*wOrig<=sz && fa*hOrig<=sz) {console.log('cant zoom out more!!!',wOrig,hOrig,fa, fa*wOrig,fa*hOrig,sz); return;}
+    fa*=0.5;if (fa<famin) fa = famin; UI.fa=fa;
+    showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+  
+  }
+  function startPanning(ev) {
+    console.log('_________startPanning!')
+    const panData = {};
+    function panStart(ev) {
+      evNoBubble(ev);
+      assertion(nundef(panData.panning), panData)
+      let dc = panData.dCrop = ev.target;
+      panData.cropStartSize = { w: mGetStyle(dc, 'w'), h: mGetStyle(dc, 'h') }
+      panData.cropStartPos = { l: mGetStyle(dc, 'left'), t: mGetStyle(dc, 'top') }
+      panData.elParent = panData.dCrop.parentNode;
+      panData.img = panData.elParent.querySelector('img, canvas');//console.log('img',panData.img);
+      panData.panning = true;
+      panData.counter = -1;
+      panData.mouseStart = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+      panData.posStart = { x: mGetStyle(dc, 'left'), y: mGetStyle(dc, 'top') };
+      addEventListener('mouseup', panEnd);
+      panData.elParent.addEventListener('mousemove', panMove);
+      console.log('panStart!', panData.mouseStart);
+    }
+    function panMove(ev) {
+      evNoBubble(ev);
+      if (!panData.panning || ++panData.counter % 3) return;
+      panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+      let [x, y] = [panData.posStart.x, panData.posStart.y];
+      let [dx, dy] = [panData.mouse.x - panData.mouseStart.x, panData.mouse.y - panData.mouseStart.y];
+      [dx, dy] = [Math.round(dx / 10) * 10, Math.round(dy / 10) * 10];
+      adjustComplex(panData)
+    }
+    function panEnd(ev) {
+      assertion(panData.panning == true);
+      let d = evToClass(ev, 'imgWrapper');
+      if (d == panData.elParent) {
+        evNoBubble(ev);
+        panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+        console.log('SUCCESS!', panData.mouse)
+      }
+      removeEventListener('mouseup', panEnd);
+      panData.elParent.removeEventListener('mousemove', panMove);
+      panData.panning = false;
+      console.log('* THE END *', panData)
+      UI.panData = panData;
+    }
+    panStart(ev);
+  }
+      
   let dParent = clearFlex();
   //let src="C:\\Users\\tawzz\\Pictures\\diana\\random114_003.png"; geht NICHT!!!!!!
   let src = '../ode/iport.png';
@@ -88,7 +179,6 @@ function rest() {
   // //await switchToMainMenu('simple')
   // //was will ich genau?
 }
-
 async function test124_superdiCollsCatsAlerts() {
   await prelims();
   let di = {};

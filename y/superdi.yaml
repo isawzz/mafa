@@ -4830,6 +4830,7 @@ bee:
   colls:
     - emo
     - tierspiel
+    - story
 beech:
   friendly: beech
   ga: E738
@@ -8601,6 +8602,7 @@ cattle_egret:
   colls:
     - tierspiel
     - birds
+    - story
 cauldron:
   friendly: cauldron
   ga: E8ED
@@ -27938,6 +27940,8 @@ mouse:
     - animal
   colls:
     - emo
+    - story
+  photo: ../assets/img/story/mouse.png
 mouse_2:
   friendly: mouse_2
   ga: EB93
@@ -33169,12 +33173,6 @@ rabbit_head:
   cats: []
   colls:
     - icon
-raccoon:
-  friendly: raccoon
-  img: ../assets/img/emo/raccoon.png
-  cats: []
-  colls:
-    - emo
 raccoon_head:
   friendly: raccoon_head
   ga: E56E
@@ -45680,6 +45678,8 @@ wolf:
   cats: []
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/wolf.png
 wolf_head:
   friendly: wolf_head
   ga: E3F3
@@ -46357,6 +46357,7 @@ bear:
   colls:
     - tierspiel
     - emo
+    - story
 bird:
   friendly: bird
   img: ../assets/img/emo/bird.png
@@ -46447,7 +46448,7 @@ moth:
 zebra:
   friendly: zebra
   img: ../assets/img/emo/zebra.png
-  photo: ../assets/img/tierspiel/i1718063937394.png
+  photo: ../assets/img/tierspiel/zebra.png
   cats: []
   colls:
     - tierspiel
@@ -46462,7 +46463,7 @@ walrus:
 skunk:
   friendly: skunk
   img: ../assets/img/emo/skunk.png
-  photo: ../assets/img/tierspiel/i1718064093225.png
+  photo: ../assets/img/tierspiel/skunk.png
   text: '&#129448;'
   cats:
     - animal
@@ -46479,7 +46480,7 @@ warthog:
 sloth:
   friendly: sloth
   img: ../assets/img/emo/sloth.png
-  photo: ../assets/img/tierspiel/i1718073330517.png
+  photo: ../assets/img/tierspiel/sloth.png
   text: '&#129445;'
   cats:
     - animal
@@ -46489,7 +46490,7 @@ sloth:
 seal:
   friendly: seal
   img: ../assets/img/emo/seal.png
-  photo: ../assets/img/tierspiel/i1718073695496.png
+  photo: ../assets/img/tierspiel/seal.png
   text: '&#129453;'
   cats:
     - animal
@@ -46499,7 +46500,7 @@ seal:
 panda:
   friendly: panda
   img: ../assets/img/emo/panda.png
-  photo: ../assets/img/tierspiel/i1718074069755.png
+  photo: ../assets/img/tierspiel/panda.png
   ga: E37D
   text: '&#128060;'
   cats:
@@ -46509,7 +46510,7 @@ panda:
     - emo
 seahorse:
   friendly: seahorse
-  img: ../assets/img/tierspiel/i1718074515267.png
+  img: ../assets/img/tierspiel/seahorse.png
   ga: E387
   cats: []
   colls:
@@ -46522,3 +46523,24 @@ stellers_jay:
     - animal
   colls:
     - tierspiel
+raccoon:
+  friendly: raccoon
+  img: ../assets/img/emo/raccoon.png
+  photo: ../assets/img/story/racoon.png
+  cats: []
+  colls:
+    - story
+    - emo
+yellow_tang:
+  friendly: yellow_tang
+  cats: []
+  colls:
+    - story
+  img: ../assets/img/story/yellow_tang.png
+tapir:
+  friendly: tapir
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/tapir.png

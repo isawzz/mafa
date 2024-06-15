@@ -1,18 +1,218 @@
+async function simpleOnDroppedItem(itemOrKey, key, sisi) {
+	//console.log(itemOrKey)
+	if (nundef(sisi)) sisi = UI.simple;
+	let item;
+	if (isString(itemOrKey)) { key = itemOrKey; item = M.superdi[key]; } else { item = itemOrKey; }
+	//console.log('===>',key, item)
+	assertion(isdef(key), 'NO KEY!!!!!');
+
+	lookupAddIfToList(item, ['colls'], sisi.name);
+
+	let o = M.superdi[key]; //console.log(key, item, o, sisi)
+	//assertion(nundef(o) || o == item, "DISPARITY!!!!!!!!!!!!!!!!!!!!!")
+	// let list = item.colls;
+	if (isdef(o)) { //} && list.includes(sisi.name)) { 
+		//check if any changes to o in item
+		console.log(`HA! ${key} already there`);
+		let changed = false;
+		for (const k in item) {
+			let val = item[k];
+			if (isLiteral(val) && o[k] != item[k]) { changed = true; break; }
+			else if (isList(val) && !sameList(val, o[k])) { changed = true; break; }
+		}
+		if (!changed) return;
+	}// dropped item into same collection!!!
+	console.log(`........But changed!!!`);
+	//addIf(item.colls, sisi.name);
+	let di = {}; di[key] = item;
+	await updateSuperdi(di);
+	simpleInit(sisi.name, sisi)
+}
+
+async function updateSuperdi(di, key) {
+	console.log('send postUpdateSuperdi', { di })
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	console.log('postUpdateSuperdi', res)
+	await loadAssets();
+}
+
+function getImageData(src) {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.crossOrigin = 'Anonymous'; // To avoid CORS issues
+		img.src = src;
+
+		img.onload = () => {
+			const canvas = document.createElement('canvas');
+			canvas.width = img.width;
+			canvas.height = img.height;
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(img, 0, 0);
+			let data = canvas.toDataURL('image/png');
+			resolve(data);
+			// const imageData = ctx.getImageData(0, 0, img.width, img.height);
+			// resolve(imageData);
+		};
+
+		img.onerror = (err) => {
+			reject(new Error('Failed to load image'));
+		};
+	});
+}
+async function simpleFinishEditing(canvas, dPopup, inpFriendly, inpCats, sisi) {
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
+	let friendly = inpFriendly.value;
+
+	let [name, imgname] = findUniqueSuperdiKey(friendly);
+
+	console.log('key name will be', name, imgname);
+	//console.log('NIX PASSIERT!!!! key name will be',name,imgname); return;
+	let key = name, filename = name + '.png';
+	//name ist unique! oder ich hab noch das slot fuer img oder photo available
+	//let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let o = { image: dataUrl, coll: sisi.name, filename };
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
+	filename = resp.filename;
+	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+	let cats = extractWords(valf(inpCats.value, ''));
+	let item = isdef(M.superdi[key])?jsCopy(M.superdi[key]): { key, friendly, cats, colls: [] };
+	//addIf(item.colls, sisi.name);
+	item[valf(imgname, 'img')] = imgPath;
+
+	dPopup.remove();
+	//console.log('NOT saving item',item); return;
+	//console.log('saving',item)
+	await simpleOnDroppedItem(item, key, sisi);
+}
+
+function findUniqueSuperdiKey(friendly) {
+	console.log('friendly', friendly)
+	let name = friendly;
+	let i = 1;
+	let imgname = null;
+	while (true) {
+		let o = M.superdi[name];
+		if (nundef(o)) { break; }
+		console.log(o.colls.includes('emo'))
+		if (isdef(o.img) && isdef(o.photo) || ['emo', 'fa6', 'icon'].every(x => !o.colls.includes(x))) { name = friendly + (i++); continue; }
+		else if (isdef(o.img)) { imgname = 'photo'; break; }
+		else { imgname = 'img'; break; }
+	}
+	return [name, imgname];
+}
+
+
+
+
+function calcRows(fontSize, fontFamily, content, maxWidth) {
+
+	// // Example usage:
+	// const ta = document.createElement('textarea'); // or any other reference element
+	// const fontSize = 16;
+	// const fontFamily = 'Arial';
+	// const content = 'This is a sample content to test the number of rows needed to fit this text within the given maximum width.';
+	// const maxWidth = 200;
+
+	// console.log(calcRows(fontSize, fontFamily, content, maxWidth));
+
+	// Create an off-screen canvas to measure text width
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+
+	// Set the font properties on the context
+	ctx.font = `${fontSize}px ${fontFamily}`;
+
+	// Split the content into words
+	const words = content.split(' ');
+	let line = '';
+	let rows = 0;
+
+	// Measure each word
+	for (let i = 0; i < words.length; i++) {
+		const testLine = line + words[i] + ' ';
+		const metrics = ctx.measureText(testLine);
+		const testWidth = metrics.width;
+
+		if (testWidth > maxWidth && i > 0) {
+			// When the line is too wide, count the line and start a new line
+			rows++;
+			line = words[i] + ' ';
+		} else {
+			// Continue adding words to the current line
+			line = testLine;
+		}
+	}
+
+	// Count the last line
+	if (line.length > 0) {
+		rows++;
+	}
+
+	return rows;
+}
+
+
+function detailsForKey(key) {
+	let o = M.superdi[key];
+	addKeys(M.details[key], o);
+	addKeys(M.details[o.friendly], o)
+	return o;
+}
+function detailsPresentDict(o) {
+	let di = {};
+	for (const key in o) {
+		if ('cats colls fa fa6 img photo text key friendly ga name'.includes(key)) continue;
+		let val = o[key];
+		if (!isLiteral(val)) continue;
+		di[key] = val;
+	}
+	return di;
+
+}
+
+
+function simpleSidebar(wmin) {
+	mStyle('dLeft', { wmin });
+	let d = mDom('dLeft', { wmin: wmin - 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let gap = 5;
+	let stylesTitles = { matop: 10, bg: '#ffffff80', fg: 'black' };
+
+	let cmds = {};
+	//mDom(d,stylesTitles,{html:'Collection:'});
+	cmds.simpleNew = mCommand(d, 'simpleNew', 'New'); mNewline(d, gap);
+
+	mDom(d, stylesTitles, { html: 'Selection:' })
+	cmds.simpleSelectAll = mCommand(d, 'simpleSelectAll', 'Select All'); mNewline(d, gap);
+	cmds.simpleSelectPage = mCommand(d, 'simpleSelectPage', 'Select Page'); mNewline(d, gap);
+	cmds.simpleClearSelections = mCommand(d, 'simpleClearSelections', 'Clear Selection', { fSel: x => x >= 1 }); mNewline(d, gap);
+
+	mDom(d, stylesTitles, { html: 'Item:' })
+	cmds.setAvatar = mCommand(d, 'setAvatar', 'Set Avatar', { fSel: x => x == 1 }); mNewline(d, gap);
+	cmds.editDetails = mCommand(d, 'editDetails', 'Edit Details', { fSel: x => x == 1 }); mNewline(d, gap);
+
+	mDom(d, stylesTitles, { html: 'Items:' })
+	cmds.addSelected = mCommand(d, 'addSelected', 'Add To', { fSel: x => (x >= 1) }); mNewline(d, gap);
+	cmds.simpleRemove = mCommand(d, 'simpleRemove', 'Remove', { fSel: x => (!simpleLocked() && x >= 1) }); mNewline(d, gap);
+
+	// UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d, gap);
+	// UI.removeCategory = mCommand(d, 'removeCategory', 'Remove Category'); mNewline(d, gap);
+	// UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d, gap);
+	// UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d, 3 * gap);
+	// UI.asSecondary = mCommand(d, 'asSecondary', 'Edit Collection'); mNewline(d, gap);
+	// UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection'); mNewline(d, gap);
+	// UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection'); mNewline(d, 3 * gap);
+	// simpleDisableListCommands();
+	// simpleDisableItemCommands();
+	copyKeys(cmds, UI.commands);
+	simpleCheckCommands();
+}
 
 function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
-	// Create canvas and button elements
 	const canvas = document.createElement('canvas');
-	// const saveButton = document.createElement('button');
-	// saveButton.textContent = 'Save Image';
-
-	// Set canvas dimensions
 	canvas.width = wCanvas;
 	canvas.height = hCanvas;
-
-	// Append elements to the parent element
 	parentElement.appendChild(canvas);
-	//parentElement.appendChild(saveButton);
-
 	const ctx = canvas.getContext('2d');
 	let image = new Image();
 	image.src = src;
@@ -26,9 +226,15 @@ function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 	let isDragging = false;
 
 	image.onload = () => {
+		// Calculate the scale to fit the smaller side of the image to the canvas
+		const scaleX = canvas.width / image.width;
+		const scaleY = canvas.height / image.height;
+		scale = Math.min(scaleX, scaleY);
+
 		// Center the image initially
-		originX = (canvas.width - image.width) / 2;
-		originY = (canvas.height - image.height) / 2;
+		originX = (canvas.width - image.width * scale) / 2;
+		originY = (canvas.height - image.height * scale) / 2;
+
 		draw();
 	};
 
@@ -70,7 +276,7 @@ function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 	// Mouse wheel event for zooming
 	canvas.addEventListener('wheel', (e) => {
 		e.preventDefault();
-		const zoom = Math.exp(e.deltaY * -0.001);
+		const zoom = Math.exp(e.deltaY * -0.0005);
 		scale *= zoom;
 
 		// Zoom relative to the mouse pointer
@@ -119,6 +325,38 @@ function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 
 	return canvas;
 }
+async function simpleOnDroppedUrl(src, sisi) {
+
+	let sz = 400;
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz, hmin: sz, bg: 'pink' });
+	let dParent = mDom(dPopup);
+
+	let d = mDom(dParent, { w: sz, h: sz, border: 'red', margin: 10 });
+	let canvas = createPanZoomCanvas(d, src, sz, sz);
+	//mStyle(canvas,{border:'red'}); mLinebreak(dParent)
+
+	let instr = mDom(dPopup, { align: 'center', mabot: 10 }, { html: `- panzoom image to your liking -` })
+
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`); }
+	defaultName = `${sisi.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+	mDom(dinp, { h: 1 });
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+
+	// mLinebreak(dinp);
+	// let ta = mDom(dinp,{w:sz},{tag:'textarea',rows:10,value:''})
+
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('Cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
+	mButton('Save', () => simpleFinishEditing(canvas, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
+}
 function savePanZoomCanvas(canvas) {
 	if (canvas) {
 		const dataURL = canvas.toDataURL('image/png');
@@ -130,71 +368,8 @@ function savePanZoomCanvas(canvas) {
 }
 
 //#region 13.6.24 alles bau1 bau2 bau3 bau4
-async function onclickAddSelected() {
-	let keys = UI.selectedImages;
-	let collist = M.collections.filter(x => !simpleLocked(x)).map(x => ({ name: x, value: false }));
-	let result = await mGather(iDiv(UI.addSelected), {}, { content: collist, type: 'checkList' });
-	if (!result) { console.log('CANCELLED!!!'); simpleClearSelections(); return; }
-	console.log('result',result); return;
-	result = result.split('@');
-	result = result.filter(x => !isEmptyOrWhiteSpace(x))
-	if (isEmpty(result)) { console.log('nothing added'); collClearSelections(); return; }
-	let di = {}, changed = false;
-	for (const kc of selist) {
-		let key = stringBefore(kc, '@');
-		let o = M.superdi[key];
-		for (const collname of result) {
-			if (o.colls.includes(collname)) continue;
-			changed = true;
-			o.colls.push(collname);
-			di[key] = o;
-		}
-	}
-	if (!changed) { console.log('nothing added'); collClearSelections(); return; }
-	console.log('items changed:', Object.keys(di));
-	await updateSuperdi(di);
-	collPostReload();
-
-}
 
 
-async function onclickSaveCropData() {
-	let o = UI.zoomo;
-	let pd = UI.panData;
-	console.log(o,pd); return;
-	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-	if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
-	fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
-	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
-
-}
-function showImgCentered(d,img,wOrig,hOrig,sz,fa,famin){
-	UI.zoomo={d,img,wOrig,hOrig,sz,fa,famin};
-  let wsc=wOrig*fa, hsc=hOrig*fa; console.log('fa',fa);
-
-	let [xwo,ywo]=[(sz-wsc)/2,(sz-hsc)/2]
-
-  showImagePartial(d, img, 0,0,wOrig,hOrig,xwo,ywo,wsc,hsc, sz, sz, wOrig,hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
-	let szCrop = sz-100;
-  let dc = mDom(d, { position: 'absolute', left: (sz-szCrop) / 2, top: (sz-szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
-	dc.onmousedown = startPanning;
-}
-async function onclickZoomIn() {
-	let o = UI.zoomo;
-	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-	if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
-	fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
-	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
-
-}
-async function onclickZoomOut() {
-	let o = UI.zoomo;
-	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-	if (fa*wOrig<=sz && fa*hOrig<=sz) {console.log('cant zoom out more!!!',wOrig,hOrig,fa, fa*wOrig,fa*hOrig,sz); return;}
-	fa*=0.5;if (fa<famin) fa = famin; UI.fa=fa;
-	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
-
-}
 
 function showImagePartial(dParent, image, x, y, w, h, left, top, wShow, hShow, wCanvas, hCanvas) {
 
@@ -210,91 +385,37 @@ function showImagePartial(dParent, image, x, y, w, h, left, top, wShow, hShow, w
 	// Draw the specified part of the image onto the canvas
 	ctx.drawImage(image, x, y, w, h, left, top, wShow, hShow);
 }
-function startPanning(ev) {
-	console.log('_________startPanning!')
-	const panData = {};
-	function panStart(ev) {
-		evNoBubble(ev);
-		assertion(nundef(panData.panning), panData)
-		let dc = panData.dCrop = ev.target;
-		panData.cropStartSize = { w: mGetStyle(dc, 'w'), h: mGetStyle(dc, 'h') }
-		panData.cropStartPos = { l: mGetStyle(dc, 'left'), t: mGetStyle(dc, 'top') }
-		panData.elParent = panData.dCrop.parentNode;
-		panData.img = panData.elParent.querySelector('img, canvas');//console.log('img',panData.img);
-		panData.panning = true;
-		panData.counter = -1;
-		panData.mouseStart = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
-		panData.posStart = { x: mGetStyle(dc, 'left'), y: mGetStyle(dc, 'top') };
-		addEventListener('mouseup', panEnd);
-		panData.elParent.addEventListener('mousemove', panMove);
-		console.log('panStart!', panData.mouseStart);
-	}
-	function panMove(ev) {
-		evNoBubble(ev);
-		if (!panData.panning || ++panData.counter % 3) return;
-		panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
-		let [x, y] = [panData.posStart.x, panData.posStart.y];
-		let [dx, dy] = [panData.mouse.x - panData.mouseStart.x, panData.mouse.y - panData.mouseStart.y];
-		[dx, dy] = [Math.round(dx / 10) * 10, Math.round(dy / 10) * 10];
-		adjustComplex(panData)
-	}
-	function panEnd(ev) {
-		assertion(panData.panning == true);
-		let d = evToClass(ev, 'imgWrapper');
-		if (d == panData.elParent) {
-			evNoBubble(ev);
-			panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
-			console.log('SUCCESS!', panData.mouse)
+
+function isExactly(n, num = 1) { return n == num; }
+function isAtLeast(n, num = 1) { return n >= num; }
+async function onclickAddSelected() {
+	let keys = UI.selectedImages;
+	let cmd = UI.commands.addSelected;
+	let collist = M.collections.filter(x => !simpleLocked(x)).map(x => ({ name: x, value: false }));
+	let result = await mGather(iDiv(cmd), {}, { content: collist, type: 'checkList' });
+	if (!result || isEmpty(result)) { console.log('nothing added'); simpleClearSelections(); return; }
+
+	//console.log('result',result,keys); //return;
+	assertion(isList(result), 'uiCadgetTypeChecklist result is NOT a list!!!')
+	let di = {}, changed = false;
+	for (const key of keys) {
+		let o = M.superdi[key];
+		for (const collname of result) {
+			if (o.colls.includes(collname)) continue;
+			changed = true;
+			o.colls.push(collname);
+			di[key] = o;
 		}
-		removeEventListener('mouseup', panEnd);
-		panData.elParent.removeEventListener('mousemove', panMove);
-		panData.panning = false;
-		console.log('* THE END *', panData)
-		UI.panData = panData;
 	}
-	panStart(ev);
+	if (!changed) { console.log('nothing added'); simpleClearSelections(); return; }
+	console.log('items changed:', Object.keys(di));
+	await updateSuperdi(di);
+	simpleInit();
 }
-
-function isExactly(n,num=1){return n == num;}
-function isAtLeast(n,num=1){return n >= num;}
-function simpleSidebar(wmin) {
-	mStyle('dLeft', { wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
-	let gap = 5;
-	let stylesTitles={matop:10,bg:'#ffffff80',fg:'black'};
-
-	let cmds = {};
-	//mDom(d,stylesTitles,{html:'Collection:'});
-	cmds.simpleNew = mCommand(d, 'simpleNew', 'New'); mNewline(d, gap);
-
-	mDom(d,stylesTitles,{html:'Selection:'})
-	cmds.simpleSelectAll = mCommand(d, 'simpleSelectAll', 'Select All'); mNewline(d, gap);
-	cmds.simpleSelectPage = mCommand(d, 'simpleSelectPage', 'Select Page'); mNewline(d, gap);
-	cmds.simpleClearSelections = mCommand(d, 'simpleClearSelections', 'Clear Selection',{fSel:x=>x>=1}); mNewline(d, gap);
-
-	mDom(d,stylesTitles,{html:'Item:'})
-	cmds.setAvatar = mCommand(d, 'setAvatar', 'Set Avatar',{fSel:x=>x==1}); mNewline(d, gap);
-
-	mDom(d,stylesTitles,{html:'Items:'})
-	cmds.addSelected = mCommand(d, 'addSelected', 'Add To',{fSel:x=>(x>=1)}); mNewline(d, gap);
-	cmds.simpleRemove = mCommand(d, 'simpleRemove', 'Remove',{fSel:x=>(!simpleLocked() && x>=1)}); mNewline(d, gap);
-
-	// UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d, gap);
-	// UI.removeCategory = mCommand(d, 'removeCategory', 'Remove Category'); mNewline(d, gap);
-	// UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d, gap);
-	// UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d, 3 * gap);
-	// UI.asSecondary = mCommand(d, 'asSecondary', 'Edit Collection'); mNewline(d, gap);
-	// UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection'); mNewline(d, gap);
-	// UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection'); mNewline(d, 3 * gap);
-	// simpleDisableListCommands();
-	// simpleDisableItemCommands();
-	copyKeys(cmds,UI.commands);
-	simpleCheckCommands();
-}
-function simpleCheckCommands(){
+function simpleCheckCommands() {
 	if (nundef(UI.selectedImages)) UI.selectedImages = [];
-	let n = UI.selectedImages.length; 
-	for(const k in UI.commands){
+	let n = UI.selectedImages.length;
+	for (const k in UI.commands) {
 		let cmd = UI.commands[k];
 		if (nundef(cmd) || nundef(iDiv(cmd))) continue;
 
@@ -305,49 +426,6 @@ function simpleCheckCommands(){
 }
 
 
-
-function adjustCropper1(img, dc, sz) {
-	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
-	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
-	mStyle(dc, { left: cx - radx, top: cy - rady, w: sz, h: sz });
-}
-
-function showImagePart(dParent,src,x,y,wi,hi){
-	mClear(dParent);
-	let [w,h]=[mGetStyle(dParent,'w'),mGetStyle(dParent,'h')];
-	let canvas = mDom(dParent,{w,h,fill:'blue'},{tag:'canvas',width:w,height:h});
-	return;
-
-}
-function showImagePart(image, x, y, w, h) {
-	const canvas = document.getElementById('canvas');
-	const ctx = canvas.getContext('2d');
-
-	// Set canvas size to the specified width and height
-	canvas.width = w;
-	canvas.height = h;
-
-	// Draw the specified part of the image onto the canvas
-	ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
-}
-
-function imgZoomOut(img, dc, sz,wOrig,hOrig) { 
-	let w = mGetStyle(dc, 'w'); 
-	let h = mGetStyle(dc, 'h'); 
-	console.log('__image',img.width,img.height);
-	console.log('sz',sz,'orig',wOrig,hOrig)
-	console.log(w,h)
-
-	return;
-
-	if (img.width == w || img.height == h) return; 
-	else { 
-		img.width = Math.max(img.width - 20, w); 
-		img.width = Math.max(img.width - 20, w); 
-		adjustCropper1(img, dc, sz); 
-		return [img.width, img.height]; 
-	} 
-}
 
 
 //#endregion
@@ -360,7 +438,7 @@ async function showTable(id) {
 	let func = DA.funcs[table.game];
 	T = table;
 	clearMain();
-	let d = mBy('dExtraLeft'); 
+	let d = mBy('dExtraLeft');
 	d.innerHTML = `<h2>${getGameProp('friendly').toUpperCase()}: ${table.friendly} (${table.step})</h2>`; // title
 	d = mDom('dMain'); mCenterFlex(d);
 	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction

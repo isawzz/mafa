@@ -253,7 +253,7 @@ async function collFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inp
 	let friendly = inpFriendly.value;
 	let cats = extractWords(valf(inpCats.value, ''));
 	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
-	let o = { image: dataUrl, coll: coll.name, path: filename };
+	let o = { image: dataUrl, coll: coll.name, filename };
 	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
 	let key = stringBefore(filename, '.');
 	let imgPath = `../assets/img/${coll.name}/${filename}`;

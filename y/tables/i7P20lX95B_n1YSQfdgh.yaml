@@ -2,12 +2,6 @@ status: started
 id: i7P20lX95B_n1YSQfdgh
 fen:
   deck:
-    - red_diamond_3_striped
-    - purple_diamond_3_solid
-    - red_oval_3_striped
-    - red_oval_3_open
-    - red_diamond_1_solid
-    - red_oval_2_solid
     - red_diamond_1_open
     - purple_oval_1_open
     - green_squiggle_1_striped
@@ -72,18 +66,18 @@ fen:
     - red_diamond_3_open
     - purple_diamond_3_open
   cards:
-    - purple_squiggle_2_solid
+    - red_oval_3_open
     - green_squiggle_3_open
     - purple_diamond_2_solid
-    - purple_squiggle_1_open
+    - purple_diamond_3_solid
     - purple_diamond_1_solid
-    - purple_squiggle_3_striped
-    - red_oval_1_solid
+    - red_oval_3_striped
+    - red_diamond_1_solid
     - purple_oval_1_striped
     - green_squiggle_3_striped
     - red_diamond_2_open
     - green_oval_3_striped
-    - red_squiggle_2_open
+    - red_oval_2_solid
 game: setgame
 owner: guest
 friendly: tournament of Reykjavík
@@ -107,7 +101,7 @@ players:
       - '#042c04'
     level: 7
     playmode: human
-    score: 0
+    score: 2
   diana:
     name: diana
     color: '#4c2882'
@@ -124,11 +118,28 @@ options:
   use_level: 'yes'
   numCards: 12
   gamemode: multi
-step: 0
-moves: []
+step: 2
+moves:
+  - step: 0
+    name: guest
+    move:
+      - purple_squiggle_2_solid
+      - purple_squiggle_1_open
+      - purple_squiggle_3_striped
+    change: '+1'
+    score: 1
+  - step: 1
+    name: guest
+    move:
+      - red_diamond_3_striped
+      - red_oval_1_solid
+      - red_squiggle_2_open
+    change: '+1'
+    score: 2
 plorder:
   - guest
   - diana
 turn:
   - guest
   - diana
+dBoard: {}

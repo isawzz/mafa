@@ -1,53 +1,47 @@
 
-async function simpleFinishEditing(canvas, dPopup, ta, inpFriendly, inpCats, sisi) {
-	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
-	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
-	let friendly = inpFriendly.value;
-	let cats = extractWords(valf(inpCats.value, ''));
-	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
-	let o = { image: dataUrl, coll: sisi.name, path: filename };
-	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
-	let key = stringBefore(filename, '.');
-	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+function uiGadgetTypeMultiText(dParent, dict, resolve, styles = {}, opts = {}) {
+	let inputs = [];
+	let wIdeal = 500;
+	let formStyles = { maleft: 10, wmin: wIdeal, padding: 10, bg: 'white', fg: 'black' };
+	// let form = mDom(dParent, formStyles, { tag: 'form', method: null, action: "javascript:void(0)" })
+	let form = mDom(dParent, formStyles, {})
+	
+	addKeys({ className: 'input', tag: 'textarea', }, opts);
+	addKeys({ fz: 14, family: 'tahoma', w: wIdeal, resize: 'none' }, styles);
 
-	let details = ta.value.trim(), odetails;
-	if (!isEmpty(details)) {
-		//console.log('details',details);
-		let odetails = {};
-		try { odetails = jsyaml.load(details); } catch { odetails[key] = details; }
-		console.log('yaml object', odetails);
-	}
+	let df=mDom(form);
+	fillMultiForm(dict,inputs,wIdeal,df,styles,opts);
+	// for (const k in dict) {
+	// 	let [content, val] = [k, dict[k]];
+	// 	mDom(form, {}, { html: `${content}:` });
+	// 	let inp = mDom(form, styles, opts);
+	// 	inp.rows = calcRows(styles.fz, styles.family, val, wIdeal); //console.log('rows',inp.rows)
+	// 	inp.value = val;
+	// 	inputs.push({ name: content, inp: inp });
+	// 	mNewline(form)
+	// }
+	let db = mDom(form, { vmargin: 10, align: 'right' });
+	mButton('Paste Object', ev => fillFormFromObject(ev, inputs,wIdeal, df,styles,opts), db, { classes: 'button', maright: 10 });
+	mButton('Cancel', ev => resolve(null), db, { classes: 'button', maright: 10 });
+	mButton('Save', ev => {
+		let di = {};
+		inputs.map(x => di[x.name] = x.inp.value);
+		resolve(di);
+	}, db, { classes: 'button' });
 
-	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
-	// if (isDict(odetails)) item.details = odetails;
-	dPopup.remove();
-	await simpleOnDroppedItem(item, sisi);
+	// mDom(db, { maright:10,className:'button' }, { tag: 'input', type: 'button', value:'Paste Object', onclick:ev=>fillFormFromObject(ev,inputs,form) });
+	// mDom(db, { maright:10,className:'button' }, { tag: 'input', type: 'button', value:'Cancel', onclick:()=>resolve(null) });
+	// mDom(db, { className:'button' }, { tag: 'input', type: 'submit', value:'Save' });
+	//mButton('done', handler, dOuter, { classes: 'input', margin: 10 });
+	// let handler = () => resolve(getCheckedNames(ui)); //.join('@'));
+	// form.onsubmit = ev => {
+	// 	ev.preventDefault();
+	// 	let di = {};
+	// 	inputs.map(x => di[x.name] = x.inp.value);
+	// 	resolve(di);
+	// }
+	return form;
 }
-async function simpleFinishEditing(canvas, dPopup, inpFriendly, inpCats, sisi) {
-	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
-	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
-	let friendly = inpFriendly.value;
-	let cats = extractWords(valf(inpCats.value, ''));
-	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
-	let o = { image: dataUrl, coll: sisi.name, path: filename };
-	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
-	let key = stringBefore(filename, '.');
-	let imgPath = `../assets/img/${sisi.name}/${filename}`;
-	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
-	dPopup.remove();
-	await simpleOnDroppedItem(item, sisi);
-}
-function savePanZoomCanvas(canvas) {
-	if (canvas) {
-		const dataURL = canvas.toDataURL('image/png');
-		const link = document.createElement('a');
-		link.href = dataURL;
-		link.download = 'canvas-image.png';
-		link.click();
-	}
-}
-
-
 
 
 

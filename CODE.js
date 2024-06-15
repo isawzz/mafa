@@ -1,5 +1,575 @@
 
+function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
+	// Create canvas and button elements
+	const canvas = document.createElement('canvas');
+	// const saveButton = document.createElement('button');
+	// saveButton.textContent = 'Save Image';
+
+	// Set canvas dimensions
+	canvas.width = wCanvas;
+	canvas.height = hCanvas;
+
+	// Append elements to the parent element
+	parentElement.appendChild(canvas);
+	//parentElement.appendChild(saveButton);
+
+	const ctx = canvas.getContext('2d');
+	let image = new Image();
+	image.src = src;
+
+	// Variables for panning and zooming
+	let scale = 1;
+	let originX = 0;
+	let originY = 0;
+	let startX = 0;
+	let startY = 0;
+	let isDragging = false;
+
+	image.onload = () => {
+		// Calculate the scale to fit the smaller side of the image to the canvas
+		const scaleX = canvas.width / image.width;
+		const scaleY = canvas.height / image.height;
+		scale = Math.min(scaleX, scaleY);
+
+		// Center the image initially
+		originX = (canvas.width - image.width * scale) / 2;
+		originY = (canvas.height - image.height * scale) / 2;
+
+		draw();
+	};
+	// image.onload = () => {
+	// 	// Center the image initially
+	// 	//if (image.width>wCanvas*2) scale=.5;
+	// 	originX = (canvas.width - image.width) / 2;
+	// 	originY = (canvas.height - image.height) / 2;
+	// 	if (image.width>wCanvas*2) {
+	// 		console.log(wCanvas,image.width)
+	// 		zoomTo(wCanvas/image.width);
+	// 	}
+	// 	draw();
+	// };
+	// function zoomTo(zoomFactor){
+	// 	scale *= zoomFactor;
+	// 	originX *= zoomFactor;
+	// 	originY *= zoomFactor;
+	// }
+
+
+	function draw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.save();
+		ctx.translate(originX, originY);
+		ctx.scale(scale, scale);
+		ctx.drawImage(image, 0, 0);
+		ctx.restore();
+	}
+
+	// Mouse events for panning
+	canvas.addEventListener('mousedown', (e) => {
+		isDragging = true;
+		startX = e.clientX - originX;
+		startY = e.clientY - originY;
+		canvas.style.cursor = 'grabbing';
+	});
+
+	canvas.addEventListener('mousemove', (e) => {
+		if (isDragging) {
+			originX = e.clientX - startX;
+			originY = e.clientY - startY;
+			draw();
+		}
+	});
+
+	canvas.addEventListener('mouseup', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	canvas.addEventListener('mouseout', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	// Mouse wheel event for zooming
+	canvas.addEventListener('wheel', (e) => {
+		e.preventDefault();
+		const zoom = Math.exp(e.deltaY * -0.001);
+		scale *= zoom;
+
+		// Zoom relative to the mouse pointer
+		const mouseX = e.clientX - canvas.offsetLeft;
+		const mouseY = e.clientY - canvas.offsetTop;
+		originX = mouseX - (mouseX - originX) * zoom;
+		originY = mouseY - (mouseY - originY) * zoom;
+
+		draw();
+	});
+
+	// Touch events for mobile support
+	let touchStartX = 0;
+	let touchStartY = 0;
+
+	canvas.addEventListener('touchstart', (e) => {
+		if (e.touches.length === 1) {
+			isDragging = true;
+			touchStartX = e.touches[0].clientX - originX;
+			touchStartY = e.touches[0].clientY - originY;
+			canvas.style.cursor = 'grabbing';
+		}
+	});
+
+	canvas.addEventListener('touchmove', (e) => {
+		if (e.touches.length === 1 && isDragging) {
+			originX = e.touches[0].clientX - touchStartX;
+			originY = e.touches[0].clientY - touchStartY;
+			draw();
+		}
+	});
+
+	canvas.addEventListener('touchend', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	// // Save button event
+	// saveButton.addEventListener('click', () => {
+	// 	const dataURL = canvas.toDataURL('image/png');
+	// 	const link = document.createElement('a');
+	// 	link.href = dataURL;
+	// 	link.download = 'canvas-image.png';
+	// 	link.click();
+	// });
+
+	return canvas;
+}
+
+
+//#region 14.6.24: removed obsolete app routes fuer superdi
+app.post('/postNewItem_', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key])) {
+		M.superdi[key] = item;
+		let y = yaml.dump(M.superdi);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key = key;
+		io.emit('superdi', item);
+		res.json(`item ${key} posted successfully!`);
+	} else {
+		res.json(`item ${key} is a DUPLICATE!!!! NOT ADDED!!!`);
+	}
+});
+app.post('/postUpdateItem_', (req, res) => {
+	let key = req.body.key;
+	let item = req.body.item;
+	if (nundef(M.superdi[key])) {
+		res.json(`item ${key} NOT FOUND! NO UPDATE!!!!!!`);
+	} else {
+		M.superdi[key] = item;
+		let y = yaml.dump(M.superdi);
+		fs.writeFileSync(superdiFile, y, 'utf8');
+		item.key = key;
+		io.emit('superdi', item);
+		res.json(`item ${key} updated successfully!`);
+	}
+});
+//#endregion
+
+//#region 14.6.24 edited
+function showDetailsAndMagnify(elem) {
+	let key = elem.firstChild.getAttribute('key')
+	if (nundef(key)) { mMagnify(elem); return; }
+	MAGNIFIER_IMAGE = elem;
+	let d = mPopup(null, {}, { id: 'hallo' });
+	let o = detailsForKey(key);
+	let title = fromNormalized(valf(o.name, o.friendly));
+	mDom(d, {}, { tag: 'h1', html: title });
+	mDom(d, {}, { tag: 'img', src: valf(o.photo, o.img) });
+	let list = detailsPresentList(o);
+	list.map(x=>mDom(d, {}, { html: `${x.key}:${x.val}` }))
+	// for (const k in o) {
+	// 	if ('cats colls fa fa6 img photo text key friendly ga name'.includes(k)) continue;
+	// 	let val = o[k];
+	// 	if (!isLiteral(val)) continue;
+	// 	mDom(d, {}, { html: `${k}:${val}` })
+	// }
+}
+//#endregion
+
+//#region 14.6.24 elim altes panzoom zeug
+async function onclickSaveCropData() {
+	let o = UI.zoomo;
+	let pd = UI.panData;
+	console.log(o,pd); return;
+	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
+	if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
+	fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
+	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+
+}
+function showImgCentered(d,img,wOrig,hOrig,sz,fa,famin){
+	UI.zoomo={d,img,wOrig,hOrig,sz,fa,famin};
+	let wsc=wOrig*fa, hsc=hOrig*fa; console.log('fa',fa);
+
+	let [xwo,ywo]=[(sz-wsc)/2,(sz-hsc)/2]
+
+	showImagePartial(d, img, 0,0,wOrig,hOrig,xwo,ywo,wsc,hsc, sz, sz, wOrig,hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+	let szCrop = sz-100;
+	let dc = mDom(d, { position: 'absolute', left: (sz-szCrop) / 2, top: (sz-szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+}
+async function onclickZoomIn() {
+	let o = UI.zoomo;
+	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
+	if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
+	fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
+	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+
+}
+async function onclickZoomOut() {
+	let o = UI.zoomo;
+	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
+	if (fa*wOrig<=sz && fa*hOrig<=sz) {console.log('cant zoom out more!!!',wOrig,hOrig,fa, fa*wOrig,fa*hOrig,sz); return;}
+	fa*=0.5;if (fa<famin) fa = famin; UI.fa=fa;
+	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+
+}
+function startPanning(ev) {
+	console.log('_________startPanning!')
+	const panData = {};
+	function panStart(ev) {
+		evNoBubble(ev);
+		assertion(nundef(panData.panning), panData)
+		let dc = panData.dCrop = ev.target;
+		panData.cropStartSize = { w: mGetStyle(dc, 'w'), h: mGetStyle(dc, 'h') }
+		panData.cropStartPos = { l: mGetStyle(dc, 'left'), t: mGetStyle(dc, 'top') }
+		panData.elParent = panData.dCrop.parentNode;
+		panData.img = panData.elParent.querySelector('img, canvas');//console.log('img',panData.img);
+		panData.panning = true;
+		panData.counter = -1;
+		panData.mouseStart = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+		panData.posStart = { x: mGetStyle(dc, 'left'), y: mGetStyle(dc, 'top') };
+		addEventListener('mouseup', panEnd);
+		panData.elParent.addEventListener('mousemove', panMove);
+		console.log('panStart!', panData.mouseStart);
+	}
+	function panMove(ev) {
+		evNoBubble(ev);
+		if (!panData.panning || ++panData.counter % 3) return;
+		panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+		let [x, y] = [panData.posStart.x, panData.posStart.y];
+		let [dx, dy] = [panData.mouse.x - panData.mouseStart.x, panData.mouse.y - panData.mouseStart.y];
+		[dx, dy] = [Math.round(dx / 10) * 10, Math.round(dy / 10) * 10];
+		adjustComplex(panData)
+	}
+	function panEnd(ev) {
+		assertion(panData.panning == true);
+		let d = evToClass(ev, 'imgWrapper');
+		if (d == panData.elParent) {
+			evNoBubble(ev);
+			panData.mouse = getMouseCoordinatesRelativeToElement(ev, panData.elParent);
+			console.log('SUCCESS!', panData.mouse)
+		}
+		removeEventListener('mouseup', panEnd);
+		panData.elParent.removeEventListener('mousemove', panMove);
+		panData.panning = false;
+		console.log('* THE END *', panData)
+		UI.panData = panData;
+	}
+	panStart(ev);
+}
+
+//noch aelter
+function adjustCropper1(img, dc, sz) {
+	let [w, h] = [img.width, img.height]; console.log('sz', w, h,)
+	let [cx, cy, radx, rady, rad] = [w / 2, h / 2, sz / 2, sz / 2, sz / 2];
+	mStyle(dc, { left: cx - radx, top: cy - rady, w: sz, h: sz });
+}
+
+function showImagePart(dParent,src,x,y,wi,hi){
+	mClear(dParent);
+	let [w,h]=[mGetStyle(dParent,'w'),mGetStyle(dParent,'h')];
+	let canvas = mDom(dParent,{w,h,fill:'blue'},{tag:'canvas',width:w,height:h});
+	return;
+
+}
+function showImagePart(image, x, y, w, h) {
+	const canvas = document.getElementById('canvas');
+	const ctx = canvas.getContext('2d');
+
+	// Set canvas size to the specified width and height
+	canvas.width = w;
+	canvas.height = h;
+
+	// Draw the specified part of the image onto the canvas
+	ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
+}
+
+function imgZoomOut(img, dc, sz,wOrig,hOrig) { 
+	let w = mGetStyle(dc, 'w'); 
+	let h = mGetStyle(dc, 'h'); 
+	console.log('__image',img.width,img.height);
+	console.log('sz',sz,'orig',wOrig,hOrig)
+	console.log(w,h)
+
+	return;
+
+	if (img.width == w || img.height == h) return; 
+	else { 
+		img.width = Math.max(img.width - 20, w); 
+		img.width = Math.max(img.width - 20, w); 
+		adjustCropper1(img, dc, sz); 
+		return [img.width, img.height]; 
+	} 
+}
+
+//#endregion
+
 //#region 13.6.24
+function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
+	// Create canvas and button elements
+	const canvas = document.createElement('canvas');
+	// const saveButton = document.createElement('button');
+	// saveButton.textContent = 'Save Image';
+
+	// Set canvas dimensions
+	canvas.width = wCanvas;
+	canvas.height = hCanvas;
+
+	// Append elements to the parent element
+	parentElement.appendChild(canvas);
+	//parentElement.appendChild(saveButton);
+
+	const ctx = canvas.getContext('2d');
+	let image = new Image();
+	image.src = src;
+
+	// Variables for panning and zooming
+	let scale = 1;
+	let originX = 0;
+	let originY = 0;
+	let startX = 0;
+	let startY = 0;
+	let isDragging = false;
+
+	image.onload = () => {
+		// Calculate the scale to fit the smaller side of the image to the canvas
+		const scaleX = canvas.width / image.width;
+		const scaleY = canvas.height / image.height;
+		scale = Math.min(scaleX, scaleY);
+
+		// Center the image initially
+		originX = (canvas.width - image.width * scale) / 2;
+		originY = (canvas.height - image.height * scale) / 2;
+
+		draw();
+	};
+	// image.onload = () => {
+	// 	// Center the image initially
+	// 	//if (image.width>wCanvas*2) scale=.5;
+	// 	originX = (canvas.width - image.width) / 2;
+	// 	originY = (canvas.height - image.height) / 2;
+	// 	if (image.width>wCanvas*2) {
+	// 		console.log(wCanvas,image.width)
+	// 		zoomTo(wCanvas/image.width);
+	// 	}
+	// 	draw();
+	// };
+	// function zoomTo(zoomFactor){
+	// 	scale *= zoomFactor;
+	// 	originX *= zoomFactor;
+	// 	originY *= zoomFactor;
+	// }
+
+
+	function draw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.save();
+		ctx.translate(originX, originY);
+		ctx.scale(scale, scale);
+		ctx.drawImage(image, 0, 0);
+		ctx.restore();
+	}
+
+	// Mouse events for panning
+	canvas.addEventListener('mousedown', (e) => {
+		isDragging = true;
+		startX = e.clientX - originX;
+		startY = e.clientY - originY;
+		canvas.style.cursor = 'grabbing';
+	});
+
+	canvas.addEventListener('mousemove', (e) => {
+		if (isDragging) {
+			originX = e.clientX - startX;
+			originY = e.clientY - startY;
+			draw();
+		}
+	});
+
+	canvas.addEventListener('mouseup', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	canvas.addEventListener('mouseout', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	// Mouse wheel event for zooming
+	canvas.addEventListener('wheel', (e) => {
+		e.preventDefault();
+		const zoom = Math.exp(e.deltaY * -0.001);
+		scale *= zoom;
+
+		// Zoom relative to the mouse pointer
+		const mouseX = e.clientX - canvas.offsetLeft;
+		const mouseY = e.clientY - canvas.offsetTop;
+		originX = mouseX - (mouseX - originX) * zoom;
+		originY = mouseY - (mouseY - originY) * zoom;
+
+		draw();
+	});
+
+	// Touch events for mobile support
+	let touchStartX = 0;
+	let touchStartY = 0;
+
+	canvas.addEventListener('touchstart', (e) => {
+		if (e.touches.length === 1) {
+			isDragging = true;
+			touchStartX = e.touches[0].clientX - originX;
+			touchStartY = e.touches[0].clientY - originY;
+			canvas.style.cursor = 'grabbing';
+		}
+	});
+
+	canvas.addEventListener('touchmove', (e) => {
+		if (e.touches.length === 1 && isDragging) {
+			originX = e.touches[0].clientX - touchStartX;
+			originY = e.touches[0].clientY - touchStartY;
+			draw();
+		}
+	});
+
+	canvas.addEventListener('touchend', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	// // Save button event
+	// saveButton.addEventListener('click', () => {
+	// 	const dataURL = canvas.toDataURL('image/png');
+	// 	const link = document.createElement('a');
+	// 	link.href = dataURL;
+	// 	link.download = 'canvas-image.png';
+	// 	link.click();
+	// });
+
+	return canvas;
+}
+
+async function simpleFinishEditing(canvas, dPopup, ta, inpFriendly, inpCats, sisi) {
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
+	let friendly = inpFriendly.value;
+	let cats = extractWords(valf(inpCats.value, ''));
+	let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let o = { image: dataUrl, coll: sisi.name, path: filename };
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
+	let key = stringBefore(filename, '.');
+	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+
+	let details = ta.value.trim(), odetails;
+	if (!isEmpty(details)) {
+		//console.log('details',details);
+		let odetails = {};
+		try { odetails = jsyaml.load(details); } catch { odetails[key] = details; }
+		console.log('yaml object', odetails);
+	}
+
+	let item = { key: key, friendly: friendly, img: imgPath, cats: cats, colls: [sisi.name] };
+	// if (isDict(odetails)) item.details = odetails;
+	dPopup.remove();
+	await simpleOnDroppedItem(item, sisi);
+}
+async function simpleOnDroppedUrl(src, sisi) {
+
+	let sz = 400;
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz, hmin: sz, bg: 'pink' });
+	let dParent=mDom(dPopup);
+	let canvas=createPanZoomCanvas(dParent, src, sz, sz);
+  mStyle(canvas,{border:'red'})
+  mLinebreak(dParent)
+  //mButton('save', ()=>savePanZoomCanvas(canvas), dParent,{},'button');
+
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`); }
+	defaultName = `${sisi.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+	mDom(dinp, { h: 1 });
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+
+	// mLinebreak(dinp);
+	// let ta = mDom(dinp,{w:sz},{tag:'textarea',rows:10,value:''})
+
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
+	mButton('OK', () => simpleFinishEditing(canvas, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
+
+
+
+
+
+}
+async function rest(){
+	let m = await imgMeasure(src); console.log('simpleOnDroppedUrl!!! sz', m);
+	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 400];
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz + 80, hmin: sz + 80, bg: 'pink' });
+	let d = mDom(dPopup); //, wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
+
+	mIfNotRelative(d);
+
+	let zoom = 1;
+
+
+	mStyle(img, { h: sz });
+	
+	mAppend(d, img);
+	let [w0, h0] = [img.width, img.height];
+	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
+	dc.onmousedown = startPanning;
+	let db1 = mDom(dPopup, { bg: 'red', padding: 10, display: 'flex', gap: 10, 'justify-content': 'center' });
+	
+	mButton('restart', () => imgReset(img, dc, sz, w0, h0), db1, { w: 70 }, 'input');
+	mButton('squish', () => imgSquish(img, dc, sz), db1, { w: 70 }, 'input');
+	mButton('expand', () => imgExpand(img, dc, sz), db1, { w: 70 }, 'input');
+	mButton('zoom out', () => imgZoomOut(img, dc, sz,wOrig, hOrig), db1, { w: 70 }, 'input');
+	mButton('zoom in', () => imgZoomIn(img, dc, sz), db1, { w: 70 }, 'input');
+	
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`); }
+	defaultName = `${sisi.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+	mDom(dinp, { h: 1 });
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
+	mButton('OK', () => simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
+}
 async function simpleOnDropImage(ev, elem) {
 	let dt = ev.dataTransfer;
 	//console.log('dropped', ev.dataTransfer);
@@ -96,7 +666,7 @@ async function simpleOnDroppedUrl(url, sisi) {
 	mButton('cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
 	mButton('OK', () => simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
 }
-
+//#endregion
 
 //#region 11.6.24
 function _showImagePart1(dParent, image, x, y, wShow, hShow) {
@@ -154,7 +724,7 @@ function mist(){
 	showImagePartial(d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
 
 }
-
+//#endregion
 
 //#region weitere tiere
 function getAnimalDetails() {
