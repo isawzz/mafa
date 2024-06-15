@@ -226,10 +226,14 @@ function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 	let isDragging = false;
 
 	image.onload = () => {
+
+		if (image.width<canvas.width) canvas.width=image.width;
+		if (image.height<canvas.height) canvas.height=image.height;
+
 		// Calculate the scale to fit the smaller side of the image to the canvas
 		const scaleX = canvas.width / image.width;
 		const scaleY = canvas.height / image.height;
-		scale = Math.min(scaleX, scaleY);
+		scale = Math.min(scaleX, scaleY, 1);
 
 		// Center the image initially
 		originX = (canvas.width - image.width * scale) / 2;
@@ -278,6 +282,7 @@ function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 		e.preventDefault();
 		const zoom = Math.exp(e.deltaY * -0.0005);
 		scale *= zoom;
+		if (scale >= 1) scale = 1;
 
 		// Zoom relative to the mouse pointer
 		const mouseX = e.clientX - canvas.offsetLeft;

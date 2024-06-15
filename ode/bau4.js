@@ -6,11 +6,11 @@ function _fillFormFromObject(ev, inputs, form) {
 	let ta = mDom(popup, {}, { tag: 'textarea', rows: 20, cols: 80 });
 	mButton('Fill Form', () => { onclickPasteDetailObject(ta.value, inputs); }, popup);
 }
-function fillFormFromObject(ev, inputs, wIdeal, df, styles, opts) {
+function fillFormFromObject(inputs, wIdeal, df,db, styles, opts) {
 	let popup = mDom(df,{margin:10}); //mPopup(df, { margin: 100 }); //mStyle(popup,{left:10})
 	mDom(popup, {}, { html: 'paste your information into the text area' })
 	let ta = mDom(popup, {}, { tag: 'textarea', rows: 20, cols: 80 });
-	mButton('Fill Form', () => { onclickPasteDetailObject(ta.value, inputs, wIdeal, df, styles, opts); }, popup);
+	mButton('Fill Form', () => { onclickPasteDetailObject(ta.value, inputs, wIdeal, df, styles, opts); }, db, { maright: 10 },'button','bParseIntoForm');
 }
 function onclickPasteDetailObject(text, inputs, wIdeal, df, styles, opts) {
 	//each inpu is of the form:{name,inp}, inp is the element
@@ -27,6 +27,7 @@ function onclickPasteDetailObject(text, inputs, wIdeal, df, styles, opts) {
 			onorm[k1] = o[k];
 		}
 		if (isEmpty(inputs)) {
+			mBy('bParseIntoForm').remove();
 			fillMultiForm(o,inputs,wIdeal,df,styles,opts);
 		} else {
 			for (const oinp of inputs) {
@@ -34,7 +35,7 @@ function onclickPasteDetailObject(text, inputs, wIdeal, df, styles, opts) {
 				if (isdef(o[k])) oinp.inp.value = o[k];
 			}
 		}
-		popup.remove();
+		//popup.remove();
 	}
 
 	try {

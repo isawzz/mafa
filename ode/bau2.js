@@ -10,7 +10,19 @@ function uiGadgetTypeMultiText(dParent, dict, resolve, styles = {}, opts = {}) {
 	addKeys({ fz: 14, family: 'tahoma', w: wIdeal, resize: 'none' }, styles);
 
 	let df=mDom(form);
-	fillMultiForm(dict,inputs,wIdeal,df,styles,opts);
+	let db = mDom(form, { vmargin: 10, align: 'right' });
+	mButton('Cancel', ev => resolve(null), db, { classes: 'button', maright: 10 });
+	mButton('Save', ev => {
+		let di = {};
+		inputs.map(x => di[x.name] = x.inp.value);
+		resolve(di);
+	}, db, { classes: 'button', maright: 10 });
+
+	if (isEmpty(dict)){
+		fillFormFromObject(inputs,wIdeal, df,db,styles,opts);
+	}else{
+		fillMultiForm(dict,inputs,wIdeal,df,styles,opts);
+	}
 	// for (const k in dict) {
 	// 	let [content, val] = [k, dict[k]];
 	// 	mDom(form, {}, { html: `${content}:` });
@@ -20,14 +32,7 @@ function uiGadgetTypeMultiText(dParent, dict, resolve, styles = {}, opts = {}) {
 	// 	inputs.push({ name: content, inp: inp });
 	// 	mNewline(form)
 	// }
-	let db = mDom(form, { vmargin: 10, align: 'right' });
-	mButton('Paste Object', ev => fillFormFromObject(ev, inputs,wIdeal, df,styles,opts), db, { classes: 'button', maright: 10 });
-	mButton('Cancel', ev => resolve(null), db, { classes: 'button', maright: 10 });
-	mButton('Save', ev => {
-		let di = {};
-		inputs.map(x => di[x.name] = x.inp.value);
-		resolve(di);
-	}, db, { classes: 'button' });
+	//mButton('Paste Object', ev => fillFormFromObject(inputs,wIdeal, df,styles,opts), db, { classes: 'button', maright: 10 });
 
 	// mDom(db, { maright:10,className:'button' }, { tag: 'input', type: 'button', value:'Paste Object', onclick:ev=>fillFormFromObject(ev,inputs,form) });
 	// mDom(db, { maright:10,className:'button' }, { tag: 'input', type: 'button', value:'Cancel', onclick:()=>resolve(null) });

@@ -42162,6 +42162,8 @@ tortoise:
   cats: []
   colls:
     - icon
+    - tierspiel
+  img: ../assets/img/tierspiel/tortoise.png
 totem:
   friendly: totem
   ga: E72A
@@ -46544,3 +46546,10 @@ tapir:
   colls:
     - tierspiel
   img: ../assets/img/tierspiel/tapir.png
+alligator:
+  friendly: alligator
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/alligator.png
