@@ -2057,3 +2057,18 @@ dodo:
   reproduction: Oviparous
   offsprings: Females likely laid a single egg per breeding season
   class: Bird
+tortoise:
+  lifespan: 50-150 years
+  habitat: >-
+    Arid regions, deserts, and savannas of the southern edge of the Sahara
+    Desert in Africa
+  weight: 45-100 kg
+  size: 60-90 cm in length
+  food: 'Herbivorous: feeds on grasses, leaves, and succulents'
+  species: Centrochelys sulcata
+  color: Brown to yellow-brown shell with a lighter underbelly
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay 15-30 eggs per clutch, with an incubation period of about 90-120
+    days
+  class: Reptile

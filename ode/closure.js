@@ -5312,34 +5312,6 @@ async function mOnclick(menu) {
 	UI.nav.activate(menu);
 	if (isdef(menu)) await window[`onclick${capitalize(menu)}`](); //eval(`onclick${capitalize(menu)}()`);}
 }
-function mPlace(elem, pos, offx, offy) {
-	elem = toElem(elem);
-	pos = pos.toLowerCase();
-	let dParent = elem.parentNode; mIfNotRelative(dParent);
-	let vert = valf(offx, 0);
-	let hor = isdef(offy) ? offy : vert;
-	if (pos[0] == 'c' || pos[1] == 'c') {
-		let dpp = dParent.parentNode;
-		let opac = mGetStyle(dParent, 'opacity'); //console.log('opac', opac);
-		if (nundef(dpp)) { mAppend(document.body, dParent); mStyle(dParent, { opacity: 0 }) }
-		let rParent = getRect(dParent);
-		let [wParent, hParent] = [rParent.w, rParent.h];
-		let rElem = getRect(elem);
-		let [wElem, hElem] = [rElem.w, rElem.h];
-		if (nundef(dpp)) { dParent.remove(); mStyle(dParent, { opacity: valf(opac, 1) }) }
-		switch (pos) {
-			case 'cc': mStyle(elem, { position: 'absolute', left: hor + (wParent - wElem) / 2, top: vert + (hParent - hElem) / 2 }); break;
-			case 'tc': mStyle(elem, { position: 'absolute', left: hor + (wParent - wElem) / 2, top: vert }); break;
-			case 'bc': mStyle(elem, { position: 'absolute', left: hor + (wParent - wElem) / 2, bottom: vert }); break;
-			case 'cl': mStyle(elem, { position: 'absolute', left: hor, top: vert + (hParent - hElem) / 2 }); break;
-			case 'cr': mStyle(elem, { position: 'absolute', right: hor, top: vert + (hParent - hElem) / 2 }); break;
-		}
-		return;
-	}
-	let di = { t: 'top', b: 'bottom', r: 'right', l: 'left' };
-	elem.style.position = 'absolute';
-	elem.style[di[pos[0]]] = hor + 'px'; elem.style[di[pos[1]]] = vert + 'px';
-}
 function mPopup(dParent, styles = {}, opts = {}) {
 	if (nundef(dParent)) dParent = document.body;
 	if (isdef(mBy(opts.id))) mRemove(opts.id);
@@ -7985,11 +7957,6 @@ function showValidMoves(table) {
 	for (const m of table.moves) {
 		console.log(`${m.step} ${m.name}: ${m.move.map(x => x.substring(0, 5)).join(',')} (${m.change})=>${m.score}`);
 	}
-}
-function showim1(imgKey, d, styles = {}, opts = {}) {
-	let src = valf(lookup(M.superdi, [imgKey, 'img']), rChoose(M.allImages));
-	let img = mDom(d, styles, { tag: 'img', src });
-	return img;
 }
 function shuffle(arr) { if (isEmpty(arr)) return []; else return fisherYates(arr); }
 
