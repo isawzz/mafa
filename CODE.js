@@ -1,4 +1,11 @@
 
+function _fillFormFromObject(ev, inputs, form) {
+	//let form = 
+	let popup = mPopup(form, { margin: 100 }); //mStyle(popup,{left:10})
+	mDom(popup, {}, { html: 'paste your information into the text area' })
+	let ta = mDom(popup, {}, { tag: 'textarea', rows: 20, cols: 80 });
+	mButton('Fill Form', () => { onclickPasteDetailObject(ta.value, inputs); }, popup);
+}
 function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 	// Create canvas and button elements
 	const canvas = document.createElement('canvas');

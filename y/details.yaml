@@ -2006,3 +2006,39 @@ bamboo_weevil:
     Females lay dozens of eggs in bamboo, which hatch into larvae and burrow
     into the bamboo
   class: Insect
+alligator:
+  lifespan: 35-50 years in the wild, up to 65-80 years in captivity
+  habitat: >-
+    Freshwater environments such as rivers, lakes, swamps, and marshes,
+    primarily in the southeastern United States and China
+  weight: 200-450 kg
+  size: 3-4.6 meters in length
+  food: >-
+    Carnivorous: feeds on fish, birds, mammals, amphibians, and occasionally
+    carrion
+  species: >-
+    Alligator mississippiensis (American Alligator), Alligator sinensis (Chinese
+    Alligator)
+  color: Dark gray to black with a white underside
+  reproduction: Oviparous
+  offsprings: Females lay 20-50 eggs per clutch, which incubate for about 65 days
+  class: Reptile
+crow:
+  lifespan: 7-8 years in the wild, up to 20 years in captivity
+  habitat: >-
+    Various habitats including forests, grasslands, agricultural fields, urban
+    areas, and coastal regions worldwide
+  weight: 300-600 grams
+  size: 40-50 cm in length with a wingspan of 85-100 cm
+  food: >-
+    Omnivorous: feeds on insects, small animals, fruits, seeds, carrion, and
+    human food waste
+  species: >-
+    Various species within the genus Corvus, including Corvus brachyrhynchos
+    (American Crow), Corvus corone (Carrion Crow)
+  color: Typically black
+  reproduction: Oviparous
+  offsprings: >-
+    Females lay 3-9 eggs per clutch, with an incubation period of about 18-21
+    days
+  class: Bird

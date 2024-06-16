@@ -1,3 +1,600 @@
+//#region baui 15.6.24
+
+function fillMultiForm(dict,inputs,wIdeal,df,styles,opts){
+	mClear(df);
+	for (const k in dict) {
+		let [content, val] = [k, dict[k]];
+		mDom(df, {}, { html: `${content}:` });
+		let inp = mDom(df, styles, opts);
+		inp.rows = calcRows(styles.fz, styles.family, val, wIdeal); //console.log('rows',inp.rows)
+		inp.value = val;
+		inputs.push({ name: content, inp: inp });
+		mNewline(df)
+	}
+
+}
+
+function uiGadgetTypeMultiText(dParent, dict, resolve, styles = {}, opts = {}) {
+	let inputs = [];
+	let wIdeal = 500;
+	let formStyles = { maleft: 10, wmin: wIdeal, padding: 10, bg: 'white', fg: 'black' };
+	// let form = mDom(dParent, formStyles, { tag: 'form', method: null, action: "javascript:void(0)" })
+	let form = mDom(dParent, formStyles, {})
+	
+	addKeys({ className: 'input', tag: 'textarea', }, opts);
+	addKeys({ fz: 14, family: 'tahoma', w: wIdeal, resize: 'none' }, styles);
+
+	let df=mDom(form);
+	let db = mDom(form, { vmargin: 10, align: 'right' });
+	mButton('Cancel', ev => resolve(null), db, { classes: 'button', maright: 10 });
+	mButton('Save', ev => {
+		let di = {};
+		inputs.map(x => di[x.name] = x.inp.value);
+		resolve(di);
+	}, db, { classes: 'button', maright: 10 });
+
+	if (isEmpty(dict)){
+		fillFormFromObject(inputs,wIdeal, df,db,styles,opts);
+	}else{
+		fillMultiForm(dict,inputs,wIdeal,df,styles,opts);
+	}
+	// for (const k in dict) {
+	// 	let [content, val] = [k, dict[k]];
+	// 	mDom(form, {}, { html: `${content}:` });
+	// 	let inp = mDom(form, styles, opts);
+	// 	inp.rows = calcRows(styles.fz, styles.family, val, wIdeal); //console.log('rows',inp.rows)
+	// 	inp.value = val;
+	// 	inputs.push({ name: content, inp: inp });
+	// 	mNewline(form)
+	// }
+	//mButton('Paste Object', ev => fillFormFromObject(inputs,wIdeal, df,styles,opts), db, { classes: 'button', maright: 10 });
+
+	// mDom(db, { maright:10,className:'button' }, { tag: 'input', type: 'button', value:'Paste Object', onclick:ev=>fillFormFromObject(ev,inputs,form) });
+	// mDom(db, { maright:10,className:'button' }, { tag: 'input', type: 'button', value:'Cancel', onclick:()=>resolve(null) });
+	// mDom(db, { className:'button' }, { tag: 'input', type: 'submit', value:'Save' });
+	//mButton('done', handler, dOuter, { classes: 'input', margin: 10 });
+	// let handler = () => resolve(getCheckedNames(ui)); //.join('@'));
+	// form.onsubmit = ev => {
+	// 	ev.preventDefault();
+	// 	let di = {};
+	// 	inputs.map(x => di[x.name] = x.inp.value);
+	// 	resolve(di);
+	// }
+	return form;
+}
+
+function fillFormFromObject(inputs, wIdeal, df,db, styles, opts) {
+	let popup = mDom(df,{margin:10}); //mPopup(df, { margin: 100 }); //mStyle(popup,{left:10})
+	mDom(popup, {}, { html: 'paste your information into the text area' })
+	let ta = mDom(popup, {}, { tag: 'textarea', rows: 20, cols: 80 });
+	mButton('Fill Form', () => { onclickPasteDetailObject(ta.value, inputs, wIdeal, df, styles, opts); }, db, { maright: 10 },'button','bParseIntoForm');
+}
+function onclickPasteDetailObject(text, inputs, wIdeal, df, styles, opts) {
+	//each inpu is of the form:{name,inp}, inp is the element
+	//console.log('text', text);
+	//console.log(inputs)
+
+	function parseToInputs(o) {
+		let keys = Object.keys(o); //console.log('keys',keys);
+		//console.log(o);
+		if (keys.length == 1) { o = o[keys[0]]; }//console.log('new o is', o); }
+		let onorm = {};
+		for (const k in o) {
+			let k1 = normalizeString(k);
+			onorm[k1] = o[k];
+		}
+		if (isEmpty(inputs)) {
+			mBy('bParseIntoForm').remove();
+			fillMultiForm(o,inputs,wIdeal,df,styles,opts);
+		} else {
+			for (const oinp of inputs) {
+				let k = normalizeString(oinp.name);
+				if (isdef(o[k])) oinp.inp.value = o[k];
+			}
+		}
+		//popup.remove();
+	}
+
+	try {
+		let o = jsyaml.load(text);
+		if (isdef(o)) parseToInputs(o);
+		//console.log('object',o)
+	} catch {
+		try {
+			let o = JSON.parse(text);
+			if (isdef(o)) parseToInputs(o);
+		} catch { showMessage('text cannot be parsed into yaml or json object!') }
+	}
+
+}
+
+async function onclickEditDetails(){
+	let key = UI.selectedImages[0];
+	let cmd = UI.commands.simpleNew;
+	await editDetailsFor(key,iDiv(cmd));
+}
+async function editDetailsFor(key,anchor){
+
+	let details = detailsForKey(key);
+	let di = detailsPresentDict(details); //console.log('details',key,di,isEmpty(di))
+
+	let result = await mGather(anchor,{},{content:di,type:'multiText',title:M.superdi[key].friendly});
+
+	//console.log('result',result);
+	if (!result) return;
+	//jetzt brauch ich echt ein updateDetails!!!!
+	let res = await updateDetails(result,key);
+	//console.log('res',res)
+	//M.details[key]=res;
+	//das object ist complete
+	//return result;
+}
+
+async function simpleOnDroppedItem(itemOrKey, key, sisi) {
+	//console.log(itemOrKey)
+	if (nundef(sisi)) sisi = UI.simple;
+	let item;
+	if (isString(itemOrKey)) { key = itemOrKey; item = M.superdi[key]; } else { item = itemOrKey; }
+	//console.log('===>',key, item)
+	assertion(isdef(key), 'NO KEY!!!!!');
+
+	lookupAddIfToList(item, ['colls'], sisi.name);
+
+	let o = M.superdi[key]; //console.log(key, item, o, sisi)
+	//assertion(nundef(o) || o == item, "DISPARITY!!!!!!!!!!!!!!!!!!!!!")
+	// let list = item.colls;
+	if (isdef(o)) { //} && list.includes(sisi.name)) { 
+		//check if any changes to o in item
+		console.log(`HA! ${key} already there`);
+		let changed = false;
+		for (const k in item) {
+			let val = item[k];
+			if (isLiteral(val) && o[k] != item[k]) { changed = true; break; }
+			else if (isList(val) && !sameList(val, o[k])) { changed = true; break; }
+		}
+		if (!changed) return;
+	}// dropped item into same collection!!!
+	console.log(`........But changed!!!`);
+	//addIf(item.colls, sisi.name);
+	let di = {}; di[key] = item;
+	await updateSuperdi(di);
+	simpleInit(sisi.name, sisi)
+}
+
+async function updateSuperdi(di, key) {
+	//console.log('send postUpdateSuperdi', { di })
+	let res = await mPostRoute('postUpdateSuperdi', { di });
+	//console.log('postUpdateSuperdi', res)
+	await loadAssets();
+}
+
+function getImageData(src) {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.crossOrigin = 'Anonymous'; // To avoid CORS issues
+		img.src = src;
+
+		img.onload = () => {
+			const canvas = document.createElement('canvas');
+			canvas.width = img.width;
+			canvas.height = img.height;
+			const ctx = canvas.getContext('2d');
+			ctx.drawImage(img, 0, 0);
+			let data = canvas.toDataURL('image/png');
+			resolve(data);
+			// const imageData = ctx.getImageData(0, 0, img.width, img.height);
+			// resolve(imageData);
+		};
+
+		img.onerror = (err) => {
+			reject(new Error('Failed to load image'));
+		};
+	});
+}
+async function simpleFinishEditing(canvas, dPopup, inpFriendly, inpCats, sisi) {
+	const dataUrl = canvas.toDataURL('image/png'); //davon jetzt die dataUrl!
+	if (isEmpty(inpFriendly.value)) inpFriendly.value = 'pic'
+	let friendly = inpFriendly.value;
+
+	let [name, imgname] = findUniqueSuperdiKey(friendly);
+
+	console.log('key name will be', name, imgname);
+	//console.log('NIX PASSIERT!!!! key name will be',name,imgname); return;
+	let key = name, filename = name + '.png';
+	//name ist unique! oder ich hab noch das slot fuer img oder photo available
+	//let filename = (isdef(M.superdi[friendly]) ? 'i' + getTimestamp() : friendly) + '.png'; //console.log('filename', filename);
+	let o = { image: dataUrl, coll: sisi.name, filename };
+	let resp = await mPostRoute('postImage', o); //console.log('resp', resp); //sollte path enthalten!
+	filename = resp.filename;
+	let imgPath = `../assets/img/${sisi.name}/${filename}`;
+	let cats = extractWords(valf(inpCats.value, ''));
+	let item = isdef(M.superdi[key])?jsCopy(M.superdi[key]): { key, friendly, cats, colls: [] };
+	//addIf(item.colls, sisi.name);
+	item[valf(imgname, 'img')] = imgPath;
+
+	dPopup.remove();
+	//console.log('NOT saving item',item); return;
+	//console.log('saving',item)
+	await simpleOnDroppedItem(item, key, sisi);
+}
+
+function findUniqueSuperdiKey(friendly) {
+	console.log('friendly', friendly)
+	let name = friendly;
+	let i = 1;
+	let imgname = null;
+	while (true) {
+		let o = M.superdi[name];
+		if (nundef(o)) { break; }
+		console.log(o.colls.includes('emo'))
+		if (isdef(o.img) && isdef(o.photo) || ['emo', 'fa6', 'icon'].every(x => !o.colls.includes(x))) { name = friendly + (i++); continue; }
+		else if (isdef(o.img)) { imgname = 'photo'; break; }
+		else { imgname = 'img'; break; }
+	}
+	return [name, imgname];
+}
+
+
+
+
+function calcRows(fontSize, fontFamily, content, maxWidth) {
+
+	// // Example usage:
+	// const ta = document.createElement('textarea'); // or any other reference element
+	// const fontSize = 16;
+	// const fontFamily = 'Arial';
+	// const content = 'This is a sample content to test the number of rows needed to fit this text within the given maximum width.';
+	// const maxWidth = 200;
+
+	// console.log(calcRows(fontSize, fontFamily, content, maxWidth));
+
+	// Create an off-screen canvas to measure text width
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
+
+	// Set the font properties on the context
+	ctx.font = `${fontSize}px ${fontFamily}`;
+
+	// Split the content into words
+	const words = content.split(' ');
+	let line = '';
+	let rows = 0;
+
+	// Measure each word
+	for (let i = 0; i < words.length; i++) {
+		const testLine = line + words[i] + ' ';
+		const metrics = ctx.measureText(testLine);
+		const testWidth = metrics.width;
+
+		if (testWidth > maxWidth && i > 0) {
+			// When the line is too wide, count the line and start a new line
+			rows++;
+			line = words[i] + ' ';
+		} else {
+			// Continue adding words to the current line
+			line = testLine;
+		}
+	}
+
+	// Count the last line
+	if (line.length > 0) {
+		rows++;
+	}
+
+	return rows;
+}
+
+
+function detailsForKey(key) {
+	let o = M.superdi[key];
+	addKeys(M.details[key], o);
+	addKeys(M.details[o.friendly], o)
+	return o;
+}
+function detailsPresentDict(o) {
+	let di = {};
+	for (const key in o) {
+		if ('cats colls fa fa6 img photo text key friendly ga name'.includes(key)) continue;
+		let val = o[key];
+		if (!isLiteral(val)) continue;
+		di[key] = val;
+	}
+	return di;
+
+}
+
+
+function simpleSidebar(wmin) {
+	mStyle('dLeft', { wmin });
+	let d = mDom('dLeft', { wmin: wmin - 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
+	let gap = 5;
+	let stylesTitles = { matop: 10, bg: '#ffffff80', fg: 'black' };
+
+	let cmds = {};
+	//mDom(d,stylesTitles,{html:'Collection:'});
+	cmds.simpleNew = mCommand(d, 'simpleNew', 'New'); mNewline(d, gap);
+
+	mDom(d, stylesTitles, { html: 'Selection:' })
+	cmds.simpleSelectAll = mCommand(d, 'simpleSelectAll', 'Select All'); mNewline(d, gap);
+	cmds.simpleSelectPage = mCommand(d, 'simpleSelectPage', 'Select Page'); mNewline(d, gap);
+	cmds.simpleClearSelections = mCommand(d, 'simpleClearSelections', 'Clear Selection', { fSel: x => x >= 1 }); mNewline(d, gap);
+
+	mDom(d, stylesTitles, { html: 'Item:' })
+	cmds.setAvatar = mCommand(d, 'setAvatar', 'Set Avatar', { fSel: x => x == 1 }); mNewline(d, gap);
+	cmds.editDetails = mCommand(d, 'editDetails', 'Edit Details', { fSel: x => x == 1 }); mNewline(d, gap);
+
+	mDom(d, stylesTitles, { html: 'Items:' })
+	cmds.addSelected = mCommand(d, 'addSelected', 'Add To', { fSel: x => (x >= 1) }); mNewline(d, gap);
+	cmds.simpleRemove = mCommand(d, 'simpleRemove', 'Remove', { fSel: x => (!simpleLocked() && x >= 1) }); mNewline(d, gap);
+
+	// UI.editCategories = mCommand(d, 'editCategories', 'Edit Categories'); mNewline(d, gap);
+	// UI.removeCategory = mCommand(d, 'removeCategory', 'Remove Category'); mNewline(d, gap);
+	// UI.addCategory = mCommand(d, 'addCategory', 'Add Category'); mNewline(d, gap);
+	// UI.deleteSelected = mCommand(d, 'deleteSelected', 'Delete Selected'); mNewline(d, 3 * gap);
+	// UI.asSecondary = mCommand(d, 'asSecondary', 'Edit Collection'); mNewline(d, gap);
+	// UI.deleteCollection = mCommand(d, 'deleteCollection', 'Delete Collection'); mNewline(d, gap);
+	// UI.renameCollection = mCommand(d, 'renameCollection', 'Rename Collection'); mNewline(d, 3 * gap);
+	// simpleDisableListCommands();
+	// simpleDisableItemCommands();
+	copyKeys(cmds, UI.commands);
+	simpleCheckCommands();
+}
+
+function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
+	const canvas = document.createElement('canvas');
+	canvas.width = wCanvas;
+	canvas.height = hCanvas;
+	parentElement.appendChild(canvas);
+	const ctx = canvas.getContext('2d');
+	let image = new Image();
+	image.src = src;
+
+	// Variables for panning and zooming
+	let scale = 1;
+	let originX = 0;
+	let originY = 0;
+	let startX = 0;
+	let startY = 0;
+	let isDragging = false;
+
+	image.onload = () => {
+
+		if (image.width<canvas.width) canvas.width=image.width;
+		if (image.height<canvas.height) canvas.height=image.height;
+
+		// Calculate the scale to fit the smaller side of the image to the canvas
+		const scaleX = canvas.width / image.width;
+		const scaleY = canvas.height / image.height;
+		scale = Math.min(scaleX, scaleY, 1);
+
+		// Center the image initially
+		originX = (canvas.width - image.width * scale) / 2;
+		originY = (canvas.height - image.height * scale) / 2;
+
+		draw();
+	};
+
+	function draw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.save();
+		ctx.translate(originX, originY);
+		ctx.scale(scale, scale);
+		ctx.drawImage(image, 0, 0);
+		ctx.restore();
+	}
+
+	// Mouse events for panning
+	canvas.addEventListener('mousedown', (e) => {
+		isDragging = true;
+		startX = e.clientX - originX;
+		startY = e.clientY - originY;
+		canvas.style.cursor = 'grabbing';
+	});
+
+	canvas.addEventListener('mousemove', (e) => {
+		if (isDragging) {
+			originX = e.clientX - startX;
+			originY = e.clientY - startY;
+			draw();
+		}
+	});
+
+	canvas.addEventListener('mouseup', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	canvas.addEventListener('mouseout', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	// Mouse wheel event for zooming
+	canvas.addEventListener('wheel', (e) => {
+		e.preventDefault();
+		const zoom = Math.exp(e.deltaY * -0.0005);
+		scale *= zoom;
+		if (scale >= 1) scale = 1;
+
+		// Zoom relative to the mouse pointer
+		const mouseX = e.clientX - canvas.offsetLeft;
+		const mouseY = e.clientY - canvas.offsetTop;
+		originX = mouseX - (mouseX - originX) * zoom;
+		originY = mouseY - (mouseY - originY) * zoom;
+
+		draw();
+	});
+
+	// Touch events for mobile support
+	let touchStartX = 0;
+	let touchStartY = 0;
+
+	canvas.addEventListener('touchstart', (e) => {
+		if (e.touches.length === 1) {
+			isDragging = true;
+			touchStartX = e.touches[0].clientX - originX;
+			touchStartY = e.touches[0].clientY - originY;
+			canvas.style.cursor = 'grabbing';
+		}
+	});
+
+	canvas.addEventListener('touchmove', (e) => {
+		if (e.touches.length === 1 && isDragging) {
+			originX = e.touches[0].clientX - touchStartX;
+			originY = e.touches[0].clientY - touchStartY;
+			draw();
+		}
+	});
+
+	canvas.addEventListener('touchend', () => {
+		isDragging = false;
+		canvas.style.cursor = 'grab';
+	});
+
+	// // Save button event
+	// saveButton.addEventListener('click', () => {
+	// 	const dataURL = canvas.toDataURL('image/png');
+	// 	const link = document.createElement('a');
+	// 	link.href = dataURL;
+	// 	link.download = 'canvas-image.png';
+	// 	link.click();
+	// });
+
+	return canvas;
+}
+async function simpleOnDroppedUrl(src, sisi) {
+
+	let sz = 400;
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz, hmin: sz, bg: 'pink' });
+	let dParent = mDom(dPopup);
+
+	let d = mDom(dParent, { w: sz, h: sz, border: 'dimgray', margin: 10 });
+	let canvas = createPanZoomCanvas(d, src, sz, sz);
+
+	let instr = mDom(dPopup, { align: 'center', mabot: 10 }, { html: `- panzoom image to your liking -` })
+
+	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
+	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
+	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
+	let defaultName = '';
+	let iDefault = 1;
+	let k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`);
+	while (isdef(k)) { iDefault++; k = sisi.masterKeys.find(x => x == `${sisi.name}${iDefault}`); }
+	defaultName = `${sisi.name}${iDefault}`;
+	inpFriendly.value = defaultName;
+	mDom(dinp, { h: 1 });
+	mDom(dinp, { display: 'inline-block' }, { html: 'Categories: ' })
+	let inpCats = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'cats', tag: 'input', type: 'text', placeholder: `<enter categories>` });
+
+	// mLinebreak(dinp);
+	// let ta = mDom(dinp,{w:sz},{tag:'textarea',rows:10,value:''})
+
+	let db2 = mDom(dPopup, { padding: 10, display: 'flex', gap: 10, 'justify-content': 'end' });
+	mButton('Cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
+	mButton('Save', () => simpleFinishEditing(canvas, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
+}
+function savePanZoomCanvas(canvas) {
+	if (canvas) {
+		const dataURL = canvas.toDataURL('image/png');
+		const link = document.createElement('a');
+		link.href = dataURL;
+		link.download = 'canvas-image.png';
+		link.click();
+	}
+}
+
+//#region 13.6.24 alles bau1 bau2 bau3 bau4
+
+
+
+function showImagePartial(dParent, image, x, y, w, h, left, top, wShow, hShow, wCanvas, hCanvas) {
+
+	mClear(dParent)
+	let canvas = mDom(dParent, {}, { tag: 'canvas' }); //console.log('left', left, 'top', top)
+	//const canvas = document.getElementById('canvas');
+	const ctx = canvas.getContext('2d');
+
+	// Set canvas size to the specified width and height
+	canvas.width = wCanvas;
+	canvas.height = hCanvas;
+
+	// Draw the specified part of the image onto the canvas
+	ctx.drawImage(image, x, y, w, h, left, top, wShow, hShow);
+}
+
+function isExactly(n, num = 1) { return n == num; }
+function isAtLeast(n, num = 1) { return n >= num; }
+async function onclickAddSelected() {
+	let keys = UI.selectedImages;
+	let cmd = UI.commands.addSelected;
+	let collist = M.collections.filter(x => !simpleLocked(x)).map(x => ({ name: x, value: false }));
+	let result = await mGather(iDiv(cmd), {}, { content: collist, type: 'checkList' });
+	if (!result || isEmpty(result)) { console.log('nothing added'); simpleClearSelections(); return; }
+
+	//console.log('result',result,keys); //return;
+	assertion(isList(result), 'uiCadgetTypeChecklist result is NOT a list!!!')
+	let di = {}, changed = false;
+	for (const key of keys) {
+		let o = M.superdi[key];
+		for (const collname of result) {
+			if (o.colls.includes(collname)) continue;
+			changed = true;
+			o.colls.push(collname);
+			di[key] = o;
+		}
+	}
+	if (!changed) { console.log('nothing added'); simpleClearSelections(); return; }
+	console.log('items changed:', Object.keys(di));
+	await updateSuperdi(di);
+	simpleInit();
+}
+function simpleCheckCommands() {
+	if (nundef(UI.selectedImages)) UI.selectedImages = [];
+	let n = UI.selectedImages.length;
+	for (const k in UI.commands) {
+		let cmd = UI.commands[k];
+		if (nundef(cmd) || nundef(iDiv(cmd))) continue;
+
+		//console.log(cmd)
+		//let x = cmd.fSel(n);console.log('k',k,cmd,x)
+		if (nundef(cmd.fSel) || cmd.fSel(n)) cmdEnable(k); else cmdDisable(k);
+	}
+}
+
+
+
+
+//#endregion
+
+//region fishgame
+async function showTable(id) {
+	let me = getUname();
+	let table = await mGetRoute('table', { id });  //console.log('table',table)
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+	let func = DA.funcs[table.game];
+	T = table;
+	clearMain();
+	let d = mBy('dExtraLeft');
+	d.innerHTML = `<h2>${getGameProp('friendly').toUpperCase()}: ${table.friendly} (${table.step})</h2>`; // title
+	d = mDom('dMain'); mCenterFlex(d);
+	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
+	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);
+	func.stats(table);
+	let minTableSize = 400;
+	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
+	mCenterCenter(dTable);
+	let items = func.present(table);
+	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
+	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
+	await updateTestButtonsPlayers(table);
+	func.activate(table, items);
+}
+
+
+//#endregion
+
+//#endregion
+
 //#region integrate 4.6.24 =>closure (bau4.js)
 async function onclickSettMyTheme(){
 	localStorage.setItem('settingsMenu','settMyTheme')

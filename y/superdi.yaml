@@ -11644,7 +11644,9 @@ crow:
     - animal
   colls:
     - icon
+    - tierspiel
   fa6: f520
+  img: ../assets/img/tierspiel/crow.png
 crow_dive:
   friendly: crow_dive
   ga: E3AC
@@ -46553,3 +46555,10 @@ alligator:
   colls:
     - tierspiel
   img: ../assets/img/tierspiel/alligator.png
+porcupine:
+  friendly: porcupine
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/porcupine.png

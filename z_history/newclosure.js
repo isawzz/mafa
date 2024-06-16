@@ -2091,6 +2091,7 @@ function enableDataDrop(elem, onDropCallback) {
 	elem.addEventListener('drop', ev => {
 		ev.preventDefault();
 		elem.style.border = originalBorderStyle;
+		console.log('border',elem.style.border)
 		onDropCallback(ev, elem);
 	});
 }
@@ -8715,7 +8716,7 @@ function updateKeySettings(nMin) {
 }
 async function updateDetails(di, key) {
 	let res = await mPostRoute('postUpdateDetails', { key, di });
-	console.log('postUpdateSuperdi', res)
+	//console.log('postUpdateSuperdi', res)
 	await loadAssets();
 }
 function updateUserImageToBotHuman(playername, value) {
