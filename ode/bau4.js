@@ -3,7 +3,7 @@ function fishgame() {
 
 	function setup(table) {
 		let fen = {};
-		fen.deck = rChoose(M.byCollection.animals, 170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
+		fen.deck = rChoose(M.byCollection.tierspiel, 170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
 		for (const name in table.players) {
 			let pl = table.players[name];
 			pl.score = 0;

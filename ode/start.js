@@ -1,27 +1,52 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test127(); }
+async function start() { TESTING = true; await test128_tierspiel(); }
 
-async function test127(){
+async function test128_tierspiel() {
+  await prelims();
+  let d = clearFlex();
+  let keys = jsCopy(M.byCollection.tierspiel);
+  arrShuffle(keys)
+  //console.log(keys);
+  let cards = deckDeal(keys, 5);
+  console.log('cards', cards);
+  let key = cards[0];
+  let card = cBlank(d, { h: 400, border: 'dimgray' });
+  console.log(card);
+  let sz = 200
+  let d1 = showim1(key, iDiv(card), { rounding: 12, w: sz, h: sz });
+  mPlace(d1, 'tc', 40, 0);
+
+  let o = M.superdi[key];
+	let details = detailsForKey(key);
+	let di = detailsPresentDict(details);
+  addKeys(di,o);
+  showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true});
+
+  let lifespan = Math.average(...allNumbers(o.lifespan));
+  console.log('lifespan',lifespan)
+
+}
+async function test127() {
   await prelims();
   return;
   let data = await getImageData('../assets/img/tierspiel/bee.png');
   //console.log('data',data); return;
-  let res = await mPostRoute('postImage',{coll:'tierspiel',filename:'zbee.png',image:data});
-  console.log('res',res);
+  let res = await mPostRoute('postImage', { coll: 'tierspiel', filename: 'zbee.png', image: data });
+  console.log('res', res);
 }
-async function test126(){
-  await prelims(); 
+async function test126() {
+  await prelims();
   //await editDetailsFor('bee',iDiv(UI.commands.simpleNew))
   //await simpleOnDroppedUrl_test('../ode/iport.png',UI.simple);
   return;
   let dParent = clearFlex();
-  let src='../ode/iport.png';
-  let canvas=createPanZoomCanvas(dParent, src, 400, 400);
-  mStyle(canvas,{border:'red'})
+  let src = '../ode/iport.png';
+  let canvas = createPanZoomCanvas(dParent, src, 400, 400);
+  mStyle(canvas, { border: 'red' })
   mLinebreak(dParent)
-  mButton('save', ()=>savePanZoomCanvas(canvas), dParent,{},'button');
+  mButton('save', () => savePanZoomCanvas(canvas), dParent, {}, 'button');
 
 }
 async function test125() {
@@ -30,39 +55,39 @@ async function test125() {
   async function onclickSaveCropData() {
     let o = UI.zoomo;
     let pd = UI.panData;
-    console.log(o,pd); return;
-    let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-    if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
-    fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
-    showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
-  
+    console.log(o, pd); return;
+    let [d, img, wOrig, hOrig, sz, fa, famin] = [o.d, o.img, o.wOrig, o.hOrig, o.sz, o.fa, o.famin];
+    if (fa >= 1) { console.log('cant zoom in more!!!', fa); return; }
+    fa *= 1.5; if (fa > 1) fa = 1; UI.fa = fa;
+    showImgCentered(d, img, wOrig, hOrig, sz, fa, famin);
+
   }
-  function showImgCentered(d,img,wOrig,hOrig,sz,fa,famin){
-    UI.zoomo={d,img,wOrig,hOrig,sz,fa,famin};
-    let wsc=wOrig*fa, hsc=hOrig*fa; console.log('fa',fa);
-  
-    let [xwo,ywo]=[(sz-wsc)/2,(sz-hsc)/2]
-  
-    showImagePartial(d, img, 0,0,wOrig,hOrig,xwo,ywo,wsc,hsc, sz, sz, wOrig,hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
-    let szCrop = sz-100;
-    let dc = mDom(d, { position: 'absolute', left: (sz-szCrop) / 2, top: (sz-szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
+  function showImgCentered(d, img, wOrig, hOrig, sz, fa, famin) {
+    UI.zoomo = { d, img, wOrig, hOrig, sz, fa, famin };
+    let wsc = wOrig * fa, hsc = hOrig * fa; console.log('fa', fa);
+
+    let [xwo, ywo] = [(sz - wsc) / 2, (sz - hsc) / 2]
+
+    showImagePartial(d, img, 0, 0, wOrig, hOrig, xwo, ywo, wsc, hsc, sz, sz, wOrig, hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+    let szCrop = sz - 100;
+    let dc = mDom(d, { position: 'absolute', left: (sz - szCrop) / 2, top: (sz - szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
     dc.onmousedown = startPanning;
   }
   async function onclickZoomIn() {
     let o = UI.zoomo;
-    let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-    if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
-    fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
-    showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
-  
+    let [d, img, wOrig, hOrig, sz, fa, famin] = [o.d, o.img, o.wOrig, o.hOrig, o.sz, o.fa, o.famin];
+    if (fa >= 1) { console.log('cant zoom in more!!!', fa); return; }
+    fa *= 1.5; if (fa > 1) fa = 1; UI.fa = fa;
+    showImgCentered(d, img, wOrig, hOrig, sz, fa, famin);
+
   }
   async function onclickZoomOut() {
     let o = UI.zoomo;
-    let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-    if (fa*wOrig<=sz && fa*hOrig<=sz) {console.log('cant zoom out more!!!',wOrig,hOrig,fa, fa*wOrig,fa*hOrig,sz); return;}
-    fa*=0.5;if (fa<famin) fa = famin; UI.fa=fa;
-    showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
-  
+    let [d, img, wOrig, hOrig, sz, fa, famin] = [o.d, o.img, o.wOrig, o.hOrig, o.sz, o.fa, o.famin];
+    if (fa * wOrig <= sz && fa * hOrig <= sz) { console.log('cant zoom out more!!!', wOrig, hOrig, fa, fa * wOrig, fa * hOrig, sz); return; }
+    fa *= 0.5; if (fa < famin) fa = famin; UI.fa = fa;
+    showImgCentered(d, img, wOrig, hOrig, sz, fa, famin);
+
   }
   function startPanning(ev) {
     console.log('_________startPanning!')
@@ -108,7 +133,7 @@ async function test125() {
     }
     panStart(ev);
   }
-      
+
   let dParent = clearFlex();
   //let src="C:\\Users\\tawzz\\Pictures\\diana\\random114_003.png"; geht NICHT!!!!!!
   let src = '../ode/iport.png';
@@ -130,14 +155,14 @@ async function test125() {
   let isPortrait = hOrig > wOrig;
   let fa = isPortrait ? szCrop / hOrig : szCrop / wOrig; //console.log('factor', fa);
 
-  showImgCentered(d,img,wOrig,hOrig,szCrop,fa, fa);
-  mButton('zoom out', onclickZoomOut, dParent,{},'button','bZoomOut');
-  mButton('zoom in', onclickZoomIn, dParent,{},'button','bZoomIn');
-  mButton('save', onclickSaveCropData, dParent,{},'button','bZoomSave');
+  showImgCentered(d, img, wOrig, hOrig, szCrop, fa, fa);
+  mButton('zoom out', onclickZoomOut, dParent, {}, 'button', 'bZoomOut');
+  mButton('zoom in', onclickZoomIn, dParent, {}, 'button', 'bZoomIn');
+  mButton('save', onclickSaveCropData, dParent, {}, 'button', 'bZoomSave');
 
 
 }
-function mist_zoomzeug(){
+function mist_zoomzeug() {
   let [xi, yi, wi, hi, wCrop, hCrop] = [0, 0, wOrig, hOrig, wOrig * fa, hOrig * fa];
   console.log('img', xi, yi, wi, hi, '\ncrop', Math.round(wCrop), Math.round(hCrop), szCrop)
   let dx = isPortrait ? (szCrop - wCrop) / 2 : 0;

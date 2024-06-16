@@ -2443,7 +2443,8 @@ function fillFormFromObject(inputs, wIdeal, df, db, styles, opts) {
 	let popup = mDom(df, { margin: 10 }); //mPopup(df, { margin: 100 }); //mStyle(popup,{left:10})
 	mDom(popup, {}, { html: 'paste your information into the text area' })
 	let ta = mDom(popup, {}, { tag: 'textarea', rows: 20, cols: 80 });
-	mButton('Fill Form', () => { onclickPasteDetailObject(ta.value, inputs, wIdeal, df, styles, opts); }, db, { maright: 10 }, 'button', 'bParseIntoForm');
+	let b = mButton('Parse To Form', () => { onclickPasteDetailObject(ta.value, inputs, wIdeal, df, styles, opts); }, db, { maright: 10 }, 'button', 'bParseIntoForm');
+	mInsert(db,b);
 }
 function fillMultiForm(dict, inputs, wIdeal, df, styles, opts) {
 	mClear(df);
@@ -7742,11 +7743,11 @@ function showNavbar() {
 	nav.commands = commands;
 	return nav;
 }
-function showObject(o, keys, dParent, styles = {}) {
+function showObject(o, keys, dParent, styles = {}, opts={}) {
 	let bg = valf(styles.bg, 'dimgray');
 	addKeys({ align: 'center', padding: 2, bg, fg: colorIdealText(bg) }, styles);
 	let html = '';
-	for (const k of keys) { html += o[k] + '<br>'; }
+	for (const k of keys) { html += (opts.showKeys?k+': ':'') + o[k] + '<br>'; }
 	let d = mDom(dParent, styles, { html });
 	return d;
 }

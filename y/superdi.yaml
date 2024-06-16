@@ -7525,6 +7525,8 @@ camel:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/camel.png
 camel_archer:
   friendly: camel_archer
   cats:

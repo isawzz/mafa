@@ -2042,3 +2042,18 @@ crow:
     Females lay 3-9 eggs per clutch, with an incubation period of about 18-21
     days
   class: Bird
+dodo:
+  lifespan: Unknown, estimated to be 10-20 years
+  habitat: Forests on the island of Mauritius in the Indian Ocean
+  weight: 10-18 kg
+  size: 1 meter in height
+  food: >-
+    Omnivorous: believed to have fed on fruits, seeds, nuts, bulbs, and possibly
+    small land invertebrates
+  species: Raphus cucullatus
+  color: >-
+    Greyish or brownish plumage with a tuft of feathers on the tail, yellow
+    legs, and a greenish beak
+  reproduction: Oviparous
+  offsprings: Females likely laid a single egg per breeding season
+  class: Bird
