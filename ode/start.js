@@ -24,7 +24,8 @@ async function test128_tierspiel() {
   addKeys(di,o);
   showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true});
 
-  let lifespan = Math.average(...allNumbers(o.lifespan));
+  let lifespan = arrAverage(allNumbers(o.lifespan,Math.abs));
+  if (lifespan.includes())
   console.log('lifespan',lifespan)
 
 }

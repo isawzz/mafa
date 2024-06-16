@@ -146,9 +146,13 @@ function allCondDict(d, func) {
 	for (const k in d) { if (func(d[k])) res.push(k); }
 	return res;
 }
-function allNumbers(s) {
+function allNumbers(s,func) {
 	let m = s.match(/\-.\d+|\-\d+|\.\d+|\d+\.\d+|\d+\b|\d+(?=\w)/g);
-	if (m) return m.map(v => +v); else return null;
+	if (nundef(m)) return [];
+	let arr=m.map(v => +v);
+	if (isdef(func)) arr = arr.map(x=>func(x));
+	return arr;
+	//if (m) return m.map(v => +v); else return null;
 }
 function allPlToPlayer(name) {
 	let allPl = DA.allPlayers[name];
