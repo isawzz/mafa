@@ -30,7 +30,7 @@ seahorse:
     many species can change color to blend in with their surroundings
   reproduction: Ovoviviparous
   offsprings: >-
-    Males give birth to 50-1,500 fry per brood after carrying eggs in a brood
+    Males give birth to 50-1500 fry per brood after carrying eggs in a brood
     pouch for 10 days to 6 weeks, depending on the species
   class: Fish
 panda:
@@ -97,7 +97,7 @@ walrus:
   name: Walrus
   lifespan: 20-30 years in the wild, up to 40 years in captivity
   habitat: Arctic and subarctic regions, often found on ice floes
-  weight: 800-1,700 kg
+  weight: 800-1700 kg
   size: 2.2-3.6 m long
   food: 'Carnivorous: benthic invertebrates such as clams and snails'
   species: Odobenus rosmarus
@@ -190,7 +190,7 @@ gray_squirrel:
     Deciduous and mixed forests, urban and suburban areas in eastern North
     America
   weight: 400-600 grams
-  size: 23-30 cm in body length, with a tail length of 15-25 cm
+  size: 23-30 cm in body length
   food: >-
     Omnivorous: primarily feeds on nuts, seeds, fruits, fungi, and occasionally
     insects and bird eggs
@@ -207,9 +207,7 @@ mandrill:
     Tropical rainforests and occasionally savannas in Central Africa, primarily
     in countries like Gabon, Cameroon, and Congo
   weight: 'Females: 11-14 kg, Males: 19-37 kg'
-  size: >-
-    Females: 55-66 cm in body length, Males: 75-95 cm in body length; both sexes
-    have tails about 5-10 cm long
+  size: 'Females: 55-66 cm in body length, Males: 75-95 cm in body length; both sexes'
   food: >-
     Omnivorous: feeds on fruits, seeds, leaves, insects, small mammals, and
     occasionally fungi
@@ -244,7 +242,7 @@ squirrel:
     Found in coniferous and mixed forests of Eastern Europe and Asia,
     particularly in Siberia
   weight: 250-400 grams
-  size: 19-23 cm in body length, with a tail length of 15-20 cm
+  size: 19-23 cm in body length
   food: >-
     Omnivorous: feeds on seeds, nuts, fruits, fungi, and occasionally insects
     and bird eggs
@@ -1019,7 +1017,7 @@ asian_lady_beetle:
     Highly variable; typically orange to red with black spots, but can also be
     yellow to black or even melanistic (black with red spots)
   reproduction: Oviparous
-  offsprings: Females can lay up to 1,500 eggs in their lifetime
+  offsprings: Females can lay up to 1500 eggs in their lifetime
   class: Insect
 grizzly_bear:
   lifespan: 20-25 years in the wild, up to 30 years in captivity
@@ -1583,7 +1581,7 @@ narwhal:
   name: Narwhal
   lifespan: 50-60 years
   habitat: Arctic waters near Canada, Greenland, and Russia
-  weight: 1,500-1,800 kg
+  weight: 1500-1800 kg
   size: 4-5 m long, including tusk
   food: 'Carnivorous: fish, squid, shrimp'
   species: Monodon monoceros
@@ -1824,7 +1822,7 @@ southern_black_rhinoceros:
   habitat: >-
     Found in savannas and semi-arid areas of southern Africa, including
     countries like Namibia, South Africa, Zimbabwe, and Kenya
-  weight: 800-1,400 kg
+  weight: 800-1400 kg
   size: 1.4-1.8 m tall at the shoulder
   food: >-
     Herbivorous: primarily feeds on leaves, branches, and twigs of shrubs and
@@ -1978,7 +1976,7 @@ mouse:
   lifespan: 1-3 years in the wild, up to 2-3 years in captivity
   habitat: Various habitats including fields, forests, and human dwellings worldwide
   weight: 12-30 grams
-  size: 6-10 cm in body length, with a tail length of 5-10 cm
+  size: 6-10 cm in body length
   food: 'Omnivorous: feeds on seeds, grains, fruits, insects, and small invertebrates'
   species: >-
     Various species within the family Muridae, including Mus musculus (house

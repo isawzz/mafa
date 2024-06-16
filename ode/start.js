@@ -4,52 +4,18 @@ async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; await test128_tierspiel(); }
 
 async function test128_tierspiel() {
-
-
   await prelims();//return;
-
-  //let res = findAllFoodTypes(); console.log(res);return;
 
   let d = clearFlex();
   let keys = jsCopy(M.byCollection.tierspiel);
   arrShuffle(keys)
-  //console.log(keys);
-  let cards = deckDeal(keys, 5); // console.log('cards', cards);
-  let key = cards[0];
-  // key = 'alpaca';
+  let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
-  let sz = 400;
-  let [yTitle,yPic,szPic]=[8,sz/5,sz/2];
-  let [yLifespan,yBrown,hTop]=[yPic+szPic,yPic+szPic+22,yPic];
+  for(const key of cards) {
+    let o = showInfoCard(key,d);
+    //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
 
-  let card = cBlank(d, { h: sz, border: 'dimgray' });
-  let dCard = iDiv(card);// console.log(card);
-  let d1 = showim1(key, dCard, { rounding: 12, w: szPic, h: szPic },{prefer:'photo'});
-
-  //eigentlich moecht ich auf jeden fall als photo shown!!!
-
-  mPlace(d1, 'tc', 0, yPic); 
-
-  let o = M.superdi[key];
-	let details = detailsForKey(key);
-	let di = detailsPresentDict(details);
-  addKeys(di,o);
-  showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true});
-
-  let title = fromNormalized(o.friendly);
-  let dtitle = mDom(dCard,{display:'inline',weight:'bold'},{html:title});
-  mPlace(dtitle,'tc',0,yTitle); 
-
-  let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
-
-  let dbrown = mDom(dCard,{matop:yBrown,w100:true,bg:'sienna',fg:'white',padding:10,box:true},{html:'WHEN ACTIVATED: All players gain 1 food from supply.'})
-
-  let dlifespan=mDom(dCard,{display:'inline'},{html:lifespan.lifespan})
-  mPlace(dlifespan,'tr',40,280);
-
-  let foodtype = extractFoodType(o.food); console.log(key,foodtype)
-
-  let dfood = mDom(dCard,{},{html:foodtype});
+  }
 
 }
 async function test127() {

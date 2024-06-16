@@ -9,6 +9,9 @@ function showim1(imgKey, d, styles = {}, opts = {}) {
 	if (nundef(src)) src = rChoose(M.allImages).path;
 	//console.log('src', src)
 	//let src = valf(lookup(M.superdi, [imgKey, valf(opts.prefer,'img')]), );
+
+	let [w,h]=mSizeSuccession(styles,40);
+	addKeys({w,h},styles)
 	let img = mDom(d, styles, { tag: 'img', src });
 	return img;
 }
