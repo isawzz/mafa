@@ -1,36 +1,35 @@
 
-function mPlace(elem, pos, offx, offy) {
-	//console.log('___pos',pos,'offx',offx,'offy',offy);
-	elem = toElem(elem);
-	pos = pos.toLowerCase();
-	let dParent = elem.parentNode; mIfNotRelative(dParent);
-	let hor = valf(offx, 0);
-	let vert = isdef(offy) ? offy : hor;
-	if (pos[0] == 'c' || pos[1] == 'c') {
-		let dpp = dParent.parentNode;
-		let opac = mGetStyle(dParent, 'opacity'); //console.log('opac', opac);
-		if (nundef(dpp)) { mAppend(document.body, dParent); mStyle(dParent, { opacity: 0 }) }
-		let rParent = getRect(dParent);
-		let [wParent, hParent] = [rParent.w, rParent.h];
-		let rElem = getRect(elem);
-		let [wElem, hElem] = [rElem.w, rElem.h];
-		if (nundef(dpp)) { dParent.remove(); mStyle(dParent, { opacity: valf(opac, 1) }) }
-		switch (pos) {
-			case 'cc': mStyle(elem, { position: 'absolute', left: hor + (wParent - wElem) / 2, top: vert + (hParent - hElem) / 2 }); break;
-			case 'tc': mStyle(elem, { position: 'absolute', left: hor + (wParent - wElem) / 2, top: vert }); break;
-			case 'bc': mStyle(elem, { position: 'absolute', left: hor + (wParent - wElem) / 2, bottom: vert }); break;
-			case 'cl': mStyle(elem, { position: 'absolute', left: hor, top: vert + (hParent - hElem) / 2 }); break;
-			case 'cr': mStyle(elem, { position: 'absolute', right: hor, top: vert + (hParent - hElem) / 2 }); break;
-		}
-		//for(const st of ['top','bottom','left','right']) console.log(st,elem.style[st]);
-		return;
-	}
-	let di = { t: 'top', b: 'bottom', r: 'right', l: 'left' };
-	elem.style.position = 'absolute';
-	let kvert=di[pos[0]],khor=di[pos[1]];
-	elem.style[kvert] = vert + 'px'; elem.style[khor] = hor + 'px';
-	//console.log(kvert,elem.style[kvert],khor,elem.style[khor])
+function mNode(o, dParent, title, isSized = false) {
+	let d = mCreate('div');
+	mYaml(d, o);
+	let pre = d.getElementsByTagName('pre')[0];
+	pre.style.fontFamily = 'inherit';
+	if (isdef(title)) mInsert(d, mText(title));
+	if (isdef(dParent)) mAppend(dParent, d);
+	if (isDict(o)) d.style.textAlign = 'left';
+	if (isSized) addClass(d, 'centered');
+	return d;
 }
+function mYaml(d, js) {
+	d.innerHTML = '<pre>' + jsonToYaml(js) + '</pre>';
+}
+function jsonToYaml(o) { let y = jsyaml.dump(o); return y; }
 
+function showObject(o, keys, dParent, styles = {}, opts={}) {
+
+	if (nundef(keys)) {keys = Object.keys(o);opts.showKeys = true;styles.align='left'}
+	addKeys({ align: 'center', padding: 2, bg:'dimgrey', fg: 'contrast' }, styles);
+
+	let d = mDom(dParent, styles, opts);
+
+	let onew={};
+	for(const k of keys) onew[k]=o[k];
+
+	mNode(onew,d,o.friendly);
+	// let html = '';
+	// for (const k of keys) { html += (opts.showKeys?k+': ':'') + o[k] + '<br>'; }
+	// let d = mDom(dParent, styles, { html });
+	return d;
+}
 
 

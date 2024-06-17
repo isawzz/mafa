@@ -1,12 +1,36 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test130_svgSliced(); }
+async function start() { TESTING = true; await test131(); }
 
-async function test130_svgSliced(){
+async function test132_verifyFoodtypeExtraction(){
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+
+  for(const key of keys){
+
+  }
+}
+async function test131() {
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+
+  let key = 'walrus';
+  let o=getDetailedSuperdi(key); showObject(o,null,d,{bg:'red',padding:10}); 
+  return;
+
+  let items = [];
+  for (const key of cards.slice(2)) {
+    let o = showInfoCard(key, d);
+
+    //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
+    o.key = key;
+    items.push(o);
+  }
+  console.log('items', items[0])
+}
+async function test130_svgSliced() {
   await prelims(); //return;
-  let d=clearFlex({gap:0})
-  for(const i of range(100)) mAppend(d,wsGetIcon());
+  let d = clearFlex({ gap: 0 })
+  for (const i of range(100)) mAppend(d, wsGetIcon());
 
   // let colors = toWords('british_racing_green yellow sangria azure gray',true).map(x=>colorFrom(x));
   // let html = generatePizzaSVG(100,...colors);
@@ -14,7 +38,7 @@ async function test130_svgSliced(){
   // mAppend(d,d1);
 }
 
-async function test129_svgWingspan(){
+async function test129_svgWingspan() {
   let html = `
       <svg width="200" height="200" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
         <!-- Slice 1: Red -->
@@ -39,7 +63,7 @@ async function test129_svgWingspan(){
     `;
 }
 async function test128_tierspiel() {
-  await prelims();return;
+  await prelims(); return;
 
   let d = clearFlex();
   let keys = jsCopy(M.byCollection.tierspiel);
@@ -47,14 +71,14 @@ async function test128_tierspiel() {
   let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
   let items = [];
-  for(const key of cards) {
-    let o = showInfoCard(key,d);
+  for (const key of cards) {
+    let o = showInfoCard(key, d);
 
     //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
     o.key = key;
     items.push(o);
   }
-  console.log('items',items)
+  console.log('items', items)
 
 }
 async function test127() {

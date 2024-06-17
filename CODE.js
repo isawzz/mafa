@@ -1,4 +1,21 @@
 
+
+function extractFoodType(s) {
+	s = s.toLowerCase();
+	for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
+		if (s.includes(t)) return t + 'vorous';
+	}
+	let plants = M.byCat.plant; plants = plants.concat(['leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
+	let carni = M.byCat.animal;
+	let types = [];
+
+	if (plants.some(x => s.includes(x.substring(0,4)))) types.push('herbi');
+	if (carni.some(x => s.includes(x.substring(0,4)))) types.push('carni');
+	if (isEmpty(types)) { console.log(s); return 'unknown' }
+	if (types.length >= 2) return 'omnivorous';
+	else return types[0] + 'vorous';
+}
+
 function _fillFormFromObject(ev, inputs, form) {
 	//let form = 
 	let popup = mPopup(form, { margin: 100 }); //mStyle(popup,{left:10})
