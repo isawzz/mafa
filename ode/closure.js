@@ -6190,7 +6190,7 @@ async function onclickPlay() {
 async function onclickSetAvatar(ev) { await simpleSetAvatar(UI.selectedImages[0]); }
 
 async function onclickSettAddYourTheme() {
-	let nameEntered = await mGather(iDiv(UI.settAddYourTheme));
+	let nameEntered = await mGather(iDiv(UI.commands.settAddYourTheme));
 	let name = normalizeString(nameEntered);
 	let ohne = replaceAll(name, '_', '');
 	if (isEmpty(ohne)) { showMessage(`name ${nameEntered} is not valid!`); return; }
@@ -6218,7 +6218,7 @@ async function onclickSettColor() {
 	await showColors();
 }
 async function onclickSettDeleteTheme() {
-	let nameEntered = await mGather(iDiv(UI.settDeleteTheme));
+	let nameEntered = await mGather(iDiv(UI.commands.settDeleteTheme));
 	let name = normalizeString(nameEntered);
 	if (!lookup(Serverdata.config, ['themes', name])) { showMessage(`theme ${name} does not exist!`); return; }
 	delete Serverdata.config.themes[name];
@@ -7344,10 +7344,10 @@ function setUserTheme() {
 }
 function settingsCheck() {
 	if (isdef(DA.settings)) {
-		cmdDisable(UI.settResetAll.key);
+		cmdDisable(UI.commands.settResetAll.key);
 		for (const k in DA.settings) {
 			if (isLiteral(U[k]) && DA.settings[k] != U[k]) {
-				cmdEnable(UI.settResetAll.key); break;
+				cmdEnable(UI.commands.settResetAll.key); break;
 			}
 		}
 	}
@@ -7358,7 +7358,7 @@ async function settingsOpen() {
 	let d = mDom('dMain', {}, { id: 'dSettingsMenu' }); // { padding: 0, overy: 'auto', hmax: '100vh' }, { id: 'dSettingsMenu' }); //,calcRestHeight('dMain') }, { id: 'dSettingsMenu' });
 	let submenu = valf(localStorage.getItem('settingsMenu'), 'settTheme');
 	settingsSidebar();
-	await UI[submenu].open();
+	await UI.commands[submenu].open();
 	settingsCheck();
 }
 function settingsSidebar() {
@@ -7366,16 +7366,16 @@ function settingsSidebar() {
 	mStyle('dLeft', { wmin: wmin });
 	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 160, h: window.innerHeight - getRect('dLeft').y - 102 }); //, bg:'#00000020'  }); 
 	let gap = 5;
-	UI.settMyTheme = mCommand(d, 'settMyTheme', 'My Theme', { save: true }); mNewline(d, gap);
-	UI.settTheme = mCommand(d, 'settTheme', 'Themes', { save: true }); mNewline(d, gap);
-	UI.settColor = mCommand(d, 'settColor', 'Color', { save: true }); mNewline(d, gap);
-	UI.settFg = mCommand(d, 'settFg', 'Text Color', { save: true }); mNewline(d, gap);
-	UI.settTexture = mCommand(d, 'settTexture', 'Texture', { save: true }); mNewline(d, gap);
-	UI.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode', { save: true }); mNewline(d, 2 * gap);
-	UI.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
-	UI.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
-	UI.settAddYourTheme = mCommand(d, 'settAddYourTheme', 'Add Your Theme'); mNewline(d, gap);
-	UI.settDeleteTheme = mCommand(d, 'settDeleteTheme', 'Delete Theme'); mNewline(d, gap);
+	UI.commands.settMyTheme = mCommand(d, 'settMyTheme', 'My Theme', { save: true }); mNewline(d, gap);
+	UI.commands.settTheme = mCommand(d, 'settTheme', 'Themes', { save: true }); mNewline(d, gap);
+	UI.commands.settColor = mCommand(d, 'settColor', 'Color', { save: true }); mNewline(d, gap);
+	UI.commands.settFg = mCommand(d, 'settFg', 'Text Color', { save: true }); mNewline(d, gap);
+	UI.commands.settTexture = mCommand(d, 'settTexture', 'Texture', { save: true }); mNewline(d, gap);
+	UI.commands.settBlendMode = mCommand(d, 'settBlendMode', 'Blend Mode', { save: true }); mNewline(d, 2 * gap);
+	UI.commands.settRemoveTexture = mCommand(d, 'settRemoveTexture', 'Remove Texture'); mNewline(d, gap);
+	UI.commands.settResetAll = mCommand(d, 'settResetAll', 'Revert Settings'); mNewline(d, gap);
+	UI.commands.settAddYourTheme = mCommand(d, 'settAddYourTheme', 'Add Your Theme'); mNewline(d, gap);
+	UI.commands.settDeleteTheme = mCommand(d, 'settDeleteTheme', 'Delete Theme'); mNewline(d, gap);
 }
 function show(elem, isInline = false) {
 	if (isString(elem)) elem = document.getElementById(elem);

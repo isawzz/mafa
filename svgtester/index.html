@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<svg width="200" height="200" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+		<!-- Slice 1: Red -->
+		<path d="M 0,0 L 100,0 A 100,100 0 0,1 50,87 L 0,0" fill="crimson" />
+		
+		<!-- Slice 2: Yellow -->
+		<path d="M 0,0 L 50,87 A 100,100 0 0,1 -50,87 L 0,0" fill="emerald" />
+		
+		<!-- Slice 3: Green -->
+		<path d="M 0,0 L -50,87 A 100,100 0 0,1 -100,0 L 0,0" fill="yellow" />
+		
+		<!-- Slice 4: Blue -->
+		<path d="M 0,0 L -100,0 A 100,100 0 0,1 -50,-87 L 0,0" fill="blue" />
+		
+		<!-- Slice 5: Gray -->
+		<path d="M 0,0 L -50,-87 A 100,100 0 0,1 50,-87 L 0,0" fill="brown" />
+		
+		<!-- Slice 6: Brown -->
+		<path d="M 0,0 L 50,-87 A 100,100 0 0,1 100,0 L 0,0" fill="gray" />
+	</svg>
+	<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+		<!-- Background circle for the token -->
+		<circle cx="50" cy="50" r="45" fill="#8B4513" stroke="black" stroke-width="5"/>
+	
+		<!-- Worm body -->
+		<path d="M40,60
+						 C30,50, 20,50, 20,40
+						 S30,20, 40,30
+						 S60,30, 60,50
+						 S50,70, 40,60"
+					fill="#FFD700" stroke="black" stroke-width="3"/>
+	
+		<!-- Worm eye -->
+		<circle cx="30" cy="35" r="3" fill="black"/>
+	</svg>
+		
+</body>
+</html>

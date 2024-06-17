@@ -1,21 +1,60 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test128_tierspiel(); }
+async function start() { TESTING = true; await test130_svgSliced(); }
 
+async function test130_svgSliced(){
+  await prelims(); //return;
+  let d=clearFlex({gap:0})
+  for(const i of range(100)) mAppend(d,wsGetIcon());
+
+  // let colors = toWords('british_racing_green yellow sangria azure gray',true).map(x=>colorFrom(x));
+  // let html = generatePizzaSVG(100,...colors);
+  // let d1=mCreateFrom(html);
+  // mAppend(d,d1);
+}
+
+async function test129_svgWingspan(){
+  let html = `
+      <svg width="200" height="200" viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- Slice 1: Red -->
+        <path d="M 0,0 L 100,0 A 100,100 0 0,1 50,87 L 0,0" fill="crimson" />
+        
+        <!-- Slice 2: Yellow -->
+        <path d="M 0,0 L 50,87 A 100,100 0 0,1 -50,87 L 0,0" fill="emerald" />
+        
+        <!-- Slice 3: Green -->
+        <path d="M 0,0 L -50,87 A 100,100 0 0,1 -100,0 L 0,0" fill="yellow" />
+        
+        <!-- Slice 4: Blue -->
+        <path d="M 0,0 L -100,0 A 100,100 0 0,1 -50,-87 L 0,0" fill="blue" />
+        
+        <!-- Slice 5: Gray -->
+        <path d="M 0,0 L -50,-87 A 100,100 0 0,1 50,-87 L 0,0" fill="brown" />
+        
+        <!-- Slice 6: Brown -->
+        <path d="M 0,0 L 50,-87 A 100,100 0 0,1 100,0 L 0,0" fill="gray" />
+      </svg>
+  
+    `;
+}
 async function test128_tierspiel() {
-  await prelims();//return;
+  await prelims();return;
 
   let d = clearFlex();
   let keys = jsCopy(M.byCollection.tierspiel);
   arrShuffle(keys)
   let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
+  let items = [];
   for(const key of cards) {
     let o = showInfoCard(key,d);
-    //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
 
+    //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
+    o.key = key;
+    items.push(o);
   }
+  console.log('items',items)
 
 }
 async function test127() {
