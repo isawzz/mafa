@@ -21208,7 +21208,6 @@ herb:
   img: ../assets/img/emo/herb.png
   text: '&#127807;'
   cats:
-    - animal
     - plant
   colls:
     - emo
@@ -46448,14 +46447,17 @@ ojos_azules_cat:
 moth:
   friendly: moth
   img: ../assets/img/tierspiel/moth.png
-  cats: []
+  cats: 
+    - animal
+    - insect
   colls:
     - tierspiel
 zebra:
   friendly: zebra
   img: ../assets/img/emo/zebra.png
   photo: ../assets/img/tierspiel/zebra.png
-  cats: []
+  cats: 
+    - animal
   colls:
     - tierspiel
     - emo

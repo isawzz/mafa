@@ -12,7 +12,7 @@ function getDetailedSuperdi(key) {
 	// if (isdef(o.lifespan)) o.lifespan = calcLifespan(o.lifespan);
 
 
-	o=sortDictionary(o);
+	o = sortDictionary(o);
 	return o;
 }
 function getPresentableDetails(o) {
@@ -25,29 +25,47 @@ function getPresentableDetails(o) {
 	}
 	return di;
 }
-function extractFoodType(s) {
+function strRemoveTrailing(s, sub) {
+	return s.endsWith(sub)?stringBeforeLast(s, sub):s;
+}
+function extractFoodType(s, easy = true, key = null) {
 	s = s.toLowerCase();
-	// for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
-	// 	if (s.includes(t)) return t + 'vorous';
-	// }
-	let herbi = M.byCat.plant; herbi = herbi.concat(['leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
-	let carni = M.byCat.animal;
-	let insecti = ['insect','worm','ant','fly','flies']
-	let di={herbi,carni,insecti};
+	let words = toWords(s,true).map(x => strRemoveTrailing(x, 's'));
+	if (easy) {
+		for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
+			if (s.includes(t)) return t + 'vorous';
+		}
+	}
+	let herbi = M.byCat.plant; herbi = herbi.concat(['plant','berries','grasses','leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
+	let carni = M.byCat.animal; carni = carni.concat(['animal'])
+	let insecti = ['insect', 'worm', 'ant', 'fly', 'flies']
+	let di = { herbi, carni, insecti };
 	let types = [];
-	let contained=[];
-	for(const type in di){
+	let contained = [];
+	for (const type in di) {
 		let arr = di[type];
-		for(const a of arr){
-			let len = a.length;
-			let w=a.endsWith('s')?a.substring(0,len-1):a;
-			if (s.includes(w)) {addIf(contained,w); addIf(types,type);}
+		for (const a of arr) {
+			let w = strRemoveTrailing(a, 's'); //console.log('w',w)
+			let o = M.superdi[a];
+
+			//if (key == 'stellers_jay') console.log('...', words)
+
+			if (isdef(o) && words.includes(o.friendly) || words.includes(w)) {
+				let cont = {};
+				if (o) { cont.key = a; cont.cats = o.cats; cont.friendly = o.friendly }
+				else cont.key = w;
+				addIf(contained, cont); // w); 
+				addIf(types, type);
+				continue;
+			}
 		}
 	}
 	// if (plants.some(x => s.includes(x.substring(0,4)))) types.push('herbi');
 	// if (carni.some(x => s.includes(x.substring(0,4)))) types.push('carni');
-	if (isEmpty(types)) { console.log(s); return 'unknown' }
-	if (types.length >= 2) return 'omnivorous';
+	//console.log('contained', contained, key)
+	if (isEmpty(types)) { return 'unknown' }
+	if (types.includes('herbi') && types.length >= 2) return 'omnivorous';
+	else if (types.length >= 2) return 'carnivorous';
 	else return types[0] + 'vorous';
 }
 

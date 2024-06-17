@@ -1,13 +1,17 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test131(); }
+async function start() { TESTING = true; await test132_verifyFoodtypeExtraction(); }
 
 async function test132_verifyFoodtypeExtraction(){
-  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
-
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); 
+  let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  //keys = ['barn_spider'];
   for(const key of keys){
-
+    let o=getDetailedSuperdi(key);
+    let foodEasy=extractFoodType(o.food,true,key);
+    let food=extractFoodType(o.food,false,key);
+    if (foodEasy != food) console.log('___',key,'\n',o.food,'\neasy',foodEasy,'\ndetect',food)
   }
 }
 async function test131() {
