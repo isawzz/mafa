@@ -1,8 +1,25 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test132_verifyFoodtypeExtraction(); }
+async function start() { TESTING = true; await test133(); }
 
+async function test133() {
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+
+  let key = 'walrus';
+  let o=getDetailedSuperdi(key); showObject(o,null,d,{bg:'red',padding:10}); 
+  return;
+
+  let items = [];
+  for (const key of cards.slice(2)) {
+    let o = showInfoCard(key, d);
+
+    //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
+    o.key = key;
+    items.push(o);
+  }
+  console.log('items', items[0])
+}
 async function test132_verifyFoodtypeExtraction(){
   await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); 
   let cards = deckDeal(keys, 3); // console.log('cards', cards);

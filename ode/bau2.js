@@ -7,10 +7,10 @@ function getDetailedSuperdi(key) {
 	//specifics
 	if (isdef(o.lifespan)) o.lifespan = calcLifespan(o.lifespan);
 	if (isdef(o.food)) o.foodtype = extractFoodType(o.food); //console.log(key,foodtype)
-
-	// if (isdef(o.offsprings)) o.lifespan = calcLifespan(o.lifespan);
-	// if (isdef(o.lifespan)) o.lifespan = calcLifespan(o.lifespan);
-
+	if (isdef(o.offsprings)) o.offsprings = calcOffsprings(o.offsprings);
+	if (isdef(o.weight)) o.weight = calcNumericInfo(o.weight, { kg: 1000, g: 1, mg: .001 }, 'kg');
+	if (isdef(o.size)) o.size = calcNumericInfo(o.size, { cm: .01, centimeter: .01, mm: .001, millimeter: .001, meter: 1, m: 1 }, 'm');
+	if (isdef(o.color)) o.colors = extractColors(o.color);
 
 	o = sortDictionary(o);
 	return o;
@@ -68,7 +68,22 @@ function extractFoodType(s, easy = true, key = null) {
 	else if (types.length >= 2) return 'carnivorous';
 	else return types[0] + 'vorous';
 }
+function extractColors(s){
+	let words = toWords(s);
+	words = words.map(x=>strRemoveTrailing(x,'ish')).map(x=>x.toLowerCase());
+	let colors = Object.keys(M.colorByName);
 
+	let res = [];
+	console.log(words)
+	for(const w of words){
+		for(const c of colors){
+			if (c == 'pink') console.log('JAAAAAAAAAA')
+			if (w == c) res.push(c);
+		}
+	}
+	return res;
+
+}
 
 
 
