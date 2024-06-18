@@ -986,6 +986,13 @@ africa:
   cats: []
   colls:
     - icon
+african_tortoise:
+  friendly: african_tortoise
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/african_tortoise.png
 afterburn:
   friendly: afterburn
   ga: E611
@@ -1290,6 +1297,13 @@ allied_star:
   cats: []
   colls:
     - icon
+alligator:
+  friendly: alligator
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/alligator.png
 alligator_clip:
   friendly: alligator_clip
   ga: EA1C
@@ -2720,6 +2734,13 @@ arcing_bolt:
   cats: []
   colls:
     - icon
+arctic_fox:
+  friendly: arctic_fox
+  img: ../assets/img/tierspiel/arctic_fox.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 arena:
   friendly: arena
   ga: E80F
@@ -2750,6 +2771,15 @@ arm_sling:
   ga: E846
   cats: []
   colls:
+    - icon
+armadillo:
+  friendly: armadillo
+  img: ../assets/img/tierspiel/armadillo.png
+  ga: E563
+  cats:
+    - animal
+  colls:
+    - tierspiel
     - icon
 armadillo_tail:
   friendly: armadillo_tail
@@ -3995,6 +4025,12 @@ bamboo:
     - plant
   colls:
     - icon
+bamboo_fountain:
+  friendly: bamboo_fountain
+  ga: E70D
+  cats: []
+  colls:
+    - icon
 bamboo_weevil:
   friendly: bamboo_weevil
   img: ../assets/img/extra/bamboo_weevil.png
@@ -4002,12 +4038,6 @@ bamboo_weevil:
     - animal
   colls:
     - tierspiel
-bamboo_fountain:
-  friendly: bamboo_fountain
-  ga: E70D
-  cats: []
-  colls:
-    - icon
 ban:
   friendly: ban
   fa: f05e
@@ -4205,6 +4235,12 @@ barn:
   cats: []
   colls:
     - icon
+barn_owl:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/barn_owl.png
+  friendly: barn_owl
+  colls: []
 barn_spider:
   friendly: barn_spider
   img: ../assets/img/tierspiel/barn_spider.png
@@ -4758,6 +4794,17 @@ beanstalk:
     - plant
   colls:
     - icon
+bear:
+  friendly: bear
+  img: ../assets/img/emo/bear.png
+  photo: ../assets/img/tierspiel/brown_bear.png
+  text: '&#128059;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+    - story
 bear_face:
   friendly: bear_face
   ga: E400
@@ -5159,6 +5206,14 @@ biplane:
     - transport
   colls:
     - icon
+bird:
+  friendly: bird
+  img: ../assets/img/emo/bird.png
+  text: '&#128038;'
+  cats:
+    - animal
+  colls:
+    - emo
 bird_claw:
   friendly: bird_claw
   ga: E678
@@ -5547,6 +5602,14 @@ blue_square:
   cats: []
   colls:
     - emo
+blue_tit:
+  friendly: blue_tit
+  img: ../assets/img/tierspiel/blue_tit.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - birds
 blueberries:
   friendly: blueberries
   img: ../assets/img/emo/blueberries.png
@@ -7277,6 +7340,15 @@ butter:
     - food
   colls:
     - emo
+butterfly:
+  friendly: butterfly
+  img: ../assets/img/emo/butterfly.png
+  ga: E3A3
+  text: '&#129419;'
+  cats:
+    - animal
+  colls:
+    - emo
 butterfly_knife:
   friendly: butterfly_knife
   ga: ED2A
@@ -8547,6 +8619,33 @@ castle_ruins:
   cats: []
   colls:
     - icon
+cat:
+  friendly: tabby_cat
+  img: ../assets/img/emo/cat.png
+  photo: ../assets/img/tierspiel/minou.png
+  ga: E3A4
+  fa: f6be
+  text: '&#128008;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
+  fa6: f6be
+cat31:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/cat31.png
+  friendly: siberian_cat
+  colls:
+    - tierspiel
+cat32:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/cat32.png
+  friendly: tabby_cat
+  colls:
+    - tierspiel
 cat_face:
   friendly: cat_face
   img: ../assets/img/emo/cat-face.png
@@ -8589,6 +8688,15 @@ catch:
     - action
   colls:
     - icon
+caterpillar:
+  friendly: caterpillar
+  ga: E405
+  img: ../assets/img/tierspiel/caterpillar.png
+  cats:
+    - animal
+  colls:
+    - icon
+    - tierspiel
 cathedral:
   friendly: cathedral
   cats:
@@ -8790,6 +8898,13 @@ chalkboard_user:
   colls:
     - fa6
   fa6: f51c
+chameleon:
+  friendly: chameleon
+  img: ../assets/img/tierspiel/chameleon.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 chameleon_glyph:
   friendly: chameleon_glyph
   ga: E06B
@@ -10517,6 +10632,14 @@ cold_heart:
     - emotion
   colls:
     - icon
+colibri:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/sparkling_violetear.png
+  friendly: colibri
+  colls:
+    - tierspiel
+    - birds
 coliseum:
   friendly: coliseum
   ga: E5BC
@@ -22295,6 +22418,19 @@ hypodermic_test:
   cats: []
   colls:
     - icon
+i_cursor:
+  friendly: i
+  cats: []
+  colls:
+    - fa6
+  fa6: f246
+ibex:
+  friendly: ibex
+  img: ../assets/img/tierspiel/ibex.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 icarus:
   friendly: icarus
   ga: E5BF
@@ -25945,6 +26081,13 @@ mailed_fist:
   cats: []
   colls:
     - icon
+maine_coon_cat:
+  cats:
+    - animal
+  img: ../assets/img/tierspiel/maine_coon.png
+  friendly: maine_coon_cat
+  colls:
+    - tierspiel
 male:
   friendly: male
   ga: E09A
@@ -25994,6 +26137,13 @@ manat_sign:
   colls:
     - fa6
   fa6: e1d5
+mandrill:
+  friendly: mandrill
+  img: ../assets/img/tierspiel/mandrill.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 mandrill_head:
   friendly: mandrill_head
   ga: E56C
@@ -26036,6 +26186,13 @@ mantelpiece_clock:
   cats: []
   colls:
     - emo
+mantis:
+  friendly: mantis
+  img: ../assets/img/tierspiel/mantis.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 mantrap:
   friendly: mantrap
   ga: EA31
@@ -27626,6 +27783,17 @@ monk_face:
   cats: []
   colls:
     - icon
+monkey:
+  friendly: monkey
+  img: ../assets/img/emo/monkey.png
+  photo: ../assets/img/tierspiel/monkey.png
+  ga: E3C8
+  text: '&#128018;'
+  cats:
+    - animal
+  colls:
+    - emo
+    - tierspiel
 monkey_face:
   friendly: monkey_face
   img: ../assets/img/emo/monkey-face.png
@@ -27794,6 +27962,14 @@ mosquito_net:
   colls:
     - fa6
   fa6: e52c
+moth:
+  friendly: moth
+  img: ../assets/img/tierspiel/moth.png
+  cats:
+    - animal
+    - insect
+  colls:
+    - tierspiel
 motor_boat:
   friendly: motor_boat
   img: ../assets/img/emo/motor-boat.png
@@ -29319,6 +29495,13 @@ oily_spiral:
   cats: []
   colls:
     - icon
+ojos_azules_cat:
+  friendly: ojos_azules_cat
+  img: ../assets/img/tierspiel/ojos_azules_cat.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 ok_button:
   friendly: ok_button
   img: ../assets/img/emo/ok-button.png
@@ -30096,6 +30279,17 @@ pancakes:
     - food
   colls:
     - emo
+panda:
+  friendly: panda
+  img: ../assets/img/emo/panda.png
+  photo: ../assets/img/tierspiel/panda.png
+  ga: E37D
+  text: '&#128060;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
 panorama:
   friendly: slalom
   cats:
@@ -30103,6 +30297,13 @@ panorama:
   colls:
     - fa6
   fa6: e209
+panther:
+  friendly: florida_panther
+  img: ../assets/img/tierspiel/florida_panther.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 panzerfaust:
   friendly: panzerfaust
   ga: E289
@@ -32362,6 +32563,13 @@ porcelain_vase:
   cats: []
   colls:
     - icon
+porcupine:
+  friendly: porcupine
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/porcupine.png
 portal:
   friendly: portal
   ga: EDED
@@ -33176,6 +33384,14 @@ rabbit_head:
   cats: []
   colls:
     - icon
+raccoon:
+  friendly: raccoon
+  img: ../assets/img/emo/raccoon.png
+  photo: ../assets/img/story/racoon.png
+  cats: []
+  colls:
+    - story
+    - emo
 raccoon_head:
   friendly: raccoon_head
   ga: E56E
@@ -35594,6 +35810,24 @@ seagull:
   cats: []
   colls:
     - icon
+seahorse:
+  friendly: seahorse
+  img: ../assets/img/tierspiel/seahorse.png
+  ga: E387
+  cats: []
+  colls:
+    - tierspiel
+    - icon
+seal:
+  friendly: seal
+  img: ../assets/img/emo/seal.png
+  photo: ../assets/img/tierspiel/seal.png
+  text: '&#129453;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
 search:
   friendly: search
   fa: f002
@@ -37057,6 +37291,16 @@ skullcap:
     - action
   colls:
     - emo
+skunk:
+  friendly: skunk
+  img: ../assets/img/emo/skunk.png
+  photo: ../assets/img/tierspiel/skunk.png
+  text: '&#129448;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
 slalom:
   friendly: slalom
   ga: E209
@@ -37223,6 +37467,16 @@ slot_machine:
   cats:
     - action
   colls:
+    - emo
+sloth:
+  friendly: sloth
+  img: ../assets/img/emo/sloth.png
+  photo: ../assets/img/tierspiel/sloth.png
+  text: '&#129445;'
+  cats:
+    - animal
+  colls:
+    - tierspiel
     - emo
 slow_blob:
   friendly: slow_blob
@@ -38965,6 +39219,14 @@ squinting_face_with_tongue:
     - emotion
   colls:
     - emo
+squirrel:
+  friendly: squirrel
+  ga: E572
+  img: ../assets/img/tierspiel/squirrel.png
+  cats: []
+  colls:
+    - tierspiel
+    - icon
 sri_lanka:
   friendly: sri_lanka
   ga: E480
@@ -39003,6 +39265,13 @@ staff_snake:
   colls:
     - fa6
   fa6: e579
+stag_beetle:
+  friendly: stag_beetle
+  img: ../assets/img/tierspiel/stag_beetle.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 stag_head:
   friendly: stag_head
   ga: E3E5
@@ -39367,6 +39636,13 @@ stegosaurus_scales:
   cats: []
   colls:
     - icon
+stellers_jay:
+  friendly: stellers_jay
+  img: ../assets/img/tierspiel/stellars_jay.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 step_backward:
   friendly: step_backward
   fa: f048
@@ -40749,6 +41025,13 @@ tape:
   colls:
     - icon
   fa6: f4db
+tapir:
+  friendly: tapir
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/tapir.png
 target_arrows:
   friendly: target_arrows
   ga: E250
@@ -42166,7 +42449,7 @@ tortoise:
   colls:
     - icon
     - tierspiel
-  img: ../assets/img/tierspiel/tortoise.png
+  img: ../assets/img/tierspiel/russian_tortoise.png
 totem:
   friendly: totem
   ga: E72A
@@ -42185,6 +42468,16 @@ totem_mask:
   cats: []
   colls:
     - icon
+toucan:
+  friendly: toucan
+  img: ../assets/img/tierspiel/toucan.png
+  ga: E390
+  cats:
+    - animal
+  colls:
+    - icon
+    - tierspiel
+    - birds
 tower_bridge:
   friendly: tower_bridge
   ga: E750
@@ -44643,6 +44936,13 @@ wallum_sedge_frog:
   colls:
     - emo
     - tierspiel
+walrus:
+  friendly: walrus
+  img: ../assets/img/tierspiel/walrus.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 walrus_head:
   friendly: walrus_head
   ga: E573
@@ -44792,6 +45092,20 @@ wars_of_alexander:
   img: ../assets/games/nations/cards/wars_of_alexander.png
   colls:
     - nations
+warthog:
+  friendly: warthog
+  img: ../assets/img/tierspiel/warthog.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+wasp:
+  friendly: wasp
+  img: ../assets/img/tierspiel/wasp.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
 wasp_sting:
   friendly: wasp_sting
   ga: E3F0
@@ -46096,6 +46410,12 @@ yellow_square:
   cats: []
   colls:
     - emo
+yellow_tang:
+  friendly: yellow_tang
+  cats: []
+  colls:
+    - story
+  img: ../assets/img/story/yellow_tang.png
 yen_banknote:
   friendly: yen_banknote
   img: ../assets/img/emo/yen-banknote.png
@@ -46153,6 +46473,15 @@ zat_gun:
   cats: []
   colls:
     - icon
+zebra:
+  friendly: zebra
+  img: ../assets/img/emo/zebra.png
+  photo: ../assets/img/tierspiel/zebra.png
+  cats:
+    - animal
+  colls:
+    - tierspiel
+    - emo
 zebra_shield:
   friendly: zebra_shield
   ga: E066
@@ -46244,325 +46573,3 @@ zzz:
     - emotion
   colls:
     - emo
-squirrel:
-  friendly: squirrel
-  ga: E572
-  img: ../assets/img/tierspiel/squirrel.png
-  cats: []
-  colls:
-    - tierspiel
-    - icon
-monkey:
-  friendly: monkey
-  img: ../assets/img/emo/monkey.png
-  photo: ../assets/img/tierspiel/monkey.png
-  ga: E3C8
-  text: '&#128018;'
-  cats:
-    - animal
-  colls:
-    - emo
-    - tierspiel
-mandrill:
-  friendly: mandrill
-  img: ../assets/img/tierspiel/mandrill.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-stag_beetle:
-  friendly: stag_beetle
-  img: ../assets/img/tierspiel/stag_beetle.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-mantis:
-  friendly: mantis
-  img: ../assets/img/tierspiel/mantis.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-arctic_fox:
-  friendly: arctic_fox
-  img: ../assets/img/tierspiel/arctic_fox.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-panther:
-  friendly: florida_panther
-  img: ../assets/img/tierspiel/florida_panther.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-wasp:
-  friendly: wasp
-  img: ../assets/img/tierspiel/wasp.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-caterpillar:
-  friendly: caterpillar
-  ga: E405
-  img: ../assets/img/tierspiel/caterpillar.png
-  cats:
-    - animal
-  colls:
-    - icon
-    - tierspiel
-armadillo:
-  friendly: armadillo
-  img: ../assets/img/tierspiel/armadillo.png
-  ga: E563
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - icon
-i_cursor:
-  friendly: i
-  cats: []
-  colls:
-    - fa6
-  fa6: f246
-ibex:
-  friendly: ibex
-  img: ../assets/img/tierspiel/ibex.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-barn_owl:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/barn_owl.png
-  friendly: barn_owl
-  colls: []
-toucan:
-  friendly: toucan
-  img: ../assets/img/tierspiel/toucan.png
-  ga: E390
-  cats:
-    - animal
-  colls:
-    - icon
-    - tierspiel
-    - birds
-bear:
-  friendly: bear
-  img: ../assets/img/emo/bear.png
-  photo: ../assets/img/tierspiel/brown_bear.png
-  text: '&#128059;'
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - emo
-    - story
-bird:
-  friendly: bird
-  img: ../assets/img/emo/bird.png
-  text: '&#128038;'
-  cats:
-    - animal
-  colls:
-    - emo
-colibri:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/sparkling_violetear.png
-  friendly: colibri
-  colls:
-    - tierspiel
-    - birds
-blue_tit:
-  friendly: blue_tit
-  img: ../assets/img/tierspiel/blue_tit.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - birds
-chameleon:
-  friendly: chameleon
-  img: ../assets/img/tierspiel/chameleon.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-maine_coon_cat:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/maine_coon.png
-  friendly: maine_coon_cat
-  colls:
-    - tierspiel
-cat:
-  friendly: tabby_cat
-  img: ../assets/img/emo/cat.png
-  photo: ../assets/img/tierspiel/minou.png
-  ga: E3A4
-  fa: f6be
-  text: '&#128008;'
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - emo
-  fa6: f6be
-cat31:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/cat31.png
-  friendly: siberian_cat
-  colls:
-    - tierspiel
-cat32:
-  cats:
-    - animal
-  img: ../assets/img/tierspiel/cat32.png
-  friendly: tabby_cat
-  colls:
-    - tierspiel
-butterfly:
-  friendly: butterfly
-  img: ../assets/img/emo/butterfly.png
-  ga: E3A3
-  text: '&#129419;'
-  cats:
-    - animal
-  colls:
-    - emo
-ojos_azules_cat:
-  friendly: ojos_azules_cat
-  img: ../assets/img/tierspiel/ojos_azules_cat.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-moth:
-  friendly: moth
-  img: ../assets/img/tierspiel/moth.png
-  cats: 
-    - animal
-    - insect
-  colls:
-    - tierspiel
-zebra:
-  friendly: zebra
-  img: ../assets/img/emo/zebra.png
-  photo: ../assets/img/tierspiel/zebra.png
-  cats: 
-    - animal
-  colls:
-    - tierspiel
-    - emo
-walrus:
-  friendly: walrus
-  img: ../assets/img/tierspiel/walrus.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-skunk:
-  friendly: skunk
-  img: ../assets/img/emo/skunk.png
-  photo: ../assets/img/tierspiel/skunk.png
-  text: '&#129448;'
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - emo
-warthog:
-  friendly: warthog
-  img: ../assets/img/tierspiel/warthog.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-sloth:
-  friendly: sloth
-  img: ../assets/img/emo/sloth.png
-  photo: ../assets/img/tierspiel/sloth.png
-  text: '&#129445;'
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - emo
-seal:
-  friendly: seal
-  img: ../assets/img/emo/seal.png
-  photo: ../assets/img/tierspiel/seal.png
-  text: '&#129453;'
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - emo
-panda:
-  friendly: panda
-  img: ../assets/img/emo/panda.png
-  photo: ../assets/img/tierspiel/panda.png
-  ga: E37D
-  text: '&#128060;'
-  cats:
-    - animal
-  colls:
-    - tierspiel
-    - emo
-seahorse:
-  friendly: seahorse
-  img: ../assets/img/tierspiel/seahorse.png
-  ga: E387
-  cats: []
-  colls:
-    - tierspiel
-    - icon
-stellers_jay:
-  friendly: stellers_jay
-  img: ../assets/img/tierspiel/stellars_jay.png
-  cats:
-    - animal
-  colls:
-    - tierspiel
-raccoon:
-  friendly: raccoon
-  img: ../assets/img/emo/raccoon.png
-  photo: ../assets/img/story/racoon.png
-  cats: []
-  colls:
-    - story
-    - emo
-yellow_tang:
-  friendly: yellow_tang
-  cats: []
-  colls:
-    - story
-  img: ../assets/img/story/yellow_tang.png
-tapir:
-  friendly: tapir
-  cats:
-    - animal
-  colls:
-    - tierspiel
-  img: ../assets/img/tierspiel/tapir.png
-alligator:
-  friendly: alligator
-  cats:
-    - animal
-  colls:
-    - tierspiel
-  img: ../assets/img/tierspiel/alligator.png
-porcupine:
-  friendly: porcupine
-  cats:
-    - animal
-  colls:
-    - tierspiel
-  img: ../assets/img/tierspiel/porcupine.png

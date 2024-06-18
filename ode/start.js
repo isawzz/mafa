@@ -1,24 +1,78 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test133(); }
+async function start() { TESTING = true; await test138(); }
 
-async function test133() {
-  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
-
-  let key = 'walrus';
-  let o=getDetailedSuperdi(key); showObject(o,null,d,{bg:'red',padding:10}); 
+async function test138(){
+  await prelims(); 
   return;
-
-  let items = [];
-  for (const key of cards.slice(2)) {
-    let o = showInfoCard(key, d);
-
-    //showObject(o,Object.keys(o),d,{align:'left'},{showKeys:true}); mLinebreak(d)
-    o.key = key;
-    items.push(o);
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); 
+  keys = ['bamboo_weevil']; //rChoose(keys);
+  let list=[];
+  for(const key of keys){ //}.slice(0,400)){
+    let o=getDetailedSuperdi(key); 
+    showDetailsPresentation(o,d);
+    //list.push(o);
+    //showObject(o,null,d,{bg:'red',padding:10}); 
   }
-  console.log('items', items[0])
+}
+async function test137(){
+  await prelims(); return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); 
+  //keys = ['blue_poison_dart_frog']; //rChoose(keys);
+  let list=[];
+  for(const key of keys){ //}.slice(0,400)){
+    let o=getDetailedSuperdi(key); 
+    list.push(o);
+    //showObject(o,null,d,{bg:'red',padding:10}); 
+  }
+  list = sortBy(list,'nweight'); list.map(x=>console.log(x.key,x.nweight));
+  console.log('N',list.length)
+  return;
+  for(const key of keys){
+    let w=calcWeight(getDetails(key).weight);
+    let text = w.text;
+    console.log(key,text,w.avg);
+  }
+}
+async function test136_sortDictionaries(){
+  await prelims();
+  let superdi = sortDictionary(M.superdi);
+  let details = sortDictionary(M.details);
+  downloadAsYaml(superdi,'superdi')
+  downloadAsYaml(details,'details')
+}
+async function test135(){
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); 
+  //keys = ['blue_poison_dart_frog']; //rChoose(keys);
+  //console.log(calcWeight('a few kg to several tons'));
+  //let s = 'a few milligrams to several grams'; let w=calcWeight(s); console.log(w);  return;
+  keys.map(x=>{console.log(x);console.log(calcWeight(getDetails(x).weight))});
+}
+function getSuperdi(key){ return valf(M.superdi[key],{});}
+function getDetails(key){
+  let o=getSuperdi(key);
+  let de=valf(M.details[key],M.details[o.friendly]); 
+  return valf(de,{});
+
+}
+async function test134() {
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  keys=['jewel_bug'];
+  for(const key of keys.slice(0,40)){
+    let o=getDetailedSuperdi(key); showObject(o,null,d,{bg:'red',padding:10}); 
+  }
+}
+async function test133_colors(){
+  await prelims(); 
+  //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  let allcolors = [];
+  for(const key of keys){
+    let o=getDetailedSuperdi(key); //showObject(o,null,d,{bg:'red',padding:10}); 
+    o.colors.map(x=>addIf(allcolors,x));
+  }
+  console.log('allcolors',allcolors);
 }
 async function test132_verifyFoodtypeExtraction(){
   await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); 

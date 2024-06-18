@@ -1,48 +1,47 @@
+function isAncestorOf(elem, elemAnc) {
+	while (elem) {
+			if (elem === elemAnc) {
+					return true;
+			}
+			elem = elem.parentNode;
+	}
+	return false;
+}
 
-function showInfoCard(key, d) {
+function enableDataDrop(elem, onDropCallback) {
+	const originalBorderStyle = elem.style.border;
+	elem.addEventListener('dragover', ev => { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
+	elem.addEventListener('dragenter', ev => { 
+		console.log(ev);
+		let els=ev.srcElement;
+		if (isAncestorOf(els,elem)) return;
+		elem.style.border = '2px solid red'; 
+	}); // Highlight the border on drag enter
+	elem.addEventListener('drop', ev => {
+		ev.preventDefault();
+		elem.style.border = originalBorderStyle;
+		console.log('border', elem.style.border)
+		onDropCallback(ev, elem);
+	});
+}
 
-	let o = getDetailedSuperdi(key);
+function getDetailedSuperdi(key) {
+	let o = M.superdi[key];
+	addKeys(M.details[key], o);
+	addKeys(M.details[o.friendly], o);
+	o.key=key;
 
-	let sz = 400;
-	let [yTitle, yPic, szPic] = [8, sz / 5, sz / 2];
-	let [yLifespan, yBrown, hTop] = [yPic + szPic, yPic + szPic + 22, yPic];
+	//specifics
+	if (isdef(o.lifespan)) o.olifespan = calcLifespan(o.lifespan);
+	if (isdef(o.food)) o.ofoodtype = extractFoodType(o.food); //console.log(key,foodtype)
+	if (isdef(o.offsprings)) o.ooffsprings = calcOffsprings(o.offsprings);
+	if (isdef(o.weight)) {o.oweight = calcWeight(o.weight);o.nweight=o.oweight.avg;}
+	
+	if (isdef(o.size)) {o.osize = calcSize(o.size);o.nsize=o.osize.avg;}
 
-	let card = cBlank(d, { h: sz, border: 'dimgray' });
-	let dCard = iDiv(card);// console.log(card);
+	let colors = ['turquoise', 'bluegreen', 'teal', 'brown', 'gray', 'green', 'violet', 'blue', 'black', 'yellow', 'white', 'lavender', 'orange', 'buff', 'red', 'pink', 'golden', 'cream', 'grey', 'sunny', 'beige'];
+	if (isdef(o.color)) o.colors = extractColors(o.color);
 
-	let d1 = showim1(key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
-	mPlace(d1, 'tc', 0, yPic);
-
-	let title = fromNormalized(o.friendly);
-	let dtitle = mDom(dCard, { display: 'inline', weight: 'bold' }, { html: title });
-	mPlace(dtitle, 'tc', 0, yTitle);
-
-	let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
-	let dlifespan = mDom(dCard, { display: 'inline' }, { html: lifespan.lifespan })
-	mPlace(dlifespan, 'tr', 40, yLifespan);
-
-	let dbrown = mDom(dCard, { matop: yBrown, w100: true, bg: 'sienna', fg: 'white', padding: 10, box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
-
-	let foodtype = extractFoodType(o.food); //console.log(key,foodtype)
-	let difood = { omnivorous: 'pot_of_food', carnivorous: 'poultry_leg', herbivorous: 'seedling', insectivorous: 'ant' }
-	let dfood = mDom(dCard); //,{bg:'silver',round:true,}); //,{},{html:foodtype});
-	showim1(difood[foodtype], dfood, { sz: 30 });
-	mPlace(dfood, 'tl', 10, 0)
-
-	let weight = calcNumericInfo(o.weight, { kg: 1000, g: 1, mg: .001 }, 'kg');
-	let size = calcNumericInfo(o.size, { cm: .01, centimeter: .01, mm: .001, millimeter: .001, meter: 1, m: 1 }, 'm');
-	let offs = calcOffsprings(o.offsprings);
-
-	o.foodType = foodtype;
-	o.difood = difood;
-	o.weight = weight;
-	o.size = size;
-	o.offsprings = offs;
-	//console.log(key,offs.text);
-
-	addKeys(card, o)
-	//mLinebreak(d)
-
+	o = sortDictionary(o);
 	return o;
-
 }

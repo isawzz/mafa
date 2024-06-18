@@ -481,9 +481,9 @@ fieldset .disabled {
   vertical-align: top;
   text-align: left;
   border-top: 1px solid #dee2e680;
-  max-height: 50px;
-  max-width: 400px;
-  white-space: nowrap;
+  /* max-height: 50px; */
+  /* max-width: 400px; */
+  /* white-space: nowrap; */
   overflow: hidden;
   text-overflow: ellipsis;
 }

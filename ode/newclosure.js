@@ -432,23 +432,6 @@ function calcLifespan(s) {
 	unit = unit[0];
 	return { s, lifespan, num, unit };
 }
-function calcNumericInfo(str, diunit, base) {
-	let s = str.toLowerCase(); s = replaceAll(s, '-', ' ');
-	let arr = allNumbers(s);
-	if (isEmpty(arr)) return { str, num: 1, unit: base, text: s };
-	let num, unit, text;
-	for (const k in diunit) {
-		unit = k;
-		if (s.includes(unit)) {
-			let arr = allNumbers(s, Math.abs);
-			let n = arrAverage(arr);
-			text = `${n.toFixed(1)} ${unit}`;
-			num = n * diunit[k];
-			return { s, num, unit, text };
-		}
-	}
-	return { s, num: 1, unit: base, text: s };
-}
 function calcOffsprings(str) {
 	let s = str.toLowerCase(); s = replaceAll(s, '-', ' '); s = replaceAll(s, ',', '');
 	let arr = allNumbers(s);
@@ -461,7 +444,7 @@ function calcOffsprings(str) {
 		newarr.push(n);
 	}
 	let num = arrAverage(newarr);
-	let text = newarr.length == 1 ? `${newarr[0]}-${newarr[1]} children}` : `${num} children`;
+	let text = newarr.length > 1 ? `${newarr[0]}-${newarr[1]} children}` : `${num} child${num==1?'':'ren'}`;
 	return { str, num, unit: 'child', text };
 }
 function calcRestHeight(dtop) {
@@ -621,7 +604,7 @@ function clearFlex(styles = {}) {
 	let d = mDom(dp, styles); mFlexWrap(d);
 	return d;
 }
-function clearMain() { staticTitle(); clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
+function clearMain() { 	UI.commands = {}; staticTitle(); clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
 
 function clearMessage() { mStyle('dMessage', { h: 0 }); }
 
@@ -2286,17 +2269,6 @@ function emptyDict(obj) {
 }
 function emptyTarget(val) {
 	return Array.isArray(val) ? [] : {}
-}
-function enableDataDrop(elem, onDropCallback) {
-	const originalBorderStyle = elem.style.border;
-	elem.addEventListener('dragover', ev => { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
-	elem.addEventListener('dragenter', ev => { elem.style.border = '2px solid red'; }); // Highlight the border on drag enter
-	elem.addEventListener('drop', ev => {
-		ev.preventDefault();
-		elem.style.border = originalBorderStyle;
-		console.log('border', elem.style.border)
-		onDropCallback(ev, elem);
-	});
 }
 function enableImageDrop(element, onDropCallback) {
 	const originalBorderStyle = element.style.border;
@@ -7670,8 +7642,8 @@ function showDetailsAndMagnify(elem) {
 	let title = fromNormalized(valf(o.name, o.friendly));
 	mDom(d, {}, { tag: 'h1', html: title });
 	mDom(d, {}, { tag: 'img', src: valf(o.photo, o.img) });
-	let di = getPresentableDetails(o);
-	for (const k in di) mDom(d, {}, { html: `${k}:${di[k]}` })
+	showDetailsPresentation(o,d); //showObject(o,null,d);
+	// let di = getPresentableDetails(o); for (const k in di) mDom(d, {}, { html: `${k}:${di[k]}` })
 }
 async function showDirPics(dir, dParent) {
 	let imgs = await mGetFiles(dir);
@@ -8109,7 +8081,8 @@ function simpleCheckCommands() {
 	let n = UI.selectedImages.length;
 	for (const k in UI.commands) {
 		let cmd = UI.commands[k];
-		if (nundef(cmd) || nundef(iDiv(cmd))) continue;
+		if (nundef(cmd) || nundef(iDiv(cmd)) || nundef(mBy(k))) continue;
+		//console.log(k)
 		if (nundef(cmd.fSel) || cmd.fSel(n)) cmdEnable(k); else cmdDisable(k);
 	}
 }
@@ -8359,7 +8332,7 @@ function simpleSidebar(wmin) {
 	mDom(d, stylesTitles, { html: 'Items:' })
 	cmds.addSelected = mCommand(d, 'addSelected', 'Add To', { fSel: x => (x >= 1) }); mNewline(d, gap);
 	cmds.simpleRemove = mCommand(d, 'simpleRemove', 'Remove', { fSel: x => (!simpleLocked() && x >= 1) }); mNewline(d, gap);
-	copyKeys(cmds, UI.commands);
+	UI.commands = cmds; //copyKeys(cmds, UI.commands);
 	simpleCheckCommands();
 }
 async function simpleUpload(route, o) {
@@ -8619,10 +8592,6 @@ function stringBefore(sFull, sSub) {
 	let idx = sFull.indexOf(sSub);
 	if (idx < 0) return sFull;
 	return sFull.substring(0, idx);
-}
-function stringBeforeLast(sFull, sSub) {
-	let parts = sFull.split(sSub);
-	return sFull.substring(0, sFull.length - arrLast(parts).length - 1);
 }
 function stringBetween(sFull, sStart, sEnd) {
 	return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);
