@@ -4,7 +4,8 @@ async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; await test139_species(); }
 
 async function test139_species() {
-  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  await prelims(); //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
   //keys = ['dragonfly']; //console.log(M.details.dragonfly); //return;
   for (const key of keys) {
