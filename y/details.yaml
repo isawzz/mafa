@@ -685,7 +685,7 @@ dragonfly:
   food: >-
     Carnivorous: primarily feeds on other insects, including mosquitoes, flies,
     and small aquatic organisms during the larval stage
-  species: 'Suborder Anisoptera, encompassing numerous genera and species'
+  species: Suborder Anisoptera, encompassing numerous genera and species
   color: >-
     Varies widely among species; often bright and iridescent with colors such as
     blue, green, red, and yellow
@@ -923,7 +923,7 @@ hare:
   weight: 2-5 kg
   size: 40-70 cm in length
   food: 'Herbivorous: primarily feeds on grasses, herbs, and twigs'
-  species: Several species within the genus Lepus
+  species: Lepus europaeus
   color: >-
     Varies among species; typically shades of brown or gray, with some species
     exhibiting seasonal color changes

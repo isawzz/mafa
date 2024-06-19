@@ -1,95 +1,111 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test138(); }
+async function start() { TESTING = true; await test139_species(); }
 
-async function test138(){
-  await prelims(); 
+async function test139_species() {
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+
+  //keys = ['dragonfly']; //console.log(M.details.dragonfly); //return;
+  for (const key of keys) {
+    let o = getDetailedSuperdi(key); //console.log('___', key); //return;
+    let ocard = showCardWingspanPortrait(o,d)
+    //console.log(o.species)
+    //let x=extractSpecies(o.species);
+    //console.log('species',x)
+  }
+}
+
+async function test139_wsCard() {
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+
+  let key = 'walrus';
+  let o = getDetailedSuperdi(key); console.log(o); //return;
+  let ocard = showInfoCard(key, d);
+  let ws = showCardWingspanPortrait(o, d)
+}
+
+//#region show object details von M.details
+async function test138() {
+  await prelims();
   return;
-  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); 
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel);
   keys = ['bamboo_weevil']; //rChoose(keys);
-  let list=[];
-  for(const key of keys){ //}.slice(0,400)){
-    let o=getDetailedSuperdi(key); 
-    showDetailsPresentation(o,d);
+  let list = [];
+  for (const key of keys) { //}.slice(0,400)){
+    let o = getDetailedSuperdi(key);
+    showDetailsPresentation(o, d);
     //list.push(o);
     //showObject(o,null,d,{bg:'red',padding:10}); 
   }
 }
-async function test137(){
+async function test137() {
   await prelims(); return;
-  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); 
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel);
   //keys = ['blue_poison_dart_frog']; //rChoose(keys);
-  let list=[];
-  for(const key of keys){ //}.slice(0,400)){
-    let o=getDetailedSuperdi(key); 
+  let list = [];
+  for (const key of keys) { //}.slice(0,400)){
+    let o = getDetailedSuperdi(key);
     list.push(o);
     //showObject(o,null,d,{bg:'red',padding:10}); 
   }
-  list = sortBy(list,'nweight'); list.map(x=>console.log(x.key,x.nweight));
-  console.log('N',list.length)
+  list = sortBy(list, 'nweight'); list.map(x => console.log(x.key, x.nweight));
+  console.log('N', list.length)
   return;
-  for(const key of keys){
-    let w=calcWeight(getDetails(key).weight);
+  for (const key of keys) {
+    let w = calcWeight(getDetails(key).weight);
     let text = w.text;
-    console.log(key,text,w.avg);
+    console.log(key, text, w.avg);
   }
 }
-async function test136_sortDictionaries(){
+async function test136_sortDictionaries() {
   await prelims();
   let superdi = sortDictionary(M.superdi);
   let details = sortDictionary(M.details);
-  downloadAsYaml(superdi,'superdi')
-  downloadAsYaml(details,'details')
+  downloadAsYaml(superdi, 'superdi')
+  downloadAsYaml(details, 'details')
 }
-async function test135(){
-  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); 
+async function test135() {
+  await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel);
   //keys = ['blue_poison_dart_frog']; //rChoose(keys);
   //console.log(calcWeight('a few kg to several tons'));
   //let s = 'a few milligrams to several grams'; let w=calcWeight(s); console.log(w);  return;
-  keys.map(x=>{console.log(x);console.log(calcWeight(getDetails(x).weight))});
-}
-function getSuperdi(key){ return valf(M.superdi[key],{});}
-function getDetails(key){
-  let o=getSuperdi(key);
-  let de=valf(M.details[key],M.details[o.friendly]); 
-  return valf(de,{});
-
+  keys.map(x => { console.log(x); console.log(calcWeight(getDetails(x).weight)) });
 }
 async function test134() {
   await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
-  keys=['jewel_bug'];
-  for(const key of keys.slice(0,40)){
-    let o=getDetailedSuperdi(key); showObject(o,null,d,{bg:'red',padding:10}); 
+  keys = ['jewel_bug'];
+  for (const key of keys.slice(0, 40)) {
+    let o = getDetailedSuperdi(key); showObject(o, null, d, { bg: 'red', padding: 10 });
   }
 }
-async function test133_colors(){
-  await prelims(); 
+async function test133_colors() {
+  await prelims();
   //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
   let allcolors = [];
-  for(const key of keys){
-    let o=getDetailedSuperdi(key); //showObject(o,null,d,{bg:'red',padding:10}); 
-    o.colors.map(x=>addIf(allcolors,x));
+  for (const key of keys) {
+    let o = getDetailedSuperdi(key); //showObject(o,null,d,{bg:'red',padding:10}); 
+    o.colors.map(x => addIf(allcolors, x));
   }
-  console.log('allcolors',allcolors);
+  console.log('allcolors', allcolors);
 }
-async function test132_verifyFoodtypeExtraction(){
+async function test132_verifyFoodtypeExtraction() {
   await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); 
   let cards = deckDeal(keys, 3); // console.log('cards', cards);
   //keys = ['barn_spider'];
-  for(const key of keys){
-    let o=getDetailedSuperdi(key);
-    let foodEasy=extractFoodType(o.food,true,key);
-    let food=extractFoodType(o.food,false,key);
-    if (foodEasy != food) console.log('___',key,'\n',o.food,'\neasy',foodEasy,'\ndetect',food)
+  for (const key of keys) {
+    let o = getDetailedSuperdi(key);
+    let foodEasy = extractFoodType(o.food, true, key);
+    let food = extractFoodType(o.food, false, key);
+    if (foodEasy != food) console.log('___', key, '\n', o.food, '\neasy', foodEasy, '\ndetect', food)
   }
 }
 async function test131() {
   await prelims(); let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
   let key = 'walrus';
-  let o=getDetailedSuperdi(key); showObject(o,null,d,{bg:'red',padding:10}); 
+  let o = getDetailedSuperdi(key); showObject(o, null, d, { bg: 'red', padding: 10 });
   return;
 
   let items = [];
@@ -102,6 +118,9 @@ async function test131() {
   }
   console.log('items', items[0])
 }
+//#endregion
+
+//#region svg fuer wingspan food items und pizza circle
 async function test130_svgSliced() {
   await prelims(); //return;
   let d = clearFlex({ gap: 0 })
@@ -137,6 +156,9 @@ async function test129_svgWingspan() {
   
     `;
 }
+//#endregion
+
+//#region showInfoCard (wingspan cards)
 async function test128_tierspiel() {
   await prelims(); return;
 
@@ -156,6 +178,9 @@ async function test128_tierspiel() {
   console.log('items', items)
 
 }
+//#endregion
+
+//#region image crop pan scale und post
 async function test127() {
   await prelims();
   return;
@@ -351,6 +376,8 @@ async function test124_superdiCollsCatsAlerts() {
   di = sortDictionary(di);
   // downloadAsYaml(di,'superdi');
 }
+//#endregion
+
 //#region tierspiel
 async function test124_animalDetailsYaml() {
   let ad = getAnimalDetails();
