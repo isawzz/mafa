@@ -14,6 +14,22 @@ function showCardWingspanPortrait(o, d, sz=500) {
 	let dtitle = mDom(dCard, { display: 'inline', weight: 'bold' }, { html: title });
 	mPlace(dtitle, 'tc', 0, yTitle);
 
+	title = o.species; //fromNormalized(o.friendly);
+	dtitle = mDom(dCard, { display: 'inline', 'font-style': 'italic' }, { html: title });
+	mPlace(dtitle, 'tc', 0, yTitle+24);
+	
+	let n=o.offsprings.num;
+	let plaetze=nundef(n)?2:n==0?0:n==1?1:n<8?2:n<25?3:n<100?4:n<1000?5:6;
+	//jetzt muss ich plaetze * kleinen circle machen unter den title!
+	
+	let dplaetze=mDom(dCard,{bg:'red'}); mCenterFlex(dplaetze);
+
+	mPlace(dplaetze, 'tc', 0, yTitle+44);
+
+	return o;
+
+
+
 	let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
 	let dlifespan = mDom(dCard, { display: 'inline' }, { html: lifespan.lifespan })
 	mPlace(dlifespan, 'tr', 40, yLifespan);

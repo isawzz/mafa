@@ -204,6 +204,20 @@ function arrAverage(arr, prop) {
 	let sum = arrSum(arr, prop);
 	return sum / n;
 }
+function arrBalancedAverage(arr, prop) {
+	if (arr.length != 2) return arrAverage(arr, prop);
+	let o = arrMinMax(arr, x => x[prop]);
+	let [min, max] = [o.min, o.max];
+	if (max < min * 1000) return (min + max) / 2;
+	let s = '' + max; //console.log('smax',s)
+	let snew = '';
+	for (let i = 0; i < s.length; i++) {
+		let ch = s[i];
+		if (ch == '0' || ch == '.') snew += ch; else snew += '1';
+	}
+	let nnew = Number(snew);
+	return (min + nnew) / 2;
+}
 function arrChildren(elem) { return [...toElem(elem).children]; }
 
 function arrClear(arr) { arr.length = 0; return arr; }
@@ -432,21 +446,6 @@ function calcLifespan(s) {
 	unit = unit[0];
 	return { s, lifespan, num, unit };
 }
-function calcOffsprings(str) {
-	let s = str.toLowerCase(); s = replaceAll(s, '-', ' '); s = replaceAll(s, ',', '');
-	let arr = allNumbers(s);
-	let words = toWords(s);
-	if (isEmpty(arr)) return 1;
-	let newarr = [];
-	for (const n of arr) {
-		let w = wordAfter(words, n);
-		if (isdef(w) && ['day', 'month', 'week', 'year'].some(x => w.includes(x))) break;
-		newarr.push(n);
-	}
-	let num = arrAverage(newarr);
-	let text = newarr.length > 1 ? `${newarr[0]}-${newarr[1]} children}` : `${num} child${num==1?'':'ren'}`;
-	return { str, num, unit: 'child', text };
-}
 function calcRestHeight(dtop) {
 	let hwin = window.innerHeight;
 	let r = getRect(dtop);
@@ -604,7 +603,7 @@ function clearFlex(styles = {}) {
 	let d = mDom(dp, styles); mFlexWrap(d);
 	return d;
 }
-function clearMain() { 	UI.commands = {}; staticTitle(); clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
+function clearMain() { UI.commands = {}; staticTitle(); clearEvents(); mClear('dMain'); mClear('dTitle'); clearMessage(); }
 
 function clearMessage() { mStyle('dMessage', { h: 0 }); }
 
@@ -2270,6 +2269,22 @@ function emptyDict(obj) {
 function emptyTarget(val) {
 	return Array.isArray(val) ? [] : {}
 }
+function enableDataDrop(elem, onDropCallback) {
+	const originalBorderStyle = elem.style.border;
+	elem.addEventListener('dragover', ev => { ev.preventDefault(); }); // Prevent default behavior for dragover and drop events to allow drop
+	elem.addEventListener('dragenter', ev => {
+		console.log(ev);
+		let els = ev.srcElement;
+		if (isAncestorOf(els, elem)) return;
+		elem.style.border = '2px solid red';
+	});
+	elem.addEventListener('drop', ev => {
+		ev.preventDefault();
+		elem.style.border = originalBorderStyle;
+		console.log('border', elem.style.border)
+		onDropCallback(ev, elem);
+	});
+}
 function enableImageDrop(element, onDropCallback) {
 	const originalBorderStyle = element.style.border;
 	element.addEventListener('dragover', function (event) {
@@ -2442,6 +2457,18 @@ function exitToAddon(callback) {
 }
 function extendRect(r4) { r4.l = r4.x; r4.t = r4.y; r4.r = r4.x + r4.w; r4.b = r4.t + r4.h; }
 
+function extractColors(s, colors) {
+	let words = toWords(s);
+	words = words.map(x => strRemoveTrailing(x, 'ish')).map(x => x.toLowerCase());
+	if (nundef(colors)) colors = Object.keys(M.colorByName);
+	let res = [];
+	for (const w of words) {
+		for (const c of colors) {
+			if (w == c) res.push(c);
+		}
+	}
+	return res;
+}
 function extractFilesFromHtml(html, htmlfile, ext = 'js') {
 	let prefix = ext == 'js' ? 'script src="' : 'link rel="stylesheet" href="';
 	let dirhtml = stringBeforeLast(htmlfile, '/');
@@ -2463,6 +2490,51 @@ function extractFilesFromHtml(html, htmlfile, ext = 'js') {
 	}
 	files = files2;
 	return files;
+}
+function extractFoodType(s, easy = true, key = null) {
+	s = s.toLowerCase();
+	let words = toWords(s, true).map(x => strRemoveTrailing(x, 's'));
+	if (easy) {
+		for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
+			if (s.includes(t)) return t + 'vorous';
+		}
+	}
+	let herbi = M.byCat.plant; herbi = herbi.concat(['plant', 'berries', 'grasses', 'leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
+	let carni = M.byCat.animal; carni = carni.concat(['animal'])
+	let insecti = ['insect', 'worm', 'ant', 'fly', 'flies']
+	let di = { herbi, carni, insecti };
+	let types = [];
+	let contained = [];
+	for (const type in di) {
+		let arr = di[type];
+		for (const a of arr) {
+			let w = strRemoveTrailing(a, 's'); //console.log('w',w)
+			let o = M.superdi[a];
+			if (isdef(o) && words.includes(o.friendly) || words.includes(w)) {
+				let cont = {};
+				if (o) { cont.key = a; cont.cats = o.cats; cont.friendly = o.friendly }
+				else cont.key = w;
+				addIf(contained, cont);
+				addIf(types, type);
+				continue;
+			}
+		}
+	}
+	if (isEmpty(types)) { return 'unknown' }
+	if (types.includes('herbi') && types.length >= 2) return 'omnivorous';
+	else if (types.length >= 2) return 'carnivorous';
+	else return types[0] + 'vorous';
+}
+function extractSpecies(s) {
+	s = s.toLowerCase();
+	let words = toWords(s);
+	if (words.length <= 2) { s = s.replace('suborder', ''); s = s.replace('genus', ''); return s.trim(); }
+	s = s.replace(' x ', ', ');
+	if (s.includes('hybrid')) return s;
+	if (s.includes('including')) return arrTake(toWords(stringAfter(s, 'including')), 2).join(' ');
+	if (s.includes('suborder')) return wordAfter(s, 'suborder');
+	let firstTwo = arrTake(words, 2).join(' '); //console.log(slower);
+	return firstTwo;
 }
 function extractTime(input) {
 	const regex = /\b([0-9]|1[0-9]|2[0-3])[h:]*\S*\b/g;
@@ -3536,6 +3608,11 @@ function getColormapColors() {
 }
 function getCssVar(varname) { return getComputedStyle(document.body).getPropertyValue(varname); }
 
+function getDetails(key) {
+	let o = getSuperdi(key);
+	let de = valf(M.details[key], M.details[o.friendly]);
+	return valf(de, {});
+}
 function getDivId(key) { return 'd' + capitalize(key); }
 
 function getDynId(loc, oid) { return loc + '@' + oid; }
@@ -4004,6 +4081,16 @@ function getPlaymode(idOrTable, name) {
 		return T.id == idOrTable ? T.players[name].playmode : 'wrong table';
 	} else return 'NO table!';
 }
+function getPresentableDetails(o) {
+	let di = {};
+	for (const key in o) {
+		if ('cats colls fa fa6 img photo text key friendly ga name'.includes(key)) continue;
+		let val = o[key];
+		if (!isLiteral(val)) continue;
+		di[key] = val;
+	}
+	return di;
+}
 function getRadioValue(prop) {
 	let fs = mBy(`d_${prop}`);
 	if (nundef(fs)) return null;
@@ -4065,6 +4152,8 @@ function getServerurl() {
 	return server;
 }
 function getStyleProp(elem, prop) { return getComputedStyle(elem).getPropertyValue(prop); }
+
+function getSuperdi(key) { return valf(M.superdi[key], {}); }
 
 function getTable() { assertion(!Tid, `getTable!!! ${T.id} !!! ${Tid}`); return T; }
 
@@ -4342,6 +4431,15 @@ function isAlphaNum(s) { query = /^[a-zA-Z0-9]+$/; return query.test(s); }
 
 function isAlphanumeric(s) { for (const ch of s) { if (!isLetter(ch) && !isDigit(ch)) return false; } return isLetter(s[0]); }
 
+function isAncestorOf(elem, elemAnc) {
+	while (elem) {
+		if (elem === elemAnc) {
+			return true;
+		}
+		elem = elem.parentNode;
+	}
+	return false;
+}
 function isAtLeast(n, num = 1) { return n >= num; }
 
 function isBetween(n, a, b) { return n >= a && n <= b }
@@ -4481,6 +4579,8 @@ function jsCopyExceptKeys(o, keys = []) {
 	for (const k in o) { if (keys.includes(k)) continue; onew[k] = o[k]; }
 	return JSON.parse(JSON.stringify(onew));
 }
+function jsonToYaml(o) { let y = jsyaml.dump(o); return y; }
+
 function keyDownHandler(ev) {
 	if (IsControlKeyDown && MAGNIFIER_IMAGE) return;
 	if (!MAGNIFIER_IMAGE && ev.key == 'Control') {
@@ -5373,6 +5473,17 @@ function mMenu(dParent, key) { let [d, l, m, r] = mLMR(dParent); return { dParen
 
 function mNewline(d, gap = 1) { mDom(d, { h: gap }); }
 
+function mNode(o, dParent, title, isSized = false) {
+	let d = mCreate('div');
+	mYaml(d, o);
+	let pre = d.getElementsByTagName('pre')[0];
+	pre.style.fontFamily = 'inherit';
+	if (isdef(title)) mInsert(d, mText(title));
+	if (isdef(dParent)) mAppend(dParent, d);
+	if (isDict(o)) d.style.textAlign = 'left';
+	if (isSized) addClass(d, 'centered');
+	return d;
+}
 function mOnEnter(elem, handler) {
 	elem.addEventListener('keydown', ev => {
 		if (ev.key == 'Enter') {
@@ -5797,6 +5908,9 @@ function mTextArea100(dParent, styles = {}) {
 }
 function mUnselect(elem) { mClassRemove(elem, 'framedPicture'); }
 
+function mYaml(d, js) {
+	d.innerHTML = '<pre>' + jsonToYaml(js) + '</pre>';
+}
 function makeArrayWithParts(keys) {
 	let arr = []; keys[0].split('_').map(x => arr.push([]));
 	for (const key of keys) {
@@ -7642,8 +7756,27 @@ function showDetailsAndMagnify(elem) {
 	let title = fromNormalized(valf(o.name, o.friendly));
 	mDom(d, {}, { tag: 'h1', html: title });
 	mDom(d, {}, { tag: 'img', src: valf(o.photo, o.img) });
-	showDetailsPresentation(o,d); //showObject(o,null,d);
-	// let di = getPresentableDetails(o); for (const k in di) mDom(d, {}, { html: `${k}:${di[k]}` })
+	showDetailsPresentation(o, d);
+}
+function showDetailsPresentation(o, dParent) {
+	let onew = {};
+	let nogo = ['longSpecies', 'ooffsprings', 'name', 'cats', 'colls', 'friendly', 'ga', 'fa', 'fa6', 'text', 'key', 'nsize', 'nweight', 'img', 'photo']
+	for (const k in o) {
+		if (nogo.includes(k)) continue;
+		let val = o[k];
+		let knew = k == 'ofoodtype' ? 'foodtype' : k;
+		if (isString(val)) {
+			val = replaceAll(val, '>-', '');
+			val = val.trim();
+			if (val.startsWith("'")) val = val.substring(1);
+			if (val.endsWith("'")) val = val.substring(0, val.length - 1);
+			if (val.includes(':')) val = stringAfter(val, ':')
+			onew[knew] = capitalize(val.trim());
+		}
+		if (k == 'food') console.log(onew[knew])
+	}
+	onew = sortDictionary(onew);
+	return showObjectInTable(onew, dParent, { w: window.innerWidth * .8 });
 }
 async function showDirPics(dir, dParent) {
 	let imgs = await mGetFiles(dir);
@@ -7830,6 +7963,26 @@ function showNavbar() {
 	commands.plan = menuCommand(nav.l, 'nav', 'plan', 'Calendar', onclickPlan, menuCloseCalendar);
 	nav.commands = commands;
 	return nav;
+}
+function showObject(o, keys, dParent, styles = {}, opts = {}) {
+	if (nundef(keys)) { keys = Object.keys(o); opts.showKeys = true; styles.align = 'left' }
+	addKeys({ align: 'center', padding: 2, bg: 'dimgrey', fg: 'contrast' }, styles);
+	let d = mDom(dParent, styles, opts);
+	let onew = {};
+	for (const k of keys) onew[k] = o[k];
+	mNode(onew, d, opts.title);
+	return d;
+}
+function showObjectInTable(onew, dParent, styles = {}, opts = {}) {
+	let d = mDom(dParent, styles);
+	let t = mTable(d);
+	for (const k in onew) {
+		let r = mCreate('tr');
+		mAppend(t, r);
+		let col = mCreate('td'); mAppend(r, col); col.innerHTML = `${k}: `;
+		col = mCreate('td'); mAppend(r, col); mDom(col, {}, { html: `${onew[k]}` });
+	}
+	return t;
 }
 function showPalette(dParent, colors) {
 	let d1 = mDom(dParent, { display: 'flex', dir: 'column', wrap: true, gap: 2, hmax: '100vh' });
@@ -8082,7 +8235,6 @@ function simpleCheckCommands() {
 	for (const k in UI.commands) {
 		let cmd = UI.commands[k];
 		if (nundef(cmd) || nundef(iDiv(cmd)) || nundef(mBy(k))) continue;
-		//console.log(k)
 		if (nundef(cmd.fSel) || cmd.fSel(n)) cmdEnable(k); else cmdDisable(k);
 	}
 }
@@ -8332,7 +8484,7 @@ function simpleSidebar(wmin) {
 	mDom(d, stylesTitles, { html: 'Items:' })
 	cmds.addSelected = mCommand(d, 'addSelected', 'Add To', { fSel: x => (x >= 1) }); mNewline(d, gap);
 	cmds.simpleRemove = mCommand(d, 'simpleRemove', 'Remove', { fSel: x => (!simpleLocked() && x >= 1) }); mNewline(d, gap);
-	UI.commands = cmds; //copyKeys(cmds, UI.commands);
+	UI.commands = cmds;
 	simpleCheckCommands();
 }
 async function simpleUpload(route, o) {
@@ -8577,6 +8729,9 @@ function stopAutobot() {
 	if (isdef(TO.SLEEPTIMEOUT)) clearTimeout(TO.SLEEPTIMEOUT);
 	DA.stopAutobot = true;
 }
+function strRemoveTrailing(s, sub) {
+	return s.endsWith(sub) ? stringBeforeLast(s, sub) : s;
+}
 function strSameCaseInsensitive(s1, s2) { return s1.toLowerCase() == s2.toLowerCase(); }
 
 function stringAfter(sFull, sSub) {
@@ -8592,6 +8747,10 @@ function stringBefore(sFull, sSub) {
 	let idx = sFull.indexOf(sSub);
 	if (idx < 0) return sFull;
 	return sFull.substring(0, idx);
+}
+function stringBeforeLast(sFull, sSub) {
+	let parts = sFull.split(sSub);
+	return sFull.substring(0, sFull.length - arrLast(parts).length - sSub.length);
 }
 function stringBetween(sFull, sStart, sEnd) {
 	return stringBefore(stringAfter(sFull, sStart), isdef(sEnd) ? sEnd : sStart);

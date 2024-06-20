@@ -681,7 +681,7 @@ dragonfly:
     Found near freshwater habitats like ponds, lakes, rivers, and wetlands
     worldwide
   weight: 0.2-0.5 grams
-  size: 2-5 inches (5-12.5 cm) in wingspan
+  size: 5-12.5 cm in wingspan
   food: >-
     Carnivorous: primarily feeds on other insects, including mosquitoes, flies,
     and small aquatic organisms during the larval stage
@@ -966,7 +966,7 @@ hoplia:
     Varies among species; often metallic green, blue, or brown with patterns of
     spots or stripes
   reproduction: Oviparous
-  offsprings: 'Varies among species; eggs laid near flowers, larvae feed on plant material'
+  offsprings: 'Varies among species; 25-50 eggs laid near flowers, larvae feed on plant material'
   class: Insect
 horse:
   name: camargue_horse
@@ -1051,7 +1051,7 @@ jewel_bug:
     green, blue, red, and orange
   reproduction: Oviparous
   offsprings: >-
-    Varies among species; eggs laid on plants and undergo several nymphal stages
+    Varies among species; 50-100 eggs laid on plants and undergo several nymphal stages
     before reaching adulthood
   class: Insect
 kangaroo:
@@ -1307,7 +1307,7 @@ mule:
     horses or donkeys
   reproduction: Sterile hybrid; mules are typically sterile and cannot reproduce
   offsprings: >-
-    Mules do not reproduce; they are the offspring of a male donkey (jack) and a
+    Mules do not reproduce, 0 offsprings; they are the offspring of a male donkey (jack) and a
     female horse (mare)
   class: Mammal
 narwhal:
@@ -1612,7 +1612,7 @@ scarlet_lily_beetle:
   species: Lilioceris lilii
   color: 'Bright scarlet red with black legs, head, antennae, and undersides'
   reproduction: Oviparous
-  offsprings: Females lay clusters of bright orange eggs on the undersides of lily leaves
+  offsprings: Females lay clusters of approx. 25 bright orange eggs on the undersides of lily leaves
   class: Insect
 scarlet_tanager:
   name: Scarlet Tanager
@@ -2023,7 +2023,7 @@ wasp:
     various patterns and markings
   reproduction: Oviparous
   offsprings: >-
-    Varies among species; queens lay eggs in nests or cells, and eggs hatch into
+    Varies among species; queens lay hundreds to thousands eggs in nests or cells, and eggs hatch into
     larvae that are cared for until they pupate and emerge as adults
   class: Insect
 white_peacock_butterfly:
@@ -2042,7 +2042,7 @@ white_peacock_butterfly:
     wing patterns
   reproduction: Oviparous
   offsprings: >-
-    Females lay eggs on host plants of the passionflower family
+    Females lay hundreds to thousands eggs on host plants of the passionflower family
     (Passifloraceae); eggs hatch into caterpillars which pupate and eventually
     emerge as adult butterflies
   class: Insect

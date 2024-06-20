@@ -1,4 +1,16 @@
 
+function arrFindKeywordFromIndex(keywords, words, iStart) {
+	//console.log(keywords,words,iStart)
+	for (let i = iStart; i < words.length; i++) {
+		let w = words[i];
+		if (keywords.some(x => x == w)) return { i, w };
+	}
+	return null;
+}
+function stringSplit(input) {
+  // Split the string at any whitespace character or comma
+  return input.split(/[\s,]+/);
+}
 function showInfoCard(key, d) {
 
 	let o = getDetailedSuperdi(key);

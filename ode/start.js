@@ -5,12 +5,15 @@ async function start() { TESTING = true; await test139_species(); }
 
 async function test139_species() {
   await prelims(); //return;
-  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
-  //keys = ['dragonfly']; //console.log(M.details.dragonfly); //return;
+  //keys = ['wasp']; //console.log(M.details.dragonfly); //return;
   for (const key of keys) {
-    let o = getDetailedSuperdi(key); //console.log('___', key); //return;
-    let ocard = showCardWingspanPortrait(o,d)
+    console.log('___', key);
+    let o = getDetailedSuperdi(key); 
+    console.log(o.ooffsprings.num); //return;
+    if (nundef(o.ooffsprings.num)) break;
+    //let ocard = showCardWingspanPortrait(o,d)
     //console.log(o.species)
     //let x=extractSpecies(o.species);
     //console.log('species',x)
