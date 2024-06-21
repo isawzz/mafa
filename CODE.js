@@ -1,17 +1,160 @@
 
+//#region 21.6.24 fishgame!
+
+
 
 //#region 19.6.24
+function _showCardWingspanPortrait(o, d, sz = 480) {
+	let item = { o, key: o.key };
+	let fa = sz / 480;
+	let card = cBlank(d, { sz, border: 'silver' });
+	let dCard = iDiv(card);
+	let [rounding, h, w, fz] = [card.rounding, card.h, card.w, 15].map(x => x * fa);
+
+	let hu = measureHeightOfTextStyle(dCard, { fz });
+	let wu = w / 20;
+	console.log('card', card, sz, h, w, rounding, hu, wu, 480 / 20);
+
+	return;
+	//habitat
+	mCenterCenterFlex(dlt);
+
+	let hcolors = o.ohabitat.colors; //console.log(hcolors)
+	//let dHabitat = mDom(dlt, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dHabitat);
+	//mPizza(dlt, 40*fa, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
+	mDom(dlt, { h: 40 * fa, w: 40 * fa, bg: hcolors[0], round: true })
+	mLinebreak(dlt, 4 * fa);
+
+	let df = mDom(dlt); mCenterCenterFlex(df);
+	let tokens = o.foodTokens;
+	let len = tokens.length;
+	let ch = len < 3 && coin() ? '/' : '+';
+	let [szf, szt] = [szlt / 4, szlt / 9];
+	let tlist = [{ t: tokens[0], sz: szf }];
+	if (len > 1) { tlist.push({ t: ch, sz: szt }); tlist.push({ t: tokens[1], sz: szf }) }
+	if (len > 2) { tlist.push({ t: ch, sz: szt }); tlist.push({ t: tokens[2], sz: szf }) }
+	for (const x of tlist) {
+		let d = mDom(df, { w: x.sz }); //,bg:rColor()}); 
+		mCenterCenterFlex(d);
+		let c = x.t;
+		if (c == '+') { d.innerHTML = c; mStyle(d, { fz }) }
+		else if (c == '/') { d.innerHTML = c; mStyle(d, { fz }) }
+		else if (c.includes('.')) {
+			let img = showim1(c, d, { w: x.sz });
+			if (c.includes('mouse')) mStyle(img, { matop: fz / 4 })
+		} else {
+			let d1 = mDom(d, { h: x.sz * .8 })
+			//mPizza(d1, x.sz*.8, 'red', 'green', 'yellow', 'gray', 'orange', 'skyblue'); 
+		}
+	}
+	// for (let i = 0; i < Math.min(3, len); i++) {
+
+	// 	if (i == 2) { mLinebreak(dfood); mDom(dfood, { fz: hTop / 5, matop: -gap, maright: gap }, { html: '+' }); }
+	// 	if (i == 1) mDom(dfood, { fz: hTop / 5, matop: gap / 2 }, { html: len > 2 || coin() ? '+' : '/&nbsp;' });
+	// 	let t = tokens[i];
+	// 	if (t == 'omni') {
+	// 		let d = mDom(dfood, { matop: i == 2 ? -gap : 1 });
+	// 		mPizza(d, hTop / 4, 'red', 'green', 'yellow', 'gray', 'orange', 'skyblue');
+	// 	} else showim1(t, dfood, { sz: hTop / 2.8 });
+	// }
+	// let flist = o.foodlist; console.log(flist);
+	// mPlace(dfood, 'tl', 0, 0);
+	// console.log(o.foodtype);
+
+	// let dfoodtype = mDom(dCard, { display: 'inline' }, { html: o.foodtype })
+	// mPlace(dfoodtype, 'tl', 40, yLifespan);
+
+
+}
+function rest() {
+	let [yTitle, yPic, szPic] = [8, sz / 5, sz / 2];
+	let [yLifespan, yBrown, hTop, szPlatz] = [yPic + szPic, yPic + szPic + 22, sz * .12, Math.max(sz / 40, 8)];
+
+
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tc', 0, yPic);
+
+	let hcolors = o.ohabitat.colors; //console.log(hcolors)
+	let dHabitat = mDom(dCard, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dHabitat);
+	mPizza(dHabitat, hTop - 10, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
+	mPlace(dHabitat, 'tr', 0, 0);
+
+
+	let title = fromNormalized(o.friendly);
+	let dtitle = mDom(dCard, { display: 'inline', weight: 'bold' }, { html: title });
+	mPlace(dtitle, 'tc', 0, yTitle);
+
+	title = o.species; //fromNormalized(o.friendly);
+	dtitle = mDom(dCard, { fz: '80%', display: 'inline', 'font-style': 'italic' }, { html: title });
+	mPlace(dtitle, 'tc', 0, yTitle + 24);
+
+	let n = o.ooffsprings.num; //console.log()
+	let plaetze = nundef(n) ? 2 : n == 0 ? 0 : n == 1 ? 1 : n < 8 ? 2 : n < 25 ? 3 : n < 100 ? 4 : n < 1000 ? 5 : 6;
+	let dPlaetze = item.dPlaetze = mDom(dCard, { w: '60%', gap: szPlatz }); mCenterFlex(dPlaetze);
+	for (const i of range(plaetze)) { mDom(dPlaetze, { round: true, w: szPlatz, h: szPlatz, border: 'silver' }); }
+	mPlace(dPlaetze, 'tc', 0, yTitle + 60);
+
+	let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
+	let dlifespan = mDom(dCard, { display: 'inline' }, { html: lifespan.lifespan })
+	mPlace(dlifespan, 'tr', 40, yLifespan);
+
+	let dbrown = mDom(dCard, { matop: yBrown, w100: true, bg: 'sienna', fg: 'white', padding: 10, box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
+
+	let rounding = mGetStyle(dCard, 'rounding')
+	let dfood = mDom(dCard, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dfood);
+	let gap = hTop / 15;
+
+	console.log(mGetStyle(dfood, 'fz'))
+
+	let tokens = o.foodTokens;
+	let len = tokens.length;
+	for (let i = 0; i < Math.min(3, len); i++) {
+		if (i == 2) { mLinebreak(dfood); mDom(dfood, { fz: hTop / 5, matop: -gap, maright: gap }, { html: '+' }); }
+		if (i == 1) mDom(dfood, { fz: hTop / 5, matop: gap / 2 }, { html: len > 2 || coin() ? '+' : '/&nbsp;' });
+		let t = tokens[i];
+		if (t == 'omni') {
+			let d = mDom(dfood, { matop: i == 2 ? -gap : 1 });
+			mPizza(d, hTop / 4, 'red', 'green', 'yellow', 'gray', 'orange', 'skyblue');
+		} else showim1(t, dfood, { sz: hTop / 2.8 });
+	}
+	let flist = o.foodlist; console.log(flist);
+	mPlace(dfood, 'tl', 0, 0);
+	console.log(o.foodtype);
+
+	let dfoodtype = mDom(dCard, { display: 'inline' }, { html: o.foodtype })
+	mPlace(dfoodtype, 'tl', 40, yLifespan);
+
+
+
+	return item;
+
+	//food
+	//wieviel food soll das ding essen?
+	let list = o.foodTokens;
+	console.log(list);
+	let nlist = range(list.length);
+	list = arrTake(list, 3);
+	let plusor = nlist > 2 ? '+' : nlist == 2 ? coin() ? '+' : '/' : coin() ? '+' : '';
+
+	showim1(difood[foodtype], dfood, { sz: 30 });
+
+
+
+
+
+}
+
 function showCardWingspanPortrait_trial1(o, d, sz = 480) {
 	let item = { o, key: o.key };
 	let card = cBlank(d, { sz, border: 'silver' });
 	let dCard = iDiv(card);
-	let fa = sz/480;
-	let [rounding, h, w, fz] = [card.rounding, card.h, card.w, 15*fa];
+	let fa = sz / 480;
+	let [rounding, h, w, fz] = [card.rounding, card.h, card.w, 15 * fa];
 
-	let szlt=w/3;
-	let dlt=mDom(dCard,{w:szlt,h:szlt,bg:'#eee'});mPlace(dlt,'tl');	dlt.style.borderTopLeftRadius =dlt.style.borderBottomRightRadius = `${rounding}px`;mCenterCenterFlex(dlt);
+	let szlt = w / 3;
+	let dlt = mDom(dCard, { w: szlt, h: szlt, bg: '#eee' }); mPlace(dlt, 'tl'); dlt.style.borderTopLeftRadius = dlt.style.borderBottomRightRadius = `${rounding}px`; mCenterCenterFlex(dlt);
 
-	showHabitat(dlt,o.ohabitat,40*fa);
+	showHabitat(dlt, o.ohabitat, 40 * fa);
 	// let ohab=o.ohabitat;
 	// for(let i=0;i<ohab.imgs.length;i++){
 	// 	let c=ohab.colors[i];
@@ -26,27 +169,27 @@ function showCardWingspanPortrait_trial1(o, d, sz = 480) {
 	//let dHabitat = mDom(dlt, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dHabitat);
 	//mPizza(dlt, 40*fa, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
 	//mDom(dlt,{h:40*fa,w:40*fa,bg:hcolors[0],round:true})
-	mLinebreak(dlt,4*fa);
-	let df=mDom(dlt);mCenterCenterFlex(df);
+	mLinebreak(dlt, 4 * fa);
+	let df = mDom(dlt); mCenterCenterFlex(df);
 	let tokens = o.foodTokens; //console.log(tokens,o.foodtype,o.food)
-	let len = tokens.length; 
-	let ch = len < 3 && coin()?'/':'+';
-	let [szf,szt]=[szlt/4,szlt/9];
-	let tlist=[{t:tokens[0],sz:szf}];
-	if (len>1) {tlist.push({t:ch,sz:szt});tlist.push({t:tokens[1],sz:szf})}
-	if (len>2) {tlist.push({t:ch,sz:szt});tlist.push({t:tokens[2],sz:szf})}
-	for(const x of tlist){
-		let d=mDom(df,{w:x.sz}); //,bg:rColor()}); 
+	let len = tokens.length;
+	let ch = len < 3 && coin() ? '/' : '+';
+	let [szf, szt] = [szlt / 4, szlt / 9];
+	let tlist = [{ t: tokens[0], sz: szf }];
+	if (len > 1) { tlist.push({ t: ch, sz: szt }); tlist.push({ t: tokens[1], sz: szf }) }
+	if (len > 2) { tlist.push({ t: ch, sz: szt }); tlist.push({ t: tokens[2], sz: szf }) }
+	for (const x of tlist) {
+		let d = mDom(df, { w: x.sz }); //,bg:rColor()}); 
 		mCenterCenterFlex(d);
-		let c=x.t;
-		if (c == '+') {d.innerHTML = c;mStyle(d,{fz})}
-		else if (c == '/') {d.innerHTML = c;mStyle(d,{fz})}
+		let c = x.t;
+		if (c == '+') { d.innerHTML = c; mStyle(d, { fz }) }
+		else if (c == '/') { d.innerHTML = c; mStyle(d, { fz }) }
 		else if (c.includes('.')) {
-			let img=showim1(c,d,{w:x.sz});
-			if (c.includes('mouse')) mStyle(img,{matop:fz/4})
-		}else {
-			let szimg=x.sz*.7;
-			let img=showim1('../ode/pie2.png',d,{w:szimg,h:szimg});//mStyle(img,{round:true})
+			let img = showim1(c, d, { w: x.sz });
+			if (c.includes('mouse')) mStyle(img, { matop: fz / 4 })
+		} else {
+			let szimg = x.sz * .7;
+			let img = showim1('../ode/pie2.png', d, { w: szimg, h: szimg });//mStyle(img,{round:true})
 			//omnisym(d,x.sz)
 			//let d1=mDom(d,{h:x.sz*.8})
 			//mAppend(d,mCreateFrom(generatePizzaSvg(sz)));
@@ -55,8 +198,8 @@ function showCardWingspanPortrait_trial1(o, d, sz = 480) {
 	}
 
 }
-function omnisym(dParent,sz){
-	let d=mDom(dParent,{w:sz,h:sz,bg:'red',position:'absolute'});
+function omnisym(dParent, sz) {
+	let d = mDom(dParent, { w: sz, h: sz, bg: 'red', position: 'absolute' });
 	d.innerHTML = `
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="10" height="10">
 			<!-- Circle background -->
@@ -75,9 +218,9 @@ function showCardWingspanPortrait(o, d, sz = 500) {
 
 	let item = { o, key: o.key };
 	let [yTitle, yPic, szPic] = [8, sz / 5, sz / 2];
-	let [yLifespan, yBrown, hTop, szPlatz] = [yPic + szPic, yPic + szPic + 22, sz*.12, Math.max(sz / 40, 8)];
+	let [yLifespan, yBrown, hTop, szPlatz] = [yPic + szPic, yPic + szPic + 22, sz * .12, Math.max(sz / 40, 8)];
 
-	let card = cBlank(d, { h: sz, border: 'silver', fz:Math.max(10,16*sz/500) });
+	let card = cBlank(d, { h: sz, border: 'silver', fz: Math.max(10, 16 * sz / 500) });
 	let dCard = iDiv(card);// console.log(card);
 
 	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
@@ -88,7 +231,7 @@ function showCardWingspanPortrait(o, d, sz = 500) {
 	mPlace(dtitle, 'tc', 0, yTitle);
 
 	title = o.species; //fromNormalized(o.friendly);
-	dtitle = mDom(dCard, { fz:'80%',display: 'inline', 'font-style': 'italic' }, { html: title });
+	dtitle = mDom(dCard, { fz: '80%', display: 'inline', 'font-style': 'italic' }, { html: title });
 	mPlace(dtitle, 'tc', 0, yTitle + 24);
 
 	let n = o.ooffsprings.num; //console.log()
@@ -103,25 +246,25 @@ function showCardWingspanPortrait(o, d, sz = 500) {
 
 	let dbrown = mDom(dCard, { matop: yBrown, w100: true, bg: 'sienna', fg: 'white', padding: 10, box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
 
-	let rounding= mGetStyle(dCard,'rounding')
-	let dfood = mDom(dCard,{w:hTop,h:hTop,bg:'#eee',rounding}); mCenterCenterFlex(dfood);
-	let gap=hTop/15;
+	let rounding = mGetStyle(dCard, 'rounding')
+	let dfood = mDom(dCard, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dfood);
+	let gap = hTop / 15;
 
-	console.log(mGetStyle(dfood,'fz'))
-	
+	console.log(mGetStyle(dfood, 'fz'))
+
 	let tokens = o.foodTokens;
-	let len=tokens.length;
+	let len = tokens.length;
 	for (let i = 0; i < Math.min(3, len); i++) {
-		if (i == 2) {mLinebreak(dfood);mDom(dfood,{fz:hTop/5,matop:-gap,maright:gap},{html:'+'});}
-		if (i == 1) mDom(dfood, {fz:hTop/5,matop:gap/2}, { html: len>2||coin()?'+':'/&nbsp;' }); 
+		if (i == 2) { mLinebreak(dfood); mDom(dfood, { fz: hTop / 5, matop: -gap, maright: gap }, { html: '+' }); }
+		if (i == 1) mDom(dfood, { fz: hTop / 5, matop: gap / 2 }, { html: len > 2 || coin() ? '+' : '/&nbsp;' });
 		let t = tokens[i];
 		if (t == 'omni') {
-			let d=mDom(dfood,{matop:i==2?-gap:1});
-			mPizza(d,hTop/4,'red','green','yellow','gray','orange','skyblue');
-		}	else showim1(t, dfood, { sz: hTop/2.8 });
+			let d = mDom(dfood, { matop: i == 2 ? -gap : 1 });
+			mPizza(d, hTop / 4, 'red', 'green', 'yellow', 'gray', 'orange', 'skyblue');
+		} else showim1(t, dfood, { sz: hTop / 2.8 });
 	}
 	let flist = o.foodlist; console.log(flist);
-	mPlace(dfood, 'tl', 0,0);
+	mPlace(dfood, 'tl', 0, 0);
 	console.log(o.foodtype);
 
 	let dfoodtype = mDom(dCard, { display: 'inline' }, { html: o.foodtype })
@@ -130,9 +273,9 @@ function showCardWingspanPortrait(o, d, sz = 500) {
 
 	//habitat
 	let hcolors = o.ohabitat.colors; //console.log(hcolors)
-	let dHabitat=mDom(dCard,{w:hTop,h:hTop,bg:'#eee',rounding}); mCenterCenterFlex(dHabitat);
-	mPizza(dHabitat, hTop-10, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
-	mPlace(dHabitat, 'tr', 0,0);
+	let dHabitat = mDom(dCard, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dHabitat);
+	mPizza(dHabitat, hTop - 10, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
+	mPlace(dHabitat, 'tr', 0, 0);
 
 	return item;
 
@@ -234,8 +377,8 @@ function extractFoodType(s) {
 	let carni = M.byCat.animal;
 	let types = [];
 
-	if (plants.some(x => s.includes(x.substring(0,4)))) types.push('herbi');
-	if (carni.some(x => s.includes(x.substring(0,4)))) types.push('carni');
+	if (plants.some(x => s.includes(x.substring(0, 4)))) types.push('herbi');
+	if (carni.some(x => s.includes(x.substring(0, 4)))) types.push('carni');
 	if (isEmpty(types)) { console.log(s); return 'unknown' }
 	if (types.length >= 2) return 'omnivorous';
 	else return types[0] + 'vorous';
@@ -391,7 +534,7 @@ function createPanZoomCanvas(parentElement, src, wCanvas, hCanvas) {
 
 	return canvas;
 }
-
+//#endregion
 
 //#region 14.6.24: removed obsolete app routes fuer superdi
 app.post('/postNewItem_', (req, res) => {
@@ -435,7 +578,7 @@ function showDetailsAndMagnify(elem) {
 	mDom(d, {}, { tag: 'h1', html: title });
 	mDom(d, {}, { tag: 'img', src: valf(o.photo, o.img) });
 	let list = detailsPresentList(o);
-	list.map(x=>mDom(d, {}, { html: `${x.key}:${x.val}` }))
+	list.map(x => mDom(d, {}, { html: `${x.key}:${x.val}` }))
 	// for (const k in o) {
 	// 	if ('cats colls fa fa6 img photo text key friendly ga name'.includes(k)) continue;
 	// 	let val = o[k];
@@ -449,38 +592,38 @@ function showDetailsAndMagnify(elem) {
 async function onclickSaveCropData() {
 	let o = UI.zoomo;
 	let pd = UI.panData;
-	console.log(o,pd); return;
-	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-	if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
-	fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
-	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+	console.log(o, pd); return;
+	let [d, img, wOrig, hOrig, sz, fa, famin] = [o.d, o.img, o.wOrig, o.hOrig, o.sz, o.fa, o.famin];
+	if (fa >= 1) { console.log('cant zoom in more!!!', fa); return; }
+	fa *= 1.5; if (fa > 1) fa = 1; UI.fa = fa;
+	showImgCentered(d, img, wOrig, hOrig, sz, fa, famin);
 
 }
-function showImgCentered(d,img,wOrig,hOrig,sz,fa,famin){
-	UI.zoomo={d,img,wOrig,hOrig,sz,fa,famin};
-	let wsc=wOrig*fa, hsc=hOrig*fa; console.log('fa',fa);
+function showImgCentered(d, img, wOrig, hOrig, sz, fa, famin) {
+	UI.zoomo = { d, img, wOrig, hOrig, sz, fa, famin };
+	let wsc = wOrig * fa, hsc = hOrig * fa; console.log('fa', fa);
 
-	let [xwo,ywo]=[(sz-wsc)/2,(sz-hsc)/2]
+	let [xwo, ywo] = [(sz - wsc) / 2, (sz - hsc) / 2]
 
-	showImagePartial(d, img, 0,0,wOrig,hOrig,xwo,ywo,wsc,hsc, sz, sz, wOrig,hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
-	let szCrop = sz-100;
-	let dc = mDom(d, { position: 'absolute', left: (sz-szCrop) / 2, top: (sz-szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
+	showImagePartial(d, img, 0, 0, wOrig, hOrig, xwo, ywo, wsc, hsc, sz, sz, wOrig, hOrig); //, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
+	let szCrop = sz - 100;
+	let dc = mDom(d, { position: 'absolute', left: (sz - szCrop) / 2, top: (sz - szCrop) / 2, w: szCrop, h: szCrop, box: true, border: 'red', cursor: 'grab' });
 	dc.onmousedown = startPanning;
 }
 async function onclickZoomIn() {
 	let o = UI.zoomo;
-	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-	if (fa>=1) {console.log('cant zoom in more!!!',fa); return;}
-	fa*=1.5;if (fa>1)fa=1; UI.fa=fa;
-	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+	let [d, img, wOrig, hOrig, sz, fa, famin] = [o.d, o.img, o.wOrig, o.hOrig, o.sz, o.fa, o.famin];
+	if (fa >= 1) { console.log('cant zoom in more!!!', fa); return; }
+	fa *= 1.5; if (fa > 1) fa = 1; UI.fa = fa;
+	showImgCentered(d, img, wOrig, hOrig, sz, fa, famin);
 
 }
 async function onclickZoomOut() {
 	let o = UI.zoomo;
-	let [d,img,wOrig,hOrig,sz,fa,famin]=[o.d,o.img,o.wOrig,o.hOrig,o.sz,o.fa,o.famin];
-	if (fa*wOrig<=sz && fa*hOrig<=sz) {console.log('cant zoom out more!!!',wOrig,hOrig,fa, fa*wOrig,fa*hOrig,sz); return;}
-	fa*=0.5;if (fa<famin) fa = famin; UI.fa=fa;
-	showImgCentered(d,img,wOrig,hOrig,sz,fa,famin);
+	let [d, img, wOrig, hOrig, sz, fa, famin] = [o.d, o.img, o.wOrig, o.hOrig, o.sz, o.fa, o.famin];
+	if (fa * wOrig <= sz && fa * hOrig <= sz) { console.log('cant zoom out more!!!', wOrig, hOrig, fa, fa * wOrig, fa * hOrig, sz); return; }
+	fa *= 0.5; if (fa < famin) fa = famin; UI.fa = fa;
+	showImgCentered(d, img, wOrig, hOrig, sz, fa, famin);
 
 }
 function startPanning(ev) {
@@ -535,10 +678,10 @@ function adjustCropper1(img, dc, sz) {
 	mStyle(dc, { left: cx - radx, top: cy - rady, w: sz, h: sz });
 }
 
-function showImagePart(dParent,src,x,y,wi,hi){
+function showImagePart(dParent, src, x, y, wi, hi) {
 	mClear(dParent);
-	let [w,h]=[mGetStyle(dParent,'w'),mGetStyle(dParent,'h')];
-	let canvas = mDom(dParent,{w,h,fill:'blue'},{tag:'canvas',width:w,height:h});
+	let [w, h] = [mGetStyle(dParent, 'w'), mGetStyle(dParent, 'h')];
+	let canvas = mDom(dParent, { w, h, fill: 'blue' }, { tag: 'canvas', width: w, height: h });
 	return;
 
 }
@@ -554,22 +697,22 @@ function showImagePart(image, x, y, w, h) {
 	ctx.drawImage(image, x, y, w, h, 0, 0, w, h);
 }
 
-function imgZoomOut(img, dc, sz,wOrig,hOrig) { 
-	let w = mGetStyle(dc, 'w'); 
-	let h = mGetStyle(dc, 'h'); 
-	console.log('__image',img.width,img.height);
-	console.log('sz',sz,'orig',wOrig,hOrig)
-	console.log(w,h)
+function imgZoomOut(img, dc, sz, wOrig, hOrig) {
+	let w = mGetStyle(dc, 'w');
+	let h = mGetStyle(dc, 'h');
+	console.log('__image', img.width, img.height);
+	console.log('sz', sz, 'orig', wOrig, hOrig)
+	console.log(w, h)
 
 	return;
 
-	if (img.width == w || img.height == h) return; 
-	else { 
-		img.width = Math.max(img.width - 20, w); 
-		img.width = Math.max(img.width - 20, w); 
-		adjustCropper1(img, dc, sz); 
-		return [img.width, img.height]; 
-	} 
+	if (img.width == w || img.height == h) return;
+	else {
+		img.width = Math.max(img.width - 20, w);
+		img.width = Math.max(img.width - 20, w);
+		adjustCropper1(img, dc, sz);
+		return [img.width, img.height];
+	}
 }
 
 //#endregion
@@ -747,11 +890,11 @@ async function simpleOnDroppedUrl(src, sisi) {
 
 	let sz = 400;
 	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz, hmin: sz, bg: 'pink' });
-	let dParent=mDom(dPopup);
-	let canvas=createPanZoomCanvas(dParent, src, sz, sz);
-  mStyle(canvas,{border:'red'})
-  mLinebreak(dParent)
-  //mButton('save', ()=>savePanZoomCanvas(canvas), dParent,{},'button');
+	let dParent = mDom(dPopup);
+	let canvas = createPanZoomCanvas(dParent, src, sz, sz);
+	mStyle(canvas, { border: 'red' })
+	mLinebreak(dParent)
+	//mButton('save', ()=>savePanZoomCanvas(canvas), dParent,{},'button');
 
 	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
 	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
@@ -778,7 +921,7 @@ async function simpleOnDroppedUrl(src, sisi) {
 
 
 }
-async function rest(){
+async function rest() {
 	let m = await imgMeasure(src); console.log('simpleOnDroppedUrl!!! sz', m);
 	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 400];
 	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz + 80, hmin: sz + 80, bg: 'pink' });
@@ -790,19 +933,19 @@ async function rest(){
 
 
 	mStyle(img, { h: sz });
-	
+
 	mAppend(d, img);
 	let [w0, h0] = [img.width, img.height];
 	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
 	dc.onmousedown = startPanning;
 	let db1 = mDom(dPopup, { bg: 'red', padding: 10, display: 'flex', gap: 10, 'justify-content': 'center' });
-	
+
 	mButton('restart', () => imgReset(img, dc, sz, w0, h0), db1, { w: 70 }, 'input');
 	mButton('squish', () => imgSquish(img, dc, sz), db1, { w: 70 }, 'input');
 	mButton('expand', () => imgExpand(img, dc, sz), db1, { w: 70 }, 'input');
-	mButton('zoom out', () => imgZoomOut(img, dc, sz,wOrig, hOrig), db1, { w: 70 }, 'input');
+	mButton('zoom out', () => imgZoomOut(img, dc, sz, wOrig, hOrig), db1, { w: 70 }, 'input');
 	mButton('zoom in', () => imgZoomIn(img, dc, sz), db1, { w: 70 }, 'input');
-	
+
 	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
 	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
 	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
@@ -886,19 +1029,19 @@ async function simpleOnDroppedUrl(url, sisi) {
 
 
 	mStyle(img, { h: sz });
-	
+
 	mAppend(d, img);
 	let [w0, h0] = [img.width, img.height];
 	let dc = mDom(d, { position: 'absolute', left: (w0 - sz) / 2, top: (h0 - sz) / 2, w: sz, h: sz, box: true, border: 'red', cursor: 'grab' });
 	dc.onmousedown = startPanning;
 	let db1 = mDom(dPopup, { bg: 'red', padding: 10, display: 'flex', gap: 10, 'justify-content': 'center' });
-	
+
 	mButton('restart', () => imgReset(img, dc, sz, w0, h0), db1, { w: 70 }, 'input');
 	mButton('squish', () => imgSquish(img, dc, sz), db1, { w: 70 }, 'input');
 	mButton('expand', () => imgExpand(img, dc, sz), db1, { w: 70 }, 'input');
-	mButton('zoom out', () => imgZoomOut(img, dc, sz,wOrig, hOrig), db1, { w: 70 }, 'input');
+	mButton('zoom out', () => imgZoomOut(img, dc, sz, wOrig, hOrig), db1, { w: 70 }, 'input');
 	mButton('zoom in', () => imgZoomIn(img, dc, sz), db1, { w: 70 }, 'input');
-	
+
 	let dinp = mDom(dPopup, { padding: 10, align: 'right', display: 'inline-block' })
 	mDom(dinp, { display: 'inline-block' }, { html: 'Name: ' });
 	let inpFriendly = mDom(dinp, { outline: 'none', w: 200 }, { className: 'input', name: 'friendly', tag: 'input', type: 'text', placeholder: `<enter name>` });
@@ -948,28 +1091,28 @@ async function _onclickZoomIn() {
 	let fa = o.fa;
 	if (wi <= wCrop || hi <= hCrop) { console.log(`can't zoom in`); return; }
 
-	console.log('fa',fa)
-	fa=Math.min(1,fa+.1);
-	let [wshow,hshow]=[wOrig*fa,hOrig*fa];
+	console.log('fa', fa)
+	fa = Math.min(1, fa + .1);
+	let [wshow, hshow] = [wOrig * fa, hOrig * fa];
 	[xi, yi, wi, hi, wCrop, hCrop] = [0, 0, wOrig, hOrig, wOrig * fa, hOrig * fa];
 
 	//if (fa)
-	
+
 	showImagePartial(d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
 
 }
-function mist(){	
+function mist() {
 	let [d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig] = [o.d, o.img, o.xi, o.yi, o.wi, o.hi, o.dx, o.dy, o.wCrop, o.hCrop, o.wCanvas, o.hCanvas, o.wOrig, o.hOrig];
 	let fa = o.fa;
 	if (wi <= wCrop || hi <= hCrop) { console.log(`can't zoom in`); return; }
 
-	console.log('fa',fa)
-	fa=Math.min(1,fa+.1);
-	let [wshow,hshow]=[wOrig*fa,hOrig*fa];
+	console.log('fa', fa)
+	fa = Math.min(1, fa + .1);
+	let [wshow, hshow] = [wOrig * fa, hOrig * fa];
 	[xi, yi, wi, hi, wCrop, hCrop] = [0, 0, wOrig, hOrig, wOrig * fa, hOrig * fa];
 
 	//if (fa)
-	
+
 	showImagePartial(d, img, xi, yi, wi, hi, dx, dy, wCrop, hCrop, wCanvas, hCanvas, wOrig, hOrig);
 
 }
@@ -2865,29 +3008,29 @@ function getAnimals() {
 function menuCloseSimple() { closeLeftSidebar(); clearMain(); } //	window.onresize = null;}
 
 async function onclickSimple() {
-	let name = valf(localStorage.getItem('sisi'),'tierspiel'); //console.log(name);
+	let name = valf(localStorage.getItem('sisi'), 'tierspiel'); //console.log(name);
 	simpleSidebar(150);
 	mAdjustPage(150);
-	let div = mDom100('dMain'); 
-	let sisi = UI.simple = {name,div};
-	let [w,h,bg,fg]=[sisi.w,sisi.h,sisi.bg,sisi.fg] = [mGetStyle(div,'w'),mGetStyle(div,'h'),getNavBg(),getThemeFg()];
+	let div = mDom100('dMain');
+	let sisi = UI.simple = { name, div };
+	let [w, h, bg, fg] = [sisi.w, sisi.h, sisi.bg, sisi.fg] = [mGetStyle(div, 'w'), mGetStyle(div, 'h'), getNavBg(), getThemeFg()];
 
-	let d1=mDom(div);mCenterFlex(d1)
-	let dMenu = sisi.dMenu = mDom(d1, { gap: 10, padding: 12 }, { className: 'title' });mFlexVWrap(dMenu);
-	let dInstruction = sisi.dInstruction = mDom(d1, { w100:true, align: 'center', fg }, { html: '* press Control key when hovering to magnify image! *' })
+	let d1 = mDom(div); mCenterFlex(d1)
+	let dMenu = sisi.dMenu = mDom(d1, { gap: 10, padding: 12 }, { className: 'title' }); mFlexVWrap(dMenu);
+	let dInstruction = sisi.dInstruction = mDom(d1, { w100: true, align: 'center', fg }, { html: '* press Control key when hovering to magnify image! *' })
 
 	let dBatch = sisi.dBatch = mDom(d1);
 	let cellStyles = { bg, fg: 'contrast', box: true, margin: 8, w: 128, h: 128, overflow: 'hidden' };
-	let o = createBatchGridCells(dBatch,w*.9,h*.9,cellStyles);
-	addKeys(o,sisi);
+	let o = createBatchGridCells(dBatch, w * .9, h * .9, cellStyles);
+	addKeys(o, sisi);
 
 	mStyle(dInstruction, { w: mGetStyle(sisi.dGrid, 'w') });
 
 	mLinebreak(d1)
-	sisi.dPageIndex = mDom(d1,{fg});
+	sisi.dPageIndex = mDom(d1, { fg });
 
 	simpleInit(name, sisi);
-	
+
 	sisi.isOpen = true;
 	sisi.dInstruction.innerHTML = '* drag images into the shaded area *'
 	let grid = sisi.dGrid;
@@ -2909,7 +3052,7 @@ async function onclickSimpleNew(name) {
 		showMessage(`collection ${name} already exists!`);
 	}
 	M.collections.push(name); M.collections.sort();
-	if (name != UI.simple) simpleInit(name,UI.simple);
+	if (name != UI.simple) simpleInit(name, UI.simple);
 }
 async function onclickSimpleRemove() {
 	let selist = UI.selectedImages;
@@ -2978,7 +3121,7 @@ async function simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, i
 	await simpleOnDroppedItem(item, sisi);
 }
 function simpleInit(name, sisi) {
-	if (nundef(name) && isdef(UI.simple)) {sisi=UI.simple;name=sisi.name;}
+	if (nundef(name) && isdef(UI.simple)) { sisi = UI.simple; name = sisi.name; }
 	let isReload = isdef(sisi.index) && sisi.name == name;
 	if (!isReload) { sisi.index = 0; sisi.pageIndex = 1; sisi.name = name; sisi.filter = null; }
 
@@ -2986,7 +3129,7 @@ function simpleInit(name, sisi) {
 	if (name == 'all' || isEmpty(name)) { list = Object.keys(M.superdi); }
 	else if (isdef(M.byCollection[name])) { list = M.byCollection[name]; }
 	else list = [];
-	
+
 	localStorage.setItem('sisi', name)
 
 	let dMenu = sisi.dMenu;
@@ -2994,22 +3137,22 @@ function simpleInit(name, sisi) {
 	let d = mDom(dMenu); mFlexV(d);
 	mDom(d, { fz: 24, weight: 'bold' }, { html: 'Collection:' });
 
-	let collNames = M.collections; 
+	let collNames = M.collections;
 	let dlColl = mDatalist(d, collNames, { placeholder: "<select from list>" });
-	dlColl.inpElem.oninput = ev => {console.log(sisi.name,ev.target.value);simpleInit(ev.target.value, sisi);}
+	dlColl.inpElem.oninput = ev => { console.log(sisi.name, ev.target.value); simpleInit(ev.target.value, sisi); }
 	dlColl.inpElem.value = name;
 
 	list = sortByFunc(list, x => M.superdi[x].friendly);
 	sisi.masterKeys = list;
 	sisi.keys = sisi.filter ? collFilterImages(sisi, sisi.filter) : list;
-	
+
 	let cats = collectCats(sisi.keys);
 	cats.sort();
 	d = mDom(dMenu); mFlexV(d);
 	let wLabel = sisi.cols < 6 ? 117 : 'auto';
 	mDom(d, { fz: 24, weight: 'bold', w: wLabel, align: 'right' }, { edit: true, html: 'Filter:' });
 	let dlCat = mDatalist(d, cats, { edit: false, placeholder: "<enter value>", value: sisi.filter });
-	dlCat.inpElem.oninput = ev =>{
+	dlCat.inpElem.oninput = ev => {
 		let coll = UI.simple;
 		let s = ev.target.value.toLowerCase().trim();
 		let list = collFilterImages(coll, s);
@@ -3018,20 +3161,20 @@ function simpleInit(name, sisi) {
 		coll.index = 0; coll.pageIndex = 1; simpleClearSelections();
 		simpleShowImageBatch(coll, 0, false);
 	};
-	
+
 	d = mDom(dMenu, { gap: 10, align: 'right' });
-	mButton('prev', ()=>simpleShowImageBatch(sisi,-1), d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
-	mButton('next', ()=>simpleShowImageBatch(sisi,1), d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
+	mButton('prev', () => simpleShowImageBatch(sisi, -1), d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bPrev');
+	mButton('next', () => simpleShowImageBatch(sisi, 1), d, { w: 70, margin: 0, maleft: 10 }, 'input', 'bNext');
 	simpleClearSelections();
 	simpleShowImageBatch(sisi);
 }
 function simpleLocked(collname) {
-	if (nundef(collname)) collname = lookup(UI,['simple','name']);
+	if (nundef(collname)) collname = lookup(UI, ['simple', 'name']);
 	if (!collname) return true;
 	return getUname() != '_unsafe' && ['all', 'amanda', 'emo', 'fa6', 'icon', 'nations', 'users'].includes(collname);
 }
 async function simpleOnclickItem(ev) {
-	let id=evToId(ev);
+	let id = evToId(ev);
 	let item = UI.simple.items[id]; if (nundef(item)) return;
 	let selkey = item.key;
 	toggleSelectionOfPicture(iDiv(item), selkey, UI.selectedImages);
@@ -3039,11 +3182,11 @@ async function simpleOnclickItem(ev) {
 }
 async function simpleOnclickLabel(ev) {
 	evNoBubble(ev);
-	let id=evToId(ev); console.log('id',id)
-	let o = lookup(UI.simple,['items',id]);
+	let id = evToId(ev); console.log('id', id)
+	let o = lookup(UI.simple, ['items', id]);
 	if (!o) return;
-	console.log('clicked label of',o);
-	let [key,elem,collname]=[o.key,o.name,iDiv(o)];
+	console.log('clicked label of', o);
+	let [key, elem, collname] = [o.key, o.name, iDiv(o)];
 
 	let newfriendly = await mGather(ev.target);
 	if (!newfriendly) return;
@@ -3062,22 +3205,22 @@ async function simpleOnclickLabel(ev) {
 	await loadAssets();
 	ev.target.innerHTML = newfriendly;
 }
-async function simpleOnDropImage(ev,elem) {
-	let dt=ev.dataTransfer;
-	console.log('dropped',ev.dataTransfer); 
+async function simpleOnDropImage(ev, elem) {
+	let dt = ev.dataTransfer;
+	console.log('dropped', ev.dataTransfer);
 
-	console.log('types',dt.types); 
+	console.log('types', dt.types);
 	//console.log('items',dt.items); 
-	console.log('files',dt.files); 
+	console.log('files', dt.files);
 
 	if (dt.types.includes('itemkey')) {
 		let data = ev.dataTransfer.getData('itemkey');
 
-		console.log('itemkey',data)
+		console.log('itemkey', data)
 		await simpleOnDroppedItem(data);
-	}else {
+	} else {
 		const files = ev.dataTransfer.files;
-		console.log('drop',ev.dataTransfer);
+		console.log('drop', ev.dataTransfer);
 		if (files.length > 0) {
 			const reader = new FileReader();
 			reader.onload = async (evReader) => {
@@ -3092,18 +3235,18 @@ async function simpleOnDropImage(ev,elem) {
 	//console.log('dropped',ev.dataTransfer); 
 
 	return;
-	if (isString(file) && isdef(M.superdi[file])){
-		console.log('YEAH!!!!!!!!!!!! ein key',file)
+	if (isString(file) && isdef(M.superdi[file])) {
+		console.log('YEAH!!!!!!!!!!!! ein key', file)
 		await simpleOnDroppedItem(M.superdi[file], UI.simple)
-	}else if (isDict(file) && isdef(M.allImages[file.name])) {
-		assertion(false,"DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
+	} else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false, "DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
 		//hab ein eigenes item gedropped!!!!
 		//muss ueberhaupt kein item adden!
 		//nur in die neue collection integrieren!
-		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
-	}else {
-		assertion(!isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
-		console.log('from somewhere else!!!!',file);
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img', M.allImages[file.name])
+	} else {
+		assertion(!isDict(file), 'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!', file);
 
 		//await simpleOnDroppedUrl(data, UI.simple);
 	}
@@ -3112,25 +3255,25 @@ async function simpleOnDropImage(ev,elem) {
 async function simpleOnDroppedItem(itemOrKey, sisi) {
 	console.log(itemOrKey)
 	if (nundef(sisi)) sisi = UI.simple;
-	let item,key;
-	if (isString(itemOrKey)){key=itemOrKey;item=M.superdi[key];}else{item=itemOrKey;key=item.key;}
-	console.log(item,key)
+	let item, key;
+	if (isString(itemOrKey)) { key = itemOrKey; item = M.superdi[key]; } else { item = itemOrKey; key = item.key; }
+	console.log(item, key)
 	assertion(isdef(key), 'NO KEY!!!!!');
-	let o=M.superdi[key]; console.log(key,item,o,sisi)
-	assertion(nundef(o) || o == item,"DISPARITY!!!!!!!!!!!!!!!!!!!!!")
+	let o = M.superdi[key]; console.log(key, item, o, sisi)
+	assertion(nundef(o) || o == item, "DISPARITY!!!!!!!!!!!!!!!!!!!!!")
 	let list = item.colls;
-	if (isdef(o) && list.includes(sisi.name)) {console.log(`HA! ${key} already there`); return; }// dropped item into same collection!!!
-	lookupAddIfToList(item,['colls'],sisi.name);
-	addIf(item.colls,sisi.name);
+	if (isdef(o) && list.includes(sisi.name)) { console.log(`HA! ${key} already there`); return; }// dropped item into same collection!!!
+	lookupAddIfToList(item, ['colls'], sisi.name);
+	addIf(item.colls, sisi.name);
 	let di = {}; di[key] = item;
 	await updateSuperdi(di);
-	simpleInit(sisi.name,sisi)
+	simpleInit(sisi.name, sisi)
 }
 async function simpleOnDroppedUrl(url, sisi) {
 	//console.log(url,sisi); //return;
 	let m = await imgMeasure(url); console.log('simpleOnDroppedUrl!!! sz', m);
 	let [img, wOrig, hOrig, sz] = [m.img, m.w, m.h, 400];
-	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz+80, hmin: sz+80, bg: 'pink' });
+	let dPopup = mDom(document.body, { position: 'fixed', top: 40, left: 0, wmin: sz + 80, hmin: sz + 80, bg: 'pink' });
 	let d = mDom(dPopup, { bg: 'pink', wmin: 128, hmin: 128, display: 'inline-block', align: 'center', margin: 10 }, { className: 'imgWrapper' });
 	mIfNotRelative(d);
 	mStyle(img, { h: sz });
@@ -3158,7 +3301,7 @@ async function simpleOnDroppedUrl(url, sisi) {
 	mButton('cancel', () => dPopup.remove(), db2, { w: 70 }, 'input');
 	mButton('OK', () => simpleFinishEditing(img, dc, wOrig, hOrig, dPopup, inpFriendly, inpCats, sisi), db2, { w: 70 }, 'input');
 }
-async function simpleSetAvatar(key){
+async function simpleSetAvatar(key) {
 	U.imgKey = key;
 	let res = await postUserChange(U);
 	//console.log('res', res)
@@ -3183,10 +3326,10 @@ function simpleShowImageBatch(sisi, inc = 0, alertEmpty = false) {
 		mStyle(d, { opacity: 1 });
 		mClass(d, 'magnifiable')
 		let id = getUID();
-		let d1 = simpleShowImageInBatch(key, d, {}, {prefer:sisi.name == 'emo'?'img':'photo'});
+		let d1 = simpleShowImageInBatch(key, d, {}, { prefer: sisi.name == 'emo' ? 'img' : 'photo' });
 		d1.id = id;
-		let item = {div:d1,key,name,id,index:i,page:newPageIndex};
-		sisi.items[id]=item;
+		let item = { div: d1, key, name, id, index: i, page: newPageIndex };
+		sisi.items[id] = item;
 		// d1.setAttribute('collname', sisi.name);
 		// let selkey = collGenSelkey(key, sisi.name);
 		if (isList(UI.selectedImages) && UI.selectedImages.includes(key)) mSelect(d1);
@@ -3232,7 +3375,7 @@ function simpleShowImageInBatch(key, dParent, styles = {}, opts = {}) {
 	d1.ondragstart = ev => { ev.dataTransfer.setData('itemkey', key); }
 	// d1.ondragstart = ev => { 
 	// 	ev.dataTransfer.setData('text/uri-list', draggableImage.src);
-        
+
 	// 	// The "text/html" format is useful for dragging the image as HTML
 	// 	ev.dataTransfer.setData('text/html', `<img src="${draggableImage.src}" alt="Draggable Image">`);
 	// 	ev.dataTransfer.setData('hallo','mySpecialData');
@@ -3250,20 +3393,20 @@ function simpleShowImageInBatch(key, dParent, styles = {}, opts = {}) {
 //#endregion
 
 //#region 10.6.24
-async function __simpleOnDropImage(data,file,elem) {
-	console.log('dropped',file,typeof file); 
-	if (isString(file) && isdef(M.superdi[file])){
-		console.log('YEAH!!!!!!!!!!!! ein key',file)
+async function __simpleOnDropImage(data, file, elem) {
+	console.log('dropped', file, typeof file);
+	if (isString(file) && isdef(M.superdi[file])) {
+		console.log('YEAH!!!!!!!!!!!! ein key', file)
 		await simpleOnDroppedItem(M.superdi[file], UI.simple)
-	}else if (isDict(file) && isdef(M.allImages[file.name])) {
-		assertion(false,"DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
+	} else if (isDict(file) && isdef(M.allImages[file.name])) {
+		assertion(false, "DROP IMAGE FROM KEY ist aber file instead!!!!!!!!!!!!!!!!")
 		//hab ein eigenes item gedropped!!!!
 		//muss ueberhaupt kein item adden!
 		//nur in die neue collection integrieren!
-		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img',M.allImages[file.name])
-	}else {
-		assertion(!isDict(file),'MUSS VON WO ANDERS KOMMEN!!!!!')
-		console.log('from somewhere else!!!!',file);
+		console.log('NOOOOOOOOO!!!!!!!!!!!! ein eigenes img', M.allImages[file.name])
+	} else {
+		assertion(!isDict(file), 'MUSS VON WO ANDERS KOMMEN!!!!!')
+		console.log('from somewhere else!!!!', file);
 
 		//await simpleOnDroppedUrl(data, UI.simple);
 	}
@@ -3405,7 +3548,7 @@ function button96() {
 		if (move == best) {
 			players[name].score += 1;
 			removeInPlace(fen.cards, move);
-			let cardlist = deckDeal(fen.deck, 1); 
+			let cardlist = deckDeal(fen.deck, 1);
 			if (isEmpty(cardlist)) {
 				table.winners = getPlayersWithMaxScore(table);
 				table.status = 'over';
@@ -3494,7 +3637,7 @@ function button96() {
 		let name = getUname();
 		let move = item.feno;
 		let step = table.step;
-		let olist = [			{ keys: ['pending'], val: { name, move } },		];
+		let olist = [{ keys: ['pending'], val: { name, move } },];
 		if (isdef(DA.pendingChanges)) {
 			for (const klist of DA.pendingChanges) {
 				olist.push({ keys: klist, val: lookup(table, klist) });
@@ -3509,7 +3652,7 @@ function button96() {
 		let res = await mPostRoute('olist', o); //console.log(res);
 	}
 
-	return { setup, resolvePending, present, stats, activate }; 
+	return { setup, resolvePending, present, stats, activate };
 }
 
 function setgame() {
@@ -3544,20 +3687,20 @@ function setgame() {
 		const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' };
 		setLoadPatterns('dPage', colors);
 		let fen = table.fen;
-		
-		mStyle('dTable', { padding:50, wmin: 500 });
-		
+
+		mStyle('dTable', { padding: 50, wmin: 500 });
+
 		let d = mDom('dTable', { gap: 10, padding: 0 }); mCenterFlex(d);
 
 		//fen.cards = arrTake(fen.deck,12)
 
 		let rows = Math.ceil(fen.cards.length / 3);
 		let gap = 10;
-		
+
 		// let hMax=80; hMin=50; //window.innerHeight/1.8;
 
 		// let hCardMax=((hMax-120)/rows)-10;
-		let sz = rows<=4?80:rows==5?70:rows==6?68:rows==7?65:rows==8?62:60;
+		let sz = rows <= 4 ? 80 : rows == 5 ? 70 : rows == 6 ? 68 : rows == 7 ? 65 : rows == 8 ? 62 : 60;
 		//4 rows ... 1
 		//5 rows ... 20
 		//6 rows ... 15
@@ -3575,13 +3718,13 @@ function setgame() {
 		}
 
 		//cheat mode!
-		let oset = setFindOneSet(items); console.log('=>',oset?oset.keys[0]:'NO SET'); 
+		let oset = setFindOneSet(items); console.log('=>', oset ? oset.keys[0] : 'NO SET');
 
 		return items;
 	}
 	async function activate(table, items) {
 
-		if (!isMyTurn(table)) {console.log('table.turn',table.turn); return;}
+		if (!isMyTurn(table)) { console.log('table.turn', table.turn); return; }
 
 		for (const item of items) {
 			let d = iDiv(item);
@@ -3593,11 +3736,11 @@ function setgame() {
 		let dParent = mBy('dTable').parentNode;
 		mIfNotRelative(dParent);
 
-		let bNoSet = mButton('No Set', () => onclickNoSet(table, items), dParent, {},'button','bNoSet'); 
+		let bNoSet = mButton('No Set', () => onclickNoSet(table, items), dParent, {}, 'button', 'bNoSet');
 		mPos(bNoSet, window.innerWidth / 2 + 180, 110);
 
-		if (amIHuman(table) && getGameOption('use_level')=='yes' && getPlayerProp('level')<=2){
-			let bHint = mButton('Hint', () => onclickHint(table, items), dParent, {},'button','bHint');
+		if (amIHuman(table) && getGameOption('use_level') == 'yes' && getPlayerProp('level') <= 2) {
+			let bHint = mButton('Hint', () => onclickHint(table, items), dParent, {}, 'button', 'bHint');
 			mPos(bHint, window.innerWidth / 2 - 200 - 80, 110);
 		}
 
@@ -3606,25 +3749,25 @@ function setgame() {
 		if (amIHuman(table) && table.options.gamemode == 'multi') return;
 
 		//bot move activation: random move
-		let name = amIHuman(table)?someOtherPlayerName(table):getUname();
+		let name = amIHuman(table) ? someOtherPlayerName(table) : getUname();
 		if (nundef(name)) return; //console.log('bot name',name)
 
-		await botMove(name,table,items);
+		await botMove(name, table, items);
 	}
-	async function botMove(name, table,items){
+	async function botMove(name, table, items) {
 		let oset = setFindOneSet(items); //console.log('botset',oset?oset.keys:'NO SET!');
 		//if (!oset) return; //kann noch kein No Set!
 
 		let avg = calcBotLevel(table); //console.log('botlevel',avg)
-		let ms = avg?18000-avg*2000:1000;
+		let ms = avg ? 18000 - avg * 2000 : 1000;
 
 		TO.bot = setTimeout(async () => {
-			if (!oset) await onclickNoSet(table,items);
-			else{
-				for(const item of oset.items) toggleItemSelection(item);
+			if (!oset) await onclickNoSet(table, items);
+			else {
+				for (const item of oset.items) toggleItemSelection(item);
 				TO.bot1 = setTimeout(async () => await evalMove(name, table, oset.keys), 1000);
 			}
-		}, rNumber(ms,ms+2000));
+		}, rNumber(ms, ms + 2000));
 
 	}
 
@@ -3732,18 +3875,18 @@ function setgame() {
 		}
 	}
 	async function onclickHint(table, items) {
-		let oset = setFindOneSet(items); 
+		let oset = setFindOneSet(items);
 		let bHint = mBy('bHint');
 		disableButton('bHint');
-		if (!oset){
+		if (!oset) {
 			ANIM.button = scaleAnimation('bNoSet');
-		}else{
+		} else {
 			//console.log('oset',oset);
 			let item = rChoose(oset.items);
-			await onclickCard(table,item,items);
+			await onclickCard(table, item, items);
 		}
 	}
-	async function onclickNoSet(table, items) { 
+	async function onclickNoSet(table, items) {
 		//console.log('clicked No Set!') 
 		clearEvents();
 		mShield('dTable', { bg: 'transparent' });
@@ -3752,15 +3895,15 @@ function setgame() {
 		let step = table.step;
 
 		let oset = setFindOneSet(items);
-		if (!oset){
+		if (!oset) {
 			table.players[name].score += 1;
 			let fen = table.fen;
 			let newCards = deckDeal(fen.deck, 1); //add 1 cards!
-			if (!isEmpty(newCards))	fen.cards.push(newCards[0]); else return await gameoverScore(table);
+			if (!isEmpty(newCards)) fen.cards.push(newCards[0]); else return await gameoverScore(table);
 		} else {
 			table.players[name].score -= 1;
 		}
-		lookupAddToList(table, ['moves'], { step, name, move:['noSet'], change: oset ? '-1' : '+1', score: table.players[name].score });
+		lookupAddToList(table, ['moves'], { step, name, move: ['noSet'], change: oset ? '-1' : '+1', score: table.players[name].score });
 
 		let o = { id, name, step, table };
 
@@ -3783,12 +3926,12 @@ function setgame() {
 			let fen = table.fen;
 			let toomany = Math.max(0, fen.cards.length - table.options.numCards);
 			let need = Math.max(0, 3 - toomany);
-			let newCards = deckDeal(fen.deck, need); 
+			let newCards = deckDeal(fen.deck, need);
 			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, keys[i], newCards[i]); else removeInPlace(fen.cards, keys[i]);
 		} else {
 			table.players[name].score -= 1;
 		}
-		lookupAddToList(table, ['moves'], { step, name, move:keys, change: isSet ? '+1' : '-1', score: table.players[name].score });
+		lookupAddToList(table, ['moves'], { step, name, move: keys, change: isSet ? '+1' : '-1', score: table.players[name].score });
 
 		let o = { id, name, step, table };
 
@@ -3796,7 +3939,7 @@ function setgame() {
 
 		let res = await mPostRoute('table', o); //console.log(res);
 	}
-//#endregion
+	//#endregion
 
 	return { setup, present, stats, activate };
 }
@@ -3805,41 +3948,41 @@ function setgame() {
 
 //#region 4.6.24
 function mimali(c, m) {
-  //das ding muss einfach nur n colors returnen!
-  //ich koennt es so machen: nimm einfach random pixels auf dem background!
+	//das ding muss einfach nur n colors returnen!
+	//ich koennt es so machen: nimm einfach random pixels auf dem background!
 	//just return n colors!
 	//console.log('___mimali n',n)
 
 	//console.log(c,m)
 
 	let seasonColors = 'winter_blue midnightblue light_azure capri spring_frost light_green deep_green summer_sky yellow_pantone orange pale_fallen_leaves timberwolf'.split(' ');
-	let c2=seasonColors[m-1];
+	let c2 = seasonColors[m - 1];
 
 	//why 43?
-  let colors = generateArrayColors(c,c2,7).slice(1); //paletteShadesBi(c,36*m);
-  //console.log('colors',colors);
-  let wheel=[];//'blue'];
-  for(const x of colors){
-    let pal1=paletteShades(x); //console.log(pal1.length)
-    //wheel=wheel.concat(pal1);
-    for(const i of range(7)) wheel.push(pal1[i+2]);
-  }
-  //console.log('wheel',wheel.length)
-  return wheel;
-	
+	let colors = generateArrayColors(c, c2, 7).slice(1); //paletteShadesBi(c,36*m);
+	//console.log('colors',colors);
+	let wheel = [];//'blue'];
+	for (const x of colors) {
+		let pal1 = paletteShades(x); //console.log(pal1.length)
+		//wheel=wheel.concat(pal1);
+		for (const i of range(7)) wheel.push(pal1[i + 2]);
+	}
+	//console.log('wheel',wheel.length)
+	return wheel;
 
 
-  // function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
-  // function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
-  // function cinc(c, hinc, sinc, linc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, clamp(hsl.s * 100 + sinc, 0, 100), clamp(hsl.l * 100 + linc, 0, 100)); }
-  // function arrd(c, hinc, sinc, linc, n) { let r = []; for (let i = 0; i < n; i++) { r.push(cinc(c, hinc * i, sinc * i, linc * i)); } return r; }
-  // function light(c, lper = 75) { let hsl = colorHSL(c, true); return colorHSLBuild(hsl.h, hsl.s * 100, lper); }
-  // function sat(c, sper = 100) { let hsl = colorHSL(c, true); return colorHSLBuild(sper, hsl.s * 100, hsl.l * 100); }
-  // function hue(c, hdeg) { let hsl = colorHSL(c, true); return colorHSLBuild(hdeg, hsl.s * 100, hsl.l * 100); }
-  // c = light(c, 75);
-  // let diff = Math.round(360 / n)
-  // wheel = arrd(c, diff, 0, 0, n);
-  // return wheel;
+
+	// function whh(c1, c2) { return generateArrayColors(colorHex(c1), colorHex(c2), 10); }
+	// function genc(c, hinc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, hsl.s * 100, hsl.l * 100); }
+	// function cinc(c, hinc, sinc, linc) { let hsl = colorHSL(c, true); return colorHSLBuild((hsl.h + hinc) % 360, clamp(hsl.s * 100 + sinc, 0, 100), clamp(hsl.l * 100 + linc, 0, 100)); }
+	// function arrd(c, hinc, sinc, linc, n) { let r = []; for (let i = 0; i < n; i++) { r.push(cinc(c, hinc * i, sinc * i, linc * i)); } return r; }
+	// function light(c, lper = 75) { let hsl = colorHSL(c, true); return colorHSLBuild(hsl.h, hsl.s * 100, lper); }
+	// function sat(c, sper = 100) { let hsl = colorHSL(c, true); return colorHSLBuild(sper, hsl.s * 100, hsl.l * 100); }
+	// function hue(c, hdeg) { let hsl = colorHSL(c, true); return colorHSLBuild(hdeg, hsl.s * 100, hsl.l * 100); }
+	// c = light(c, 75);
+	// let diff = Math.round(360 / n)
+	// wheel = arrd(c, diff, 0, 0, n);
+	// return wheel;
 }
 
 //#endregion
@@ -3942,7 +4085,7 @@ async function showPaletteFor_messy(src, color, blendMode) {
 	mLinebreak(d);
 
 	//console.log(p3[0], p3[2], colorDistance(p3[0], p3[2]))
-	return [palette.map(x=>colorO(x)),palContrast];
+	return [palette.map(x => colorO(x)), palContrast];
 
 	// //showPaletteMini(d1, palette);
 	// let pal2 = [colorComplement(fill), colorComplement(dominant), 'white', 'silver', 'dimgray', 'black'];
@@ -4047,7 +4190,7 @@ async function showPaletteFor(src, color, blendMode) {
 async function calcUserPalette(name) {
 	if (nundef(name)) name = U.name;
 	let user = await getUser(name);
-	
+
 	let d = mPopup();
 	return await calcPalette(d, user.texture, user.color, user.blendMode);
 }
@@ -4143,7 +4286,7 @@ function colorDistanceHue_ai(color1, color2) {
 	let hsl2 = hexToHSL(color2);
 
 	// Calculate hue distance
-	let hueDiff = Math.abs(c1,hue - c2.hue);
+	let hueDiff = Math.abs(c1, hue - c2.hue);
 	let hueDistance = Math.min(hueDiff, 360 - hueDiff) / 180; // Normalize to [0, 1]
 
 	// Calculate lightness distance
@@ -4166,7 +4309,7 @@ async function calcPalette(dParent, src, color, blendMode) {
 	let palette = await getPaletteFromCanvas(ca.cv);
 	//palette.splice(8);
 	let dominant = palette[0];
-	
+
 	let opal = [];
 	for (let i = 0; i < palette.length; i++) {
 		let c = palette[i];
@@ -4244,7 +4387,7 @@ function uiTypeCheckListInput(lst, dParent, styles = {}, opts = {}) {
 //#endregion
 
 //#region 1.6.24: uiGadgetType und uiTypeCheckList mit resolve
-function uiGadgetTypeCheckList(dParent, content, resolve, styles={}, opts={}) {
+function uiGadgetTypeCheckList(dParent, content, resolve, styles = {}, opts = {}) {
 	addKeys({ bg: 'white', fg: 'black', padding: 10, rounding: 10, w100: true, box: true }, styles)
 	let dOuter = mDom(dParent, styles)
 	let dParent = mDom(dOuter, { hmax: 510, wmax: 200, pabottom: 10, box: true }); //,bg:'blue',fg:'contrast'});
@@ -4346,7 +4489,7 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 	return new Promise((resolve, _) => {
 		let [content, type] = [valf(opts.content, 'name'), valf(opts.type, 'text')]; //defaults
 		let dbody = document.body;
-		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog',id:'dDialog' });
+		let dDialog = mDom(dbody, { bg: '#00000040', box: true, w: '100vw', h: '100vh' }, { tag: 'dialog', id: 'dDialog' });
 
 		let d = mDom(dDialog);
 		let uiFunc = window[`uiGadgetType${capitalize(type)}`];
@@ -4357,42 +4500,42 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 function uiGadgetTypeSelect(dParent, content, resolve, styles = {}, opts = {}) {
 
 	//resolve('hallo'); mBy('dDialog').remove(); return;
-	let d=mDom(dParent);
+	let d = mDom(dParent);
 
-	let handler = (ev,selval)=>{
+	let handler = (ev, selval) => {
 		ev.preventDefault();
-		dParent.setAttribute('proceed',selval);
-		console.log('form',dParent)
+		dParent.setAttribute('proceed', selval);
+		console.log('form', dParent)
 		dParent.submit();
 	}
-	let select = uiTypeSelect(content,handler,d,styles,opts);
+	let select = uiTypeSelect(content, handler, d, styles, opts);
 	//mDom(form, { display: 'none' }, { tag: 'input', type: 'submit' });
 	//return () => form.getAttribute('proceed');
 
 	let rect = getRect(select);
-	mStyle(dParent,{bg:'red',padding:10, wmin:rect.w, hmin:(1+content.length)*25}); //,wmin:'100vw',hmin:'100vh'});
+	mStyle(dParent, { bg: 'red', padding: 10, wmin: rect.w, hmin: (1 + content.length) * 25 }); //,wmin:'100vw',hmin:'100vh'});
 
 
 	return () => dParent.getAttribute('proceed');
 }
 function uiTypeSelect(any, handler, form, styles = {}, opts = {}) {
 
-	let list=toNameValueList(any);
+	let list = toNameValueList(any);
 	//console.log(list); //return;
 
 	let d = form; // mDom(dParent, { overy: 'auto' }); //hier drin kommt das select elem
 	let id = getUID();
-	let dselect = mDom(d, {bg:'blue'}, { className: 'input', tag: 'select', id });
-	for(const el of list){
+	let dselect = mDom(d, { bg: 'blue' }, { className: 'input', tag: 'select', id });
+	for (const el of list) {
 		//console.log(el.name,el.value)
 		mDom(dselect, {}, { tag: 'option', html: el.name, value: el.value });
 	}
 	// dselect.onchange = ()=>isdef(opts.handler)??opts.handler(id); //ev=>console.log('changed',id,mBy(id).value);
 
-	if (nundef(handler)) handler = ()=>console.log(id,'value changed to',mBy(id).value)
+	if (nundef(handler)) handler = () => console.log(id, 'value changed to', mBy(id).value)
 
 
-	dselect.onchange = ev=>handler(ev,mBy(id).value)// ()=>{form.setAttribute('proceed',mBy(id).value)}; //;form.submit(); } //console.log('changed',id,mBy(id).value);
+	dselect.onchange = ev => handler(ev, mBy(id).value)// ()=>{form.setAttribute('proceed',mBy(id).value)}; //;form.submit(); } //console.log('changed',id,mBy(id).value);
 	return dselect;
 }
 //#endregion
@@ -4413,14 +4556,14 @@ async function mGather(dAnchor, styles = {}, opts = {}) {
 		let form = mDom(dialog, formStyles, { autocomplete: 'off', tag: 'form', method: 'dialog' });
 		dialog.addEventListener('mouseup', ev => {
 			if (opts.type != 'select' && isPointOutsideOf(form, ev.clientX, ev.clientY)) {
-				console.log('RESOLVE NULL POINTER OUTSIDE!!!',form, ev.clientX, ev.clientY)
+				console.log('RESOLVE NULL POINTER OUTSIDE!!!', form, ev.clientX, ev.clientY)
 				resolve(null);
 				dialog.remove();
 			}
 		});
 		dialog.addEventListener('keydown', ev => {
 			if (ev.key === 'Escape') {
-				dialog.remove(); 
+				dialog.remove();
 				console.log('RESOLVE NULL ESCAPE');
 				resolve(null);
 			}
@@ -4544,22 +4687,22 @@ console.log(`Base Color: ${baseColor}, Blend Color: ${blendColor}, Result Color:
 //#endregion
 
 //#region 27.mai 24
-function addColorDistance(c,palette){
-	let dist=10000,idx=0;
-	palette.forEach((c1,i)=>{
-		let distance = colorDistance(c,c1);
-		if (distance < dist){dist=distance;idx=i;}
+function addColorDistance(c, palette) {
+	let dist = 10000, idx = 0;
+	palette.forEach((c1, i) => {
+		let distance = colorDistance(c, c1);
+		if (distance < dist) { dist = distance; idx = i; }
 	});
-	return {dist,idx};
+	return { dist, idx };
 
 }
-function colorMostSimilar(c,palette){
-	let dist=10000,idx=0;
-	palette.forEach((c1,i)=>{
-		let distance = colorDistance(c,c1);
-		if (distance < dist){dist=distance;idx=i;}
+function colorMostSimilar(c, palette) {
+	let dist = 10000, idx = 0;
+	palette.forEach((c1, i) => {
+		let distance = colorDistance(c, c1);
+		if (distance < dist) { dist = distance; idx = i; }
 	});
-	return {dist,idx};
+	return { dist, idx };
 
 }
 //#endregion
@@ -4586,16 +4729,16 @@ function rgbToHsl(r, g, b) {
 	let h, s, l = (max + min) / 2;
 
 	if (max === min) {
-			h = s = 0; // achromatic
+		h = s = 0; // achromatic
 	} else {
-			let d = max - min;
-			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-			switch (max) {
-					case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-					case g: h = (b - r) / d + 2; break;
-					case b: h = (r - g) / d + 4; break;
-			}
-			h /= 6;
+		let d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+		h /= 6;
 	}
 	return [h * 360, s, l];
 }
@@ -4604,23 +4747,23 @@ function hslToRgb(h, s, l) {
 	let r, g, b;
 
 	if (s === 0) {
-			r = g = b = l; // achromatic
+		r = g = b = l; // achromatic
 	} else {
-			let hue2rgb = function(p, q, t) {
-					if (t < 0) t += 1;
-					if (t > 1) t -= 1;
-					if (t < 1 / 6) return p + (q - p) * 6 * t;
-					if (t < 1 / 2) return q;
-					if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-					return p;
-			};
+		let hue2rgb = function (p, q, t) {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		};
 
-			let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-			let p = 2 * l - q;
-			h /= 360;
-			r = hue2rgb(p, q, h + 1 / 3);
-			g = hue2rgb(p, q, h);
-			b = hue2rgb(p, q, h - 1 / 3);
+		let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		let p = 2 * l - q;
+		h /= 360;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
 	}
 
 	return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
@@ -4722,8 +4865,8 @@ function setTexture(item) {
 	// let bgSize = bgImage == ''? '':bgImage.includes('marble') || bgImage.includes('wall') ? 'cover' : '';
 	d.style.backgroundColor = valf(item.color, item.bg, '');
 	d.style.backgroundImage = bgImage;
-	d.style.backgroundSize = bgImage.includes('marble') || bgImage.includes('wall')? '100vw 100vh' : '';
-	d.style.backgroundRepeat = 'repeat'; 
+	d.style.backgroundSize = bgImage.includes('marble') || bgImage.includes('wall') ? '100vw 100vh' : '';
+	d.style.backgroundRepeat = 'repeat';
 	d.style.backgroundBlendMode = bgBlend;
 }
 async function updateUserTheme() {
@@ -4762,14 +4905,14 @@ async function showBlendModes() {
 	//let bgSizeItem = bgSize;
 	let list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
 	let items = [];
-	for (const bgBlend of list) { 
+	for (const bgBlend of list) {
 		//let item = await showBlendMode(dTheme, bg, bgImage, bgRepeat, bgSize, bgBlend); 
-		let item = await showBlendMode2(dTheme, bg, bgImage, bgRepeat, bgSize, bgBlend); 
-		items.push(item);	
+		let item = await showBlendMode2(dTheme, bg, bgImage, bgRepeat, bgSize, bgBlend);
+		items.push(item);
 	}
 	return items;
 }
-async function showBlendMode(dParent, bg, bgImage, bgRepeat, bgSize, bgBlend){
+async function showBlendMode(dParent, bg, bgImage, bgRepeat, bgSize, bgBlend) {
 	let d = mDom(dParent, { align: 'center', border: 'red', bgBlend, bg, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
 	mCenterCenterFlex(d);
 	let d1 = mDom(d, { className: 'no_events' })
@@ -4780,7 +4923,7 @@ async function showBlendMode(dParent, bg, bgImage, bgRepeat, bgSize, bgBlend){
 	return item;
 }
 async function showBlendModes() {
-	let d = mBy('dSettingsColor'); mClear(d); 
+	let d = mBy('dSettingsColor'); mClear(d);
 	let dTheme = mDom(d, { padding: 10, gap: 10 }); mFlexWrap(dTheme);
 	let bgImage = bgImageFromPath(U.texture);
 	let bg = U.color;
@@ -4850,7 +4993,7 @@ function showim(key, dParent, styles = {}, imgFit = 'fill', useSymbol = false) {
 	else if (isdef(o.img)) el = mDom(d1, { w: '100%', h: '100%', 'object-fit': imgFit, 'object-position': 'center center' }, { tag: 'img', src: `${o.img}` });
 	return el;
 }
-function restVonShowBlendMode(){
+function restVonShowBlendMode() {
 	let d = mDom(dParent, { align: 'center', border: 'red', bgBlend, bg, bgImage, bgRepeat, bgSize, w: '30%', h: 150 });
 	mCenterCenterFlex(d);
 	let d1 = mDom(d, { className: 'no_events' })
@@ -4864,575 +5007,575 @@ function restVonShowBlendMode(){
 
 //#region 22.mai 24: ai canvas blend-mode
 async function createBlendedCanvas(parentDiv, imageSrc) {
-  // Create a canvas element
-  const cv = document.createElement('canvas');
-  cv.width = 500;
-  cv.height = 500;
-  const ctx = cv.getContext('2d');
+	// Create a canvas element
+	const cv = document.createElement('canvas');
+	cv.width = 500;
+	cv.height = 500;
+	const ctx = cv.getContext('2d');
 
-  // Append the canvas to the parent div
-  parentDiv.appendChild(cv);
+	// Append the canvas to the parent div
+	parentDiv.appendChild(cv);
 
-  // Fill the canvas with blue
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(0, 0, cv.width, cv.height);
+	// Fill the canvas with blue
+	ctx.fillStyle = 'blue';
+	ctx.fillRect(0, 0, cv.width, cv.height);
 
-  // Load the image
-  const img = new Image();
-  img.src = imageSrc;
+	// Load the image
+	const img = new Image();
+	img.src = imageSrc;
 
-  // Return a promise that resolves when the image is loaded and drawn
-  return new Promise((resolve, reject) => {
-    img.onload = () => {
-      // Set the blend mode
-      ctx.globalCompositeOperation = 'multiply'; // Change to your desired blend mode
+	// Return a promise that resolves when the image is loaded and drawn
+	return new Promise((resolve, reject) => {
+		img.onload = () => {
+			// Set the blend mode
+			ctx.globalCompositeOperation = 'multiply'; // Change to your desired blend mode
 
-      // Draw the image on top of the blue background
-      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+			// Draw the image on top of the blue background
+			ctx.drawImage(img, 0, 0, cv.width, cv.height);
 
-      // Resolve the promise with the canvas
-      resolve(cv);
-    };
+			// Resolve the promise with the canvas
+			resolve(cv);
+		};
 
-    img.onerror = () => {
-      reject(new Error('Failed to load the image.'));
-    };
-  });
+		img.onerror = () => {
+			reject(new Error('Failed to load the image.'));
+		};
+	});
 }
 
 // Example usage
 window.onload = async () => {
-  const parentDiv = document.getElementById('parentDiv');
-  const imageSrc = 'your-image-url.jpg'; // Replace with your image URL
+	const parentDiv = document.getElementById('parentDiv');
+	const imageSrc = 'your-image-url.jpg'; // Replace with your image URL
 
-  try {
-    const canvas = await createBlendedCanvas(parentDiv, imageSrc);
-    console.log('Canvas created:', canvas);
-  } catch (error) {
-    console.error(error);
-  }
+	try {
+		const canvas = await createBlendedCanvas(parentDiv, imageSrc);
+		console.log('Canvas created:', canvas);
+	} catch (error) {
+		console.error(error);
+	}
 };
 //#endregion
 
 //#region 21.mai 24: voriges settings menu: colors, textures, blendmode samples
 async function getPaletteFromColorTextureBlend(color, texture, blend, dParent) {
-  let elem = mDom(dParent, { w: 100, h: 100, border: 'red', position: 'absolute', top: 100, left: 800 });
-  elem.style.backgroundColor = color;
-  if (isEmpty(texture)) return colorPalette(color);
-  elem.style.backgroundImage = texture.startsWith('url') ? texture : `url("${texture}")`;
-  elem.style.backgroundBlend = blend;
-  let [repeat, size] = getRepeatAndSizeForTexture(texture);
-  elem.style.backgroundRepeat = repeat;
-  elem.style.backgroundSize = size;
-  return getPaletteFromElem(elem);
+	let elem = mDom(dParent, { w: 100, h: 100, border: 'red', position: 'absolute', top: 100, left: 800 });
+	elem.style.backgroundColor = color;
+	if (isEmpty(texture)) return colorPalette(color);
+	elem.style.backgroundImage = texture.startsWith('url') ? texture : `url("${texture}")`;
+	elem.style.backgroundBlend = blend;
+	let [repeat, size] = getRepeatAndSizeForTexture(texture);
+	elem.style.backgroundRepeat = repeat;
+	elem.style.backgroundSize = size;
+	return getPaletteFromElem(elem);
 }
 function getRepeatAndSizeForTexture(t) {
-  if (isEmpty(t)) return ['', ''];
-  let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-  let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-  return [bgRepeat, bgSize];
+	if (isEmpty(t)) return ['', ''];
+	let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
+	let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
+	return [bgRepeat, bgSize];
 }
 async function onclickBlendSample(item, items) {
-  //console.log('CLICK!!!');//,item)
-  let texture = settingsGetSelectedTexture();
-  if (nundef(texture)) { console.log('please select a texture'); return; }
-  let bgBlend = item.bgBlend; //ev.target.style.backgroundImage;
-  let prev = settingsGetSelectedBlend();//console.log(prev)
-  if (prev != item) toggleItemSelection(prev);
-  toggleItemSelection(item);
-  if (item.isSelected) document.body.style.backgroundBlendMode = bgBlend;
+	//console.log('CLICK!!!');//,item)
+	let texture = settingsGetSelectedTexture();
+	if (nundef(texture)) { console.log('please select a texture'); return; }
+	let bgBlend = item.bgBlend; //ev.target.style.backgroundImage;
+	let prev = settingsGetSelectedBlend();//console.log(prev)
+	if (prev != item) toggleItemSelection(prev);
+	toggleItemSelection(item);
+	if (item.isSelected) document.body.style.backgroundBlendMode = bgBlend;
 
-  let color = settingsGetSelectedColor();
+	let color = settingsGetSelectedColor();
 
 }
 async function onclickColor(item, items) {
-  let c = item.color;//ev.target.style.background; 
-  toggleItemSelection(item);//console.log('items',items)
-  let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
-  //console.log('c',c,typeof(c),isEmpty(c))
-  if (!isEmpty(c)) c = colorHex(c);
-  //if (isEmpty(c)) { console.log('color EMPTY!', item); } //ev.target.style);}
-  for (const i of range(0, 9)) { mBy(`dSample${i}`).style.backgroundColor = c; }
-  document.body.style.backgroundColor = c;
-  // mBy('dPos').style.backgroundColor = c;
+	let c = item.color;//ev.target.style.background; 
+	toggleItemSelection(item);//console.log('items',items)
+	let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
+	//console.log('c',c,typeof(c),isEmpty(c))
+	if (!isEmpty(c)) c = colorHex(c);
+	//if (isEmpty(c)) { console.log('color EMPTY!', item); } //ev.target.style);}
+	for (const i of range(0, 9)) { mBy(`dSample${i}`).style.backgroundColor = c; }
+	document.body.style.backgroundColor = c;
+	// mBy('dPos').style.backgroundColor = c;
 }
 async function _onclickTexture(item, items) {
-  //console.log('item', item)
-  let texture = item.bgImage; //ev.target.style.backgroundImage;
-  let repeat = item.bgRepeat; //ev.target.style.backgroundRepeat;
-  let bgSize = item.bgSize; //repeat == 'repeat'?'auto':'cover';
-  let blend = item.bgBlend;
-  toggleItemSelection(item);
-  let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
-  //console.log('texture',texture,'repeat',repeat)
-  //if (isEmpty(texture)) { console.log('texture EMPTY!', item); } //ev.target.style);}
-  let blendDiv = null;
-  for (const i of range(0, 9)) {
-    let sample = mBy(`dSample${i}`);
-    //console.log(sample.style.backgroundBlend, blend)
-    if (sample.style.backgroundBlend == blend) { blendDiv = sample; break; }//console.log('YES!') }
-    sample.style.backgroundImage = texture;
-    sample.style.backgroundRepeat = repeat;
-    sample.style.backgroundSize = bgSize;
-  }
-  document.body.style.backgroundImage = texture;
-  document.body.style.backgroundRepeat = repeat;
-  document.body.style.backgroundSize = bgSize;
-  if (nundef(blendDiv)) return;
-  blendDiv.click();
+	//console.log('item', item)
+	let texture = item.bgImage; //ev.target.style.backgroundImage;
+	let repeat = item.bgRepeat; //ev.target.style.backgroundRepeat;
+	let bgSize = item.bgSize; //repeat == 'repeat'?'auto':'cover';
+	let blend = item.bgBlend;
+	toggleItemSelection(item);
+	let selitems = items.filter(x => x.isSelected && x != item); selitems.map(x => toggleItemSelection(x));
+	//console.log('texture',texture,'repeat',repeat)
+	//if (isEmpty(texture)) { console.log('texture EMPTY!', item); } //ev.target.style);}
+	let blendDiv = null;
+	for (const i of range(0, 9)) {
+		let sample = mBy(`dSample${i}`);
+		//console.log(sample.style.backgroundBlend, blend)
+		if (sample.style.backgroundBlend == blend) { blendDiv = sample; break; }//console.log('YES!') }
+		sample.style.backgroundImage = texture;
+		sample.style.backgroundRepeat = repeat;
+		sample.style.backgroundSize = bgSize;
+	}
+	document.body.style.backgroundImage = texture;
+	document.body.style.backgroundRepeat = repeat;
+	document.body.style.backgroundSize = bgSize;
+	if (nundef(blendDiv)) return;
+	blendDiv.click();
 
-  let palette = item.palette.map(x => x.hex); console.log(palette);
-  let d = mBy('dPalette');
-  mClear(d);
-  let szSmall = 30;
-  for (const c of palette) { mDom(d, { w: szSmall, h: szSmall, bg: c }) }
-  mLinebreak(d);
+	let palette = item.palette.map(x => x.hex); console.log(palette);
+	let d = mBy('dPalette');
+	mClear(d);
+	let szSmall = 30;
+	for (const c of palette) { mDom(d, { w: szSmall, h: szSmall, bg: c }) }
+	mLinebreak(d);
 
 }
 function selectUserColor(itemsColor) {
-  if (isEmpty(U.color)) U.color = rChoose(itemsColor);
-  console.log('user color is', U.color)
-  let c = colorHex(U.color);  //console.log(chex,itemsColor)
-  let item = itemsColor.find(x => x.color == c);  //console.log('item with same color',item);
-  console.log(c, item)
-  if (isdef(item)) iDiv(item).click();
-  return item.color;
+	if (isEmpty(U.color)) U.color = rChoose(itemsColor);
+	console.log('user color is', U.color)
+	let c = colorHex(U.color);  //console.log(chex,itemsColor)
+	let item = itemsColor.find(x => x.color == c);  //console.log('item with same color',item);
+	console.log(c, item)
+	if (isdef(item)) iDiv(item).click();
+	return item.color;
 }
 function selectUserTexture(itemsTexture) {
-  if (isEmpty(U.texture)) { console.log('no texture'); return ''; }
-  let item = itemsTexture.find(x => x.bgImage.includes(U.texture));
-  if (isdef(item)) iDiv(item).click();
-  return isdef(item) ? item.path : '';
+	if (isEmpty(U.texture)) { console.log('no texture'); return ''; }
+	let item = itemsTexture.find(x => x.bgImage.includes(U.texture));
+	if (isdef(item)) iDiv(item).click();
+	return isdef(item) ? item.path : '';
 }
 function selectUserBlend(itemsBlend) {
-  if (isEmpty(U.bgBlend)) { console.log('no blend'); return ''; }
-  let item = itemsBlend.find(x => x.bgBlend == U.bgBlend);
-  if (isdef(item)) iDiv(item).click();
-  return isdef(item) ? item.bgBlend : '';
+	if (isEmpty(U.bgBlend)) { console.log('no blend'); return ''; }
+	let item = itemsBlend.find(x => x.bgBlend == U.bgBlend);
+	if (isdef(item)) iDiv(item).click();
+	return isdef(item) ? item.bgBlend : '';
 }
 function settingsGetSelectedBlend() {
-  let item = DA.itemsBlend.find(x => x.isSelected == true);
-  return item;
+	let item = DA.itemsBlend.find(x => x.isSelected == true);
+	return item;
 }
 function settingsGetSelectedColor() {
-  let item = DA.itemsColor.find(x => x.isSelected == true);
-  return item;
+	let item = DA.itemsColor.find(x => x.isSelected == true);
+	return item;
 }
 function settingsGetSelectedTexture() {
-  let item = DA.itemsTexture.find(x => x.isSelected == true);
-  return item;
+	let item = DA.itemsTexture.find(x => x.isSelected == true);
+	return item;
 }
 async function settingsSave() {
-  let o = { name: U.name };
-  let item = settingsGetSelectedColor(); if (isdef(item)) o.color = item.color;
-  item = settingsGetSelectedTexture(); if (isdef(item)) o.texture = item.path;
-  item = settingsGetSelectedBlend(); if (isdef(item)) o.bgBlend = item.bgBlend;
+	let o = { name: U.name };
+	let item = settingsGetSelectedColor(); if (isdef(item)) o.color = item.color;
+	item = settingsGetSelectedTexture(); if (isdef(item)) o.texture = item.path;
+	item = settingsGetSelectedBlend(); if (isdef(item)) o.bgBlend = item.bgBlend;
 }
 async function _showColors() {
-  showTitle('Settings');
-  let [szSmall, szMiddle, wmax] = [30, 80, 34 * 15];
-  let dParent = mBy('dMain'); mClear(dParent);
+	showTitle('Settings');
+	let [szSmall, szMiddle, wmax] = [30, 80, 34 * 15];
+	let dParent = mBy('dMain'); mClear(dParent);
 
-  DA.itemsColor = showColorGrid(dParent, szSmall, wmax, onclickColor)
+	DA.itemsColor = showColorGrid(dParent, szSmall, wmax, onclickColor)
 
-  let dPalette = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dPalette' });
+	let dPalette = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dPalette' });
 
-  DA.itemsTexture = showTextureGrid(dParent, szSmall, wmax, onclickTexture);
+	DA.itemsTexture = showTextureGrid(dParent, szSmall, wmax, onclickTexture);
 
-  DA.itemsBlend = showBlendGrid(dParent, szMiddle, wmax, onclickBlendSample);
+	DA.itemsBlend = showBlendGrid(dParent, szMiddle, wmax, onclickBlendSample);
 
-  mButton('Apply', settingsApply, 'dMain', { fz: 24, maleft: 20 });
-  mButton('Save', settingsSave, 'dMain', { fz: 24, maleft: 20 });
+	mButton('Apply', settingsApply, 'dMain', { fz: 24, maleft: 20 });
+	mButton('Save', settingsSave, 'dMain', { fz: 24, maleft: 20 });
 
-  let color = selectUserColor(DA.itemsColor);
-  let pathTexture = selectUserTexture(DA.itemsTexture);
-  if (isEmpty(pathTexture)) return;
-  let blend = selectUserBlend(DA.itemsBlend);
+	let color = selectUserColor(DA.itemsColor);
+	let pathTexture = selectUserTexture(DA.itemsTexture);
+	if (isEmpty(pathTexture)) return;
+	let blend = selectUserBlend(DA.itemsBlend);
 }
 function showBlendGrid(dParent, sz, wmax, handler) {
-  let dBlend = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-  list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
-  let itemsBlend = DA.itemsBlend = [];
-  // console.log('list',list.length)
-  for (const [idx, mode] of list.entries()) {
-    let id = `dSample${idx}`;
-    let db = mDom(dBlend, { border: 'white', w: sz, h: sz, 'background-blend-mode': mode, cursor: 'pointer' }, { id, idx });
-    let item = { div: db, blend: mode, isSelected: false };
-    itemsBlend.push(item);
-    db.onclick = () => handler(item, itemsBlend);
-  }
-  return itemsBlend;
+	let dBlend = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
+	list = 'normal|multiply|screen|overlay|darken|lighten|color-dodge|saturation|color|luminosity'.split('|');
+	let itemsBlend = DA.itemsBlend = [];
+	// console.log('list',list.length)
+	for (const [idx, mode] of list.entries()) {
+		let id = `dSample${idx}`;
+		let db = mDom(dBlend, { border: 'white', w: sz, h: sz, 'background-blend-mode': mode, cursor: 'pointer' }, { id, idx });
+		let item = { div: db, blend: mode, isSelected: false };
+		itemsBlend.push(item);
+		db.onclick = () => handler(item, itemsBlend);
+	}
+	return itemsBlend;
 }
 function showColorGrid(dParent, sz, wmax, handler) {
-  let dColors = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dColors' });
-  let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
-  list = M.playerColors.concat(grays);
-  let items = [];
-  //console.log(BLUEGREEN)
-  for (const c of list) {
-    let dc = mDom(dColors, { w: sz, h: sz, bg: c, cursor: 'pointer' });
-    let item = { div: dc, color: c, isSelected: false };
-    //console.log('color',c,dc,item)
-    items.push(item);
-    dc.onclick = () => handler(item, items);
-  }
-  return items;
+	let dColors = mDom(dParent, { wmax, hmargin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true }, { id: 'dColors' });
+	let grays = []; for (const x of '0123456789abcde') { grays.push(`#${x}${x}${x}${x}${x}${x}`) };
+	list = M.playerColors.concat(grays);
+	let items = [];
+	//console.log(BLUEGREEN)
+	for (const c of list) {
+		let dc = mDom(dColors, { w: sz, h: sz, bg: c, cursor: 'pointer' });
+		let item = { div: dc, color: c, isSelected: false };
+		//console.log('color',c,dc,item)
+		items.push(item);
+		dc.onclick = () => handler(item, items);
+	}
+	return items;
 }
 function showTextureGrid(dParent, sz, wmax, handler) {
-  let dTheme = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
-  list = M.textures;
-  let itemsTexture = [];
-  for (const t of list) {
-    let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
-    let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-    let bgImage = `url('${t}')`;
-    let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
-    // let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
-    let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz }, { tag: 'img' });
-    let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blend: recommendedMode, isSelected: false };
-    itemsTexture.push(item);
-    dc.onclick = () => handler(item, itemsTexture);
-  }
-  for (const [i, o] of itemsTexture.entries()) {
-    let img = iDiv(o);
-    img.onload = () => {
-      let pal = ColorThiefObject.getPalette(img);
-      if (pal == null) {
-        //mach eine transparency palette!
-        pal = colorTransPalette();
+	let dTheme = mDom(dParent, { wmax, margin: 20, hpadding: 0, display: 'flex', gap: '2px 4px', wrap: true });
+	list = M.textures;
+	let itemsTexture = [];
+	for (const t of list) {
+		let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
+		let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
+		let bgImage = `url('${t}')`;
+		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
+		// let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz, 'background-image': bgImage, 'background-blend-mode': recommendedMode });
+		let dc = mDom(dTheme, { cursor: 'pointer', border: 'black', w: sz, h: sz }, { tag: 'img' });
+		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, blend: recommendedMode, isSelected: false };
+		itemsTexture.push(item);
+		dc.onclick = () => handler(item, itemsTexture);
+	}
+	for (const [i, o] of itemsTexture.entries()) {
+		let img = iDiv(o);
+		img.onload = () => {
+			let pal = ColorThiefObject.getPalette(img);
+			if (pal == null) {
+				//mach eine transparency palette!
+				pal = colorTransPalette();
 
-      }
-      if (pal != null) {
-        pal.unshift('white'); pal.push('black');
-        let n = pal.length;
-        pal = pal.map(x => colorHex(x)); // console.log(pal)
-        let palhex = Array.from(new Set(pal));// console.log(palhex)
-        let palhsl = palhex.map(x => colorHexToHsl360Object(x));
-        let lum = palhsl.map(x => x.l);
-        let hue = palhsl.map(x => x.h);
-        let sat = palhsl.map(x => x.s);
-        pal = [];
-        for (let i = 0; i < palhex.length; i++) {
-          let o = { hex: palhex[i], lum: lum[i], hue: hue[i], sat: sat[i] };
-          pal.push(o);
-        }
-        //if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
-      }
+			}
+			if (pal != null) {
+				pal.unshift('white'); pal.push('black');
+				let n = pal.length;
+				pal = pal.map(x => colorHex(x)); // console.log(pal)
+				let palhex = Array.from(new Set(pal));// console.log(palhex)
+				let palhsl = palhex.map(x => colorHexToHsl360Object(x));
+				let lum = palhsl.map(x => x.l);
+				let hue = palhsl.map(x => x.h);
+				let sat = palhsl.map(x => x.s);
+				pal = [];
+				for (let i = 0; i < palhex.length; i++) {
+					let o = { hex: palhex[i], lum: lum[i], hue: hue[i], sat: sat[i] };
+					pal.push(o);
+				}
+				//if (n!=pal.length) console.log('reduce from',n,'to',pal.length)
+			}
 
-      itemsTexture[i].palette = pal;
-    }
-    img.src = o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
+			itemsTexture[i].palette = pal;
+		}
+		img.src = o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
 
-  }
-  return itemsTexture;
+	}
+	return itemsTexture;
 }
 function settingsApply() {
-  console.log('apply settings');
-  let color = settingsGetSelectedColor();
-  let texture = settingsGetSelectedTexture();
-  let blend = settingsGetSelectedBlend();
-  _setColors(color, texture, blend);
+	console.log('apply settings');
+	let color = settingsGetSelectedColor();
+	let texture = settingsGetSelectedTexture();
+	let blend = settingsGetSelectedBlend();
+	_setColors(color, texture, blend);
 }
 function extractUrlFromBlendMode(blend) {
-  let parts = blend.split('.');
-  console.log('parts', parts);
+	let parts = blend.split('.');
+	console.log('parts', parts);
 }
 function _setColors(c, texture, blend) {
-  // mClass(document.body, 'wood');
-  if (nundef(c)) {
-    //pickup document.body style
-    c = document.body.style.background;
-    texture = document.body.style.backgroundImage;
-    blend = document.body.style.backgroundBlendMode;
-  }
-  if (isEmpty(c)) c = 'transparent';
-  if (nundef(texture)) texture = '';
-  if (nundef(blend)) blend = '';
-  let [bgRepeat, bgSize] = getRepeatAndSizeForTexture(texture);
+	// mClass(document.body, 'wood');
+	if (nundef(c)) {
+		//pickup document.body style
+		c = document.body.style.background;
+		texture = document.body.style.backgroundImage;
+		blend = document.body.style.backgroundBlendMode;
+	}
+	if (isEmpty(c)) c = 'transparent';
+	if (nundef(texture)) texture = '';
+	if (nundef(blend)) blend = '';
+	let [bgRepeat, bgSize] = getRepeatAndSizeForTexture(texture);
 }
 
 //#endregion
 
 //#region 21.mai 24 unused legacy code: isolate and eliminate
 function colorHSL(cAny, asObject = false) {
-  let res = colorFrom(cAny, undefined, true);
-  let shsl = res;
-  if (res[0] == '#') {
-    if (res.length == 9) {
-      shsl = hexAToHSLA(res);
-    } else if (res.length == 7) {
-      shsl = hexToHSL(res);
-    }
-  } else if (res[0] == 'r') {
-    if (res[3] == 'a') {
-      shsl = RGBAToHSLA(res);
-    } else {
-      shsl = RGBToHSL(res);
-    }
-  }
-  let n = allNumbers(shsl);
-  if (asObject) {
-    return { h: n[0] / 360, s: n[1] / 100, l: n[2] / 100, a: n.length > 3 ? n[3] : 1 };
-  } else {
-    return shsl;
-  }
+	let res = colorFrom(cAny, undefined, true);
+	let shsl = res;
+	if (res[0] == '#') {
+		if (res.length == 9) {
+			shsl = hexAToHSLA(res);
+		} else if (res.length == 7) {
+			shsl = hexToHSL(res);
+		}
+	} else if (res[0] == 'r') {
+		if (res[3] == 'a') {
+			shsl = RGBAToHSLA(res);
+		} else {
+			shsl = RGBToHSL(res);
+		}
+	}
+	let n = allNumbers(shsl);
+	if (asObject) {
+		return { h: n[0] / 360, s: n[1] / 100, l: n[2] / 100, a: n.length > 3 ? n[3] : 1 };
+	} else {
+		return shsl;
+	}
 }
 function colorLum(cAny, percent = false) {
-  let hsl = colorHSL(cAny, true);
-  return percent ? hsl.l * 100 : hsl.l;
+	let hsl = colorHSL(cAny, true);
+	return percent ? hsl.l * 100 : hsl.l;
 }
 function hexAToHSLA(H) {
-  let ex = /^#([\da-f]{4}){1,2}$/i;
-  if (ex.test(H)) {
-    let r = 0,
-      g = 0,
-      b = 0,
-      a = 1;
-    if (H.length == 5) {
-      r = '0x' + H[1] + H[1];
-      g = '0x' + H[2] + H[2];
-      b = '0x' + H[3] + H[3];
-      a = '0x' + H[4] + H[4];
-    } else if (H.length == 9) {
-      r = '0x' + H[1] + H[2];
-      g = '0x' + H[3] + H[4];
-      b = '0x' + H[5] + H[6];
-      a = '0x' + H[7] + H[8];
-    }
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    let cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    a = (a / 255).toFixed(3);
-    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
-  } else {
-    return 'Invalid input color';
-  }
+	let ex = /^#([\da-f]{4}){1,2}$/i;
+	if (ex.test(H)) {
+		let r = 0,
+			g = 0,
+			b = 0,
+			a = 1;
+		if (H.length == 5) {
+			r = '0x' + H[1] + H[1];
+			g = '0x' + H[2] + H[2];
+			b = '0x' + H[3] + H[3];
+			a = '0x' + H[4] + H[4];
+		} else if (H.length == 9) {
+			r = '0x' + H[1] + H[2];
+			g = '0x' + H[3] + H[4];
+			b = '0x' + H[5] + H[6];
+			a = '0x' + H[7] + H[8];
+		}
+		r /= 255;
+		g /= 255;
+		b /= 255;
+		let cmin = Math.min(r, g, b),
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
+		if (delta == 0) h = 0;
+		else if (cmax == r) h = ((g - b) / delta) % 6;
+		else if (cmax == g) h = (b - r) / delta + 2;
+		else h = (r - g) / delta + 4;
+		h = Math.round(h * 60);
+		if (h < 0) h += 360;
+		l = (cmax + cmin) / 2;
+		s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+		a = (a / 255).toFixed(3);
+		return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+	} else {
+		return 'Invalid input color';
+	}
 }
 function hexToHSL(H) {
-  let ex = /^#([\da-f]{3}){1,2}$/i;
-  if (ex.test(H)) {
-    let r = 0,
-      g = 0,
-      b = 0;
-    if (H.length == 4) {
-      r = '0x' + H[1] + H[1];
-      g = '0x' + H[2] + H[2];
-      b = '0x' + H[3] + H[3];
-    } else if (H.length == 7) {
-      r = '0x' + H[1] + H[2];
-      g = '0x' + H[3] + H[4];
-      b = '0x' + H[5] + H[6];
-    }
-    r /= 255;
-    g /= 255;
-    b /= 255;
-    let cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
-  } else {
-    return 'Invalid input color';
-  }
+	let ex = /^#([\da-f]{3}){1,2}$/i;
+	if (ex.test(H)) {
+		let r = 0,
+			g = 0,
+			b = 0;
+		if (H.length == 4) {
+			r = '0x' + H[1] + H[1];
+			g = '0x' + H[2] + H[2];
+			b = '0x' + H[3] + H[3];
+		} else if (H.length == 7) {
+			r = '0x' + H[1] + H[2];
+			g = '0x' + H[3] + H[4];
+			b = '0x' + H[5] + H[6];
+		}
+		r /= 255;
+		g /= 255;
+		b /= 255;
+		let cmin = Math.min(r, g, b),
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
+		if (delta == 0) h = 0;
+		else if (cmax == r) h = ((g - b) / delta) % 6;
+		else if (cmax == g) h = (b - r) / delta + 2;
+		else h = (r - g) / delta + 4;
+		h = Math.round(h * 60);
+		if (h < 0) h += 360;
+		l = (cmax + cmin) / 2;
+		s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+		return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+	} else {
+		return 'Invalid input color';
+	}
 }
 function hex2RgbObject(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    }
-    : null;
+	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+	return result
+		? {
+			r: parseInt(result[1], 16),
+			g: parseInt(result[2], 16),
+			b: parseInt(result[3], 16)
+		}
+		: null;
 }
 function HSLAToRGBA(hsla, isPct) {
-  let ex = /^hsla\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)(((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2},\s?)|((\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}\s\/\s))((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
-  if (ex.test(hsla)) {
-    let sep = hsla.indexOf(',') > -1 ? ',' : ' ';
-    hsla = hsla
-      .substr(5)
-      .split(')')[0]
-      .split(sep);
-    if (hsla.indexOf('/') > -1) hsla.splice(3, 1);
-    isPct = isPct === true;
-    let h = hsla[0],
-      s = hsla[1].substr(0, hsla[1].length - 1) / 100,
-      l = hsla[2].substr(0, hsla[2].length - 1) / 100,
-      a = hsla[3];
-    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
-    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
-    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
-    if (h >= 360) h %= 360;
-    let c = (1 - Math.abs(2 * l - 1)) * s,
-      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
-      m = l - c / 2,
-      r = 0,
-      g = 0,
-      b = 0;
-    if (0 <= h && h < 60) {
-      r = c;
-      g = x;
-      b = 0;
-    } else if (60 <= h && h < 120) {
-      r = x;
-      g = c;
-      b = 0;
-    } else if (120 <= h && h < 180) {
-      r = 0;
-      g = c;
-      b = x;
-    } else if (180 <= h && h < 240) {
-      r = 0;
-      g = x;
-      b = c;
-    } else if (240 <= h && h < 300) {
-      r = x;
-      g = 0;
-      b = c;
-    } else if (300 <= h && h < 360) {
-      r = c;
-      g = 0;
-      b = x;
-    }
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    b = Math.round((b + m) * 255);
-    let pctFound = a.indexOf('%') > -1;
-    if (isPct) {
-      r = +((r / 255) * 100).toFixed(1);
-      g = +((g / 255) * 100).toFixed(1);
-      b = +((b / 255) * 100).toFixed(1);
-      if (!pctFound) {
-        a *= 100;
-      } else {
-        a = a.substr(0, a.length - 1);
-      }
-    } else if (pctFound) {
-      a = a.substr(0, a.length - 1) / 100;
-    }
-    return 'rgba(' + (isPct ? r + '%,' + g + '%,' + b + '%,' + a + '%' : +r + ',' + +g + ',' + +b + ',' + +a) + ')';
-  } else {
-    return 'Invalid input color';
-  }
+	let ex = /^hsla\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)(((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2},\s?)|((\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}\s\/\s))((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+	if (ex.test(hsla)) {
+		let sep = hsla.indexOf(',') > -1 ? ',' : ' ';
+		hsla = hsla
+			.substr(5)
+			.split(')')[0]
+			.split(sep);
+		if (hsla.indexOf('/') > -1) hsla.splice(3, 1);
+		isPct = isPct === true;
+		let h = hsla[0],
+			s = hsla[1].substr(0, hsla[1].length - 1) / 100,
+			l = hsla[2].substr(0, hsla[2].length - 1) / 100,
+			a = hsla[3];
+		if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
+		else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
+		else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
+		if (h >= 360) h %= 360;
+		let c = (1 - Math.abs(2 * l - 1)) * s,
+			x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+			m = l - c / 2,
+			r = 0,
+			g = 0,
+			b = 0;
+		if (0 <= h && h < 60) {
+			r = c;
+			g = x;
+			b = 0;
+		} else if (60 <= h && h < 120) {
+			r = x;
+			g = c;
+			b = 0;
+		} else if (120 <= h && h < 180) {
+			r = 0;
+			g = c;
+			b = x;
+		} else if (180 <= h && h < 240) {
+			r = 0;
+			g = x;
+			b = c;
+		} else if (240 <= h && h < 300) {
+			r = x;
+			g = 0;
+			b = c;
+		} else if (300 <= h && h < 360) {
+			r = c;
+			g = 0;
+			b = x;
+		}
+		r = Math.round((r + m) * 255);
+		g = Math.round((g + m) * 255);
+		b = Math.round((b + m) * 255);
+		let pctFound = a.indexOf('%') > -1;
+		if (isPct) {
+			r = +((r / 255) * 100).toFixed(1);
+			g = +((g / 255) * 100).toFixed(1);
+			b = +((b / 255) * 100).toFixed(1);
+			if (!pctFound) {
+				a *= 100;
+			} else {
+				a = a.substr(0, a.length - 1);
+			}
+		} else if (pctFound) {
+			a = a.substr(0, a.length - 1) / 100;
+		}
+		return 'rgba(' + (isPct ? r + '%,' + g + '%,' + b + '%,' + a + '%' : +r + ',' + +g + ',' + +b + ',' + +a) + ')';
+	} else {
+		return 'Invalid input color';
+	}
 }
 function hslToHex(h, s, l, alpha) {
-  //expects h:0..360, s,l 0..100%, alpha 0..1
-  l /= 100;
-  const a = s * Math.min(l, 1 - l) / 100;
-  const f = n => {
-    const k = (n + h / 30) % 12;
-    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color).toString(16).padStart(2, '0');
-  };
-  return `#${f(0)}${f(8)}${f(4)}` + (isdef(alpha) ? alphaToHex(alpha) : '');
+	//expects h:0..360, s,l 0..100%, alpha 0..1
+	l /= 100;
+	const a = s * Math.min(l, 1 - l) / 100;
+	const f = n => {
+		const k = (n + h / 30) % 12;
+		const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+		return Math.round(255 * color).toString(16).padStart(2, '0');
+	};
+	return `#${f(0)}${f(8)}${f(4)}` + (isdef(alpha) ? alphaToHex(alpha) : '');
 }
 function hslToHexCOOL(hslColor) {
-  const hslColorCopy = { ...hslColor };
-  hslColorCopy.l /= 100;
-  const a =
-    (hslColorCopy.s * Math.min(hslColorCopy.l, 1 - hslColorCopy.l)) / 100;
-  const f = (n) => {
-    const k = (n + hslColorCopy.h / 30) % 12;
-    const color = hslColorCopy.l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
-    return Math.round(255 * color)
-      .toString(16)
-      .padStart(2, "0");
-  };
-  return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
+	const hslColorCopy = { ...hslColor };
+	hslColorCopy.l /= 100;
+	const a =
+		(hslColorCopy.s * Math.min(hslColorCopy.l, 1 - hslColorCopy.l)) / 100;
+	const f = (n) => {
+		const k = (n + hslColorCopy.h / 30) % 12;
+		const color = hslColorCopy.l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+		return Math.round(255 * color)
+			.toString(16)
+			.padStart(2, "0");
+	};
+	return `#${f(0)}${f(8)}${f(4)}`.toUpperCase();
 }
 function HSLToRGB(hsl, isPct) {
-  let ex = /^hsl\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}|(\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2})\)$/i;
-  if (ex.test(hsl)) {
-    let sep = hsl.indexOf(',') > -1 ? ',' : ' ';
-    hsl = hsl
-      .substr(4)
-      .split(')')[0]
-      .split(sep);
-    isPct = isPct === true;
-    let h = hsl[0],
-      s = hsl[1].substr(0, hsl[1].length - 1) / 100,
-      l = hsl[2].substr(0, hsl[2].length - 1) / 100;
-    if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
-    else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
-    else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
-    if (h >= 360) h %= 360;
-    let c = (1 - Math.abs(2 * l - 1)) * s,
-      x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
-      m = l - c / 2,
-      r = 0,
-      g = 0,
-      b = 0;
-    if (0 <= h && h < 60) {
-      r = c;
-      g = x;
-      b = 0;
-    } else if (60 <= h && h < 120) {
-      r = x;
-      g = c;
-      b = 0;
-    } else if (120 <= h && h < 180) {
-      r = 0;
-      g = c;
-      b = x;
-    } else if (180 <= h && h < 240) {
-      r = 0;
-      g = x;
-      b = c;
-    } else if (240 <= h && h < 300) {
-      r = x;
-      g = 0;
-      b = c;
-    } else if (300 <= h && h < 360) {
-      r = c;
-      g = 0;
-      b = x;
-    }
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    b = Math.round((b + m) * 255);
-    if (isPct) {
-      r = +((r / 255) * 100).toFixed(1);
-      g = +((g / 255) * 100).toFixed(1);
-      b = +((b / 255) * 100).toFixed(1);
-    }
-    return 'rgb(' + (isPct ? r + '%,' + g + '%,' + b + '%' : +r + ',' + +g + ',' + +b) + ')';
-  } else {
-    return 'Invalid input color';
-  }
+	let ex = /^hsl\(((((([12]?[1-9]?\d)|[12]0\d|(3[0-5]\d))(\.\d+)?)|(\.\d+))(deg)?|(0|0?\.\d+)turn|(([0-6](\.\d+)?)|(\.\d+))rad)((,\s?(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2}|(\s(([1-9]?\d(\.\d+)?)|100|(\.\d+))%){2})\)$/i;
+	if (ex.test(hsl)) {
+		let sep = hsl.indexOf(',') > -1 ? ',' : ' ';
+		hsl = hsl
+			.substr(4)
+			.split(')')[0]
+			.split(sep);
+		isPct = isPct === true;
+		let h = hsl[0],
+			s = hsl[1].substr(0, hsl[1].length - 1) / 100,
+			l = hsl[2].substr(0, hsl[2].length - 1) / 100;
+		if (h.indexOf('deg') > -1) h = h.substr(0, h.length - 3);
+		else if (h.indexOf('rad') > -1) h = Math.round((h.substr(0, h.length - 3) / (2 * Math.PI)) * 360);
+		else if (h.indexOf('turn') > -1) h = Math.round(h.substr(0, h.length - 4) * 360);
+		if (h >= 360) h %= 360;
+		let c = (1 - Math.abs(2 * l - 1)) * s,
+			x = c * (1 - Math.abs(((h / 60) % 2) - 1)),
+			m = l - c / 2,
+			r = 0,
+			g = 0,
+			b = 0;
+		if (0 <= h && h < 60) {
+			r = c;
+			g = x;
+			b = 0;
+		} else if (60 <= h && h < 120) {
+			r = x;
+			g = c;
+			b = 0;
+		} else if (120 <= h && h < 180) {
+			r = 0;
+			g = c;
+			b = x;
+		} else if (180 <= h && h < 240) {
+			r = 0;
+			g = x;
+			b = c;
+		} else if (240 <= h && h < 300) {
+			r = x;
+			g = 0;
+			b = c;
+		} else if (300 <= h && h < 360) {
+			r = c;
+			g = 0;
+			b = x;
+		}
+		r = Math.round((r + m) * 255);
+		g = Math.round((g + m) * 255);
+		b = Math.round((b + m) * 255);
+		if (isPct) {
+			r = +((r / 255) * 100).toFixed(1);
+			g = +((g / 255) * 100).toFixed(1);
+			b = +((b / 255) * 100).toFixed(1);
+		}
+		return 'rgb(' + (isPct ? r + '%,' + g + '%,' + b + '%' : +r + ',' + +g + ',' + +b) + ')';
+	} else {
+		return 'Invalid input color';
+	}
 }
 function hue(h) {
-  var r = Math.abs(h * 6 - 3) - 1;
-  var g = 2 - Math.abs(h * 6 - 2);
-  var b = 2 - Math.abs(h * 6 - 4);
-  return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
+	var r = Math.abs(h * 6 - 3) - 1;
+	var g = 2 - Math.abs(h * 6 - 2);
+	var b = 2 - Math.abs(h * 6 - 4);
+	return [Math.floor(r * 255), Math.floor(g * 255), Math.floor(b * 255)];
 }
 function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
 	if (bg.substring(0, 1) != '#') bg = colorNameToHexString(bg);
@@ -5446,83 +5589,83 @@ function idealTextColor(bg, grayPreferred = false, nThreshold = 105) {
 	return foreColor;
 }
 function RGBAToHSLA(rgba) {
-  let ex = /^rgba\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){3}))|(((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){3}))\/\s)((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
-  if (ex.test(rgba)) {
-    let sep = rgba.indexOf(',') > -1 ? ',' : ' ';
-    rgba = rgba
-      .substr(5)
-      .split(')')[0]
-      .split(sep);
-    if (rgba.indexOf('/') > -1) rgba.splice(3, 1);
-    for (let R in rgba) {
-      let r = rgba[R];
-      if (r.indexOf('%') > -1) {
-        let p = r.substr(0, r.length - 1) / 100;
-        if (R < 3) {
-          rgba[R] = Math.round(p * 255);
-        }
-      }
-    }
-    let r = rgba[0] / 255,
-      g = rgba[1] / 255,
-      b = rgba[2] / 255,
-      a = rgba[3],
-      cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
-  } else {
-    return 'Invalid input color';
-  }
+	let ex = /^rgba\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){3}))|(((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s){3})|(((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){3}))\/\s)((0?\.\d+)|[01]|(([1-9]?\d(\.\d+)?)|100|(\.\d+))%)\)$/i;
+	if (ex.test(rgba)) {
+		let sep = rgba.indexOf(',') > -1 ? ',' : ' ';
+		rgba = rgba
+			.substr(5)
+			.split(')')[0]
+			.split(sep);
+		if (rgba.indexOf('/') > -1) rgba.splice(3, 1);
+		for (let R in rgba) {
+			let r = rgba[R];
+			if (r.indexOf('%') > -1) {
+				let p = r.substr(0, r.length - 1) / 100;
+				if (R < 3) {
+					rgba[R] = Math.round(p * 255);
+				}
+			}
+		}
+		let r = rgba[0] / 255,
+			g = rgba[1] / 255,
+			b = rgba[2] / 255,
+			a = rgba[3],
+			cmin = Math.min(r, g, b),
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
+		if (delta == 0) h = 0;
+		else if (cmax == r) h = ((g - b) / delta) % 6;
+		else if (cmax == g) h = (b - r) / delta + 2;
+		else h = (r - g) / delta + 4;
+		h = Math.round(h * 60);
+		if (h < 0) h += 360;
+		l = (cmax + cmin) / 2;
+		s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+		return 'hsla(' + h + ',' + s + '%,' + l + '%,' + a + ')';
+	} else {
+		return 'Invalid input color';
+	}
 }
 function RGBToHSL(rgb) {
-  let ex = /^rgb\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){2}|((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s)){2})((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]))|((((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){2}|((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){2})(([1-9]?\d(\.\d+)?)|100|(\.\d+))%))\)$/i;
-  if (ex.test(rgb)) {
-    let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
-    rgb = rgb
-      .substr(4)
-      .split(')')[0]
-      .split(sep);
-    for (let R in rgb) {
-      let r = rgb[R];
-      if (r.indexOf('%') > -1) rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
-    }
-    let r = rgb[0] / 255,
-      g = rgb[1] / 255,
-      b = rgb[2] / 255,
-      cmin = Math.min(r, g, b),
-      cmax = Math.max(r, g, b),
-      delta = cmax - cmin,
-      h = 0,
-      s = 0,
-      l = 0;
-    if (delta == 0) h = 0;
-    else if (cmax == r) h = ((g - b) / delta) % 6;
-    else if (cmax == g) h = (b - r) / delta + 2;
-    else h = (r - g) / delta + 4;
-    h = Math.round(h * 60);
-    if (h < 0) h += 360;
-    l = (cmax + cmin) / 2;
-    s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-    s = +(s * 100).toFixed(1);
-    l = +(l * 100).toFixed(1);
-    return 'hsl(' + h + ',' + s + '%,' + l + '%)';
-  } else {
-    return 'Invalid input color';
-  }
+	let ex = /^rgb\((((((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]),\s?)){2}|((((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5])\s)){2})((1?[1-9]?\d)|10\d|(2[0-4]\d)|25[0-5]))|((((([1-9]?\d(\.\d+)?)|100|(\.\d+))%,\s?){2}|((([1-9]?\d(\.\d+)?)|100|(\.\d+))%\s){2})(([1-9]?\d(\.\d+)?)|100|(\.\d+))%))\)$/i;
+	if (ex.test(rgb)) {
+		let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
+		rgb = rgb
+			.substr(4)
+			.split(')')[0]
+			.split(sep);
+		for (let R in rgb) {
+			let r = rgb[R];
+			if (r.indexOf('%') > -1) rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
+		}
+		let r = rgb[0] / 255,
+			g = rgb[1] / 255,
+			b = rgb[2] / 255,
+			cmin = Math.min(r, g, b),
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
+		if (delta == 0) h = 0;
+		else if (cmax == r) h = ((g - b) / delta) % 6;
+		else if (cmax == g) h = (b - r) / delta + 2;
+		else h = (r - g) / delta + 4;
+		h = Math.round(h * 60);
+		if (h < 0) h += 360;
+		l = (cmax + cmin) / 2;
+		s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+		s = +(s * 100).toFixed(1);
+		l = +(l * 100).toFixed(1);
+		return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+	} else {
+		return 'Invalid input color';
+	}
 }
 
 function bestContrastingColor(color, colorlist = ['white', 'black']) {
@@ -5540,64 +5683,64 @@ function bestContrastingColor(color, colorlist = ['white', 'black']) {
 }
 
 function colorFromHSL(hue, sat = 100, lum = 50) {
-  return hslToHex(valf(hue, rHue()), sat, lum);
+	return hslToHex(valf(hue, rHue()), sat, lum);
 }
 function colorHex(cAny) {
-  let c = colorFrom(cAny);
-  if (c[0] == '#') {
-    return c;
-  } else {
-    let res = pSBC(0, c, 'c');
-    return res;
-  }
+	let c = colorFrom(cAny);
+	if (c[0] == '#') {
+		return c;
+	} else {
+		let res = pSBC(0, c, 'c');
+		return res;
+	}
 }
 function colorHexToRgb(hex) {
-  hex = hex.replace(/^#/, '');
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
+	hex = hex.replace(/^#/, '');
+	const bigint = parseInt(hex, 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = bigint & 255;
+	return { r, g, b };
 }
 function colorHSLBuild(hue, sat = 100, lum = 50) { let result = "hsl(" + hue + ',' + sat + '%,' + lum + '%)'; return result; }
 function colorNameToHexString(str) {
-  var ctx = document.createElement('canvas').getContext('2d');
-  ctx.fillStyle = str;
-  return ctx.fillStyle;
+	var ctx = document.createElement('canvas').getContext('2d');
+	ctx.fillStyle = str;
+	return ctx.fillStyle;
 }
 function colorRGB(cAny, asObject = false) {
-  let res = colorFrom(cAny);
-  let srgb = res;
-  if (res[0] == '#') {
-    srgb = pSBC(0, res, 'c');
-  }
-  let n = allNumbers(srgb);
-  if (asObject) {
-    return { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 };
-  } else {
-    return srgb;
-  }
+	let res = colorFrom(cAny);
+	let srgb = res;
+	if (res[0] == '#') {
+		srgb = pSBC(0, res, 'c');
+	}
+	let n = allNumbers(srgb);
+	if (asObject) {
+		return { r: n[0], g: n[1], b: n[2], a: n.length > 3 ? n[3] : 1 };
+	} else {
+		return srgb;
+	}
 }
 function _colorLight(c, percent = 20, log = true) {
-  if (nundef(c)) {
-    return colorFromHSL(rHue(), 100, 85);
-  } else c = colorFrom(c);
-  let zero1 = percent / 100;
-  return pSBC(zero1, c, undefined, !log);
+	if (nundef(c)) {
+		return colorFromHSL(rHue(), 100, 85);
+	} else c = colorFrom(c);
+	let zero1 = percent / 100;
+	return pSBC(zero1, c, undefined, !log);
 }
 function colorLighter(c, zero1 = .2, log = true) {
-  c = colorFrom(c);
-  return pSBC(zero1, c, undefined, !log);
+	c = colorFrom(c);
+	return pSBC(zero1, c, undefined, !log);
 }
 function computeColor(c) { return (c == 'random') ? randomColor() : c; }
 function getExtendedColors(bg, fg) {
-  bg = computeColor(bg);
-  fg = computeColor(fg);
-  if (bg == 'inherit' && (nundef(fg) || fg == 'contrast')) {
-    fg = 'inherit';
-  } else if (fg == 'contrast' && isdef(bg) && bg != 'inherit') fg = colorIdealText(bg);
-  else if (bg == 'contrast' && isdef(fg) && fg != 'inherit') { bg = colorIdealText(fg); }
-  return [bg, fg];
+	bg = computeColor(bg);
+	fg = computeColor(fg);
+	if (bg == 'inherit' && (nundef(fg) || fg == 'contrast')) {
+		fg = 'inherit';
+	} else if (fg == 'contrast' && isdef(bg) && bg != 'inherit') fg = colorIdealText(bg);
+	else if (bg == 'contrast' && isdef(fg) && fg != 'inherit') { bg = colorIdealText(fg); }
+	return [bg, fg];
 }
 function mStyleX(elem, styles, unit = 'px') {
 	const paramDict = {
@@ -5672,77 +5815,77 @@ function geht(sp) {
 }
 
 function expandHexShorthand(c) {
-  // Check if the input is a valid shorthand hex code
-  if (c.length === 4 && c[0] === '#') {
-    // Expand each character to double
-    let r = c[1];
-    let g = c[2];
-    let b = c[3];
+	// Check if the input is a valid shorthand hex code
+	if (c.length === 4 && c[0] === '#') {
+		// Expand each character to double
+		let r = c[1];
+		let g = c[2];
+		let b = c[3];
 
-    return `#${r}${r}${g}${g}${b}${b}`;
-  } else {
-    // Return the original input if it's not a valid shorthand hex code
-    return c;
-  }
+		return `#${r}${r}${g}${g}${b}${b}`;
+	} else {
+		// Return the original input if it's not a valid shorthand hex code
+		return c;
+	}
 }
 //#endregion
 
 //#region 21.mai 24 todo old showTable
 async function ____showTable(table) {
-  if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
-  let func = DA.funcs[table.game];
-  let me = getUname();
+	if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
+	let func = DA.funcs[table.game];
+	let me = getUname();
 
-  menuCloseHome(); //INTERRUPT();
+	menuCloseHome(); //INTERRUPT();
 
-  if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-  else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
+	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
+	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
-  Clientdata.table = table; //console.log(table);
-  TPrev = T; T = { table, me };
+	Clientdata.table = table; //console.log(table);
+	TPrev = T; T = { table, me };
 
-  let d = T.dMain = mBy('dMain');//mClass(d,'wood')
-  let dInstruction = T.dInstruction = mDom(d, { className: 'instruction' }, { html: `Waiting for ${table.fen.turn.join(', ')}` });
-  mCenterFlex(dInstruction);
-  // let dTitle=T.dTitle=mDom(d,{fz:'2em',weight:'bold',padding:'10'},{html:table.friendly,classes:'title'});
-  let dTitle = T.dTitle = mDom(d, {}, { html: table.friendly });
-  let dGameover = T.dGameover = mDom(d);
-  let dStats = T.dStats = mDom('dMain');
-  let dOpenTable = T.dOpenTable = mDom(d);
-  // showRibbon(d,"this is the game!")
-  //showMessage('HALLO this is a message');
-  let dt = testUpdateTestButtons(dTitle); mStyle(dt, { matop: 4 });
+	let d = T.dMain = mBy('dMain');//mClass(d,'wood')
+	let dInstruction = T.dInstruction = mDom(d, { className: 'instruction' }, { html: `Waiting for ${table.fen.turn.join(', ')}` });
+	mCenterFlex(dInstruction);
+	// let dTitle=T.dTitle=mDom(d,{fz:'2em',weight:'bold',padding:'10'},{html:table.friendly,classes:'title'});
+	let dTitle = T.dTitle = mDom(d, {}, { html: table.friendly });
+	let dGameover = T.dGameover = mDom(d);
+	let dStats = T.dStats = mDom('dMain');
+	let dOpenTable = T.dOpenTable = mDom(d);
+	// showRibbon(d,"this is the game!")
+	//showMessage('HALLO this is a message');
+	let dt = testUpdateTestButtons(dTitle); mStyle(dt, { matop: 4 });
 
-  func.present(T);
-  func.showStats(T);
-  mRise(d);
+	func.present(T);
+	func.showStats(T);
+	mRise(d);
 
 
 }
 async function ___showTable_rest(table) {
-  //showTitle(`${table.friendly}`);
-  mStyle('dTitle', { display: 'flex', justify: 'space-between' })
-  mDom('dTitle', { fz: '2em', weight: 'bold', maleft: 10, display: 'inline' }, { html: table.friendly, classes: 'title' });
-  let dOver = mDom('dMain', {}, { id: 'dGameover' })
+	//showTitle(`${table.friendly}`);
+	mStyle('dTitle', { display: 'flex', justify: 'space-between' })
+	mDom('dTitle', { fz: '2em', weight: 'bold', maleft: 10, display: 'inline' }, { html: table.friendly, classes: 'title' });
+	let dOver = mDom('dMain', {}, { id: 'dGameover' })
 
 
 
-  T = func.present('dMain', table, me); //console.log('TPrev',TPrev,'T',T);
-  func.showStats(T);
-  mRise('dMain');
+	T = func.present('dMain', table, me); //console.log('TPrev',TPrev,'T',T);
+	func.showStats(T);
+	mRise('dMain');
 
-  if (TESTING) testUpdateTestButtons();
+	if (TESTING) testUpdateTestButtons();
 
-  if (table.status == 'over') return showGameover(table, dOver);
-  else if (func.checkGameover(table)) return await sendMergeTable(table);
+	if (table.status == 'over') return showGameover(table, dOver);
+	else if (func.checkGameover(table)) return await sendMergeTable(table);
 
-  if (!table.fen.turn.includes(me)) { staticTitle(table); return; }
+	if (!table.fen.turn.includes(me)) { staticTitle(table); return; }
 
-  animatedTitle();
+	animatedTitle();
 
-  let playmode = getPlaymode(table, me);
-  if (playmode == 'bot') return await func.botMove(T);
-  else return await func.activate(T);
+	let playmode = getPlaymode(table, me);
+	if (playmode == 'bot') return await func.botMove(T);
+	else return await func.activate(T);
 }
 //#endregion 
 
@@ -5964,10 +6107,10 @@ async function setOnclickNoSet(items, direct = false) {
 	let res = await sendMergeTable({ id: table.id, name: me, olist });
 }
 async function setPresent(dParent, table) {
-	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' }; 
+	const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' };
 	setLoadPatterns('dPage', colors);
 	mClear(dParent);
-	let d = mDom(dParent, { margin: 10 }); 
+	let d = mDom(dParent, { margin: 10 });
 	[dOben, dOpenTable, dMiddle, dRechts] = tableLayoutMR(d);
 	let [fen, playerNames, players, turn] = [table.fen, table.playerNames, table.players, table.turn];
 	let cards = fen.cards;
@@ -6031,7 +6174,7 @@ async function showTable(id) {
 	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
 
 	//let tableSize = calcHeightLeftUnder('dExtra') - 40; //height visible in browser
-	d = mDom('dMain'); mCenterFlex(d); 
+	d = mDom('dMain'); mCenterFlex(d);
 
 	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
 
@@ -6073,30 +6216,30 @@ function setgame() {
 
 		let skip = false;
 
-		if (isdef(move.noset)){
-			if (move.noset == 'correct'){
+		if (isdef(move.noset)) {
+			if (move.noset == 'correct') {
 				players[name].score += 1;
 				let newCards = deckDeal(fen.deck, 1); //add 1 cards!
-				if (!isEmpty(newCards))	fen.cards.push(newCards[0]);
+				if (!isEmpty(newCards)) fen.cards.push(newCards[0]);
 				DA.pendingChanges = [['players', name, 'score'], ['fen']];
-			}else{
+			} else {
 				//console.log('INCORRECT NOSET!!!!');
 				players[name].score -= 1;
 				DA.pendingChanges = [['players', name, 'score']];
 			}
-		}else{
+		} else {
 			let isSet = setCheckIfSet(move);
 			if (isSet) {
 				players[name].score += 1;
-	
+
 				//calc how to replace cards from set
 				let toomany = Math.max(0, fen.cards.length - table.options.numCards);
 				let need = Math.max(0, 3 - toomany);
 				let newCards = deckDeal(fen.deck, need);
 				for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, move[i], newCards[i]); else removeInPlace(fen.cards, move[i]);
-	
+
 				DA.pendingChanges = [['players', name, 'score'], ['fen']];
-			}else{
+			} else {
 				//console.log('INCORRECT SET!!!!');
 				players[name].score -= 1;
 				DA.pendingChanges = [['players', name, 'score']];
@@ -6104,7 +6247,7 @@ function setgame() {
 		}
 
 		// ***TODO*** nicht ganz correct hier!!!
-		if (isEmpty(fen.deck)){
+		if (isEmpty(fen.deck)) {
 			table.winners = getPlayersWithMaxScore(table);
 			table.status = 'over';
 			table.turn = [];
@@ -6128,7 +6271,7 @@ function setgame() {
 		}
 
 		let oset = setFindOneSet(items);
-		console.log('set',oset?oset.keys:'NO SET'); 
+		console.log('set', oset ? oset.keys : 'NO SET');
 		//if (oset)	console.log('set',oset.keys); else console.log('NO')
 
 		return items;
@@ -6157,8 +6300,8 @@ function setgame() {
 		//show no set button
 		let dParent = mBy('dTable').parentNode;
 		mIfNotRelative(dParent);
-		let bNoSet = mButton('No Set',()=>onclickNoSet(table,items),dParent,{className:'button'});
-		mPos(bNoSet,window.innerWidth/2+180,110);
+		let bNoSet = mButton('No Set', () => onclickNoSet(table, items), dParent, { className: 'button' });
+		mPos(bNoSet, window.innerWidth / 2 + 180, 110);
 
 		if (amIHuman(table)) return;
 
@@ -6237,7 +6380,7 @@ function setgame() {
 					assertion(items[x] != items[y], `WTF!?!?!?! ${items[x].key} ${items[y].key}`)
 					let list = [items[x], items[y], items[z]];
 					let keys = list.map(x => x.key);
-					if (setCheckIfSet(keys)) return{items:list,keys};
+					if (setCheckIfSet(keys)) return { items: list, keys };
 				}
 			}
 		}
@@ -6291,7 +6434,7 @@ function setgame() {
 			let res = await mPostRoute('olist', o); //console.log(res);
 		}
 	}
-	async function onclickNoSet(table,items){
+	async function onclickNoSet(table, items) {
 		console.log('was nun?');
 		clearEvents();
 		mShield('dTable', { bg: 'transparent' });
@@ -6300,7 +6443,7 @@ function setgame() {
 
 		let id = table.id;
 		let name = getUname();
-		let move = oset?{noset:'wrong',keys:oset.keys}:{noset:'correct'};
+		let move = oset ? { noset: 'wrong', keys: oset.keys } : { noset: 'correct' };
 		let step = table.step;
 		let olist = [{ keys: ['pending'], val: { name, move } },];
 		if (isdef(DA.pendingChanges)) {
@@ -6314,7 +6457,7 @@ function setgame() {
 		let res = await mPostRoute('olist', o); //console.log(res);
 	}
 
-//#endregion
+	//#endregion
 
 	return { setup, resolvePending, present, stats, activate };
 }
@@ -6330,7 +6473,7 @@ async function showTable(id) {
 	let func = DA.funcs[table.game];
 
 	if (table.status == 'started' && isdef(table.pending)) {
-		let skip = func.resolvePending(table); console.log('skip',skip); // deterministic!!! (table.pending)
+		let skip = func.resolvePending(table); console.log('skip', skip); // deterministic!!! (table.pending)
 		if (table.status == 'over') { mPostRoute('postTable', table); return; }
 		else if (skip && isdef(mBy('dTable'))) return;
 	}
@@ -6340,7 +6483,7 @@ async function showTable(id) {
 	let d = mBy('dExtraLeft'); d.innerHTML = `<h2>${table.friendly} (${table.step})</h2>`; // title
 
 	//let tableSize = calcHeightLeftUnder('dExtra') - 40; //height visible in browser
-	d = mDom('dMain'); mCenterFlex(d); 
+	d = mDom('dMain'); mCenterFlex(d);
 
 	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
 
@@ -6367,21 +6510,21 @@ function resolvePending(table) {
 
 	let skip = false;
 
-	if (isdef(move.noset)){
-		if (move.noset == 'correct'){
+	if (isdef(move.noset)) {
+		if (move.noset == 'correct') {
 			players[name].score += 1;
 			let newCards = deckDeal(fen.deck, 1); //add 1 cards!
-			if (!isEmpty(newCards))	fen.cards.push(newCards[0]);
+			if (!isEmpty(newCards)) fen.cards.push(newCards[0]);
 			DA.pendingChanges = [['players', name, 'score'], ['fen']];
-		}else{
+		} else {
 			console.log('INCORRECT NOSET!!!!');
 			players[name].score -= 1;
 			DA.pendingChanges = [['players', name, 'score']];
 			skip = name != getUname();
-			modifyStat(name,'score',players[name].score); //mach ui changes gleich und skip
+			modifyStat(name, 'score', players[name].score); //mach ui changes gleich und skip
 
 		}
-	}else{
+	} else {
 		let isSet = setCheckIfSet(move);
 		if (isSet) {
 			players[name].score += 1;
@@ -6393,18 +6536,18 @@ function resolvePending(table) {
 			for (let i = 0; i < 3; i++) if (i < newCards.length) arrReplace1(fen.cards, move[i], newCards[i]); else removeInPlace(fen.cards, move[i]);
 
 			DA.pendingChanges = [['players', name, 'score'], ['fen']];
-		}else{
+		} else {
 			console.log('HALLO!!!!');
 			DA.pendingChanges = [['players', name, 'score']];
 			skip = name != getUname();
-			modifyStat(name,'score',players[name].score); //mach ui changes gleich und skip
-			
+			modifyStat(name, 'score', players[name].score); //mach ui changes gleich und skip
+
 		}
 	}
 
 
 	// ***TODO*** nicht ganz correct hier!!!
-	if (isEmpty(fen.deck)){
+	if (isEmpty(fen.deck)) {
 		table.winners = getPlayersWithMaxScore(table);
 		table.status = 'over';
 		table.turn = [];
@@ -6415,13 +6558,13 @@ function resolvePending(table) {
 //#endregion
 
 //#region 18.mai 24
-async function showThemeEditor(){
+async function showThemeEditor() {
 	let d = mBy('dSettingsColor'); mClear(d);
-  let sam=mDom(d,{margin:20,w:'80vw',h:'80vh',bg:'white'});
-  let dnav=mDom(sam,{h:'20%',bg:'orange'});
-  let drest=mDom(sam,{h:'80%'});
-  let [dside,dmain]=mColFlex(drest,[1,5],['blue','green']);
-  let [bg,bgImage,bgSize,bgBlend,bgRepeat,fg]=[U.bg,U.bgImage,U.bgSize,U.bgBlend,U.bgRepeat,U.fg];
+	let sam = mDom(d, { margin: 20, w: '80vw', h: '80vh', bg: 'white' });
+	let dnav = mDom(sam, { h: '20%', bg: 'orange' });
+	let drest = mDom(sam, { h: '80%' });
+	let [dside, dmain] = mColFlex(drest, [1, 5], ['blue', 'green']);
+	let [bg, bgImage, bgSize, bgBlend, bgRepeat, fg] = [U.bg, U.bgImage, U.bgSize, U.bgBlend, U.bgRepeat, U.fg];
 }
 function __animate(elem, aniclass, timeoutms) {
 	mClass(elem, aniclass);
@@ -6542,27 +6685,27 @@ async function saveAndUpdatePlayerOptions(allPl, gamename) {
 
 	if (nundef(poss)) return;
 
-	let opts={};
-	for (const p in poss) { 
-		allPl[p] = getRadioValue(p); 
+	let opts = {};
+	for (const p in poss) {
+		allPl[p] = getRadioValue(p);
 		if (p == 'playmode') continue;
-		opts[p] =  allPl[p];
+		opts[p] = allPl[p];
 	}
 
 	let id = 'dPlayerOptions'; mRemoveIfExists(id); //dont need UI anymore
 
-	let oldOpts = valf(getUserOptionsForGame(name,gamename),{});
+	let oldOpts = valf(getUserOptionsForGame(name, gamename), {});
 
 	let changed = false;
-	for(const p in poss){
+	for (const p in poss) {
 		if (p == 'playmode') continue;
-		if (oldOpts[p]!=opts[p]) {changed = true; break;}
+		if (oldOpts[p] != opts[p]) { changed = true; break; }
 	}
 
 	if (changed) {
-		let games = valf(Serverdata.users[name].games,{});
+		let games = valf(Serverdata.users[name].games, {});
 		games[gamename] = opts;
-		await postUserChange({name,games})
+		await postUserChange({ name, games })
 	}
 }
 function createGamePlayer(name, gamename, opts = {}) {
@@ -6587,7 +6730,7 @@ async function collectPlayerOptions(allPl, gamename) {
 	let options = allPl.options;
 	let poss = Serverdata.config.games[gamename].ploptions;
 
-	console.log('___collectPlayerOptions',name,'\npl.options',jsCopy(allPl.options),'\nposs',jsCopy(poss))
+	console.log('___collectPlayerOptions', name, '\npl.options', jsCopy(allPl.options), '\nposs', jsCopy(poss))
 
 	if (nundef(poss)) return options;
 	for (const p in poss) {
@@ -6601,14 +6744,14 @@ async function collectPlayerOptions(allPl, gamename) {
 		if (['div', 'isSelected', 'playmode', 'options'].includes(k)) continue;
 		unew[k] = jsCopy(allPl[k]);
 	}
-	lookupSetOverride(unew,['games',gamename],options);
+	lookupSetOverride(unew, ['games', gamename], options);
 	for (const k in unew.options) {
 		if (k == 'playmode') continue;
-		if (lookup(uold, ['games',gamename, k]) != lookup(unew, ['games',gamename, k])) {
+		if (lookup(uold, ['games', gamename, k]) != lookup(unew, ['games', gamename, k])) {
 			let res = await postUserChange(unew);
-			let o=DA.allPlayers[name];
+			let o = DA.allPlayers[name];
 			copyKeys(res, o);
-			o.options = lookup(res,['games',gamename]);
+			o.options = lookup(res, ['games', gamename]);
 			delete o.games;
 			delete o.options.playmode;
 			DA.allPlayers[name] = o;
@@ -6667,18 +6810,18 @@ async function setPlayerPlaying(item, gamename) {
 async function showGamePlayers(dParent, users) {
 	let me = getUname();
 	mStyle(dParent, { wrap: true });
-	let userlist = ['amanda','felix','mimi'];
-	for(const name in users) addIf(userlist,name);
+	let userlist = ['amanda', 'felix', 'mimi'];
+	for (const name in users) addIf(userlist, name);
 	for (const name of userlist) {
 		let d = mDom(dParent, { align: 'center', padding: 2, cursor: 'pointer', border: `transparent` });
 		d.setAttribute('username', name)
 		let img = showUserImage(name, d, 40);
 		let label = mDom(d, { matop: -4, fz: 12, hline: 12 }, { html: name });
-		let item = jsCopy(users[name]); 
+		let item = jsCopy(users[name]);
 
-		
+
 		delete item.games;
-		let options = valf(lookup(users,[name,'games',DA.gamename]),{});
+		let options = valf(lookup(users, [name, 'games', DA.gamename]), {});
 		item.options = jsCopy(options);
 		item.div = d;
 		item.isSelected = false;
@@ -6701,7 +6844,7 @@ function createOpenTable(gamename, players, options) {
 			if (k == gamename) { addKeys(pl[gamename], o); }
 			else if (!['div', 'isSelected'].includes(k)) o[k] = pl[k];
 		}
-		pdict[name]=o;
+		pdict[name] = o;
 	}
 	assertion(playerNames[0] == me, `_addTable: owner should be ${me} and first in ${playerNames.join(',')}`);
 
@@ -6814,7 +6957,7 @@ function button96() {
 		if (amIHuman(table)) return;
 
 		//bot move activation
-		TO.bot = setInterval(async () => { 
+		TO.bot = setInterval(async () => {
 			//console.log('BOT!!!',table.step);
 			let list = sortBy(items, x => x.feno); //console.log(list);
 			let item = list[0]; //rChoose(items);
@@ -6839,7 +6982,7 @@ function button96() {
 		let olist = [
 			{ keys: ['pending'], val: { name, move } },
 		];
-		if (isdef(DA.pendingChanges)){
+		if (isdef(DA.pendingChanges)) {
 			for (const klist of DA.pendingChanges) {
 				olist.push({ keys: klist, val: lookup(table, klist) });
 			}
@@ -6867,7 +7010,7 @@ function checkInterrupt(items) {
 //#endregion
 
 //#region 17.mai 24
-async function switchToUser(uname,menu) {
+async function switchToUser(uname, menu) {
 	if (!isEmpty(uname)) uname = normalizeString(uname);
 	if (isEmpty(uname)) uname = 'guest';
 	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
@@ -6875,20 +7018,20 @@ async function switchToUser(uname,menu) {
 	localStorage.setItem('username', uname);
 	iDiv(UI.user).innerHTML = uname;
 	setTheme(U);
-	menu = valf(menu,Clientdata.curMenu,localStorage.getItem('menu'),'home');
-  switchToMainMenu(menu);
+	menu = valf(menu, Clientdata.curMenu, localStorage.getItem('menu'), 'home');
+	switchToMainMenu(menu);
 	if (menu == 'table') {
-		assertion(Clientdata.table,"Table menu without table!!!!!!!")
+		assertion(Clientdata.table, "Table menu without table!!!!!!!")
 		showTable(Clientdata.table.id);
-	}	else await switchToMainMenu(menu);
+	} else await switchToMainMenu(menu);
 }
 function closeApps() {
 	if (isdef(DA.calendar)) { closePopup(); delete DA.calendar; }
 	mClear('dMain');
 	mClear(dTitle);
 }
-function subscribeAsSpectator(id,name){
-  mPostRoute('spectate',{id,name})
+function subscribeAsSpectator(id, name) {
+	mPostRoute('spectate', { id, name })
 }
 async function onclickCard(table, item) {
 	//console.log('click!!!')
@@ -6898,33 +7041,33 @@ async function onclickCard(table, item) {
 
 	let d = iDiv(item);
 	let ms = 500;
-	mClass(d, 'framedPicture'); TO.hallo = setTimeout(()=>mClassRemove(d,'framedPicture'),ms);
-	try{await mSleep(ms);}catch(err){console.log("ERR",err); return;}
+	mClass(d, 'framedPicture'); TO.hallo = setTimeout(() => mClassRemove(d, 'framedPicture'), ms);
+	try { await mSleep(ms); } catch (err) { console.log("ERR", err); return; }
 
-	try{
+	try {
 		let best = arrMinMax(fen.cards).min;
 		if (card == best) {
-			mShield('dTable',{bg:'transparent'});
+			mShield('dTable', { bg: 'transparent' });
 			let name = getUname();
 			let move = card;
 			table.pending = { name, move };
 			//console.log('sending',table)
-			let res = await mPostRoute('move', table); 
-			console.log('res',res)
+			let res = await mPostRoute('move', table);
+			console.log('res', res)
 			//if (isString(res) && res.includes('INVALID')) console.log('...from server:', res)
-		} else { 
+		} else {
 			//console.log('fehler!');
 			//was soll bei einem fehler passieren?
 			//was wenn es ein bot war?
 		}
-	}catch(err){
-		console.log(`wie bitte???!!!!!!!!!!!!!!!!!!`,err);
+	} catch (err) {
+		console.log(`wie bitte???!!!!!!!!!!!!!!!!!!`, err);
 		if (isdef(TO.SLEEPTIMEOUT)) {
 			clearTimeout(TO.SLEEPTIMEOUT);
-			console.log('after clearTimeout',TO.SLEEPTIMEOUT);
+			console.log('after clearTimeout', TO.SLEEPTIMEOUT);
 		}
 	}
-	
+
 
 }
 var MergeCount = 0;
@@ -7070,8 +7213,8 @@ app.post('/move', (req, res) => { //send complete table! emits to all players!
 });
 app.post('/spectate', (req, res) => { //emits id turn to everyone, fuer den anfang von einer table!
 	let id = req.body.id;
-	let name = req.body.name; 
-	console.log('SPECTATE!!!',name)
+	let name = req.body.name;
+	console.log('SPECTATE!!!', name)
 	//lookupAddIfToList(Spectators,[id],name); console.log('Spectators',Spectators)
 });
 
@@ -7079,60 +7222,60 @@ app.post('/spectate', (req, res) => { //emits id turn to everyone, fuer den anfa
 
 //#region CancelablePromise take 1
 class CancelablePromise {
-  constructor(executor) {
-    this._hasCanceled = false;
-    this.promise = new Promise((resolve, reject) => {
-      this._reject = reject; // Store reject function to call it on cancel
+	constructor(executor) {
+		this._hasCanceled = false;
+		this.promise = new Promise((resolve, reject) => {
+			this._reject = reject; // Store reject function to call it on cancel
 
-      executor(
-        (value) => {
-          if (this._hasCanceled) {
-            reject({ isCanceled: true });
-          } else {
-            resolve(value);
-          }
-        },
-        (error) => {
-          if (this._hasCanceled) {
-            reject({ isCanceled: true });
-          } else {
-            reject(error);
-          }
-        }
-      );
-    });
-  }
+			executor(
+				(value) => {
+					if (this._hasCanceled) {
+						reject({ isCanceled: true });
+					} else {
+						resolve(value);
+					}
+				},
+				(error) => {
+					if (this._hasCanceled) {
+						reject({ isCanceled: true });
+					} else {
+						reject(error);
+					}
+				}
+			);
+		});
+	}
 
-  cancel() {
-    this._hasCanceled = true;
-    this._reject({ isCanceled: true }); // Immediately reject with cancelation
-  }
+	cancel() {
+		this._hasCanceled = true;
+		this._reject({ isCanceled: true }); // Immediately reject with cancelation
+	}
 }
 
 async function mySleep(ms) {
-  return new CancelablePromise((resolve) => {
-    const timeoutId = setTimeout(resolve, ms);
-    // Clean up timeout if canceled
-    this.promise.catch((err) => {
-      if (err.isCanceled) {
-        clearTimeout(timeoutId);
-      }
-    });
-  });
+	return new CancelablePromise((resolve) => {
+		const timeoutId = setTimeout(resolve, ms);
+		// Clean up timeout if canceled
+		this.promise.catch((err) => {
+			if (err.isCanceled) {
+				clearTimeout(timeoutId);
+			}
+		});
+	});
 }
 
 // Usage example:
 const sleep = mySleep(5000);
 
 sleep.promise
-  .then(() => console.log('Completed'))
-  .catch((err) => {
-    if (err.isCanceled) {
-      console.log('Sleep was canceled');
-    } else {
-      console.error('Error:', err);
-    }
-  });
+	.then(() => console.log('Completed'))
+	.catch((err) => {
+		if (err.isCanceled) {
+			console.log('Sleep was canceled');
+		} else {
+			console.error('Error:', err);
+		}
+	});
 
 // To cancel the sleep
 setTimeout(() => sleep.cancel(), 2000); // Cancels the sleep after 2 seconds
@@ -7140,48 +7283,48 @@ setTimeout(() => sleep.cancel(), 2000); // Cancels the sleep after 2 seconds
 
 //#region CancelablePromise take 0
 class CancelablePromise {
-  constructor(executor) {
-    this._hasCanceled = false;
+	constructor(executor) {
+		this._hasCanceled = false;
 
-    this.promise = new Promise((resolve, reject) => {
-      executor(
-        (value) => {
-          if (this._hasCanceled) {
-            reject({ isCanceled: true });
-          } else {
-            resolve(value);
-          }
-        },
-        (error) => {
-          if (this._hasCanceled) {
-            reject({ isCanceled: true });
-          } else {
-            reject(error);
-          }
-        }
-      );
-    });
-  }
+		this.promise = new Promise((resolve, reject) => {
+			executor(
+				(value) => {
+					if (this._hasCanceled) {
+						reject({ isCanceled: true });
+					} else {
+						resolve(value);
+					}
+				},
+				(error) => {
+					if (this._hasCanceled) {
+						reject({ isCanceled: true });
+					} else {
+						reject(error);
+					}
+				}
+			);
+		});
+	}
 
-  cancel() {
-    this._hasCanceled = true;
-  }
+	cancel() {
+		this._hasCanceled = true;
+	}
 }
 
 // Usage example
 const cancelablePromise = new CancelablePromise((resolve, reject) => {
-  setTimeout(() => resolve('Promise resolved'), 3000);
+	setTimeout(() => resolve('Promise resolved'), 3000);
 });
 
 cancelablePromise.promise
-  .then((value) => console.log(value))
-  .catch((error) => {
-    if (error.isCanceled) {
-      console.log('Promise was canceled');
-    } else {
-      console.error('Promise error:', error);
-    }
-  });
+	.then((value) => console.log(value))
+	.catch((error) => {
+		if (error.isCanceled) {
+			console.log('Promise was canceled');
+		} else {
+			console.error('Promise error:', error);
+		}
+	});
 
 // To cancel the promise
 cancelablePromise.cancel();
@@ -7199,31 +7342,31 @@ function button96() {
 			let pl = fen.players[name] = table.players[name];
 			let opts = pl.options;
 			delete pl.options;
-			addKeys(opts,pl)
+			addKeys(opts, pl)
 			//pl.color = getUserColor(name)
 			pl.score = 0;
 		}
 		fen.cards = [1, 2, 3];
-		fen.deck = range(4,100); //[4, 5, 6, 7, 8, 9, 10];
+		fen.deck = range(4, 100); //[4, 5, 6, 7, 8, 9, 10];
 		fen.plorder = jsCopy(table.playerNames);
 		fen.turn = jsCopy(table.playerNames);
 		return fen;
 	}
-	function resolvePending(table){
-		let [fen,players] = [table.fen,table.fen.players];
+	function resolvePending(table) {
+		let [fen, players] = [table.fen, table.fen.players];
 		let pending = table.pending; delete table.pending;
-		let [name,move] = [pending.name,pending.move];
+		let [name, move] = [pending.name, pending.move];
 		//console.log(name,move,fen.cards,fen.deck);
-		removeInPlace(fen.cards,move);
-		let cardlist = deckDeal(fen.deck,1); //console.log('new card(s)',cardlist);
-		if (!isEmpty(cardlist))	fen.cards.push(cardlist[0]);
+		removeInPlace(fen.cards, move);
+		let cardlist = deckDeal(fen.deck, 1); //console.log('new card(s)',cardlist);
+		if (!isEmpty(cardlist)) fen.cards.push(cardlist[0]);
 		players[name].score += 1;
 		//table.step+=1;
 	}
 	function present(table) {
 		//console.log(table)
 		let [fen, players] = [table.fen, table.fen.players];
-		console.log('players',players)
+		console.log('players', players)
 		let d = mDom('dTable', { gap: 10, padding: 10 }); mCenterFlex(d);
 		let items = [];
 		for (const card of fen.cards) {
@@ -7258,33 +7401,33 @@ function button96() {
 		//html = 'was ist da eigentlich los???'
 		//mDom('dInstruction',{className:'instruction',},{html})
 		let dinst = mBy('dInstruction'); mClear(dinst);
-		let style={	display: 'flex','justify-content': 'center','align-items': 'center'};
-		if (isMyTurn(fen)) style.maleft=-30;
-		 mDom(dinst,style,{html})
+		let style = { display: 'flex', 'justify-content': 'center', 'align-items': 'center' };
+		if (isMyTurn(fen)) style.maleft = -30;
+		mDom(dinst, style, { html })
 
 		for (const item of items) {
 			let d = iDiv(item);
 			mStyle(d, { cursor: 'pointer' });
-			d.onclick = ev=>onclickCard(table,item);
+			d.onclick = ev => onclickCard(table, item);
 		}
 	}
-	
-	async function onclickCard(table,item) {
+
+	async function onclickCard(table, item) {
 		//was soll denn jetzt passieren?
-		let [fen,players] = [table.fen,table.fen.players];
+		let [fen, players] = [table.fen, table.fen.players];
 		let card = item.feno;
 		let best = arrMinMax(fen.cards).min;
-		if (card == best){
+		if (card == best) {
 			mShield('dTable');
 			let name = getUname();
 			let move = card;
-			table.pending = {name,move};
+			table.pending = { name, move };
 			//console.log('sending',table)
-			let res = await mPostRoute(`move`, table); console.log('from server:',res)
+			let res = await mPostRoute(`move`, table); console.log('from server:', res)
 			//this should be the correct click!
 			//sendmove to server;
 			//if move is valid, 
-		}else{console.log('fehler!')}
+		} else { console.log('fehler!') }
 
 
 	}
@@ -7295,13 +7438,13 @@ function button96() {
 app.post('muell', (req, res) => {
 	let step = req.body.table.step;
 
-	let tnew=req.body;
+	let tnew = req.body;
 	let id = tnew.id;
-	let table =  lookup(Session, ['tables', id]);
+	let table = lookup(Session, ['tables', id]);
 	if (!table) { io.emit('tables', getTablesInfo()); return; } //as if deleted
-	assertion(table.status == 'started',`ERROR: ${table.status} (condTable only valid for table with status started)`)
+	assertion(table.status == 'started', `ERROR: ${table.status} (condTable only valid for table with status started)`)
 	let expected = diTableStep[id];
-	if (nundef(expected)) diTableStep[id]=expected=0;
+	if (nundef(expected)) diTableStep[id] = expected = 0;
 	//if (table.step != )
 });
 
@@ -7312,32 +7455,32 @@ app.post('/muell', (req, res) => {
 	if (nundef(id)) return res.json("ERRROR! no id provided for raceTable!")
 	let tnew = req.body.table;
 	let olist = req.body.olist;
-	let table =  lookup(Session, ['tables', id]);
-	if (!assertion(table,`table ${id} does NOT exist`)) {res.json('ASSERTION ERROR'); return;}
+	let table = lookup(Session, ['tables', id]);
+	if (!assertion(table, `table ${id} does NOT exist`)) { res.json('ASSERTION ERROR'); return; }
 
-	let step = valf(req.body.step,table.step); 
-	let errors = valf(req.body.errors,0); 
-	
+	let step = valf(req.body.step, table.step);
+	let errors = valf(req.body.errors, 0);
+
 	let tcopy = jsCopy(table); //erstmal eine table copy machen
-	if (isdef(olist)){
+	if (isdef(olist)) {
 		//partial merge!
-		for(const o of olist){
-			lookupSetOverride(tcopy,o.keys,o.val);
+		for (const o of olist) {
+			lookupSetOverride(tcopy, o.keys, o.val);
 			//let last = arrLast(o.keys); console.log('override',last,isLiteral(o.val)?o.val:typeof o.val);
 		}
-	}else if (isdef(tnew)){
+	} else if (isdef(tnew)) {
 		// console.log(Object.keys(tnew))
 		tcopy = tnew; //deepmergeOverride(table,tnew);
 	}
 
 	let sum = calcScoreSum(tcopy); //check if this new table is valid!
 	let errsum = calcErrSum(tcopy);
-	console.log(`__race ${RaceCount++}:`,name,step,`-${errors}`,sum,errsum);
+	console.log(`__race ${RaceCount++}:`, name, step, `-${errors}`, sum, errsum);
 
-	let scores = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].score}`).join(',')
-	let allErrors = tcopy.playerNames.map(x=>`${x}:${tcopy.fen.players[x].errors}`).join(',')
-	if (sum!=step-errsum){
-		console.log('=>INVALID!\nstep',step,sum+errsum,'\nerrsum',errsum,'\nsum',sum,'\nplayer',name,'\nscores',scores,'\nerrors',allErrors);
+	let scores = tcopy.playerNames.map(x => `${x}:${tcopy.fen.players[x].score}`).join(',')
+	let allErrors = tcopy.playerNames.map(x => `${x}:${tcopy.fen.players[x].errors}`).join(',')
+	if (sum != step - errsum) {
+		console.log('=>INVALID!\nstep', step, sum + errsum, '\nerrsum', errsum, '\nsum', sum, '\nplayer', name, '\nscores', scores, '\nerrors', allErrors);
 		//do NOT update table and do NOT send anything!!!
 		res.json('INVALID');
 		return;
@@ -7345,7 +7488,7 @@ app.post('/muell', (req, res) => {
 	saveTable(id, tcopy);
 	//io.emit('table', { msg, id, turn, isNew: false }) DAS WAR DER FEHLER!!!!!!!!!!!!!!!!!!!
 	// *** the following only works if players is only logged in ONCE!!!!!!
-	emitToPlayers(arrMinus(tcopy.playerNames,name), 'merged', tcopy); 
+	emitToPlayers(arrMinus(tcopy.playerNames, name), 'merged', tcopy);
 	res.json(tcopy);
 });
 //#endregion
@@ -7354,20 +7497,20 @@ app.post('/muell', (req, res) => {
 async function showTable(table) {
 	INTERRUPT(); //reentrance?!?!?
 	DA.counter += 1; let me = getUname();
-	if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); } 
+	if (!isDict(table)) { let id = table; table = await mGetRoute('table', { id }); }
 	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
 	else if (!table.playerNames.includes(me)) { showMessage(`SPECTATOR VIEW NOT YET IMPLEMENTED!`); Clientdata.table = null; return; }
 
-	Clientdata.table = table; DA.tsTable=DA.merged;
+	Clientdata.table = table; DA.tsTable = DA.merged;
 
 	clearEvents();
 	showTitle(`${table.friendly}`);
 	let func = DA.funcs[table.game];
 	T = {};
-	let items = T.items = await func.present('dMain',table);
+	let items = T.items = await func.present('dMain', table);
 	mRise('dMain');
 
-	let playmode = getPlaymode(table,me);
+	let playmode = getPlaymode(table, me);
 	if (TESTING) testUpdateTestButtons();
 
 	if (table.status == 'over') return showGameover(table);
@@ -7383,62 +7526,62 @@ async function showTable(table) {
 //region 14.mai 24
 async function showColors() {
 
-  let d=mBy('dSettingsColor');mClear(d);
-  let di = M.dicolor; //console.log('buckets',Object.keys(di).length);
+	let d = mBy('dSettingsColor'); mClear(d);
+	let di = M.dicolor; //console.log('buckets',Object.keys(di).length);
 	let bucketlist = 'yellow orangeyellow orange orangered red magentapink magenta bluemagenta blue cyanblue cyan greencyan green yellowgreen'.split(' ');
-  for (const bucket of bucketlist) {
-    let list = dict2list(di[bucket]);
-    let clist = [];
-    for (const c of list) {
-      let o = w3color(c.value);
-      o.name = c.id;
-      o.hex = c.value;
-      clist.push(o);
-    }
-    let sorted = sortByFunc(clist, x => -x.lightness);
-    // mDom(d, {hpadding:10}, { html: `<br>${bucket}<br>`, class:'nav' });
-    _showPaletteNames(d, sorted);
-  }
+	for (const bucket of bucketlist) {
+		let list = dict2list(di[bucket]);
+		let clist = [];
+		for (const c of list) {
+			let o = w3color(c.value);
+			o.name = c.id;
+			o.hex = c.value;
+			clist.push(o);
+		}
+		let sorted = sortByFunc(clist, x => -x.lightness);
+		// mDom(d, {hpadding:10}, { html: `<br>${bucket}<br>`, class:'nav' });
+		_showPaletteNames(d, sorted);
+	}
 
-  let divs = document.getElementsByClassName('colorbox');
-  for (const div of divs) {
-    mStyle(div,{cursor:'pointer'})
-    div.onclick =async()=>onclickColor(div.getAttribute('dataColor')); 
-  }
+	let divs = document.getElementsByClassName('colorbox');
+	for (const div of divs) {
+		mStyle(div, { cursor: 'pointer' })
+		div.onclick = async () => onclickColor(div.getAttribute('dataColor'));
+	}
 }
 
 //#endregion
 
 //region 13.mai 24
-async function onclickSettColor(){
-  console.log('set Color!!!')
-  await showColors();
+async function onclickSettColor() {
+	console.log('set Color!!!')
+	await showColors();
 }
-async function onclickSettFg(){
-  console.log('set Color!!!')
-  await showTextColors();
+async function onclickSettFg() {
+	console.log('set Color!!!')
+	await showTextColors();
 }
-async function onclickSettBlendMode(){
-  if (isEmpty(U.bgImage)) {
-    showMessage('You need to set a Texture in order to set a Blend Mode!');
-    return;
-  }
+async function onclickSettBlendMode() {
+	if (isEmpty(U.bgImage)) {
+		showMessage('You need to set a Texture in order to set a Blend Mode!');
+		return;
+	}
 	showBlendModes();
-  setTexture({});
-  for(const prop of ['bgImage','bgSize','bgBlend','bgRepeat']) delete U[prop];
-  //console.log(U);
-  await postUserChange(U,true)
+	setTexture({});
+	for (const prop of ['bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
+	//console.log(U);
+	await postUserChange(U, true)
 }
-async function onclickSettRemoveTexture(){
-  if (isEmpty(U.bgImage)) return;
-  setTexture({});
-  for(const prop of ['bgImage','bgSize','bgBlend','bgRepeat']) delete U[prop];
-  console.log(U);
-  await postUserChange(U,true)
+async function onclickSettRemoveTexture() {
+	if (isEmpty(U.bgImage)) return;
+	setTexture({});
+	for (const prop of ['bgImage', 'bgSize', 'bgBlend', 'bgRepeat']) delete U[prop];
+	console.log(U);
+	await postUserChange(U, true)
 }
-async function onclickSettTexture(){
-  //console.log('set Texture!!!')
-  await showTextures();
+async function onclickSettTexture() {
+	//console.log('set Texture!!!')
+	await showTextures();
 }
 async function onclickTexture(item) {
 
@@ -7466,105 +7609,105 @@ async function onclickTexture(item) {
 
 
 }
-async function showColors(){
-  //console.log('open Settings!!!'); 
-	
+async function showColors() {
+	//console.log('open Settings!!!'); 
+
 	mClear('dMain');
 
-	let di=M.dicolor;
-	let d=mDom('dMain',{padding:12});
-  for(const bucket in di){
-    let list = dict2list(di[bucket]);
-    let clist=[];
-    for(const c of list){
-      let o=w3color(c.value);
-      //console.log('c',c)
-      o.name = c.id;
-      o.hex = c.value;
-      clist.push(o);
-    }
+	let di = M.dicolor;
+	let d = mDom('dMain', { padding: 12 });
+	for (const bucket in di) {
+		let list = dict2list(di[bucket]);
+		let clist = [];
+		for (const c of list) {
+			let o = w3color(c.value);
+			//console.log('c',c)
+			o.name = c.id;
+			o.hex = c.value;
+			clist.push(o);
+		}
 
-    let sorted = sortByFunc(clist,x=>-x.lightness); //(10*x.lightness+x.sat*100));
-    //console.log(sorted[0]); return;
+		let sorted = sortByFunc(clist, x => -x.lightness); //(10*x.lightness+x.sat*100));
+		//console.log(sorted[0]); return;
 
-    mDom(d,{},{html:`<br>${bucket}<br>`})
-    showPaletteNames(d,sorted);
-    
-  }
+		mDom(d, {}, { html: `<br>${bucket}<br>` })
+		showPaletteNames(d, sorted);
 
-  let divs=document.getElementsByClassName('colorbox');
-  for(const div of divs){
-    div.onclick=async()=>{
-      let c = div.getAttribute('dataColor');
-      setColors(c);
-      //let c=getCSSVariable('--bgBody');
-      let hex = colorToHex79(c);
-      U.color = hex;
-      await postUserChange();
-    
-    }
-    //console.log('HAAAAAAALLLO',div);break;
+	}
 
-  }
+	let divs = document.getElementsByClassName('colorbox');
+	for (const div of divs) {
+		div.onclick = async () => {
+			let c = div.getAttribute('dataColor');
+			setColors(c);
+			//let c=getCSSVariable('--bgBody');
+			let hex = colorToHex79(c);
+			U.color = hex;
+			await postUserChange();
+
+		}
+		//console.log('HAAAAAAALLLO',div);break;
+
+	}
 
 }
-async function showTextColors(){
+async function showTextColors() {
 	mClear('dMain');
-	let d=mDom('dMain',{padding:12});
+	let d = mDom('dMain', { padding: 12 });
 
 	//ich brauch die palette fuer den current body background
 	//weiss, schwarz, silver, dimgray
 	let d1 = mDom(d, { gap: 12 }); mFlexWrap(d1);
-	let colors = ['white','silver','dimgray','black',getCSSVariable('--fgButton'),getCSSVariable('--fgButtonHover')].map(x=>w3color(x));
+	let colors = ['white', 'silver', 'dimgray', 'black', getCSSVariable('--fgButton'), getCSSVariable('--fgButtonHover')].map(x => w3color(x));
 	for (var c of colors) {
 		let bg = 'transparent';
 		let fg = c.hex = c.toHexString();
-		let d2 = mDom(d1, { border:fg, wmin: 250, bg, fg, padding: 20 }, { class: 'colorbox', dataColor: fg });
+		let d2 = mDom(d1, { border: fg, wmin: 250, bg, fg, padding: 20 }, { class: 'colorbox', dataColor: fg });
 		mDom(d2, { weight: 'bold', align: 'center' }, { html: 'Text Sample' });
 		let html = `<br>${bg}<br>hue:${c.hue}<br>sat:${Math.round(c.sat * 100)}<br>lum:${Math.round(c.lightness * 100)}`
 		let dmini = mDom(d2, { align: 'center', wmin: 120, padding: 2, bg, fg }, { html });
 	}
 
-  let divs=document.getElementsByClassName('colorbox');
-  for(const div of divs){
-    div.onclick=async()=>{
+	let divs = document.getElementsByClassName('colorbox');
+	for (const div of divs) {
+		div.onclick = async () => {
 			console.log('HALLO')
 			let fg = div.getAttribute('dataColor');
-      setColors(getCSSVariable('--bgBody'),fg);
-      let hex = colorToHex79(fg);
-      U.fg = hex;
-      await postUserChange({name:U.name,fg:U.fg});
-    
-    }
-    //console.log('HAAAAAAALLLO',div);break;
+			setColors(getCSSVariable('--bgBody'), fg);
+			let hex = colorToHex79(fg);
+			U.fg = hex;
+			await postUserChange({ name: U.name, fg: U.fg });
 
-  }
+		}
+		//console.log('HAAAAAAALLLO',div);break;
+
+	}
 
 }
-async function showTextures(){
-  mClear('dMain');
-	let list=M.textures;
-	let dTheme=mDom('dMain',{padding:12, gap:10}); mFlexWrap(dTheme);
-  //console.log(list)
+async function showTextures() {
+	mClear('dMain');
+	let list = M.textures;
+	let dTheme = mDom('dMain', { padding: 12, gap: 10 }); mFlexWrap(dTheme);
+	//console.log(list)
 	let itemsTexture = [];
 	for (const t of list) {
 		// let bgRepeat = t.includes('marble_') ? 'no-repeat' : 'repeat';
 		// let bgSize = bgRepeat == 'repeat' ? 'auto' : 'cover';
-    let bgRepeat = 'repeat';
-    let bgSize = t.includes('marble_')? `100vw 100vh`:'auto';
-    let bgImage = `url('${t}')`;
+		let bgRepeat = 'repeat';
+		let bgSize = t.includes('marble_') ? `100vw 100vh` : 'auto';
+		let bgImage = `url('${t}')`;
 		let recommendedMode = t.includes('ttrans') ? 'normal' : t.includes('marble_') ? 'luminosity' : 'multiply';
 
-    let dc = mDom(dTheme, { cursor: 'pointer', border: 'white', w: 300, h: 170 }, { tag: 'img' });
+		let dc = mDom(dTheme, { cursor: 'pointer', border: 'white', w: 300, h: 170 }, { tag: 'img' });
 
-    let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, bgBlend: recommendedMode, isSelected: false };
+		let item = { div: dc, path: t, bgImage, bgRepeat, bgSize, bgBlend: recommendedMode, isSelected: false };
 		itemsTexture.push(item);
 
-    //dc.onclick = () => handler(item, itemsTexture);
-    dc.onclick=async()=>onclickTexture(item,itemsTexture);
-  }
+		//dc.onclick = () => handler(item, itemsTexture);
+		dc.onclick = async () => onclickTexture(item, itemsTexture);
+	}
 
-  for (const [i, o] of itemsTexture.entries()) {
+	for (const [i, o] of itemsTexture.entries()) {
 		let img = iDiv(o);
 		img.onload = () => {
 			let pal = ColorThiefObject.getPalette(img);
@@ -7592,27 +7735,27 @@ async function showTextures(){
 
 			itemsTexture[i].palette = pal;
 
-  
+
 		}
 		img.src = o.path; //,src:t		//let pal=colorPaletteFromUrl(t); //await getPaletteFromElem(dc);
 
 	}
 	return itemsTexture;
 }
-function setTheme(o){
-	setColors(o.color,o.fg);
+function setTheme(o) {
+	setColors(o.color, o.fg);
 	setTexture(o);
 }
-async function settingsOpen(){
-  await showColors();
-  settingsSidebar();
+async function settingsOpen() {
+	await showColors();
+	settingsSidebar();
 
 
 }
-async function settingsClose(){
-  //uebernimm current color!
-  //console.log('close Settings!!!'); mClear('dMain');
-	closeLeftSidebar(); clearMain(); 
+async function settingsClose() {
+	//uebernimm current color!
+	//console.log('close Settings!!!'); mClear('dMain');
+	closeLeftSidebar(); clearMain();
 }
 function settingsSidebar() {
 	let wmin = 170;
@@ -7630,127 +7773,127 @@ function settingsSidebar() {
 
 //#region 12.mai 24
 function setColors(c, fg) {
-  let hsl = colorHSL(c, true);
-  let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
-  let hstart = (hue + diff);
-  for (i = hstart; i <= hstart + 235; i += 20) {
-    let h = i % 360;
-    let c1 = colorFromHSL(h, 100, 75);
-    wheel.push(c1);
-  }
-  fg='red';
-  let cc = 'white'; // valf(fg,idealTextColor(c)); console.log('!!!',fg);
+	let hsl = colorHSL(c, true);
+	let [hue, diff, wheel, p] = [hsl.h, 30, [], 20];
+	let hstart = (hue + diff);
+	for (i = hstart; i <= hstart + 235; i += 20) {
+		let h = i % 360;
+		let c1 = colorFromHSL(h, 100, 75);
+		wheel.push(c1);
+	}
+	fg = 'red';
+	let cc = 'white'; // valf(fg,idealTextColor(c)); console.log('!!!',fg);
 
-  
 
-  let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
-  let palc = colorPalette(cc);
-  function light(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 + i]; }
-  function dark(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 - i]; }
-  function simil(i = 3) { return cc == 'white' ? dark(i) : light(i); }
-  function contrast(i = 3) { return cc == 'white' ? light(i) : dark(i); }
-  setCssVar('--bgBody', c);
-  setCssVar('--bgButton', 'transparent')
-  setCssVar('--bgButtonActive', light(3))
-  setCssVar('--bgNav', simil(2))
-  setCssVar('--bgLighter', light())
-  setCssVar('--bgDarker', dark())
-  setCssVar('--fgButton', contrast(3))
-  setCssVar('--fgButtonActive', cc == 'black' ? dark(2) : c)
-  setCssVar('--fgButtonDisabled', 'silver')
-  setCssVar('--fgButtonHover', contrast(5))
-  setCssVar('--fgTitle', contrast(4))
-  setCssVar('--fgSubtitle', contrast(3))
+
+	let pal = colorPalette(c); pal.unshift('black'); pal.push('white');
+	let palc = colorPalette(cc);
+	function light(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 + i]; }
+	function dark(i = 3) { if (i < 0) i = 0; if (i > 5) i = 5; return pal[5 - i]; }
+	function simil(i = 3) { return cc == 'white' ? dark(i) : light(i); }
+	function contrast(i = 3) { return cc == 'white' ? light(i) : dark(i); }
+	setCssVar('--bgBody', c);
+	setCssVar('--bgButton', 'transparent')
+	setCssVar('--bgButtonActive', light(3))
+	setCssVar('--bgNav', simil(2))
+	setCssVar('--bgLighter', light())
+	setCssVar('--bgDarker', dark())
+	setCssVar('--fgButton', contrast(3))
+	setCssVar('--fgButtonActive', cc == 'black' ? dark(2) : c)
+	setCssVar('--fgButtonDisabled', 'silver')
+	setCssVar('--fgButtonHover', contrast(5))
+	setCssVar('--fgTitle', contrast(4))
+	setCssVar('--fgSubtitle', contrast(3))
 }
 async function prelims_old() {
-  ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
-  let t1 = performance.now();
-  Serverdata = await mGetRoute('session'); //session ist: users,config,events
-  let t2 = performance.now();
-  await loadAssets();
-  let t4 = performance.now();
-  sockInit();
-  UI.nav = showNavbar();
-  UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
-  UI.dTitle = mBy('dTitle');
-  let t5 = performance.now();
-  window.onkeydown = keyDownHandler;
-  window.onkeyup = keyUpHandler;
-  DA.funcs = { button96: button96() }; //implemented games!
-  for (const gname in Serverdata.config.games) {
-    if (isdef(DA.funcs[gname])) continue;
-    DA.funcs[gname] = defaultGameFunc();
-  }
-  await switchToUser(localStorage.getItem('username'));
+	ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
+	let t1 = performance.now();
+	Serverdata = await mGetRoute('session'); //session ist: users,config,events
+	let t2 = performance.now();
+	await loadAssets();
+	let t4 = performance.now();
+	sockInit();
+	UI.nav = showNavbar();
+	UI.user = mCommand(UI.nav.r, 'user', null, onclickUser); iDiv(UI.user).classList.add('activeLink');
+	UI.dTitle = mBy('dTitle');
+	let t5 = performance.now();
+	window.onkeydown = keyDownHandler;
+	window.onkeyup = keyUpHandler;
+	DA.funcs = { button96: button96() }; //implemented games!
+	for (const gname in Serverdata.config.games) {
+		if (isdef(DA.funcs[gname])) continue;
+		DA.funcs[gname] = defaultGameFunc();
+	}
+	await switchToUser(localStorage.getItem('username'));
 }
-function hslTable(dParent,x,color) {
-  let i, a='', match, same, comp, loopHSL, HSL;
-  //var color = document.getElementById("colorhexDIV").innerHTML;
-  let  hslObj = w3color(color);
-  let h = hslObj.hue;
-  let s = hslObj.sat;
-  let l = hslObj.lightness;
-  let arr = [];
-  let lineno = (x == "hue")?12:10;
-  let header = x.toUpperCase();
-  for (i = 0; i <= lineno; i++) {
-    let chue=`hsl(${(h+i*30)%360},${s},${l})`;
-    if (x == "hue") { arr.push(w3color(chue)); }
-    // if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
-    else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
-    else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
-  }
-  // console.log('arr',arr); 
-  if (x == "sat" || x == "light") { arr.reverse(); }
-  a += "<div class='w3-responsive'>";
-  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
-  a += "<tr>";
-  a += `<td style='width:30px;'>${header}</td>`;
-  for (i = 0; i < arr.length; i++) {
-    a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
-  }
-  a += "</table></div>";
-  dParent.innerHTML = a;
+function hslTable(dParent, x, color) {
+	let i, a = '', match, same, comp, loopHSL, HSL;
+	//var color = document.getElementById("colorhexDIV").innerHTML;
+	let hslObj = w3color(color);
+	let h = hslObj.hue;
+	let s = hslObj.sat;
+	let l = hslObj.lightness;
+	let arr = [];
+	let lineno = (x == "hue") ? 12 : 10;
+	let header = x.toUpperCase();
+	for (i = 0; i <= lineno; i++) {
+		let chue = `hsl(${(h + i * 30) % 360},${s},${l})`;
+		if (x == "hue") { arr.push(w3color(chue)); }
+		// if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+		else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+		else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
+	}
+	// console.log('arr',arr); 
+	if (x == "sat" || x == "light") { arr.reverse(); }
+	a += "<div class='w3-responsive'>";
+	a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+	a += "<tr>";
+	a += `<td style='width:30px;'>${header}</td>`;
+	for (i = 0; i < arr.length; i++) {
+		a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
+	}
+	a += "</table></div>";
+	dParent.innerHTML = a;
 }
-function hslTables(dParent,color) {
-  let i, a='', match, same, comp, loopHSL, HSL;
-  //var color = document.getElementById("colorhexDIV").innerHTML;
-  let  hslObj = w3color(color);
-  let h = hslObj.hue;
-  let s = hslObj.sat;
-  let l = hslObj.lightness;
-  let arr = [];
-  lineno=10;
-  //let header = x.toUpperCase();
-  for (i = 0; i <= lineno; i++) {
-    let chue=`hsl(${(h-50+i*10)%360},${s},${l})`;
-    let csat=`hsl(${h},${i*.1},${l})`;
-    let clum=`hsl(${h},${s},${i*.1})`;
-    arr.push({h:w3color(chue),s:w3color(csat),l:w3color(clum)});
-  }
-  // console.log('arr',arr); 
-  a += "<div class='w3-responsive'>";
-  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
-  a += "<tr>";
-  a += `<td style='width:30px;'>Hue</td><td style='width:30px;'>Sat</td><td style='width:30px;'>Lum</td>`;
-  for (i = 0; i < arr.length; i++) {
-    let [hexh,hexs,hexl]=[arr[i].h.toHexString(),arr[i].s.toHexString(),arr[i].l.toHexString()];
-    a += `
+function hslTables(dParent, color) {
+	let i, a = '', match, same, comp, loopHSL, HSL;
+	//var color = document.getElementById("colorhexDIV").innerHTML;
+	let hslObj = w3color(color);
+	let h = hslObj.hue;
+	let s = hslObj.sat;
+	let l = hslObj.lightness;
+	let arr = [];
+	lineno = 10;
+	//let header = x.toUpperCase();
+	for (i = 0; i <= lineno; i++) {
+		let chue = `hsl(${(h - 50 + i * 10) % 360},${s},${l})`;
+		let csat = `hsl(${h},${i * .1},${l})`;
+		let clum = `hsl(${h},${s},${i * .1})`;
+		arr.push({ h: w3color(chue), s: w3color(csat), l: w3color(clum) });
+	}
+	// console.log('arr',arr); 
+	a += "<div class='w3-responsive'>";
+	a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+	a += "<tr>";
+	a += `<td style='width:30px;'>Hue</td><td style='width:30px;'>Sat</td><td style='width:30px;'>Lum</td>`;
+	for (i = 0; i < arr.length; i++) {
+		let [hexh, hexs, hexl] = [arr[i].h.toHexString(), arr[i].s.toHexString(), arr[i].l.toHexString()];
+		a += `
       <tr>
         <td style='cursor:pointer;background-color:${hexh}' onclick='onclickHue("${hexh}")'>${hexh}</td>
         <td style='cursor:pointer;background-color:${hexs}' onclick='onclickSat("${hexs}")'>${hexs}</td>
         <td style='cursor:pointer;background-color:${hexl}' onclick='onclickLum("${hexl}")'>${hexl}</td>
       </tr>`;
-  }
-  a += "</table></div>";
-  dParent.innerHTML = a;
+	}
+	a += "</table></div>";
+	dParent.innerHTML = a;
 }
 function mColorPickerBoard(dParent) {
-	dParent = mDom(dParent); 
+	dParent = mDom(dParent);
 
 	//let board = drawHexBoard(7, 7, dParent, { bg: rColor(), padding:10, transition:'1s' }, {w:20,h:22, classes:'hexframe'}); //, {padding:10});
-	let board = drawHexBoard(7, 7, dParent, { bg: 'transparent', padding: 10 }, { w: 20, h: 22 }); 
-	board.dSample = mDom(dParent,{w:200,hmin:40,margin:'auto',align:'center'});
+	let board = drawHexBoard(7, 7, dParent, { bg: 'transparent', padding: 10 }, { w: 20, h: 22 });
+	board.dSample = mDom(dParent, { w: 200, hmin: 40, margin: 'auto', align: 'center' });
 	let tables = mDom(dParent, {}, { id: 'dHslTable' });
 	let colors = getColormapColors(); //console.log('colors', colors);
 
@@ -7774,43 +7917,43 @@ function sortColorsByHueAndLuminance(colors) {
 		let g = parseInt(hex.slice(3, 5), 16) / 255;
 		let b = parseInt(hex.slice(5, 7), 16) / 255;
 		let cmin = Math.min(r, g, b),
-				cmax = Math.max(r, g, b),
-				delta = cmax - cmin,
-				h = 0,
-				s = 0,
-				l = 0;
-	
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
+
 		if (delta === 0)
-				h = 0;
+			h = 0;
 		else if (cmax === r)
-				h = ((g - b) / delta) % 6;
+			h = ((g - b) / delta) % 6;
 		else if (cmax === g)
-				h = (b - r) / delta + 2;
+			h = (b - r) / delta + 2;
 		else
-				h = (r - g) / delta + 4;
-	
+			h = (r - g) / delta + 4;
+
 		h = Math.round(h * 60);
-	
+
 		// Make negative hues positive behind 360°
 		if (h < 0)
-				h += 360;
-	
+			h += 360;
+
 		l = (cmax + cmin) / 2;
-	
+
 		// Calculate saturation
 		s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-		
+
 		// Multiply s and l by 100 to get the value in percentage, rather than [0,1]
 		s = +(s * 100).toFixed(1);
 		l = +(l * 100).toFixed(1);
-	
+
 		return { h, s, l };
 	}
 	return colors.sort((a, b) => {
 		const hslA = _hexToHSL(a);
 		const hslB = _hexToHSL(b);
 		if (hslA.h !== hslB.h) {
-				return hslA.h - hslB.h;
+			return hslA.h - hslB.h;
 		}
 		// Sort by luminance if hues are equal
 		return hslB.l - hslA.l; // Note: reverse to get light to dark if desired
@@ -7823,43 +7966,43 @@ function sortColorsByLumHue(colors) {
 		let g = parseInt(hex.slice(3, 5), 16) / 255;
 		let b = parseInt(hex.slice(5, 7), 16) / 255;
 		let cmin = Math.min(r, g, b),
-				cmax = Math.max(r, g, b),
-				delta = cmax - cmin,
-				h = 0,
-				s = 0,
-				l = 0;
-	
+			cmax = Math.max(r, g, b),
+			delta = cmax - cmin,
+			h = 0,
+			s = 0,
+			l = 0;
+
 		if (delta === 0)
-				h = 0;
+			h = 0;
 		else if (cmax === r)
-				h = ((g - b) / delta) % 6;
+			h = ((g - b) / delta) % 6;
 		else if (cmax === g)
-				h = (b - r) / delta + 2;
+			h = (b - r) / delta + 2;
 		else
-				h = (r - g) / delta + 4;
-	
+			h = (r - g) / delta + 4;
+
 		h = Math.round(h * 60);
-	
+
 		// Make negative hues positive behind 360°
 		if (h < 0)
-				h += 360;
-	
+			h += 360;
+
 		l = (cmax + cmin) / 2;
-	
+
 		// Calculate saturation
 		s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
-		
+
 		// Multiply s and l by 100 to get the value in percentage, rather than [0,1]
 		s = +(s * 100).toFixed(1);
 		l = +(l * 100).toFixed(1);
-	
+
 		return { h, s, l };
 	}
 	return colors.sort((a, b) => {
 		const hslA = _hexToHSL(a);
 		const hslB = _hexToHSL(b);
 		if (hslA.l !== hslB.l) {
-				return hslA.l - hslB.l;
+			return hslA.l - hslB.l;
 		}
 		// Sort by luminance if hues are equal
 		return hslB.h - hslA.h; // Note: reverse to get light to dark if desired
@@ -7872,171 +8015,171 @@ function generateRYBColorHexagon() {
 	const colors = [];
 	const steps = 127;
 	const huesPerStep = 360 / steps;
-	
+
 	for (let i = 0; i < steps; i++) {
-			const hue = i * huesPerStep;
-			const angle = hue * Math.PI / 180;
-			// Generate RYB values based on the angle
-			const ryb = [
-					(Math.cos(angle) + 1) / 2 * 255,               // Red
-					(Math.cos(angle - 2 * Math.PI / 3) + 1) / 2 * 255, // Yellow
-					(Math.cos(angle + 2 * Math.PI / 3) + 1) / 2 * 255  // Blue
-			];
-			const rgb = rybToRgb(ryb);
-			const hex = `#${rgb.map(x => x.toString(16).padStart(2, '0')).join('')}`;
-			colors.push(hex);
+		const hue = i * huesPerStep;
+		const angle = hue * Math.PI / 180;
+		// Generate RYB values based on the angle
+		const ryb = [
+			(Math.cos(angle) + 1) / 2 * 255,               // Red
+			(Math.cos(angle - 2 * Math.PI / 3) + 1) / 2 * 255, // Yellow
+			(Math.cos(angle + 2 * Math.PI / 3) + 1) / 2 * 255  // Blue
+		];
+		const rgb = rybToRgb(ryb);
+		const hex = `#${rgb.map(x => x.toString(16).padStart(2, '0')).join('')}`;
+		colors.push(hex);
 	}
-	
+
 	return colors;
 }
 function rybToRgb(ryb) {
 	const r = ryb[0] / 255, y = ryb[1] / 255, b = ryb[2] / 255;
 	// Convert RYB directly to RGB
 	const rgb = [
-			1 * r + 1 * y + 0 * b, // Red
-			0 * r + 1 * y + 0.5 * b, // Green
-			0 * r + 0 * y + 1 * b // Blue
+		1 * r + 1 * y + 0 * b, // Red
+		0 * r + 1 * y + 0.5 * b, // Green
+		0 * r + 0 * y + 1 * b // Blue
 	];
 	// Normalize the colors
 	return rgb.map(c => Math.round(c * 255));
 }
 
-function sortByHue(colors){
-  let list=colors.map(x=>w3color(x));
-  list = sortBy(list,'hue');
-  for(const c of list){c.hex=c.toHexString()}
-  return list.map(x=>x.hex);
+function sortByHue(colors) {
+	let list = colors.map(x => w3color(x));
+	list = sortBy(list, 'hue');
+	for (const c of list) { c.hex = c.toHexString() }
+	return list.map(x => x.hex);
 }
-function sortByLum(colors){
-  let list=colors.map(x=>w3color(x));
-  list = sortBy(list,'lightness');
-  for(const c of list){c.hex=c.toHexString()}
-  return list.map(x=>x.hex);
-}
-
-function hslTable(dParent,x,color,cols) {
-  var lineno, header, i, a, match, same, comp, loopHSL, HSL;
-  //var color = document.getElementById("colorhexDIV").innerHTML;
-  var hslObj = w3color(color);
-  var h = hslObj.hue;
-  var s = hslObj.sat;
-  var l = hslObj.lightness;
-  var arr = [];
-  if (x == "hue") { header = "Hue"; lineno = 24; }
-  if (x == "sat") { header = "Saturation"; lineno = 20; }
-  if (x == "light") { header = "Lightness"; lineno = 20; }
-  for (i = 0; i <= lineno; i++) {
-    if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
-    if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
-    if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
-  }
-  if (x == "sat" || x == "light") { arr.reverse(); }
-  a = "<h3>" + header + "</h3>";
-  a += "<div class='w3-responsive'>";
-  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
-  a += "<tr>";
-  a += "<td style='width:150px;'></td>";
-  a += "<td style='text-align:right;text-transform:capitalize;'>" + x + "&nbsp;</td>";
-  a += "<td>Hex</td>";
-  a += "<td>Rgb</td>";
-  a += "<td>Hsl</td>";
-  a += "</tr>";
-  match = 0;
-  for (i = 0; i < arr.length; i++) {
-    same = 0;
-    if (x == "hue") {
-      loopHSL = w3color(arr[i]).hue;
-      HSL = h;
-      if (i == arr.length - 1) { loopHSL = 360; }
-      comp = (loopHSL > HSL);
-    }
-    if (x == "sat") {
-      loopHSL = Math.round(w3color(arr[i]).sat * 100);
-      HSL = Number(s * 100);
-      HSL = Math.round(HSL);
-      comp = (loopHSL < HSL);
-      HSL = HSL + "%";
-      loopHSL = loopHSL + "%";
-    }
-    if (x == "light") {
-      loopHSL = Math.round(w3color(arr[i]).lightness * 100);
-      HSL = Number(l * 100);
-      HSL = Math.round(HSL);
-      comp = (loopHSL < HSL);
-      HSL = HSL + "%";
-      loopHSL = loopHSL + "%";
-    }
-    if (HSL == loopHSL) {
-      match++;
-      same = 1;
-    }
-    if (comp) { match++; }
-    if (match == 1) {
-      a += "<tr class='ws-green'>";
-      a += "<td style='background-color:" + hslObj.toHexString() + "'></td>";
-      a += "<td style='text-align:right;'><b>" + HSL + "&nbsp;</b></td>";
-      a += "<td><b>" + hslObj.toHexString() + "</b></td>";
-      a += "<td><b>" + hslObj.toRgbString() + "</b></td>";
-      a += "<td><b>" + hslObj.toHslString() + "</b></td>";
-      a += "</tr>";
-      match = 2;
-    }
-    if (same == 0) {
-      a += "<tr>";
-      a += "<td style='cursor:pointer;background-color:" + arr[i].toHexString() + "' onclick='clickColor(\"" + arr[i].toHexString() + "\")'></td>";
-      a += "<td style='text-align:right;'>" + loopHSL + "&nbsp;</td>";
-      a += "<td>" + arr[i].toHexString() + "</td>";
-      a += "<td>" + arr[i].toRgbString() + "</td>";
-      a += "<td>" + arr[i].toHslString() + "</td>";
-      a += "</tr>";
-    }
-  }
-  a += "</table></div>";
-  dParent.innerHTML = a;
-  // if (x == "hue") { document.getElementById("huecontainer").innerHTML = a; }
-  // if (x == "sat") { document.getElementById("hslsatcontainer").innerHTML = a; }
-  // if (x == "light") { document.getElementById("hsllumcontainer").innerHTML = a; }
+function sortByLum(colors) {
+	let list = colors.map(x => w3color(x));
+	list = sortBy(list, 'lightness');
+	for (const c of list) { c.hex = c.toHexString() }
+	return list.map(x => x.hex);
 }
 
-function hslTable(dParent,x,color) {
-  let i, a='', match, same, comp, loopHSL, HSL;
-  //var color = document.getElementById("colorhexDIV").innerHTML;
-  let  hslObj = w3color(color);
-  let h = hslObj.hue;
-  let s = hslObj.sat;
-  let l = hslObj.lightness;
-  let arr = [];
-  let lineno = (x == "hue")?24:20;
-  let header = x.toUpperCase();
-  for (i = 0; i <= lineno; i++) {
-    if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
-    else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
-    else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
-  }
-  // console.log('arr',arr); 
-  if (x == "sat" || x == "light") { arr.reverse(); }
-  a += "<div class='w3-responsive'>";
-  a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
-  a += "<tr>";
-  a += `<td style='width:30px;'>${header}</td>`;
-  for (i = 0; i < arr.length; i++) {
-    a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
-  }
-  a += "</table></div>";
-  dParent.innerHTML = a;
+function hslTable(dParent, x, color, cols) {
+	var lineno, header, i, a, match, same, comp, loopHSL, HSL;
+	//var color = document.getElementById("colorhexDIV").innerHTML;
+	var hslObj = w3color(color);
+	var h = hslObj.hue;
+	var s = hslObj.sat;
+	var l = hslObj.lightness;
+	var arr = [];
+	if (x == "hue") { header = "Hue"; lineno = 24; }
+	if (x == "sat") { header = "Saturation"; lineno = 20; }
+	if (x == "light") { header = "Lightness"; lineno = 20; }
+	for (i = 0; i <= lineno; i++) {
+		if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+		if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+		if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
+	}
+	if (x == "sat" || x == "light") { arr.reverse(); }
+	a = "<h3>" + header + "</h3>";
+	a += "<div class='w3-responsive'>";
+	a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+	a += "<tr>";
+	a += "<td style='width:150px;'></td>";
+	a += "<td style='text-align:right;text-transform:capitalize;'>" + x + "&nbsp;</td>";
+	a += "<td>Hex</td>";
+	a += "<td>Rgb</td>";
+	a += "<td>Hsl</td>";
+	a += "</tr>";
+	match = 0;
+	for (i = 0; i < arr.length; i++) {
+		same = 0;
+		if (x == "hue") {
+			loopHSL = w3color(arr[i]).hue;
+			HSL = h;
+			if (i == arr.length - 1) { loopHSL = 360; }
+			comp = (loopHSL > HSL);
+		}
+		if (x == "sat") {
+			loopHSL = Math.round(w3color(arr[i]).sat * 100);
+			HSL = Number(s * 100);
+			HSL = Math.round(HSL);
+			comp = (loopHSL < HSL);
+			HSL = HSL + "%";
+			loopHSL = loopHSL + "%";
+		}
+		if (x == "light") {
+			loopHSL = Math.round(w3color(arr[i]).lightness * 100);
+			HSL = Number(l * 100);
+			HSL = Math.round(HSL);
+			comp = (loopHSL < HSL);
+			HSL = HSL + "%";
+			loopHSL = loopHSL + "%";
+		}
+		if (HSL == loopHSL) {
+			match++;
+			same = 1;
+		}
+		if (comp) { match++; }
+		if (match == 1) {
+			a += "<tr class='ws-green'>";
+			a += "<td style='background-color:" + hslObj.toHexString() + "'></td>";
+			a += "<td style='text-align:right;'><b>" + HSL + "&nbsp;</b></td>";
+			a += "<td><b>" + hslObj.toHexString() + "</b></td>";
+			a += "<td><b>" + hslObj.toRgbString() + "</b></td>";
+			a += "<td><b>" + hslObj.toHslString() + "</b></td>";
+			a += "</tr>";
+			match = 2;
+		}
+		if (same == 0) {
+			a += "<tr>";
+			a += "<td style='cursor:pointer;background-color:" + arr[i].toHexString() + "' onclick='clickColor(\"" + arr[i].toHexString() + "\")'></td>";
+			a += "<td style='text-align:right;'>" + loopHSL + "&nbsp;</td>";
+			a += "<td>" + arr[i].toHexString() + "</td>";
+			a += "<td>" + arr[i].toRgbString() + "</td>";
+			a += "<td>" + arr[i].toHslString() + "</td>";
+			a += "</tr>";
+		}
+	}
+	a += "</table></div>";
+	dParent.innerHTML = a;
+	// if (x == "hue") { document.getElementById("huecontainer").innerHTML = a; }
+	// if (x == "sat") { document.getElementById("hslsatcontainer").innerHTML = a; }
+	// if (x == "light") { document.getElementById("hsllumcontainer").innerHTML = a; }
+}
+
+function hslTable(dParent, x, color) {
+	let i, a = '', match, same, comp, loopHSL, HSL;
+	//var color = document.getElementById("colorhexDIV").innerHTML;
+	let hslObj = w3color(color);
+	let h = hslObj.hue;
+	let s = hslObj.sat;
+	let l = hslObj.lightness;
+	let arr = [];
+	let lineno = (x == "hue") ? 24 : 20;
+	let header = x.toUpperCase();
+	for (i = 0; i <= lineno; i++) {
+		if (x == "hue") { arr.push(w3color("hsl(" + (i * 15) + "," + s + "," + l + ")")); }
+		else if (x == "sat") { arr.push(w3color("hsl(" + h + "," + (i * 0.05) + "," + l + ")")); }
+		else if (x == "light") { arr.push(w3color("hsl(" + h + "," + s + "," + (i * 0.05) + ")")); }
+	}
+	// console.log('arr',arr); 
+	if (x == "sat" || x == "light") { arr.reverse(); }
+	a += "<div class='w3-responsive'>";
+	a += "<table class='ws-table-all colorTable' style='width:100%;white-space: nowrap;font-size:14px;'>";
+	a += "<tr>";
+	a += `<td style='width:30px;'>${header}</td>`;
+	for (i = 0; i < arr.length; i++) {
+		a += `<tr><td style='cursor:pointer;background-color:${arr[i].toHexString()}' onclick='onclickColor("${arr[i].toHexString()}")'>${arr[i].toHexString()}</td></tr>`;
+	}
+	a += "</table></div>";
+	dParent.innerHTML = a;
 }
 
 function hsl360StringToHex79_(hsl) {
 	let [h, s, l] = hsl.match(/\d+\.?\d*/g).map(Number);
-	console.log('anfang',h,s,l);
-	const hue = h/360;
+	console.log('anfang', h, s, l);
+	const hue = h / 360;
 	const saturation = s / 100;
 	const lightness = l / 100;
 
 
 
 	const [r, g, b] = hslToRgb__(h, s, l); //saturation, lightness);
-	console.log('rgb',r,g,b)
+	console.log('rgb', r, g, b)
 	// Convert RGB to Hex
 	const toHex = x => x.toString(16).padStart(2, '0');
 	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
@@ -8071,9 +8214,9 @@ function hslToRgb__(h, s, l) {
 }
 
 async function mColorPicker(dParent) {
-	let d = mDom(dParent,{bg:'black'});
+	let d = mDom(dParent, { bg: 'black' });
 	let img = await imgAsync(d, {}, { src: '../copi2/img_colormap.gif', usemap: '#colormap' });
-	mStyle(d,{w:img.naturalWidth,h:img.naturalHeight});
+	mStyle(d, { w: img.naturalWidth, h: img.naturalHeight });
 	//console.log(img.naturalWidth, img.naturalHeight); let r = getRect(d); let ri = getRect(img); console.log('rect', r.w, r.h); console.log('ri', ri.w, ri.h);
 	mAppend(d, colormapHtml());
 
@@ -8094,187 +8237,187 @@ async function mColorPicker(dParent) {
 	console.log('rect', getRect(d));
 	return d;
 }
-function drawHexBoard(topside,side,dParent,styles={},opts={}){
-	addKeys({position:'relative'},styles);
+function drawHexBoard(topside, side, dParent, styles = {}, opts = {}) {
+	addKeys({ position: 'relative' }, styles);
 	let d = mDom(dParent, styles, opts); // { position: 'relative', bg:'#222' });
-	let [centers,rows,maxcols] = hexBoardCenters(topside,side);
+	let [centers, rows, maxcols] = hexBoardCenters(topside, side);
 	//console.log('centers',centers[0],centers)
 	let sz = 20;
 	let [w, h] = [sz, sz];
 	let items = [];
-	for(const c of centers){
+	for (const c of centers) {
 		// let [x,y]=[w/2+c.x*w,h/2+c.y*h*.75];
-		let dhex = hexFromCenter(d, {x:c.x*w,y:c.y*h}, { w:w-2, h:h-2, bg: 'pink' },{classes:'hop1'});
-		dhex.onclick = ()=>mStyle(document.body, {bg:rColor()}); 
-		let item = {div:dhex,cx:c.x,cy:c.y,row:c.row,col:c.col};
+		let dhex = hexFromCenter(d, { x: c.x * w, y: c.y * h }, { w: w - 2, h: h - 2, bg: 'pink' }, { classes: 'hop1' });
+		dhex.onclick = () => mStyle(document.body, { bg: rColor() });
+		let item = { div: dhex, cx: c.x, cy: c.y, row: c.row, col: c.col };
 		items.push(item);
 	}
-	let [wBoard,hBoard]=[maxcols*w,rows*h*.75+h*.25];
-	mStyle(d,{w:wBoard,h:hBoard}); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
-	return {div:d,topside,side,centers,rows,maxcols,boardShape:'hex',w,h,wBoard,hBoard,items}
+	let [wBoard, hBoard] = [maxcols * w, rows * h * .75 + h * .25];
+	mStyle(d, { w: wBoard, h: hBoard }); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
+	return { div: d, topside, side, centers, rows, maxcols, boardShape: 'hex', w, h, wBoard, hBoard, items }
 
 }
-function drawHexBoard(topside,side,dParent,styles={},opts={}){
-	addKeys({position:'relative'},styles);
+function drawHexBoard(topside, side, dParent, styles = {}, opts = {}) {
+	addKeys({ position: 'relative' }, styles);
 	let d = mDom(dParent, styles, opts); // { position: 'relative', bg:'#222' });
-	let [centers,rows,maxcols] = hexBoardCenters(topside,side);
+	let [centers, rows, maxcols] = hexBoardCenters(topside, side);
 	//console.log('centers',centers[0],centers)
 	let sz = 20;
 	let [w, h] = [sz, sz];
 	let items = [];
-	for(const c of centers){
+	for (const c of centers) {
 		// let [x,y]=[w/2+c.x*w,h/2+c.y*h*.75];
-		let dhex = hexFromCenter(d, {x:c.x*w,y:c.y*h}, { w:w-2, h:h-2, bg: 'pink' },{classes:'hop1'});
-		dhex.onclick = ()=>mStyle(document.body, {bg:rColor()}); 
-		let item = {div:dhex,cx:c.x,cy:c.y,row:c.row,col:c.col};
+		let dhex = hexFromCenter(d, { x: c.x * w, y: c.y * h }, { w: w - 2, h: h - 2, bg: 'pink' }, { classes: 'hop1' });
+		dhex.onclick = () => mStyle(document.body, { bg: rColor() });
+		let item = { div: dhex, cx: c.x, cy: c.y, row: c.row, col: c.col };
 		items.push(item);
 	}
-	let [wBoard,hBoard]=[maxcols*w,rows*h*.75+h*.25];
-	mStyle(d,{w:wBoard,h:hBoard}); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
-	return {div:d,topside,side,centers,rows,maxcols,boardShape:'hex',w,h,wBoard,hBoard,items}
+	let [wBoard, hBoard] = [maxcols * w, rows * h * .75 + h * .25];
+	mStyle(d, { w: wBoard, h: hBoard }); //,'clip-path': 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)'});
+	return { div: d, topside, side, centers, rows, maxcols, boardShape: 'hex', w, h, wBoard, hBoard, items }
 
 }
-function drawHex(dParent, styles={}, opts={}) {
-  //if (nundef(styles.w)) addKeys({ w: 100, h: 100, bg: 'blue' },styles);
+function drawHex(dParent, styles = {}, opts = {}) {
+	//if (nundef(styles.w)) addKeys({ w: 100, h: 100, bg: 'blue' },styles);
 	//styles.h=valf(styles.h,styles.w);//*.866);
-  addKeys({ classes:'hop1' },opts);
-	let d=mDom(dParent,styles,opts);
-  // if (nundef(classes)) classes = ['frameOnHover'];
-  // if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
-  // let d = mDiv(dParent, styles, null, null, classes, sizing);
-  mStyle(d, { 'clip-path': 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' });
-  return d;
+	addKeys({ classes: 'hop1' }, opts);
+	let d = mDom(dParent, styles, opts);
+	// if (nundef(classes)) classes = ['frameOnHover'];
+	// if (nundef(sizing)) sizing = { hgrow: true, wgrow: true };
+	// let d = mDiv(dParent, styles, null, null, classes, sizing);
+	mStyle(d, { 'clip-path': 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' });
+	return d;
 }
 //#endregion
 
 //#region clickColor progress from orig
 function clickColor(hex, seltop, selleft, html5) {
-  var c=hex;
-  let cObj = w3color(c);
-  let colorhex = cObj.toHexString();
+	var c = hex;
+	let cObj = w3color(c);
+	let colorhex = cObj.toHexString();
 	let colormap, areas, i, areacolor, cc;
-  r = cObj.red;
-  g = cObj.green;
-  b = cObj.blue;
+	r = cObj.red;
+	g = cObj.green;
+	b = cObj.blue;
 
 	//hier versucht er herauszufinden ob die color die via input eingegeben wurde im colorpicker existiert und setzt die coordinates falls ja!
-  if (isdef(mBy('colornamDIV'))) {
-    document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
-    document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
-    document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
-    document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
-    if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
-      colormap = document.getElementById("colormap");
-      areas = colormap.getElementsByTagName("AREA");
-      for (i = 0; i < areas.length; i++) {
-        areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
-        areacolor = areacolor.replace('")', '');
-        if (areacolor.toLowerCase() == colorhex) {
-          cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
-          seltop = Number(cc[1]);
-          selleft = Number(cc[2]);
-        }
-      }
-    }
-    document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
-  }
+	if (isdef(mBy('colornamDIV'))) {
+		document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
+		document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
+		document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
+		document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
+		if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
+			colormap = document.getElementById("colormap");
+			areas = colormap.getElementsByTagName("AREA");
+			for (i = 0; i < areas.length; i++) {
+				areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
+				areacolor = areacolor.replace('")', '');
+				if (areacolor.toLowerCase() == colorhex) {
+					cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
+					seltop = Number(cc[1]);
+					selleft = Number(cc[2]);
+				}
+			}
+		}
+		document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
+	}
 
-  if ((seltop + 200) > -1 && selleft > -1) {
-    document.getElementById("selectedhexagon").style.top = seltop + "px";
-    document.getElementById("selectedhexagon").style.left = selleft + "px";
-    document.getElementById("selectedhexagon").style.visibility = "visible";
-  } else {
-    document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
-    document.getElementById("selectedhexagon").style.visibility = "hidden";
-  }
+	if ((seltop + 200) > -1 && selleft > -1) {
+		document.getElementById("selectedhexagon").style.top = seltop + "px";
+		document.getElementById("selectedhexagon").style.left = selleft + "px";
+		document.getElementById("selectedhexagon").style.visibility = "visible";
+	} else {
+		document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
+		document.getElementById("selectedhexagon").style.visibility = "hidden";
+	}
 
-  if (isdef(mBy('html5colorpicker'))) {
-    document.getElementById("html5colorpicker").value = cObj.toHexString();
-  }
+	if (isdef(mBy('html5colorpicker'))) {
+		document.getElementById("html5colorpicker").value = cObj.toHexString();
+	}
 
-  if (isdef(mBy('slideRed'))) {
-    document.getElementById('slideRed').value = r;
-    document.getElementById('slideGreen').value = g;
-    document.getElementById('slideBlue').value = b;
-    changeRed(r); changeGreen(g); changeBlue(b);
-    changeColor();
-    document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
-  }
+	if (isdef(mBy('slideRed'))) {
+		document.getElementById('slideRed').value = r;
+		document.getElementById('slideGreen').value = g;
+		document.getElementById('slideBlue').value = b;
+		changeRed(r); changeGreen(g); changeBlue(b);
+		changeColor();
+		document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
+	}
 }
 function clickColor_orig(hex, seltop, selleft, html5) {
-  var c, cObj, colormap, areas, i, areacolor, cc;
-  if (html5 && html5 == 5) {
-    c = document.getElementById("html5colorpicker").value;
-  } else {
-    if (hex == 0) {
-      c = document.getElementById("entercolor").value;
-      c = c.replace(/;/g, ","); //replace any semicolon with a comma
-    } else {
-      c = hex;
-    }
-  }
-  cObj = w3color(c);
-  colorhex = cObj.toHexString();
-  if (cObj.valid) {
-    clearWrongInput();
-  } else {
-    wrongInput();
-    return;
-  }
+	var c, cObj, colormap, areas, i, areacolor, cc;
+	if (html5 && html5 == 5) {
+		c = document.getElementById("html5colorpicker").value;
+	} else {
+		if (hex == 0) {
+			c = document.getElementById("entercolor").value;
+			c = c.replace(/;/g, ","); //replace any semicolon with a comma
+		} else {
+			c = hex;
+		}
+	}
+	cObj = w3color(c);
+	colorhex = cObj.toHexString();
+	if (cObj.valid) {
+		clearWrongInput();
+	} else {
+		wrongInput();
+		return;
+	}
 
-  r = cObj.red;
-  g = cObj.green;
-  b = cObj.blue;
+	r = cObj.red;
+	g = cObj.green;
+	b = cObj.blue;
 
-  if (isdef(mBy('colornamDIV'))) {
-    document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
-    document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
-    document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
-    document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
-    if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
-      colormap = document.getElementById("colormap");
-      areas = colormap.getElementsByTagName("AREA");
-      for (i = 0; i < areas.length; i++) {
-        areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
-        areacolor = areacolor.replace('")', '');
-        if (areacolor.toLowerCase() == colorhex) {
-          cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
-          seltop = Number(cc[1]);
-          selleft = Number(cc[2]);
-        }
-      }
-    }
-    document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
-  }
+	if (isdef(mBy('colornamDIV'))) {
+		document.getElementById("colornamDIV").innerHTML = (cObj.toName() || "");
+		document.getElementById("colorhexDIV").innerHTML = cObj.toHexString();
+		document.getElementById("colorrgbDIV").innerHTML = cObj.toRgbString();
+		document.getElementById("colorhslDIV").innerHTML = cObj.toHslString();
+		if ((!seltop || seltop == -1) && (!selleft || selleft == -1)) {
+			colormap = document.getElementById("colormap");
+			areas = colormap.getElementsByTagName("AREA");
+			for (i = 0; i < areas.length; i++) {
+				areacolor = areas[i].getAttribute("onmouseover").replace('mouseOverColor("', '');
+				areacolor = areacolor.replace('")', '');
+				if (areacolor.toLowerCase() == colorhex) {
+					cc = areas[i].getAttribute("onclick").replace(')', '').split(",");
+					seltop = Number(cc[1]);
+					selleft = Number(cc[2]);
+				}
+			}
+		}
+		document.getElementById("selectedcolor").style.backgroundColor = cObj.toHexString();
+	}
 
-  if ((seltop + 200) > -1 && selleft > -1) {
-    document.getElementById("selectedhexagon").style.top = seltop + "px";
-    document.getElementById("selectedhexagon").style.left = selleft + "px";
-    document.getElementById("selectedhexagon").style.visibility = "visible";
-  } else {
-    document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
-    document.getElementById("selectedhexagon").style.visibility = "hidden";
-  }
+	if ((seltop + 200) > -1 && selleft > -1) {
+		document.getElementById("selectedhexagon").style.top = seltop + "px";
+		document.getElementById("selectedhexagon").style.left = selleft + "px";
+		document.getElementById("selectedhexagon").style.visibility = "visible";
+	} else {
+		document.getElementById("divpreview").style.backgroundColor = cObj.toHexString();
+		document.getElementById("selectedhexagon").style.visibility = "hidden";
+	}
 
-  if (isdef(mBy('html5colorpicker'))) {
-    document.getElementById("html5colorpicker").value = cObj.toHexString();
-  }
+	if (isdef(mBy('html5colorpicker'))) {
+		document.getElementById("html5colorpicker").value = cObj.toHexString();
+	}
 
-  if (isdef(mBy('slideRed'))) {
-    document.getElementById('slideRed').value = r;
-    document.getElementById('slideGreen').value = g;
-    document.getElementById('slideBlue').value = b;
-    changeRed(r); changeGreen(g); changeBlue(b);
-    changeColor();
-    document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
-  }
+	if (isdef(mBy('slideRed'))) {
+		document.getElementById('slideRed').value = r;
+		document.getElementById('slideGreen').value = g;
+		document.getElementById('slideBlue').value = b;
+		changeRed(r); changeGreen(g); changeBlue(b);
+		changeColor();
+		document.getElementById("fixed").style.backgroundColor = cObj.toHexString();
+	}
 }
 
 
 //#endregion
 
 //#region bad copi2 parts
-function NOpart111(){
+function NOpart111() {
 	let html = `
 	<div class="w3-row">
 		<div class="w3-col colorthird1" style="text-align:center;">
@@ -8297,8 +8440,8 @@ function NOpart111(){
 	`;
 	return createFom(html);
 }
-function NOpart111(){
-	let d=mDom(null,{},{classes:'w3-row'});
+function NOpart111() {
+	let d = mDom(null, {}, { classes: 'w3-row' });
 	let html = `
 		<div class="w3-col colorthird1" style="text-align:center;">
 			${h3_111('Pick a Color:')}				
@@ -8318,12 +8461,12 @@ function NOpart111(){
 			</div>
 		</div>
 	`;
-	mAppend(d,createFom(html));
+	mAppend(d, createFom(html));
 	return d;
 }
-function NOpart111(){
-	let d=mDom(null,{},{classes:'w3-row'});
-	let d1=mDom(d,{align:'center',w100:true},{classes:'w3-col',html:h3_111('Pick a Color:')});
+function NOpart111() {
+	let d = mDom(null, {}, { classes: 'w3-row' });
+	let d1 = mDom(d, { align: 'center', w100: true }, { classes: 'w3-col', html: h3_111('Pick a Color:') });
 
 	let html = `
 		<div style="margin:auto;width:236px;">
@@ -8341,10 +8484,10 @@ function NOpart111(){
 			<br>
 		</div>
 	`;
-	mAppend(d1,createFom(html));
+	mAppend(d1, createFom(html));
 	return d;
 }
-function part111_2(){	
+function part111_2() {
 	let html = `
 		<div class="w3-col colorthird2" style="text-align:center;">
 			<h3>Selected Color:</h3>
@@ -8371,14 +8514,14 @@ function part111_2(){
 	return mCreateFrom(html);
 
 }
-function col3_111(){
+function col3_111() {
 	return `
 			<div class="w3-col colorthird3">
 				<div id="lumtopcontainer"></div>
 			</div>
-		`;	
+		`;
 }
-function col2_111(){
+function col2_111() {
 	return `
 	<div class="w3-col colorthird2" style="text-align:center;">
 		<h3>Selected Color:</h3>
@@ -8394,7 +8537,7 @@ function col2_111(){
 		<div id="colorrgbDIV"></div>
 		<div id="colorhslDIV"></div>
 	</div>
-`;	
+`;
 }
 function copi2_all111() {
 	let html = `
@@ -8984,7 +9127,7 @@ function copi2_part() {
 		`;
 	return mCreateFrom(html);
 }
-function part111(){
+function part111() {
 	let html = `
 	<div class="w3-row">
 		<div class="w3-col colorthird1" style="text-align:center;">
@@ -9042,7 +9185,7 @@ function part111(){
 }
 //#endregion
 
-//#region 
+//#region
 
 
 //#endregion

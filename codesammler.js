@@ -1,4 +1,469 @@
 
+//#region baui 21.6.24
+function wsShowTitle(dCard,title,fz,szlt){
+	let margin = szlt/12;
+	//let title = fromNormalized(o.friendly);
+	let dtitle = mDom(dCard, { fz, margin, display: 'inline', weight: 'bold' }, { html: title });
+	mPlace(dtitle, 'tl',szlt+margin/2,0); //, 0, yTitle);
+
+}
+function showPlaetze(dCard,n, szPlatz){
+	let plaetze = nundef(n) ? 2 : n == 0 ? 0 : n == 1 ? 1 : n < 8 ? 2 : n < 25 ? 3 : n < 100 ? 4 : n < 1000 ? 5 : 6;
+	let dPlaetze = mDom(dCard, { w: szPlatz, gap: szPlatz/2 }); mCenterFlex(dPlaetze);
+	for (const i of range(plaetze)) { mDom(dPlaetze, { round: true, w: szPlatz, h: szPlatz, border: 'silver' }); }
+	return dPlaetze;
+}
+function showFood(dParent,tokens,w,fz){
+	let df=mDom(dParent);mCenterCenterFlex(df);
+	// let tokens = o.foodTokens; //console.log(tokens,o.foodtype,o.food)
+	let len = tokens.length; 
+	let ch = len < 3 && coin()?'/':'+';
+	let [szSym,szChar]=[w/4,w/9];
+	let tlist=[{t:tokens[0],sz:szSym}];
+	if (len>1) {tlist.push({t:ch,sz:szChar});tlist.push({t:tokens[1],sz:szSym})}
+	if (len>2) {tlist.push({t:ch,sz:szChar});tlist.push({t:tokens[2],sz:szSym})}
+	for(const x of tlist){
+		let d=mDom(df,{w:x.sz}); //,bg:rColor()}); 
+		mCenterCenterFlex(d);
+		let c=x.t;
+		if (c == '+') {d.innerHTML = c;mStyle(d,{fz})}
+		else if (c == '/') {d.innerHTML = c;mStyle(d,{fz})}
+		else if (c.includes('.')) {
+			let img=showim1(c,d,{w:x.sz});
+			if (c.includes('mouse')) mStyle(img,{matop:fz/4})
+		}else {
+			let szimg=x.sz*.7;
+			let img=showim1('../assets/games/wingspan/pie2.png',d,{w:szimg,h:szimg});//mStyle(img,{round:true})
+			//omnisym(d,x.sz)
+			//let d1=mDom(d,{h:x.sz*.8})
+			//mAppend(d,mCreateFrom(generatePizzaSvg(sz)));
+			//mPizza(d, x.sz*.75, 'red', 'green', 'yellow', 'gray', 'orange', 'skyblue'); 
+		}
+	}
+}
+
+function showHabitat(dParent,ohab,h){
+	for(let i=0;i<ohab.imgs.length;i++){
+		let c=ohab.colors[i];
+		if (c == 'gray') continue;
+		let d=showim1(ohab.imgs[i],dParent,{h,round:true,bg:c,'clip-path':PolyClips.diamond})	
+		if (i == 2) mStyle(d,{matop:-h}); //-20})
+	}
+}
+
+
+function extractFoodAndType(s){
+
+	let carni = ['mouse', 'bird', 'fish', 'beetle',  'spider', 'animal', 'frog', 'lizard', 'worm', 'deer', 'zebra', 'shrimp', 'squid', 'snail'];
+	let insecti = ['worm', 'ant', 'insect', 'moth', 'flies', 'grasshopper',]
+	let herbi = ['grass', 'grasses', 'leaves', 'fruit', 'flowers', 'grain', 'berries', 'plant', 'bamboo', 'tree', 'wood', 'reed', 'twig', 'crops', 'herbs'];
+
+	s = s.toLowerCase();
+	let words = toWords(s, true).map(x => strRemoveTrailing(x, 's'));
+
+	let di = { herbi, carni, insecti };
+	let types = [];
+	let contained = [];
+	for (const type in di) {
+		let arr = di[type];
+		for (const a of arr) {
+			let w = strRemoveTrailing(a, 's'); 
+			if (words.includes(w)){
+				addIf(contained, a);
+				addIf(types, type);
+				continue;
+			}
+		}
+	}
+	let type;
+	for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
+		if (s.includes(t)) type = t + 'vorous';
+	}
+	if (nundef(type)){
+		if (isEmpty(types)) { type='unknown' }
+		if (types.includes('herbi') && types.length >= 2) type='omnivorous';
+		else if (types.length >= 2) type='carnivorous';
+		else type = types[0] + 'vorous';
+	}
+	
+	return [contained,type];
+
+}	
+function extractFoods(s) {
+	s = s.toLowerCase();
+	let words = toWords(s, true).map(x => strRemoveTrailing(x, 's'));
+
+	let herbi = M.byCat.plant; herbi = herbi.concat(['plant', 'berries', 'grasses', 'leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
+	let carni = M.byCat.animal; carni = carni.concat(['animal'])
+	let insecti = ['insect', 'worm', 'ant', 'fly', 'flies']
+	let di = { herbi, carni, insecti };
+	let types = [];
+	let contained = [];
+	for (const type in di) {
+		let arr = di[type];
+		for (const a of arr) {
+			let w = strRemoveTrailing(a, 's'); //console.log('w',w)
+			let o = M.superdi[a];
+			if (isdef(o) && words.includes(o.friendly) || words.includes(w)) {
+				let cont = {};
+				if (o) { cont.key = a; cont.cats = o.cats; cont.friendly = o.friendly }
+				else cont.key = w;
+				addIf(contained, cont);
+				addIf(types, type);
+				continue;
+			}
+		}
+	}
+	return [contained,types];
+}
+function extractFoodType(s, easy = true, key = null) {
+	s = s.toLowerCase();
+	let words = toWords(s, true).map(x => strRemoveTrailing(x, 's'));
+	if (easy) {
+		for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
+			if (s.includes(t)) return t + 'vorous';
+		}
+	}
+	let herbi = M.byCat.plant; herbi = herbi.concat(['plant', 'berries', 'grasses', 'leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
+	let carni = M.byCat.animal; carni = carni.concat(['animal'])
+	let insecti = ['insect', 'worm', 'ant', 'fly', 'flies']
+	let di = { herbi, carni, insecti };
+	let types = [];
+	let contained = [];
+	for (const type in di) {
+		let arr = di[type];
+		for (const a of arr) {
+			let w = strRemoveTrailing(a, 's'); //console.log('w',w)
+			let o = M.superdi[a];
+			if (isdef(o) && words.includes(o.friendly) || words.includes(w)) {
+				let cont = {};
+				if (o) { cont.key = a; cont.cats = o.cats; cont.friendly = o.friendly }
+				else cont.key = w;
+				addIf(contained, cont);
+				addIf(types, type);
+				continue;
+			}
+		}
+	}
+	if (isEmpty(types)) { return 'unknown' }
+	if (types.includes('herbi') && types.length >= 2) return 'omnivorous';
+	else if (types.length >= 2) return 'carnivorous';
+	else return types[0] + 'vorous';
+}
+
+function mPizza(dParent,sz){
+	let args = Array.from(arguments).slice(2);
+	args = args.map(x=>colorFrom(x))
+	if (args.lenght == 0) return mDom(dParent,{w:sz,h:sz,border:'silver',round:true});
+	else if (args.length == 1) return mDom(dParent,{bg:args[0],w:sz,h:sz,border:'silver',round:true});
+	let html = generatePizzaSvg(sz,...args);
+	let el=mCreateFrom(html);
+	let d=mDom(dParent,{patop:4}); //,{patop:4});
+	mAppend(d,el);
+	return el;
+}
+function mPizza(dParent,sz){
+	let args = Array.from(arguments).slice(2);
+	args = args.map(x=>colorFrom(x))
+	if (args.lenght == 0) return mDom(dParent,{w:sz,h:sz,border:'silver',round:true});
+	else if (args.length == 1) return mDom(dParent,{bg:args[0],w:sz,h:sz,border:'silver',round:true});
+	let html = generatePizzaSvg(sz,...args);
+	let el=mCreateFrom(html);
+	let d=mDom(dParent); //,{patop:4});
+	mAppend(d,el);
+	return d;
+}
+function generatePizzaSvg(sz) {
+	let colors = Array.from(arguments).slice(1);
+	let numSlices = colors.length;
+	const radius = sz / 2;
+	const centerX = radius;
+	const centerY = radius;
+	const angleStep = (2 * Math.PI) / numSlices;
+	const svgParts = [];
+	svgParts.push(`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg">`);
+	for (let i = 0; i < numSlices; i++) {
+		const startAngle = i * angleStep;
+		const endAngle = (i + 1) * angleStep;
+		const x1 = centerX + radius * Math.cos(startAngle);
+		const y1 = centerY + radius * Math.sin(startAngle);
+		const x2 = centerX + radius * Math.cos(endAngle);
+		const y2 = centerY + radius * Math.sin(endAngle);
+		const largeArcFlag = angleStep > Math.PI ? 1 : 0;
+		const pathData = [
+			`M ${centerX},${centerY}`, // Move to the center
+			`L ${x1},${y1}`,           // Line to the start of the arc
+			`A ${radius},${radius} 0 ${largeArcFlag} 1 ${x2},${y2}`, // Arc to the end of the slice
+			`Z`                        // Close the path
+		].join(' ');
+		svgParts.push(`<path d="${pathData}" fill="${colors[i]}" />`);
+	}
+	svgParts.push('</svg>');
+	return svgParts.join('\n');
+}
+
+function mCluster(olist,func,fout){
+	let res={};
+	if (nundef(fout)) fout = x=>x
+	for(const o of olist){
+		for(const x of func(o)){lookupAddIfToList(res,[x],fout(o))}
+	}
+	return res;
+}
+function getAllHabitats(){
+	let res=[];
+	for(const k in M.details){
+		let hab = M.details[k].habitat;
+		toWords(hab.toLowerCase()).map(x=>addIf(res,x));
+	}
+	res.sort();
+	
+	return res;
+}
+function extractHabitat(str,ignore=[]){
+	let s = str.toLowerCase();
+	let habit=[];
+	let di=M.habitat;
+	for(const k in di){
+		if (k == 'geo') continue;
+		for(const hab of di[k]){
+			if (ignore.includes(hab)) continue;
+			if (s.includes(hab)) {addIf(habit,k);break;}
+		}
+	}
+	return habit;
+}
+
+function calcOffsprings(str) {
+	let s = str.toLowerCase(); s = replaceAll(s, '-', ' '); s = replaceAll(s, ',', '');
+	if (s.includes('incub')) s=stringBefore(s,'incub');
+	
+	//console.log('s',s)
+	let arr = allNumbers(s);
+
+	if (isEmpty(arr) && s.includes('hundred') && s.includes('thousand')) {s=s.replace('hundred','100 ');s=s.replace('thousand','1000 ');arr=[100,1000];}
+	else if (isEmpty(arr) && s.includes('hundred')) {s=s.replace('hundred','100 ');arr=[100];}
+	else if (isEmpty(arr) && s.includes('thousand')) {s=s.replace('thousand','1000 ');arr=[1000];}
+	else if (isEmpty(arr) && s.includes('ten')) {s=s.replace('ten','10 ');arr=[10];}
+	else if (isEmpty(arr) && s.includes('dozen')) {s=s.replace('dozen','20 ');arr=[20];}
+
+	let words = toWords(s).filter(x=>x!='s');
+
+	//console.log('words',words);
+
+	if (isEmpty(arr)) return 1;
+	let newarr = [];
+	for (const n of arr) {
+		let w = wordAfter(words, n);
+		if (isdef(w) && ['day', 'month', 'week', 'year'].some(x => w.includes(x))) break;
+		newarr.push(n);
+	}
+	let num = arrAverage(newarr);
+	let text = newarr.length > 1 ? `${newarr[0]}-${newarr[1]} children}` : `${num} child${num == 1 ? '' : 'ren'}`;
+	return { str, num, unit: 'child', text };
+}
+function calcSize(str) {
+	return calcNumericInfo(str, { cm: .01, centimeter: .01, centimeters: .01, mm: .001, millimeter: .001, millimeters: .001, meter: 1, meters: 1, m: 1 }, 'm');
+}
+function calcWeight(str) {
+	return calcNumericInfo(str, { kg: 1, kilogram: 1, kilograms: 1, mg: .000001, milligram: .000001, milligrams: .000001, grams: .001, gram: .001, g: .001, ton: 1000, tons: 1000 }, 'kg');
+}
+function calcNumericInfo(str, diunit, base) {
+	if (nundef(str)) return {str:'',num:0,base,text:''};
+	let s = str.toLowerCase(); s = replaceAll(s, '-', ' ');
+	let words1 = stringSplit(s);
+	let words = words1.map(x=>x == 'few' || x == 'several'?3:x); //console.log(words)
+	
+	let arr = allNumbers(words.join(' ')); //console.log(arr)
+	if (isEmpty(arr)) {
+		console.log('could NOT find any numbers!!!!')
+		return { str, num: 1, unit: base, text: s };
+	}
+	//console.log(arr)
+	let num, unit, text;
+
+	//console.log('str',str,'\ns',s,'\nwords',words);//return null;
+	let units = Object.keys(diunit);//console.log('units',units)
+	let arrunits=[];
+	let unitFound=base;
+	for(const n of arr){
+		let i=words.indexOf(''+n); //console.log('...',n,arr,words,i); //return;
+		unit=arrFindKeywordFromIndex(units,words,i);
+		if (unit) {
+			unitFound = unit.w; 
+		arrunits.push({n,unit:unit.w});
+		}//else console.log(arr,n,words,i,unit)
+		words = words.slice(i+1);
+	}
+
+	//jetzt werden alle zahlen in arr umgerechnet in die entsprechende base unit
+	for(const o of arrunits){
+		o.nnorm = o.n*diunit[o.unit];
+	}
+
+	let avg = arrBalancedAverage(arrunits,'nnorm'); //let av2=arrBalancedAverage(arrunits,'nnorm')
+	unit = arrunits[0].unit;
+	num = avg/diunit[unit]; 
+	text = `${num.toFixed(1)} ${unit}`;
+	return {str,num,unit,text,avg};
+}
+
+
+function showCardWingspanPortrait(o, d, sz = 480) {
+	let item = { o, key: o.key };
+	let card = cBlank(d, { sz, border: 'silver' });
+	let dCard = iDiv(card);
+	let fa = sz / 480;
+	let [rounding, h, w, fz, gap] = [card.rounding, card.h, card.w, 15 * fa, card.w/36];
+
+	let szlt = w / 3;
+	let dlt = mDom(dCard, { w: szlt, h: szlt * .9, bg: '#eee' }); mPlace(dlt, 'tl'); dlt.style.borderTopLeftRadius = dlt.style.borderBottomRightRadius = `${rounding}px`; mCenterCenterFlex(dlt);
+	showHabitat(dlt, o.ohabitat, 40 * fa);
+	mLinebreak(dlt, 4 * fa);
+	showFood(dlt, o.foodTokens, szlt, fz);
+
+	let dtitle = mDom(dCard, { paleft: gap,wmax:szlt*1.5 }); mPlace(dtitle, 'tl', szlt, gap)
+	mDom(dtitle, { fz: fz * 1.2, weight: 'bold' }, { html: fromNormalized(o.friendly) });
+	mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
+
+	let [szPic, yPic] = [sz / 2, szlt]
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tr', w / 50, yPic);
+
+	let szPlatz = sz / 30; //Math.max(sz / 40, 8);
+	let dPlaetze = showPlaetze(dCard, o.ooffsprings.num, szPlatz);
+	mPlace(dPlaetze, 'tl', (w - szPic) / 2, szlt + szPlatz);
+
+	let dbrown = mDom(dCard, { fz:fz*1.2, padding:gap, matop: szlt+szPic+szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
+
+	let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
+	let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: lifespan.lifespan })
+	mPlace(dlifespan, 'bl', gap);
+
+	let size = calcSize(o.size);// console.log('lifespan',lifespan);
+	let dsize = mDom(dCard, { fz, display: 'inline' }, { html: size.text })
+	mPlace(dsize, 'br', gap);
+
+	let value = rChoose(range(1,3))*o.foodTokens.length;
+	let dval=mDom(dCard,{fz:fz*1.8,weight:'bold'},{html:value}); mPlace(dval,'tr',2*gap,gap)
+
+}
+
+function arrFindKeywordFromIndex(keywords, words, iStart) {
+	//console.log(keywords,words,iStart)
+	for (let i = iStart; i < words.length; i++) {
+		let w = words[i];
+		if (keywords.some(x => x == w)) return { i, w };
+	}
+	return null;
+}
+function getDetailedSuperdi(key) {
+	let o = M.superdi[key];
+	addKeys(M.details[key], o); //console.log('1',o.species)
+	addKeys(M.details[o.friendly], o); //console.log('e',o.species)
+	o.key = key;
+
+	//specifics
+	if (isdef(o.lifespan)) o.olifespan = calcLifespan(o.lifespan);
+	if (isdef(o.food)) {
+		[o.foodlist,o.foodtype] = extractFoodAndType(o.food); //console.log(key,foodtype)
+		let foodTokens = [];
+		if (['berries','fruit'].some(x=>o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/fruit.svg');
+		if (['fish','shrimp','squid'].some(x=>o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/fish.svg');
+		if (['wheat','grain','crops'].some(x=>o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/wheat.svg');
+		if (o.foodtype.startsWith('insect')) foodTokens.push('../assets/games/wingspan/worm.svg');
+		else if (o.foodtype.startsWith('carni')) foodTokens.push('../assets/games/wingspan/mouse.svg');
+		else if (o.foodtype.startsWith('omni')) foodTokens.push('omni');
+		else if (o.foodtype.startsWith('herbi')) foodTokens.push('../assets/img/emo/seedling.png');
+		o.foodTokens = foodTokens;
+	}
+	if (isdef(o.offsprings)) o.ooffsprings = calcOffsprings(o.offsprings);
+	if (isdef(o.weight)) { o.oweight = calcWeight(o.weight); o.nweight = o.oweight.avg; }
+	if (isdef(o.size)) { o.osize = calcSize(o.size); o.nsize = o.osize.avg; }
+	if (isdef(o.species)) {
+		//console.log(o.species,typeof o.species);
+		let x = o.species; o.longSpecies = x; o.species = extractSpecies(x); //console.log(x) 
+	}
+	if (isdef(o.habitat)) { 
+		let text = o.habitat; 
+		let ohab= o.ohabitat = { text };
+		let hlist = ohab.list = extractHabitat(text,['coastal']);
+		let colors = ohab.colors = [];
+		let imgs = ohab.imgs = [];
+		if (['wetland'].some(x=>hlist.includes(x))) {colors.push('lightblue');imgs.push('../assets/games/wingspan/wetland.png');}
+		if (['dwellings','grassland','desert'].some(x=>hlist.includes(x))) 			{colors.push('goldenrod');imgs.push('../assets/games/wingspan/grassland2.png');}
+		if (['forest','mountain','ice'].some(x=>hlist.includes(x))) 			{colors.push('emerald');imgs.push('../assets/games/wingspan/forest1.png');}
+		//if (['dwellings','ice'].some(x=>hlist.includes(x))) hcolors.push('grey');
+	}
+
+	let colors = ['turquoise', 'bluegreen', 'teal', 'brown', 'gray', 'green', 'violet', 'blue', 'black', 'yellow', 'white', 'lavender', 'orange', 'buff', 'red', 'pink', 'golden', 'cream', 'grey', 'sunny', 'beige'];
+	if (isdef(o.color)) o.colors = extractColors(o.color, colors);
+
+	o = sortDictionary(o);
+	return o;
+}
+function mClip(shape, d) {
+	if (shape == 'circle' || shape == 'ellipse') mStyle(d, { rounding: '50%' });
+	else mStyle(d, { 'clip-path': PolyClips[shape] });
+}
+function showPlaetze(dParent, n, bg) {
+	let ch = arrChildren(dParent);
+	ch.map(x => mStyle(x, { bg: 'transparent' }));
+	arrTake(ch, n).map(x => mStyle(x, { bg }));
+}
+function showInfoCard(key, d) {
+
+	let o = getDetailedSuperdi(key);
+
+	let sz = 400;
+	let [yTitle, yPic, szPic] = [8, sz / 5, sz / 2];
+	let [yLifespan, yBrown, hTop] = [yPic + szPic, yPic + szPic + 22, yPic];
+
+	let card = cBlank(d, { h: sz, border: 'dimgray' });
+	let dCard = iDiv(card);// console.log(card);
+
+	let d1 = showim1(key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tc', 0, yPic);
+
+	let title = fromNormalized(o.friendly);
+	let dtitle = mDom(dCard, { display: 'inline', weight: 'bold' }, { html: title });
+	mPlace(dtitle, 'tc', 0, yTitle);
+
+	let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
+	let dlifespan = mDom(dCard, { display: 'inline' }, { html: lifespan.lifespan })
+	mPlace(dlifespan, 'tr', 40, yLifespan);
+
+	let dbrown = mDom(dCard, { matop: yBrown, w100: true, bg: 'sienna', fg: 'white', padding: 10, box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
+
+	let foodtype = extractFoodType(o.food); //console.log(key,foodtype)
+	let difood = { omnivorous: 'pot_of_food', carnivorous: 'poultry_leg', herbivorous: 'seedling', insectivorous: 'ant' }
+	let dfood = mDom(dCard); //,{bg:'silver',round:true,}); //,{},{html:foodtype});
+	showim1(difood[foodtype], dfood, { sz: 30 });
+	mPlace(dfood, 'tl', 10, 0)
+
+	let weight = calcNumericInfo(o.weight, { kg: 1000, g: 1, mg: .001 }, 'kg');
+	let size = calcNumericInfo(o.size, { cm: .01, centimeter: .01, mm: .001, millimeter: .001, meter: 1, m: 1 }, 'm');
+	let offs = calcOffsprings(o.offsprings);
+
+	o.foodType = foodtype;
+	o.difood = difood;
+	o.weight = weight;
+	o.size = size;
+	o.offsprings = offs;
+	//console.log(key,offs.text);
+
+	addKeys(card, o)
+	//mLinebreak(d)
+
+	return o;
+
+}
+function stringSplit(input) {
+	// Split the string at any whitespace character or comma
+	return input.split(/[\s,]+/);
+}
+
+//#endregion
 
 //#region baui 20.6.24
 function extractSpecies(s){
