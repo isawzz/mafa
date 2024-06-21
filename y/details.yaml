@@ -788,7 +788,7 @@ fly:
   lifespan: 15-30 days
   habitat: >-
     Found worldwide in a variety of environments, especially in close
-    association with human habitation
+    association with human dwellings
   weight: 10-15 milligrams
   size: 6-7 mm in length
   food: >-
@@ -1297,7 +1297,7 @@ mule:
   lifespan: 25-30 years
   habitat: >-
     Varies widely depending on human activity; found in agricultural settings,
-    ranches, and sometimes wild environments
+    ranches, farms and sometimes wild environments
   weight: 350-500 kg
   size: 140-160 cm at the withers
   food: 'Herbivorous: primarily feeds on grasses, hay, and grains'

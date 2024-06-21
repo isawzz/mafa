@@ -16278,3 +16278,125 @@ levels:
   - prince
   - king
   - emperor
+habitat:
+  geo:
+    - afghanistan
+    - africa
+    - america
+    - americas
+    - andes
+    - asia
+    - atlantic
+    - australia
+    - borneo
+    - brazil
+    - camargue
+    - cameroon
+    - canada
+    - china
+    - congo
+    - europe
+    - european
+    - florida
+    - france
+    - french
+    - gabon
+    - guinea
+    - hawaii
+    - himalayas
+    - indian
+    - iran
+    - kenya
+    - mauritius
+    - mexico
+    - mongolia
+    - namibia
+    - normandy
+    - norway
+    - pakistan
+    - polynesia
+    - russia
+    - siberia
+    - sumatra
+    - suriname
+    - tasmania
+    - usa
+    - zimbabwe
+  mountain:
+    - alpine
+    - alps
+    - montane
+    - mountainous
+    - mountains
+    - cliffs
+  wetland:
+    - water
+    - waters
+    - ponds
+    - lagoons
+    - lake
+    - lakes
+    - aquatic
+    - canals
+    - wet
+    - wetlands
+    - mangroves
+    - groves
+    - ocean
+    - sea
+    - coastal
+    - marine
+    - marshes
+    - reef
+    - reefs
+    - rivers
+    - streams
+    - swamps
+    - freshwater
+  ice:
+    - ice
+    - subarctic
+    - arctic
+  desert:
+    - arid
+    - desert
+    - deserts
+    - sahara
+    - saharan
+    - dry
+  forest:
+    - forest
+    - forests
+    - coniferous
+    - deciduous
+    - bamboo
+    - rainforests
+    - wood
+    - woodlands
+    - bushes
+  dwellings:
+    - barns
+    - basements
+    - bathrooms
+    - buildings
+    - homes
+    - households
+    - domestic
+    - domesticated
+    - dwellings
+    - farms
+  grassland:
+    - pastures
+    - meadows
+    - fields
+    - flowering
+    - gardens
+    - prairies
+    - grasslands
+    - savanna
+    - savannah
+    - savannahs
+    - savannas
+    - steppes
+    - tundra
+    - greenland

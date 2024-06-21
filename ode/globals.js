@@ -344,6 +344,7 @@ var P;
 var Pictures = [];
 var Players;
 var PolyClips = {
+  diamond: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
   hex: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
   test1: 'inset(50% 0% 100% 25% 100% 75% 50% 100% 0% 75% 0% 25% round 10px)',
   test0: 'inset(45% 0% 33% 10% round 10px)',

@@ -1,23 +1,77 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test139_species(); }
+async function start() { TESTING = true; await test141_card(); }
 
+
+async function test141_card() {
+  await prelims(); //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  //keys = ['panther','arctic_fox','bear','eagle']; //,'bear','wasp']; //console.log(M.details.dragonfly); //return;
+  let items = [];
+  for (const key of keys) {
+    //console.log('___', key);
+    let o = getDetailedSuperdi(key); 
+    let ocard = showCardWingspanPortrait(o,d,300);
+    items.push(ocard);
+    // showPlaetze(ocard.dPlaetze,rChoose([1,2,3]),'sienna')
+    //break;
+  }
+  // let res = mCluster(items,x=>x.o.ohabitat.list,x=>`${x.key}: ${x.o.habitat}`);
+}
+async function test141_allFoods(){
+  await prelims(); //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  //keys = ['wasp']; //console.log(M.details.dragonfly); //return;
+  let foods = [];
+  for (const key of keys) {
+    // console.log('___', key);
+    let o = getDetailedSuperdi(key); 
+    let [contained,types] = extractFoods(o.food);
+    contained.map(x=>addIf(foods,x.key));
+
+  }
+  console.log('foods',foods)
+}
+async function test140_habitat(){
+  await prelims(); //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  let items = [];
+  for (const key of keys) { items.push(getDetailedSuperdi(key)) }; 
+
+
+  for(const o of items){
+    let hcolors = o.ohabitat.colors; console.log(hcolors)
+    let x=mPizza(d,50,...hcolors);
+  }
+
+
+}
 async function test139_species() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
 
+  //console.log(Object.keys(M.habitat).join(' ')); return;
+
   //keys = ['wasp']; //console.log(M.details.dragonfly); //return;
+  let items = [];
   for (const key of keys) {
     console.log('___', key);
     let o = getDetailedSuperdi(key); 
-    console.log(o.ooffsprings.num); //return;
-    if (nundef(o.ooffsprings.num)) break;
-    //let ocard = showCardWingspanPortrait(o,d)
+    //console.log(o.ooffsprings.num); if (nundef(o.ooffsprings.num)) break;
+    //console.log(o.ohabitat.list)
+    let ocard = showCardWingspanPortrait(o,d);
+    items.push(ocard);
+    
+    showPlaetze(ocard.dPlaetze,rChoose([1,2,3]),'sienna')
     //console.log(o.species)
     //let x=extractSpecies(o.species);
     //console.log('species',x)
   }
+
+  let res = mCluster(items,x=>x.o.ohabitat.list,x=>`${x.key}: ${x.o.habitat}`);
+  //console.log(res)
+
 }
 
 async function test139_wsCard() {

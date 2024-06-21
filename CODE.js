@@ -1,5 +1,181 @@
 
+
 //#region 19.6.24
+function showCardWingspanPortrait_trial1(o, d, sz = 480) {
+	let item = { o, key: o.key };
+	let card = cBlank(d, { sz, border: 'silver' });
+	let dCard = iDiv(card);
+	let fa = sz/480;
+	let [rounding, h, w, fz] = [card.rounding, card.h, card.w, 15*fa];
+
+	let szlt=w/3;
+	let dlt=mDom(dCard,{w:szlt,h:szlt,bg:'#eee'});mPlace(dlt,'tl');	dlt.style.borderTopLeftRadius =dlt.style.borderBottomRightRadius = `${rounding}px`;mCenterCenterFlex(dlt);
+
+	showHabitat(dlt,o.ohabitat,40*fa);
+	// let ohab=o.ohabitat;
+	// for(let i=0;i<ohab.imgs.length;i++){
+	// 	let c=ohab.colors[i];
+	// 	if (c == 'gray') continue;
+	// 	let d=showim1(ohab.imgs[i],dlt,{h:40*fa,round:true,bg:c,'clip-path':PolyClips.diamond})	
+	// 	if (i == 2) mStyle(d,{matop:-40*fa}); //-20})
+	// }
+	// if (hcolors.includes('blue') &&hcolors.includes('goldenrod') && hcolors.includes('green')) console.log(o.key);
+	// if (hcolors.includes('blue')) showim1('../ode/wetland.png',dlt,{h:40*fa,round:true,bg:'lightblue'})	
+	// if (hcolors.includes('goldenrod')) showim1('../ode/grassland2.png',dlt,{h:40*fa,round:true})	
+	// if (hcolors.includes('green')) showim1('../ode/forest1.png',dlt,{h:40*fa,round:true,bg:'emerald'})	
+	//let dHabitat = mDom(dlt, { w: hTop, h: hTop, bg: '#eee', rounding }); mCenterCenterFlex(dHabitat);
+	//mPizza(dlt, 40*fa, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
+	//mDom(dlt,{h:40*fa,w:40*fa,bg:hcolors[0],round:true})
+	mLinebreak(dlt,4*fa);
+	let df=mDom(dlt);mCenterCenterFlex(df);
+	let tokens = o.foodTokens; //console.log(tokens,o.foodtype,o.food)
+	let len = tokens.length; 
+	let ch = len < 3 && coin()?'/':'+';
+	let [szf,szt]=[szlt/4,szlt/9];
+	let tlist=[{t:tokens[0],sz:szf}];
+	if (len>1) {tlist.push({t:ch,sz:szt});tlist.push({t:tokens[1],sz:szf})}
+	if (len>2) {tlist.push({t:ch,sz:szt});tlist.push({t:tokens[2],sz:szf})}
+	for(const x of tlist){
+		let d=mDom(df,{w:x.sz}); //,bg:rColor()}); 
+		mCenterCenterFlex(d);
+		let c=x.t;
+		if (c == '+') {d.innerHTML = c;mStyle(d,{fz})}
+		else if (c == '/') {d.innerHTML = c;mStyle(d,{fz})}
+		else if (c.includes('.')) {
+			let img=showim1(c,d,{w:x.sz});
+			if (c.includes('mouse')) mStyle(img,{matop:fz/4})
+		}else {
+			let szimg=x.sz*.7;
+			let img=showim1('../ode/pie2.png',d,{w:szimg,h:szimg});//mStyle(img,{round:true})
+			//omnisym(d,x.sz)
+			//let d1=mDom(d,{h:x.sz*.8})
+			//mAppend(d,mCreateFrom(generatePizzaSvg(sz)));
+			//mPizza(d, x.sz*.75, 'red', 'green', 'yellow', 'gray', 'orange', 'skyblue'); 
+		}
+	}
+
+}
+function omnisym(dParent,sz){
+	let d=mDom(dParent,{w:sz,h:sz,bg:'red',position:'absolute'});
+	d.innerHTML = `
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="10" height="10">
+			<!-- Circle background -->
+			<circle cx="50" cy="50" r="48" stroke="black" stroke-width="2" fill="white" />
+			
+			<!-- Beak shape -->
+			<path d="M 50 10 L 75 50 L 50 90 L 25 50 Z" fill="orange" stroke="black" stroke-width="2"/>
+			
+			<!-- Optional lines for more detail -->
+			<line x1="50" y1="10" x2="50" y2="90" stroke="black" stroke-width="2" />
+			<line x1="25" y1="50" x2="75" y2="50" stroke="black" stroke-width="2" />
+		</svg>
+		`;
+}
+function showCardWingspanPortrait(o, d, sz = 500) {
+
+	let item = { o, key: o.key };
+	let [yTitle, yPic, szPic] = [8, sz / 5, sz / 2];
+	let [yLifespan, yBrown, hTop, szPlatz] = [yPic + szPic, yPic + szPic + 22, sz*.12, Math.max(sz / 40, 8)];
+
+	let card = cBlank(d, { h: sz, border: 'silver', fz:Math.max(10,16*sz/500) });
+	let dCard = iDiv(card);// console.log(card);
+
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tc', 0, yPic);
+
+	let title = fromNormalized(o.friendly);
+	let dtitle = mDom(dCard, { display: 'inline', weight: 'bold' }, { html: title });
+	mPlace(dtitle, 'tc', 0, yTitle);
+
+	title = o.species; //fromNormalized(o.friendly);
+	dtitle = mDom(dCard, { fz:'80%',display: 'inline', 'font-style': 'italic' }, { html: title });
+	mPlace(dtitle, 'tc', 0, yTitle + 24);
+
+	let n = o.ooffsprings.num; //console.log()
+	let plaetze = nundef(n) ? 2 : n == 0 ? 0 : n == 1 ? 1 : n < 8 ? 2 : n < 25 ? 3 : n < 100 ? 4 : n < 1000 ? 5 : 6;
+	let dPlaetze = item.dPlaetze = mDom(dCard, { w: '60%', gap: szPlatz }); mCenterFlex(dPlaetze);
+	for (const i of range(plaetze)) { mDom(dPlaetze, { round: true, w: szPlatz, h: szPlatz, border: 'silver' }); }
+	mPlace(dPlaetze, 'tc', 0, yTitle + 60);
+
+	let lifespan = calcLifespan(o.lifespan);// console.log('lifespan',lifespan);
+	let dlifespan = mDom(dCard, { display: 'inline' }, { html: lifespan.lifespan })
+	mPlace(dlifespan, 'tr', 40, yLifespan);
+
+	let dbrown = mDom(dCard, { matop: yBrown, w100: true, bg: 'sienna', fg: 'white', padding: 10, box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
+
+	let rounding= mGetStyle(dCard,'rounding')
+	let dfood = mDom(dCard,{w:hTop,h:hTop,bg:'#eee',rounding}); mCenterCenterFlex(dfood);
+	let gap=hTop/15;
+
+	console.log(mGetStyle(dfood,'fz'))
+	
+	let tokens = o.foodTokens;
+	let len=tokens.length;
+	for (let i = 0; i < Math.min(3, len); i++) {
+		if (i == 2) {mLinebreak(dfood);mDom(dfood,{fz:hTop/5,matop:-gap,maright:gap},{html:'+'});}
+		if (i == 1) mDom(dfood, {fz:hTop/5,matop:gap/2}, { html: len>2||coin()?'+':'/&nbsp;' }); 
+		let t = tokens[i];
+		if (t == 'omni') {
+			let d=mDom(dfood,{matop:i==2?-gap:1});
+			mPizza(d,hTop/4,'red','green','yellow','gray','orange','skyblue');
+		}	else showim1(t, dfood, { sz: hTop/2.8 });
+	}
+	let flist = o.foodlist; console.log(flist);
+	mPlace(dfood, 'tl', 0,0);
+	console.log(o.foodtype);
+
+	let dfoodtype = mDom(dCard, { display: 'inline' }, { html: o.foodtype })
+	mPlace(dfoodtype, 'tl', 40, yLifespan);
+
+
+	//habitat
+	let hcolors = o.ohabitat.colors; //console.log(hcolors)
+	let dHabitat=mDom(dCard,{w:hTop,h:hTop,bg:'#eee',rounding}); mCenterCenterFlex(dHabitat);
+	mPizza(dHabitat, hTop-10, ...hcolors);//mDom(dCard, {}, { html: generatePizzaSvg(50, ...hcolors) });
+	mPlace(dHabitat, 'tr', 0,0);
+
+	return item;
+
+	//food
+	//wieviel food soll das ding essen?
+	let list = o.foodTokens;
+	console.log(list);
+	let nlist = range(list.length);
+	list = arrTake(list, 3);
+	let plusor = nlist > 2 ? '+' : nlist == 2 ? coin() ? '+' : '/' : coin() ? '+' : '';
+
+	showim1(difood[foodtype], dfood, { sz: 30 });
+
+
+
+
+
+}
+function mist() {
+
+	let foodtype = extractFoodType(o.food); //console.log(key,foodtype)
+	let difood = { omnivorous: 'pot_of_food', carnivorous: 'poultry_leg', herbivorous: 'seedling', insectivorous: 'ant' }
+	let dfood = mDom(dCard); //,{bg:'silver',round:true,}); //,{},{html:foodtype});
+	showim1(difood[foodtype], dfood, { sz: 30 });
+	mPlace(dfood, 'tl', 10, 0)
+
+	let weight = calcNumericInfo(o.weight, { kg: 1000, g: 1, mg: .001 }, 'kg');
+	let size = calcNumericInfo(o.size, { cm: .01, centimeter: .01, mm: .001, millimeter: .001, meter: 1, m: 1 }, 'm');
+	let offs = calcOffsprings(o.offsprings);
+
+	o.foodType = foodtype;
+	o.difood = difood;
+	o.weight = weight;
+	o.size = size;
+	o.offsprings = offs;
+	//console.log(key,offs.text);
+
+	addKeys(card, o)
+	//mLinebreak(d)
+
+	return o;
+
+}
 function showInfoCard(key, d) {
 
 	let o = getDetailedSuperdi(key);

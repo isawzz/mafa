@@ -326,7 +326,7 @@ function cBlank(dParent, styles = {}, opts = {}) {
 	if (nundef(styles.w)) styles.w = styles.h * .7;
 	if (nundef(styles.bg)) styles.bg = 'white';
 	styles.position = 'relative';
-	if (nundef(styles.rounding)) styles.rounding = Math.min(styles.w, styles.h) * .05;
+	if (nundef(styles.rounding)) styles.rounding = Math.min(styles.w, styles.h) / 21;
 	addKeys({ className: 'card' }, opts);
 	let d = mDom(dParent, styles, opts);
 	opts.type = 'card';
@@ -2491,40 +2491,6 @@ function extractFilesFromHtml(html, htmlfile, ext = 'js') {
 	files = files2;
 	return files;
 }
-function extractFoodType(s, easy = true, key = null) {
-	s = s.toLowerCase();
-	let words = toWords(s, true).map(x => strRemoveTrailing(x, 's'));
-	if (easy) {
-		for (const t of ['omni', 'herbi', 'carni', 'insecti']) {
-			if (s.includes(t)) return t + 'vorous';
-		}
-	}
-	let herbi = M.byCat.plant; herbi = herbi.concat(['plant', 'berries', 'grasses', 'leave', 'tree', 'twig', 'fruit', 'grass', 'grain']);
-	let carni = M.byCat.animal; carni = carni.concat(['animal'])
-	let insecti = ['insect', 'worm', 'ant', 'fly', 'flies']
-	let di = { herbi, carni, insecti };
-	let types = [];
-	let contained = [];
-	for (const type in di) {
-		let arr = di[type];
-		for (const a of arr) {
-			let w = strRemoveTrailing(a, 's'); //console.log('w',w)
-			let o = M.superdi[a];
-			if (isdef(o) && words.includes(o.friendly) || words.includes(w)) {
-				let cont = {};
-				if (o) { cont.key = a; cont.cats = o.cats; cont.friendly = o.friendly }
-				else cont.key = w;
-				addIf(contained, cont);
-				addIf(types, type);
-				continue;
-			}
-		}
-	}
-	if (isEmpty(types)) { return 'unknown' }
-	if (types.includes('herbi') && types.length >= 2) return 'omnivorous';
-	else if (types.length >= 2) return 'carnivorous';
-	else return types[0] + 'vorous';
-}
 function extractSpecies(s) {
 	s = s.toLowerCase();
 	let words = toWords(s);
@@ -3068,37 +3034,6 @@ async function gameoverScore(table) {
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
 
-function generatePizzaSvg(sz) {
-	let colors = Array.from(arguments).slice(1);
-	let numSlices = colors.length;
-	if (colors.length !== numSlices) {
-		throw new Error("The number of colors must match the number of slices.");
-	}
-	const radius = sz / 2;
-	const centerX = radius;
-	const centerY = radius;
-	const angleStep = (2 * Math.PI) / numSlices;
-	const svgParts = [];
-	svgParts.push(`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg">`);
-	for (let i = 0; i < numSlices; i++) {
-		const startAngle = i * angleStep;
-		const endAngle = (i + 1) * angleStep;
-		const x1 = centerX + radius * Math.cos(startAngle);
-		const y1 = centerY + radius * Math.sin(startAngle);
-		const x2 = centerX + radius * Math.cos(endAngle);
-		const y2 = centerY + radius * Math.sin(endAngle);
-		const largeArcFlag = angleStep > Math.PI ? 1 : 0;
-		const pathData = [
-			`M ${centerX},${centerY}`, // Move to the center
-			`L ${x1},${y1}`,           // Line to the start of the arc
-			`A ${radius},${radius} 0 ${largeArcFlag} 1 ${x2},${y2}`, // Arc to the end of the slice
-			`Z`                        // Close the path
-		].join(' ');
-		svgParts.push(`<path d="${pathData}" fill="${colors[i]}" />`);
-	}
-	svgParts.push('</svg>');
-	return svgParts.join('\n');
-}
 function generateRandomWords(n, unique = false) {
 	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
 	let randomWords = [];
