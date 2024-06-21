@@ -1,9 +1,18 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test141_card(); }
+async function start() { TESTING = true; await test142_spiel(); }
+
+//#region tierspiel
+async function test142_spiel(){
+  await prelims();
+
+  
+
+}
 
 
+//#region tierspiel cards
 async function test141_card() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
@@ -82,6 +91,7 @@ async function test139_wsCard() {
   let ocard = showInfoCard(key, d);
   let ws = showCardWingspanPortrait(o, d)
 }
+//#endregion
 
 //#region show object details von M.details
 async function test138() {
