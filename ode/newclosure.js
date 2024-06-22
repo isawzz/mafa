@@ -3751,45 +3751,6 @@ function getColormapColors() {
 }
 function getCssVar(varname) { return getComputedStyle(document.body).getPropertyValue(varname); }
 
-function getDetailedSuperdi(key) {
-	let o = M.superdi[key];
-	addKeys(M.details[key], o);
-	addKeys(M.details[o.friendly], o);
-	o.key = key;
-	if (isdef(o.lifespan)) o.olifespan = calcLifespan(o.lifespan);
-	if (isdef(o.food)) {
-		[o.foodlist, o.foodtype] = extractFoodAndType(o.food);
-		let foodTokens = [];
-		if (['berries', 'fruit'].some(x => o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/fruit.svg');
-		if (['fish', 'shrimp', 'squid'].some(x => o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/fish.svg');
-		if (['wheat', 'grain', 'crops'].some(x => o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/wheat.svg');
-		if (o.foodtype.startsWith('insect')) foodTokens.push('../assets/games/wingspan/worm.svg');
-		else if (o.foodtype.startsWith('carni')) foodTokens.push('../assets/games/wingspan/mouse.svg');
-		else if (o.foodtype.startsWith('omni')) foodTokens.push('omni');
-		else if (o.foodtype.startsWith('herbi')) foodTokens.push('../assets/img/emo/seedling.png');
-		o.foodTokens = foodTokens;
-	}
-	if (isdef(o.offsprings)) o.ooffsprings = calcOffsprings(o.offsprings);
-	if (isdef(o.weight)) { o.oweight = calcWeight(o.weight); o.nweight = o.oweight.avg; }
-	if (isdef(o.size)) { o.osize = calcSize(o.size); o.nsize = o.osize.avg; }
-	if (isdef(o.species)) {
-		let x = o.species; o.longSpecies = x; o.species = extractSpecies(x);
-	}
-	if (isdef(o.habitat)) {
-		let text = o.habitat;
-		let ohab = o.ohabitat = { text };
-		let hlist = ohab.list = extractHabitat(text, ['coastal']);
-		let colors = ohab.colors = [];
-		let imgs = ohab.imgs = [];
-		if (['wetland'].some(x => hlist.includes(x))) { colors.push('lightblue'); imgs.push('../assets/games/wingspan/wetland.png'); }
-		if (['dwellings', 'grassland', 'desert'].some(x => hlist.includes(x))) { colors.push('goldenrod'); imgs.push('../assets/games/wingspan/grassland2.png'); }
-		if (['forest', 'mountain', 'ice'].some(x => hlist.includes(x))) { colors.push('emerald'); imgs.push('../assets/games/wingspan/forest1.png'); }
-	}
-	let colors = ['turquoise', 'bluegreen', 'teal', 'brown', 'gray', 'green', 'violet', 'blue', 'black', 'yellow', 'white', 'lavender', 'orange', 'buff', 'red', 'pink', 'golden', 'cream', 'grey', 'sunny', 'beige'];
-	if (isdef(o.color)) o.colors = extractColors(o.color, colors);
-	o = sortDictionary(o);
-	return o;
-}
 function getDetails(key) {
 	let o = getSuperdi(key);
 	let de = valf(M.details[key], M.details[o.friendly]);
@@ -7844,36 +7805,6 @@ async function showCalendarApp() {
 	let d1 = mDiv('dMain', { w: 800, h: 800, margin: 20 }); //, bg: 'white' })
 	let x = DA.calendar = await uiTypeCalendar(d1);
 }
-function showCardWingspanPortrait(o, d, sz = 480) {
-	let item = { o, key: o.key };
-	let card = cBlank(d, { sz, border: 'silver' });
-	let dCard = iDiv(card);
-	let fa = sz / 480;
-	let [rounding, h, w, fz, gap] = [card.rounding, card.h, card.w, 15 * fa, card.w / 36];
-	let szlt = w / 3;
-	let dlt = mDom(dCard, { w: szlt, h: szlt * .9, bg: '#eee' }); mPlace(dlt, 'tl'); dlt.style.borderTopLeftRadius = dlt.style.borderBottomRightRadius = `${rounding}px`; mCenterCenterFlex(dlt);
-	showHabitat(dlt, o.ohabitat, 40 * fa);
-	mLinebreak(dlt, 4 * fa);
-	showFood(dlt, o.foodTokens, szlt, fz);
-	let dtitle = mDom(dCard, { paleft: gap, wmax: szlt * 1.5 }); mPlace(dtitle, 'tl', szlt, gap)
-	mDom(dtitle, { fz: fz * 1.2, weight: 'bold' }, { html: fromNormalized(o.friendly) });
-	mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
-	let [szPic, yPic] = [sz / 2, szlt]
-	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
-	mPlace(d1, 'tr', w / 50, yPic);
-	let szPlatz = sz / 30;
-	let dPlaetze = showPlaetze(dCard, o.ooffsprings.num, szPlatz);
-	mPlace(dPlaetze, 'tl', (w - szPic) / 2, szlt + szPlatz);
-	let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: szlt + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: 'WHEN ACTIVATED: All players gain 1 food from supply.' })
-	let lifespan = calcLifespan(o.lifespan);
-	let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: lifespan.lifespan })
-	mPlace(dlifespan, 'bl', gap);
-	let size = calcSize(o.size);
-	let dsize = mDom(dCard, { fz, display: 'inline' }, { html: size.text })
-	mPlace(dsize, 'br', gap);
-	let value = rChoose(range(1, 3)) * o.foodTokens.length;
-	let dval = mDom(dCard, { fz: fz * 1.8, weight: 'bold' }, { html: value }); mPlace(dval, 'tr', 2 * gap, gap)
-}
 function showChatMessage(o) {
 	let d = mBy('dChatWindow'); if (nundef(d)) return;
 	if (o.user == getUname()) mDom(d, { align: 'right' }, { html: `${o.msg}` })
@@ -8054,29 +7985,6 @@ function showFleetingMessage(msg, dParent, styles = {}, ms = 3000, msDelay = 0, 
 		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), msDelay);
 	} else {
 		TOFleetingMessage = setTimeout(() => fleetingMessage(msg, dFleetingMessage, styles, ms, fade), 10);
-	}
-}
-function showFood(dParent, tokens, w, fz) {
-	let df = mDom(dParent); mCenterCenterFlex(df);
-	let len = tokens.length;
-	let ch = len < 3 && coin() ? '/' : '+';
-	let [szSym, szChar] = [w / 4, w / 9];
-	let tlist = [{ t: tokens[0], sz: szSym }];
-	if (len > 1) { tlist.push({ t: ch, sz: szChar }); tlist.push({ t: tokens[1], sz: szSym }) }
-	if (len > 2) { tlist.push({ t: ch, sz: szChar }); tlist.push({ t: tokens[2], sz: szSym }) }
-	for (const x of tlist) {
-		let d = mDom(df, { w: x.sz }); //,bg:rColor()}); 
-		mCenterCenterFlex(d);
-		let c = x.t;
-		if (c == '+') { d.innerHTML = c; mStyle(d, { fz }) }
-		else if (c == '/') { d.innerHTML = c; mStyle(d, { fz }) }
-		else if (c.includes('.')) {
-			let img = showim1(c, d, { w: x.sz });
-			if (c.includes('mouse')) mStyle(img, { matop: fz / 4 })
-		} else {
-			let szimg = x.sz * .7;
-			let img = showim1('../assets/games/wingspan/pie2.png', d, { w: szimg, h: szimg });//mStyle(img,{round:true})
-		}
 	}
 }
 async function showGameMenu(gamename) {
@@ -8359,28 +8267,6 @@ function showRibbon(dParent, msg) {
 	let bg = `linear-gradient(270deg, #fffffd, #00000080)`
 	d = mDom(dParent, { bg, mabottom: 10, align: 'center', vpadding: 10, fz: 30, w100: true }, { html: msg, id: 'ribbon' });
 	return d;
-}
-async function showTable(id) {
-	let me = getUname();
-	let table = await mGetRoute('table', { id });  //console.log('table',table)
-	if (!table) { showMessage('table deleted!'); return await showTables('showTable'); }
-	let func = DA.funcs[table.game];
-	T = table;
-	clearMain();
-	let d = mBy('dExtraLeft');
-	d.innerHTML = `<h2>${getGameProp('friendly').toUpperCase()}: ${table.friendly} (${table.step})</h2>`; // title
-	d = mDom('dMain'); mCenterFlex(d);
-	mDom(d, { className: 'instruction' }, { id: 'dInstruction' }); mLinebreak(d); // instruction
-	mDom(d, {}, { id: 'dStats' }); mLinebreak(d);
-	func.stats(table);
-	let minTableSize = 400;
-	let dTable = mDom(d, { hmin: minTableSize, wmin: minTableSize, margin: 20, round: true, className: 'wood' }, { id: 'dTable' });
-	mCenterCenter(dTable);
-	let items = func.present(table);
-	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
-	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);
-	await updateTestButtonsPlayers(table);
-	func.activate(table, items);
 }
 async function showTables(from) {
 	await updateTestButtonsLogin();

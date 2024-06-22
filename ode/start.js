@@ -1,27 +1,38 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test142_spiel(); }
+async function start() { TESTING = true; await test_swSymbols(); }
 
 //#region tierspiel
 async function test142_spiel(){
   await prelims();
 
-  
+
 
 }
 
-
 //#region tierspiel cards
+async function test_swSymbols(){
+  let d = clearFlex({bg:'silver'});
+  let d1=mDom(d,{bg:'green',w:25,h:25},{tag:'img',src:'../assets/games/wingspan/worm.svg'});
+}
+async function test_swSymbols_omni(){
+  let d = clearFlex({bg:'silver'});
+
+  let svgcode = generatePizzaSvg(50,'red','yellow','blue','orange','green');
+  console.log(svgcode)
+
+  let d1=mDom(d,{bg:'green',w:25,h:25},{tag:'img',src:'../assets/games/wingspan/pie3.svg'});
+}
 async function test141_card() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
-  //keys = ['panther','arctic_fox','bear','eagle']; //,'bear','wasp']; //console.log(M.details.dragonfly); //return;
+  keys = ['arctic_fox'];// panther bear eagle arctic_fox wasp
   let items = [];
   for (const key of keys) {
     //console.log('___', key);
     let o = getDetailedSuperdi(key); 
-    let ocard = showCardWingspanPortrait(o,d,300);
+    let ocard = showCardWingspanPortrait(o,d,600);
     items.push(ocard);
     // showPlaetze(ocard.dPlaetze,rChoose([1,2,3]),'sienna')
     //break;
