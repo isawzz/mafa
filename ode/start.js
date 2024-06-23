@@ -3,43 +3,10 @@ onload = start;
 async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; await test151_card(); }
 
-function wsCard(d, w, h) {
-  let card = cBlank(d, { h, w, border: 'silver' }); //return;
-  let dCard = iDiv(card);
-  return [card, dCard];
-}
-function wsTopLeft(dCard, sztop, rounding) {
-  let dtop = mDom(dCard, { w: sztop, h: sztop, bg: '#ccc' });
-  mPlace(dtop, 'tl');
-  dtop.style.borderTopLeftRadius = dtop.style.borderBottomRightRadius = `${rounding}px`;
-  mCenterCenterFlex(dtop);
-  return dtop;
-}
-function wsHabitat(tokens, dtop, sz) {
-  for (let i = 0; i < tokens.length; i++) {
-    let t = tokens[i];
-    if (i == 2) mLinebreak(dtop);
-    let d = wsPrintSymbol(dtop, sz, t);
-    if (i == 2) mStyle(d, { matop: -sz * 3 / 2 });
-  }
-}
-function wsFood(tokens, dtop, sz) {
-  let d = mDom(dtop); mCenterCenterFlex(d);
-  let ch = tokens.length == 2 && coin() ? '/' : '+';
-  for (let i = 0; i < tokens.length; i++) {
-    let t = tokens[i];
-    let d1 = wsPrintSymbol(d, sz, t);
-    if (i != 2) mDom(d, { fz: sz * .7 }, { html: ch });
-  }
-}
-function wsTitle(o, dCard, sztop, fz, gap) {
-  let dtitle = mDom(dCard, { paleft: gap, wmax: sztop * 1.5 }); mPlace(dtitle, 'tl', sztop, gap)
-  mDom(dtitle, { fz: fz * 1.1, weight: 'bold' }, { html: fromNormalized(o.friendly) });
-  mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
-}
 async function test151_card() {
   await prelims();
   let key = ['arctic_fox'];
+  
   let o = getDetailedSuperdi(key);
   let item = jsCopy(o);
 
