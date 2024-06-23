@@ -451,7 +451,7 @@ function calcLifespan(s) {
 		unit = stringAfter(lifespan, ' ');
 	}
 	unit = unit[0];
-	return { s, lifespan, num, unit };
+	return { s, text:lifespan, num, unit };
 }
 function calcNumericInfo(str, diunit, base) {
 	if (nundef(str)) return { str: '', num: 0, base, text: '' };
@@ -3205,34 +3205,6 @@ async function gameoverScore(table) {
 }
 function generateEventId(tsDay, tsCreated) { return `${rLetter()}_${tsDay}_${tsCreated}`; }
 
-function generatePizzaSvg(sz) {
-	let colors = Array.from(arguments).slice(1);
-	let numSlices = colors.length;
-	const radius = sz / 2;
-	const centerX = radius;
-	const centerY = radius;
-	const angleStep = (2 * Math.PI) / numSlices;
-	const svgParts = [];
-	svgParts.push(`<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" xmlns="http://www.w3.org/2000/svg">`);
-	for (let i = 0; i < numSlices; i++) {
-		const startAngle = i * angleStep;
-		const endAngle = (i + 1) * angleStep;
-		const x1 = centerX + radius * Math.cos(startAngle);
-		const y1 = centerY + radius * Math.sin(startAngle);
-		const x2 = centerX + radius * Math.cos(endAngle);
-		const y2 = centerY + radius * Math.sin(endAngle);
-		const largeArcFlag = angleStep > Math.PI ? 1 : 0;
-		const pathData = [
-			`M ${centerX},${centerY}`, // Move to the center
-			`L ${x1},${y1}`,           // Line to the start of the arc
-			`A ${radius},${radius} 0 ${largeArcFlag} 1 ${x2},${y2}`, // Arc to the end of the slice
-			`Z`                        // Close the path
-		].join(' ');
-		svgParts.push(`<path d="${pathData}" fill="${colors[i]}" />`);
-	}
-	svgParts.push('</svg>');
-	return svgParts.join('\n');
-}
 function generateRandomWords(n, unique = false) {
 	const sampleWords = ['apple', 'banana', 'cherry', 'date', 'elderberry', 'fig', 'grape', 'honeydew', 'kiwi', 'lemon', 'mango', 'nectarine', 'orange', 'papaya', 'quince', 'raspberry', 'strawberry', 'tangerine', 'ugli', 'victoria plum', 'watermelon', 'xigua', 'yuzu', 'zucchini'];
 	let randomWords = [];
@@ -8077,14 +8049,6 @@ function showGames(ms = 500) {
 		mDiv(d1, { fz: 18, align: 'center' }, null, g.friendly);
 	}
 }
-function showHabitat(dParent, ohab, h) {
-	for (let i = 0; i < ohab.imgs.length; i++) {
-		let c = ohab.colors[i];
-		if (c == 'gray') continue;
-		let d = showim1(ohab.imgs[i], dParent, { h, round: true, bg: c, 'clip-path': PolyClips.diamond })
-		if (i == 2) mStyle(d, { matop: -h }); //-20})
-	}
-}
 function showImage(key, dParent, styles = {}, useSymbol = false) {
 	let o = M.superdi[key];
 	if (nundef(o)) { console.log('showImage:key not found', key); return; }
@@ -8256,11 +8220,12 @@ function showPaletteText(dParent, list) {
 	}
 	return items;
 }
-function showPlaetze(dCard, n, szPlatz) {
+function showPlaetze(dCard, n, gap) {
 	let plaetze = nundef(n) ? 2 : n == 0 ? 0 : n == 1 ? 1 : n < 8 ? 2 : n < 25 ? 3 : n < 100 ? 4 : n < 1000 ? 5 : 6;
-	let dPlaetze = mDom(dCard, { w: szPlatz, gap: szPlatz / 2 }); mCenterFlex(dPlaetze);
-	for (const i of range(plaetze)) { mDom(dPlaetze, { round: true, w: szPlatz, h: szPlatz, border: 'silver' }); }
-	return dPlaetze;
+	//let dPlaetze = mDom(dCard, { w: szPlatz, gap: szPlatz / 2 }); mCenterFlex(dPlaetze);
+	let dgrid = mGrid(3,2,dCard,{w:3*gap,h:5*gap,gap:gap/2});
+	for (const i of range(plaetze)) { mDom(dgrid, { round: true, w: gap, h: gap, border: 'silver' }); }
+	return dgrid; //dPlaetze;
 }
 function showRibbon(dParent, msg) {
 	let d = mBy('ribbon'); if (isdef(d)) d.remove();

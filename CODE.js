@@ -1,5 +1,185 @@
 
+//#region 23.6.24
+async function test151_card() { //showCard
+  await prelims();
+  let key = ['arctic_fox'];
+  let o = getDetailedSuperdi(key);
+  let item = jsCopy(o);
+
+  let d = clearFlex();
+  let fa = 1;
+  let [w, h, sztop, sz, gap, fz] = [340, 500, 100, 30, 8, 16].map(x => x * fa);
+
+  let [card, dCard] = wsCard(d, w, h);
+  let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
+  addKeys(card,item);
+
+  //o.habTokens.push('wetland');
+  wsHabitat(o.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
+  wsFood(o.foodTokens, dtop, sz * .8);
+  wsTitle(o, dCard, sztop, fz, gap);
+
+	let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
+	let dval = mDom(dCard, { fz: fz * 1.8, weight: 'bold' }, { html: value }); 
+	mPlace(dval, 'tl', 2 * gap, szTop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
+
+  let [szPic, yPic] = [h / 2, sztop+gap]
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tr', gap, yPic);
+
+	//let symbol=
+  let szPlatz = h / 30; o.ooffsprings.num=60000;
+	let dPlaetze = item.live.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, gap*2); //szPlatz);
+	mPlace(dPlaetze, 'cl', (w-szPic)/2-3*gap,5*gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
+	
+	let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
+	let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
+	item.power = dbrown.innerHTML;
+	
+  let dinfo=mDom(dCard,{fz,hpadding:gap,box:true,w100:true});
+	mPlace(dinfo, 'bl');mFlexLine(dinfo,'space-between');
+  mDom(dinfo,{},{html:o.class});
+  mDom(dinfo,{},{html:o.olifespan.text});
+  mDom(dinfo,{},{html:o.osize.text});
+	// let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: `${o.class.toLowerCase()} ${o.olifespan.text}` })
+	// mPlace(dlifespan, 'bl', gap);
+
+	// let dsize = mDom(dCard, { fz, display: 'inline' }, { html: o.osize.text })
+	// mPlace(dsize, 'br', gap);
+
+  // let dclass = mDom(dCard, { fz, display: 'inline' }, { html: o.class });
+	// mPlace(dsize, 'br', gap);
+
+
+  console.log(item)
+
+}
+function showHabitat(dParent, ohab, h) {
+	for (let i = 0; i < ohab.imgs.length; i++) {
+		let c = ohab.colors[i];
+		if (c == 'gray') continue;
+		let d = showim1(ohab.imgs[i], dParent, { h, round: true, bg: c, 'clip-path': PolyClips.diamond })
+		if (i == 2) mStyle(d, { matop: -h }); //-20})
+	}
+}
+function showCardWingspanPortrait(o, d, h) {
+	let item = { o, key: o.key };
+	let fa = h / 250;
+	let w = 170 * fa;
+	console.log(h,w,fa)
+	let card = cBlank(d, { h, w, border: 'silver' }); //return;
+	let dCard = iDiv(card);
+	addKeys(card,item);
+
+	let [rounding, fz, gap] = [card.rounding, 8 * fa, w / 36];
+	let wtop = w / 3.5;
+	let htop=wtop*1.1;
+	let dlt = mDom(dCard, { w: wtop, h: htop, bg: '#ccc' }); mPlace(dlt, 'tl'); dlt.style.borderTopLeftRadius = dlt.style.borderBottomRightRadius = `${rounding}px`; mCenterCenterFlex(dlt);
+
+	
+	showHabitat(dlt, o.ohabitat, 16 * fa);
+	mLinebreak(dlt, 3 * fa);
+
+	//console.log(o.foodTokens); //return item;
+	showFood(dlt, o.foodTokens, wtop, fz); return item;
+
+	let dtitle = mDom(dCard, { paleft: gap, wmax: wtop * 1.5 }); mPlace(dtitle, 'tl', wtop, gap)
+	mDom(dtitle, { fz: fz * 1.2, weight: 'bold' }, { html: fromNormalized(o.friendly) });
+	mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
+
+	let [szPic, yPic] = [h / 2, wtop+gap]
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tr', w / 50, yPic);
+
+	let szPlatz = h / 30;
+	let dPlaetze = item.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, szPlatz);
+	mPlace(dPlaetze, 'tl', (w - szPic) / 2, wtop + szPlatz);
+	
+	let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
+	let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: wtop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
+	item.power = dbrown.innerHTML;
+	
+	let lifespan = item.lifespan = calcLifespan(o.lifespan);
+	let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: lifespan.lifespan })
+	mPlace(dlifespan, 'bl', gap);
+
+	let size = item.size = calcSize(o.size);
+	let dsize = mDom(dCard, { fz, display: 'inline' }, { html: size.text })
+	mPlace(dsize, 'br', gap);
+	
+	let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
+	let dval = mDom(dCard, { fz: fz * 1.8, weight: 'bold' }, { html: value }); mPlace(dval, 'tr', 2 * gap, gap)
+	
+	return item;
+}
+function wsPrintSymbol(dParent, sz, key) {
+	let files = {
+		cherries: '../assets/games/wingspan/fruit.svg',
+		fish: '../assets/games/wingspan/fish.svg',
+		forest: '../assets/games/wingspan/forest1.png',
+		grain: '../assets/games/wingspan/wheat.svg',
+		grassland: '../assets/games/wingspan/grassland2.png',
+		mouse: '../assets/games/wingspan/mouse.svg',
+		omni: '../assets/games/wingspan/pie3.svg',
+		seedling: '../assets/img/emo/seedling.png',
+		wetland: '../assets/games/wingspan/wetland.png',
+		worm: '../assets/games/wingspan/worm.svg',
+	};
+	let keys = Object.keys(files);
+	// if (key == 'omni') {
+	// 	mDom(dParent, { w: sz, h: sz, matop:-sz/1.4 }, { html: generatePizzaSvg(sz, 'red', 'yellow', 'blue', 'orange', 'green') });
+	// } else {
+		let styles = { w: sz, h: sz,  };
+		if (['wetland','grassland','forest'].includes(key)) styles['clip-path']=PolyClips.diamond;
+		if (key == 'wetland') styles.bg = 'lightblue';
+		else if (key == 'grassland') styles.bg = 'goldenrod';
+		else if (key == 'forest') styles.bg = 'darkgreen';
+		mDom(dParent, styles, { tag: 'img', width: sz, height: sz, src: files[valf(key, rChoose(keys))] });
+	// }
+
+	//wsDrawWorm(dParent,{w:sz,h:sz,sz});
+}
+
 //#region 22.6.24 simple game editor
+function getDetailedSuperdi(key) {
+	let o = M.superdi[key];
+	addKeys(M.details[key], o);
+	addKeys(M.details[o.friendly], o);
+	o.key = key;
+	if (isdef(o.lifespan)) o.olifespan = calcLifespan(o.lifespan);
+	if (isdef(o.food)) {
+		[o.foodlist, o.foodtype] = extractFoodAndType(o.food);
+		let foodTokens = [];
+		if (['berries', 'fruit'].some(x => o.foodlist.includes(x))) foodTokens.push(wsDrawCherries);//'../assets/games/wingspan/fruit.svg');
+		if (['fish', 'shrimp', 'squid'].some(x => o.foodlist.includes(x))) foodTokens.push(wsDrawFish); //'../assets/games/wingspan/fish.svg');
+		if (['wheat', 'grain', 'crops'].some(x => o.foodlist.includes(x))) foodTokens.push(wsDrawGrain); //'../assets/games/wingspan/wheat.svg');
+		if (o.foodtype.startsWith('insect')) foodTokens.push(wsDrawWorm); //'../assets/games/wingspan/worm.svg');
+		else if (o.foodtype.startsWith('carni')) foodTokens.push(wsDrawMouse); //'../assets/games/wingspan/mouse.svg');
+		else if (o.foodtype.startsWith('omni')) foodTokens.push(wsDrawOmni); //'../assets/games/wingspan/pie2.png'); //'omni');
+		else if (o.foodtype.startsWith('herbi')) foodTokens.push(wsDrawSeedling); //'../assets/img/emo/seedling.png');
+		o.foodTokens = foodTokens;
+	}
+	if (isdef(o.offsprings)) o.ooffsprings = calcOffsprings(o.offsprings);
+	if (isdef(o.weight)) { o.oweight = calcWeight(o.weight); o.nweight = o.oweight.avg; }
+	if (isdef(o.size)) { o.osize = calcSize(o.size); o.nsize = o.osize.avg; }
+	if (isdef(o.species)) {
+		let x = o.species; o.longSpecies = x; o.species = extractSpecies(x);
+	}
+	if (isdef(o.habitat)) {
+		let text = o.habitat;
+		let ohab = o.ohabitat = { text };
+		let hlist = ohab.list = extractHabitat(text, ['coastal']);
+		let colors = ohab.colors = [];
+		let imgs = ohab.imgs = [];
+		if (['wetland'].some(x => hlist.includes(x))) { colors.push('lightblue'); imgs.push('../assets/games/wingspan/wetland.png'); }
+		if (['dwellings', 'grassland', 'desert'].some(x => hlist.includes(x))) { colors.push('goldenrod'); imgs.push('../assets/games/wingspan/grassland2.png'); }
+		if (['forest', 'mountain', 'ice'].some(x => hlist.includes(x))) { colors.push('emerald'); imgs.push('../assets/games/wingspan/forest1.png'); }
+	}
+	let colors = ['turquoise', 'bluegreen', 'teal', 'brown', 'gray', 'green', 'violet', 'blue', 'black', 'yellow', 'white', 'lavender', 'orange', 'buff', 'red', 'pink', 'golden', 'cream', 'grey', 'sunny', 'beige'];
+	if (isdef(o.color)) o.colors = extractColors(o.color, colors);
+	o = sortDictionary(o);
+	return o;
+}
 function showFood(dParent, tokens, w, fz) {
 	let df = mDom(dParent); mCenterCenterFlex(df);
 	let len = tokens.length;

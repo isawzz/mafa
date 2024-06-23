@@ -1,42 +1,53 @@
+function showCardWingspanPortrait(o, d, h) {
+	let item = { o, key: o.key };
+	let fa = h / 250;
+	let w = 170 * fa;
+	console.log(h,w,fa)
+	let card = cBlank(d, { h, w, border: 'silver' }); //return;
+	let dCard = iDiv(card);
+	addKeys(card,item);
 
-function getDetailedSuperdi(key) {
-	let o = M.superdi[key];
-	addKeys(M.details[key], o);
-	addKeys(M.details[o.friendly], o);
-	o.key = key;
-	if (isdef(o.lifespan)) o.olifespan = calcLifespan(o.lifespan);
-	if (isdef(o.food)) {
-		[o.foodlist, o.foodtype] = extractFoodAndType(o.food);
-		let foodTokens = [];
-		if (['berries', 'fruit'].some(x => o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/fruit.svg');
-		if (['fish', 'shrimp', 'squid'].some(x => o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/fish.svg');
-		if (['wheat', 'grain', 'crops'].some(x => o.foodlist.includes(x))) foodTokens.push('../assets/games/wingspan/wheat.svg');
-		if (o.foodtype.startsWith('insect')) foodTokens.push('../assets/games/wingspan/worm.svg');
-		else if (o.foodtype.startsWith('carni')) foodTokens.push('../assets/games/wingspan/mouse.svg');
-		else if (o.foodtype.startsWith('omni')) foodTokens.push('../assets/games/wingspan/pie2.png'); //'omni');
-		else if (o.foodtype.startsWith('herbi')) foodTokens.push('../assets/img/emo/seedling.png');
-		o.foodTokens = foodTokens;
-	}
-	if (isdef(o.offsprings)) o.ooffsprings = calcOffsprings(o.offsprings);
-	if (isdef(o.weight)) { o.oweight = calcWeight(o.weight); o.nweight = o.oweight.avg; }
-	if (isdef(o.size)) { o.osize = calcSize(o.size); o.nsize = o.osize.avg; }
-	if (isdef(o.species)) {
-		let x = o.species; o.longSpecies = x; o.species = extractSpecies(x);
-	}
-	if (isdef(o.habitat)) {
-		let text = o.habitat;
-		let ohab = o.ohabitat = { text };
-		let hlist = ohab.list = extractHabitat(text, ['coastal']);
-		let colors = ohab.colors = [];
-		let imgs = ohab.imgs = [];
-		if (['wetland'].some(x => hlist.includes(x))) { colors.push('lightblue'); imgs.push('../assets/games/wingspan/wetland.png'); }
-		if (['dwellings', 'grassland', 'desert'].some(x => hlist.includes(x))) { colors.push('goldenrod'); imgs.push('../assets/games/wingspan/grassland2.png'); }
-		if (['forest', 'mountain', 'ice'].some(x => hlist.includes(x))) { colors.push('emerald'); imgs.push('../assets/games/wingspan/forest1.png'); }
-	}
-	let colors = ['turquoise', 'bluegreen', 'teal', 'brown', 'gray', 'green', 'violet', 'blue', 'black', 'yellow', 'white', 'lavender', 'orange', 'buff', 'red', 'pink', 'golden', 'cream', 'grey', 'sunny', 'beige'];
-	if (isdef(o.color)) o.colors = extractColors(o.color, colors);
-	o = sortDictionary(o);
-	return o;
+	let [rounding, fz, gap] = [card.rounding, 8 * fa, w / 36];
+	let wtop = w / 3.5;
+	let htop=wtop*1.1;
+	let dlt = mDom(dCard, { w: wtop, h: htop, bg: '#ccc' }); mPlace(dlt, 'tl'); dlt.style.borderTopLeftRadius = dlt.style.borderBottomRightRadius = `${rounding}px`; mCenterCenterFlex(dlt);
+
+	
+	showHabitat(dlt, o.ohabitat, 16 * fa);
+	mLinebreak(dlt, 3 * fa);
+
+	//console.log(o.foodTokens); //return item;
+	showFood(dlt, o.foodTokens, wtop, fz); return item;
+
+	let dtitle = mDom(dCard, { paleft: gap, wmax: wtop * 1.5 }); mPlace(dtitle, 'tl', wtop, gap)
+	mDom(dtitle, { fz: fz * 1.2, weight: 'bold' }, { html: fromNormalized(o.friendly) });
+	mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
+
+	let [szPic, yPic] = [h / 2, wtop+gap]
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tr', w / 50, yPic);
+
+	let szPlatz = h / 30;
+	let dPlaetze = item.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, szPlatz);
+	mPlace(dPlaetze, 'tl', (w - szPic) / 2, wtop + szPlatz);
+	
+	let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
+	let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: wtop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
+	item.power = dbrown.innerHTML;
+	
+	let lifespan = item.lifespan = calcLifespan(o.lifespan);
+	let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: lifespan.lifespan })
+	mPlace(dlifespan, 'bl', gap);
+
+	let size = item.size = calcSize(o.size);
+	let dsize = mDom(dCard, { fz, display: 'inline' }, { html: size.text })
+	mPlace(dsize, 'br', gap);
+	
+	let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
+	let dval = mDom(dCard, { fz: fz * 1.8, weight: 'bold' }, { html: value }); mPlace(dval, 'tr', 2 * gap, gap)
+	
+	return item;
 }
+
 
 

@@ -1,28 +1,338 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test_swSymbols(); }
+async function start() { TESTING = true; await test151_card(); }
+
+function wsCard(d, w, h) {
+  let card = cBlank(d, { h, w, border: 'silver' }); //return;
+  let dCard = iDiv(card);
+  return [card, dCard];
+}
+function wsTopLeft(dCard, sztop, rounding) {
+  let dtop = mDom(dCard, { w: sztop, h: sztop, bg: '#ccc' });
+  mPlace(dtop, 'tl');
+  dtop.style.borderTopLeftRadius = dtop.style.borderBottomRightRadius = `${rounding}px`;
+  mCenterCenterFlex(dtop);
+  return dtop;
+}
+function wsHabitat(tokens, dtop, sz) {
+  for (let i = 0; i < tokens.length; i++) {
+    let t = tokens[i];
+    if (i == 2) mLinebreak(dtop);
+    let d = wsPrintSymbol(dtop, sz, t);
+    if (i == 2) mStyle(d, { matop: -sz * 3 / 2 });
+  }
+}
+function wsFood(tokens, dtop, sz) {
+  let d = mDom(dtop); mCenterCenterFlex(d);
+  let ch = tokens.length == 2 && coin() ? '/' : '+';
+  for (let i = 0; i < tokens.length; i++) {
+    let t = tokens[i];
+    let d1 = wsPrintSymbol(d, sz, t);
+    if (i != 2) mDom(d, { fz: sz * .7 }, { html: ch });
+  }
+}
+function wsTitle(o, dCard, sztop, fz, gap) {
+  let dtitle = mDom(dCard, { paleft: gap, wmax: sztop * 1.5 }); mPlace(dtitle, 'tl', sztop, gap)
+  mDom(dtitle, { fz: fz * 1.1, weight: 'bold' }, { html: fromNormalized(o.friendly) });
+  mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
+}
+async function test151_card() {
+  await prelims();
+  let key = ['arctic_fox'];
+  let o = getDetailedSuperdi(key);
+  let item = jsCopy(o);
+
+  let d = clearFlex();
+  let fa = 1;
+  let [w, h, sztop, sz, gap, fz] = [340, 500, 100, 30, 8, 16].map(x => x * fa);
+
+  let [card, dCard] = wsCard(d, w, h);
+  let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
+  addKeys(card,item);
+
+  //o.habTokens.push('wetland');
+  wsHabitat(o.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
+  wsFood(o.foodTokens, dtop, sz * .8);
+  wsTitle(o, dCard, sztop, fz, gap);
+
+  let [szPic, yPic] = [h / 2, sztop+gap]
+	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+	mPlace(d1, 'tr', gap, yPic);
+
+  let leftBorderOfPic = w-(szPic+gap);
+
+	let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
+	let dval = mDom(dCard, { fz: fz * 1.8, weight: 'bold' }, { html: value }); 
+	mPlace(dval, 'tl', sztop/2-gap,sztop+gap); //(w-szPic)/2-3*gap, sztop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
+
+  let sym=getAbstractSymbol(range(5));
+  let a=showim1(sym,dCard,{w:sz,h:sz,bg:'silver',fg:'black'});
+  mPlace(a,'tl',sztop/2-sz,sztop*2)
+
+
+  let szPlatz = h / 30; o.ooffsprings.num=60000;
+	let dPlaetze = item.live.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, gap*2); //szPlatz);
+	mPlace(dPlaetze, 'cl', (w-szPic)/2-3*gap,5*gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
+	
+	let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
+	let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
+	item.power = dbrown.innerHTML;
+	
+  let dinfo=mDom(dCard,{fz,hpadding:gap,box:true,w100:true});
+	mPlace(dinfo, 'bl');mFlexLine(dinfo,'space-between');
+  mDom(dinfo,{},{html:o.class});
+  mDom(dinfo,{},{html:o.olifespan.text});
+  mDom(dinfo,{},{html:o.osize.text});
+	// let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: `${o.class.toLowerCase()} ${o.olifespan.text}` })
+	// mPlace(dlifespan, 'bl', gap);
+
+	// let dsize = mDom(dCard, { fz, display: 'inline' }, { html: o.osize.text })
+	// mPlace(dsize, 'br', gap);
+
+  // let dclass = mDom(dCard, { fz, display: 'inline' }, { html: o.class });
+	// mPlace(dsize, 'br', gap);
+
+
+  console.log(item)
+
+}
+async function test150_mist() {
+  let d = clearFlex();
+
+  //let x=50; //wsDrawWorm(d,{bg:'blue',w:x,h:x}); return;
+  //let x=50; let d1=mDom(d,{bg:'silver',w:50,h:50}); wsPrintSymbol(d1,x,'omni'); return;
+
+  let fa = 1.25;
+  let [w, h, sz] = [100, 100, 10].map(x => x * fa);
+
+  let grid = mGrid(10, 10, d, { w, h, bg: 'red' });
+  let ohab = getOhab();
+
+  for (const i of range(100)) {
+    //showim1(ohab.imgs[i%3], grid, { w:sz,h:sz }); //, bg: c, 'clip-path': PolyClips.diamond })
+    let key = rChoose(['cherries', 'fish', 'forest', 'grain', 'grassland', 'mouse', 'seedling', 'wetland', 'worm', 'omni']);
+    wsPrintSymbol(grid, sz, key); //'omni'); 
+  }
+}
+
+async function test146_card() {
+  await prelims(); //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  keys = ['arctic_fox'];// panther bear eagle arctic_fox wasp
+  let items = [];
+  let fa = .25; //1.25;
+  for (const key of keys) {
+    let o = getDetailedSuperdi(key);
+    let [w, h, wtop, htop, hhab, hfood] = [170, 250, 60, 64, 20, 16].map(x => fa * x);
+    let card = cBlank(d, { h, w, border: 'silver' });
+    let [rounding] = [card.rounding];
+    let dCard = iDiv(card);
+    let dlt = mDom(dCard, { w: wtop, h: htop, bg: '#ccc' });
+    let dParent = dlt;
+    mPlace(dlt, 'tl');
+    dlt.style.borderTopLeftRadius = dlt.style.borderBottomRightRadius = `${rounding}px`;
+    //mCenterCenterFlex(dlt);
+
+    let ohab = o.ohabitat; console.log(ohab.imgs);
+    let colors = ohab.colors = [];
+    let imgs = ohab.imgs = [];
+    colors.push('lightblue'); imgs.push('../assets/games/wingspan/wetland.png');
+    colors.push('goldenrod'); imgs.push('../assets/games/wingspan/grassland2.png');
+    colors.push('emerald'); imgs.push('../assets/games/wingspan/forest1.png');
+    for (let i = 0; i < ohab.imgs.length; i++) {
+      let c = ohab.colors[i];
+      if (c == 'gray') continue;
+      if (i == 2) mLinebreak(dParent);
+      let d = showim1(ohab.imgs[i], dParent, { h: hhab, bg: c, 'clip-path': PolyClips.diamond })
+      if (i == 2) mStyle(d, { matop: -hhab / 2 });
+    }
+
+
+    // mLinebreak(dlt,0);
+
+    let html = `<img width='${hfood}' height='${hfood}' src='../assets/img/emo/seedling.png' />`;
+    let d1 = mDom(dParent, {}, { html })
+
+    break;
+    html = `
+		<svg width="${hfood}" height="${hfood}" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+				<g transform="matrix(1.6,0,0,1.6,-540,-540)">
+						<g transform="matrix(8.59167,0,0,8.59167,432.85,422.626)">
+								<g>
+										<path d="M0,-5.356C-0.427,-5.356 -0.825,-5.247 -1.184,-5.07L-1.487,-6.86C-1.18,-7.11 -0.839,-7.331 -0.47,-7.508C0.341,-7.901 1.273,-8.154 2.148,-8.241L2.17,-8.243C2.227,-8.249 2.283,-8.262 2.338,-8.282C2.695,-8.415 2.877,-8.811 2.745,-9.168C2.612,-9.524 2.216,-9.706 1.859,-9.574C0.872,-9.208 -0.018,-8.809 -0.897,-8.288C-1.327,-8.022 -1.751,-7.73 -2.127,-7.365C-2.478,-7.028 -2.813,-6.676 -3.154,-6.309C-3.37,-6.078 -3.566,-5.826 -3.752,-5.566C-3.756,-5.566 -3.759,-5.568 -3.763,-5.568L-5.106,-5.582C-5.308,-6.864 -6.41,-7.847 -7.749,-7.847C-9.233,-7.847 -10.435,-6.645 -10.435,-5.162C-10.435,-3.679 -9.233,-2.476 -7.749,-2.476C-6.304,-2.476 -5.134,-3.62 -5.074,-5.051L-4.184,-4.886C-4.394,-4.515 -4.579,-4.131 -4.719,-3.739C-4.942,-3.129 -5.117,-2.511 -5.27,-1.883C-6.879,-1.753 -8.148,-0.421 -8.148,1.221C-8.148,2.949 -6.748,4.35 -5.019,4.35C-3.291,4.35 -1.89,2.949 -1.89,1.221C-1.89,-0.297 -2.973,-1.562 -4.408,-1.846C-4.278,-2.39 -4.122,-2.933 -3.938,-3.457C-3.647,-4.336 -3.233,-5.136 -2.609,-5.816C-2.452,-5.994 -2.279,-6.162 -2.1,-6.327L-1.724,-4.714C-2.307,-4.221 -2.686,-3.493 -2.686,-2.67C-2.686,-1.187 -1.483,0.016 0,0.016C1.484,0.016 2.686,-1.187 2.686,-2.67C2.686,-4.153 1.484,-5.356 0,-5.356" style="fill:rgb(152,21,49);fill-rule:nonzero;"/>
+								</g>
+						</g>
+				</g>
+		</svg>
+    `;
+    d1 = mDom(dParent, {}, { html })
+
+    // html = generatePizzaSvg(hfood, 'red', 'yellow', 'blue', 'orange', 'green');
+    // d1=mDom(dParent,{},{html});
+
+    html = `
+      <svg width="${hfood}" height="${hfood}" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+          <g transform="matrix(1.9,0,0,1.8,-655,-980)">
+              <g transform="matrix(7.70232,0,0,7.70232,-3403,-873.691)">
+                  <g>
+                      <g>
+                          <g transform="matrix(1,0,0,1,487.796,189.11)">
+                              <path d="M0,-2.293C0.445,-1.498 1.102,-0.729 1.282,-0.522C1.462,-0.316 3.41,-0.035 4.113,0.01C3.948,-0.403 3.671,-0.749 3.079,-1.281C2.586,-1.724 2.109,-1.963 1.47,-2.084C1.11,-2.152 0.279,-2.303 0,-2.293" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(0.807192,0.590289,0.590289,-0.807192,489.51,186.325)">
+                              <path d="M0.599,0.015C0.869,0.113 1.467,0.126 1.68,0.173C1.017,0.749 0.85,1.614 0.599,1.67C0.348,1.727 -0.747,1.767 -1.127,1.674C-1.066,1.536 -0.423,0.405 0.599,0.015" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(1,0,0,1,493.462,188.018)">
+                              <path d="M0,-0.85C-0.107,-1.338 -1.235,-2.168 -1.841,-2.459C-1.935,-2.155 -2.079,-1.594 -2.053,-1.056C-2.024,-0.467 -1.76,0.211 -1.407,0.615C-1.055,1.019 -0.183,1.515 0.13,1.609C0.128,1.597 0.126,1.586 0.124,1.574C-0.042,0.499 0.107,-0.361 0,-0.85" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(1,0,0,1,493.524,194.883)">
+                              <path d="M0,-2.513C-1.031,-2.522 -1.653,-2.448 -2.565,-2.524C-2.161,-1.814 -1.315,-0.599 -0.557,-0.253C0.201,0.094 1.4,-0.3 2.482,-0.291C2.697,-0.289 3.439,-0.2 3.657,-0.152C3.551,-0.509 3.087,-1.833 2.6,-2.147C1.889,-2.607 1.577,-2.5 0,-2.513" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(1,0,0,1,496.22,189.606)">
+                              <path d="M0,-0.012C-0.375,-1.259 -1.609,-2.115 -2.317,-2.551C-2.342,-1.879 -2.343,-1.374 -2.21,-0.514C-2.049,0.535 -1.946,0.574 -1.451,1.053C-1.175,1.319 -0.283,2.43 0.145,2.539C0.145,2.539 0.144,0.467 0,-0.012" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(-0.506442,0.862274,0.862274,0.506442,497.305,197.132)">
+                              <path d="M-1.454,-1.812C-0.793,-3.066 -0.232,-3.44 0.202,-4.508C0.816,-2.36 0.396,0.388 -1.454,1.136C-1.693,1.232 -0.925,0.982 -1.454,1.136C-1.409,0.584 -2.027,-0.726 -1.454,-1.812" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(1,0,0,1,496.942,193.86)">
+                              <path d="M0,-2.164C-0.197,-0.955 0.514,0.481 0.88,0.901C1.246,1.32 1.926,2.192 2.218,2.336C3.808,0.963 1.265,-2.639 0.213,-3.845C0.017,-4.069 -0.193,-4.287 -0.415,-4.5C-0.415,-4.5 -0.002,-3.337 0,-2.164" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(0.658061,-0.752964,-0.752964,-0.658061,489.682,185.285)">
+                              <path d="M-1.083,-0.492C-0.929,-0.19 -0.7,0.149 -0.362,0.372C-0.023,0.597 -1.083,2.385 -1.083,2.385C-1.083,2.385 -1.281,0.976 -1.678,0.238C-1.494,0.048 -1.282,-0.197 -1.083,-0.492" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(1,0,0,1,493.645,189.424)">
+                              <path d="M0,2.503C0.135,2.509 1.42,2.539 1.55,2.55C1.235,2.005 0.612,1.245 0.031,0.771C-0.532,0.313 -1.45,0.27 -2.369,0.204C-2.97,0.161 -3.964,-0.039 -4.563,-0.047C-4.309,0.6 -3.575,1.878 -3.04,2.181C-2.504,2.485 -1.165,2.457 0,2.503" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                          <g transform="matrix(1,0,0,1,498.162,197.672)">
+                              <path d="M0,-0.974C0.138,-0.91 0.295,-0.809 0.427,-0.701C0.564,-0.594 0.684,-0.467 0.803,-0.344C0.906,-0.218 0.995,-0.088 1.06,0.052C1.119,0.181 1.236,0.44 1.251,0.547L2.018,-0.089C1.867,-0.346 1.481,-0.74 1.316,-0.866C0.983,-1.134 0.56,-1.408 0.317,-1.521L0,-0.974Z" style="fill:rgb(195,116,45);fill-rule:nonzero;"/>
+                          </g>
+                      </g>
+                  </g>
+              </g>
+          </g>
+      </svg>
+    `;
+    d1 = mDom(dParent, {}, { html });
+
+
+    break;
+
+
+    let dOuter = mDom(dParent); mCenterFlex(dOuter);
+    let tokens = rChoose([wsDrawCherries, wsDrawFish, wsDrawGrain, wsDrawMouse, wsDrawOmni, wsDrawSeedling, wsDrawWorm], 1)
+    let last = arrLast(tokens);
+    let ch = tokens.length == 2 && coin() ? '/' : '+';
+    for (const t of tokens) {
+      wsDrawFoodToken(dOuter, t, hfood);
+      let d1 = mDom(dOuter, { h: hfood }); mCenterCenterFlex(d1);
+      if (t == last) break;
+      //mDom(d1,{fz:8},{html:'+'})
+
+      // if (t != last) {
+      // 	//let d1=mDom(dOuter,{h:sz});mCenterCenterFlex(d1);
+      // 	mDom(dOuter, { fz,matop:sz/2 }, { html: ch })
+      // }
+    }
+
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async function test145_card() {
+  await prelims(); //return;
+  let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
+  keys = ['arctic_fox'];// panther bear eagle arctic_fox wasp
+  let items = [];
+  for (const key of keys) {
+    //console.log('___', key);
+    let o = getDetailedSuperdi(key);
+    let ocard = showCardWingspanPortrait(o, d, 100);
+    items.push(ocard);
+    // showPlaetze(ocard.dPlaetze,rChoose([1,2,3]),'sienna')
+    //break;
+  }
+  // let res = mCluster(items,x=>x.o.ohabitat.list,x=>`${x.key}: ${x.o.habitat}`);
+}
+
+
+
+
+
+
+
+
+async function test145_swSymbols() {
+  let d = clearFlex({ bg: 'silver' });
+  let sz = 25;
+  wsDrawGrain(d, { w: sz, h: sz, bg: 'white' });
+}
+async function test144_worm() {
+  let d = clearFlex();
+  let sz = 50;
+  let d1 = mDom(d, { w: sz, h: sz, bg: 'red' });
+  let html = `
+    <svg width="100" height="100" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+        <g transform="matrix(1,0,0,1,-344,-152)">
+            <g transform="matrix(7.14802,0,0,7.14802,-2977.16,-1174.38)">
+                <g id="ws-1">
+                    <g id="worm">
+                        <g transform="matrix(1,0,0,1,467.653,195.772)">
+                            <path d="M0,-8.535C-0.018,-8.351 -0.038,-8.047 -0.036,-7.798C-0.033,-7.536 -0.021,-7.275 0.007,-7.021C0.06,-6.511 0.179,-6.031 0.35,-5.619C0.432,-5.41 0.538,-5.226 0.648,-5.059C0.75,-4.905 0.789,-4.895 0.869,-4.838C1.013,-4.757 1.318,-4.665 1.782,-4.653C2.239,-4.635 2.789,-4.679 3.406,-4.729C3.718,-4.754 4.049,-4.779 4.42,-4.788C4.792,-4.794 5.204,-4.792 5.732,-4.686C6.694,-4.473 7.445,-4.057 8.093,-3.608C8.416,-3.38 8.716,-3.139 8.999,-2.886C9.14,-2.758 9.278,-2.629 9.413,-2.493C9.556,-2.348 9.664,-2.238 9.84,-2.031L9.993,-1.85C10.704,-1.01 10.599,0.248 9.758,0.959C8.918,1.67 7.66,1.564 6.95,0.724C6.866,0.626 6.79,0.513 6.729,0.404C6.711,0.373 6.616,0.251 6.548,0.17C6.473,0.08 6.394,-0.009 6.313,-0.096C6.152,-0.269 5.983,-0.43 5.815,-0.575C5.479,-0.863 5.134,-1.063 4.895,-1.148C4.821,-1.18 4.615,-1.217 4.37,-1.231C4.125,-1.248 3.839,-1.252 3.535,-1.254C2.922,-1.259 2.237,-1.25 1.464,-1.348C0.709,-1.447 -0.233,-1.666 -1.075,-2.345C-1.479,-2.669 -1.84,-3.145 -2.029,-3.534C-2.22,-3.903 -2.374,-4.283 -2.48,-4.66C-2.701,-5.417 -2.79,-6.164 -2.792,-6.886C-2.795,-7.247 -2.774,-7.603 -2.74,-7.957C-2.701,-8.323 -2.657,-8.633 -2.563,-9.056C-2.408,-9.76 -1.711,-10.205 -1.007,-10.049C-0.355,-9.906 0.075,-9.297 0.011,-8.649L0,-8.535Z" style="fill:rgb(0,95,82);fill-rule:nonzero;"/>
+                        </g>
+                        <g transform="matrix(-0.516885,-0.856055,-0.856055,0.516885,474.654,198.339)">
+                            <path d="M-0.369,-0.653C-0.561,-0.652 -0.716,-0.461 -0.716,-0.223C-0.716,0.015 -0.561,0.208 -0.369,0.208C-0.177,0.208 -0.021,0.016 -0.021,-0.223C-0.021,-0.46 -0.177,-0.653 -0.369,-0.653" style="fill:rgb(0,95,82);fill-rule:nonzero;"/>
+                        </g>
+                        <g transform="matrix(1,0,0,1,474.892,196.692)">
+                            <path d="M0,1.752C0.014,1.561 0.041,1.419 0.072,1.26C0.114,1.108 0.14,0.954 0.209,0.811C0.272,0.66 0.356,0.52 0.439,0.401C0.515,0.27 0.593,0.149 0.661,0L1.046,0.377C0.917,0.433 0.806,0.524 0.705,0.613C0.614,0.715 0.525,0.806 0.489,0.922C0.451,1.042 0.417,1.168 0.427,1.297C0.431,1.42 0.458,1.564 0.518,1.653L0,1.752Z" style="fill:rgb(0,95,82);fill-rule:nonzero;"/>
+                        </g>
+                        <g transform="matrix(0.516885,0.856055,0.856055,-0.516885,479.321,195.111)">
+                            <path d="M0.369,-0.208C0.561,-0.208 0.716,-0.015 0.716,0.222C0.716,0.461 0.56,0.653 0.369,0.653C0.176,0.653 0.021,0.46 0.021,0.222C0.021,-0.016 0.177,-0.208 0.369,-0.208" style="fill:rgb(0,95,82);fill-rule:nonzero;"/>
+                        </g>
+                        <g transform="matrix(1,0,0,1,479.355,194.874)">
+                            <path d="M0,0.679C-0.051,0.585 -0.166,0.495 -0.273,0.434C-0.382,0.364 -0.51,0.336 -0.633,0.314C-0.753,0.293 -0.874,0.329 -1.008,0.362C-1.134,0.41 -1.266,0.465 -1.375,0.554L-1.53,0.038C-1.367,0.047 -1.223,0.034 -1.072,0.028C-0.927,0.01 -0.764,0 -0.602,0.015C-0.443,0.02 -0.295,0.069 -0.14,0.102C0.015,0.148 0.152,0.191 0.329,0.267L0,0.679Z" style="fill:rgb(0,95,82);fill-rule:nonzero;"/>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </svg>
+    `;
+  d1.innerHTML = html
+}
 
 //#region tierspiel
-async function test142_spiel(){
+async function test142_spiel() {
   await prelims();
-
+  await switchToMainMenu('table');
 
 
 }
 
 //#region tierspiel cards
-async function test_swSymbols(){
-  let d = clearFlex({bg:'silver'});
-  let d1=mDom(d,{bg:'green',w:25,h:25},{tag:'img',src:'../assets/games/wingspan/worm.svg'});
+async function test_swSymbols() {
+  let d = clearFlex({ bg: 'silver' });
+  let d1 = mDom(d, { bg: 'green', w: 25, h: 25 }, { tag: 'img', src: '../assets/games/wingspan/worm.svg' });
 }
-async function test_swSymbols_omni(){
-  let d = clearFlex({bg:'silver'});
+async function test_swSymbols_omni() {
+  let d = clearFlex({ bg: 'silver' });
 
-  let svgcode = generatePizzaSvg(50,'red','yellow','blue','orange','green');
+  let svgcode = generatePizzaSvg(50, 'red', 'yellow', 'blue', 'orange', 'green');
   console.log(svgcode)
 
-  let d1=mDom(d,{bg:'green',w:25,h:25},{tag:'img',src:'../assets/games/wingspan/pie3.svg'});
+  let d1 = mDom(d, { bg: 'green', w: 25, h: 25 }, { tag: 'img', src: '../assets/games/wingspan/pie3.svg' });
 }
 async function test141_card() {
   await prelims(); //return;
@@ -31,38 +341,38 @@ async function test141_card() {
   let items = [];
   for (const key of keys) {
     //console.log('___', key);
-    let o = getDetailedSuperdi(key); 
-    let ocard = showCardWingspanPortrait(o,d,600);
+    let o = getDetailedSuperdi(key);
+    let ocard = showCardWingspanPortrait(o, d, 600);
     items.push(ocard);
     // showPlaetze(ocard.dPlaetze,rChoose([1,2,3]),'sienna')
     //break;
   }
   // let res = mCluster(items,x=>x.o.ohabitat.list,x=>`${x.key}: ${x.o.habitat}`);
 }
-async function test141_allFoods(){
+async function test141_allFoods() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
   //keys = ['wasp']; //console.log(M.details.dragonfly); //return;
   let foods = [];
   for (const key of keys) {
     // console.log('___', key);
-    let o = getDetailedSuperdi(key); 
-    let [contained,types] = extractFoods(o.food);
-    contained.map(x=>addIf(foods,x.key));
+    let o = getDetailedSuperdi(key);
+    let [contained, types] = extractFoods(o.food);
+    contained.map(x => addIf(foods, x.key));
 
   }
-  console.log('foods',foods)
+  console.log('foods', foods)
 }
-async function test140_habitat(){
+async function test140_habitat() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
   let items = [];
-  for (const key of keys) { items.push(getDetailedSuperdi(key)) }; 
+  for (const key of keys) { items.push(getDetailedSuperdi(key)) };
 
 
-  for(const o of items){
+  for (const o of items) {
     let hcolors = o.ohabitat.colors; console.log(hcolors)
-    let x=mPizza(d,50,...hcolors);
+    let x = mPizza(d, 50, ...hcolors);
   }
 
 
@@ -77,19 +387,19 @@ async function test139_species() {
   let items = [];
   for (const key of keys) {
     console.log('___', key);
-    let o = getDetailedSuperdi(key); 
+    let o = getDetailedSuperdi(key);
     //console.log(o.ooffsprings.num); if (nundef(o.ooffsprings.num)) break;
     //console.log(o.ohabitat.list)
-    let ocard = showCardWingspanPortrait(o,d);
+    let ocard = showCardWingspanPortrait(o, d);
     items.push(ocard);
-    
-    showPlaetze(ocard.dPlaetze,rChoose([1,2,3]),'sienna')
+
+    showPlaetze(ocard.dPlaetze, rChoose([1, 2, 3]), 'sienna')
     //console.log(o.species)
     //let x=extractSpecies(o.species);
     //console.log('species',x)
   }
 
-  let res = mCluster(items,x=>x.o.ohabitat.list,x=>`${x.key}: ${x.o.habitat}`);
+  let res = mCluster(items, x => x.o.ohabitat.list, x => `${x.key}: ${x.o.habitat}`);
   //console.log(res)
 
 }
