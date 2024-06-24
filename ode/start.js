@@ -4,9 +4,9 @@ async function start() { TESTING = true; await prelims(); }
 async function start() { TESTING = true; await test151_card(); }
 
 async function test151_card() {
-  await prelims();
+  await prelims(); //return;
   let key = ['arctic_fox'];
-  
+
   let o = getDetailedSuperdi(key);
   let item = jsCopy(o);
 
@@ -16,49 +16,52 @@ async function test151_card() {
 
   let [card, dCard] = wsCard(d, w, h);
   let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
-  addKeys(card,item);
+  addKeys(card, item);
 
   //o.habTokens.push('wetland');
   wsHabitat(o.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
   wsFood(o.foodTokens, dtop, sz * .8);
   wsTitle(o, dCard, sztop, fz, gap);
 
-  let [szPic, yPic] = [h / 2, sztop+gap]
-	let d1 = showim1(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
-	mPlace(d1, 'tr', gap, yPic);
+  let [szPic, yPic] = [h / 2, sztop + gap]
+  let d1 = showim2(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+  mPlace(d1, 'tr', gap, yPic);
 
-  let leftBorderOfPic = w-(szPic+gap);
+  let leftBorderOfPic = w - (szPic + gap);
+  let dleft = mDom(dCard, { w: leftBorderOfPic, h: szPic / 2 }); mPlace(dleft, 'tl', gap / 2, sztop + gap);
+  mCenterCenterFlex(dleft);
 
-	let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
-	let dval = mDom(dCard, { fz: fz * 1.8, weight: 'bold' }, { html: value }); 
-	mPlace(dval, 'tl', sztop/2-gap,sztop+gap); //(w-szPic)/2-3*gap, sztop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
+  let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
+  let dval = mDom(dleft, { w: sz * 1.2, align: 'center', fz: fz * 1.8, weight: 'bold' }, { html: value });
+  // mPlace(dval, 'tl', sztop/2-gap,sztop+gap); //(w-szPic)/2-3*gap, sztop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
+  mLinebreak(dleft, 2 * gap)
 
-  let sym=getAbstractSymbol(range(5));
-  let a=showim1(sym,dCard,{w:sz,h:sz,bg:'silver',fg:'black'});
-  mPlace(a,'tl',sztop/2-sz,sztop*2)
+  let sym = item.abstract = getAbstractSymbol([2, 4, 8, 23, 26]);
+  let a = showim2(sym, dleft, { w: sz * 1.2, h: sz * 1.2, fg: 'silver' });
+  // mPlace(a,'tl',sztop/2-gap,sztop*2)
 
 
-  let szPlatz = h / 30; o.ooffsprings.num=60000;
-	let dPlaetze = item.live.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, gap*2); //szPlatz);
-	mPlace(dPlaetze, 'cl', (w-szPic)/2-3*gap,5*gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
-	
-	let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
-	let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
-	item.power = dbrown.innerHTML;
-	
-  let dinfo=mDom(dCard,{fz,hpadding:gap,box:true,w100:true});
-	mPlace(dinfo, 'bl');mFlexLine(dinfo,'space-between');
-  mDom(dinfo,{},{html:o.class});
-  mDom(dinfo,{},{html:o.olifespan.text});
-  mDom(dinfo,{},{html:o.osize.text});
-	// let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: `${o.class.toLowerCase()} ${o.olifespan.text}` })
-	// mPlace(dlifespan, 'bl', gap);
+  let szPlatz = h / 30; o.ooffsprings.num = 60000;
+  let dPlaetze = item.live.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, gap * 2); //szPlatz);
+  mPlace(dPlaetze, 'cl', (w - szPic) / 2 - 3 * gap, 5 * gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
 
-	// let dsize = mDom(dCard, { fz, display: 'inline' }, { html: o.osize.text })
-	// mPlace(dsize, 'br', gap);
+  let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
+  let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
+  item.power = dbrown.innerHTML;
+
+  let dinfo = mDom(dCard, { fz, hpadding: gap, box: true, w100: true });
+  mPlace(dinfo, 'bl'); mFlexLine(dinfo, 'space-between');
+  mDom(dinfo, {}, { html: o.class });
+  mDom(dinfo, {}, { html: o.olifespan.text });
+  mDom(dinfo, {}, { html: o.osize.text });
+  // let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: `${o.class.toLowerCase()} ${o.olifespan.text}` })
+  // mPlace(dlifespan, 'bl', gap);
+
+  // let dsize = mDom(dCard, { fz, display: 'inline' }, { html: o.osize.text })
+  // mPlace(dsize, 'br', gap);
 
   // let dclass = mDom(dCard, { fz, display: 'inline' }, { html: o.class });
-	// mPlace(dsize, 'br', gap);
+  // mPlace(dsize, 'br', gap);
 
 
   console.log(item)
@@ -77,12 +80,11 @@ async function test150_mist() {
   let ohab = getOhab();
 
   for (const i of range(100)) {
-    //showim1(ohab.imgs[i%3], grid, { w:sz,h:sz }); //, bg: c, 'clip-path': PolyClips.diamond })
+    //showim2(ohab.imgs[i%3], grid, { w:sz,h:sz }); //, bg: c, 'clip-path': PolyClips.diamond })
     let key = rChoose(['cherries', 'fish', 'forest', 'grain', 'grassland', 'mouse', 'seedling', 'wetland', 'worm', 'omni']);
     wsPrintSymbol(grid, sz, key); //'omni'); 
   }
 }
-
 async function test146_card() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
@@ -111,7 +113,7 @@ async function test146_card() {
       let c = ohab.colors[i];
       if (c == 'gray') continue;
       if (i == 2) mLinebreak(dParent);
-      let d = showim1(ohab.imgs[i], dParent, { h: hhab, bg: c, 'clip-path': PolyClips.diamond })
+      let d = showim2(ohab.imgs[i], dParent, { h: hhab, bg: c, 'clip-path': PolyClips.diamond })
       if (i == 2) mStyle(d, { matop: -hhab / 2 });
     }
 
@@ -208,16 +210,6 @@ async function test146_card() {
 
 
 
-
-
-
-
-
-
-
-
-
-
 async function test145_card() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
@@ -233,14 +225,6 @@ async function test145_card() {
   }
   // let res = mCluster(items,x=>x.o.ohabitat.list,x=>`${x.key}: ${x.o.habitat}`);
 }
-
-
-
-
-
-
-
-
 async function test145_swSymbols() {
   let d = clearFlex({ bg: 'silver' });
   let sz = 25;
@@ -707,8 +691,8 @@ function rest() {
 
   // let b1=mButton('dummy',null,dParent,{opacity:0}); b1.focus();
 
-  // //showim1('hallo','dMain',)
-  // //let sz=100; showim1('halloss', 'dMain', { position:'absolute',top:0,left:0, 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `red 3px solid` });
+  // //showim2('hallo','dMain',)
+  // //let sz=100; showim2('halloss', 'dMain', { position:'absolute',top:0,left:0, 'object-position': 'center top', 'object-fit': 'cover', h: sz, w: sz, round: true, border: `red 3px solid` });
   // //await switchToUser('mitra');
   // //await switchToMainMenu('simple')
   // //was will ich genau?
