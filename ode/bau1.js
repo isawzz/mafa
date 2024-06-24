@@ -8,10 +8,18 @@ function showim2(imgKey, d, styles = {}, opts = {}) {
 	let [w, h] = mSizeSuccession(styles, 40);
 	addKeys({ w, h }, styles)
 
-	if (nundef(src)) src = rChoose(M.allImages).path;
+	//if (nundef(src)) src = rChoose(M.allImages).path;
+	let el=null;
+	if (nundef(o) && nundef(src)) 
+	if (isdef(src)) el = mDom(d, styles, { tag: 'img', src });
+	else if (nundef(o) ) 
+	else if (isdef(o.text)) el = mDom(d1, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d1, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.fa6)) el = mDom(d1, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 
-	let img = mDom(d, styles, { tag: 'img', src });
-	return img;
+
+	return el;
 }
 
 
