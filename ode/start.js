@@ -5,18 +5,54 @@ async function start() { TESTING = true; await test151_card(); }
 
 async function test151_card() {
   await prelims(); //return;
+  let d = clearFlex();
   let key = ['arctic_fox'];
+  let item = wsShowCard(key,d,1.5);   
+  
+  console.log(item);
+  let fen=wsCardInfo(item); 
+  
+  console.log(fen);
+  //return;
+  let item1=wsFromCardInfo(fen,d,1);
 
+}
+function wsGenerateCardInfo(key){
+  let bg=item.colorPower=valf(colorPower,rChoose(['white','sienna','pink','lightblue']));
+  let palette = ['gold','limegreen','orangered','dodgerblue']; if (bg!='white') palette.push(bg); 
+  let fg=item.colorSym=valf(colorSym,rChoose(palette)); //console.log(palette)
+  sym = item.abstract = valf(sym,getAbstractSymbol([2, 4, 8, 23, 26]));
+  power = valf(power,'WHEN ACTIVATED: All players gain 1 food from supply.');
+  value = item.value = valf(value,rChoose(range(1, 3)) * o.foodTokens.length);
+}
+function wsCardInfo(item){
+  return `${item.key}@${item.value}@${normalizeString(item.power,'_',[':','.'])}@${item.colorPower}@${item.abstract}@${item.colorSym}`;
+}
+function wsFromNormalized(s,sep='_') {
+	let x = replaceAll(s, sep, ' '); return x;
+}
+
+function wsFromCardInfo(s,d,sz){
+  let [key,value,power,colorPower,sym,colorSym]=s.split('@');
+  power = wsFromNormalized(power); //console.log('power',power)
+  power = stringBefore(power,':').toUpperCase()+':'+stringAfter(power,':');
+  return wsShowCard(key,d,sz,Number(value),power,colorPower,sym,colorSym);
+}
+function wsShowCard(key,d,fa,value,power,colorPower,sym,colorSym){
   let o = getDetailedSuperdi(key);
   let item = jsCopy(o);
-
-  let d = clearFlex();
-  let fa = 1;
   let [w, h, sztop, sz, gap, fz] = [340, 500, 100, 30, 8, 16].map(x => x * fa);
 
   let [card, dCard] = wsCard(d, w, h);
   let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
   addKeys(card, item);
+
+  let bg=item.colorPower=valf(colorPower,rChoose(['white','sienna','pink','lightblue']));
+  let palette = ['gold','limegreen','orangered','dodgerblue']; if (bg!='white') palette.push(bg); 
+  let fg=item.colorSym=valf(colorSym,rChoose(palette)); //console.log(palette)
+  sym = item.abstract = valf(sym,getAbstractSymbol([2, 4, 8, 23, 26]));
+  power = valf(power,'WHEN ACTIVATED: All players gain 1 food from supply.');
+  value = item.value = valf(value,rChoose(range(1, 3)) * o.foodTokens.length);
 
   //o.habTokens.push('wetland');
   wsHabitat(o.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
@@ -28,24 +64,23 @@ async function test151_card() {
   mPlace(d1, 'tr', gap, yPic);
 
   let leftBorderOfPic = w - (szPic + gap);
-  let dleft = mDom(dCard, { w: leftBorderOfPic, h: szPic / 2 }); mPlace(dleft, 'tl', gap / 2, sztop + gap);
+  let dleft = mDom(dCard, { w: leftBorderOfPic, h: szPic }); mPlace(dleft, 'tl', gap / 2, sztop + gap);
   mCenterCenterFlex(dleft);
 
-  let value = item.value = rChoose(range(1, 3)) * o.foodTokens.length;
-  let dval = mDom(dleft, { w: sz * 1.2, align: 'center', fz: fz * 1.8, weight: 'bold' }, { html: value });
+  let dval = mDom(dleft, { fg, w: sz * 1.2, align: 'center', fz: fz * 1.8, weight: 'bold' }, { html: value });
   // mPlace(dval, 'tl', sztop/2-gap,sztop+gap); //(w-szPic)/2-3*gap, sztop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
   mLinebreak(dleft, 2 * gap)
 
-  let sym = item.abstract = getAbstractSymbol([2, 4, 8, 23, 26]);
-  let a = showim2(sym, dleft, { w: sz * 1.2, h: sz * 1.2, fg: 'silver' });
+  let szSym=sz*1.5; 
+  let a = showim2(sym, dleft, { w: szSym, h: szSym, fg });
   // mPlace(a,'tl',sztop/2-gap,sztop*2)
+  mLinebreak(dleft, 3 * gap)
 
-  let szPlatz = h / 30; o.ooffsprings.num = 60000;
-  let dPlaetze = item.live.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, gap * 2); //szPlatz);
-  mPlace(dPlaetze, 'cl', (w - szPic) / 2 - 3 * gap, 5 * gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
+  //let szPlatz = h / 30; //o.ooffsprings.num =1;
+  let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, o.ooffsprings.num, gap * 2); //szPlatz);
+  //mPlace(dPlaetze, 'cl', (w - szPic) / 2 - 3 * gap, 5 * gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
 
-  let power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
-  let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + szPlatz, w100: true, bg: 'sienna', fg: 'white', box: true }, { html: power })
+  let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap*2, w100: true, bg, fg: 'contrast', box: true }, { html: power })
   item.power = dbrown.innerHTML;
 
   let dinfo = mDom(dCard, { fz, hpadding: gap, box: true, w100: true });
@@ -62,8 +97,7 @@ async function test151_card() {
   // let dclass = mDom(dCard, { fz, display: 'inline' }, { html: o.class });
   // mPlace(dsize, 'br', gap);
 
-
-  console.log(item)
+  return item;
 
 }
 async function test150_mist() {

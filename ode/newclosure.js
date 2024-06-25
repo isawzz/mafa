@@ -3048,8 +3048,8 @@ function formatLegend(key) {
 }
 function from01ToPercent(x) { return Math.round(Number(x) * 100); }
 
-function fromNormalized(s) {
-	let x = replaceAll(s, '_', ' ');
+function fromNormalized(s,sep='_') {
+	let x = replaceAll(s, sep, ' ');
 	let words = toWords(x).map(x => capitalize(x)).join(' ');
 	return words;
 }
@@ -6278,10 +6278,10 @@ function nextLine(ctx, rest, color) {
 	if (line) line.map(p => drawPix(ctx, p.x, p.y, color));
 	return { val, line, rest, color };
 }
-function normalizeString(s, sep = '_') {
+function normalizeString(s, sep = '_', keep=[]) {
 	s = s.toLowerCase().trim();
 	let res = '';
-	for (let i = 0; i < s.length; i++) { if (isAlphaNum(s[i])) res += s[i]; else res += sep; }
+	for (let i = 0; i < s.length; i++) { if (isAlphaNum(s[i]) || keep.includes(s[i])) res += s[i]; else res += sep; }
 	return res;
 }
 function nundef(x) { return x === null || x === undefined || x === 'undefined'; }
@@ -8220,11 +8220,12 @@ function showPaletteText(dParent, list) {
 	}
 	return items;
 }
-function showPlaetze(dCard, n, gap) {
+function showPlaetze(dCard, n, gap, color='silver') {
 	let plaetze = nundef(n) ? 2 : n == 0 ? 0 : n == 1 ? 1 : n < 8 ? 2 : n < 25 ? 3 : n < 100 ? 4 : n < 1000 ? 5 : 6;
 	//let dPlaetze = mDom(dCard, { w: szPlatz, gap: szPlatz / 2 }); mCenterFlex(dPlaetze);
-	let dgrid = mGrid(3,2,dCard,{w:3*gap,h:5*gap,gap:gap/2});
-	for (const i of range(plaetze)) { mDom(dgrid, { round: true, w: gap, h: gap, border: 'silver' }); }
+	let [rows,cols,w]=[3,plaetze<=3?1:2,plaetze<=3?gap:3*gap]
+	let dgrid = mGrid(3,cols,dCard,{gap:gap*.8});//{w,h:5*gap,gap:gap/2});
+	for (const i of range(plaetze)) { mDom(dgrid, { round: true, w: gap, h: gap, border: color }); }
 	return dgrid; //dPlaetze;
 }
 function showRibbon(dParent, msg) {

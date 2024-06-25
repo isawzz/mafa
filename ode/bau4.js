@@ -35,7 +35,7 @@ function showim1(imgKey, d, styles = {}, opts = {}) {
 	return img;
 }
 function showim2(imgKey, d, styles = {}, opts = {}) {
-	let o = lookup(M.superdi, [imgKey]); console.log(imgKey,o)
+	let o = lookup(M.superdi, [imgKey]); //console.log(imgKey,o)
 	let src;
 	if (nundef(o) && imgKey.includes('.')) src = imgKey;
 	else if (isdef(o) && isdef(opts.prefer)) src = valf(o[opts.prefer], o.img);
