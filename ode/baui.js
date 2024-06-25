@@ -4,7 +4,7 @@ function fishgame() {
 
 	function setup(table) {
 		let fen = {};
-		fen.deck = jsCopy(M.byCollection.tierspiel); //rChoose(M.byCollection.tierspiel, 170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
+		fen.deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x)); //rChoose(M.byCollection.tierspiel, 170); //range(4, table.options.numCards); //[4, 5, 6, 7, 8, 9, 10];
 		arrShuffle(fen.deck);
 		for (const name in table.players) {
 			let pl = table.players[name];
@@ -45,9 +45,11 @@ function fishgame() {
 
 		let dCards = mDom(d, { gap: 8 }); mCenterFlex(dCards);
 		let items = [];
-		for (const key of pl.cards) {
-			let o = getDetailedSuperdi(key); 
-			let ocard = showCardWingspanPortrait(o,dCards,250);
+		for (const cinfo of pl.cards) {
+			console.log(cinfo)
+			let ocard = wsFromCardInfo(cinfo,dCards,.5);
+			// let o = getDetailedSuperdi(key); 
+			// let ocard = showCardWingspanPortrait(o,dCards,250);
 			items.push(ocard);
 		}
 
@@ -147,3 +149,147 @@ async function wsPreAction(table,items){
 	console.log()
 }
 
+
+//#region ws cards
+function wsCard(d, w, h) {
+  let card = cBlank(d, { h, w, border: 'silver' }); //return;
+  let dCard = iDiv(card);
+  return [card, dCard];
+}
+function wsCardInfo(item) {
+  return `${item.key}@${item.valueFactor}@${normalizeString(item.power, '_', [':', '.'])}@${item.colorPower}@${item.abstract}@${item.colorSym}@${item.op}`;
+}
+function wsFood(tokens, op, dtop, sz) {
+
+  let d = mDom(dtop); mCenterCenterFlex(d);
+  let ch = op; //tokens.length >= 2 && coin() ? '/' : '+';
+  for (let i = 0; i < tokens.length; i++) {
+    let t = tokens[i];
+    let d1 = wsPrintSymbol(d, sz, t);
+    if (i < tokens.length-1) mDom(d, { fz: sz * .7,weight:'bold' }, { html: ch });
+  }
+}
+function wsFromCardInfo(s, d, sz) {
+  let [key, valueFactor, power, colorPower, sym, colorSym,op] = s.split('@');
+  power = wsFromNormalized(power); //console.log('power',power)
+  power = stringBefore(power, ':').toUpperCase() + ':' + stringAfter(power, ':');
+  return wsShowCard(key, d, sz, Number(valueFactor), power, colorPower, sym, colorSym,op);
+}
+function wsFromNormalized(s, sep = '_') {
+  let x = replaceAll(s, sep, ' '); return x;
+}
+function wsGenerateCardInfo(key) {
+  let bg = rChoose(['white', 'sienna', 'pink', 'lightblue']);
+  let palette = ['gold', 'limegreen', 'orangered', 'dodgerblue']; if (bg != 'white') palette.push(bg);
+  let fg = rChoose(palette);
+  sym = getAbstractSymbol([2, 4, 8, 23, 26]);
+  power = 'WHEN ACTIVATED: All players gain 1 food from supply.';
+  valueFactor = rChoose(range(1, 3));
+	op=rChoose(['+','/']); console.log('op',op)
+	return wsCardInfo({key,valueFactor,power,colorPower:bg,abstract:sym,colorSym:fg,op});
+}
+function wsHabitat(tokens, dtop, sz) {
+  for (let i = 0; i < tokens.length; i++) {
+    let t = tokens[i];
+    if (i == 2) mLinebreak(dtop);
+    let d = wsPrintSymbol(dtop, sz, t);
+    if (i == 2) mStyle(d, { matop: -sz * 3 / 2 });
+  }
+}
+function wsPrintSymbol(dParent, sz, key) {
+	let files = {
+		cherries: '../assets/games/wingspan/fruit.svg',
+		fish: '../assets/games/wingspan/fish.svg',
+		forest: '../assets/games/wingspan/forest1.png',
+		grain: '../assets/games/wingspan/wheat.svg',
+		grassland: '../assets/games/wingspan/grassland2.png',
+		mouse: '../assets/games/wingspan/mouse.svg',
+		omni: '../assets/games/wingspan/pie3.svg',
+		seedling: '../assets/img/emo/seedling.png',
+		wetland: '../assets/games/wingspan/wetland.png',
+		worm: '../assets/games/wingspan/worm.svg',
+	};
+	let keys = Object.keys(files);
+	let styles = { w: sz, h: sz, };
+	if (['wetland', 'grassland', 'forest'].includes(key)) styles['clip-path'] = PolyClips.diamond;
+	if (key == 'wetland') styles.bg = 'lightblue';
+	else if (key == 'grassland') styles.bg = 'goldenrod';
+	else if (key == 'forest') styles.bg = 'emerald';
+	return mDom(dParent, styles, { tag: 'img', width: sz, height: sz, src: files[valf(key, rChoose(keys))] });
+}
+function wsShowCard(key, d, fa, valueFactor, power, colorPower, sym, colorSym,op) {
+  let o = getDetailedSuperdi(key);
+  let item = jsCopy(o);
+  let [w, h, sztop, sz, gap, fz] = [340, 500, 100, 30, 8, 16].map(x => x * fa);
+
+  let [card, dCard] = wsCard(d, w, h);
+  let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
+  addKeys(card, item);
+
+  let bg = item.colorPower = valf(colorPower, rChoose(['white', 'sienna', 'pink', 'lightblue']));
+  let palette = ['gold', 'limegreen', 'orangered', 'dodgerblue']; if (bg != 'white') palette.push(bg);
+  let fg = item.colorSym = valf(colorSym, rChoose(palette)); //console.log(palette)
+  sym = item.abstract = valf(sym, getAbstractSymbol([2, 4, 8, 23, 26]));
+  power = valf(power, 'WHEN ACTIVATED: All players gain 1 food from supply.');
+  valueFactor = item.valueFactor = valf(valueFactor, rChoose(range(1, 3)));
+  let value = item.value = valueFactor * (item.op=='+'?1:o.foodTokens.length);
+
+  //o.habTokens.push('wetland');
+  wsHabitat(o.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
+  wsFood(o.foodTokens, op, dtop, sz * .8);
+  wsTitle(o, dCard, sztop, fz, gap);
+
+  let [szPic, yPic] = [h / 2, sztop + gap]
+  let d1 = showim2(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
+  mPlace(d1, 'tr', gap, yPic);
+
+  let leftBorderOfPic = w - (szPic + gap);
+  let dleft = mDom(dCard, { w: leftBorderOfPic, h: szPic }); mPlace(dleft, 'tl', gap / 2, sztop + gap);
+  mCenterCenterFlex(dleft);
+
+  let dval = mDom(dleft, { fg, w: sz * 1.2, align: 'center', fz: fz * 1.8, weight: 'bold' }, { html: value });
+  // mPlace(dval, 'tl', sztop/2-gap,sztop+gap); //(w-szPic)/2-3*gap, sztop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
+  mLinebreak(dleft, 2 * gap)
+
+  let szSym = sz * 1.5;
+  let a = showim2(sym, dleft, { w: szSym, h: szSym, fg });
+  // mPlace(a,'tl',sztop/2-gap,sztop*2)
+  mLinebreak(dleft, 3 * gap)
+
+  //let szPlatz = h / 30; //o.ooffsprings.num =1;
+  let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, o.ooffsprings.num, gap * 2); //szPlatz);
+  //mPlace(dPlaetze, 'cl', (w - szPic) / 2 - 3 * gap, 5 * gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
+
+  let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap * 3, w100: true, bg, fg: 'contrast', box: true }, { html: power })
+  item.power = dbrown.innerHTML;
+
+  let dinfo = mDom(dCard, { fz, hpadding: gap, box: true, w100: true });
+  mPlace(dinfo, 'bl'); mFlexLine(dinfo, 'space-between');
+  mDom(dinfo, {}, { html: o.class });
+  mDom(dinfo, {}, { html: o.olifespan.text });
+  mDom(dinfo, {}, { html: o.osize.text });
+  // let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: `${o.class.toLowerCase()} ${o.olifespan.text}` })
+  // mPlace(dlifespan, 'bl', gap);
+
+  // let dsize = mDom(dCard, { fz, display: 'inline' }, { html: o.osize.text })
+  // mPlace(dsize, 'br', gap);
+
+  // let dclass = mDom(dCard, { fz, display: 'inline' }, { html: o.class });
+  // mPlace(dsize, 'br', gap);
+
+  return item;
+
+}
+function wsTitle(o, dCard, sztop, fz, gap) {
+  let dtitle = mDom(dCard, { paleft: gap, wmax: sztop * 1.5 }); mPlace(dtitle, 'tl', sztop, gap)
+  mDom(dtitle, { fz: fz * 1.1, weight: 'bold' }, { html: fromNormalized(o.friendly) });
+  mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
+}
+function wsTopLeft(dCard, sztop, rounding) {
+  let dtop = mDom(dCard, { w: sztop, h: sztop, bg: '#ccc' });
+  mPlace(dtop, 'tl');
+  dtop.style.borderTopLeftRadius = dtop.style.borderBottomRightRadius = `${rounding}px`;
+  mCenterCenterFlex(dtop);
+  return dtop;
+}
+//#endregion

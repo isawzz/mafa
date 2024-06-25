@@ -1,103 +1,42 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test151_card(); }
+async function start() { TESTING = true; await test152_spiel(); }
 
+
+//#region tierspiel
+async function test152_spiel() {
+  await prelims();
+  //await switchToMainMenu('table');
+
+
+}
+
+//#region tierspiel cards
+async function test151_cardWiePresent() {
+  await prelims(); //return;
+  let d = clearFlex();
+  let keys = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
+  //let keys = ['arctic_fox'];
+  
+  for(const key of keys){
+    // let item = wsShowCard(key, d, 1); //console.log(item);
+    // let fen = wsCardInfo(item); //console.log(fen);
+    let item1 = wsFromCardInfo(key, d, .5);
+  }
+
+}
 async function test151_card() {
   await prelims(); //return;
   let d = clearFlex();
-  let key = ['arctic_fox'];
-  let item = wsShowCard(key,d,1.5);   
+  let keys = jsCopy(M.byCollection.tierspiel);
+  //let keys = ['arctic_fox'];
   
-  console.log(item);
-  let fen=wsCardInfo(item); 
-  
-  console.log(fen);
-  //return;
-  let item1=wsFromCardInfo(fen,d,1);
-
-}
-function wsGenerateCardInfo(key){
-  let bg=item.colorPower=valf(colorPower,rChoose(['white','sienna','pink','lightblue']));
-  let palette = ['gold','limegreen','orangered','dodgerblue']; if (bg!='white') palette.push(bg); 
-  let fg=item.colorSym=valf(colorSym,rChoose(palette)); //console.log(palette)
-  sym = item.abstract = valf(sym,getAbstractSymbol([2, 4, 8, 23, 26]));
-  power = valf(power,'WHEN ACTIVATED: All players gain 1 food from supply.');
-  value = item.value = valf(value,rChoose(range(1, 3)) * o.foodTokens.length);
-}
-function wsCardInfo(item){
-  return `${item.key}@${item.value}@${normalizeString(item.power,'_',[':','.'])}@${item.colorPower}@${item.abstract}@${item.colorSym}`;
-}
-function wsFromNormalized(s,sep='_') {
-	let x = replaceAll(s, sep, ' '); return x;
-}
-
-function wsFromCardInfo(s,d,sz){
-  let [key,value,power,colorPower,sym,colorSym]=s.split('@');
-  power = wsFromNormalized(power); //console.log('power',power)
-  power = stringBefore(power,':').toUpperCase()+':'+stringAfter(power,':');
-  return wsShowCard(key,d,sz,Number(value),power,colorPower,sym,colorSym);
-}
-function wsShowCard(key,d,fa,value,power,colorPower,sym,colorSym){
-  let o = getDetailedSuperdi(key);
-  let item = jsCopy(o);
-  let [w, h, sztop, sz, gap, fz] = [340, 500, 100, 30, 8, 16].map(x => x * fa);
-
-  let [card, dCard] = wsCard(d, w, h);
-  let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
-  addKeys(card, item);
-
-  let bg=item.colorPower=valf(colorPower,rChoose(['white','sienna','pink','lightblue']));
-  let palette = ['gold','limegreen','orangered','dodgerblue']; if (bg!='white') palette.push(bg); 
-  let fg=item.colorSym=valf(colorSym,rChoose(palette)); //console.log(palette)
-  sym = item.abstract = valf(sym,getAbstractSymbol([2, 4, 8, 23, 26]));
-  power = valf(power,'WHEN ACTIVATED: All players gain 1 food from supply.');
-  value = item.value = valf(value,rChoose(range(1, 3)) * o.foodTokens.length);
-
-  //o.habTokens.push('wetland');
-  wsHabitat(o.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
-  wsFood(o.foodTokens, dtop, sz * .8);
-  wsTitle(o, dCard, sztop, fz, gap);
-
-  let [szPic, yPic] = [h / 2, sztop + gap]
-  let d1 = showim2(o.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
-  mPlace(d1, 'tr', gap, yPic);
-
-  let leftBorderOfPic = w - (szPic + gap);
-  let dleft = mDom(dCard, { w: leftBorderOfPic, h: szPic }); mPlace(dleft, 'tl', gap / 2, sztop + gap);
-  mCenterCenterFlex(dleft);
-
-  let dval = mDom(dleft, { fg, w: sz * 1.2, align: 'center', fz: fz * 1.8, weight: 'bold' }, { html: value });
-  // mPlace(dval, 'tl', sztop/2-gap,sztop+gap); //(w-szPic)/2-3*gap, sztop+gap); //mPlace(dval, 'tr', 2 * gap, gap)
-  mLinebreak(dleft, 2 * gap)
-
-  let szSym=sz*1.5; 
-  let a = showim2(sym, dleft, { w: szSym, h: szSym, fg });
-  // mPlace(a,'tl',sztop/2-gap,sztop*2)
-  mLinebreak(dleft, 3 * gap)
-
-  //let szPlatz = h / 30; //o.ooffsprings.num =1;
-  let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, o.ooffsprings.num, gap * 2); //szPlatz);
-  //mPlace(dPlaetze, 'cl', (w - szPic) / 2 - 3 * gap, 5 * gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
-
-  let dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap*2, w100: true, bg, fg: 'contrast', box: true }, { html: power })
-  item.power = dbrown.innerHTML;
-
-  let dinfo = mDom(dCard, { fz, hpadding: gap, box: true, w100: true });
-  mPlace(dinfo, 'bl'); mFlexLine(dinfo, 'space-between');
-  mDom(dinfo, {}, { html: o.class });
-  mDom(dinfo, {}, { html: o.olifespan.text });
-  mDom(dinfo, {}, { html: o.osize.text });
-  // let dlifespan = mDom(dCard, { fz, display: 'inline' }, { html: `${o.class.toLowerCase()} ${o.olifespan.text}` })
-  // mPlace(dlifespan, 'bl', gap);
-
-  // let dsize = mDom(dCard, { fz, display: 'inline' }, { html: o.osize.text })
-  // mPlace(dsize, 'br', gap);
-
-  // let dclass = mDom(dCard, { fz, display: 'inline' }, { html: o.class });
-  // mPlace(dsize, 'br', gap);
-
-  return item;
+  for(const key of keys){
+    let item = wsShowCard(key, d, 1); //console.log(item);
+    let fen = wsCardInfo(item); //console.log(fen);
+    let item1 = wsFromCardInfo(fen, d, .5);
+  }
 
 }
 async function test150_mist() {
@@ -239,10 +178,6 @@ async function test146_card() {
 
   }
 }
-
-
-
-
 async function test145_card() {
   await prelims(); //return;
   let d = clearFlex(); let keys = jsCopy(M.byCollection.tierspiel); //arrShuffle(keys); let cards = deckDeal(keys, 3); // console.log('cards', cards);
@@ -296,16 +231,6 @@ async function test144_worm() {
     `;
   d1.innerHTML = html
 }
-
-//#region tierspiel
-async function test142_spiel() {
-  await prelims();
-  await switchToMainMenu('table');
-
-
-}
-
-//#region tierspiel cards
 async function test_swSymbols() {
   let d = clearFlex({ bg: 'silver' });
   let d1 = mDom(d, { bg: 'green', w: 25, h: 25 }, { tag: 'img', src: '../assets/games/wingspan/worm.svg' });

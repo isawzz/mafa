@@ -333,7 +333,7 @@ fieldset .disabled {
 .instruction {
   border-radius: 10px;
   border: 2px silver solid;
-  background: #f0f0f080;
+  background: #ffffff; 
   margin: 4px;
   padding: 4px;
   /* flex-wrap: wrap; */

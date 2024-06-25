@@ -93,40 +93,6 @@ function simpleShowImageInBatch(key, dParent, styles = {}, opts = {}) {
 	return d1;
 }
 
-function wsCard(d, w, h) {
-  let card = cBlank(d, { h, w, border: 'silver' }); //return;
-  let dCard = iDiv(card);
-  return [card, dCard];
-}
-function wsTopLeft(dCard, sztop, rounding) {
-  let dtop = mDom(dCard, { w: sztop, h: sztop, bg: '#ccc' });
-  mPlace(dtop, 'tl');
-  dtop.style.borderTopLeftRadius = dtop.style.borderBottomRightRadius = `${rounding}px`;
-  mCenterCenterFlex(dtop);
-  return dtop;
-}
-function wsHabitat(tokens, dtop, sz) {
-  for (let i = 0; i < tokens.length; i++) {
-    let t = tokens[i];
-    if (i == 2) mLinebreak(dtop);
-    let d = wsPrintSymbol(dtop, sz, t);
-    if (i == 2) mStyle(d, { matop: -sz * 3 / 2 });
-  }
-}
-function wsFood(tokens, dtop, sz) {
-  let d = mDom(dtop); mCenterCenterFlex(d);
-  let ch = tokens.length == 2 && coin() ? '/' : '+';
-  for (let i = 0; i < tokens.length; i++) {
-    let t = tokens[i];
-    let d1 = wsPrintSymbol(d, sz, t);
-    if (i != 2) mDom(d, { fz: sz * .7 }, { html: ch });
-  }
-}
-function wsTitle(o, dCard, sztop, fz, gap) {
-  let dtitle = mDom(dCard, { paleft: gap, wmax: sztop * 1.5 }); mPlace(dtitle, 'tl', sztop, gap)
-  mDom(dtitle, { fz: fz * 1.1, weight: 'bold' }, { html: fromNormalized(o.friendly) });
-  mDom(dtitle, { fz, 'font-style': 'italic' }, { html: o.species });
-}
 function getAbstractSymbol(n){
 	// let abs=M.byCollection.icon.filter(x=>x.includes('abstract'));
 	if (nundef(n)) n=rChoose(range(1,100));
@@ -150,7 +116,7 @@ function getDetailedSuperdi(key) {
 		else if (o.foodtype.startsWith('carni')) foodTokens.push('mouse');
 		else if (o.foodtype.startsWith('omni')) foodTokens.push('omni');
 		else if (o.foodtype.startsWith('herbi')) foodTokens.push('seedling');
-		o.foodTokens = foodTokens;
+		o.foodTokens = arrTake(foodTokens,3);
 	}
 	if (isdef(o.offsprings)) o.ooffsprings = calcOffsprings(o.offsprings);
 	if (isdef(o.weight)) { o.oweight = calcWeight(o.weight); o.nweight = o.oweight.avg; }
@@ -210,27 +176,6 @@ function generatePizzaSvg(sz) {
 	return svgParts.join('\n');
 }
 
-function wsPrintSymbol(dParent, sz, key) {
-	let files = {
-		cherries: '../assets/games/wingspan/fruit.svg',
-		fish: '../assets/games/wingspan/fish.svg',
-		forest: '../assets/games/wingspan/forest1.png',
-		grain: '../assets/games/wingspan/wheat.svg',
-		grassland: '../assets/games/wingspan/grassland2.png',
-		mouse: '../assets/games/wingspan/mouse.svg',
-		omni: '../assets/games/wingspan/pie3.svg',
-		seedling: '../assets/img/emo/seedling.png',
-		wetland: '../assets/games/wingspan/wetland.png',
-		worm: '../assets/games/wingspan/worm.svg',
-	};
-	let keys = Object.keys(files);
-	let styles = { w: sz, h: sz, };
-	if (['wetland', 'grassland', 'forest'].includes(key)) styles['clip-path'] = PolyClips.diamond;
-	if (key == 'wetland') styles.bg = 'lightblue';
-	else if (key == 'grassland') styles.bg = 'goldenrod';
-	else if (key == 'forest') styles.bg = 'emerald';
-	return mDom(dParent, styles, { tag: 'img', width: sz, height: sz, src: files[valf(key, rChoose(keys))] });
-}
 
 function showCardWingspanPortrait(o, d, h) {
 	let item = { o, key: o.key };
