@@ -1,0 +1,223 @@
+status: started
+id: LDJPO8kMYIVc7TRE5UFd
+fen:
+  deck:
+    - >-
+      squirrel@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_004@dodgerblue@+
+    - >-
+      stellers_jay@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@gold@/
+    - >-
+      wasp@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_004@orangered@/
+    - >-
+      sphynx_cat@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@pink@+
+    - >-
+      grasshopper@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@gold@/
+    - >-
+      panda@1@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_008@orangered@+
+    - >-
+      moth@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@dodgerblue@+
+    - >-
+      dragonfly@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_026@orangered@/
+    - >-
+      tortoise@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_023@sienna@/
+    - >-
+      crow@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_023@dodgerblue@/
+    - >-
+      leopard@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_008@dodgerblue@/
+    - >-
+      elephant@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_002@limegreen@/
+    - >-
+      scarlet_tanager@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_023@gold@/
+    - >-
+      hare@3@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_026@pink@/
+    - >-
+      tabby_cat@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_026@dodgerblue@/
+    - >-
+      hippopotamus@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_008@sienna@/
+    - >-
+      jewel_bug@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_008@gold@+
+    - >-
+      eagle_head@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@gold@+
+    - >-
+      british_shorthair@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_002@limegreen@+
+    - >-
+      caterpillar@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_026@limegreen@/
+    - >-
+      ojos_azules_cat@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_023@pink@+
+    - >-
+      armadillo@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_004@orangered@+
+    - >-
+      giraffe@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_026@dodgerblue@+
+    - >-
+      mandrill@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_008@pink@+
+    - >-
+      warthog@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@limegreen@/
+    - >-
+      wallum_sedge_frog@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_023@limegreen@+
+    - >-
+      khao_manee_cat@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@dodgerblue@+
+    - >-
+      tapir@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@limegreen@+
+    - >-
+      red
+      beetle@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@pink@/
+    - >-
+      skunk@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_002@lightblue@+
+    - >-
+      blue_tit@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_023@gold@+
+    - >-
+      walrus@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@gold@/
+    - >-
+      fly@1@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_026@sienna@/
+    - >-
+      seahorse@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@orangered@+
+    - >-
+      alligator@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_023@limegreen@/
+    - >-
+      wolf@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_023@sienna@/
+    - >-
+      monkey@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_023@orangered@/
+    - >-
+      chameleon@2@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_008@dodgerblue@/
+    - >-
+      seal@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_026@limegreen@/
+    - >-
+      bengal_cat@3@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_008@orangered@/
+    - >-
+      mantis@1@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_023@limegreen@/
+    - >-
+      colibri@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@limegreen@+
+    - >-
+      aardvark@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_026@dodgerblue@/
+    - >-
+      blue_poison_dart_frog@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_008@dodgerblue@+
+    - >-
+      white_peacock_butterfly@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_023@limegreen@/
+    - >-
+      horse@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_026@dodgerblue@/
+    - >-
+      tiger@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@orangered@+
+    - >-
+      camel@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_002@dodgerblue@+
+    - >-
+      sloth@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@orangered@/
+    - >-
+      frog@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@gold@/
+    - >-
+      pallas_cat@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@dodgerblue@+
+    - >-
+      grizzly_bear@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@gold@/
+    - >-
+      panther@2@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_023@sienna@+
+    - >-
+      maine_coon_cat@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_023@dodgerblue@+
+    - >-
+      lion@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@lightblue@/
+    - >-
+      alpaca@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_008@limegreen@+
+    - >-
+      bear@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_023@orangered@/
+    - >-
+      eagle@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_023@limegreen@+
+    - >-
+      siberian_cat@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_008@dodgerblue@/
+    - >-
+      ladybug@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_023@limegreen@+
+    - >-
+      arctic_fox@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_023@dodgerblue@/
+    - >-
+      cattle_egret@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@gold@/
+    - >-
+      spider@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_002@gold@+
+    - >-
+      rhino_beetle@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_002@dodgerblue@+
+    - >-
+      ibex@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_004@dodgerblue@/
+    - >-
+      toucan@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@orangered@+
+    - >-
+      zebra@3@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@gold@/
+    - >-
+      red_panda@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_004@dodgerblue@/
+    - >-
+      hoplia@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_023@limegreen@/
+    - >-
+      african_tortoise@1@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_004@limegreen@/
+    - >-
+      porcupine@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_023@gold@/
+    - >-
+      norwegian_forest_cat@3@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_002@gold@+
+    - >-
+      persian_cat@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_023@pink@+
+    - >-
+      hedgehog@2@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_023@dodgerblue@/
+  round: 0
+  phase: init
+  stage: pick_cards
+game: fishgame
+owner: guest
+friendly: soirée in Asmara
+players:
+  guest:
+    name: guest
+    color: '#002e63'
+    texture: ../assets/textures/marble_blue1.jpeg
+    imgKey: stellers_jay
+    blendMode: normal
+    bg: '#55bc41'
+    fg: '#ffffff'
+    palette:
+      - '#046307'
+      - '#041104'
+      - '#045104'
+      - '#043f04'
+      - '#047704'
+      - '#041c04'
+      - '#042404'
+      - '#042c04'
+    playmode: human
+    score: 0
+    cards:
+      - >-
+        stag_beetle@1@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_026@dodgerblue@/
+      - >-
+        bamboo_weevil@3@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_026@dodgerblue@+
+      - >-
+        mule@2@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_002@gold@/
+      - >-
+        cat31@2@when_activated:_all_players_gain_1_food_from_supply.@sienna@abstract_008@sienna@/
+      - >-
+        cat32@2@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_004@dodgerblue@+
+  gul:
+    name: gul
+    color: '#e6be8a'
+    texture: ../assets/textures/marble_beige1.jpeg
+    blendMode: normal
+    imgKey: gul
+    playmode: human
+    score: 0
+    cards:
+      - >-
+        bee@3@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_026@orangered@/
+      - >-
+        donkey@1@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_004@limegreen@/
+      - >-
+        cat@2@when_activated:_all_players_gain_1_food_from_supply.@white@abstract_002@limegreen@+
+      - >-
+        barn_spider@3@when_activated:_all_players_gain_1_food_from_supply.@pink@abstract_023@pink@+
+      - >-
+        rhino@1@when_activated:_all_players_gain_1_food_from_supply.@lightblue@abstract_023@limegreen@+
+playerNames:
+  - guest
+  - gul
+options:
+  numCards: 12
+  gamemode: multi
+step: 0
+moves: []
+plorder:
+  - guest
+  - gul
+turn:
+  - guest
+  - gul
