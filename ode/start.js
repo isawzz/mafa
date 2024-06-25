@@ -40,7 +40,6 @@ async function test151_card() {
   let a = showim2(sym, dleft, { w: sz * 1.2, h: sz * 1.2, fg: 'silver' });
   // mPlace(a,'tl',sztop/2-gap,sztop*2)
 
-
   let szPlatz = h / 30; o.ooffsprings.num = 60000;
   let dPlaetze = item.live.dPlaetze = showPlaetze(dCard, o.ooffsprings.num, gap * 2); //szPlatz);
   mPlace(dPlaetze, 'cl', (w - szPic) / 2 - 3 * gap, 5 * gap); //2*gap,gap); //(w - szPic) / 2,0);//, sztop*2); // + szPlatz);
