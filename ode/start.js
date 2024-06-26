@@ -16,13 +16,14 @@ async function test152_spiel() {
 async function test151_cardWiePresent() {
   await prelims(); //return;
   let d = clearFlex();
-  let keys = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
+  let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
   //let keys = ['arctic_fox'];
   
-  for(const key of keys){
+  for(const fen of arrTake(deck,5)){
     // let item = wsShowCard(key, d, 1); //console.log(item);
     // let fen = wsCardInfo(item); //console.log(fen);
-    let item1 = wsFromCardInfo(key, d, .5);
+    let item = wsItemFromFen(fen);
+    wsShowCardItem(item,d,1);
   }
 
 }
@@ -34,7 +35,7 @@ async function test151_card() {
   
   for(const key of keys){
     let item = wsShowCard(key, d, 1); //console.log(item);
-    let fen = wsCardInfo(item); //console.log(fen);
+    let fen = wsFenFromItem(item); //console.log(fen);
     let item1 = wsFromCardInfo(fen, d, .5);
   }
 
