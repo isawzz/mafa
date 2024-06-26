@@ -3,11 +3,11 @@ function wsHowMany(deck,prop,val,op){
 
 }
 	
-function wsGetPower(){
+function wsGetPower(key,prop){
 
 	let powers={
 		child_1_any:['WHEN ACTIVATED: Place 1 child on any card'],
-		child_2_1:['WHEN ACTIVATED: Place 2 child on any card'],
+		child_2_1:[`WHEN ACTIVATED: Place 1 child on each of 2 card with symbol [sym:${o.abstract}]'`],
 		child_1_class:[],
 		child_1_sym:[],
 		child_1_color:[],
@@ -37,7 +37,7 @@ function wsGetPower(){
 		//change_card_positions:[],
 
 	};
-	return rChoose(Object.keys(powers));
+	return nundef(key)? rChoose(Object.keys(powers)):nundef(prop)?powers[key]:lookup(powers,[key,prop]);
 }
 function wsGetMission(){
 

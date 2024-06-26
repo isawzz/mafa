@@ -44,10 +44,11 @@ function fishgame() {
 		let pl = table.players[me];
 
 		let dCards = mDom(d, { gap: 8 }); mCenterFlex(dCards);
-		let items = [];
-		for (const cinfo of pl.cards) {
-			console.log(cinfo)
-			let ocard = wsFromCardInfo(cinfo,dCards,.5);
+		let items = []; //console.log(pl.cards)
+		for (const fencard of pl.cards) { 
+			//console.log(cinfo)
+			let ocard = wsItemFromFen(fencard); //console.log(fencard,ocard) 
+			wsShowCardItem(ocard,dCards,.5);
 			// let o = getDetailedSuperdi(key); 
 			// let ocard = showCardWingspanPortrait(o,dCards,250);
 			items.push(ocard);
@@ -213,4 +214,4 @@ function wsTopLeft(dCard, sztop, rounding) {
   mCenterCenterFlex(dtop);
   return dtop;
 }
-//#endregion
+//#_endregion

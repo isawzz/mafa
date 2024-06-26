@@ -517,7 +517,7 @@ function calcRows(fontSize, fontFamily, content, maxWidth) {
 	const canvas = document.createElement('canvas');
 	const ctx = canvas.getContext('2d');
 	ctx.font = `${fontSize}px ${fontFamily}`;
-	const words = content.split(' ');
+	const words = (''+content).split(' ');
 	let line = '';
 	let rows = 0;
 	for (let i = 0; i < words.length; i++) {
@@ -2317,9 +2317,9 @@ function drop(ev) {
 	setDropPosition(ev, draggedElement, targetElem, isdef(draggedElement.dropPosition) ? draggedElement.dropPosition : dropPosition);
 }
 async function editDetailsFor(key, anchor) {
-	let details = getDetailedSuperdi(key);
-	let di = getPresentableDetails(details);
-	let result = await mGather(anchor, {}, { content: di, type: 'multiText', title: M.superdi[key].friendly });
+	let content = valf(lookup(M.details,[key]),{}); //getDetailedSuperdi(key); let content = getPresentableDetails(details); //console.log(di)
+	console.log(content)
+	let result = await mGather(anchor, {}, { content, type: 'multiText', title: M.superdi[key].friendly });
 	if (!result) return;
 	let res = await updateDetails(result, key);
 }
@@ -2700,7 +2700,7 @@ function fillFormFromObject(inputs, wIdeal, df, db, styles, opts) {
 function fillMultiForm(dict, inputs, wIdeal, df, styles, opts) {
 	mClear(df);
 	for (const k in dict) {
-		let [content, val] = [k, dict[k]];
+		let [content, val] = [k, dict[k]]; console.log(content,val)
 		mDom(df, {}, { html: `${content}:` });
 		let inp = mDom(df, styles, opts);
 		inp.rows = calcRows(styles.fz, styles.family, val, wIdeal);
@@ -4197,6 +4197,7 @@ function getPlaymode(idOrTable, name) {
 	} else return 'NO table!';
 }
 function getPresentableDetails(o) {
+	if(!o || nundef(M.details[o.key])) return null;
 	let di = {};
 	for (const key in o) {
 		if ('cats colls fa fa6 img photo text key friendly ga name'.includes(key)) continue;
@@ -4917,7 +4918,7 @@ function mButtonX(dParent, handler = null, sz = 22, offset = 5, color = 'contras
 	let bx = mDom(dParent, { position: 'absolute', top: -2 + offset, right: -5 + offset, w: sz, h: sz, cursor: 'pointer' }, { className: 'hop1' });
 	bx.onclick = ev => { evNoBubble(ev); if (!handler) dParent.remove(); else handler(ev); }
 	let o = M.superdi.xmark;
-	let bg = mGetStyle(dParent, 'bg');
+	let bg = mGetStyle(dParent, 'bg'); if (isEmpty(bg)) bg='white';
 	let fg = color == 'contrast' ? colorIdealText(bg, true) : color;
 	el = mDom(bx, { fz: sz, hline: sz, family: 'fa6', fg, display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
 }
@@ -6353,9 +6354,9 @@ async function onclickColor(color) {
 	await updateUserTheme()
 }
 async function onclickCommand(ev) {
-	let key = evToAttr(ev, 'key');
-	assertion(isdef(UI.commands[key]), `command ${key} not in UI!!!`)
-	let cmd = UI.commands[key];
+	let key = evToAttr(ev, 'key'); //console.log(key);
+	let cmd = key == 'user'? UI.nav.commands.user:UI.commands[key];
+	assertion(isdef(cmd), `command ${key} not in UI!!!`)
 	await cmd.open();
 }
 function onclickDay(d, styles) {
@@ -6751,7 +6752,7 @@ async function onclickThemeSample(ev) {
 	await updateUserTheme();
 }
 async function onclickUser() {
-	let uname = await mGather(iDiv(UI.user), { w: 100, margin: 0 }, { content: 'username', align: 'br', placeholder: ' <username> ' });
+	let uname = await mGather(iDiv(UI.nav.commands.user), { w: 100, margin: 0 }, { content: 'username', align: 'br', placeholder: ' <username> ' });
 	if (!uname) return;
 	await switchToUser(uname);
 }
@@ -7886,11 +7887,14 @@ function showDeck(keys, dParent, splay, w, h) {
 	d.style.height = firstNumber(Pictures[0].div.style.height) + 'px';
 }
 function showDetailsAndMagnify(elem) {
-	let key = elem.firstChild.getAttribute('key')
-	if (nundef(key)) { mMagnify(elem); return; }
+	let key = elem.firstChild.getAttribute('key'); //console.log('key',key)
+	if (nundef(key)) return;
+
+	let o = getDetailedSuperdi(key); //console.log('o',o)
 	MAGNIFIER_IMAGE = elem;
+	if (nundef(o)) { mMagnify(elem); return; }
+
 	let d = mPopup(null, {}, { id: 'hallo' });
-	let o = getDetailedSuperdi(key);
 	let title = fromNormalized(valf(o.name, o.friendly));
 	mDom(d, {}, { tag: 'h1', html: title });
 	mDom(d, {}, { tag: 'img', src: valf(o.photo, o.img) });
@@ -7938,7 +7942,7 @@ function showEventOpen(id) {
 	let [x, y, w, h, wp, hp] = [d.offsetLeft, d.offsetTop, d.offsetWidth, d.offsetHeight, 300, 180];
 	let [left, top] = [Math.max(10, x + w / 2 - wp / 2), Math.min(window.innerHeight - hp - 60, y + h / 2 - hp / 2)]
 	mStyle(popup, { left: left, top: top, w: wp, h: hp });
-	let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month}.${year}` });
+	let dd = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 3, pabottom: 4 }, { html: `date: ${day}.${month+1}.${year}` });
 	let dt = mDom(popup, { display: 'inline-block', fz: '80%', maleft: 20, pabottom: 4 }, { html: `time:` });
 	let inpt = mDom(popup, { fz: '80%', maleft: 3, mabottom: 4, w: 60 }, { tag: 'input', value: e.time });
 	mOnEnter(inpt);
@@ -8937,7 +8941,8 @@ async function switchToUser(uname, menu) {
 	sockPostUserChange(U ? getUname() : '', uname); //das ist nur fuer die client id!
 	U = await getUser(uname);
 	localStorage.setItem('username', uname);
-	iDiv(UI.user).innerHTML = uname;
+	//console.log(UI.nav.commands.user)
+	iDiv(UI.nav.commands.user).innerHTML = uname;
 	setUserTheme();
 	menu = valf(menu, getMenu(), localStorage.getItem('menu'), 'home');
 	await switchToMainMenu(menu);

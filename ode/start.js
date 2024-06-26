@@ -19,10 +19,10 @@ async function test151_cardWiePresent() {
   let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
   //let keys = ['arctic_fox'];
   
-  for(const fen of arrTake(deck,5)){
+  for(const fen of arrTake(deck,1)){
     // let item = wsShowCard(key, d, 1); //console.log(item);
     // let fen = wsCardInfo(item); //console.log(fen);
-    let item = wsItemFromFen(fen);
+    let item = wsItemFromFen(fen); //console.log('item',item)
     wsShowCardItem(item,d,1);
   }
 
@@ -1669,9 +1669,10 @@ async function prelims() {
     `;
   document.body.innerHTML = html;
   UI.commands = {};
-  UI.nav = showNavbar();
+  UI.nav = showNavbar(); //console.log(UI.nav)
   staticTitle();
-  UI.user = mCommand(UI.nav.r, 'user'); iDiv(UI.user).classList.add('activeLink');
+  let cmd = UI.nav.commands.user = mCommand(UI.nav.elem, 'user'); //console.log(cmd)
+  iDiv(cmd).classList.add('activeLink');
   await switchToUser(localStorage.getItem('username'), localStorage.getItem('menu'));
 }
 function defaultGameFunc() {

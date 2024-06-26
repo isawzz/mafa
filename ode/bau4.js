@@ -101,6 +101,7 @@ function getAbstractSymbol(n){
 }
 function getDetailedSuperdi(key) {
 	let o = M.superdi[key];
+	if(nundef(M.details[key])) return null;
 	addKeys(M.details[key], o);
 	addKeys(M.details[o.friendly], o);
 	o.key = key;
