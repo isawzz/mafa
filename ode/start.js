@@ -8,10 +8,10 @@ async function start() { TESTING = true; await test153_powerText(); }
 async function test153_powerText(){
   await preprelims();// await prelims(); return;
   let d = clearFlex();  //let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
-  let key = 'aardvark';
+  let key = 'bee';
   let fen = wsGenerateCardInfo(key);
   let item = wsItemFromFen(fen); console.log(item)
-  item.power = '_child_2_color'; //_child_1_sym
+  item.power = wsGetPower(); //'_draw_1_deck'; //_child_1_sym
   
   wsShowCardItem(item,d,1);
 
