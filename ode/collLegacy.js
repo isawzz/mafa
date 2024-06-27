@@ -1,4 +1,75 @@
 
+//#region ari_history
+function ari_history_list(lines, title = '', fen) {
+	//usage: ari_history_list([`*** new herald: ${fen.heraldorder[0]} ***`], 'herald');
+	//usage: ari_history_list([`${blackmailed} accepts: gives ${item.key} to ${blackmailer}`], 'blackmail');
+	if (nundef(fen)) fen = Z.fen;
+	if (nundef(fen.history)) fen.history = [];
+	if (isString(lines)) lines = [lines];
+	fen.history.push({ title: title, lines: lines });
+}
+function beautify_history(lines, title, fen, uplayer) {
+	let html = `<div class="history"><span style="color:red;font-weight:bold;">${title}: </span>`;
+	for (const l of lines) {
+		let words = toWords(l);
+		for (const w1 of words) {
+			if (is_card_key(w1)) { html += mCardText(w1); continue; }
+			w = w1.toLowerCase();
+			if (isdef(fen.players[w])) {
+				html += `<span style="color:${get_user_color(w)};font-weight:bold"> ${w} </span>`;
+			} else html += ` ${w} `;
+		}
+		if (lines.length > 1) html = html.trim() + (l == arrLast(lines) ? '.' : ', ');
+	}
+	html += "</div>";
+	return html;
+}
+function is_card_key(ckey, rankstr = '*A23456789TJQK', suitstr = 'SHCD') {
+	return is_nc_card(ckey) || is_color(ckey) || rankstr.includes(ckey[0]) && suitstr.includes(ckey[1]);
+}
+function mCardText(ckey, sz, color) {
+	let j = is_jolly(ckey);
+	if (nundef(color)) color = get_color_of_card(ckey);
+	return is_jolly(ckey) ?
+		`<span style="font-size:12px;font-family:Algerian;color:${color}">jolly</span>` :
+		is_color(ckey) ? `<span style="font-weight:bold;color:${color}">${ckey}</span>` :
+			is_color(stringAfter(ckey, '_')) ? `<span style="font-size:16px;font-family:Algerian;color:${color}">${stringBefore(ckey, '_')}</span>` :
+				`${ckey[0]}${mSuit(ckey, sz, color)}`;
+}
+function is_color(s) { return isdef(ColorDi[s.toLowerCase()]); }
+function show_history(fen, dParent) {
+	if (!isEmpty(fen.history)) {
+		let html = '';
+		for (const o of jsCopy(fen.history).reverse()) {
+			html += beautify_history(o.lines, o.title, fen);
+		}
+		let dHistory = mDiv(dParent, { maright: 10, hpadding: 12, bg: colorLight('#EDC690', 50), box: true, matop: 4, rounding: 10, patop: 10, pabottom: 10, hmax: `calc( 100vh - 250px )`, 'overflow-y': 'auto', w: 260 }, null, html); //JSON.stringify(fen.history));
+		UI.dHistoryParent = dParent;
+		UI.dHistory = dHistory;
+		if (isdef(Clientdata.historyLayout)) { show_history_layout(Clientdata.historyLayout); }
+	}
+}
+function show_history_layout(layout) {
+	assertion(isdef(UI.dHistoryParent) && isdef(UI.dHistory), 'UI.dHistoryParent && UI.dHistory do NOT exist!!!');
+	if (layout == 'ph') PHLayout();
+	else if (layout == 'hp') HPLayout();
+	else if (layout == 'prh') PRHLayout();
+	else if (layout == 'hrp') HRPLayout();
+	else PHLayout();
+}
+function show_history_popup() {
+	if (isEmpty(Z.fen.history)) return;
+	assertion(isdef(UI.dHistoryParent) && isdef(UI.dHistory), 'UI.dHistoryParent && UI.dHistory do NOT exist!!!');
+	let l = valf(Clientdata.historyLayout, 'ph');
+	let cycle = ['ph', 'hp', 'prh', 'hrp'];
+	let i = (cycle.indexOf(l) + 1) % cycle.length;
+	show_history_layout(cycle[i]);
+}
+
+
+
+
+//#region collections
 async function clickOnItem(elem, key) {
 	if (nundef(UI.selectedImages)) UI.selectedImages = [];
 	let collname = elem.getAttribute('collname');
@@ -743,3 +814,5 @@ function showImageInBatch(key, dParent, styles = {}, opts = {}) {
 	d1.ondragstart = () => { UI.draggedItem = o; };
 	return d1;
 }
+
+//#endregion

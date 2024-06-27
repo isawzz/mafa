@@ -200,7 +200,12 @@ function wsPrintSymbol(dParent, sz, key) {
 	if (key == 'wetland') styles.bg = 'lightblue';
 	else if (key == 'grassland') styles.bg = 'goldenrod';
 	else if (key == 'forest') styles.bg = 'emerald';
-	return mDom(dParent, styles, { tag: 'img', width: sz, height: sz, src: files[valf(key, rChoose(keys))] });
+
+	let src=valf(files[key],key == 'food'?files[rChoose(keys)]:null);
+	if (src) return  mDom(dParent, styles, { tag: 'img', width: sz, height: sz, src: files[valf(key, rChoose(keys))] });
+
+	let o=M.superdi[key];
+	return showim2(key,dParent,styles);
 }
 function wsTitle(o, dCard, sztop, fz, gap) {
   let dtitle = mDom(dCard, { paleft: gap, wmax: sztop * 1.5 }); mPlace(dtitle, 'tl', sztop, gap)

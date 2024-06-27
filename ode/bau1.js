@@ -6,11 +6,12 @@ function wsHowMany(deck,prop,val,op){
 function wsGetPower(key,prop){
 
 	let powers={
-		child_1_any:['WHEN ACTIVATED: Place 1 child on any card'],
-		child_2_1:[`WHEN ACTIVATED: Place 1 child on each of 2 card with symbol [sym:${o.abstract}]'`],
-		child_1_class:[],
-		child_1_sym:[],
-		child_1_color:[],
+		_child_1_sym:[],
+		_child_2_sym:[],
+		_child_1_class:[],
+		_child_2_class:[],
+		_child_1_color:[],
+		_child_2_color:[],
 		card_1_deck:[],
 		card_2_1:[],
 		draw_2:[],
@@ -33,7 +34,12 @@ function wsGetPower(key,prop){
 		white_all_food:[],
 		white_2_card:[],
 		white_3_1:[],
-		move_habitat:[],
+		white_child_1_sym:[],
+		white_child_1_class:[],
+		white_child_1_color:[],
+		_move_habitat:[],
+		lightblue_food_1:[],
+		_repeat:[]
 		//change_card_positions:[],
 
 	};

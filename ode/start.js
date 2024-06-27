@@ -1,10 +1,23 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test152_spiel(); }
+async function start() { TESTING = true; await test153_powerText(); }
 
 
 //#region tierspiel
+async function test153_powerText(){
+  await preprelims();// await prelims(); return;
+  let d = clearFlex();  //let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
+  let key = 'aardvark';
+  let fen = wsGenerateCardInfo(key);
+  let item = wsItemFromFen(fen); console.log(item)
+  item.power = '_child_2_color'; //_child_1_sym
+  
+  wsShowCardItem(item,d,1);
+
+  wsPowerText(item,item.dbrown,{fz:item.fz})
+
+}
 async function test152_spiel() {
   await prelims();
   //await switchToMainMenu('table');
@@ -1631,13 +1644,15 @@ async function test80() {
 
 }
 
-async function prelims() {
-
+async function preprelims(){
   ColorThiefObject = new ColorThief();//console.log(ColorThiefObject);
   let t1 = performance.now();
   Serverdata = await mGetRoute('session'); //session ist: users,config,events
   let t2 = performance.now();
   await loadAssets();
+}
+async function prelims() {
+  await preprelims();
   let t4 = performance.now();
   sockInit();
   UI.dTitle = mBy('dTitle');
