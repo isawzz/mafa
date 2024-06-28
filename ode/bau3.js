@@ -58,7 +58,8 @@ function wsShowCardItem(item,d,fa){
   mLinebreak(dleft, 3 * gap)
   let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, item.ooffsprings.num, gap * 2); //szPlatz);
 
-	item.dbrown = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap * 3, w100: true, bg, fg: 'contrast', box: true }, { html: item.power })
+	item.dpower = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap * 3, w100: true, bg, fg: 'contrast', box: true });
+  wsPowerText(item,item.dpower,{fz:item.fz})
 
   let dinfo = mDom(dCard, { fz, hpadding: gap, box: true, w100: true });
   mPlace(dinfo, 'bl'); mFlexLine(dinfo, 'space-between');

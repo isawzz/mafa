@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test153_powerText(); }
+async function start() { TESTING = true; await test152_spiel(); }
 
 
 //#region tierspiel
@@ -11,12 +11,9 @@ async function test153_powerText(){
   let key = 'bee';
   let fen = wsGenerateCardInfo(key);
   let item = wsItemFromFen(fen); console.log(item)
-  item.power = wsGetPower(); //'_draw_1_deck'; //_child_1_sym
-  
+  // item.power = wsGetPower('lightblue');//'pink'); //'_draw_1_deck'; //_child_1_sym
   wsShowCardItem(item,d,1);
-
-  wsPowerText(item,item.dbrown,{fz:item.fz})
-
+  //wsPowerText(item,item.dpower,{fz:item.fz})
 }
 async function test152_spiel() {
   await prelims();

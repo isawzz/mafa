@@ -1,0 +1,141 @@
+status: started
+id: I7TE98OYC6_WGbpi0SNQ
+fen:
+  deck:
+    - wasp@2@white_draw_2_mission_return_1@lightblue@abstract_002@gold@+
+    - >-
+      elephant@3@pink_draw_mission_pick_1_food_feeder@lightblue@abstract_002@dodgerblue@+
+    - >-
+      siberian_cat@2@pink_place_child_pick_1_food_feeder@white@abstract_002@limegreen@+
+    - tortoise@1@lightblue_feeder@pink@abstract_026@limegreen@+
+    - aardvark@1@_child_1_class@lightblue@abstract_026@gold@/
+    - camel@2@_hunt_food_fish@pink@abstract_002@indigo@+
+    - jewel_bug@1@_food_2_tray@pink@abstract_026@orangered@+
+    - tiger@1@_food_2_supply@lightblue@abstract_026@dodgerblue@+
+    - wolf@2@_tuck_1_place@lightblue@abstract_023@gold@/
+    - frog@3@_discard_1_card_pick_1_food_supply@lightblue@abstract_002@indigo@+
+    - hedgehog@3@lightblue_feeder@white@abstract_023@hotpink@+
+    - >-
+      leopard@2@pink_draw_mission_draw_1_card_deck@lightblue@abstract_008@indigo@/
+    - dragonfly@1@_child_1_class@sienna@abstract_002@dodgerblue@/
+    - rhino_beetle@1@lightblue_tray@white@abstract_026@gold@/
+    - bee@2@_child_1_sym@sienna@abstract_010@indigo@/
+    - >-
+      chameleon@1@_discard_1_child_pick_1_food_supply@pink@abstract_026@hotpink@/
+    - red_panda@1@_discard_1_child_draw_2_card@sienna@abstract_023@hotpink@+
+    - mandrill@1@_discard_1_food_draw_1_card@lightblue@abstract_026@indigo@/
+    - sloth@2@white_draw_2_mission_return_1@lightblue@abstract_026@limegreen@+
+    - >-
+      hoplia@1@pink_hunt_successfully_pick_1_food_feeder@white@abstract_026@dodgerblue@+
+    - panda@2@_tuck_1_place@lightblue@abstract_002@hotpink@+
+    - tapir@2@_food_2_supply@pink@abstract_010@orangered@/
+    - cat32@1@_food_2_tray@pink@abstract_008@dodgerblue@/
+    - grizzly_bear@3@_tuck_1_draw_deck@sienna@abstract_010@gold@+
+    - >-
+      monkey@3@pink_place_child_draw_1_card_deck@lightblue@abstract_026@limegreen@/
+    - bamboo_weevil@1@_child_1_class@lightblue@abstract_010@orangered@+
+    - colibri@1@_draw_2_card_return_1@white@abstract_008@gold@/
+    - toucan@2@_tuck_1_pick_supply@pink@abstract_002@indigo@+
+    - alligator@3@_hunt_food_mouse@white@abstract_010@gold@/
+    - persian_cat@3@_draw_2_card_return_1@white@abstract_008@limegreen@+
+    - rhino@2@_tuck_1_place@pink@abstract_026@hotpink@+
+    - hare@1@_discard_1_child_pick_1_food_supply@sienna@abstract_023@limegreen@/
+    - british_shorthair@2@_hunt_food_fish@lightblue@abstract_026@orangered@+
+    - hippopotamus@3@lightblue_tray@white@abstract_002@indigo@/
+    - seal@1@_food_1_feeder@sienna@abstract_008@gold@+
+    - alpaca@3@white_collect_fish@lightblue@abstract_023@limegreen@/
+    - >-
+      sphynx_cat@1@_discard_1_child_pick_2_food_feeder@pink@abstract_026@indigo@/
+    - >-
+      khao_manee_cat@2@pink_draw_mission_pick_1_food_feeder@pink@abstract_008@orangered@/
+    - warthog@2@_hunt_food_mouse@lightblue@abstract_023@indigo@+
+    - barn_spider@1@_repeat@pink@abstract_023@indigo@/
+    - maine_coon_cat@3@white_collect_worm@pink@abstract_008@hotpink@/
+    - crow@3@_food_2_supply@pink@abstract_010@indigo@+
+    - zebra@3@_discard_1_child_draw_2_card@sienna@abstract_002@dodgerblue@/
+    - eagle_head@2@white_collect_cherries@white@abstract_010@orangered@+
+    - >-
+      cattle_egret@3@pink_place_child_pick_1_food_feeder@sienna@abstract_023@limegreen@+
+    - grasshopper@1@white_collect_worm@sienna@abstract_002@dodgerblue@/
+    - eagle@3@pink_draw_mission_draw_1_card_deck@pink@abstract_026@hotpink@/
+    - porcupine@1@_discard_1_food_draw_1_card@lightblue@abstract_008@gold@+
+    - pallas_cat@3@_tuck_1_pick_supply@sienna@abstract_026@orangered@/
+    - blue_tit@2@_draw_2_card_return_1@white@abstract_002@limegreen@+
+    - armadillo@2@_discard_1_child_draw_2_card@white@abstract_026@limegreen@+
+    - ibex@2@_discard_1_child_pick_1_food_supply@white@abstract_010@gold@/
+    - cat31@3@_food_2_supply@lightblue@abstract_010@gold@+
+    - giraffe@2@_discard_1_food_draw_1_card@lightblue@abstract_008@dodgerblue@+
+    - mantis@2@pink_draw_mission_draw_1_card_deck@sienna@abstract_008@hotpink@+
+    - tabby_cat@2@pink_draw_mission_draw_1_card_deck@pink@abstract_010@indigo@/
+    - white_peacock_butterfly@2@_food_2_tray@lightblue@abstract_010@hotpink@/
+    - >-
+      seahorse@1@pink_hunt_successfully_pick_1_food_feeder@white@abstract_002@hotpink@+
+    - skunk@1@pink_place_child_draw_1_card_deck@sienna@abstract_008@indigo@+
+    - >-
+      norwegian_forest_cat@2@pink_place_child_pick_1_food_feeder@pink@abstract_026@hotpink@/
+    - mule@2@_child_1_color@sienna@abstract_008@limegreen@+
+    - fly@2@_child_2_sym@white@abstract_010@limegreen@/
+    - >-
+      panther@2@pink_draw_mission_draw_1_card_deck@sienna@abstract_008@dodgerblue@/
+    - cat@3@_discard_1_food_draw_1_card@sienna@abstract_023@orangered@+
+    - squirrel@2@_draw_2_card_return_1@lightblue@abstract_010@gold@/
+    - walrus@1@_child_2_sym@lightblue@abstract_010@limegreen@/
+    - scarlet_tanager@3@white_child_color@pink@abstract_002@orangered@/
+    - donkey@1@_child_1_class@white@abstract_026@hotpink@/
+    - stag_beetle@3@_child_2_sym@lightblue@abstract_002@limegreen@+
+    - ojos_azules_cat@3@white_child_color@sienna@abstract_026@limegreen@+
+    - bear@1@_child_2_color@sienna@abstract_026@hotpink@+
+    - horse@2@_child_1_class@pink@abstract_023@hotpink@+
+    - >-
+      bengal_cat@1@_discard_1_card_pick_1_food_supply@lightblue@abstract_010@orangered@/
+    - caterpillar@2@_child_1_color@white@abstract_010@dodgerblue@+
+  round: 0
+  phase: init
+  stage: pick_cards
+game: fishgame
+owner: mimi
+friendly: festival of St. George
+players:
+  mimi:
+    name: mimi
+    color: '#ffe4e1'
+    texture: ../assets/textures/marble_rosa.jpeg
+    blendMode: normal
+    imgKey: mimi
+    playmode: human
+    score: 0
+    cards:
+      - arctic_fox@1@_tuck_1_pick_feeder@sienna@abstract_026@gold@+
+      - red beetle@2@_child_1_class@lightblue@abstract_023@gold@+
+      - wallum_sedge_frog@3@_hunt_food_fish@white@abstract_002@dodgerblue@/
+      - >-
+        lion@3@_discard_1_child_pick_2_food_feeder@white@abstract_026@orangered@/
+      - moth@2@_child_1_color@white@abstract_010@dodgerblue@/
+  felix:
+    name: felix
+    color: '#0e1e76'
+    texture: ../assets/textures/marble_meer1.jpg
+    blendMode: normal
+    imgKey: felix
+    playmode: human
+    score: 0
+    cards:
+      - blue_poison_dart_frog@2@_draw_2_card_1@pink@abstract_023@gold@+
+      - ladybug@1@_tuck_1_pick_supply@lightblue@abstract_010@limegreen@/
+      - african_tortoise@2@white_collect_fish@lightblue@abstract_008@gold@/
+      - spider@2@lightblue_feeder@pink@abstract_002@dodgerblue@+
+      - stellers_jay@1@_hunt_card_insect@lightblue@abstract_026@limegreen@+
+playerNames:
+  - mimi
+  - felix
+options:
+  numCards: 12
+  gamemode: multi
+step: 0
+moves: []
+plorder:
+  - mimi
+  - felix
+turn:
+  - mimi
+  - felix
