@@ -5,9 +5,10 @@ function wsGenerateCardInfo(key) {
   let palette = wsGetColorRainbow(); //['gold', 'limegreen', 'orangered', 'dodgerblue']; if (bg != 'white') palette.push(bg);
   let fg = rChoose(palette);
   sym = getAbstractSymbol([2, 8, 10, 23, 26]);
-  power = wsGetPower();
+  power = wsGetPower(bg); console.log(power)
   valueFactor = rChoose(range(1, 3));
 	op=rChoose(['+','/']); //console.log('op',op)
+  console.log(bg)
 	return wsFenFromItem({key,valueFactor,power,colorPower:bg,abstract:sym,colorSym:fg,op});
 }
 function wsGetColorRainbow(){return ['gold', 'limegreen', 'orangered', 'dodgerblue', 'indigo', 'hotpink'];}
@@ -18,6 +19,7 @@ function wsItemFromFen(fen){
 
   let o = getDetailedSuperdi(key);
   let item = jsCopy(o);
+  console.log(key,item,fen)
   let bg = item.colorPower = colorPower; //valf(colorPower, rChoose(['white', 'sienna', 'pink', 'lightblue']));
   let palette = wsGetColorRainbow(); //['gold', 'limegreen', 'orangered', 'dodgerblue', 'indigo', 'hotpink']; //if (bg != 'white') palette.push(bg);
   let fg = item.colorSym = colorSym; //valf(colorSym, rChoose(palette)); //console.log(palette)
@@ -56,7 +58,7 @@ function wsShowCardItem(item,d,fa){
   let szSym = sz * 1.5;
   let a = showim2(item.abstract, dleft, { w: szSym, h: szSym, fg });
   mLinebreak(dleft, 3 * gap)
-  let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, item.ooffsprings.num, gap * 2); //szPlatz);
+  let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, item, gap * 2); //szPlatz);
 
 	item.dpower = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap * 3, w100: true, bg, fg: 'contrast', box: true });
   wsPowerText(item,item.dpower,{fz:item.fz})

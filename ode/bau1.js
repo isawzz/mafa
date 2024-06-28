@@ -32,7 +32,7 @@ function wsGetPower(colorOrKey,prop){
 		_repeat:[],
 		_hunt_food_mouse:[],
 		_hunt_food_fish:[],
-		_hunt_card_insect:[],
+		_hunt_card_sym:[],
 		//pink_verb_what_verb_n_what:[]
 		pink_draw_mission_pick_1_food_feeder:[],
 		pink_place_child_pick_1_food_feeder:[],
@@ -53,7 +53,8 @@ function wsGetPower(colorOrKey,prop){
 		lightblue_tray:[],
 	};
 	let list=Object.keys(powers);
-	if (isColor(colorOrKey)) return rChoose(list.filter(x=>colorOrKey == 'brown'?x.startsWith('_'):x.startsWith(colorOrKey)));
+	console.log(colorOrKey);
+	if (isColor(colorOrKey)) return rChoose(list.filter(x=>colorOrKey == 'sienna'?x.startsWith('_'):x.startsWith(colorOrKey)));
 	else if (nundef(colorOrKey)) return rChoose(list);
 	else if (nundef(prop)) return powers[colorOrKey];
 	else return lookup(powers,[colorOrKey,prop]);

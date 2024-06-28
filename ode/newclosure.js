@@ -8192,12 +8192,16 @@ function showPaletteText(dParent, list) {
 	}
 	return items;
 }
-function showPlaetze(dCard, n, gap, color='silver') {
+function showPlaetze(dCard,item, gap, color='silver') {
+	let n=item.ooffsprings.num;
+	let sym=item.class == 'mammal'?'paw':'big_egg';
+	let html = wsGetChildInline(item,color);
 	let plaetze = nundef(n) ? 2 : n == 0 ? 0 : n == 1 ? 1 : n < 8 ? 2 : n < 25 ? 3 : n < 100 ? 4 : n < 1000 ? 5 : 6;
 	//let dPlaetze = mDom(dCard, { w: szPlatz, gap: szPlatz / 2 }); mCenterFlex(dPlaetze);
 	let [rows,cols,w]=[3,plaetze<=3?1:2,plaetze<=3?gap:3*gap]
 	let dgrid = mGrid(3,cols,dCard,{gap:gap*.8});//{w,h:5*gap,gap:gap/2});
-	for (const i of range(plaetze)) { mDom(dgrid, { round: true, w: gap, h: gap, border: color }); }
+	// for (const i of range(plaetze)) { mDom(dgrid, { round: true, w: gap, h: gap, border: color }); }
+	for (const i of range(plaetze)) { mDom(dgrid, { w: gap, h: gap, fg:color },{html}); }
 	return dgrid; //dPlaetze;
 }
 function showRibbon(dParent, msg) {

@@ -158,6 +158,7 @@ function wsCard(d, w, h) {
   return [card, dCard];
 }
 function wsFenFromItem(item) {
+	console.log('___item',item);
   return `${item.key}@${item.valueFactor}@${normalizeString(item.power, '_', [':', '.'])}@${item.colorPower}@${item.abstract}@${item.colorSym}@${item.op}`;
 }
 function wsFood(tokens, op, dtop, sz) {

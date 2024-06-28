@@ -106,7 +106,7 @@ games:
     options:
       gamemode: solo,multi
   fishgame:
-    friendly: Fish
+    friendly: tier
     logo: blowfish
     color: water
     ploptions:

@@ -79,7 +79,14 @@ function wsPowerText(item, d, styles = {}) {
 			let verb = what; what = parts[2];
 			if (what == 'food') {
 				s += `Roll dice in feeder. If there is a ${parts[3]}, keep it.`;
-			} else s += `Draw a card. If it is a ${parts[3]}, tuck it.`
+			} else if (what == 'card') {
+				s += `Draw a card. `;
+				switch(parts[3]){
+					case 'sym':
+					default: s+=`If it has symbol ${wsGetSymbolInline(item.abstract, item.fz)}, tuck it.`; break;
+				}
+				
+			}
 		}
 	}
 
@@ -120,11 +127,22 @@ function wsPowerText(item, d, styles = {}) {
 		else if (what == 'tray') s+=`Collect a card from tray.`
 	}
 
+	s=replaceAll(s,'child',wsGetChildInline(item));
 	d.innerHTML = s;
 	return d;
 
 }
 
+function wsGetChildInline(item,color){
+	let type = item.class;
+	let key = type == 'mammal'?'paw':'big_egg';
+	let o=M.superdi[key];
+	let [fam,sym]=isdef(o.fa6)?['fa6','fa6']:isdef(o.fa)?['pictoFa','fa']:['pictoGame','ga'];
+	console.log(item.colorPower)
+	let fg = valf(color,colorIdealText(item.colorPower,true)); // == 'white'?'grey':'inherit';
+	console.log(fg)
+	return `<span style="color:${fg};vertical-align:middle;line-height:80%;font-size:${item.fz * 1.5}px;font-family:${fam}">${String.fromCharCode('0x' + M.superdi[key][sym])}</span>`;
+}
 function wsGetSymbolInline(key, fz) { return `&nbsp;<span style="vertical-align:middle;line-height:80%;font-size:${fz * 1.5}px;font-family:pictoGame">${String.fromCharCode('0x' + M.superdi[key].ga)}</span>`; }
 function pluralOf(s, n) {
 	di = { food: '', child: 'ren' };

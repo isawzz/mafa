@@ -100,10 +100,10 @@ function getAbstractSymbol(n){
 	return `abstract_${String(n).padStart(3, '0')}`;
 }
 function getDetailedSuperdi(key) {
-	let o = M.superdi[key];
-	if(nundef(M.details[key])) return null;
-	addKeys(M.details[key], o);
-	addKeys(M.details[o.friendly], o);
+	let o = M.superdi[key]; console.log('...',key,o)
+	let details = valf(M.details[key],M.details[o.friendly]);
+	if(nundef(details)) return null;
+	addKeys(details, o);
 	o.key = key;
 	o.class = o.class.toLowerCase();
 	if (isdef(o.lifespan)) o.olifespan = calcLifespan(o.lifespan);
