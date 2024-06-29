@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test152_spiel(); }
+async function start() { TESTING = true; await test151_cardWiePresent(); }
 
 
 //#region tierspiel

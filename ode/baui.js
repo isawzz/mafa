@@ -69,14 +69,14 @@ function fishgame() {
 		//let dBoard = mDom(db,{w,h,transform:'rotate( -.5deg )',bgSize:'cover',bgImage:`url('../ode/wsboard1.jpg')`}); //position:'relative'});
 		//mDom(dBoard,{},{tag:'img',src:'../ode/wslandscape.png'});
 		let gap=11;
-		let grid=mGrid(3,5,dBoard,{padding:gap,w:w-40}); //,position:'absolute'});
+		let grid=mGrid(3,5,dBoard,{padding:gap,w:w-52}); //,position:'absolute'});
 		let sym=['food','child','card'];
 		let n=[1,1,2,2,3];
 		let cost=[0,1,1,2,2];
 		let addon=[0,1,0,1,0]
 		for(const i of range(3)){
 			for(const j of range(5)){
-				let d=mDom(grid,{w:170,h:250},{html:'card'});
+				let d=mDom(grid,{w:170,h:250,bg:rColor(),mabottom:20},{html:'card'});
 
 			}
 		}
@@ -85,6 +85,7 @@ function fishgame() {
 
 		return items;
 	}
+	
 	async function activate(table, items) {
 
 		await instructionStandard(table,'may pick your initial cards'); //browser tab and instruction if any
