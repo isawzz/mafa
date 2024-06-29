@@ -22,6 +22,7 @@ function fishgame() {
 		return fen;
 	}
 	function stats(table) {
+		mClear('dRight');
 		let [me, players] = [getUname(), table.players];
 		let style = { patop: 8, mabottom: 20, wmin: 80, bg: 'beige', fg: 'contrast' };
 		let player_stat_items = uiTypePlayerStats(table, me, 'dRight', 'colflex', style)
@@ -57,9 +58,30 @@ function fishgame() {
 		}
 
 		mLinebreak(d,25)
+		let [w,h]=[1467,1235].map(x=>x*.67);
+		let db=mDom(d,{w,h,bg:'green',padding:10,position:'relative'});
+		let da=mDom(db,{transform:'rotate( -.5deg )',position:'relative',w,h});
+		let ibg=mDom(da,{position:'absolute',left:0,top:0,w,h},{tag:'img',src:'../ode/wsboard1.jpg'});
 
-		let dBoard = mDom(d);
-		mDom(dBoard,{},{tag:'img',src:'../assets/games/wingspan/board.jpg'});
+		let dBoard=mDom(db,{position:'absolute',left:-2,top:0,w:w-15,h:h-12,wbox:true,border:'20px green solid'});
+
+		//let db=mDom(d,{wbox:true,border:'30px inset green',outline: 'solid 25px green','outline-offset': -20,w,h});
+		//let dBoard = mDom(db,{w,h,transform:'rotate( -.5deg )',bgSize:'cover',bgImage:`url('../ode/wsboard1.jpg')`}); //position:'relative'});
+		//mDom(dBoard,{},{tag:'img',src:'../ode/wslandscape.png'});
+		let gap=11;
+		let grid=mGrid(3,5,dBoard,{padding:gap,w:w-40}); //,position:'absolute'});
+		let sym=['food','child','card'];
+		let n=[1,1,2,2,3];
+		let cost=[0,1,1,2,2];
+		let addon=[0,1,0,1,0]
+		for(const i of range(3)){
+			for(const j of range(5)){
+				let d=mDom(grid,{w:170,h:250},{html:'card'});
+
+			}
+		}
+
+
 
 		return items;
 	}

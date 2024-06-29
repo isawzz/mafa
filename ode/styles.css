@@ -1975,3 +1975,31 @@ input:checked+.slider:before {
 }
 
 /* #endregion */
+
+/* #region test border image */
+.image-container {
+  position: relative;
+  width: fit-content; /* Adjust width as needed */
+  display: inline-block; /* Ensure div sizes to content */
+}
+
+.image-container::before {
+  content: '';
+  position: absolute;
+  top: 10px; /* Adjust top position as needed */
+  left: 10px; /* Adjust left position as needed */
+  right: 10px; /* Adjust right position as needed */
+  bottom: 10px; /* Adjust bottom position as needed */
+  border: 20px inset #000; /* Adjust border width and color */
+  z-index: -1; /* Ensure pseudo-element is behind the image */
+}
+
+.image-container img {
+  display: block;
+  max-width: 100%; /* Ensure image does not exceed container width */
+}
+
+
+
+/* #endregion */
+

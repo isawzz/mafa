@@ -1,6 +1,6 @@
 name: amanda
-color: '#2f7532'
-texture: ../assets/textures/marble_greenorange.jpeg
+color: '#046307'
+texture: ../assets/textures/wall1.jpg
 blendMode: overlay
 imgKey: amanda
 games:
