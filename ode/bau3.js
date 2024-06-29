@@ -1,74 +1,65 @@
 
+function showim2(imgKey, d, styles = {}, opts = {}) {
+	let o = lookup(M.superdi, [imgKey]); //console.log(imgKey,o)
+	let src;
+	if (nundef(o) && imgKey.includes('.')) src = imgKey;
+	else if (isdef(o) && isdef(opts.prefer)) src = valf(o[opts.prefer], o.img);
+	else if (isdef(o)) src = valf(o.img, o.photo)
+	let [w, h] = mSizeSuccession(styles, 40);
+	addKeys({ w, h }, styles);
 
-function wsGenerateCardInfo(key) {
-  let bg = rChoose(['white', 'sienna', 'pink', 'lightblue']);
-  let palette = wsGetColorRainbow(); //['gold', 'limegreen', 'orangered', 'dodgerblue']; if (bg != 'white') palette.push(bg);
-  let fg = rChoose(palette);
-  sym = getAbstractSymbol([2, 8, 10, 23, 26]);
-  power = wsGetPower(bg); console.log(power)
-  valueFactor = rChoose(range(1, 3));
-	op=rChoose(['+','/']); //console.log('op',op)
-  console.log(bg)
-	return wsFenFromItem({key,valueFactor,power,colorPower:bg,abstract:sym,colorSym:fg,op});
+	if (nundef(o)) src = rChoose(M.allImages).path;
+	if (isdef(src)) return mDom(d, styles, { tag: 'img', src });
+
+	fz=.8*h;
+	let [family,html]=isdef(o.text)?['emoNoto',o.text]:isdef(o.fa)?['pictoFa',String.fromCharCode('0x' + o.fa)]:isdef(o.ga)?['pictoGame',String.fromCharCode('0x' + o.ga)]:isdef(o.fa6)?['fa6',String.fromCharCode('0x' + o.fa6)]:['algerian',o.friendly];
+	addKeys({ family, fz, hline: fz, display: 'inline'}, styles);
+
+	let el = mDom(d, styles, { html }); mCenterCenterFlex(el);
+
+	return el;
+
+	if (isdef(o.text)) el = mDom(d, { fz: fz, hline: fz, family: 'emoNoto', fg: rColor(), display: 'inline' }, { html: o.text });
+	else if (isdef(o.fa)) el = mDom(d, { fz: fz, hline: fz, family: 'pictoFa', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa) });
+	else if (isdef(o.ga)) el = mDom(d, { fz: fz, hline: fz, family: 'pictoGame', bg: 'beige', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.ga) });
+	else if (isdef(o.fa6)) el = mDom(d, { fz: fz, hline: fz, family: 'fa6', bg: 'transparent', fg: rColor(), display: 'inline' }, { html: String.fromCharCode('0x' + o.fa6) });
+	return el;
 }
-function wsGetColorRainbow(){return ['gold', 'limegreen', 'orangered', 'dodgerblue', 'indigo', 'hotpink'];}
-function wsGetColorRainbowText(color){return {gold:'gold',limegreen:'green',orangered:'red',hotpink:'pink',indigo:'violet',dodgerblue:'blue'}[color];}
-function wsItemFromFen(fen){
+function wsPrintSymbol(dParent, sz, key) {
+	let files = {
+		cherries: '../assets/games/wingspan/fruit.svg',
+		fish: '../assets/games/wingspan/fish.svg',
+		forest: '../assets/games/wingspan/forest1.png',
+		grain: '../assets/games/wingspan/wheat.svg',
+		grassland: '../assets/games/wingspan/grassland2.png',
+		mouse: '../assets/games/wingspan/mouse.svg',
+		omni: '../assets/games/wingspan/pie3.svg',
+		seedling: '../assets/img/emo/seedling.png',
+		wetland: '../assets/games/wingspan/wetland.png',
+		worm: '../assets/games/wingspan/worm.svg',
+	};
+	let keys = Object.keys(files);
+	let styles = { w: sz, h: sz, };
+	if (['wetland', 'grassland', 'forest'].includes(key)) styles['clip-path'] = PolyClips.diamond;
+	if (key == 'wetland') styles.bg = 'lightblue';
+	else if (key == 'grassland') styles.bg = 'goldenrod';
+	else if (key == 'forest') styles.bg = 'emerald';
 
-  let [key, valueFactor, power, colorPower, sym, colorSym, op] = fen.split('@');
+	let src=valf(files[key],key == 'food'?files[rChoose(keys)]:null);
+	if (src) return  mDom(dParent, styles, { tag: 'img', width: sz, height: sz, src: files[valf(key, rChoose(keys))] });
 
-  let o = getDetailedSuperdi(key);
-  let item = jsCopy(o);
-  console.log(key,item,fen)
-  let bg = item.colorPower = colorPower; //valf(colorPower, rChoose(['white', 'sienna', 'pink', 'lightblue']));
-  let palette = wsGetColorRainbow(); //['gold', 'limegreen', 'orangered', 'dodgerblue', 'indigo', 'hotpink']; //if (bg != 'white') palette.push(bg);
-  let fg = item.colorSym = colorSym; //valf(colorSym, rChoose(palette)); //console.log(palette)
-  sym = item.abstract = sym; //valf(sym, getAbstractSymbol([2, 4, 8, 23, 26]));
-  item.power = power;
-  valueFactor = item.valueFactor = valueFactor; //valf(valueFactor, rChoose(range(1, 3)));
-	item.op = op;
-	item.value = valueFactor * (item.op == '+' ? 1 : item.foodTokens.length);
-
-	return item;
+	let o=M.superdi[key];
+	return showim2(key,dParent,styles);
 }
-function wsShowCardItem(item,d,fa){
-  let [w, h, sztop, sz, gap, fz] = [340, 500, 100, 30, 8, 16].map(x => x * fa);
-  item.fz=fz;
-
-	let [card, dCard] = wsCard(d, w, h);
-  let dtop = wsTopLeft(dCard, sztop, card.rounding);//mStyle(dtop,{h:200})
-  addKeys(card, item);
-
-	let [bg,fg]=[item.colorPower,item.colorSym];
-
-	wsHabitat(item.habTokens, dtop, sz * 1.1); mLinebreak(dtop, sz / 5);
-  wsFood(item.foodTokens, item.op, dtop, sz * .8);
-  wsTitle(item, dCard, sztop, fz, gap);
-
-	let [szPic, yPic] = [h / 2, sztop + gap]
-  let d1 = showim2(item.key, dCard, { rounding: 12, w: szPic, h: szPic }, { prefer: 'photo' });
-  mPlace(d1, 'tr', gap, yPic);
-
-	let leftBorderOfPic = w - (szPic + gap);
-  let dleft = mDom(dCard, { w: leftBorderOfPic, h: szPic }); mPlace(dleft, 'tl', gap / 2, sztop + gap);
-  mCenterCenterFlex(dleft);
-
-	let dval = mDom(dleft, { fg, w: sz * 1.2, align: 'center', fz: fz * 1.8, weight: 'bold' }, { html: item.value });
-  mLinebreak(dleft, 2 * gap)
-  let szSym = sz * 1.5;
-  let a = showim2(item.abstract, dleft, { w: szSym, h: szSym, fg });
-  mLinebreak(dleft, 3 * gap)
-  let dPlaetze = item.live.dPlaetze = showPlaetze(dleft, item, gap * 2); //szPlatz);
-
-	item.dpower = mDom(dCard, { fz: fz * 1.2, padding: gap, matop: sztop + szPic + gap * 3, w100: true, bg, fg: 'contrast', box: true });
-  wsPowerText(item,item.dpower,{fz:item.fz})
-
-  let dinfo = mDom(dCard, { fz, hpadding: gap, box: true, w100: true });
-  mPlace(dinfo, 'bl'); mFlexLine(dinfo, 'space-between');
-  mDom(dinfo, {}, { html: item.class });
-  mDom(dinfo, {}, { html: item.olifespan.text });
-  mDom(dinfo, {}, { html: item.osize.text });
-
-	return item;
+function wsGetChildInline(item,color){
+	let type = item.class;
+	let key = type == 'mammal'?'paw':'big_egg';
+	let o=M.superdi[key];
+	let [fam,sym]=isdef(o.fa6)?['fa6','fa6']:isdef(o.fa)?['pictoFa','fa']:['pictoGame','ga'];
+	//console.log(item.colorPower)
+	let fg = valf(color,colorIdealText(item.colorPower,true)); // == 'white'?'grey':'inherit';
+	//console.log(fg)
+	return `<span style="color:${fg};vertical-align:middle;line-height:80%;font-size:${item.fz * 1.5}px;font-family:${fam}">${String.fromCharCode('0x' + M.superdi[key][sym])}</span>`;
 }
+function wsGetSymbolInline(key, fz) { return `&nbsp;<span style="vertical-align:middle;line-height:80%;font-size:${fz * 1.5}px;font-family:pictoGame">${String.fromCharCode('0x' + M.superdi[key].ga)}</span>`; }
 

@@ -1,6 +1,6 @@
 name: guest
-color: '#006c7f'
-texture: ../assets/textures/marble_blue2.jpeg
+color: '#002e63'
+texture: ../assets/textures/marble_blue1.jpeg
 imgKey: stellers_jay
 blendMode: normal
 bg: '#55bc41'

@@ -2,7 +2,7 @@ name: mimi
 color: '#ffe4e1'
 texture: ../assets/textures/marble_rosa.jpeg
 blendMode: multiply
-imgKey: aardvark
+imgKey: mimi
 games:
   setgame:
     level: 1

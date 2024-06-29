@@ -107,7 +107,7 @@ games:
       gamemode: solo,multi
   fishgame:
     friendly: tier
-    logo: blowfish
+    logo: leopard
     color: water
     ploptions:
       playmode: bot,human

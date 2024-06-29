@@ -6956,6 +6956,8 @@ buffalo:
     - animal
   colls:
     - emo
+    - tierspiel
+  img: ../assets/img/tierspiel/buffalo.png
 buffalo_head:
   friendly: buffalo_head
   ga: E566
@@ -10365,6 +10367,8 @@ clownfish:
   cats: []
   colls:
     - icon
+    - tierspiel
+  img: ../assets/img/tierspiel/clownfish.png
 club_suit:
   friendly: club_suit
   img: ../assets/img/emo/club-suit.png
@@ -11532,6 +11536,8 @@ cricket:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/cricket.png
 cricket_bat:
   friendly: cricket_bat
   ga: ECF6
@@ -13377,6 +13383,8 @@ dolphin:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/dolphin.png
 domino_mask:
   friendly: domino_mask
   ga: EA64
@@ -13964,6 +13972,8 @@ duck:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/duck.png
 duck_palm:
   friendly: duck_palm
   ga: E668
@@ -17330,6 +17340,8 @@ flamingo:
   colls:
     - emo
     - birds
+    - tierspiel
+  photo: ../assets/img/tierspiel/flamingo.png
 flanged_mace:
   friendly: flanged_mace
   ga: E27B
@@ -18073,6 +18085,8 @@ fox:
   cats: []
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/fox.png
 fox_head:
   friendly: fox_head
   ga: E3B5
@@ -19093,6 +19107,8 @@ goat:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/goat.png
 goblin:
   friendly: goblin
   img: ../assets/img/emo/goblin.png
@@ -23627,6 +23643,8 @@ kangaroo:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/kangaroo.png
 katana:
   friendly: katana
   ga: E8E1
@@ -24097,6 +24115,8 @@ koala:
   cats: []
   colls:
     - icon
+    - tierspiel
+  photo: ../assets/img/tierspiel/koala.png
 krak_des_chevaliers:
   friendly: krak_des_chevaliers
   cats:
@@ -25268,6 +25288,8 @@ llama:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/llama.png
 load:
   friendly: load
   ga: EB91
@@ -29406,6 +29428,8 @@ octopus:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/octopus.png
 oden:
   friendly: oden
   img: ../assets/img/emo/oden.png
@@ -29959,6 +29983,8 @@ ostrich:
   cats: []
   colls:
     - icon
+    - tierspiel
+  img: ../assets/img/tierspiel/ostrich.png
 otter:
   friendly: otter
   img: ../assets/img/emo/otter.png
@@ -36224,6 +36250,8 @@ shark:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/shark.png
 shark_bite:
   friendly: shark_bite
   ga: E388
@@ -46573,3 +46601,80 @@ zzz:
     - emotion
   colls:
     - emo
+starfish:
+  friendly: starfish
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/starfish1.png
+chimpanzee:
+  friendly: chimpanzee
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/chimpanzee.png
+capybara:
+  friendly: capybara
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/capybara.png
+cheetah:
+  friendly: cheetah
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/cheetah.png
+bumblebee:
+  friendly: bumblebee
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/bumblebee.png
+copperband_butterflyfish:
+  friendly: copperband_butterflyfish
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/copperband_butterflyfish.png
+horse1:
+  friendly: horse
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/horse1.png
+katydid:
+  friendly: katydid
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/katydid.png
+intellagama_lesueurii:
+  friendly: intellagama_lesueurii
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/intellagama_lesueurii.png
+macaw:
+  friendly: macaw
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/macaw.png
+meerkat:
+  friendly: meerkat
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/meerkat.png

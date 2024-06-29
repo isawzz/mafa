@@ -6643,7 +6643,7 @@ async function onclickSimple() {
 	sisi.dPageIndex = mDom(d1, { fg });
 	simpleInit(name, sisi);
 	sisi.isOpen = true;
-	sisi.dInstruction.innerHTML = '* drag images into the shaded area *'
+	sisi.dInstruction.innerHTML = '* press Ctrl while hovering over an image for details *'; //'* drag images into the shaded area *'
 	let grid = sisi.dGrid;
 	mStyle(grid, { bg: '#00000030' })
 	enableDataDrop(grid, simpleOnDropImage)

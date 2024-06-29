@@ -6,8 +6,8 @@ async function start() { TESTING = true; await test152_spiel(); }
 
 //#region tierspiel
 async function test153_powerText(){
-  await preprelims();// await prelims(); return;
-  let d = clearFlex();  //let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
+  await preprelims(); // await prelims(); return;
+  let d = clearFlex(); //let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
   let key = 'bee';
   let fen = wsGenerateCardInfo(key);
   let item = wsItemFromFen(fen); console.log(item)
@@ -17,21 +17,15 @@ async function test153_powerText(){
 }
 async function test152_spiel() {
   await prelims();
-  //await switchToMainMenu('table');
-
-
 }
 
 //#region tierspiel cards
 async function test151_cardWiePresent() {
-  await prelims(); //return;
+  await prelims(); 
   let d = clearFlex();
-  let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x));
-  //let keys = ['arctic_fox'];
-  
-  for(const fen of arrTake(deck,1)){
-    // let item = wsShowCard(key, d, 1); //console.log(item);
-    // let fen = wsCardInfo(item); //console.log(fen);
+  let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x)); console.log(deck.length)
+  for(const fen of arrTake(deck,100)){
+    console.log(fen)
     let item = wsItemFromFen(fen); //console.log('item',item)
     wsShowCardItem(item,d,1);
   }
