@@ -4,15 +4,16 @@ onscroll = handleSticky;
 
 function handleSticky() { let d = mBy('dNav'); if (window.scrollY >= 88) mClass(d, 'sticky'); else mClassRemove(d, 'sticky'); }
 
-async function start() { await prelims();test5(); }
+async function start() { await prelims();test6(); }
 
 async function test6(){
 	await switchToMainMenu('home');
+	await onclickTransactions1();
 
 }
 async function test5(){
 	await switchToMainMenu('home');
-	let q=get_q3();
+	let q=getTransactionsFlexperks();
 	let res=dboutput(q);
 	mBy('dPre').textContent = res;
 }

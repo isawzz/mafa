@@ -1,5 +1,5 @@
 
-function get_q1(){
+function getTransactions(){
 	return `
 			SELECT
 					t.id,
@@ -22,7 +22,7 @@ function get_q1(){
 					accounts receiver_account ON t.receiver = receiver_account.id;
 		`;
 }
-function get_q2(){
+function getTransactionsSelected(){
 	return `
 			SELECT
 					t.dateof,
@@ -42,8 +42,7 @@ function get_q2(){
 					accounts receiver_account ON t.receiver = receiver_account.id;
 		`;
 }
-
-function get_q3(){
+function getTransactionsFlexperks(){
 	return `
 			SELECT
 					t.dateof,

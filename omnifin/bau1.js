@@ -11,13 +11,12 @@ async function menuOpenOverview() {
 function onclickShowSchema() {
 	dbQuery(DB, `SELECT sql FROM sqlite_master WHERE type='table';`, 'dPre')
 }
-function onclickFlex() { let q = get_q3(); let res = dboutput(q); mBy('dPre').textContent = res; }
-function onclickTransactions() { let q = get_q2(); let res = dboutput(q); mBy('dPre').textContent = res; }
+function onclickFlex() { let q = getTransactionsFlexperks(); let res = dboutput(q); mBy('dPre').textContent = res; }
+function onclickTransactions() { let q = getTransactionsSelected(); let res = dboutput(q); mBy('dPre').textContent = res; }
 function onclickTransactions1() { 
-	let q = get_q2(); 
-	mClear('dPre');
-
-	let res = dbtable(q,mBy('dT')); 
+	let q = getTransactionsSelected(); 
+	let res = dbq(q);
+	showTransactions(res[0])
 }
 
 async function menuOpenSql() {
