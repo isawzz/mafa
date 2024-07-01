@@ -1,10 +1,3 @@
-function dbq(q) {	return DB.exec(q);}
-function dboutput(q){
-	let result = dbq(q);
-	return output = result.map(({ columns, values }) => {
-		return columns.join('\t') + '\n' + values.map(row => row.join('\t')).join('\n');
-	}).join('\n\n');
-}
 
 function get_q1(){
 	return `
