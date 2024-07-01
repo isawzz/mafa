@@ -24,6 +24,9 @@ package-lock.json
 _sens*
 assets_old/
 _weg
+*.db
+*db/
+
 
 
 
