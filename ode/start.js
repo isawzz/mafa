@@ -1647,7 +1647,6 @@ async function prelims() {
   await preprelims();
   let t4 = performance.now();
   sockInit();
-  UI.dTitle = mBy('dTitle');
   let t5 = performance.now();
   window.onkeydown = keyDownHandler;
   window.onkeyup = keyUpHandler;
@@ -1675,6 +1674,7 @@ async function prelims() {
     
     `;
   document.body.innerHTML = html;
+  UI.dTitle = mBy('dTitle');
   UI.commands = {};
   UI.nav = showNavbar(); //console.log(UI.nav)
   staticTitle();

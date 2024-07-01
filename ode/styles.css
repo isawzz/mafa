@@ -1,3 +1,5 @@
+/* #region root und reset */
+
 :root {
   --bgBody: transparent;
   --bgButton: null;
@@ -66,6 +68,7 @@ dialog:-internal-dialog-in-top-layer {
   font-size: inherit;
   font-family: inherit;
 }
+/* #endregion */
 
 /* #region classes for cards */
 .card {
@@ -141,7 +144,6 @@ dialog:-internal-dialog-in-top-layer {
 
 /* #endregion */
 
-
 body {
   font-family: opensans, sans-serif;
   /* padding: 2px 12px; */
@@ -150,6 +152,7 @@ body {
   background-color: var(--bgBody) !important;
 }
 
+/* #region all */
 .button {
   padding: 5px 10px;
   font-size: 16px;
@@ -507,6 +510,7 @@ fieldset .disabled {
 .w80 {
   width: 80px;
 }
+/* #endregion */
 
 /* #region datalist */
 .datalist {
@@ -2003,3 +2007,15 @@ input:checked+.slider:before {
 
 /* #endregion */
 
+/* #region sticky navbar */
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.sticky + .content {
+  padding-top: 60px;
+}
+
+/* #endregion */

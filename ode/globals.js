@@ -2,7 +2,7 @@ var A = null;
 var Menu = null;
 var T = null;
 var Tid = null;
-var U = null;
+var U = {};
 var SLEEP_WATCHER = null; //elim!
 const deepRichColors = [
   "#2B2D42", // Charcoal Blue

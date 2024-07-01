@@ -5,6 +5,7 @@ SELECT sender,receiver,amount FROM transactions WHERE description LIKE '%COSTCO%
 
 
 SELECT SUM(sender) AS total_sender_sum FROM transactions;
+
 SELECT sql FROM sqlite_master WHERE type='table';
 
 

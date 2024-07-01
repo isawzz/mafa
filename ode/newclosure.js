@@ -6151,12 +6151,12 @@ function menuDisable(menu, key) { mClass(iDiv(menu.commands[key]), 'disabled') }
 
 function menuEnable(menu, key) { mClassRemove(iDiv(menu.commands[key]), 'disabled') }
 
-async function menuOpen(menu, key) {
-	let cmd = menu.commands[key];
-	if (nundef(cmd)) { console.log('abandon', key); await switchToMainMenu('settings'); return; }
+async function menuOpen(menu, key, defaultKey='settings') {
+	let cmd = menu.commands[key]; console.log(cmd)
+	if (nundef(cmd)) { console.log('abandon', key); await switchToMainMenu(defaultKey); return; }
 	menu.cur = key;
 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
-	await updateExtra();
+	if (isdef(mBy('dExtra'))) await updateExtra();
 	await cmd.open();
 }
 function mergeArrays(target, source) {

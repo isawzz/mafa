@@ -1,7 +1,46 @@
+
 onload = start;
+onscroll = handleSticky;
 
-async function start() { test1(); }
+function handleSticky() { let d = mBy('dNav'); if (window.scrollY >= d.offsetTop) mClass(d, 'sticky'); else mClassRemove(d, 'sticky'); }
 
+async function start() { await prelims();test4(); }
+
+async function test4() {
+	await switchToMainMenu('tables');
+}
+
+//#region preliminary tests
+async function test3_getdb() {
+	let db = await dbInit('../omnifin/test.db');
+	if (!db) return; //	console.log(db)
+	let text = await dbQuery(db, `SELECT sql FROM sqlite_master WHERE type='table';`, mBy('output'))
+}
+async function test2() {
+	const fileUrl = './test.db';
+
+	try {
+		const response = await fetch(fileUrl);
+		const buffer = await response.arrayBuffer();
+
+		const SQL = await initSqlJs({ locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${filename}` });
+		const db = new SQL.Database(new Uint8Array(buffer));
+		const query = "SELECT * FROM transactions;";
+
+		try {
+			const result = db.exec(query);
+			const output = result.map(({ columns, values }) => {
+				return columns.join('\t') + '\n' + values.map(row => row.join('\t')).join('\n');
+			}).join('\n\n');
+			document.getElementById('output').textContent = output || 'Query executed successfully.';
+		} catch (error) {
+			document.getElementById('output').textContent = 'Error executing SQL: ' + error.message;
+		}
+	} catch (error) {
+		console.error('Error:', error);
+		document.getElementById('output').textContent = 'Error: ' + error.message;
+	}
+}
 async function test1() {
 	const fileUrl = './test.db';
 
@@ -58,7 +97,16 @@ async function test0() {
 			console.error('Error fetching database file:', error);
 		});
 }
+//#endregion
 
+async function prelims() {
+	let dNav = mBy('dNav');
+	mStyle(dNav, { overflow: 'hidden', box: true, padding: 10, className: 'nav' });
+	UI.commands = {};
+	UI.nav = showNavbar(); 
+	setColors('skyblue', 'white');
+	DB = await dbInit('../omnifin/test.db');
+}
 
 
 
