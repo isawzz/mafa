@@ -15,6 +15,12 @@ async function dbInit(path) {
 	}
 
 }
+function mSidebar(dParent='dLeft',wmin=170,styles={},opts={}) {
+	dParent = toElem(dParent);
+	mStyle(dParent, { wmin: wmin });
+	let d = mDom(dParent, styles, opts); //{ wmin: wmin - 10, margin: 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 });
+	return {wmin,d}
+}
 function showNavbar() {
 	mDom('dNav',{fz:34,mabottom:10,w100:true},{html:`Omnifin`});
 	let nav = mMenu('dNav');

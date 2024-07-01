@@ -1,35 +1,77 @@
-
-function onclickShowSchema(){
-	dbQuery(DB,`SELECT sql FROM sqlite_master WHERE type='table';`,'dPre')
+function dbq(q) {	return DB.exec(q);}
+function dboutput(q){
+	let result = dbq(q);
+	return output = result.map(({ columns, values }) => {
+		return columns.join('\t') + '\n' + values.map(row => row.join('\t')).join('\n');
+	}).join('\n\n');
 }
 
-// function menuCommand(dParent, menuKey, key, html, open, close) {
-// 	let cmd = mCommand(dParent, key, html, { open, close });
-// 	let a = iDiv(cmd);
-// 	a.setAttribute('key', `${menuKey}_${key}`);
-// 	a.onclick = onclickMenu;
-// 	cmd.menuKey = menuKey;
-// 	return cmd;
-// }
-// function onclickMenu(ev) {
-// 	let keys = evToAttr(ev, 'key');
-// 	let [menuKey, cmdKey] = keys.split('_');
-// 	let menu = UI[menuKey];
-// 	switchToMenu(menu, cmdKey);
-// }
-// async function switchToMenu(menu, key) {
-// 	menuCloseCurrent(menu); console.log('switchToMenu')
-// 	Menu = { key }; localStorage.setItem('menu', key);
-// 	await menuOpen(menu, key);
-// }
-// async function menuOpen(menu, key, defaultKey='settings') {
-// 	let cmd = menu.commands[key]; console.log(cmd)
-// 	if (nundef(cmd)) { console.log('abandon', key); await switchToMainMenu(defaultKey); return; }
-// 	menu.cur = key;
-// 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
-// 	//if (isdef(mBy('dExtra'))) await updateExtra();
-// 	console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-// 	console.log('WIE BITTE???')
-// 	//await menuOpenSql();
-// 	await cmd.open();
-// }
+function get_q1(){
+	return `
+			SELECT
+					t.id,
+					t.dateof,
+					t.location,
+					sender_account.account_name AS sender_name,
+					receiver_account.account_name AS receiver_name,
+					t.amount,
+					t.unit,
+					t.received_amount,
+					t.received_unit,
+					t.description,
+					t.reference,
+					t.report
+			FROM
+					transactions t
+			JOIN
+					accounts sender_account ON t.sender = sender_account.id
+			JOIN
+					accounts receiver_account ON t.receiver = receiver_account.id;
+		`;
+}
+function get_q2(){
+	return `
+			SELECT
+					t.dateof,
+					t.location,
+					sender_account.account_name AS sender_name,
+					sender_account.account_owner AS sender_owner,
+					receiver_account.account_name AS receiver_name,
+					receiver_account.account_owner AS receiver_owner,
+					t.amount,
+					t.unit,
+					t.description
+			FROM
+					transactions t
+			JOIN
+					accounts sender_account ON t.sender = sender_account.id
+			JOIN
+					accounts receiver_account ON t.receiver = receiver_account.id;
+		`;
+}
+
+function get_q3(){
+	return `
+			SELECT
+					t.dateof,
+					t.location,
+					sender_account.account_name AS sender_name,
+					sender_account.account_owner AS sender_owner,
+					receiver_account.account_name AS receiver_name,
+					receiver_account.account_owner AS receiver_owner,
+					t.amount,
+					t.unit,
+					t.description
+			FROM
+					transactions t
+			JOIN
+					accounts sender_account ON t.sender = sender_account.id
+			JOIN
+					accounts receiver_account ON t.receiver = receiver_account.id
+			WHERE
+					sender_name = 'flex-perks';
+		`;
+}
+
+
+

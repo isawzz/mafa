@@ -2,12 +2,28 @@
 onload = start;
 onscroll = handleSticky;
 
-function handleSticky() { let d = mBy('dNav'); if (window.scrollY >= d.offsetTop) mClass(d, 'sticky'); else mClassRemove(d, 'sticky'); }
+function handleSticky() { let d = mBy('dNav'); if (window.scrollY >= 88) mClass(d, 'sticky'); else mClassRemove(d, 'sticky'); }
 
-async function start() { await prelims();test4(); }
+async function start() { await prelims();test5(); }
 
+async function test6(){
+	await switchToMainMenu('home');
+
+}
+async function test5(){
+	await switchToMainMenu('home');
+	let q=get_q3();
+	let res=dboutput(q);
+	mBy('dPre').textContent = res;
+}
 async function test4() {
-	await switchToMainMenu('tables');
+	await switchToMainMenu('sql');
+
+	let res=dbq('select * from transactions');
+	console.log(res[0].columns,res[0].values)
+
+
+
 }
 
 //#region preliminary tests

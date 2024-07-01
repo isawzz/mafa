@@ -1,4 +1,15 @@
 
+//#region 1.7.24 OMNIFIN
+
+function sidebarHome() {
+	let wmin = 170;
+	mStyle('dLeft', { wmin: wmin });
+	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 });
+	let gap = 5;
+	UI.commands.showSchema = mCommand(d, 'showSchema', 'DB Structure'); mNewline(d, gap);
+}
+
+
 //#region 30.6.24
 function playerStatCount(key, n, dParent, styles = {}, opts = {}) {
 	//console.log(key)

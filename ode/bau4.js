@@ -10,7 +10,7 @@ async function showTable(id) {
 
 	let items = func.present(table); 
 
-	func.stats(table);return;
+	func.stats(table);//return;
 	
 	if (table.status == 'over') { showGameover(table, 'dTitle'); return; }
 	assertion(table.status == 'started', `showTable status ERROR ${table.status}`);

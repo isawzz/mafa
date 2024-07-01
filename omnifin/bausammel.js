@@ -19,25 +19,40 @@ function dbQuery(db, q, dParent) {
 
 }
 
-function sidebarHome() {
-	let wmin = 170;
-	mStyle('dLeft', { wmin: wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 });
-	let gap = 5;
-	UI.commands.showSchema = mCommand(d, 'showSchema', 'DB Structure'); mNewline(d, gap);
-}
 async function onclickSql(){console.log('hallo')}
-async function onclickExecute(){
-	dbQuery(DB,UI.ta.value,'dPre');
-}
-function sidebarSql() {
-	let wmin = 170;
-	mStyle('dLeft', { wmin: wmin });
-	let d = mDom('dLeft', { wmin: wmin - 10, margin: 10, matop: 20, h: window.innerHeight - getRect('dLeft').y - 102 });
-	let gap = 5;
-	//UI.commands.showSchema = mCommand(d, 'showSchema', 'DB Structure'); mNewline(d, gap);
-}
 
 //stubs
 async function updateExtra(){}
 
+
+
+// function menuCommand(dParent, menuKey, key, html, open, close) {
+// 	let cmd = mCommand(dParent, key, html, { open, close });
+// 	let a = iDiv(cmd);
+// 	a.setAttribute('key', `${menuKey}_${key}`);
+// 	a.onclick = onclickMenu;
+// 	cmd.menuKey = menuKey;
+// 	return cmd;
+// }
+// function onclickMenu(ev) {
+// 	let keys = evToAttr(ev, 'key');
+// 	let [menuKey, cmdKey] = keys.split('_');
+// 	let menu = UI[menuKey];
+// 	switchToMenu(menu, cmdKey);
+// }
+// async function switchToMenu(menu, key) {
+// 	menuCloseCurrent(menu); console.log('switchToMenu')
+// 	Menu = { key }; localStorage.setItem('menu', key);
+// 	await menuOpen(menu, key);
+// }
+// async function menuOpen(menu, key, defaultKey='settings') {
+// 	let cmd = menu.commands[key]; console.log(cmd)
+// 	if (nundef(cmd)) { console.log('abandon', key); await switchToMainMenu(defaultKey); return; }
+// 	menu.cur = key;
+// 	mClass(iDiv(cmd), 'activeLink'); //console.log('cmd',cmd)
+// 	//if (isdef(mBy('dExtra'))) await updateExtra();
+// 	console.log('HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+// 	console.log('WIE BITTE???')
+// 	//await menuOpenSql();
+// 	await cmd.open();
+// }
