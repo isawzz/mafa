@@ -1,0 +1,45 @@
+status: started
+id: deViDLY43F0WZIHQaXTJ
+game: fishgame
+owner: amanda
+friendly: battle of Bridgetown
+players:
+  amanda:
+    name: amanda
+    color: '#046307'
+    texture: ../assets/textures/wall1.jpg
+    blendMode: overlay
+    imgKey: amanda
+    playmode: human
+    score: 0
+    cards:
+      - >-
+        white_peacock_butterfly@2@pink_hunt_successfully_draw_1_card_deck@pink@abstract_002@hotpink@/
+      - bumblebee@3@_repeat@sienna@abstract_026@limegreen@+
+      - >-
+        camel@3@pink_place_child_pick_1_food_feeder@pink@abstract_008@orangered@/
+      - alligator@2@lightblue_tray@lightblue@abstract_010@orangered@+
+      - >-
+        norwegian_forest_cat@3@pink_draw_mission_draw_1_card_deck@pink@abstract_023@dodgerblue@+
+    missions: []
+    offsprings: 0
+    cherries: 0
+    fish: 0
+    grain: 0
+    mouse: 0
+    seedling: 0
+    worm: 0
+    forest: []
+    grassland: []
+    wetland: []
+playerNames:
+  - amanda
+options:
+  numCards: 12
+  gamemode: multi
+step: 0
+moves: []
+plorder:
+  - amanda
+turn:
+  - amanda

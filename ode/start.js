@@ -1,7 +1,7 @@
 onload = start;
 
 async function start() { TESTING = true; await prelims(); }
-async function start() { TESTING = true; await test151_cardWiePresent(); }
+async function start() { TESTING = true; await test152_spiel(); }
 
 
 //#region tierspiel
@@ -17,6 +17,7 @@ async function test153_powerText(){
 }
 async function test152_spiel() {
   await prelims();
+  console.log(M.byCollection.tierspiel.length,'animals')
 }
 
 //#region tierspiel cards
@@ -25,7 +26,7 @@ async function test151_cardWiePresent() {
   let d = clearFlex();
   let deck = jsCopy(M.byCollection.tierspiel).map(x=>wsGenerateCardInfo(x)); console.log(deck.length)
   for(const fen of arrTake(deck,100)){
-    console.log(fen)
+    //console.log(fen)
     let item = wsItemFromFen(fen); //console.log('item',item)
     wsShowCardItem(item,d,1);
   }

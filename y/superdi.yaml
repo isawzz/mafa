@@ -12488,6 +12488,8 @@ deer:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/deer.png
 defense_satellite:
   friendly: defense_satellite
   ga: ECA0
@@ -14342,6 +14344,8 @@ eel:
     - animal
   colls:
     - icon
+    - tierspiel
+  img: ../assets/img/tierspiel/eel.png
 egg:
   friendly: egg
   img: ../assets/img/emo/egg.png
@@ -14903,6 +14907,8 @@ ermine:
     - animal
   colls:
     - icon
+    - tierspiel
+  img: ../assets/img/tierspiel/ermine.png
 eruption:
   friendly: eruption
   ga: E31E
@@ -25268,6 +25274,8 @@ lizard:
     - animal
   colls:
     - emo
+    - tierspiel
+  photo: ../assets/img/tierspiel/lizard.png
 lizard_tongue:
   friendly: lizard_tongue
   ga: E79C
@@ -44881,6 +44889,8 @@ vulture:
   cats: []
   colls:
     - icon
+    - tierspiel
+  img: ../assets/img/tierspiel/vulture.png
 vuvuzelas:
   friendly: vuvuzelas
   ga: E59A
@@ -46678,3 +46688,10 @@ meerkat:
   colls:
     - tierspiel
   img: ../assets/img/tierspiel/meerkat.png
+dung_beetle:
+  friendly: dung_beetle
+  cats:
+    - animal
+  colls:
+    - tierspiel
+  img: ../assets/img/tierspiel/dung_beetle.png

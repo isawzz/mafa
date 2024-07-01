@@ -28,6 +28,9 @@ function setgame() {
 		}
 	}
 	function present(table) {
+
+		presentStandardRoundTable(table);
+
 		const colors = { red: '#e74c3c', green: '#27ae60', purple: 'indigo' };
 		setLoadPatterns('dPage', colors);
 		let fen = table.fen;
