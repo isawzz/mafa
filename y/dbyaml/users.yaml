@@ -1,0 +1,53 @@
+felix:
+  name: felix
+  color: '#1f8fff'
+  key: felix
+amanda:
+  name: amanda
+  color: '#008a8a'
+  key: amanda
+lauren:
+  name: lauren
+  color: '#ada0ee'
+  key: lauren
+lili:
+  name: lili
+  color: '#6762f3'
+  key: lili
+mitra:
+  name: mitra
+  color: '#ffc400'
+  key: mitra
+gul:
+  name: gul
+  color: '#89cffa'
+  key: gul
+mac:
+  name: mac
+  color: '#4d0085'
+  key: mac
+guest:
+  name: guest
+  color: '#777777'
+  key: guest
+____unsafe:
+  name: ____unsafe
+  color: '#aaff00'
+  key: unknown_user
+mimi:
+  name: mimi
+  color: '#f28cb2'
+  key: mimi
+nasi:
+  name: nasi
+  color: '#26d926'
+  key: nasi
+max:
+  name: max
+  color: '#ba55d3'
+  key: baby_chick
+  avatar: amanda10_12
+maria:
+  name: maria
+  color: '#ffa07a'
+  key: maria

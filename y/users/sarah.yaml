@@ -1,0 +1,18 @@
+name: sarah
+color: '#f494b4'
+imgKey: sarah
+games:
+  setgame:
+    level: 7
+texture: ../assets/textures/marble_grey1.jpeg
+palette:
+  - '#f28cb2'
+  - '#fc9bc0'
+  - '#fcaccc'
+  - '#fcdae7'
+  - '#fcb6d0'
+  - '#fca4cc'
+  - '#f494b4'
+  - '#fcc4dc'
+blendMode: luminosity
+fg: '#ffffff'

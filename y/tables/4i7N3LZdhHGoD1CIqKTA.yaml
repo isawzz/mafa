@@ -1,0 +1,70 @@
+status: started
+id: 4i7N3LZdhHGoD1CIqKTA
+game: crazu
+owner: amanda
+friendly: showdown in Panama City
+players:
+  amanda:
+    name: amanda
+    color: '#046307'
+    texture: ../assets/textures/wall1.jpg
+    blendMode: overlay
+    imgKey: amanda
+    playmode: human
+    score: 0
+    cards:
+      - eagle_head@3@lightblue_feeder@lightblue@abstract_023@limegreen@/
+      - white_peacock_butterfly@1@_food_2_supply@sienna@abstract_026@limegreen@+
+      - caterpillar@2@lightblue_tray@lightblue@abstract_002@indigo@/
+      - kangaroo@3@white_child_class@white@abstract_010@indigo@+
+      - fly@3@white_child_class@white@abstract_008@limegreen@/
+    missions: []
+    offsprings: 0
+    cherries: 0
+    fish: 0
+    grain: 0
+    mouse: 0
+    seedling: 0
+    worm: 0
+    forest: []
+    grassland: []
+    wetland: []
+  felix:
+    name: felix
+    color: '#0e1e76'
+    texture: ../assets/textures/marble_meer1.jpg
+    blendMode: normal
+    imgKey: felix
+    playmode: human
+    score: 0
+    cards:
+      - koala@1@pink_place_child_pick_1_food_feeder@pink@abstract_008@hotpink@/
+      - tiger@1@pink_draw_mission_pick_1_food_feeder@pink@abstract_002@gold@/
+      - wolf@1@_food_2_tray@sienna@abstract_008@hotpink@/
+      - alpaca@1@white_collect_fish@white@abstract_023@indigo@/
+      - norwegian_forest_cat@1@_draw_1_card_deck@sienna@abstract_026@orangered@/
+    missions: []
+    offsprings: 0
+    cherries: 0
+    fish: 0
+    grain: 0
+    mouse: 0
+    seedling: 0
+    worm: 0
+    forest: []
+    grassland: []
+    wetland: []
+playerNames:
+  - amanda
+  - felix
+options:
+  numCards: 12
+  gamemode: multi
+step: 0
+moves: []
+plorder:
+  - amanda
+  - felix
+turn:
+  - amanda
+  - felix

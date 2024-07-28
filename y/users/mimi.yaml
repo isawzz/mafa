@@ -1,0 +1,19 @@
+name: mimi
+color: '#ffe4e1'
+texture: ../assets/textures/marble_rosa.jpeg
+blendMode: multiply
+imgKey: mimi
+games:
+  setgame:
+    level: 1
+  button96:
+    handicap: 3
+palette:
+  - '#ffe4e1'
+  - '#c79f9b'
+  - '#9b8886'
+  - '#ae5031'
+  - '#cb765c'
+  - '#7c6d6f'
+  - '#b97876'
+  - '#d08d78'

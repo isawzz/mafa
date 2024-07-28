@@ -1,0 +1,10 @@
+name: diana
+color: '#4c2882'
+texture: ../assets/textures/marble_violet1.jpeg
+blendMode: luminosity
+imgKey: das
+games:
+  setgame:
+    level: 7
+  button96:
+    handicap: 3

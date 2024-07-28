@@ -1,0 +1,17 @@
+name: lauren
+color: '#006c7f'
+texture: ../assets/textures/marble_blue2.jpeg
+blendMode: normal
+imgKey: lauren
+palette:
+  - '#006c7f'
+  - '#7caac1'
+  - '#39688b'
+  - '#cddbe0'
+  - '#abc3cd'
+  - '#b6d6e2'
+  - '#566a79'
+  - '#6c848e'
+games:
+  setgame:
+    level: 7

@@ -1,0 +1,78 @@
+
+_________ scrape / extract from wikivoyage dump
+enwikivoyage-20240220-pages-meta-current.xml
+
+npm install xml2js wikijs sax express
+
+
+_________ hugging face
+login angleeb
+account, settings, access tokens: https://huggingface.co/settings/tokens
+create new token: token1
+npm install express dotenv;
+in same dir as app.js, have .env file with 
+	HUGGING_FACE_API_TOKEN=your_hugging_face_api_token_here
+in app.js:
+const dotenv = require('dotenv');
+dotenv.config();
+
+app.get('/fetch-answer', async (req, res) => {
+  const query = req.query.question;
+  if (!query) {
+    return res.status(400).json({ error: 'Question parameter is required' });
+  }
+
+  const url = 'https://api-inference.huggingface.co/models/gpt2';
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.HUGGING_FACE_API_TOKEN}`,
+    },
+    body: JSON.stringify({ inputs: query }),
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    if (response.ok) {
+      res.json({ answer: data[0].generated_text });
+    } else {
+      res.status(response.status).json({ error: data });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching answer from Hugging Face API', details: error.message });
+  }
+});
+
+_________ work with wikipedia api
+1. npm install express node-fetch
+
+2. in app.js add
+const fetch = require('node-fetch');
+...
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+...
+// Proxy endpoint to fetch data from Wikipedia
+app.get('/wiki', async (req, res) => {
+    const { keyword } = req.query;
+    if (!keyword) {
+        return res.status(400).json({ error: 'Keyword parameter is required.' });
+    }
+
+    try {
+        const encodedKeyword = encodeURIComponent(keyword);
+        const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&exintro&explaintext&redirects=1&titles=${encodedKeyword}`;
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching data from Wikipedia:', error);
+        res.status(500).json({ error: 'Error fetching data from Wikipedia.' });
+    }
+});

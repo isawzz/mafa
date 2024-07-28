@@ -1,0 +1,8 @@
+name: gul
+color: '#e6be8a'
+texture: ../assets/textures/marble_beige1.jpeg
+blendMode: normal
+imgKey: leopard
+games:
+  setgame:
+    level: 1

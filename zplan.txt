@@ -1,0 +1,200 @@
+_____ mo 17.6.24 airport D!!! 890
+5:03 AM 6/17/2024 490
+settColor
+7:27 AM 6/17/2024 710
+10:12 AM 6/17/2024 830
+
+
+
+phone,lg,mouse,docs
+
+vps
+seedling
+pot_of_food
+poultry_leg
+ant
+
+restart internet!
+
+_____ do 13.6.24 airport D!!! 900
+6:26 AM 6/13/2024 900
+was will ich grad jetzt?
+ich will einfach zoom in machen
+
+
+
+_____ mi 12.6.24 airport D!!! 695
+5:55 AM 6/12/2024 295
+- "C:\Users\tawzz\Pictures\diana\random114_003.png"
+
+
+=>mach ein not implemented message!!!
+
+
+
+- how can I handle portrait images?
+
+
+
+remove weggeben!
+400x400 ab sofort!
+und wenn das bild potrait ist soll er die breite nehmen im ausschnitt
+
+
+
+bussard
+newt
+gecko
+yak
+
+_____ mo 10.6.24 airport D!!! 590 (vor abend m15)
+5:36 AM 6/10/2024 190
+5:46 AM 6/10/2024 200
+simpleInitCollection
+what if avatar key stops existing?
+showUserImage muss das ausgleichen!
+6:54 AM 6/10/2024 265
+collOnDroppedUrl
+schau was passiert wenn ich NICHT item draggable mach!
+
+die folgenden gehen weiterhin:
+collectCats
+collFilterImages
+
+die folgenden muessen replaced werden!
+
+ich brauch doch eine sidebar!
+mit tv
+- each cell should have an indexsodass ich bei reload wenn keine image dazukommt NICHT die pos veraendere!!!
+- brauch kein drag items!!! oder vielleicht doch
+
+- versuch noch irgendein bild
+- goto closure 824
+- involviert sind auch noch:
+collPostReload
+collPreReload
+onclickCollItemLabel
+onclickCollItem
+collOnDropImage
+collOnDroppedItem
+collOnDroppedUrl
+
+cat15:
+  cats:
+    - animal
+  img: ../assets/img/animals/cat/cat15.png
+  friendly: ojos_azules_cat
+  colls:
+    - tierspiel
+cat20:
+  cats:
+    - animal
+  img: ../assets/img/animals/cat/cat20.png
+  friendly: sphynx_cat
+  colls:
+    - tierspiel
+butterfly1:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly1.png
+  friendly: giant_swallowtail
+  colls: []
+butterfly2:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly2.png
+  friendly: blue_morpho
+  colls: []
+butterfly3:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly3.png
+  friendly: butterfly
+  colls: []
+butterfly4:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly4.png
+  friendly: butterfly
+  colls: []
+butterfly5:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly5.png
+  friendly: plain_tiger_butterfly
+  colls:
+    - tierspiel
+butterfly6:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly6.png
+  friendly: southern_festoon
+  colls:
+    - tierspiel
+butterfly7:
+  cats:
+    - animal
+  img: ../assets/img/animals/insect/butterfly7.png
+  friendly: butterfly
+  colls: []
+
+
+
+- collections ist alles nicht gut genug!
+- muss viel einfacher werden!!!
+- change AddSelected to Add Selected To
+choices: 
+1. man kann nur in der edit collection items aendern
+2. man kann alle collections immer erweitern
+3. ich koennte es doch machen wenn ich 2 browsers offen habe oder?
+
+was ist sonst noch drin in den animals coll animals?
+key entfernen aus superdi
+alle
+
+
+in tierspiel: wenn es ein photo gibt, nimm dieses, sonst nimm img!
+==>nur in showInImageBatch geaendert!!!!! muss ich auch in showImage aendern!!!
+
+wenn friendly in details ist soll es auch triggern
+
+
+
+solo mode soll eigentlich anders sein: die bots
+sollen alle im eigenen browser laufen!
+
+_____ 6:44 AM 5/20/2024 355
+==>alles aus todo.js holen was gebraucht wird!!!
+luminosity function rewrite
+
+==>was ist mit den user_images??? warum resetten die sich staendig?
+das ist von postUser mit true wenn key fehlt!
+
+
+
+___ 13.5.24
+- warum geht das texture mit blend mode nicht?
+- mach eines!
+U.color darf KEINE transparency haben!!!
+- schreib auf die blend mode items den blend mode in weiss und in schwarz drauf!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

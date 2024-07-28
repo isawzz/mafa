@@ -1,0 +1,10 @@
+name: felix
+color: '#0e1e76'
+texture: ../assets/textures/marble_meer1.jpg
+blendMode: normal
+imgKey: felix
+games:
+  setgame:
+    level: 7
+  button96:
+    handicap: 3

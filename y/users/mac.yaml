@@ -1,0 +1,17 @@
+name: mac
+color: '#091f92'
+imgKey: mac
+games:
+  setgame:
+    level: 3
+texture: ../assets/textures/marble_green1.jpeg
+palette:
+  - '#091f92'
+  - '#70ae97'
+  - '#a8d0bf'
+  - '#608e94'
+  - '#3f7e94'
+  - '#193e94'
+  - '#e0f1e9'
+  - '#8cac9d'
+blendMode: lighten

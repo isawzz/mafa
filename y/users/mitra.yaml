@@ -1,0 +1,6 @@
+name: mitra
+color: '#ed9121'
+fg: '#ffffff'
+texture: ../assets/textures/wall2.jpg
+blendMode: darken
+imgKey: mitra

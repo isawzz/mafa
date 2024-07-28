@@ -1,0 +1,6 @@
+name: annabel
+color: '#f07f7f'
+imgKey: annabel
+games:
+  setgame:
+    level: 7

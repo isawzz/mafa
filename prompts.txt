@@ -1,0 +1,18 @@
+write a python script that, given a wikivoyage page (eg., https://en.wikivoyage.org/wiki/Paris) extracts the most important information plus a few images and a short introductory paragraph to give a good impression of that place
+
+- for the following xml file about the travel location Paris, write an html card introducing the location, with some historic data, some data of the most interesting tourist activities, and images
+
+here is some code. I would like to modify it to start an express server with a 'get' with a parameter 'city' that will return just history information about that city 
+
+
+
+
+
+
+
+
+
+
+
+
+

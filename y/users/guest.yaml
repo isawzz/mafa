@@ -1,0 +1,21 @@
+name: guest
+color: '#002e63'
+texture: ../assets/textures/marble_blue1.jpeg
+imgKey: stellers_jay
+blendMode: normal
+bg: '#55bc41'
+games:
+  setgame:
+    level: 7
+  button96:
+    handicap: 3
+fg: '#ffffff'
+palette:
+  - '#002e63'
+  - '#071c3b'
+  - '#81591f'
+  - '#42372f'
+  - '#202737'
+  - '#23446a'
+  - '#0c2c55'
+  - '#131922'

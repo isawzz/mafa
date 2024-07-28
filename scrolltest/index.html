@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Scroll to Bottom</title>
+	<style>
+		#scrollableDiv {
+			width: 300px;
+			height: 200px;
+			overflow-y: scroll;
+			border: 1px solid black;
+		}
+
+		.content {
+			height: 1600px;
+			background: linear-gradient(white, lightblue);
+		}
+
+		#scrollButton {
+			margin-top: 20px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<button id="scrollButton">Scroll to Bottom</button>
+	<div id="scrollableDiv">
+		<div class="content">
+			Scrollable content here...
+		</div>
+	</div>
+
+	<script>
+		function scrollToBottom() {
+			const scrollableDiv = document.getElementById('scrollableDiv');
+			scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+		}
+
+		scrollToBottom();
+		//document.getElementById('scrollButton').addEventListener('click', scrollToBottom);
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+name: amanda
+color: '#046307'
+texture: ../assets/textures/wall1.jpg
+blendMode: overlay
+imgKey: amanda
+games:
+  setgame:
+    level: 2
+  button96:
+    handicap: 3
