@@ -1,12 +1,25 @@
 onload=start;
 
-async function start() { await test2_zusammen(); }
+async function start() { await test2_citiesKovalam(); }
 
+async function test2_citiesKovalam(){
+  let di = await mGetYaml('../wikisaves/di.yaml');
+  console.log(di['9245'],di['9246']);
+}
 async function test2_articles(){
-  //let 
+  let di = await mGetYaml('../wikisaves/di.yaml');
+  console.log(Object.keys(di).length);
+  let cities = {},byTitle={};
+  for(const k in di){
+    let o = di[k];
+    let cats = o.cats;
+    assertion(isList(cats),`problem! ${k}`);
+    if (cats.some(x=>x.toLowerCase().includes('city'))) cities[k]=o;
+  }
+  console.log(Object.values(cities).map(x=>x.title));
 }
 async function test2_zusammen(){
-  let dir='../wikisaves/filenofile20';
+  let dir='../wikisaves/filenofile80';
   let files=await mGetFiles(dir,3001);
   files.sort();
   let di={},nodi={};

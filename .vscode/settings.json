@@ -64,7 +64,9 @@
 			"**/*.sass",
 			"**/*.ts",
 			"**/assets/**",
-			"**/y/**"
+			"**/y/**",
+			"**/*saves/**"
+
 	],
 	"liveServer.settings.port": 0,
 	"workbench.colorCustomizations": {
